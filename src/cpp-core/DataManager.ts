@@ -5,13 +5,9 @@ const STORAGE_PREFIX = 'cpp_dm_'
 
 export class DataManager {
   async init() {
-    this.initialized = false
-    this.raw = await this.loadRaw()
-    this.data = await this.transform()
-    this.initialized = true
-    ;(<any>globalThis).$dm = this
+    await this.loadRaw()
+    await this.transform()
   }
-  public initialized: boolean = false
 
   async transform() {
     return {
@@ -43,12 +39,10 @@ export class DataManager {
   }
 
   private generateCharacters() {
-    return Object.fromEntries(
-      Object.entries(this.raw.exCharacters).map(([key, raw]) => [key, new Character(raw, this)]),
-    )
+    return Object.fromEntries(Object.entries(this.raw.exCharacters).map(([key, raw]) => [key, new Character(raw)]))
   }
 }
 
 export class Character {
-  constructor(public readonly raw: ExcelCharacterTable.Character, private readonly dm: DataManager) {}
+  constructor(public readonly raw: ExcelCharacterTable.Character) {}
 }

@@ -7,7 +7,7 @@ import { Container } from './pkg/container'
 import { DataManager } from './pkg/cpp-core/DataManager'
 
 const container = new Container()
-void container.get(DataManager).init();
+void container.get(DataManager).init()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

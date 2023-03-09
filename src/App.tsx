@@ -21,9 +21,7 @@ function App() {
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
     </div>
   )
 }
@@ -32,9 +30,7 @@ export function AppWrapper() {
   const dm = useInject(DataManager)
 
   if (!dm.initialized) {
-    <div className="App">
-      loading...
-    </div>
+    return <div className="App">loading...</div>
   }
   return <App />
 }

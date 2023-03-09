@@ -1,10 +1,10 @@
-import { IContainer } from './private/IContainer';
-import { createInjectBrandObject, InjectContext } from './private/InjectBrand';
-import { RootContainer } from './private/RootContainer';
+import { IContainer } from './private/IContainer'
+import { createInjectBrandObject, InjectContext } from './private/InjectBrand'
+import { RootContainer } from './private/RootContainer'
 
 type ContainerConstructor = {
   (): IContainer
-  new(): IContainer
+  new (): IContainer
 }
 
 const containerFactory = (ctx: InjectContext) => {
@@ -13,13 +13,13 @@ const containerFactory = (ctx: InjectContext) => {
 
 export const Container: ContainerConstructor = function Container(this: any) {
   if (this && this instanceof Container) {
-    const result = RootContainer.create();
-    result.set(Container as ContainerConstructor, result);
-    return result as IContainer;
+    const result = RootContainer.create()
+    result.set(Container as ContainerConstructor, result)
+    return result as IContainer
   }
 
   return createInjectBrandObject({
-    factory: containerFactory
+    factory: containerFactory,
   })
 } as any
 

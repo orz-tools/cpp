@@ -1,4 +1,4 @@
-import { Constructor } from "../types";
+import { Constructor } from '../types'
 
 export interface IContainer {
   get<T extends object>(constructor: Constructor<T>): T
