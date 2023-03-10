@@ -1,25 +1,13 @@
-import { Spinner } from '@blueprintjs/core'
 import elite0 from '../assets/elite0.png'
 import elite1 from '../assets/elite1.png'
 import elite2 from '../assets/elite2.png'
 import m1 from '../assets/m1.png'
 import m2 from '../assets/m2.png'
 import m3 from '../assets/m3.png'
-import { useInject } from '../hooks'
-import { DataManager, UniEquip } from '../pkg/cpp-core/DataManager'
+import { Skill, UniEquip } from '../pkg/cpp-core/DataManager'
 import { CharacterLevel } from '../pkg/cpp-core/UserData'
 
-export function SkillIcon({ skillId, level, master }: { skillId: string; level?: number; master?: number }) {
-  const dm = useInject(DataManager)
-  const skill = dm.data.skills[skillId]
-  if (!skill) {
-    return (
-      <span className="bp4-menu-item-icon">
-        <Spinner title={skillId} size={20} />
-      </span>
-    )
-  }
-
+export function SkillIcon({ skill, level, master }: { skill: Skill; level?: number; master?: number }) {
   const name = skill.raw.levels[0].name
 
   return (
