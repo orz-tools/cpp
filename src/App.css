@@ -5,38 +5,84 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.cpp-character-menu.bp4-menu-item .bp4-menu-item-icon {
+  height: 40px;
+  width: 40px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.cpp-level-target {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: white;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.cpp-level-target img {
+  width: 19px;
+  height: auto;
+  vertical-align: middle;
 }
 
-.card {
-  padding: 2em;
+.cpp-level-target .source,
+.cpp-level-target .target {
+  height: 20px;
+  font: 14px monospace;
+  line-height: 20px;
+  display: block;
+  text-align: center;
 }
 
-.read-the-docs {
-  color: #888;
+.cpp-simple-target {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cpp-simple-target > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  background-color: black;
+  color: white;
+  font: 14px monospace;
+  padding: 0px 4px;
+  line-height: 20px;
+  height: 20px;
+}
+
+.cpp-simple-target > span > img {
+  vertical-align: -1px;
+  height: 12px;
+  width: auto;
+}
+
+.cpp-uniequip-icon {
+  background-color: black;
+  /* background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 100%); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.cpp-uniequip-icon > img {
+  margin: 0 auto;
+}
+
+.cpp-uniequip-shining-blue {
+  background-image: url(./assets/shining_blue.png);
+}
+.cpp-uniequip-shining-green {
+  background-image: url(./assets/shining_green.png);
+}
+.cpp-uniequip-shining-grey {
+  background-image: url(./assets/shining_grey.png);
+}
+.cpp-uniequip-shining-red {
+  background-image: url(./assets/shining_red.png);
+}
+.cpp-uniequip-shining-yellow {
+  background-image: url(./assets/shining_yellow.png);
 }

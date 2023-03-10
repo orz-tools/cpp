@@ -143,3 +143,105 @@ export namespace ExcelCharacterTable {
     allSkillLvlup: AllSkillLvlup[]
   }
 }
+
+export interface ExcelSkillTable extends Record<string, ExcelSkillTable.Skill> {}
+
+export namespace ExcelSkillTable {
+  export interface SpData {
+    spType: number
+    levelUpCost?: any
+    maxChargeTime: number
+    spCost: number
+    initSp: number
+    increment: number
+  }
+
+  export interface Blackboard {
+    key: string
+    value: number
+  }
+
+  export interface Level {
+    name: string
+    rangeId?: any
+    description: string
+    skillType: number
+    durationType: number
+    spData: SpData
+    prefabId: string
+    duration: number
+    blackboard: Blackboard[]
+  }
+
+  export interface Skill {
+    skillId: string
+    iconId?: any
+    hidden: boolean
+    levels: Level[]
+  }
+}
+
+export interface ExcelUniEquipTable {
+  equipDict: Record<string, ExcelUniEquipTable.UniEquip>
+  missionList: Record<string, ExcelUniEquipTable.UniEquipMission>
+  subProfDict: Record<string, ExcelUniEquipTable.SubProfession>
+  charEquip: Record<string, string[]>
+  equipTrackDict: ExcelUniEquipTable.EquipTrack[]
+}
+export namespace ExcelUniEquipTable {
+  export interface TrackList {
+    charId: string
+    equipId: string
+  }
+
+  export interface EquipTrack {
+    timeStamp: number
+    trackList: TrackList[]
+  }
+
+  export interface SubProfession {
+    subProfessionId: string
+    subProfessionName: string
+    subProfessionCatagory: number
+  }
+  export interface UniEquipMission {
+    template: string
+    desc: string
+    paramList: string[]
+    uniEquipMissionId: string
+    uniEquipMissionSort: number
+    uniEquipId: string
+    jumpStageId: string
+  }
+
+  export interface ItemCost {
+    id: string
+    count: number
+    type: string
+  }
+
+  export interface PerLevelItemCosts extends Record<number, ItemCost[]> {}
+
+  export interface UniEquip {
+    uniEquipId: string
+    uniEquipName: string
+    uniEquipIcon: string
+    uniEquipDesc: string
+    typeIcon: string
+    typeName1: string
+    typeName2: string
+    equipShiningColor: string
+    showEvolvePhase: number
+    unlockEvolvePhase: number
+    charId: string
+    tmplId?: any
+    showLevel: number
+    unlockLevel: number
+    unlockFavorPoint: number
+    missionList: string[]
+    itemCost: PerLevelItemCosts
+    type: string
+    uniEquipGetTime: number
+    charEquipOrder: number
+  }
+}
