@@ -1,12 +1,40 @@
 import { Alignment, Button, Classes, Menu, Navbar, Spinner } from '@blueprintjs/core'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { LevelIcon, UniEquipIcon, EmptyIcon, SkillIcon } from './components/Icons'
 import { useInject } from './hooks'
 import { Character, DataManager } from './pkg/cpp-core/DataManager'
+import { UserDataAtomHolder } from './pkg/cpp-core/UserData'
 
 const NAVBAR_HEIGHT = '50px'
-const SIDEBAR_WIDTH = '450px'
+const SIDEBAR_WIDTH = '800px'
+
+function UndoButtons() {
+  const atoms = useInject(UserDataAtomHolder)
+  const setData = useSetAtom(atoms.dataAtom)
+  const undoCounter = useAtomValue(atoms.undoCounterAtom)
+  const redoCounter = useAtomValue(atoms.redoCounterAtom)
+
+  return (
+    <>
+      <Button
+        className="bp4-minimal"
+        icon="undo"
+        disabled={undoCounter === 0}
+        text="Undo"
+        onClick={() => setData('undo')}
+      />
+      <Button
+        className="bp4-minimal"
+        icon="redo"
+        disabled={redoCounter === 0}
+        text="Redo"
+        onClick={() => setData('redo')}
+      />
+    </>
+  )
+}
 
 function App() {
   return (
@@ -15,8 +43,7 @@ function App() {
         <Navbar.Group align={Alignment.LEFT}>
           <Navbar.Heading>Closure++</Navbar.Heading>
           <Navbar.Divider />
-          <Button className="bp4-minimal" icon="home" text="Home" />
-          <Button className="bp4-minimal" icon="document" text="Files" />
+          <UndoButtons />
         </Navbar.Group>
       </Navbar>
       <section
@@ -49,8 +76,8 @@ function CharacterMenu({ character }: { character: Character }) {
 
   return (
     <>
-      <li role="none">
-        <a role="menuitem" tabIndex={0} className="bp4-menu-item bp4-popover-dismiss cpp-character-menu">
+      <li role="none" className="cpp-char-menu-master">
+        <a role="menuitem" tabIndex={0} className="bp4-menu-item bp4-popover-dismiss cpp-char-menu-char">
           <>
             <span className="bp4-menu-item-icon">
               <img src={character.avatar} width={'100%'} height={'100%'} alt={character.key} title={character.key} />
@@ -67,11 +94,36 @@ function CharacterMenu({ character }: { character: Character }) {
                 {character.raw.appellation}
               </div>
             </div>
+          </>
+        </a>
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className="bp4-menu-item bp4-popover-dismiss cpp-char-menu-status cpp-char-menu-status-current"
+        >
+          <>
             <LevelIcon level={{ elite: 0, level: 1 }} />
-            {uniX ? <UniEquipIcon uniEquip={uniX} key={uniX.key} /> : <EmptyIcon />}
-            {uniY ? <UniEquipIcon uniEquip={uniY} key={uniY.key} /> : <EmptyIcon />}
+            {uniX ? <UniEquipIcon uniEquip={uniX} key={uniX.key} level={0} /> : <EmptyIcon />}
+            {uniY ? <UniEquipIcon uniEquip={uniY} key={uniY.key} level={0} /> : <EmptyIcon />}
             {character.raw.skills?.map((skill) => (
-              <SkillIcon skillId={skill.skillId} key={skill.skillId} level={0} master={0} />
+              <SkillIcon skillId={skill.skillId} key={skill.skillId} level={1} master={0} />
+            ))}
+            {new Array(3 - (character.raw.skills?.length || 0)).fill(0).map((_, i) => (
+              <EmptyIcon key={i} />
+            ))}
+          </>
+        </a>
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className="bp4-menu-item bp4-popover-dismiss cpp-char-menu-status cpp-char-menu-status-goal"
+        >
+          <>
+            <LevelIcon level={{ elite: 0, level: 1 }} />
+            {uniX ? <UniEquipIcon uniEquip={uniX} key={uniX.key} level={0} /> : <EmptyIcon />}
+            {uniY ? <UniEquipIcon uniEquip={uniY} key={uniY.key} level={0} /> : <EmptyIcon />}
+            {character.raw.skills?.map((skill) => (
+              <SkillIcon skillId={skill.skillId} key={skill.skillId} level={1} master={0} />
             ))}
             {new Array(3 - (character.raw.skills?.length || 0)).fill(0).map((_, i) => (
               <EmptyIcon key={i} />

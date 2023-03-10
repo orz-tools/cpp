@@ -7,7 +7,7 @@ import m2 from '../assets/m2.png'
 import m3 from '../assets/m3.png'
 import { useInject } from '../hooks'
 import { DataManager, UniEquip } from '../pkg/cpp-core/DataManager'
-import { CharacterLevel } from '../pkg/cpp-core/State'
+import { CharacterLevel } from '../pkg/cpp-core/UserData'
 
 export function SkillIcon({ skillId, level, master }: { skillId: string; level?: number; master?: number }) {
   const dm = useInject(DataManager)
@@ -33,12 +33,11 @@ export function SkillIcon({ skillId, level, master }: { skillId: string; level?:
 }
 
 export function EmptyIcon() {
-  return <span className="bp4-menu-item-icon" style={{ backgroundColor: 'lightgray' }}></span>
+  return <span className="bp4-menu-item-icon"></span>
 }
 
 export function UniEquipIcon({ uniEquip, level }: { uniEquip: UniEquip; level?: number }) {
   const name = `${uniEquip.raw.uniEquipName} (${uniEquip.raw.typeName1}-${uniEquip.raw.typeName2})`
-  level = 0
   return (
     <span className="bp4-menu-item-icon">
       <div
@@ -78,7 +77,7 @@ export function UniEquipIcon({ uniEquip, level }: { uniEquip: UniEquip; level?: 
 export function LevelIcon({ level }: { level: CharacterLevel }) {
   return (
     <span className="bp4-menu-item-icon">
-      <div className="cpp-simple-target" style={{ backgroundColor: 'black' }}>
+      <div className="cpp-simple-target">
         <img
           src={[elite0, elite1, elite2][level.elite]}
           width={'20'}
@@ -94,7 +93,7 @@ export function LevelTarget2({ source, target }: { source: CharacterLevel; targe
   return (
     <span className="bp4-menu-item-icon">
       <div className="cpp-level-target">
-        <span className="source" style={{ backgroundColor: 'black' }}>
+        <span className="source">
           <img src={[elite0, elite1, elite2][source.elite]} />
           {source.level.toFixed(0).padStart(2, ' ')}
         </span>

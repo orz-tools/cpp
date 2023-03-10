@@ -14,7 +14,6 @@ export class DataManager {
     this.raw = await this.loadRaw()
     this.data = await this.transform()
     this.initialized = true
-    ;(<any>globalThis).$dm = this
   }
   public initialized: boolean = false
 
