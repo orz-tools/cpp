@@ -280,7 +280,7 @@ function QuerySearchBox() {
   )
 }
 
-export function QueryBuilder() {
+function QueryBuilder() {
   const [param, setParam] = useAtom(queryParamAtom)
   const atoms = useInject(UserDataAtomHolder)
   const data = useAtomValue(atoms.dataAtom)
@@ -360,7 +360,7 @@ export function CharacterList() {
           <QueryBuilder />
         </Navbar.Group>
       </Navbar>
-      <Menu style={{ flex: 1, flexShrink: 1, overflow: 'hidden' }}>
+      <Menu style={{ flex: 1, flexShrink: 1 }}>
         <AutoSizer>
           {({ height, width }) => (
             <FixedSizeList

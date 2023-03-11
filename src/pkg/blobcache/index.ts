@@ -37,7 +37,9 @@ export function load(url: string): string | Promise<string> {
     }
 
     try {
-      const ab = await (await fetch(url)).arrayBuffer()
+      const res = await fetch(url)
+      if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`, { cause: res })
+      const ab = await res.arrayBuffer()
       await blobStore.setItem(url, ab)
       const blobUrl = URL.createObjectURL(new Blob([ab], { type: mime(url) }))
       return commit(url, blobUrl)

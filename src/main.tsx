@@ -5,7 +5,7 @@ import { ContainerContext } from './hooks/useContainer'
 import './index.css'
 import { Container } from './pkg/container'
 import { DataManager } from './pkg/cpp-core/DataManager'
-import { newUserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
+import { newUserData, UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
 import { atomWithStorage } from 'jotai/utils'
 import { Store } from './Store'
 import { Provider } from 'jotai'
@@ -14,7 +14,7 @@ const container = new Container()
 void container.get(DataManager).init()
 
 const atoms = container.get(UserDataAtomHolder)
-atoms.setAtom(atomWithStorage('cpp_userdata', newUserData()))
+atoms.setAtom(atomWithStorage<UserData | undefined>('cpp_userdata', undefined))
 
 const store = container.get(Store).store
 store.sub(atoms.undoCounterAtom, () => {

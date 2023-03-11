@@ -1,6 +1,13 @@
 import pProps from 'p-props'
-import { ExcelCharacterTable, ExcelPatchCharacterTable, ExcelSkillTable, ExcelUniEquipTable } from './excelTypes'
+import {
+  ExcelCharacterTable,
+  ExcelItemTable,
+  ExcelPatchCharacterTable,
+  ExcelSkillTable,
+  ExcelUniEquipTable,
+} from './excelTypes'
 import localForage from 'localforage'
+import { YituliuValue } from './yituliuTypes'
 
 const STORAGE_PREFIX = 'cpp_dm_'
 
@@ -23,6 +30,7 @@ export class DataManager {
       skills: this.generateSkills(),
       uniEquips: this.generateUniEquips(),
       constants: this.generateConstants(),
+      items: this.generateItems(),
     }
   }
   public data!: Awaited<ReturnType<DataManager['transform']>>
@@ -41,9 +49,10 @@ export class DataManager {
       exUniEquips: DataManager.loadJson<ExcelUniEquipTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/uniequip_table.json',
       ),
-      exItems: DataManager.loadJson<ExcelUniEquipTable>(
+      exItems: DataManager.loadJson<ExcelItemTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/item_table.json',
       ),
+      yituliuValue: DataManager.loadJson<YituliuValue[]>('https://houduan.yituliu.site/file/export/item/value/json'),
     }
     return (await pProps(task)) as any as { [K in keyof typeof task]: Awaited<(typeof task)[K]> }
   }
@@ -75,6 +84,12 @@ export class DataManager {
   private generateUniEquips() {
     return Object.fromEntries(
       Object.entries(this.raw.exUniEquips.equipDict).map(([key, raw]) => [key, new UniEquip(key, raw, this)]),
+    )
+  }
+
+  private generateItems() {
+    return Object.fromEntries(
+      Object.entries(this.raw.exItems.items).map(([key, raw]) => [key, new Item(key, raw, this)]),
     )
   }
 
@@ -234,5 +249,54 @@ export class UniEquip {
     return `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/equip/type/${encodeURIComponent(
       this.raw.typeIcon.toLowerCase(),
     )}.png`
+  }
+}
+
+export class Item {
+  constructor(
+    public readonly key: string,
+    public readonly raw: ExcelItemTable.Item,
+    private readonly dm: DataManager,
+  ) {}
+
+  get icon() {
+    return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/item/${encodeURIComponent(
+      this.raw.iconId,
+    )}.png`
+  }
+
+  private _valueAsAp?: [number | undefined]
+  get valueAsAp(): number | undefined {
+    return (this._valueAsAp || (this._valueAsAp = [this._generateValueAsAp()]))[0]
+  }
+
+  get valueAsApString(): string {
+    if (this.valueAsAp == null) return ''
+    return this.valueAsAp
+      .toFixed(4)
+      .replace(/(\.\d+?)0+$/, (_, orig) => orig)
+      .replace(/\.$/, '')
+  }
+
+  private _generateValueAsAp() {
+    switch (this.key) {
+      case '3213': // 先锋双芯片
+        return this.dm.data.items['3212'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
+      case '3223': // 近卫双芯片
+        return this.dm.data.items['3222'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
+      case '3233': // 重装双芯片
+        return this.dm.data.items['3232'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
+      case '3243': // 狙击双芯片
+        return this.dm.data.items['3242'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
+      case '3253': // 术师双芯片
+        return this.dm.data.items['3252'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
+      case '3263': // 医疗双芯片
+        return this.dm.data.items['3262'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
+      case '3273': // 辅助双芯片
+        return this.dm.data.items['3272'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
+      case '3283': // 特种双芯片
+        return this.dm.data.items['3282'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
+    }
+    return this.dm.raw.yituliuValue.find((x) => x.itemId == this.key)?.itemValueReason
   }
 }

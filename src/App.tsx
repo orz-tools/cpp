@@ -3,12 +3,10 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import './App.css'
 import { CharacterList } from './components/CharacterList'
+import { ItemList } from './components/ItemList'
 import { useInject } from './hooks/useContainer'
 import { DataManager } from './pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from './pkg/cpp-core/UserData'
-
-const NAVBAR_HEIGHT = '50px'
-const SIDEBAR_WIDTH = '800px'
 
 function UndoButtons() {
   const atoms = useInject(UserDataAtomHolder)
@@ -40,7 +38,7 @@ function UndoButtons() {
 
 function App() {
   return (
-    <div className="App">
+    <>
       <Navbar fixedToTop={true}>
         <Navbar.Group align={Alignment.LEFT}>
           <Navbar.Heading>Closure++</Navbar.Heading>
@@ -49,24 +47,30 @@ function App() {
           <Navbar.Divider />
         </Navbar.Group>
       </Navbar>
-      <section
-        className={Classes.ELEVATION_1}
-        style={{
-          left: 0,
-          bottom: 0,
-          top: NAVBAR_HEIGHT,
-          width: SIDEBAR_WIDTH,
-          position: 'fixed',
-          overflowY: 'auto',
-          overflowX: 'visible',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <CharacterList />
-      </section>
-      <section style={{ marginLeft: SIDEBAR_WIDTH, paddingTop: NAVBAR_HEIGHT }}>'Source Han Sans SC'</section>
-    </div>
+      <div className="App">
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
+            width: '750px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <CharacterList />
+        </section>
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
+            width: '350px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <ItemList />
+        </section>
+        <section></section>
+      </div>
+    </>
   )
 }
 

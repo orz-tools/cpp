@@ -5,17 +5,18 @@ import deepEqual from 'deep-equal'
 import { Constructor, Inject } from '../container'
 import { txatom } from '../txatom'
 import { Character, DataManager } from './DataManager'
+import { SetStateAction } from 'react'
 
 const UserDataAtoms = class UserDataAtoms {} as Constructor<ReturnType<typeof buildAtoms>> &
   ReturnType<typeof buildAtoms>
 
 export class UserDataAtomHolder extends UserDataAtoms {
   dataManager = Inject(DataManager)
-  rootAtom!: PrimitiveAtom<UserData>
+  baseAtom!: PrimitiveAtom<UserData | undefined>
 
-  public setAtom(atom: PrimitiveAtom<UserData>) {
-    this.rootAtom = atom
-    Object.assign(this, buildAtoms(this.rootAtom, this.dataManager))
+  public setAtom(atom: PrimitiveAtom<UserData | undefined>) {
+    this.baseAtom = atom
+    Object.assign(this, buildAtoms(this.baseAtom, this.dataManager))
   }
 }
 
@@ -27,7 +28,23 @@ export const emptyCharacterStatus = Object.freeze<CharacterStatus>({
   modLevel: Object.freeze({}),
 })
 
-function buildAtoms(rootAtom: PrimitiveAtom<UserData>, dm: DataManager) {
+function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManager) {
+  const rootAtom: PrimitiveAtom<UserData> = atom(
+    (get) => {
+      let value = get(baseAtom)
+      if (!value) {
+        value = newUserData()
+      }
+      if (!value.items) value.items = {}
+      return value
+    },
+    (get, set, value) =>
+      set(baseAtom, (v) => {
+        if (typeof value === 'function') return value(get(rootAtom))
+        return value
+      }),
+  )
+
   const tx = txatom(rootAtom)
   const { dataAtom } = tx
 
@@ -44,6 +61,21 @@ function buildAtoms(rootAtom: PrimitiveAtom<UserData>, dm: DataManager) {
       delete data.goal[charId]
     }
   }
+
+  const itemQuantities = atom((get) => get(dataAtom).items)
+
+  const itemQuantity = atomFamily(
+    (itemId: string) =>
+      atom(
+        (get) => get(dataAtom).items[itemId] || 0,
+        (get, set, value: SetStateAction<number>) => {
+          set(dataAtom, 'modify', (data) => {
+            data.items[itemId] = typeof value === 'function' ? value(data.items[itemId] || 0) : value
+          })
+        },
+      ),
+    (a, b) => a === b,
+  )
 
   const currentCharacter = atomFamily(
     (charId: string) =>
@@ -113,6 +145,9 @@ function buildAtoms(rootAtom: PrimitiveAtom<UserData>, dm: DataManager) {
 
   return {
     ...tx,
+    rootAtom,
+    itemQuantities,
+    itemQuantity,
     currentCharacter,
     goalCharacter,
     characterFinishedStatus,
@@ -254,6 +289,7 @@ function rewriteCharacters(
 export interface UserData {
   current: Record<string, CharacterStatus>
   goal: Record<string, CharacterStatus>
+  items: Record<string, number>
 }
 
 export interface CharacterStatus {
@@ -273,5 +309,6 @@ export function newUserData(): UserData {
   return {
     current: {},
     goal: {},
+    items: {},
   }
 }
