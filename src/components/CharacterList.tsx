@@ -144,7 +144,7 @@ function CharacterMenu({ character, style }: { character: Character; style?: Rea
           role="menuitem"
           tabIndex={0}
           className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-current"
-          style={{ opacity: currentCharacter.level === 0 ? 0.5 : 1 }}
+          style={{ opacity: currentCharacter.level === 0 ? 0.25 : 1 }}
         >
           {renderCharacterStatus(currentCharacter, character, uniX, uniY)}
         </a>
