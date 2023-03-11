@@ -19,6 +19,11 @@ function mime(url: string) {
   }
 }
 
+function commit(url: string, blobUrl: string) {
+  blobMap.set(url, blobUrl)
+  return blobUrl
+}
+
 export function load(url: string): string | Promise<string> {
   if (blobMap.has(url)) {
     return blobMap.get(url)!
@@ -28,20 +33,17 @@ export function load(url: string): string | Promise<string> {
     const existing = (await blobStore.getItem(url)) as ArrayBuffer
     if (existing) {
       const blobUrl = URL.createObjectURL(new Blob([existing], { type: mime(url) }))
-      blobMap.set(url, blobUrl)
-      return blobUrl
+      return commit(url, blobUrl)
     }
 
     try {
       const ab = await (await fetch(url)).arrayBuffer()
       await blobStore.setItem(url, ab)
       const blobUrl = URL.createObjectURL(new Blob([ab], { type: mime(url) }))
-      blobMap.set(url, blobUrl)
-      return blobUrl
+      return commit(url, blobUrl)
     } catch (e) {
       console.error(`Cannot cache ${url}.`, e)
-      blobMap.set(url, badUrl)
-      return badUrl
+      return commit(url, badUrl)
     }
   })
 }
