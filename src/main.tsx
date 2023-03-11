@@ -29,11 +29,11 @@ Object.assign(globalThis, {
 })
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <ContainerContext.Provider value={container}>
-        <AppWrapper />
-      </ContainerContext.Provider>
-    </Provider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <Provider store={store}>
+    <ContainerContext.Provider value={container}>
+      <AppWrapper />
+    </ContainerContext.Provider>
+  </Provider>,
+  // </React.StrictMode>,
 )

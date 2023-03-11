@@ -1,22 +1,19 @@
-import { Alignment, Button, ButtonGroup, Classes, Menu, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import { Alignment, Button, Classes, Menu, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import deepEqual from 'deep-equal'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { memo, useEffect, useMemo, useState } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { memo, useEffect, useState } from 'react'
+import AutoSizer from 'react-virtualized-auto-sizer'
+import { areEqual, FixedSizeList } from 'react-window'
 import './App.css'
-import m1 from './assets/m1.png'
-import m2 from './assets/m2.png'
-import m3 from './assets/m3.png'
+import { CharacterStatusPopover } from './components/CharacterStatusPopover'
 import { CachedImg, EmptyIcon, LevelIcon, SkillIcon, UniEquipIcon } from './components/Icons'
 import { useContainer, useInject } from './hooks/useContainer'
-import { Character, DataManager, UniEquip } from './pkg/cpp-core/DataManager'
-import { CharacterStatus, emptyCharacterStatus, UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
-import { Store } from './Store'
-import { areEqual, FixedSizeList } from 'react-window'
-import AutoSizer from 'react-virtualized-auto-sizer'
 import { useRequest } from './hooks/useRequest'
 import { Container } from './pkg/container'
-import { load } from './pkg/blobcache'
+import { Character, DataManager, UniEquip } from './pkg/cpp-core/DataManager'
+import { CharacterStatus, emptyCharacterStatus, UserDataAtomHolder } from './pkg/cpp-core/UserData'
+import { Store } from './Store'
 
 const NAVBAR_HEIGHT = '50px'
 const SIDEBAR_WIDTH = '800px'
@@ -34,7 +31,9 @@ function UndoButtons() {
         icon="undo"
         disabled={undoCounter === 0}
         text="Undo"
+        minimal={true}
         onClick={() => setData('undo')}
+        rightIcon={undoCounter > 0 ? <Tag round={true}>{undoCounter}</Tag> : undefined}
       />
       <Button
         className="bp4-minimal"
@@ -42,6 +41,7 @@ function UndoButtons() {
         disabled={redoCounter === 0}
         text="Redo"
         onClick={() => setData('redo')}
+        rightIcon={redoCounter > 0 ? <Tag round={true}>{redoCounter}</Tag> : undefined}
       />
     </>
   )
@@ -94,278 +94,6 @@ function renderCharacterStatus(status: CharacterStatus, character: Character, un
       {new Array(3 - (character.raw.skills?.length || 0)).fill(0).map((_, i) => (
         <EmptyIcon key={i} />
       ))}
-    </>
-  )
-}
-
-function CharacterStatusPopover({ character, isGoal }: { character: Character; isGoal: boolean }) {
-  const atoms = useInject(UserDataAtomHolder)
-  const charId = character.key
-  const statusAtom = isGoal ? atoms.goalCharacter(charId) : atoms.currentCharacter(charId)
-  const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 0)
-  const [status, setStatus] = useAtom(statusAtom)
-
-  return (
-    <>
-      <div>
-        {character.raw.name} - {isGoal ? '培养目标' : '当前状态'}
-      </div>
-      <div>
-        <ButtonGroup>
-          <Tag large={true}>等级</Tag>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 0
-                x.level = 0
-              })
-            }
-          >
-            未持有
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 0
-                x.level = 1
-              })
-            }
-          >
-            精零1
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 0
-                x.level = 999
-              })
-            }
-          >
-            精零满
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 1
-                x.level = 1
-              })
-            }
-          >
-            精一1
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 1
-                x.level = 999
-              })
-            }
-          >
-            精一满
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 2
-                x.level = 1
-              })
-            }
-          >
-            精二1
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 2
-                x.level = 40
-              })
-            }
-          >
-            精二40
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 2
-                x.level = 50
-              })
-            }
-          >
-            精二50
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 2
-                x.level = 60
-              })
-            }
-          >
-            精二60
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.elite = 2
-                x.level = 90
-              })
-            }
-          >
-            精二90
-          </Button>
-        </ButtonGroup>
-      </div>
-      <div>
-        <ButtonGroup>
-          <Tag large={true}>技能</Tag>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.skillLevel = 1
-              })
-            }
-          >
-            1
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.skillLevel = 2
-              })
-            }
-          >
-            2
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.skillLevel = 3
-              })
-            }
-          >
-            3
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.skillLevel = 4
-              })
-            }
-          >
-            4
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.skillLevel = 5
-              })
-            }
-          >
-            5
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.skillLevel = 6
-              })
-            }
-          >
-            6
-          </Button>
-          <Button
-            onClick={() =>
-              setStatus((x) => {
-                x.skillLevel = 7
-              })
-            }
-          >
-            7
-          </Button>
-        </ButtonGroup>
-      </div>
-
-      {character.skills.map(([cSkill, skill]) => {
-        return (
-          <div key={skill.key}>
-            <ButtonGroup className={Classes.DARK}>
-              <Tag large={true}>{skill.raw.levels[0].name}</Tag>
-              <Button
-                icon={<img src={m1} width="100%" height="100%" />}
-                onClick={() =>
-                  setStatus((x) => {
-                    x.skillMaster[skill.key] = 1
-                  })
-                }
-              ></Button>
-              <Button
-                icon={<img src={m2} width="100%" height="100%" />}
-                onClick={() =>
-                  setStatus((x) => {
-                    x.skillMaster[skill.key] = 2
-                  })
-                }
-              ></Button>
-              <Button
-                icon={<img src={m3} width="100%" height="100%" />}
-                onClick={() =>
-                  setStatus((x) => {
-                    x.skillMaster[skill.key] = 3
-                  })
-                }
-              ></Button>
-            </ButtonGroup>
-          </div>
-        )
-      })}
-
-      {uniEquips.map((equip) => {
-        return (
-          <div key={equip.key}>
-            <ButtonGroup className={Classes.DARK}>
-              <Tag large={true}>{equip.raw.uniEquipName}</Tag>
-              <Tag large={true}>
-                {equip.raw.typeName1}-{equip.raw.typeName2}
-              </Tag>
-              <Button
-                onClick={() =>
-                  setStatus((x) => {
-                    x.modLevel[equip.key] = 0
-                  })
-                }
-              >
-                0
-              </Button>
-              <Button
-                onClick={() =>
-                  setStatus((x) => {
-                    x.modLevel[equip.key] = 1
-                  })
-                }
-              >
-                1
-              </Button>
-              <Button
-                onClick={() =>
-                  setStatus((x) => {
-                    x.modLevel[equip.key] = 2
-                  })
-                }
-              >
-                2
-              </Button>
-              <Button
-                onClick={() =>
-                  setStatus((x) => {
-                    x.modLevel[equip.key] = 3
-                  })
-                }
-              >
-                3
-              </Button>
-            </ButtonGroup>
-          </div>
-        )
-      })}
     </>
   )
 }
