@@ -100,13 +100,13 @@ function buildAtoms(rootAtom: PrimitiveAtom<UserData>, dm: DataManager) {
 
   const isCharacterFinished = atomFamily((charId: string) =>
     atom((get) => {
-      if (charId == 'char_278_orchid') {
-        console.log(
-          get(currentCharacter(charId)),
-          get(characterFinishedStatus(charId)),
-          deepEqual(get(currentCharacter(charId)), get(characterFinishedStatus(charId))),
-        )
-      }
+      // if (charId == 'char_278_orchid') {
+      //   console.log(
+      //     get(currentCharacter(charId)),
+      //     get(characterFinishedStatus(charId)),
+      //     deepEqual(get(currentCharacter(charId)), get(characterFinishedStatus(charId))),
+      //   )
+      // }
       return deepEqual(get(currentCharacter(charId)), get(characterFinishedStatus(charId)))
     }),
   )
@@ -169,7 +169,7 @@ function rewriteCharacter(char: Character, status: Draft<CharacterStatus>) {
     }
   }
 
-  if (char.rarity < 3 || status.elite < 2) {
+  if (char.rarity < 3 || status.elite < 2 || status.level < char.modUnlockLevel) {
     status.modLevel = {}
   } else {
     for (const mod of char.uniEquips) {

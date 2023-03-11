@@ -1,7 +1,8 @@
 import { Alignment, Button, Menu, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import deepEqual from 'deep-equal'
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { atom, SetStateAction, useAtom, useAtomValue } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList, ListChildComponentProps, ListItemKeySelector } from 'react-window'
@@ -244,7 +245,18 @@ interface ListCharactersQueryParam {
   mode: ListMode
 }
 
-const queryParamAtom = atom<ListCharactersQueryParam>({ query: '', mode: ListMode.Fav })
+// const queryParamAtom = atom<ListCharactersQueryParam>({ query: '', mode: ListMode.Fav })
+const queryParamStorageAtom = atomWithStorage<ListCharactersQueryParam>('cpp_query_param', undefined as any)
+const queryParamAtom = atom(
+  (get) => {
+    const value = Object.assign({}, get(queryParamStorageAtom) || {})
+    if (value.query == null) value.query = ''
+    if (value.mode == null) value.mode = ListMode.Fav
+    return value
+  },
+  (get, set, value: ListCharactersQueryParam | SetStateAction<ListCharactersQueryParam>) =>
+    set(queryParamStorageAtom, value),
+)
 
 function QuerySearchBox() {
   const [param, setParam] = useAtom(queryParamAtom)

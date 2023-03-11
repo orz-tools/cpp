@@ -77,6 +77,7 @@ export class DataManager {
 
   private generateConstants() {
     return {
+      modUnlockLevel: [-1, -1, -1, 40, 50, 60],
       maxLevel: [[30], [30], [40, 55], [45, 60, 70], [50, 70, 80], [50, 80, 90]],
       characterExpMap: [
         [
@@ -174,6 +175,10 @@ export class Character {
 
   get maxLevels() {
     return this.dm.data.constants.maxLevel[this.rarity]
+  }
+
+  get modUnlockLevel() {
+    return this.dm.data.constants.modUnlockLevel[this.rarity]
   }
 }
 

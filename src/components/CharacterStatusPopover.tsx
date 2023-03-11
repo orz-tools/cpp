@@ -9,8 +9,6 @@ import { useInject } from '../hooks/useContainer'
 import { Character, Skill } from '../pkg/cpp-core/DataManager'
 import { CharacterStatus, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 
-const modUnlockLevels = [-1, -1, -1, 40, 50, 60]
-
 const setStatusAtomTypeHolder = () => useSetAtom(null as any as ReturnType<UserDataAtomHolder['goalCharacter']>)
 const EditorContext = React.createContext<{
   status: CharacterStatus
@@ -74,7 +72,6 @@ export function EliteLevelButton({ elite, level, color }: { elite: number; level
 
 export function CharacterStatusEliteLevelSection() {
   const { status, setStatus, currentStatus, character } = useContext(EditorContext)
-  const modUnlockLevel = modUnlockLevels[character.rarity]
   return (
     <>
       {character.maxElite >= 0 &&
@@ -123,7 +120,7 @@ export function CharacterStatusEliteLevelSection() {
                   key={lv}
                   elite={2}
                   level={lv}
-                  color={lv == modUnlockLevel ? 'rgba(0,0,255,0.25)' : undefined}
+                  color={lv == character.modUnlockLevel ? 'rgba(0,0,255,0.25)' : undefined}
                 />
               ))}
             <EliteLevelInput elite={2} />
@@ -162,18 +159,20 @@ export function SkillMasterButton({ skillId, level }: { skillId: string; level: 
   const { status, setStatus, currentStatus } = useContext(EditorContext)
   const master = status.skillMaster[skillId] || 0
   const currentMaster = currentStatus ? currentStatus.skillMaster[skillId] || 0 : undefined
-  const needElite = status.elite < 2 || status.skillLevel < 7
+  const needElite = level > 0 && (status.elite < 2 || status.skillLevel < 7)
   const already = master >= level
   const disabled = currentMaster != null ? currentMaster > level : false
   return (
     <Button
       onClick={() =>
         setStatus((x) => {
-          if (x.elite < 2) {
-            x.elite = 2
-            x.level = 1
+          if (level > 0) {
+            if (x.elite < 2) {
+              x.elite = 2
+              x.level = 1
+            }
+            if (x.skillLevel < 7) x.skillLevel = 7
           }
-          if (x.skillLevel < 7) x.skillLevel = 7
           x.skillMaster[skillId] = level
         })
       }
@@ -221,18 +220,20 @@ export function ModButton({ modId, level }: { modId: string; level: number }) {
   const { character, status, setStatus, currentStatus } = useContext(EditorContext)
   const master = status.modLevel[modId] || 0
   const currentMaster = currentStatus ? currentStatus.modLevel[modId] || 0 : undefined
-  const needElite = status.elite < 2 || status.level < modUnlockLevels[character.rarity]
+  const needElite = level > 0 && (status.elite < 2 || status.level < character.modUnlockLevel)
   const already = master >= level
   const disabled = currentMaster != null ? currentMaster > level : false
   return (
     <Button
       onClick={() =>
         setStatus((x) => {
-          if (x.elite < 2) {
-            x.elite = 2
-            x.level = 1
+          if (level > 0) {
+            if (x.elite < 2) {
+              x.elite = 2
+              x.level = 1
+            }
+            if (x.level < character.modUnlockLevel) x.level = character.modUnlockLevel
           }
-          if (x.level < modUnlockLevels[character.rarity]) x.level = modUnlockLevels[character.rarity]
           x.modLevel[modId] = level
         })
       }
