@@ -8,9 +8,10 @@ import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
 import m3 from './assets/m3.png'
 import { EmptyIcon, LevelIcon, SkillIcon, UniEquipIcon } from './components/Icons'
-import { useInject } from './hooks'
+import { useContainer, useInject } from './hooks'
 import { Character, DataManager, UniEquip } from './pkg/cpp-core/DataManager'
-import { CharacterStatus, UserDataAtomHolder } from './pkg/cpp-core/UserData'
+import { CharacterStatus, emptyCharacterStatus, UserDataAtomHolder } from './pkg/cpp-core/UserData'
+import { Store } from './Store'
 
 const NAVBAR_HEIGHT = '50px'
 const SIDEBAR_WIDTH = '800px'
@@ -436,7 +437,11 @@ function CharacterMenu({ character }: { character: Character }) {
 }
 
 function Sidebar() {
+  const container = useContainer()
   const dm = useInject(DataManager)
+  const store = container.get(Store).store
+  const atoms = useInject(UserDataAtomHolder)
+  const data = store.get(atoms.rootAtom)
   const filteredCharacters = useMemo(
     () =>
       Object.values(dm.data.characters)
@@ -448,9 +453,18 @@ function Sidebar() {
         .sort((a, b) => {
           if (a.raw.rarity > b.raw.rarity) return -1
           if (a.raw.rarity < b.raw.rarity) return 1
+
+          const stA = data.current[a.key] || emptyCharacterStatus
+          const stB = data.current[b.key] || emptyCharacterStatus
+          if (stA.elite > stB.elite) return -1
+          if (stA.elite < stB.elite) return 1
+
+          if (stA.level > stB.level) return -1
+          if (stA.level < stB.level) return 1
+
           return 0
         }),
-    [dm],
+    [dm, data.current],
   )
   // const [a, setA] = useState(false)
   return (

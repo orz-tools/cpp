@@ -19,7 +19,7 @@ export class UserDataAtomHolder extends UserDataAtoms {
   }
 }
 
-const emptyCharacterStatus = Object.freeze<CharacterStatus>({
+export const emptyCharacterStatus = Object.freeze<CharacterStatus>({
   elite: 0,
   level: 0,
   skillLevel: 1,
