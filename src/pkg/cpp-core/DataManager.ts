@@ -28,7 +28,7 @@ export class DataManager {
   public data!: Awaited<ReturnType<DataManager['transform']>>
 
   async loadRaw() {
-    return (await pProps({
+    const task = {
       exCharacters: DataManager.loadJson<ExcelCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json',
       ),
@@ -38,15 +38,14 @@ export class DataManager {
       exSkills: DataManager.loadJson<ExcelSkillTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/skill_table.json',
       ),
-      exUniEquip: DataManager.loadJson<ExcelUniEquipTable>(
+      exUniEquips: DataManager.loadJson<ExcelUniEquipTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/uniequip_table.json',
       ),
-    })) as {
-      exCharacters: ExcelCharacterTable
-      exPatchCharacters: ExcelPatchCharacterTable
-      exSkills: ExcelSkillTable
-      exUniEquip: ExcelUniEquipTable
+      exItems: DataManager.loadJson<ExcelUniEquipTable>(
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/item_table.json',
+      ),
     }
+    return (await pProps(task)) as any as { [K in keyof typeof task]: Awaited<(typeof task)[K]> }
   }
   public raw!: Awaited<ReturnType<DataManager['loadRaw']>>
 
@@ -75,7 +74,7 @@ export class DataManager {
 
   private generateUniEquips() {
     return Object.fromEntries(
-      Object.entries(this.raw.exUniEquip.equipDict).map(([key, raw]) => [key, new UniEquip(key, raw, this)]),
+      Object.entries(this.raw.exUniEquips.equipDict).map(([key, raw]) => [key, new UniEquip(key, raw, this)]),
     )
   }
 
@@ -168,20 +167,25 @@ export class Character {
 
   private _skills?: [ExcelCharacterTable.Skill, Skill][]
   get skills() {
-    return this._skills || (this._skills = this.rawSkills.map((x) => [x, this.dm.data.skills[x.skillId]]))
+    return (
+      this._skills ||
+      (this._skills = this.rawSkills
+        .filter((x): x is ExcelCharacterTable.Skill & { skillId: string } => !!x.skillId)
+        .map((x) => [x, this.dm.data.skills[x.skillId]]))
+    )
   }
 
   get rawUniEquips() {
     return [
-      ...(this.dm.raw.exUniEquip.charEquip[this.key] || []),
-      ...this.patches.flatMap((x) => this.dm.raw.exUniEquip.charEquip[x[0]] || []),
+      ...(this.dm.raw.exUniEquips.charEquip[this.key] || []),
+      ...this.patches.flatMap((x) => this.dm.raw.exUniEquips.charEquip[x[0]] || []),
     ]
   }
 
   private _uniEquips?: UniEquip[]
   get uniEquips() {
     return (this._uniEquips ||
-      (this._uniEquips = (this.dm.raw.exUniEquip.charEquip[this.key] || [])
+      (this._uniEquips = (this.dm.raw.exUniEquips.charEquip[this.key] || [])
         .map((x) => this.dm.data.uniEquips[x])
         .sort((a, b) =>
           a.raw.charEquipOrder > b.raw.charEquipOrder ? 1 : a.raw.charEquipOrder < b.raw.charEquipOrder ? -1 : 0,
