@@ -2,6 +2,7 @@ import { Alignment, Button, Classes, Navbar, Spinner, Tag } from '@blueprintjs/c
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import './App.css'
+import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ItemList } from './components/ItemList'
 import { useInject } from './hooks/useContainer'
@@ -67,6 +68,16 @@ function App() {
           }}
         >
           <ItemList />
+        </section>
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
+            width: '350px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <AboutList />
         </section>
         <section></section>
       </div>
