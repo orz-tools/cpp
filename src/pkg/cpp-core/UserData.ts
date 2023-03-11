@@ -139,7 +139,7 @@ function rewriteCharacter(char: Character, status: Draft<CharacterStatus>) {
       const key = mod.key
       if (!(key in status.modLevel)) continue
       status.modLevel[key] = parseInt(String(status.modLevel[key]))
-      if (status.modLevel[key] < 0 || !isFinite(status.modLevel[key])) {
+      if (status.modLevel[key] <= 0 || !isFinite(status.modLevel[key])) {
         delete status.modLevel[key]
         continue
       }
@@ -154,7 +154,7 @@ function rewriteCharacter(char: Character, status: Draft<CharacterStatus>) {
       const key = skill.key
       if (!(key in status.skillMaster)) continue
       status.skillMaster[key] = parseInt(String(status.skillMaster[key]))
-      if (status.skillMaster[key] < 0 || !isFinite(status.skillMaster[key])) {
+      if (status.skillMaster[key] <= 0 || !isFinite(status.skillMaster[key])) {
         delete status.skillMaster[key]
         continue
       }

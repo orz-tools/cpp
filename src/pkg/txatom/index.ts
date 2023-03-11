@@ -1,6 +1,7 @@
 import produce, { applyPatches, Draft, Patch, produceWithPatches } from 'immer'
 import { atom, PrimitiveAtom } from 'jotai'
 import { enablePatches } from 'immer'
+import deepEqual from 'deep-equal'
 
 enablePatches()
 
@@ -71,11 +72,13 @@ export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number
                   return
                 }
                 if (draft.directPatches.length > 0 || draft.inversePatches.length > 0) {
-                  const [, directPatches, inversePatches] = produceWithPatches(storage.startHead, (x) =>
+                  const [y, directPatches, inversePatches] = produceWithPatches(storage.startHead, (x) =>
                     applyPatches(x, draft.directPatches),
                   )
-                  if (directPatches.length > 0 || inversePatches.length > 0) {
+                  // FIXME: get rid of this deepEqual, or better patches
+                  if (!deepEqual(y, storage.startHead) && (directPatches.length > 0 || inversePatches.length > 0)) {
                     draft.undos.push({ directPatches: directPatches, inversePatches: inversePatches })
+                    // console.log('new patch', { directPatches: directPatches, inversePatches: inversePatches })
                     if (draft.undos.length > history) {
                       draft.undos.splice(0, draft.undos.length - history)
                     }
