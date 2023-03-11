@@ -1,10 +1,10 @@
-import { Alignment, Button, Classes, Menu, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import { Alignment, Button, Menu, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import deepEqual from 'deep-equal'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { atom, useAtom, useAtomValue } from 'jotai'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { areEqual, FixedSizeList, ListChildComponentProps, ListItemKeySelector } from 'react-window'
+import { FixedSizeList, ListChildComponentProps, ListItemKeySelector } from 'react-window'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg, EmptyIcon, LevelIcon, SkillIcon, UniEquipIcon } from '../components/Icons'
 import { useContainer, useInject } from '../hooks/useContainer'
@@ -14,19 +14,71 @@ import { Character, DataManager, UniEquip } from '../pkg/cpp-core/DataManager'
 import { CharacterStatus, emptyCharacterStatus, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
 
-function renderCharacterStatus(status: CharacterStatus, character: Character, uniX?: UniEquip, uniY?: UniEquip) {
+function Hide({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) {
+  return (
+    <div
+      style={
+        alreadyHide
+          ? undefined
+          : {
+              opacity: hide ? 0.1 : 1,
+            }
+      }
+    >
+      {children}
+    </div>
+  )
+}
+
+function renderCharacterStatus(
+  status: CharacterStatus,
+  character: Character,
+  uniX?: UniEquip,
+  uniY?: UniEquip,
+  current?: CharacterStatus,
+  alreadyHide: boolean = false,
+) {
   return (
     <>
-      <LevelIcon level={status} />
-      {uniX ? <UniEquipIcon uniEquip={uniX} key={uniX.key} level={status.modLevel[uniX.key] || 0} /> : <EmptyIcon />}
-      {uniY ? <UniEquipIcon uniEquip={uniY} key={uniY.key} level={status.modLevel[uniY.key] || 0} /> : <EmptyIcon />}
-      {character.skills.map(([, skill]) => (
-        <SkillIcon
-          skill={skill}
+      <Hide
+        hide={current ? status.elite == current.elite && status.level == current.level : false}
+        alreadyHide={alreadyHide}
+      >
+        <LevelIcon level={status} />
+      </Hide>
+      {uniX ? (
+        <Hide
+          hide={current ? (status.modLevel[uniX.key] || 0) == (current.modLevel[uniX.key] || 0) : false}
+          alreadyHide={alreadyHide}
+        >
+          <UniEquipIcon uniEquip={uniX} key={uniX.key} level={status.modLevel[uniX.key] || 0} />
+        </Hide>
+      ) : (
+        <EmptyIcon />
+      )}
+      {uniY ? (
+        <Hide
+          hide={current ? (status.modLevel[uniY.key] || 0) == (current.modLevel[uniY.key] || 0) : false}
+          alreadyHide={alreadyHide}
+        >
+          <UniEquipIcon uniEquip={uniY} key={uniY.key} level={status.modLevel[uniY.key] || 0} />
+        </Hide>
+      ) : (
+        <EmptyIcon />
+      )}
+      {character.skills.slice(0, 3).map(([, skill]) => (
+        <Hide
+          hide={
+            current
+              ? status.skillLevel == current.skillLevel &&
+                (status.skillMaster[skill.key] || 0) == (current.skillMaster[skill.key] || 0)
+              : false
+          }
           key={skill.key}
-          level={status.skillLevel}
-          master={status.skillMaster[skill.key] || 0}
-        />
+          alreadyHide={alreadyHide}
+        >
+          <SkillIcon skill={skill} level={status.skillLevel} master={status.skillMaster[skill.key] || 0} />
+        </Hide>
       ))}
       {new Array(3 - (character.raw.skills?.length || 0)).fill(0).map((_, i) => (
         <EmptyIcon key={i} />
@@ -44,7 +96,11 @@ function CharacterMenu({ character, style }: { character: Character; style?: Rea
   const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 0)
   const uniX = uniEquips.find((x) => x.raw.typeName2.toUpperCase() == 'X')
   const uniY = uniEquips.find((x) => x.raw.typeName2.toUpperCase() == 'Y')
-  const goalSame = deepEqual(currentCharacter, goalCharacter, { strict: true })
+  const goalSame = useMemo(
+    () => deepEqual(currentCharacter, goalCharacter, { strict: true }),
+    [currentCharacter, goalCharacter],
+  )
+  const finished = useAtomValue(atoms.isCharacterFinished(charId))
 
   if ([uniX, uniY].filter((x) => !!x).length != uniEquips.length) {
     console.warn('character extra uniEquips', character, uniEquips)
@@ -87,7 +143,7 @@ function CharacterMenu({ character, style }: { character: Character; style?: Rea
           role="menuitem"
           tabIndex={0}
           className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-current"
-          style={{ opacity: currentCharacter.level === 0 ? 0.25 : 1 }}
+          style={{ opacity: currentCharacter.level === 0 ? 0.5 : 1 }}
         >
           {renderCharacterStatus(currentCharacter, character, uniX, uniY)}
         </a>
@@ -102,9 +158,10 @@ function CharacterMenu({ character, style }: { character: Character; style?: Rea
           role="menuitem"
           tabIndex={0}
           className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
-          style={{ opacity: goalSame ? 0.25 : 1 }}
+          // style={{ opacity: goalCharacter.level === 0 ? 0.25 : 1 }}
+          style={{ opacity: finished ? 0 : goalSame ? 0.25 : 1 }}
         >
-          {renderCharacterStatus(goalCharacter, character, uniX, uniY)}
+          {renderCharacterStatus(goalCharacter, character, uniX, uniY, currentCharacter, goalSame)}
         </a>
       </Popover2>
     </li>
@@ -141,15 +198,24 @@ async function listCharactersQuery(container: Container, param: ListCharactersQu
     .filter((x) => {
       if (!x.raw.displayNumber) return false
       if (!(matcher(x.raw.name) || matcher(x.raw.appellation) || matcher(x.key))) return false
+
+      if (param.mode == ListMode.WithGoal) {
+        return !!ud.goal[x.key]
+      } else if (param.mode == ListMode.Absent) {
+        return (ud.current[x.key] || emptyCharacterStatus).level == 0
+      } else if (param.mode == ListMode.Fav) {
+        const current = ud.current[x.key] || emptyCharacterStatus
+        return !!ud.goal[x.key] || (current.elite < 2 && !store.get(atoms.isCharacterFinished(x.key)))
+      }
       // if (x.raw.rarity !== 5) return false
       return true
     })
     .sort((a, b) => {
-      const goalA = +!!ud.goal[a.key]
-      const goalB = +!!ud.goal[b.key]
+      // const goalA = +!!ud.goal[a.key]
+      // const goalB = +!!ud.goal[b.key]
 
-      if (goalA > goalB) return -1
-      if (goalA < goalB) return 1
+      // if (goalA > goalB) return -1
+      // if (goalA < goalB) return 1
 
       if (a.raw.rarity > b.raw.rarity) return -1
       if (a.raw.rarity < b.raw.rarity) return 1
@@ -166,11 +232,19 @@ async function listCharactersQuery(container: Container, param: ListCharactersQu
     })
 }
 
-interface ListCharactersQueryParam {
-  query: string
+enum ListMode {
+  Fav,
+  All,
+  WithGoal,
+  Absent,
 }
 
-const queryParamAtom = atom({ query: '' })
+interface ListCharactersQueryParam {
+  query: string
+  mode: ListMode
+}
+
+const queryParamAtom = atom<ListCharactersQueryParam>({ query: '', mode: ListMode.Fav })
 
 function QuerySearchBox() {
   const [param, setParam] = useAtom(queryParamAtom)
@@ -190,6 +264,43 @@ function QuerySearchBox() {
           onChange={(e) => setParam((x) => ({ ...x, query: e.currentTarget.value }))}
         />
       </div>
+    </>
+  )
+}
+
+export function QueryBuilder() {
+  const [param, setParam] = useAtom(queryParamAtom)
+  const atoms = useInject(UserDataAtomHolder)
+  const data = useAtomValue(atoms.dataAtom)
+  const goalCount = Object.keys(data.goal).length
+  return (
+    <>
+      <QuerySearchBox />
+      <Button
+        minimal={true}
+        active={param.mode == ListMode.Fav}
+        text="想看的"
+        onClick={() => setParam((x) => ({ ...x, mode: ListMode.Fav }))}
+      />
+      <Button
+        minimal={true}
+        active={param.mode == ListMode.All}
+        text="全部"
+        onClick={() => setParam((x) => ({ ...x, mode: ListMode.All }))}
+      />
+      <Button
+        minimal={true}
+        active={param.mode == ListMode.WithGoal}
+        text="计划"
+        rightIcon={goalCount > 0 ? <Tag round={true}>{goalCount}</Tag> : undefined}
+        onClick={() => setParam((x) => ({ ...x, mode: ListMode.WithGoal }))}
+      />
+      <Button
+        minimal={true}
+        active={param.mode == ListMode.Absent}
+        text="缺席"
+        onClick={() => setParam((x) => ({ ...x, mode: ListMode.Absent }))}
+      />
     </>
   )
 }
@@ -234,7 +345,7 @@ export function CharacterList() {
           />
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
-          <QuerySearchBox />
+          <QueryBuilder />
         </Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'hidden' }}>

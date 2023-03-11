@@ -89,10 +89,47 @@ function buildAtoms(rootAtom: PrimitiveAtom<UserData>, dm: DataManager) {
     (a, b) => a === b,
   )
 
+  const characterFinishedStatus = atomFamily((charId: string) =>
+    atom(
+      (get) => {
+        return finishedCharacterStatus(dm.data.characters[charId])
+      },
+      (a, b) => a === b,
+    ),
+  )
+
+  const isCharacterFinished = atomFamily((charId: string) =>
+    atom((get) => {
+      if (charId == 'char_278_orchid') {
+        console.log(
+          get(currentCharacter(charId)),
+          get(characterFinishedStatus(charId)),
+          deepEqual(get(currentCharacter(charId)), get(characterFinishedStatus(charId))),
+        )
+      }
+      return deepEqual(get(currentCharacter(charId)), get(characterFinishedStatus(charId)))
+    }),
+  )
+
   return {
     ...tx,
     currentCharacter,
     goalCharacter,
+    characterFinishedStatus,
+    isCharacterFinished,
+  }
+}
+
+function finishedCharacterStatus(char: Character) {
+  return {
+    elite: char.maxElite,
+    level: char.maxLevels[char.maxElite],
+    skillLevel: char.skills.length > 0 ? 7 : 1,
+    skillMaster: char.maxElite >= 2 ? Object.fromEntries(char.skills.map(([, skill]) => [skill.key, 3])) : {},
+    modLevel:
+      char.maxElite >= 2
+        ? Object.fromEntries(char.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 0).map((mod) => [mod.key, 3]))
+        : {},
   }
 }
 
