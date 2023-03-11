@@ -261,4 +261,27 @@ describe('user data test', () => {
       assert.deepEqual(store.get(redoCounterAtom), 0)
     },
   )
+
+  myit('can compress transaction', ({ base, dataAtom, redoCounterAtom, undoCounterAtom, store }) => {
+    assert.deepEqual(store.get(base), newUserData())
+
+    store.set(dataAtom, 'transact', () => {
+      store.set(dataAtom, 'modify', (x) => {
+        x.status.amiya = {
+          elite: 2,
+          level: 80,
+          skillLevel: 7,
+          skillMaster: {},
+          modLevel: {},
+        }
+      })
+      store.set(dataAtom, 'modify', (x) => {
+        delete x.status.amiya
+      })
+    })
+
+    assert.deepEqual(store.get(base), newUserData())
+    assert.deepEqual(store.get(undoCounterAtom), 0)
+    assert.deepEqual(store.get(redoCounterAtom), 0)
+  })
 })

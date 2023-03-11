@@ -70,16 +70,21 @@ export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number
                   draft.head = get(baseAtom) as Draft<T>
                   return
                 }
-                draft.startHead = undefined
                 if (draft.directPatches.length > 0 || draft.inversePatches.length > 0) {
-                  draft.undos.push({ directPatches: draft.directPatches, inversePatches: draft.inversePatches })
-                  if (draft.undos.length > history) {
-                    draft.undos.splice(0, draft.undos.length - history)
+                  const [, directPatches, inversePatches] = produceWithPatches(storage.startHead, (x) =>
+                    applyPatches(x, draft.directPatches),
+                  )
+                  if (directPatches.length > 0 || inversePatches.length > 0) {
+                    draft.undos.push({ directPatches: directPatches, inversePatches: inversePatches })
+                    if (draft.undos.length > history) {
+                      draft.undos.splice(0, draft.undos.length - history)
+                    }
+                    draft.redos = []
                   }
                   draft.directPatches = []
                   draft.inversePatches = []
-                  draft.redos = []
                 }
+                draft.startHead = undefined
               }
             })),
           )
