@@ -2,16 +2,21 @@ import { Alignment, Button, ButtonGroup, Classes, Menu, Navbar, Spinner, Tag } f
 import { Popover2 } from '@blueprintjs/popover2'
 import deepEqual from 'deep-equal'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import './App.css'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
 import m3 from './assets/m3.png'
-import { EmptyIcon, LevelIcon, SkillIcon, UniEquipIcon } from './components/Icons'
-import { useContainer, useInject } from './hooks'
+import { CachedImg, EmptyIcon, LevelIcon, SkillIcon, UniEquipIcon } from './components/Icons'
+import { useContainer, useInject } from './hooks/useContainer'
 import { Character, DataManager, UniEquip } from './pkg/cpp-core/DataManager'
-import { CharacterStatus, emptyCharacterStatus, UserDataAtomHolder } from './pkg/cpp-core/UserData'
+import { CharacterStatus, emptyCharacterStatus, UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
 import { Store } from './Store'
+import { areEqual, FixedSizeList } from 'react-window'
+import AutoSizer from 'react-virtualized-auto-sizer'
+import { useRequest } from './hooks/useRequest'
+import { Container } from './pkg/container'
+import { load } from './pkg/blobcache'
 
 const NAVBAR_HEIGHT = '50px'
 const SIDEBAR_WIDTH = '800px'
@@ -62,6 +67,7 @@ function App() {
           position: 'fixed',
           overflowY: 'auto',
           overflowX: 'visible',
+          display: 'flex',
         }}
       >
         <Sidebar />
@@ -364,7 +370,7 @@ function CharacterStatusPopover({ character, isGoal }: { character: Character; i
   )
 }
 
-function CharacterMenu({ character }: { character: Character }) {
+function CharacterMenu({ character, style }: { character: Character; style?: React.CSSProperties }) {
   const atoms = useInject(UserDataAtomHolder)
   const charId = character.key
   const currentCharacter = useAtomValue(atoms.currentCharacter(charId))
@@ -380,103 +386,128 @@ function CharacterMenu({ character }: { character: Character }) {
   }
 
   return (
-    <>
-      <li role="none" className="cpp-char-menu-master">
-        <a role="menuitem" tabIndex={0} className="bp4-menu-item cpp-char-menu-char">
-          <>
-            <span className="bp4-menu-item-icon">
-              <img src={character.avatar} width={'100%'} height={'100%'} alt={character.key} title={character.key} />
-            </span>
-            <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div className="bp4-text-overflow-ellipsis" title={character.raw.name}>
-                {character.raw.name}
-              </div>
-              <div
-                className="bp4-text-overflow-ellipsis"
-                title={character.raw.appellation}
-                style={{ fontWeight: 'normal', opacity: 0.75 }}
-              >
-                {character.raw.appellation}
-              </div>
+    <li role="none" className="cpp-char-menu-master" style={style}>
+      <a role="menuitem" tabIndex={0} className="bp4-menu-item cpp-char-menu-char">
+        <>
+          <span className="bp4-menu-item-icon">
+            <CachedImg
+              src={character.avatar}
+              width={'100%'}
+              height={'100%'}
+              alt={character.key}
+              title={character.key}
+            />
+          </span>
+          <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp4-text-overflow-ellipsis" title={character.raw.name}>
+              {character.raw.name}
             </div>
-          </>
+            <div
+              className="bp4-text-overflow-ellipsis"
+              title={character.raw.appellation}
+              style={{ fontWeight: 'normal', opacity: 0.75 }}
+            >
+              {character.raw.appellation}
+            </div>
+          </div>
+        </>
+      </a>
+      <Popover2
+        usePortal={true}
+        popoverClassName={'cpp-popover2'}
+        content={<CharacterStatusPopover character={character} isGoal={false} />}
+        placement="bottom"
+      >
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-current"
+          style={{ opacity: currentCharacter.level === 0 ? 0.25 : 1 }}
+        >
+          {renderCharacterStatus(currentCharacter, character, uniX, uniY)}
         </a>
-        <Popover2
-          usePortal={true}
-          popoverClassName={'cpp-popover2'}
-          content={<CharacterStatusPopover character={character} isGoal={false} />}
-          placement="bottom"
+      </Popover2>
+      <Popover2
+        usePortal={true}
+        popoverClassName={'cpp-popover2'}
+        content={<CharacterStatusPopover character={character} isGoal={true} />}
+        placement="bottom"
+      >
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
+          style={{ opacity: goalSame ? 0.25 : 1 }}
         >
-          <a
-            role="menuitem"
-            tabIndex={0}
-            className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-current"
-            style={{ opacity: currentCharacter.level === 0 ? 0.25 : 1 }}
-          >
-            {renderCharacterStatus(currentCharacter, character, uniX, uniY)}
-          </a>
-        </Popover2>
-        <Popover2
-          usePortal={true}
-          popoverClassName={'cpp-popover2'}
-          content={<CharacterStatusPopover character={character} isGoal={true} />}
-          placement="bottom"
-        >
-          <a
-            role="menuitem"
-            tabIndex={0}
-            className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
-            style={{ opacity: goalSame ? 0.25 : 1 }}
-          >
-            {renderCharacterStatus(goalCharacter, character, uniX, uniY)}
-          </a>
-        </Popover2>
-      </li>
-    </>
+          {renderCharacterStatus(goalCharacter, character, uniX, uniY)}
+        </a>
+      </Popover2>
+    </li>
   )
+}
+
+async function listCharactersQuery(container: Container) {
+  const dm = container.get(DataManager)
+  const store = container.get(Store).store
+  const atoms = container.get(UserDataAtomHolder)
+  const ud = store.get(atoms.rootAtom)
+
+  return Object.values(dm.data.characters)
+    .filter((x) => {
+      if (!x.raw.displayNumber) return false
+      // if (x.raw.rarity !== 5) return false
+      return true
+    })
+    .sort((a, b) => {
+      if (a.raw.rarity > b.raw.rarity) return -1
+      if (a.raw.rarity < b.raw.rarity) return 1
+
+      const stA = ud.current[a.key] || emptyCharacterStatus
+      const stB = ud.current[b.key] || emptyCharacterStatus
+      if (stA.elite > stB.elite) return -1
+      if (stA.elite < stB.elite) return 1
+
+      if (stA.level > stB.level) return -1
+      if (stA.level < stB.level) return 1
+
+      return 0
+    })
 }
 
 function Sidebar() {
   const container = useContainer()
-  const dm = useInject(DataManager)
-  const store = container.get(Store).store
-  const atoms = useInject(UserDataAtomHolder)
-  const data = store.get(atoms.rootAtom)
-  const filteredCharacters = useMemo(
-    () =>
-      Object.values(dm.data.characters)
-        .filter((x) => {
-          if (!x.raw.displayNumber) return false
-          // if (x.raw.rarity !== 5) return false
-          return true
-        })
-        .sort((a, b) => {
-          if (a.raw.rarity > b.raw.rarity) return -1
-          if (a.raw.rarity < b.raw.rarity) return 1
+  const { send, response } = useRequest(listCharactersQuery)
 
-          const stA = data.current[a.key] || emptyCharacterStatus
-          const stB = data.current[b.key] || emptyCharacterStatus
-          if (stA.elite > stB.elite) return -1
-          if (stA.elite < stB.elite) return 1
-
-          if (stA.level > stB.level) return -1
-          if (stA.level < stB.level) return 1
-
-          return 0
-        }),
-    [dm, data.current],
+  useEffect(
+    () => send(container),
+    [
+      /* intended */
+    ],
   )
+
+  const filteredCharacters = response || []
+
   // const [a, setA] = useState(false)
   return (
-    <>
-      <Menu>
-        {filteredCharacters.map((x) => (
-          <CharacterMenu character={x} key={x.key} />
-        ))}
-      </Menu>
-    </>
+    <Menu style={{ flex: 1 }}>
+      <AutoSizer>
+        {({ height, width }) => (
+          <FixedSizeList
+            height={height}
+            itemCount={filteredCharacters.length}
+            itemSize={50}
+            width={width}
+            itemKey={(index) => filteredCharacters[index].key}
+          >
+            {({ index, style }) => <MemorizedCharacterMenu style={style} character={filteredCharacters[index]} />}
+          </FixedSizeList>
+        )}
+      </AutoSizer>
+    </Menu>
   )
 }
+
+const MemorizedCharacterMenu = memo(CharacterMenu, areEqual)
 
 export function AppWrapper() {
   const dm = useInject(DataManager)

@@ -1,11 +1,47 @@
+import { Spinner } from '@blueprintjs/core'
+import { useState, useEffect } from 'react'
 import elite0 from '../assets/elite0.png'
 import elite1 from '../assets/elite1.png'
 import elite2 from '../assets/elite2.png'
 import m1 from '../assets/m1.png'
 import m2 from '../assets/m2.png'
 import m3 from '../assets/m3.png'
+import { load } from '../pkg/blobcache'
 import { Skill, UniEquip } from '../pkg/cpp-core/DataManager'
 import { CharacterLevel } from '../pkg/cpp-core/UserData'
+
+export function CachedImg({
+  src,
+  width,
+  height,
+  alt,
+  title,
+  style,
+}: {
+  src: string
+  width?: JSX.IntrinsicElements['img']['width']
+  height?: JSX.IntrinsicElements['img']['height']
+  alt?: JSX.IntrinsicElements['img']['alt']
+  title?: JSX.IntrinsicElements['img']['title']
+  style?: JSX.IntrinsicElements['img']['style']
+}) {
+  const data = load(src)
+  const [, render] = useState(0)
+
+  useEffect(() => {
+    if (typeof data === 'string') return
+    let run = true
+    void data.then(() => run && render((x) => x + 1)).catch(() => run && render((x) => x + 1))
+    return () => {
+      run = false
+    }
+  })
+
+  if (!(typeof data === 'string')) {
+    return <img width={width} height={height} alt={''} title={title} style={style} />
+  }
+  return <img src={data} width={width} height={height} alt={alt} title={title} style={style} />
+}
 
 export function SkillIcon({ skill, level, master }: { skill: Skill; level?: number; master?: number }) {
   const name = skill.raw.levels[0].name
@@ -13,7 +49,7 @@ export function SkillIcon({ skill, level, master }: { skill: Skill; level?: numb
   return (
     <span className="bp4-menu-item-icon">
       <div className="cpp-simple-target">
-        <img src={skill.icon} width={'100%'} height={'100%'} alt={name} title={name} />
+        <CachedImg src={skill.icon} width={'100%'} height={'100%'} alt={name} title={name} />
         {!level ? undefined : <span>{master && master > 0 ? <img src={[m1, m2, m3][master - 1]} /> : level}</span>}
       </div>
     </span>
@@ -42,7 +78,7 @@ export function UniEquipIcon({ uniEquip, level }: { uniEquip: UniEquip; level?: 
             : {}),
         }}
       >
-        <img
+        <CachedImg
           src={uniEquip.icon}
           width={'75%'}
           height={'75%'}

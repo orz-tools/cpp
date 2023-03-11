@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Constructor, Container } from './pkg/container'
+import { Constructor, Container } from '../pkg/container'
 
 export const ContainerContext = React.createContext<Container>(new Container())
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { AppWrapper } from './App'
-import { ContainerContext } from './hooks'
+import { ContainerContext } from './hooks/useContainer'
 import './index.css'
 import { Container } from './pkg/container'
 import { DataManager } from './pkg/cpp-core/DataManager'
