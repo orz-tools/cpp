@@ -196,7 +196,7 @@ export function CharacterStatusSkillMasterSection() {
         return (
           <div key={skill.key}>
             <ButtonGroup className={Classes.DARK}>
-              <Tag large={true}>{['一技能', '二技能', '三技能'][index]}</Tag>
+              <Tag large={true}>技能 {index + 1}</Tag>
               <SkillMasterButton skillId={skill.key} level={0} />
               <SkillMasterButton skillId={skill.key} level={1} />
               <SkillMasterButton skillId={skill.key} level={2} />

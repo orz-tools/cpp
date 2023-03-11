@@ -144,6 +144,34 @@ export namespace ExcelCharacterTable {
   }
 }
 
+export interface ExcelPatchCharacterTable {
+  infos: Record<
+    string,
+    {
+      tmplIds: string[]
+      default: string
+    }
+  >
+  patchChars: Record<string, ExcelCharacterTable.Character>
+  unlockConds: Record<
+    string,
+    {
+      conds: {
+        stageId: string
+        completeState: number
+      }[]
+    }
+  >
+  patchDetailInfoList: Record<
+    string,
+    {
+      patchId: string
+      sortId: number
+      infoParam: string
+    }
+  >
+}
+
 export interface ExcelSkillTable extends Record<string, ExcelSkillTable.Skill> {}
 
 export namespace ExcelSkillTable {

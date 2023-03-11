@@ -1,5 +1,5 @@
 import pProps from 'p-props'
-import { ExcelCharacterTable, ExcelSkillTable, ExcelUniEquipTable } from './excelTypes'
+import { ExcelCharacterTable, ExcelPatchCharacterTable, ExcelSkillTable, ExcelUniEquipTable } from './excelTypes'
 import localForage from 'localforage'
 
 const STORAGE_PREFIX = 'cpp_dm_'
@@ -32,6 +32,9 @@ export class DataManager {
       exCharacters: DataManager.loadJson<ExcelCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json',
       ),
+      exPatchCharacters: DataManager.loadJson<ExcelPatchCharacterTable>(
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/char_patch_table.json',
+      ),
       exSkills: DataManager.loadJson<ExcelSkillTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/skill_table.json',
       ),
@@ -40,6 +43,7 @@ export class DataManager {
       ),
     })) as {
       exCharacters: ExcelCharacterTable
+      exPatchCharacters: ExcelPatchCharacterTable
       exSkills: ExcelSkillTable
       exUniEquip: ExcelUniEquipTable
     }
@@ -142,7 +146,15 @@ export class Character {
     public readonly key: string,
     public readonly raw: ExcelCharacterTable.Character,
     private readonly dm: DataManager,
-  ) {}
+  ) {
+    if (dm.raw.exPatchCharacters.infos[key]) {
+      this.patches = dm.raw.exPatchCharacters.infos[key].tmplIds
+        .map((x) => [x, dm.raw.exPatchCharacters.patchChars[x]] as const)
+        .filter((x) => !!x[1])
+    }
+  }
+
+  private readonly patches: (readonly [string, ExcelCharacterTable.Character])[] = []
 
   get avatar() {
     return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/avatar/${encodeURIComponent(
@@ -150,9 +162,20 @@ export class Character {
     )}.png`
   }
 
+  get rawSkills() {
+    return [...(this.raw.skills || []), ...this.patches.flatMap((x) => x[1].skills)]
+  }
+
   private _skills?: [ExcelCharacterTable.Skill, Skill][]
   get skills() {
-    return this._skills || (this._skills = (this.raw.skills || []).map((x) => [x, this.dm.data.skills[x.skillId]]))
+    return this._skills || (this._skills = this.rawSkills.map((x) => [x, this.dm.data.skills[x.skillId]]))
+  }
+
+  get rawUniEquips() {
+    return [
+      ...(this.dm.raw.exUniEquip.charEquip[this.key] || []),
+      ...this.patches.flatMap((x) => this.dm.raw.exUniEquip.charEquip[x[0]] || []),
+    ]
   }
 
   private _uniEquips?: UniEquip[]
