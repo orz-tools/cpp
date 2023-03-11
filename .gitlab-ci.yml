@@ -1,0 +1,16 @@
+image: node:18-bullseye
+build:
+  script:
+    - yarn
+    - yarn build
+    - |
+      tar c dist | curl \
+        -s \
+        -u "$RIPPLE_BASIC_AUTH" \
+        -F "content=@-" \
+        --form-string "type=tar" \
+        --form-string "target=cpfs" \
+        --form-string "name=$CI_PROJECT_PATH" \
+        --form-string "tag=$CI_COMMIT_SHORT_SHA,$CI_COMMIT_TAG,$CI_COMMIT_REF_NAME" \
+        --form-string "strip=1" \
+        https://ripple.orztech.com/v0/pages.publish
