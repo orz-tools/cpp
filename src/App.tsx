@@ -225,7 +225,7 @@ function CharacterStatusPopover({ character, isGoal }: { character: Character; i
               })
             }
           >
-            技能1
+            1
           </Button>
           <Button
             onClick={() =>
@@ -234,7 +234,7 @@ function CharacterStatusPopover({ character, isGoal }: { character: Character; i
               })
             }
           >
-            技能2
+            2
           </Button>
           <Button
             onClick={() =>
@@ -243,7 +243,7 @@ function CharacterStatusPopover({ character, isGoal }: { character: Character; i
               })
             }
           >
-            技能3
+            3
           </Button>
           <Button
             onClick={() =>
@@ -252,7 +252,7 @@ function CharacterStatusPopover({ character, isGoal }: { character: Character; i
               })
             }
           >
-            技能4
+            4
           </Button>
           <Button
             onClick={() =>
@@ -261,7 +261,7 @@ function CharacterStatusPopover({ character, isGoal }: { character: Character; i
               })
             }
           >
-            技能5
+            5
           </Button>
           <Button
             onClick={() =>
@@ -270,7 +270,7 @@ function CharacterStatusPopover({ character, isGoal }: { character: Character; i
               })
             }
           >
-            技能6
+            6
           </Button>
           <Button
             onClick={() =>
@@ -279,7 +279,7 @@ function CharacterStatusPopover({ character, isGoal }: { character: Character; i
               })
             }
           >
-            技能7
+            7
           </Button>
         </ButtonGroup>
       </div>
