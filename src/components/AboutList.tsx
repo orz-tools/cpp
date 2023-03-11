@@ -14,6 +14,17 @@ export function AboutList() {
         <Navbar.Group align={Alignment.LEFT}></Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
+        <MenuDivider title="声明" />
+        <MenuItem
+          multiline={true}
+          text={
+            <>
+              <div style={{ fontWeight: 'normal', opacity: 0.75 }}>
+                本项目所使用的游戏资源（包括但不限于：游戏图片、动画、音频、文本原文或其转译版本等）仅用于更好地表现游戏资料、增强用户体验，其版权属于上海鹰角网络科技有限公司和其关联公司。
+              </div>
+            </>
+          }
+        ></MenuItem>
         <MenuDivider title="鸣谢" />
         <MenuItem
           icon={'link'}
@@ -52,6 +63,14 @@ export function AboutList() {
           icon={'code'}
           text="Aceship/Arknight-Images"
           href={'https://github.com/Aceship/Arknight-Images'}
+          {...externalLinkProps}
+        />
+        <MenuItem
+          icon={'font'}
+          text="Source Han Sans"
+          href={
+            'https://github.com/adobe-fonts/source-han-sans/blob/e3bfa7062185d1ec689b07b9236e108a9a00e9c5/LICENSE.txt'
+          }
           {...externalLinkProps}
         />
       </Menu>
