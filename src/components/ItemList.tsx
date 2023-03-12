@@ -33,6 +33,55 @@ export function ItemQuantityEditor({ item, style }: { item: Item; style?: React.
   )
 }
 
+export function ItemTaskRequirements({ item }: { item: Item }) {
+  const atoms = useInject(UserDataAtomHolder)
+  const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
+  const goal = useAtomValue(atoms.allGoalTaskRequirements)[item.key] || 0
+  const finished = useAtomValue(atoms.allFinishedTaskRequirements)[item.key] || 0
+
+  const goalCrafts = 0
+  const finishedCrafts = 0
+  const goalIndirects = 0
+  const finishedIndirects = 0
+
+  return (
+    <>
+      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="还需">
+        <div style={{ textAlign: 'right', opacity: goal - quantity - goalCrafts > 0 ? 1 : 0.4 }}>
+          <span>{goal - quantity - goalCrafts}</span>
+        </div>
+        <div style={{ textAlign: 'right', opacity: finished - quantity - finishedCrafts > 0 ? 1 : 0.4 }}>
+          <span>{finished - quantity - finishedCrafts}</span>
+        </div>
+      </div>
+      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="需合成">
+        <div style={{ textAlign: 'right', opacity: goalCrafts > 0 ? 1 : 0.4 }}>
+          <span>{goalCrafts}</span>
+        </div>
+        <div style={{ textAlign: 'right', opacity: finishedCrafts > 0 ? 1 : 0.4 }}>
+          <span>{finishedCrafts}</span>
+        </div>
+      </div>
+      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="直接需求">
+        <div style={{ textAlign: 'right', opacity: goal > 0 ? 1 : 0.4 }}>
+          <span>{goal}</span>
+        </div>
+        <div style={{ textAlign: 'right', opacity: finished > 0 ? 1 : 0.4 }}>
+          <span>{finished}</span>
+        </div>
+      </div>
+      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="间接需求">
+        <div style={{ textAlign: 'right', opacity: goalIndirects > 0 ? 1 : 0.4 }}>
+          <span>{goalIndirects}</span>
+        </div>
+        <div style={{ textAlign: 'right', opacity: finishedIndirects > 0 ? 1 : 0.4 }}>
+          <span>{finishedIndirects}</span>
+        </div>
+      </div>
+    </>
+  )
+}
+
 export function ItemMenu({ item }: { item: Item }) {
   return (
     <li role="none">
@@ -59,6 +108,7 @@ export function ItemMenu({ item }: { item: Item }) {
       <div style={{}}>
         <ItemQuantityEditor item={item} style={{ width: '6em', textAlign: 'right' }} />
       </div>
+      <ItemTaskRequirements item={item} />
     </li>
   )
 }
@@ -244,8 +294,8 @@ function AllValue() {
   const dataManager = useInject(DataManager)
   const atoms = useInject(UserDataAtomHolder)
   const quantites = useAtomValue(atoms.itemQuantities)
-  useAtomValue(atoms.goalComputationCore)
-  useAtomValue(atoms.finishedComputationCore)
+  useAtomValue(atoms.allGoalTasks)
+  useAtomValue(atoms.allFinishedTasks)
 
   const a = sum(
     Object.entries(quantites).map(([k, v]) => {

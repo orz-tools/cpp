@@ -1,14 +1,18 @@
-import produce, { Draft } from 'immer'
-import { atom, PrimitiveAtom, Setter, WritableAtom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
 import deepEqual from 'deep-equal'
+import produce, { Draft } from 'immer'
+import { Atom, atom, PrimitiveAtom, WritableAtom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
+import { AtomFamily } from 'jotai/vanilla/utils/atomFamily'
+import { sum, T } from 'ramda'
+import { SetStateAction } from 'react'
 import { Constructor, Inject } from '../container'
 import { txatom } from '../txatom'
-import { Character, DataManager, ITEM_VIRTUAL_EXP } from './DataManager'
-import { SetStateAction } from 'react'
-import { ComputationCore } from './ComputationCore'
-import { sum } from 'ramda'
-import { AtomFamily } from 'jotai/vanilla/utils/atomFamily'
+import { Character, DataManager, ITEM_GOLD, ITEM_VIRTUAL_EXP } from './DataManager'
+
+function withDebugLabel<T extends Atom<any>>(t: T, label?: string): T {
+  t.debugLabel = label
+  return t
+}
 
 const UserDataAtoms = class UserDataAtoms {} as Constructor<ReturnType<typeof buildAtoms>> &
   ReturnType<typeof buildAtoms>
@@ -32,20 +36,23 @@ export const emptyCharacterStatus = Object.freeze<CharacterStatus>({
 })
 
 function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManager) {
-  const rootAtom: PrimitiveAtom<UserData> = atom(
-    (get) => {
-      let value = get(baseAtom)
-      if (!value) {
-        value = newUserData()
-      }
-      if (!value.items) value.items = {}
-      return value
-    },
-    (get, set, value) =>
-      set(baseAtom, (v) => {
-        if (typeof value === 'function') return value(get(rootAtom))
+  const rootAtom: PrimitiveAtom<UserData> = withDebugLabel(
+    atom(
+      (get) => {
+        let value = get(baseAtom)
+        if (!value) {
+          value = newUserData()
+        }
+        if (!value.items) value.items = {}
         return value
-      }),
+      },
+      (get, set, value) =>
+        set(baseAtom, (v) => {
+          if (typeof value === 'function') return value(get(rootAtom))
+          return value
+        }),
+    ),
+    'rootAtom',
   )
 
   const tx = txatom(rootAtom)
@@ -65,7 +72,10 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
     }
   }
 
-  const itemQuantities = atom((get) => get(dataAtom).items)
+  const itemQuantities = withDebugLabel(
+    atom((get) => get(dataAtom).items),
+    'itemQuantities',
+  )
 
   const itemQuantity: AtomFamily<string, WritableAtom<number, [value: SetStateAction<number>], void>> = atomFamily<
     string,
@@ -73,22 +83,28 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
   >(
     (itemId: string) => {
       if (itemId == ITEM_VIRTUAL_EXP) {
-        return atom(
-          (get) => {
-            return sum(
-              Object.values(dm.raw.exItems.expItems).map((x) => (get(itemQuantity(x.id)) as number) * x.gainExp),
-            )
-          },
-          (get, set, value: SetStateAction<number>) => {},
+        return withDebugLabel(
+          atom(
+            (get) => {
+              return sum(
+                Object.values(dm.raw.exItems.expItems).map((x) => (get(itemQuantity(x.id)) as number) * x.gainExp),
+              )
+            },
+            (get, set, value: SetStateAction<number>) => {},
+          ),
+          `itemQuantity(${itemId})`,
         )
       }
-      return atom(
-        (get) => get(dataAtom).items[itemId] || 0,
-        (get, set, value: SetStateAction<number>) => {
-          set(dataAtom, 'modify', (data) => {
-            data.items[itemId] = typeof value === 'function' ? value(data.items[itemId] || 0) : value
-          })
-        },
+      return withDebugLabel(
+        atom(
+          (get) => get(dataAtom).items[itemId] || 0,
+          (get, set, value: SetStateAction<number>) => {
+            set(dataAtom, 'modify', (data) => {
+              data.items[itemId] = typeof value === 'function' ? value(data.items[itemId] || 0) : value
+            })
+          },
+        ),
+        `itemQuantity(${itemId})`,
       )
     },
     (a, b) => a === b,
@@ -96,83 +112,169 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
 
   const currentCharacter = atomFamily(
     (charId: string) =>
-      atom(
-        (get) => get(dataAtom).current[charId] || emptyCharacterStatus,
-        (get, set, value: (draft: Draft<CharacterStatus>) => any) => {
-          set(dataAtom, 'transact', () => {
-            set(dataAtom, 'modify', (data) => {
-              data.current[charId] =
-                produce(data.current[charId] || emptyCharacterStatus, value) || emptyCharacterStatus
+      withDebugLabel(
+        atom(
+          (get) => get(dataAtom).current[charId] || emptyCharacterStatus,
+          (get, set, value: (draft: Draft<CharacterStatus>) => any) => {
+            set(dataAtom, 'transact', () => {
+              set(dataAtom, 'modify', (data) => {
+                data.current[charId] =
+                  produce(data.current[charId] || emptyCharacterStatus, value) || emptyCharacterStatus
+              })
+              set(dataAtom, 'modify', (data) => {
+                data.goal[charId] = produce(data.goal[charId] || data.current[charId], () => {}) || data.current[charId]
+              })
+              set(dataAtom, 'modify', (data) => {
+                doRewrite(charId, data)
+              })
             })
-            set(dataAtom, 'modify', (data) => {
-              data.goal[charId] = produce(data.goal[charId] || data.current[charId], () => {}) || data.current[charId]
-            })
-            set(dataAtom, 'modify', (data) => {
-              doRewrite(charId, data)
-            })
-          })
-        },
+          },
+        ),
+        `currentCharacter(${charId})`,
       ),
     (a, b) => a === b,
   )
 
   const goalCharacter = atomFamily(
     (charId: string) =>
-      atom(
-        (get) => get(dataAtom).goal[charId] || get(currentCharacter(charId)),
-        (get, set, value: (draft: Draft<CharacterStatus>) => any) => {
-          set(dataAtom, 'transact', () => {
-            set(dataAtom, 'modify', (data) => {
-              data.current[charId] =
-                produce(data.current[charId] || emptyCharacterStatus, () => {}) || emptyCharacterStatus
+      withDebugLabel(
+        atom(
+          (get) => get(dataAtom).goal[charId] || get(currentCharacter(charId)),
+          (get, set, value: (draft: Draft<CharacterStatus>) => any) => {
+            set(dataAtom, 'transact', () => {
+              set(dataAtom, 'modify', (data) => {
+                data.current[charId] =
+                  produce(data.current[charId] || emptyCharacterStatus, () => {}) || emptyCharacterStatus
+              })
+              set(dataAtom, 'modify', (data) => {
+                data.goal[charId] = produce(data.goal[charId] || data.current[charId], value) || data.current[charId]
+              })
+              set(dataAtom, 'modify', (data) => {
+                doRewrite(charId, data)
+              })
             })
-            set(dataAtom, 'modify', (data) => {
-              data.goal[charId] = produce(data.goal[charId] || data.current[charId], value) || data.current[charId]
-            })
-            set(dataAtom, 'modify', (data) => {
-              doRewrite(charId, data)
-            })
-          })
-        },
+          },
+        ),
+        `goalCharacter(${charId})`,
       ),
     (a, b) => a === b,
   )
 
-  const characterFinishedStatus = atomFamily((charId: string) =>
-    atom(
-      (get) => {
-        return finishedCharacterStatus(dm.data.characters[charId])
-      },
-      (a, b) => a === b,
-    ),
+  const characterFinishedStatus = atomFamily(
+    (charId: string) =>
+      withDebugLabel(
+        atom((get) => {
+          return finishedCharacterStatus(dm.data.characters[charId])
+        }),
+        `characterFinishedStatus(${charId})`,
+      ),
+    (a, b) => a === b,
   )
 
-  const isCharacterFinished = atomFamily((charId: string) =>
+  const isCharacterFinished = atomFamily(
+    (charId: string) =>
+      withDebugLabel(
+        atom((get) => {
+          // if (charId == 'char_278_orchid') {
+          //   console.log(
+          //     get(currentCharacter(charId)),
+          //     get(characterFinishedStatus(charId)),
+          //     deepEqual(get(currentCharacter(charId)), get(characterFinishedStatus(charId))),
+          //   )
+          // }
+          return deepEqual(get(currentCharacter(charId)), get(characterFinishedStatus(charId)))
+        }),
+        `isCharacterFinished(${charId})`,
+      ),
+    (a, b) => a === b,
+  )
+
+  const currentCharacters = withDebugLabel(
+    atom((get) => get(dataAtom).current),
+    `currentCharacters`,
+  )
+  const goalCharacters = withDebugLabel(
+    atom((get) => get(dataAtom).goal),
+    `goalCharacters`,
+  )
+  const finishedCharacters = withDebugLabel(
     atom((get) => {
-      // if (charId == 'char_278_orchid') {
-      //   console.log(
-      //     get(currentCharacter(charId)),
-      //     get(characterFinishedStatus(charId)),
-      //     deepEqual(get(currentCharacter(charId)), get(characterFinishedStatus(charId))),
-      //   )
-      // }
-      return deepEqual(get(currentCharacter(charId)), get(characterFinishedStatus(charId)))
+      return Object.fromEntries(get(allCharacterIds).map((k) => [k, get(characterFinishedStatus(k))]))
     }),
+    `finishedCharacters`,
   )
 
-  const currentCharacters = atom((get) => get(dataAtom).current)
-  const goalCharacters = atom((get) => get(dataAtom).goal)
-  const finishedCharacters = atom((get) => {
-    return Object.fromEntries(
-      Object.entries(dm.data.characters)
-        .filter(([, v]) => !!v.raw.displayNumber)
-        .map(([k]) => [k, get(characterFinishedStatus(k))]),
-    )
-  })
+  const goalTasks = atomFamily(
+    (charId: string) =>
+      withDebugLabel(
+        atom((get) => {
+          // console.log('regen goalTasks', charId)
+          const current = get(currentCharacter(charId))
+          const goal = get(goalCharacter(charId))
+          return generateTasks(dm, dm.data.characters[charId], current, goal)
+        }),
+        `goalTasks(${charId})`,
+      ),
+    (a, b) => a === b,
+  )
 
-  const goalComputationCore = atom((get) => new ComputationCore(dm, get(currentCharacters), get(goalCharacters)))
-  const finishedComputationCore = atom(
-    (get) => new ComputationCore(dm, get(currentCharacters), get(finishedCharacters)),
+  const finishedTasks = atomFamily(
+    (charId: string) =>
+      withDebugLabel(
+        atom((get) => {
+          // console.log('regen finishedTasks', charId)
+          const current = get(currentCharacter(charId))
+          const finished = get(characterFinishedStatus(charId))
+          return generateTasks(dm, dm.data.characters[charId], current, finished)
+        }),
+        `finishedTasks(${charId})`,
+      ),
+    (a, b) => a === b,
+  )
+
+  const allCharacterIds = withDebugLabel(
+    atom((get) => {
+      return Object.entries(dm.data.characters)
+        .filter(([, v]) => !!v.raw.displayNumber)
+        .map(([k]) => k)
+    }),
+    `allCharacterIds`,
+  )
+
+  const allGoalTasks = withDebugLabel(
+    atom((get) => {
+      return Object.keys(get(goalCharacters)).flatMap((x) => get(goalTasks(x)))
+    }),
+    `allGoalTasks`,
+  )
+
+  const allFinishedTasks = withDebugLabel(
+    atom((get) => {
+      return get(allCharacterIds).flatMap((x) => get(finishedTasks(x)))
+    }),
+    `allFinishedTasks`,
+  )
+
+  const allGoalTaskRequirements = withDebugLabel(
+    atom((get) => {
+      const result: Record<string, number> = {}
+      get(allGoalTasks).forEach((x) =>
+        x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
+      )
+      return result
+    }),
+    'allGoalTaskRequirements',
+  )
+
+  const allFinishedTaskRequirements = withDebugLabel(
+    atom((get) => {
+      const result: Record<string, number> = {}
+      get(allFinishedTasks).forEach((x) =>
+        x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
+      )
+      return result
+    }),
+    'allFinishedTaskRequirements',
   )
 
   return {
@@ -187,8 +289,13 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
     currentCharacters,
     goalCharacters,
     finishedCharacters,
-    goalComputationCore,
-    finishedComputationCore,
+    goalTasks,
+    finishedTasks,
+    allCharacterIds,
+    allGoalTasks,
+    allFinishedTasks,
+    allGoalTaskRequirements,
+    allFinishedTaskRequirements,
   }
 }
 
@@ -348,4 +455,185 @@ export function newUserData(): UserData {
     goal: {},
     items: {},
   }
+}
+
+export interface Task {
+  id: string
+  charId: string
+  type: TaskType
+  requires: { itemId: string; quantity: number }[]
+  depends: Task[]
+}
+
+export type TaskType =
+  | { _: 'join' }
+  | { _: 'elite'; elite: number }
+  | { _: 'level'; elite: number; from: number; to: number }
+  | { _: 'skill'; to: number }
+  | { _: 'skillMaster'; skillId: string; to: number }
+  | { _: 'mod'; modId: string; to: number }
+
+const isTask = (i: Task | undefined): i is Task => !!i
+
+function generateTasks(
+  dataManager: DataManager,
+  character: Character,
+  current: CharacterStatus,
+  goal: CharacterStatus,
+) {
+  if (current == goal) return []
+
+  const tasks: Task[] = []
+  const add = (type: TaskType, requires: Task['requires'], ...depends: (Task | undefined)[]): Task => {
+    const task: Task = {
+      id: character.key + JSON.stringify(type),
+      charId: character.key,
+      type,
+      requires,
+      depends: depends.filter(isTask),
+    }
+    tasks.push(task)
+    return task
+  }
+
+  let elite = current.elite
+  let level = current.level
+  let dep: Task | undefined = undefined
+
+  const meetEliteLevel = (goalElite: number, goalLevel: number) => {
+    if (elite > goalElite || (elite === goalElite && level >= goalLevel)) return
+
+    while (elite < goalElite) {
+      const goalLevel = character.maxLevels[elite]
+      if (level < goalLevel) {
+        dep = add(
+          { _: 'level', elite: elite, from: level, to: goalLevel },
+          [
+            {
+              itemId: ITEM_VIRTUAL_EXP,
+              quantity: sum(dataManager.data.constants.characterExpMap[elite].slice(level - 1, goalLevel - 1)),
+            },
+            {
+              itemId: ITEM_GOLD,
+              quantity: sum(dataManager.data.constants.characterUpgradeCostMap[elite].slice(level - 1, goalLevel - 1)),
+            },
+          ],
+          dep,
+        )
+        level = goalLevel
+      }
+
+      const price = dataManager.data.constants.evolveGoldCost[character.rarity][elite]
+      console.assert(price > 0)
+      dep = add(
+        { _: 'elite', elite: elite + 1 },
+        [
+          {
+            itemId: ITEM_GOLD,
+            quantity: dataManager.data.constants.evolveGoldCost[character.rarity][elite],
+          },
+          ...(character.raw.phases[elite + 1].evolveCost || []).map((x) => ({ itemId: x.id, quantity: x.count })),
+        ],
+        dep,
+      )
+      elite++
+      level = 1
+    }
+
+    if (level < goalLevel) {
+      dep = add(
+        { _: 'level', elite: elite, from: level, to: goalLevel },
+        [
+          {
+            itemId: ITEM_VIRTUAL_EXP,
+            quantity: sum(dataManager.data.constants.characterExpMap[elite].slice(level - 1, goalLevel - 1)),
+          },
+          {
+            itemId: ITEM_GOLD,
+            quantity: sum(dataManager.data.constants.characterUpgradeCostMap[elite].slice(level - 1, goalLevel - 1)),
+          },
+        ],
+        dep,
+      )
+      level = goalLevel
+    }
+  }
+
+  if (elite === 0 && level === 0 && goal.level > 0) {
+    dep = add({ _: 'join' }, [], dep)
+    level = 1
+  }
+
+  let skillLevel = current.skillLevel
+  let skillDep: typeof dep = undefined
+  {
+    while (skillLevel < goal.skillLevel) {
+      if (skillLevel === 4) {
+        meetEliteLevel(1, 1)
+      }
+      skillDep = add(
+        { _: 'skill', to: skillLevel + 1 },
+        [
+          ...(character.raw.allSkillLvlup[skillLevel - 1].lvlUpCost || []).map((x) => ({
+            itemId: x.id,
+            quantity: x.count,
+          })),
+        ],
+        dep,
+        skillDep,
+      )
+      skillLevel++
+    }
+  }
+
+  const skillIds = new Set([...Object.keys(current.skillMaster), ...Object.keys(goal.skillMaster)])
+  for (const skillId of skillIds) {
+    let sc = current.skillMaster[skillId] || 0
+    const sg = goal.skillMaster[skillId] || sc
+    let sDep: typeof dep = undefined
+    if (sg > 0) meetEliteLevel(2, 1)
+    while (sc < sg) {
+      sDep = add(
+        { _: 'skillMaster', skillId: skillId, to: sc + 1 },
+        [
+          ...(character.skills.find((x) => x[0].skillId == skillId)?.[0].levelUpCostCond[sc].levelUpCost || []).map(
+            (x) => ({
+              itemId: x.id,
+              quantity: x.count,
+            }),
+          ),
+        ],
+        dep,
+        skillDep,
+        sDep,
+      )
+      sc++
+    }
+  }
+
+  const modIds = new Set([...Object.keys(current.modLevel), ...Object.keys(goal.modLevel)])
+  for (const modId of modIds) {
+    let mc = current.modLevel[modId] || 0
+    const mg = goal.modLevel[modId] || mc
+    let mDep: typeof dep = undefined
+    if (mg > 0) meetEliteLevel(2, character.modUnlockLevel)
+    while (mc < mg) {
+      mDep = add(
+        { _: 'mod', modId: modId, to: mc + 1 },
+        [
+          ...(character.uniEquips.find((x) => x.key == modId)?.raw.itemCost?.[mc + 1] || []).map((x) => ({
+            itemId: x.id,
+            quantity: x.count,
+          })),
+        ],
+        dep,
+        mDep,
+      )
+      mc++
+    }
+  }
+
+  meetEliteLevel(goal.elite, goal.level)
+
+  return tasks
 }

@@ -1,14 +1,14 @@
-import React from 'react'
+import { Provider } from 'jotai'
+import { DevTools } from 'jotai-devtools'
+import { atomWithStorage } from 'jotai/utils'
 import ReactDOM from 'react-dom/client'
 import { AppWrapper } from './App'
 import { ContainerContext } from './hooks/useContainer'
 import './index.css'
 import { Container } from './pkg/container'
 import { DataManager } from './pkg/cpp-core/DataManager'
-import { newUserData, UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
-import { atomWithStorage } from 'jotai/utils'
+import { UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
 import { Store } from './Store'
-import { Provider } from 'jotai'
 
 const container = new Container()
 void container.get(DataManager).init()
@@ -31,6 +31,7 @@ Object.assign(globalThis, {
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <React.StrictMode>
   <Provider store={store}>
+    <DevTools store={store} />
     <ContainerContext.Provider value={container}>
       <AppWrapper />
     </ContainerContext.Provider>
