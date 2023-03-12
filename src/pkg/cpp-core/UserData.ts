@@ -1,11 +1,14 @@
 import produce, { Draft } from 'immer'
-import { atom, PrimitiveAtom, Setter } from 'jotai'
+import { atom, PrimitiveAtom, Setter, WritableAtom } from 'jotai'
 import { atomFamily } from 'jotai/utils'
 import deepEqual from 'deep-equal'
 import { Constructor, Inject } from '../container'
 import { txatom } from '../txatom'
-import { Character, DataManager } from './DataManager'
+import { Character, DataManager, ITEM_VIRTUAL_EXP } from './DataManager'
 import { SetStateAction } from 'react'
+import { ComputationCore } from './ComputationCore'
+import { sum } from 'ramda'
+import { AtomFamily } from 'jotai/vanilla/utils/atomFamily'
 
 const UserDataAtoms = class UserDataAtoms {} as Constructor<ReturnType<typeof buildAtoms>> &
   ReturnType<typeof buildAtoms>
@@ -64,16 +67,30 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
 
   const itemQuantities = atom((get) => get(dataAtom).items)
 
-  const itemQuantity = atomFamily(
-    (itemId: string) =>
-      atom(
+  const itemQuantity: AtomFamily<string, WritableAtom<number, [value: SetStateAction<number>], void>> = atomFamily<
+    string,
+    WritableAtom<number, [value: SetStateAction<number>], void>
+  >(
+    (itemId: string) => {
+      if (itemId == ITEM_VIRTUAL_EXP) {
+        return atom(
+          (get) => {
+            return sum(
+              Object.values(dm.raw.exItems.expItems).map((x) => (get(itemQuantity(x.id)) as number) * x.gainExp),
+            )
+          },
+          (get, set, value: SetStateAction<number>) => {},
+        )
+      }
+      return atom(
         (get) => get(dataAtom).items[itemId] || 0,
         (get, set, value: SetStateAction<number>) => {
           set(dataAtom, 'modify', (data) => {
             data.items[itemId] = typeof value === 'function' ? value(data.items[itemId] || 0) : value
           })
         },
-      ),
+      )
+    },
     (a, b) => a === b,
   )
 
@@ -143,6 +160,21 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
     }),
   )
 
+  const currentCharacters = atom((get) => get(dataAtom).current)
+  const goalCharacters = atom((get) => get(dataAtom).goal)
+  const finishedCharacters = atom((get) => {
+    return Object.fromEntries(
+      Object.entries(dm.data.characters)
+        .filter(([, v]) => !!v.raw.displayNumber)
+        .map(([k]) => [k, get(characterFinishedStatus(k))]),
+    )
+  })
+
+  const goalComputationCore = atom((get) => new ComputationCore(dm, get(currentCharacters), get(goalCharacters)))
+  const finishedComputationCore = atom(
+    (get) => new ComputationCore(dm, get(currentCharacters), get(finishedCharacters)),
+  )
+
   return {
     ...tx,
     rootAtom,
@@ -152,6 +184,11 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
     goalCharacter,
     characterFinishedStatus,
     isCharacterFinished,
+    currentCharacters,
+    goalCharacters,
+    finishedCharacters,
+    goalComputationCore,
+    finishedComputationCore,
   }
 }
 

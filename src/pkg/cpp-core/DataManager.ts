@@ -88,9 +88,12 @@ export class DataManager {
   }
 
   private generateItems() {
-    return Object.fromEntries(
+    const items = Object.fromEntries(
       Object.entries(this.raw.exItems.items).map(([key, raw]) => [key, new Item(key, raw, this)]),
     )
+    items[ITEM_VIRTUAL_EXP] = new ExpItem(ITEM_VIRTUAL_EXP, this)
+
+    return items
   }
 
   private generateConstants() {
@@ -256,7 +259,7 @@ export class Item {
   constructor(
     public readonly key: string,
     public readonly raw: ExcelItemTable.Item,
-    private readonly dm: DataManager,
+    protected readonly dm: DataManager,
   ) {}
 
   get icon() {
@@ -278,7 +281,7 @@ export class Item {
       .replace(/\.$/, '')
   }
 
-  private _generateValueAsAp() {
+  protected _generateValueAsAp() {
     switch (this.key) {
       case '3213': // 先锋双芯片
         return this.dm.data.items['3212'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
@@ -300,3 +303,35 @@ export class Item {
     return this.dm.raw.yituliuValue.find((x) => x.itemId == this.key)?.itemValueReason
   }
 }
+
+export class ExpItem extends Item {
+  constructor(key: string, dm: DataManager) {
+    super(
+      key,
+      {
+        itemId: key,
+        name: '经验',
+        description: '竟有一种办法可以聚合四种作战记录。这么虚拟的物品，真的可以收下吗？真的吗？！',
+        rarity: 4,
+        iconId: 'EXP_PLAYER',
+        overrideBkg: null,
+        stackIconId: null,
+        sortId: 10005,
+        usage: '聚合了作战录像的存储装置的装置，可以增加干员的经验值',
+        obtainApproach: '战斗获取',
+        classifyType: ExcelItemTable.ClassifyType.None,
+        itemType: '##EXP_VIRTUAL',
+        stageDropList: [],
+        buildingProductList: [],
+      },
+      dm,
+    )
+  }
+
+  protected override _generateValueAsAp() {
+    return this.dm.data.items['2004'].valueAsAp! / this.dm.raw.exItems.expItems['2004'].gainExp
+  }
+}
+
+export const ITEM_GOLD = '4001'
+export const ITEM_VIRTUAL_EXP = '##EXP'

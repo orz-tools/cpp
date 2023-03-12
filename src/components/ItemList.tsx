@@ -1,9 +1,9 @@
 import { Alignment, Button, Menu, MenuDivider, Navbar, NumericInput } from '@blueprintjs/core'
-import { useAtom, useSetAtom } from 'jotai'
-import { groupBy, pick, pickAll } from 'ramda'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { groupBy, pick, pickAll, sum } from 'ramda'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useInject } from '../hooks/useContainer'
-import { DataManager, Item } from '../pkg/cpp-core/DataManager'
+import { DataManager, Item, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
 import { CachedImg } from './Icons'
@@ -51,7 +51,7 @@ export function ItemMenu({ item }: { item: Item }) {
               {item.raw.name}
             </div>
             <div className="bp4-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
-              {`≈AP ${item.valueAsApString}`}
+              {item.valueAsApString ? `≈AP ${item.valueAsApString}` : ''}
             </div>
           </div>
         </>
@@ -64,21 +64,36 @@ export function ItemMenu({ item }: { item: Item }) {
 }
 
 enum Category {
-  Gold = '0gold',
-  Rarity4 = '1rarity4',
-  Rarity3 = '2rarity3',
-  Rarity2 = '3rarity2',
-  Rarity1 = '4rarity1',
-  Rarity0 = '5rarity0',
-  ModSkill = '7modskill',
-  ChipsDual = '81chips',
-  ChipsHard = '82chips',
-  ChipsEasy = '83chips',
-  Unknown = '9unknown',
+  Gold = '0',
+  Rarity4 = '1',
+  Rarity3 = '2',
+  Rarity2 = '3',
+  Rarity1 = '4',
+  Rarity0 = '5',
+  ModSkill = '7',
+  ChipsDual = '81',
+  ChipsHard = '82',
+  ChipsEasy = '83',
+  Unknown = '9',
 }
+
+const CategoryNames = {
+  [Category.Gold]: '钱和经验',
+  [Category.Rarity4]: '金材料',
+  [Category.Rarity3]: '紫材料',
+  [Category.Rarity2]: '蓝材料',
+  [Category.Rarity1]: '绿材料',
+  [Category.Rarity0]: '灰材料',
+  [Category.ModSkill]: '技能、模组和胶水',
+  [Category.ChipsDual]: '双芯片',
+  [Category.ChipsHard]: '芯片组',
+  [Category.ChipsEasy]: '芯片',
+  [Category.Unknown]: '其他',
+} satisfies Record<Category, string>
 
 const myCategories = {
   '4001': Category.Gold, // 龙门币
+  [ITEM_VIRTUAL_EXP]: Category.Gold,
   '2004': Category.Gold, // 高级作战记录
   '2003': Category.Gold, // 中级作战记录
   '2002': Category.Gold, // 初级作战记录
@@ -90,7 +105,7 @@ const myCategories = {
   mod_unlock_token: Category.ModSkill, // 模组数据块
   mod_update_token_2: Category.ModSkill, // 数据增补仪
   mod_update_token_1: Category.ModSkill, // 数据增补条
-  '4006': Category.ModSkill, // 采购凭证
+  '4006': Category.Gold, // 采购凭证
   '32001': Category.ModSkill, // 芯片助剂
 
   '3213': Category.ChipsDual, // 先锋双芯片
@@ -136,7 +151,7 @@ function buildItemList(dm: DataManager) {
     byCategory(
       Object.values(dm.data.items)
         .filter((x) => {
-          if (!['MATERIAL', 'CARD_EXP', 'GOLD'].includes(x.raw.itemType)) return false
+          if (!['MATERIAL', 'CARD_EXP', 'GOLD', '##EXP_VIRTUAL'].includes(x.raw.itemType)) return false
           if (
             [
               '3105', // 龙骨
@@ -189,7 +204,7 @@ function ImportButton() {
           const data = JSON.parse(prompt('Import MAA items') || '')
           const quans = Object.fromEntries(
             Object.entries(data).filter(([key, value]) => {
-              return Object.hasOwn(dataManager.data.items, key) && typeof value === 'number'
+              return Object.hasOwn(dataManager.data.items, key) && key[0] !== '#' && typeof value === 'number'
             }),
           )
           const before = store.get(atoms.itemQuantities)
@@ -225,6 +240,23 @@ function ImportButton() {
   )
 }
 
+function AllValue() {
+  const dataManager = useInject(DataManager)
+  const atoms = useInject(UserDataAtomHolder)
+  const quantites = useAtomValue(atoms.itemQuantities)
+  useAtomValue(atoms.goalComputationCore)
+  useAtomValue(atoms.finishedComputationCore)
+
+  const a = sum(
+    Object.entries(quantites).map(([k, v]) => {
+      const value = dataManager.data.items[k].valueAsAp
+      if (value == null) return 0
+      return value * v
+    }),
+  )
+  return <Button minimal={true} text={`≈AP ${a.toFixed(0)}`} />
+}
+
 export function ItemList() {
   const dataManager = useInject(DataManager)
   const itemGroups = useMemo(() => buildItemList(dataManager), [dataManager])
@@ -235,13 +267,14 @@ export function ItemList() {
         <Navbar.Group align={Alignment.RIGHT}></Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
           <ImportButton />
+          <AllValue />
         </Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} className="cpp-item-menu-master">
         {itemGroups.map(([key, items]) => {
           return (
             <React.Fragment key={key}>
-              <MenuDivider title={key} />
+              <MenuDivider title={CategoryNames[key as Category]} />
               {items.map((x) => (
                 <ItemMenu key={x.key} item={x} />
               ))}
