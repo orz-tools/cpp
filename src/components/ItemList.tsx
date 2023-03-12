@@ -9,7 +9,7 @@ import { Store } from '../Store'
 import { CachedImg } from './Icons'
 
 const formatter = (q: number) => q.toFixed(0)
-const parser = (q: string) => Math.floor(parseFloat(q))
+const parser = (q: string) => Math.floor(parseFloat(q) || 0)
 export function ItemQuantityEditor({ item, style }: { item: Item; style?: React.CSSProperties }) {
   const atoms = useInject(UserDataAtomHolder)
   const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
