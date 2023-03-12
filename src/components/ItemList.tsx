@@ -1,4 +1,4 @@
-import { Alignment, Button, Menu, MenuDivider, Navbar, NumericInput } from '@blueprintjs/core'
+import { Alignment, Button, Menu, MenuDivider, Navbar, NumericInput, Tag } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { groupBy, pick, pickAll, sum } from 'ramda'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -41,29 +41,86 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
   const goalIndirects = useAtomValue(atoms.allGoalIndirects)[item.key] || 0
   const finishedIndirects = useAtomValue(atoms.allFinishedIndirects)[item.key] || 0
 
+  const itemListParam = useAtomValue(itemListParamAtom)
+
   return (
     <>
       <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="还需">
-        <div style={{ textAlign: 'right', opacity: goal + goalIndirects - quantity > 0 ? 1 : 0.4 }}>
+        <div
+          style={{
+            textAlign: 'right',
+            opacity:
+              itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+                ? goal + goalIndirects - quantity > 0
+                  ? 1
+                  : 0.4
+                : 0,
+          }}
+        >
           <span>{goal + goalIndirects - quantity}</span>
         </div>
-        <div style={{ textAlign: 'right', opacity: finished + finishedIndirects - quantity > 0 ? 1 : 0.4 }}>
+        <div
+          style={{
+            textAlign: 'right',
+            opacity:
+              itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+                ? finished + finishedIndirects - quantity > 0
+                  ? 1
+                  : 0.4
+                : 0,
+          }}
+        >
           <span>{finished + finishedIndirects - quantity}</span>
         </div>
       </div>
       <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="直接需求">
-        <div style={{ textAlign: 'right', opacity: goal > 0 ? 1 : 0.4 }}>
+        <div
+          style={{
+            textAlign: 'right',
+            opacity: itemListParam.mode == 'all' || itemListParam.mode === 'goal' ? (goal - quantity > 0 ? 1 : 0.4) : 0,
+          }}
+        >
           <span>{goal}</span>
         </div>
-        <div style={{ textAlign: 'right', opacity: finished > 0 ? 1 : 0.4 }}>
+        <div
+          style={{
+            textAlign: 'right',
+            opacity:
+              itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+                ? finished - quantity > 0
+                  ? 1
+                  : 0.4
+                : 0,
+          }}
+        >
           <span>{finished}</span>
         </div>
       </div>
       <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="间接需求">
-        <div style={{ textAlign: 'right', opacity: goalIndirects > 0 ? 1 : 0.4 }}>
+        <div
+          style={{
+            textAlign: 'right',
+            opacity:
+              itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+                ? goal + goalIndirects - quantity > 0
+                  ? 1
+                  : 0.4
+                : 0,
+          }}
+        >
           <span>{goalIndirects}</span>
         </div>
-        <div style={{ textAlign: 'right', opacity: finishedIndirects > 0 ? 1 : 0.4 }}>
+        <div
+          style={{
+            textAlign: 'right',
+            opacity:
+              itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+                ? finished + finishedIndirects - quantity > 0
+                  ? 1
+                  : 0.4
+                : 0,
+          }}
+        >
           <span>{finishedIndirects}</span>
         </div>
       </div>
@@ -291,7 +348,7 @@ function AllValue() {
       return value * v
     }),
   )
-  return <Button minimal={true} text={`库存价值 AP ${a.toFixed(0)}`} />
+  return <Button minimal={true} text={`库存`} rightIcon={<Tag round={true}>AP {a.toFixed(0)}</Tag>} />
 }
 
 function AllGoalValue() {
@@ -299,16 +356,27 @@ function AllGoalValue() {
   const atoms = useInject(UserDataAtomHolder)
   const quantites = useAtomValue(atoms.itemQuantities)
   const allGoals = useAtomValue(atoms.allGoalTaskRequirements)
+  const [param, setParam] = useAtom(itemListParamAtom)
 
   const a = sum(
     Object.entries(allGoals).map(([k, v]) => {
-      const count = v - (quantites[k] || 0)
+      const count = Math.max(0, v - (quantites[k] || 0))
       const value = dataManager.data.items[k].valueAsAp
       if (value == null) return 0
-      return value * v
+      return value * count
     }),
   )
-  return <Button minimal={true} text={`完成计划还需 AP ${a.toFixed(0)}`} />
+  return (
+    <Button
+      minimal={true}
+      text={`计划`}
+      rightIcon={<Tag round={true}>AP {a.toFixed(0)}</Tag>}
+      active={param.mode == 'goal'}
+      onClick={() => {
+        setParam((p) => ({ ...p, mode: p.mode === 'goal' ? 'all' : 'goal' }))
+      }}
+    />
+  )
 }
 
 function AllFinishedValue() {
@@ -316,17 +384,34 @@ function AllFinishedValue() {
   const atoms = useInject(UserDataAtomHolder)
   const quantites = useAtomValue(atoms.itemQuantities)
   const allFinished = useAtomValue(atoms.allFinishedTaskRequirements)
+  const [param, setParam] = useAtom(itemListParamAtom)
 
   const a = sum(
     Object.entries(allFinished).map(([k, v]) => {
-      const count = v - (quantites[k] || 0)
+      const count = Math.max(0, v - (quantites[k] || 0))
       const value = dataManager.data.items[k].valueAsAp
       if (value == null) return 0
-      return value * v
+      return value * count
     }),
   )
-  return <Button minimal={true} text={`毕业还需 AP ${a.toFixed(0)}`} />
+  return (
+    <Button
+      minimal={true}
+      text={`毕业`}
+      rightIcon={<Tag round={true}>AP {a.toFixed(0)}</Tag>}
+      active={param.mode == 'finished'}
+      onClick={() => {
+        setParam((p) => ({ ...p, mode: p.mode === 'finished' ? 'all' : 'finished' }))
+      }}
+    />
+  )
 }
+
+interface ItemListParam {
+  mode: 'all' | 'goal' | 'finished'
+}
+
+const itemListParamAtom = atom<ItemListParam>({ mode: 'all' })
 
 export function ItemList() {
   const dataManager = useInject(DataManager)
