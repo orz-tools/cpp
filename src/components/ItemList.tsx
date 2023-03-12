@@ -54,7 +54,7 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
           <span>{finished - quantity - finishedCrafts}</span>
         </div>
       </div>
-      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="需合成">
+      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="待合成">
         <div style={{ textAlign: 'right', opacity: goalCrafts > 0 ? 1 : 0.4 }}>
           <span>{goalCrafts}</span>
         </div>
@@ -294,8 +294,6 @@ function AllValue() {
   const dataManager = useInject(DataManager)
   const atoms = useInject(UserDataAtomHolder)
   const quantites = useAtomValue(atoms.itemQuantities)
-  useAtomValue(atoms.allGoalTasks)
-  useAtomValue(atoms.allFinishedTasks)
 
   const a = sum(
     Object.entries(quantites).map(([k, v]) => {
@@ -305,6 +303,40 @@ function AllValue() {
     }),
   )
   return <Button minimal={true} text={`≈AP ${a.toFixed(0)}`} />
+}
+
+function AllGoalValue() {
+  const dataManager = useInject(DataManager)
+  const atoms = useInject(UserDataAtomHolder)
+  const quantites = useAtomValue(atoms.itemQuantities)
+  const allGoals = useAtomValue(atoms.allGoalTaskRequirements)
+
+  const a = sum(
+    Object.entries(allGoals).map(([k, v]) => {
+      const count = v - (quantites[k] || 0)
+      const value = dataManager.data.items[k].valueAsAp
+      if (value == null) return 0
+      return value * v
+    }),
+  )
+  return <Button minimal={true} text={`还需 AP ${a.toFixed(0)}`} />
+}
+
+function AllFinishedValue() {
+  const dataManager = useInject(DataManager)
+  const atoms = useInject(UserDataAtomHolder)
+  const quantites = useAtomValue(atoms.itemQuantities)
+  const allFinished = useAtomValue(atoms.allFinishedTaskRequirements)
+
+  const a = sum(
+    Object.entries(allFinished).map(([k, v]) => {
+      const count = v - (quantites[k] || 0)
+      const value = dataManager.data.items[k].valueAsAp
+      if (value == null) return 0
+      return value * v
+    }),
+  )
+  return <Button minimal={true} text={`毕业还需 AP ${a.toFixed(0)}`} />
 }
 
 export function ItemList() {
@@ -318,6 +350,8 @@ export function ItemList() {
         <Navbar.Group align={Alignment.LEFT}>
           <ImportButton />
           <AllValue />
+          <AllGoalValue />
+          <AllFinishedValue />
         </Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} className="cpp-item-menu-master">
