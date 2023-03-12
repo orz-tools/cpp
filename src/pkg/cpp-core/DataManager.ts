@@ -175,14 +175,41 @@ export class DataManager {
           ...(i.goldCost > 0 ? [{ itemId: ITEM_GOLD, quantity: i.goldCost }] : []),
         ],
       }
-      console.log(formatItemStack(this, formula), '=', formula.costs.map((x) => formatItemStack(this, x)).join(' + '))
       formulas.push(formula)
     }
+
+    for (const i of Object.values(this.raw.exBuilding.manufactFormulas)) {
+      if (i.formulaType !== 'F_ASC') continue
+      const formula: Formula = {
+        id: `manufact-${i.formulaId}`,
+        itemId: i.itemId,
+        quantity: i.count,
+        costs: [...i.costs.map((x) => ({ itemId: x.id, quantity: x.count }))],
+      }
+      formulas.push(formula)
+    }
+
+    formulas.push({
+      // 采购凭证 买 芯片助剂
+      id: `shop-32001`,
+      itemId: '32001',
+      quantity: 1,
+      costs: [{ itemId: '4006', quantity: 20 }],
+    })
+
+    // for (const formula of formulas) {
+    //   console.log(
+    //     formula.id,
+    //     formatItemStack(this, formula),
+    //     '=',
+    //     formula.costs.map((x) => formatItemStack(this, x)).join(' + '),
+    //   )
+    // }
     return formulas
   }
 }
 
-function formatItemStack(dm: DataManager, { itemId, quantity }: { itemId: string; quantity: number }) {
+export function formatItemStack(dm: DataManager, { itemId, quantity }: { itemId: string; quantity: number }) {
   return `${dm.raw.exItems.items[itemId].name} x${quantity}`
 }
 

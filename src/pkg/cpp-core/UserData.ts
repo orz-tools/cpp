@@ -661,6 +661,7 @@ function generateIndirects(
 ): Record<string, number> {
   const indirects: Record<string, number> = {}
   const quantities: Record<string, number> = clone(inputQuantities)
+  const unsatisfiedRequirements: Record<string, number> = {}
 
   function pass(requirements: Record<string, number>): void {
     const newRequirements: Record<string, number> = {}
@@ -671,7 +672,10 @@ function generateIndirects(
         quantities[itemId] = 0
 
         const formula = dm.data.formulas.find((x) => x.itemId == itemId)
-        if (!formula) continue
+        if (!formula) {
+          unsatisfiedRequirements[itemId] = (unsatisfiedRequirements[itemId] || 0) + diff
+          continue
+        }
 
         const times = Math.ceil(diff / formula.quantity)
         for (const cost of formula.costs) {
@@ -688,5 +692,23 @@ function generateIndirects(
   }
 
   pass(inputRequirements)
+
+  if (unsatisfiedRequirements[ITEM_VIRTUAL_EXP]) {
+    let exp = unsatisfiedRequirements[ITEM_VIRTUAL_EXP]
+    for (const expItem of Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)) {
+      const fulfilled = quantities[expItem.id] * expItem.gainExp
+      exp -= fulfilled
+      quantities[expItem.id] = 0
+      if (exp < 0) break
+    }
+    if (exp > 0) {
+      const ls6 = Math.ceil(exp / 10000)
+      exp -= ls6 * 10000
+      indirects['2004'] = (indirects['2004'] || 0) + 4 * ls6
+      indirects['2003'] = (indirects['2003'] || 0) + 2 * ls6
+    }
+    delete unsatisfiedRequirements[ITEM_VIRTUAL_EXP]
+  }
+
   return indirects
 }
