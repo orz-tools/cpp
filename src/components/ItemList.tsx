@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useInject } from '../hooks/useContainer'
 import { DataManager, Item } from '../pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
+import { Store } from '../Store'
 import { CachedImg } from './Icons'
 
 const formatter = (q: number) => q.toFixed(0)
@@ -177,6 +178,7 @@ const pickRetainableItems = pick([
 function ImportButton() {
   const dataManager = useInject(DataManager)
   const atoms = useInject(UserDataAtomHolder)
+  const store = useInject(Store).store
   const setData = useSetAtom(atoms.dataAtom)
   return (
     <Button
@@ -190,12 +192,31 @@ function ImportButton() {
               return Object.hasOwn(dataManager.data.items, key) && typeof value === 'number'
             }),
           )
+          const before = store.get(atoms.itemQuantities)
           setData('modify', (x) => {
             x.items = {
               ...quans,
               ...pickRetainableItems(x.items),
             }
           })
+          const after = store.get(atoms.itemQuantities)
+          {
+            // FIXME: 挪走
+            const allKeys = new Set([...Object.keys(before), ...Object.keys(after)])
+            let count = 0
+            for (const i of allKeys) {
+              const item = dataManager.data.items[i]
+              const b = before[i] || 0
+              const a = after[i] || 0
+              if (a - b === 0) continue
+              const v = item.valueAsAp == null ? undefined : (a - b) * item.valueAsAp
+              console.log(item.raw.name, `${b} -> ${a}`, a - b, v)
+              if (v != null) {
+                count += v
+              }
+            }
+            console.log(count)
+          }
         } catch (e) {
           alert(e)
         }
