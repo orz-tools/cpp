@@ -696,6 +696,7 @@ function generateIndirects(
   if (unsatisfiedRequirements[ITEM_VIRTUAL_EXP]) {
     let exp = unsatisfiedRequirements[ITEM_VIRTUAL_EXP]
     for (const expItem of Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)) {
+      if (!quantities[expItem.id]) continue
       const fulfilled = quantities[expItem.id] * expItem.gainExp
       exp -= fulfilled
       quantities[expItem.id] = 0
