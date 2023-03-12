@@ -38,28 +38,17 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
   const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
   const goal = useAtomValue(atoms.allGoalTaskRequirements)[item.key] || 0
   const finished = useAtomValue(atoms.allFinishedTaskRequirements)[item.key] || 0
-
-  const goalCrafts = 0
-  const finishedCrafts = 0
-  const goalIndirects = 0
-  const finishedIndirects = 0
+  const goalIndirects = useAtomValue(atoms.allGoalIndirects)[item.key] || 0
+  const finishedIndirects = useAtomValue(atoms.allFinishedIndirects)[item.key] || 0
 
   return (
     <>
       <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="还需">
-        <div style={{ textAlign: 'right', opacity: goal - quantity - goalCrafts > 0 ? 1 : 0.4 }}>
-          <span>{goal - quantity - goalCrafts}</span>
+        <div style={{ textAlign: 'right', opacity: goal + goalIndirects - quantity > 0 ? 1 : 0.4 }}>
+          <span>{goal + goalIndirects - quantity}</span>
         </div>
-        <div style={{ textAlign: 'right', opacity: finished - quantity - finishedCrafts > 0 ? 1 : 0.4 }}>
-          <span>{finished - quantity - finishedCrafts}</span>
-        </div>
-      </div>
-      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="待合成">
-        <div style={{ textAlign: 'right', opacity: goalCrafts > 0 ? 1 : 0.4 }}>
-          <span>{goalCrafts}</span>
-        </div>
-        <div style={{ textAlign: 'right', opacity: finishedCrafts > 0 ? 1 : 0.4 }}>
-          <span>{finishedCrafts}</span>
+        <div style={{ textAlign: 'right', opacity: finished + finishedIndirects - quantity > 0 ? 1 : 0.4 }}>
+          <span>{finished + finishedIndirects - quantity}</span>
         </div>
       </div>
       <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="直接需求">
@@ -302,7 +291,7 @@ function AllValue() {
       return value * v
     }),
   )
-  return <Button minimal={true} text={`≈AP ${a.toFixed(0)}`} />
+  return <Button minimal={true} text={`库存价值 AP ${a.toFixed(0)}`} />
 }
 
 function AllGoalValue() {
@@ -319,7 +308,7 @@ function AllGoalValue() {
       return value * v
     }),
   )
-  return <Button minimal={true} text={`还需 AP ${a.toFixed(0)}`} />
+  return <Button minimal={true} text={`完成计划还需 AP ${a.toFixed(0)}`} />
 }
 
 function AllFinishedValue() {

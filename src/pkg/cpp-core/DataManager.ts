@@ -1,5 +1,6 @@
 import pProps from 'p-props'
 import {
+  ExcelBuildingData,
   ExcelCharacterTable,
   ExcelItemTable,
   ExcelPatchCharacterTable,
@@ -31,6 +32,7 @@ export class DataManager {
       uniEquips: this.generateUniEquips(),
       constants: this.generateConstants(),
       items: this.generateItems(),
+      formulas: this.generateFormulas(),
     }
   }
   public data!: Awaited<ReturnType<DataManager['transform']>>
@@ -51,6 +53,9 @@ export class DataManager {
       ),
       exItems: DataManager.loadJson<ExcelItemTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/item_table.json',
+      ),
+      exBuilding: DataManager.loadJson<ExcelBuildingData>(
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/building_data.json',
       ),
       yituliuValue: DataManager.loadJson<YituliuValue[]>('https://houduan.yituliu.site/file/export/item/value/json'),
     }
@@ -156,6 +161,39 @@ export class DataManager {
       ],
     }
   }
+
+  private generateFormulas() {
+    const formulas: Formula[] = []
+    for (const i of Object.values(this.raw.exBuilding.workshopFormulas)) {
+      if (i.formulaType === 'F_ASC') continue
+      const formula: Formula = {
+        id: `workshop-${i.formulaId}`,
+        itemId: i.itemId,
+        quantity: i.count,
+        costs: [
+          ...i.costs.map((x) => ({ itemId: x.id, quantity: x.count })),
+          ...(i.goldCost > 0 ? [{ itemId: ITEM_GOLD, quantity: i.goldCost }] : []),
+        ],
+      }
+      console.log(formatItemStack(this, formula), '=', formula.costs.map((x) => formatItemStack(this, x)).join(' + '))
+      formulas.push(formula)
+    }
+    return formulas
+  }
+}
+
+function formatItemStack(dm: DataManager, { itemId, quantity }: { itemId: string; quantity: number }) {
+  return `${dm.raw.exItems.items[itemId].name} x${quantity}`
+}
+
+interface Formula {
+  id: string
+  itemId: string
+  quantity: number
+  costs: {
+    itemId: string
+    quantity: number
+  }[]
 }
 
 export class Character {
@@ -283,6 +321,10 @@ export class Item {
 
   protected _generateValueAsAp() {
     switch (this.key) {
+      case 'mod_unlock_token': // 模组数据块
+      case 'mod_update_token_2': // 数据增补仪
+      case 'mod_update_token_1': // 数据增补条
+        return undefined // 氪金也买不到，不应该有价值
       case '3213': // 先锋双芯片
         return this.dm.data.items['3212'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
       case '3223': // 近卫双芯片

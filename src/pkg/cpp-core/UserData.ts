@@ -3,7 +3,7 @@ import produce, { Draft } from 'immer'
 import { Atom, atom, PrimitiveAtom, WritableAtom } from 'jotai'
 import { atomFamily } from 'jotai/utils'
 import { AtomFamily } from 'jotai/vanilla/utils/atomFamily'
-import { sum, T } from 'ramda'
+import { clone, sum, T } from 'ramda'
 import { SetStateAction } from 'react'
 import { Constructor, Inject } from '../container'
 import { txatom } from '../txatom'
@@ -277,6 +277,20 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
     'allFinishedTaskRequirements',
   )
 
+  const allGoalIndirects = withDebugLabel(
+    atom((get) => {
+      return generateIndirects(dm, get(allGoalTaskRequirements), get(itemQuantities))
+    }),
+    'allGoalIndirects',
+  )
+
+  const allFinishedIndirects = withDebugLabel(
+    atom((get) => {
+      return generateIndirects(dm, get(allFinishedTaskRequirements), get(itemQuantities))
+    }),
+    'allFinishedIndirects',
+  )
+
   return {
     ...tx,
     rootAtom,
@@ -296,6 +310,8 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
     allFinishedTasks,
     allGoalTaskRequirements,
     allFinishedTaskRequirements,
+    allGoalIndirects,
+    allFinishedIndirects,
   }
 }
 
@@ -636,4 +652,41 @@ function generateTasks(
   meetEliteLevel(goal.elite, goal.level)
 
   return tasks
+}
+
+function generateIndirects(
+  dm: DataManager,
+  inputRequirements: Record<string, number>,
+  inputQuantities: Record<string, number>,
+): Record<string, number> {
+  const indirects: Record<string, number> = {}
+  const quantities: Record<string, number> = clone(inputQuantities)
+
+  function pass(requirements: Record<string, number>): void {
+    const newRequirements: Record<string, number> = {}
+    for (const [itemId, requires] of Object.entries(requirements)) {
+      const quantity = quantities[itemId] || 0
+      const diff = requires - quantity
+      if (diff > 0) {
+        quantities[itemId] = 0
+
+        const formula = dm.data.formulas.find((x) => x.itemId == itemId)
+        if (!formula) continue
+
+        const times = Math.ceil(diff / formula.quantity)
+        for (const cost of formula.costs) {
+          const newRequirement = times * cost.quantity
+          newRequirements[cost.itemId] = (newRequirements[cost.itemId] || 0) + newRequirement
+          indirects[cost.itemId] = (indirects[cost.itemId] || 0) + newRequirement
+        }
+      } else {
+        quantities[itemId] -= requires
+      }
+    }
+
+    if (Object.values(newRequirements).length > 0) return pass(newRequirements)
+  }
+
+  pass(inputRequirements)
+  return indirects
 }
