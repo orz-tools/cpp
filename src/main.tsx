@@ -1,6 +1,6 @@
 import { FocusStyleManager } from '@blueprintjs/core'
 import { Provider } from 'jotai'
-import { DevTools } from 'jotai-devtools'
+// import { DevTools } from 'jotai-devtools'
 import { atomWithStorage } from 'jotai/utils'
 import ReactDOM from 'react-dom/client'
 import { AppWrapper } from './App'
@@ -34,7 +34,7 @@ FocusStyleManager.onlyShowFocusOnTabs()
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <React.StrictMode>
   <Provider store={store}>
-    <DevTools store={store} />
+    {/* <DevTools store={store} /> */}
     <ContainerContext.Provider value={container}>
       <AppWrapper />
     </ContainerContext.Provider>
