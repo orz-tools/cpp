@@ -26,6 +26,12 @@ body {
   margin-right: 0;
 }
 
+.bp4-dialog,
+.bp4-alert {
+  width: unset !important;
+  max-width: 80vw;
+}
+
 .cpp-level-target {
   width: 100%;
   height: 100%;
