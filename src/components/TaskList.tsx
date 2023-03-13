@@ -1,14 +1,14 @@
-import { Alignment, Button, Menu, MenuDivider, MenuItem, Navbar, Spinner } from '@blueprintjs/core'
+import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar, Spinner } from '@blueprintjs/core'
 import { Atom, atom, useAtom, useAtomValue, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { sortBy } from 'ramda'
+import { clone, sortBy, T } from 'ramda'
 import React, { SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ListChildComponentProps, ListItemKeySelector, VariableSizeList } from 'react-window'
 import { useContainer, useInject } from '../hooks/useContainer'
 import { useRequest } from '../hooks/useRequest'
 import { Container } from '../pkg/container'
-import { Character, DataManager, formatItemStack } from '../pkg/cpp-core/DataManager'
+import { Character, DataManager, formatItemStack, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
 import { Task, TaskType, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
 import { CachedImg } from './Icons'
@@ -33,8 +33,24 @@ const queryParamAtom: WritableAtom<
     set(queryParamStorageAtom, typeof value === 'function' ? value(get(queryParamAtom)) : value),
 )
 
-interface TaskExtra {}
-const emptyTaskExtra: TaskExtra = {}
+enum TaskStatus {
+  Completable,
+  Synthesizable,
+  DependencyUnmet,
+  AllUnmet,
+}
+
+enum TaskCostStatus {
+  Completable,
+  Synthesizable,
+  AllUnmet,
+}
+
+interface TaskExtra {
+  status: TaskStatus
+  costStatus: TaskCostStatus[]
+}
+const emptyTaskExtra: TaskExtra = { status: TaskStatus.AllUnmet, costStatus: [] }
 
 async function taskListQuery(
   container: Container,
@@ -44,8 +60,118 @@ async function taskListQuery(
   const store = container.get(Store).store
   const atoms = container.get(UserDataAtomHolder)
   const tasks = store.get(atoms.allGoalTasks)
+  let quantities = clone(store.get(atoms.itemQuantities))
 
-  return { result: tasks.map((x) => [x, emptyTaskExtra]), hideCosts: param.hideCosts }
+  const consumeItems = (
+    inputCosts: { itemId: string; quantity: number }[],
+  ): { result: boolean | undefined; newQuantities?: Record<string, number>; costStatus: TaskCostStatus[] } => {
+    const costStatus: TaskCostStatus[] = new Array(inputCosts.length).fill(TaskCostStatus.Completable)
+    let needSynthesis: boolean | undefined = false
+    const newQuantities = clone(quantities)
+    const queue: { itemId: string; quantity: number; source: number }[] = inputCosts.map((x, i) => ({
+      ...x,
+      source: i,
+    }))
+    while (queue.length > 0) {
+      const cost = queue.shift()!
+      // if (cost.itemId !== ITEM_VIRTUAL_EXP) {
+      const quantity = newQuantities[cost.itemId] || 0
+      if (quantity > cost.quantity) {
+        newQuantities[cost.itemId] = quantity - cost.quantity
+      } else {
+        const left = cost.quantity - quantity
+        if (quantity > 0) {
+          newQuantities[cost.itemId] = 0
+        }
+
+        const formula = dm.data.formulas.find((x) => x.itemId == cost.itemId)
+        if (formula) {
+          if (needSynthesis === false) {
+            needSynthesis = true
+          }
+          if (costStatus[cost.source] === TaskCostStatus.Completable) {
+            costStatus[cost.source] = TaskCostStatus.Synthesizable
+          }
+          const times = Math.ceil(left / formula.quantity)
+          const extra = times * formula.quantity - left
+          newQuantities[cost.itemId] = (newQuantities[cost.itemId] || 0) + extra
+          for (const formulaCost of formula.costs) {
+            queue.push({ itemId: formulaCost.itemId, quantity: formulaCost.quantity * times, source: cost.source })
+          }
+        } else if (cost.itemId == ITEM_VIRTUAL_EXP) {
+          let exp = cost.quantity
+          const expItems = Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)
+          for (const expItem of expItems) {
+            if (!newQuantities[expItem.id]) continue
+            const need = Math.min(newQuantities[expItem.id], Math.floor(exp / expItem.gainExp))
+            exp -= need * expItem.gainExp
+            newQuantities[expItem.id] = newQuantities[expItem.id] - need
+          }
+          const smallestExpItemWithQuantity = expItems.reverse().find((x) => newQuantities[x.id] > 0)
+          if (exp === 0) {
+          } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity.gainExp) {
+            exp = 0
+            newQuantities[smallestExpItemWithQuantity.id] -= 1
+          } else {
+            needSynthesis = undefined
+            costStatus[cost.source] = TaskCostStatus.AllUnmet
+          }
+        } else {
+          // continue for task cost status
+          needSynthesis = undefined
+          costStatus[cost.source] = TaskCostStatus.AllUnmet
+        }
+      }
+    }
+    return { result: needSynthesis, newQuantities: newQuantities, costStatus }
+  }
+
+  const sortedTasks = tasks
+  const map = new Map<Task, TaskExtra>()
+  const result: [Task, TaskExtra][] = []
+  for (const task of sortedTasks) {
+    const taskExtra: TaskExtra = { status: TaskStatus.AllUnmet, costStatus: emptyTaskExtra.costStatus }
+    map.set(task, taskExtra)
+    result.push([task, taskExtra])
+    if (task.type._ == 'join') {
+      taskExtra.status = TaskStatus.AllUnmet
+    } else {
+      const { result, newQuantities, costStatus } = consumeItems(task.requires)
+      taskExtra.costStatus = costStatus
+      if (result == null) {
+        taskExtra.status = TaskStatus.AllUnmet
+      } else {
+        if (result) {
+          taskExtra.status = TaskStatus.Synthesizable
+        } else {
+          taskExtra.status = TaskStatus.Completable
+        }
+
+        const dependencyUnmet = !task.depends.every((x) => {
+          const tx = map.get(x)
+          if (!tx) return false
+          switch (tx.status) {
+            case TaskStatus.AllUnmet:
+              return false
+            case TaskStatus.Completable:
+              return true
+            case TaskStatus.DependencyUnmet:
+              return false
+            case TaskStatus.Synthesizable:
+              return true
+          }
+        })
+
+        if (dependencyUnmet) {
+          taskExtra.status = TaskStatus.DependencyUnmet
+        } else {
+          quantities = newQuantities!
+        }
+      }
+    }
+  }
+
+  return { result: tasks.map((x) => [x, map.get(x)!]), hideCosts: param.hideCosts }
 }
 
 export function Task({ type, character }: { type: TaskType; character: Character }) {
@@ -72,12 +198,14 @@ export function Task({ type, character }: { type: TaskType; character: Character
 
 export function TaskMenu({
   task,
+  extra,
   style,
   same,
   nextSame,
   hideCosts,
 }: {
   task: Task
+  extra: TaskExtra
   style?: React.CSSProperties
   same?: boolean
   nextSame?: boolean
@@ -86,7 +214,11 @@ export function TaskMenu({
   const dm = useInject(DataManager)
   const character = dm.data.characters[task.charId]
   const sortedRequires = useMemo(
-    () => sortBy((a) => dm.data.items[a.itemId].raw.sortId, task.requires),
+    () =>
+      sortBy(
+        (a) => dm.data.items[a[0].itemId].raw.sortId,
+        task.requires.map((r, i) => [r, i] as const),
+      ),
     [dm, task.requires],
   )
 
@@ -118,11 +250,13 @@ export function TaskMenu({
         <MenuItem
           style={{ fontWeight: 'normal' }}
           text={<Task type={task.type} character={character} />}
-          icon={'tick'}
+          icon={StatusIcon[extra.status]}
         />
         {hideCosts
           ? null
-          : sortedRequires.map((x) => <ItemStack key={x.itemId} task={task} stack={x} style={{ marginLeft: 22 }} />)}
+          : sortedRequires.map(([x, i]) => (
+              <ItemStack key={x.itemId} task={task} stack={x} style={{ marginLeft: 22 }} status={extra.costStatus[i]} />
+            ))}
         {nextSame ? <MenuDivider /> : null}
       </Menu>
       {nextSame ? null : <MenuDivider />}
@@ -130,13 +264,41 @@ export function TaskMenu({
   )
 }
 
-function ItemStack({ stack, task, style }: { task: Task; stack: Task['requires'][0]; style?: React.CSSProperties }) {
+const StatusIcon = {
+  [TaskStatus.AllUnmet]: 'cross',
+  [TaskStatus.Completable]: 'tick',
+  [TaskStatus.DependencyUnmet]: 'blank',
+  [TaskStatus.Synthesizable]: 'build',
+} satisfies { [K in TaskStatus]: IconName }
+
+const CostStatusIcon = {
+  [TaskCostStatus.AllUnmet]: 'cross',
+  [TaskCostStatus.Completable]: 'tick',
+  [TaskCostStatus.Synthesizable]: 'build',
+} satisfies { [K in TaskCostStatus]: IconName }
+
+function ItemStack({
+  stack,
+  task,
+  style,
+  status,
+}: {
+  task: Task
+  stack: Task['requires'][0]
+  style?: React.CSSProperties
+  status: TaskCostStatus
+}) {
   const dm = useInject(DataManager)
   const item = dm.data.items[stack.itemId]
   return (
     <MenuItem
       key={stack.itemId}
-      icon={<CachedImg src={item.icon} width={'20'} height={'20'} alt={item.key} title={item.key} />}
+      icon={
+        <div style={{ display: 'flex' }}>
+          <Icon icon={CostStatusIcon[status]} size={16} style={{ padding: 2 }} />
+          <CachedImg src={item.icon} width={'20'} height={'20'} alt={item.key} title={item.key} />
+        </div>
+      }
       text={
         <>
           <span>{item.raw.name}</span>
@@ -185,10 +347,9 @@ export function TaskList() {
   useEffect(() => refresh(), [param])
 
   const atoms = useInject(UserDataAtomHolder)
-  const tasks = useAtomValue(atoms.allGoalTasks)
   useEffect(() => {
     refresh()
-  }, [tasks, send, param])
+  }, [send, param, useAtomValue(atoms.allGoalTasks), useAtomValue(atoms.itemQuantities)])
 
   const hideCosts = response?.hideCosts || false
   const list = response?.result || emptyList
@@ -200,6 +361,7 @@ export function TaskList() {
       <TaskMenu
         style={style}
         task={data[index][0]}
+        extra={data[index][1]}
         same={data[index - 1]?.[0].charId == data[index][0].charId}
         nextSame={data[index + 1]?.[0].charId == data[index][0].charId}
         hideCosts={param.hideCosts}
