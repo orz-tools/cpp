@@ -162,10 +162,9 @@ async function taskListQuery(
           }
         })
 
+        quantities = newQuantities!
         if (dependencyUnmet) {
           taskExtra.status = TaskStatus.DependencyUnmet
-        } else {
-          quantities = newQuantities!
         }
       }
     }
