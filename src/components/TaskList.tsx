@@ -76,7 +76,7 @@ async function taskListQuery(
       const cost = queue.shift()!
       // if (cost.itemId !== ITEM_VIRTUAL_EXP) {
       const quantity = newQuantities[cost.itemId] || 0
-      if (quantity > cost.quantity) {
+      if (quantity >= cost.quantity) {
         newQuantities[cost.itemId] = quantity - cost.quantity
       } else {
         const left = cost.quantity - quantity
