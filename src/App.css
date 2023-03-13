@@ -29,7 +29,7 @@ body {
 .bp4-dialog,
 .bp4-alert {
   width: unset !important;
-  max-width: 80vw;
+  max-width: 80vw !important;
 }
 
 .cpp-level-target {
