@@ -14,6 +14,25 @@ export function AboutList() {
         <Navbar.Group align={Alignment.LEFT}></Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
+        <MenuDivider title="联系" />
+        <MenuItem
+          icon={'envelope'}
+          multiline={true}
+          href={'mailto:cpp@ouomail.com'}
+          {...externalLinkProps}
+          text={<span style={{ userSelect: 'text' }}>cpp@ouomail.com</span>}
+        ></MenuItem>
+        <MenuDivider title="警告" />
+        <MenuItem
+          multiline={true}
+          text={
+            <>
+              <div style={{ fontWeight: 'normal', opacity: 0.75 }}>
+                此工具仍在缓慢开发中，虽然不应该发生，但请随时做好丢失数据的准备，可以没事先自己备份备份 localStorage……
+              </div>
+            </>
+          }
+        ></MenuItem>
         <MenuDivider title="声明" />
         <MenuItem
           multiline={true}

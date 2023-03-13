@@ -16,8 +16,8 @@ body {
 }
 
 .App > section {
-  overflow-y: auto;
-  overflow-x: auto;
+  overflow-y: hidden;
+  overflow-x: hidden;
   flex-shrink: 0;
   margin-right: 1px;
 }
