@@ -43,7 +43,10 @@ function App() {
     <>
       <Navbar fixedToTop={true}>
         <Navbar.Group align={Alignment.LEFT}>
-          <Navbar.Heading>Closure++</Navbar.Heading>
+          <Navbar.Heading style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            <img src="/favicon.png" alt="Closure++ logo" width="24" height="24" title="" style={{ marginRight: 4 }} />
+            Closure++
+          </Navbar.Heading>
           <Navbar.Divider />
           <UndoButtons />
           <Navbar.Divider />
