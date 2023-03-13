@@ -210,7 +210,7 @@ export class DataManager {
 }
 
 export function formatItemStack(dm: DataManager, { itemId, quantity }: { itemId: string; quantity: number }) {
-  return `${dm.raw.exItems.items[itemId].name} x${quantity}`
+  return `${dm.raw.exItems.items[itemId]?.name || itemId} x${quantity}`
 }
 
 interface Formula {

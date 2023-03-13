@@ -5,6 +5,7 @@ import './App.css'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ItemList } from './components/ItemList'
+import { TaskList } from './components/TaskList'
 import { useInject } from './hooks/useContainer'
 import { DataManager } from './pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from './pkg/cpp-core/UserData'
@@ -68,6 +69,16 @@ function App() {
           }}
         >
           <ItemList />
+        </section>
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
+            width: '350px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <TaskList />
         </section>
         <section
           className={Classes.ELEVATION_1}

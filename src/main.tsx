@@ -1,3 +1,4 @@
+import { FocusStyleManager } from '@blueprintjs/core'
 import { Provider } from 'jotai'
 import { DevTools } from 'jotai-devtools'
 import { atomWithStorage } from 'jotai/utils'
@@ -27,6 +28,8 @@ Object.assign(globalThis, {
   $store: store,
   $atoms: atoms,
 })
+
+FocusStyleManager.onlyShowFocusOnTabs()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <React.StrictMode>

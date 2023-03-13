@@ -134,7 +134,7 @@ export function ItemMenu({ item }: { item: Item }) {
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp4-menu-item cpp-utem-menu"
+        className="bp4-menu-item cpp-item-menu"
         style={{ flexShrink: 1, overflow: 'hidden' }}
       >
         <>

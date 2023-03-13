@@ -364,6 +364,7 @@ export function CharacterList() {
         <AutoSizer>
           {({ height, width }) => (
             <FixedSizeList
+              overscanCount={5}
               height={height}
               itemCount={list.length}
               itemSize={50}
