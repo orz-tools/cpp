@@ -300,7 +300,7 @@ export function TaskMenu({
           icon={StatusIcon[extra.status]}
           popoverProps={{ usePortal: true, matchTargetWidth: true }}
         >
-          {hideCosts ? renderedCosts : null}
+          {hideCosts && renderedCosts.length > 0 ? renderedCosts : null}
         </MenuItem2>
         {hideCosts ? null : renderedCosts}
         {nextSame ? <MenuDivider /> : null}
