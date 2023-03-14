@@ -299,6 +299,7 @@ export function TaskMenu({
           text={<Task type={task.type} character={character} />}
           icon={StatusIcon[extra.status]}
           popoverProps={{ usePortal: true, matchTargetWidth: true }}
+          onContextMenu={preventDefault}
         >
           {hideCosts && renderedCosts.length > 0 ? renderedCosts : null}
         </MenuItem2>
@@ -309,6 +310,8 @@ export function TaskMenu({
     </li>
   )
 }
+
+const preventDefault = (e: React.MouseEvent<any, MouseEvent>) => e.preventDefault()
 
 const StatusIcon = {
   [TaskStatus.AllUnmet]: 'cross',
@@ -350,6 +353,7 @@ function ItemStack({
           <CachedImg src={item.icon} width={'20'} height={'20'} alt={item.key} title={item.key} />
         </div>
       }
+      onContextMenu={preventDefault}
       text={
         <>
           <span>{item.raw.name}</span>
