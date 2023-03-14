@@ -1,14 +1,14 @@
 import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar, Spinner } from '@blueprintjs/core'
-import { Atom, atom, useAtom, useAtomValue, WritableAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { clone, sortBy, T } from 'ramda'
+import { clone, sortBy } from 'ramda'
 import React, { SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ListChildComponentProps, ListItemKeySelector, VariableSizeList } from 'react-window'
 import { useContainer, useInject } from '../hooks/useContainer'
 import { useRequest } from '../hooks/useRequest'
 import { Container } from '../pkg/container'
-import { Character, DataManager, formatItemStack, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
+import { Character, DataManager, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
 import { Task, TaskType, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
 import { CachedImg } from './Icons'
@@ -38,6 +38,7 @@ enum TaskStatus {
   Synthesizable,
   DependencyUnmet,
   AllUnmet,
+  Manually,
 }
 
 enum TaskCostStatus {
@@ -49,8 +50,10 @@ enum TaskCostStatus {
 interface TaskExtra {
   status: TaskStatus
   costStatus: TaskCostStatus[]
+  costConsumed: number[]
+  costSynthesised: number[]
 }
-const emptyTaskExtra: TaskExtra = { status: TaskStatus.AllUnmet, costStatus: [] }
+const emptyTaskExtra: TaskExtra = { status: TaskStatus.AllUnmet, costStatus: [], costConsumed: [], costSynthesised: [] }
 
 async function taskListQuery(
   container: Container,
@@ -64,28 +67,46 @@ async function taskListQuery(
 
   const consumeItems = (
     inputCosts: { itemId: string; quantity: number }[],
-  ): { result: boolean | undefined; newQuantities?: Record<string, number>; costStatus: TaskCostStatus[] } => {
+  ): {
+    result: boolean | undefined
+    newQuantities?: Record<string, number>
+    costStatus: TaskCostStatus[]
+    costConsumed: number[]
+    costSynthesised: number[]
+  } => {
     const costStatus: TaskCostStatus[] = new Array(inputCosts.length).fill(TaskCostStatus.Completable)
+    const costConsumed: number[] = new Array(inputCosts.length).fill(0)
+    const costSynthesised: number[] = new Array(inputCosts.length).fill(0)
     let needSynthesis: boolean | undefined = false
     const newQuantities = clone(quantities)
-    const queue: { itemId: string; quantity: number; source: number }[] = inputCosts.map((x, i) => ({
+    const queue: { itemId: string; quantity: number; source: number; root: boolean }[] = inputCosts.map((x, i) => ({
       ...x,
       source: i,
+      root: true,
     }))
     while (queue.length > 0) {
       const cost = queue.shift()!
       // if (cost.itemId !== ITEM_VIRTUAL_EXP) {
       const quantity = newQuantities[cost.itemId] || 0
       if (quantity >= cost.quantity) {
+        if (cost.root) {
+          costConsumed[cost.source] += quantity
+        }
         newQuantities[cost.itemId] = quantity - cost.quantity
       } else {
         const left = cost.quantity - quantity
         if (quantity > 0) {
+          if (cost.root) {
+            costConsumed[cost.source] += quantity
+          }
           newQuantities[cost.itemId] = 0
         }
 
         const formula = dm.data.formulas.find((x) => x.itemId == cost.itemId)
         if (formula) {
+          if (cost.root) {
+            costSynthesised[cost.source] += left
+          }
           if (needSynthesis === false) {
             needSynthesis = true
           }
@@ -96,7 +117,12 @@ async function taskListQuery(
           const extra = times * formula.quantity - left
           newQuantities[cost.itemId] = (newQuantities[cost.itemId] || 0) + extra
           for (const formulaCost of formula.costs) {
-            queue.push({ itemId: formulaCost.itemId, quantity: formulaCost.quantity * times, source: cost.source })
+            queue.push({
+              itemId: formulaCost.itemId,
+              quantity: formulaCost.quantity * times,
+              source: cost.source,
+              root: false,
+            })
           }
         } else if (cost.itemId == ITEM_VIRTUAL_EXP) {
           let exp = cost.quantity
@@ -123,21 +149,29 @@ async function taskListQuery(
         }
       }
     }
-    return { result: needSynthesis, newQuantities: newQuantities, costStatus }
+    return { result: needSynthesis, newQuantities: newQuantities, costStatus, costConsumed, costSynthesised }
   }
 
   const sortedTasks = tasks
   const map = new Map<Task, TaskExtra>()
   const result: [Task, TaskExtra][] = []
   for (const task of sortedTasks) {
-    const taskExtra: TaskExtra = { status: TaskStatus.AllUnmet, costStatus: emptyTaskExtra.costStatus }
+    const taskExtra: TaskExtra = {
+      status: TaskStatus.AllUnmet,
+      costStatus: emptyTaskExtra.costStatus,
+      costConsumed: emptyTaskExtra.costConsumed,
+      costSynthesised: emptyTaskExtra.costSynthesised,
+    }
     map.set(task, taskExtra)
     result.push([task, taskExtra])
     if (task.type._ == 'join') {
-      taskExtra.status = TaskStatus.AllUnmet
+      taskExtra.status = TaskStatus.Manually
     } else {
-      const { result, newQuantities, costStatus } = consumeItems(task.requires)
+      const { result, newQuantities, costStatus, costConsumed, costSynthesised } = consumeItems(task.requires)
       taskExtra.costStatus = costStatus
+      taskExtra.costConsumed = costConsumed
+      taskExtra.costSynthesised = costSynthesised
+      quantities = newQuantities!
       if (result == null) {
         taskExtra.status = TaskStatus.AllUnmet
       } else {
@@ -159,10 +193,11 @@ async function taskListQuery(
               return false
             case TaskStatus.Synthesizable:
               return true
+            case TaskStatus.Manually:
+              return false
           }
         })
 
-        quantities = newQuantities!
         if (dependencyUnmet) {
           taskExtra.status = TaskStatus.DependencyUnmet
         }
@@ -254,7 +289,15 @@ export function TaskMenu({
         {hideCosts
           ? null
           : sortedRequires.map(([x, i]) => (
-              <ItemStack key={x.itemId} task={task} stack={x} style={{ marginLeft: 22 }} status={extra.costStatus[i]} />
+              <ItemStack
+                key={x.itemId}
+                task={task}
+                stack={x}
+                style={{ marginLeft: 22 }}
+                status={extra.costStatus[i]}
+                consumed={extra.costConsumed[i]}
+                synthesised={extra.costSynthesised[i]}
+              />
             ))}
         {nextSame ? <MenuDivider /> : null}
       </Menu>
@@ -268,6 +311,7 @@ const StatusIcon = {
   [TaskStatus.Completable]: 'tick',
   [TaskStatus.DependencyUnmet]: 'blank',
   [TaskStatus.Synthesizable]: 'build',
+  [TaskStatus.Manually]: 'pulse',
 } satisfies { [K in TaskStatus]: IconName }
 
 const CostStatusIcon = {
@@ -281,11 +325,15 @@ function ItemStack({
   task,
   style,
   status,
+  consumed,
+  synthesised,
 }: {
   task: Task
   stack: Task['requires'][0]
   style?: React.CSSProperties
   status: TaskCostStatus
+  consumed: number
+  synthesised: number
 }) {
   const dm = useInject(DataManager)
   const item = dm.data.items[stack.itemId]
@@ -301,7 +349,18 @@ function ItemStack({
       text={
         <>
           <span>{item.raw.name}</span>
-          <span style={{ float: 'right' }}>{stack.quantity}</span>
+          <span style={{ float: 'right' }}>
+            {consumed > 0 || (consumed <= 0 && synthesised <= 0) ? consumed : undefined}
+            {consumed > 0 && synthesised > 0 ? ' + ' : undefined}
+            {synthesised > 0 ? (
+              <>
+                <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5 }} />
+                {synthesised}
+              </>
+            ) : undefined}
+            {' / '}
+            {stack.quantity}
+          </span>
         </>
       }
       style={{ fontWeight: 'normal', ...style }}
