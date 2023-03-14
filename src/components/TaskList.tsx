@@ -1,4 +1,5 @@
 import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar, Spinner } from '@blueprintjs/core'
+import { MenuItem2 } from '@blueprintjs/popover2'
 import { atom, useAtom, useAtomValue, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { clone, sortBy } from 'ramda'
@@ -256,6 +257,18 @@ export function TaskMenu({
     [dm, task.requires],
   )
 
+  const renderedCosts = sortedRequires.map(([x, i]) => (
+    <ItemStack
+      key={x.itemId}
+      task={task}
+      stack={x}
+      style={hideCosts ? {} : { marginLeft: 22 }}
+      status={extra.costStatus[i]}
+      consumed={extra.costConsumed[i]}
+      synthesised={extra.costSynthesised[i]}
+    />
+  ))
+
   return (
     <li role="none" style={style} className="cpp-task-menu-master">
       {same ? undefined : (
@@ -281,24 +294,15 @@ export function TaskMenu({
         </a>
       )}
       <Menu style={{ padding: 0 }}>
-        <MenuItem
+        <MenuItem2
           style={{ fontWeight: 'normal' }}
           text={<Task type={task.type} character={character} />}
           icon={StatusIcon[extra.status]}
-        />
-        {hideCosts
-          ? null
-          : sortedRequires.map(([x, i]) => (
-              <ItemStack
-                key={x.itemId}
-                task={task}
-                stack={x}
-                style={{ marginLeft: 22 }}
-                status={extra.costStatus[i]}
-                consumed={extra.costConsumed[i]}
-                synthesised={extra.costSynthesised[i]}
-              />
-            ))}
+          popoverProps={{ usePortal: true, matchTargetWidth: true }}
+        >
+          {hideCosts ? renderedCosts : null}
+        </MenuItem2>
+        {hideCosts ? null : renderedCosts}
         {nextSame ? <MenuDivider /> : null}
       </Menu>
       {nextSame ? null : <MenuDivider />}
