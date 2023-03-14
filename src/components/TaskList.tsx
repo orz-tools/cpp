@@ -1,8 +1,8 @@
 import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar, Spinner } from '@blueprintjs/core'
-import { MenuItem2 } from '@blueprintjs/popover2'
-import { atom, useAtom, useAtomValue, WritableAtom } from 'jotai'
+import { ContextMenu2, MenuItem2 } from '@blueprintjs/popover2'
+import { atom, useAtom, useAtomValue, useStore, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { clone, sortBy } from 'ramda'
+import { clone, sortBy, sum } from 'ramda'
 import React, { SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ListChildComponentProps, ListItemKeySelector, VariableSizeList } from 'react-window'
@@ -10,7 +10,7 @@ import { useContainer, useInject } from '../hooks/useContainer'
 import { useRequest } from '../hooks/useRequest'
 import { Container } from '../pkg/container'
 import { Character, DataManager, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
-import { Task, TaskType, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
+import { Task as TaskDisplay, TaskType, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
 import { CachedImg } from './Icons'
 
@@ -59,7 +59,7 @@ const emptyTaskExtra: TaskExtra = { status: TaskStatus.AllUnmet, costStatus: [],
 async function taskListQuery(
   container: Container,
   param: TaskListQueryParam,
-): Promise<{ result: [Task, TaskExtra][]; hideCosts: boolean }> {
+): Promise<{ result: [TaskDisplay, TaskExtra][]; hideCosts: boolean }> {
   const dm = container.get(DataManager)
   const store = container.get(Store).store
   const atoms = container.get(UserDataAtomHolder)
@@ -126,6 +126,11 @@ async function taskListQuery(
             })
           }
         } else if (cost.itemId == ITEM_VIRTUAL_EXP) {
+          if (cost.root) {
+            costConsumed[cost.source] += sum(
+              Object.values(dm.raw.exItems.expItems).map((x) => (newQuantities[x.id] || 0) * x.gainExp),
+            )
+          }
           let exp = cost.quantity
           const expItems = Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)
           for (const expItem of expItems) {
@@ -154,8 +159,8 @@ async function taskListQuery(
   }
 
   const sortedTasks = tasks
-  const map = new Map<Task, TaskExtra>()
-  const result: [Task, TaskExtra][] = []
+  const map = new Map<TaskDisplay, TaskExtra>()
+  const result: [TaskDisplay, TaskExtra][] = []
   for (const task of sortedTasks) {
     const taskExtra: TaskExtra = {
       status: TaskStatus.AllUnmet,
@@ -209,7 +214,7 @@ async function taskListQuery(
   return { result: tasks.map((x) => [x, map.get(x)!]), hideCosts: param.hideCosts }
 }
 
-export function Task({ type, character }: { type: TaskType; character: Character }) {
+function TaskDisplay({ type, character }: { type: TaskType; character: Character }) {
   switch (type._) {
     case 'join':
       return <>招募</>
@@ -228,7 +233,70 @@ export function Task({ type, character }: { type: TaskType; character: Character
       const uniEquip = character.uniEquips.find((x) => x.key == type.modId)!
       return <>{`${uniEquip.raw.typeName2.toUpperCase()} 模组 ${type.to} 级: ${uniEquip.raw.uniEquipName}`}</>
     }
+    default:
+      throwBad(type)
   }
+}
+
+function throwBad(p: never): never {
+  throw new Error(`Missing switch coverage: ${p}`)
+}
+
+function TaskContextMenu({ task, extra }: { task: TaskDisplay; extra: TaskExtra }) {
+  const atoms = useInject(UserDataAtomHolder)
+  const store = useInject(Store).store
+  const consumeCost = () => {
+    for (const i of task.requires) {
+      store.set(atoms.itemQuantity(i.itemId), (e) => {
+        console.assert(e - i.quantity > 0)
+        return e - i.quantity
+      })
+    }
+  }
+  const completeTask = () => {
+    store.set(atoms.currentCharacter(task.charId), (d) => {
+      const type = task.type
+      switch (type._) {
+        case 'elite':
+          d.elite = type.elite
+          break
+        case 'join':
+          d.level = 1
+          break
+        case 'level':
+          d.level = type.to
+          break
+        case 'mod':
+          d.modLevel[type.modId] = type.to
+          break
+        case 'skill':
+          d.skillLevel = type.to
+          break
+        case 'skillMaster':
+          d.skillMaster[type.skillId] = type.to
+          break
+        default:
+          throwBad(type)
+      }
+    })
+  }
+
+  return (
+    <Menu>
+      <MenuItem
+        text={'完成'}
+        icon={'tick-circle'}
+        disabled={extra.status !== TaskStatus.Completable}
+        onClick={() => {
+          store.set(atoms.dataAtom, 'transact', () => {
+            consumeCost()
+            completeTask()
+          })
+        }}
+      />
+      <MenuItem text={'强制完成（不消耗材料）'} icon={'cross-circle'} onClick={completeTask} />
+    </Menu>
+  )
 }
 
 export function TaskMenu({
@@ -239,7 +307,7 @@ export function TaskMenu({
   nextSame,
   hideCosts,
 }: {
-  task: Task
+  task: TaskDisplay
   extra: TaskExtra
   style?: React.CSSProperties
   same?: boolean
@@ -294,15 +362,16 @@ export function TaskMenu({
         </a>
       )}
       <Menu style={{ padding: 0 }}>
-        <MenuItem2
-          style={{ fontWeight: 'normal' }}
-          text={<Task type={task.type} character={character} />}
-          icon={StatusIcon[extra.status]}
-          popoverProps={{ usePortal: true, matchTargetWidth: true }}
-          onContextMenu={preventDefault}
-        >
-          {hideCosts && renderedCosts.length > 0 ? renderedCosts : null}
-        </MenuItem2>
+        <ContextMenu2 content={<TaskContextMenu task={task} extra={extra} />}>
+          <MenuItem2
+            style={{ fontWeight: 'normal' }}
+            text={<TaskDisplay type={task.type} character={character} />}
+            icon={StatusIcon[extra.status]}
+            popoverProps={{ usePortal: true, matchTargetWidth: true }}
+          >
+            {hideCosts && renderedCosts.length > 0 ? renderedCosts : null}
+          </MenuItem2>
+        </ContextMenu2>
         {hideCosts ? null : renderedCosts}
         {nextSame ? <MenuDivider /> : null}
       </Menu>
@@ -335,8 +404,8 @@ function ItemStack({
   consumed,
   synthesised,
 }: {
-  task: Task
-  stack: Task['requires'][0]
+  task: TaskDisplay
+  stack: TaskDisplay['requires'][0]
   style?: React.CSSProperties
   status: TaskCostStatus
   consumed: number
@@ -392,7 +461,7 @@ function HideCostsButton() {
   )
 }
 
-const emptyList: [Task, TaskExtra][] = []
+const emptyList: [TaskDisplay, TaskExtra][] = []
 export function TaskList() {
   const param = useAtomValue(queryParamAtom)
 
@@ -419,11 +488,11 @@ export function TaskList() {
 
   const hideCosts = response?.hideCosts || false
   const list = response?.result || emptyList
-  const listRef = useRef<VariableSizeList<[Task, TaskExtra][]>>(
-    undefined as unknown as VariableSizeList<[Task, TaskExtra][]>,
+  const listRef = useRef<VariableSizeList<[TaskDisplay, TaskExtra][]>>(
+    undefined as unknown as VariableSizeList<[TaskDisplay, TaskExtra][]>,
   )
   const child = useCallback(
-    ({ index, data, style }: ListChildComponentProps<[Task, TaskExtra][]>) => (
+    ({ index, data, style }: ListChildComponentProps<[TaskDisplay, TaskExtra][]>) => (
       <TaskMenu
         style={style}
         task={data[index][0]}
@@ -435,7 +504,7 @@ export function TaskList() {
     ),
     [param],
   )
-  const itemKey = useCallback<ListItemKeySelector<[Task, TaskExtra][]>>((index, data) => data[index][0].id, [])
+  const itemKey = useCallback<ListItemKeySelector<[TaskDisplay, TaskExtra][]>>((index, data) => data[index][0].id, [])
   const itemSize = useCallback<(index: number) => number>(
     (index) => {
       const same = list[index - 1]?.[0].charId == list[index][0].charId
