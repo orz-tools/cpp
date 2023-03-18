@@ -1,7 +1,8 @@
 import { Alert, Alignment, Button, Menu, MenuDivider, Navbar, NumericInput, Tag } from '@blueprintjs/core'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom, useStore, WritableAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import { groupBy, pick, pickAll, sum } from 'ramda'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useInject } from '../hooks/useContainer'
 import { DataManager, Item, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
@@ -15,6 +16,10 @@ export function ItemQuantityEditor({ item, style }: { item: Item; style?: React.
   const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
   const [input, setInput] = useState(formatter(quantity))
   useEffect(() => setInput(formatter(quantity)), [quantity])
+
+  if (item.key === ITEM_VIRTUAL_EXP) {
+    return <NumericInput value={input} style={style} disabled={true} />
+  }
   return (
     <NumericInput
       value={input}
@@ -77,7 +82,12 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
         <div
           style={{
             textAlign: 'right',
-            opacity: itemListParam.mode == 'all' || itemListParam.mode === 'goal' ? (goal - quantity > 0 ? 1 : 0.4) : 0,
+            opacity:
+              itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+                ? goal > 0 && goal - quantity > 0
+                  ? 1
+                  : 0.4
+                : 0,
           }}
         >
           <span>{goal}</span>
@@ -87,7 +97,7 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
             textAlign: 'right',
             opacity:
               itemListParam.mode == 'all' || itemListParam.mode === 'finished'
-                ? finished - quantity > 0
+                ? finished > 0 && finished - quantity > 0
                   ? 1
                   : 0.4
                 : 0,
@@ -102,7 +112,7 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
             textAlign: 'right',
             opacity:
               itemListParam.mode == 'all' || itemListParam.mode === 'goal'
-                ? goal + goalIndirects - quantity > 0
+                ? goalIndirects > 0 && goal + goalIndirects - quantity > 0
                   ? 1
                   : 0.4
                 : 0,
@@ -115,7 +125,7 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
             textAlign: 'right',
             opacity:
               itemListParam.mode == 'all' || itemListParam.mode === 'finished'
-                ? finished + finishedIndirects - quantity > 0
+                ? finishedIndirects > 0 && finished + finishedIndirects - quantity > 0
                   ? 1
                   : 0.4
                 : 0,
@@ -422,15 +432,54 @@ function AllFinishedValue() {
   )
 }
 
-interface ItemListParam {
-  mode: 'all' | 'goal' | 'finished'
+function HideCompletedButton() {
+  const [param, setParam] = useAtom(itemListParamAtom)
+  return (
+    <Button
+      minimal={true}
+      active={param.hideCompleted}
+      icon={'eye-off'}
+      onClick={() => {
+        setParam((p) => {
+          return { ...p, hideCompleted: !p.hideCompleted }
+        })
+      }}
+    />
+  )
 }
 
-const itemListParamAtom = atom<ItemListParam>({ mode: 'all' })
+interface ItemListParam {
+  mode: 'all' | 'goal' | 'finished'
+  hideCompleted: boolean
+}
+
+const itemListParamStorageAtom = atomWithStorage<ItemListParam>('cpp_item_param', undefined as any)
+const itemListParamAtom: WritableAtom<ItemListParam, [ItemListParam | SetStateAction<ItemListParam>], void> = atom<
+  ItemListParam,
+  [ItemListParam | SetStateAction<ItemListParam>],
+  void
+>(
+  (get) => {
+    const value = Object.assign({}, get(itemListParamStorageAtom) || {})
+    if (!value.mode) value.mode == 'all'
+    if (value.hideCompleted == null) value.hideCompleted = false
+    return value
+  },
+  (get, set, value: ItemListParam | SetStateAction<ItemListParam>) =>
+    set(itemListParamStorageAtom, typeof value === 'function' ? value(get(itemListParamAtom)) : value),
+)
 
 export function ItemList() {
+  const param = useAtomValue(itemListParamAtom)
   const dataManager = useInject(DataManager)
   const itemGroups = useMemo(() => buildItemList(dataManager), [dataManager])
+  const atoms = useInject(UserDataAtomHolder)
+  const store = useStore()
+  const quantities = useAtomValue(atoms.itemQuantities)
+  const goals = useAtomValue(atoms.allGoalTaskRequirements)
+  const finished = useAtomValue(atoms.allFinishedTaskRequirements)
+  const goalIndirects = useAtomValue(atoms.allGoalIndirects)
+  const finishedIndirects = useAtomValue(atoms.allFinishedIndirects)
 
   return (
     <>
@@ -439,13 +488,26 @@ export function ItemList() {
           <ImportButton />
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
+          <HideCompletedButton />
           <AllValue />
           <AllGoalValue />
           <AllFinishedValue />
         </Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} className="cpp-item-menu-master">
-        {itemGroups.map(([key, items]) => {
+        {itemGroups.map(([key, allItems]) => {
+          const items = allItems.filter((x) => {
+            if (!param.hideCompleted) return true
+            switch (param.mode) {
+              case 'goal':
+                return store.get(atoms.itemQuantity(x.key)) < (goals[x.key] || 0) + (goalIndirects[x.key] || 0)
+              case 'finished':
+              case 'all':
+                return store.get(atoms.itemQuantity(x.key)) < (finished[x.key] || 0) + (finishedIndirects[x.key] || 0)
+            }
+          })
+          if (!items.length) return null
+
           return (
             <React.Fragment key={key}>
               <MenuDivider title={CategoryNames[key as Category]} />
