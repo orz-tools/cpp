@@ -57,7 +57,7 @@ export class DataManager {
       exBuilding: DataManager.loadJson<ExcelBuildingData>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/building_data.json',
       ),
-      yituliuValue: DataManager.loadJson<YituliuValue[]>('https://houduan.yituliu.site/file/export/item/value/json'),
+      yituliuValue: DataManager.loadJson<YituliuValue[]>('https://backend.yituliu.site/api/item/export/json'),
     }
     return (await pProps(task)) as any as { [K in keyof typeof task]: Awaited<(typeof task)[K]> }
   }
@@ -369,7 +369,7 @@ export class Item {
       case '3283': // 特种双芯片
         return this.dm.data.items['3282'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
     }
-    return this.dm.raw.yituliuValue.find((x) => x.itemId == this.key)?.itemValueReason
+    return this.dm.raw.yituliuValue.find((x) => x.itemId == this.key)?.itemValueAp
   }
 }
 

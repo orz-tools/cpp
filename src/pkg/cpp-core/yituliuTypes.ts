@@ -1,8 +1,9 @@
 export interface YituliuValue {
-  expCoefficient: number
   itemId: string
+  cardNum: number
   itemName: string
-  itemType: string
-  itemValueGreen: number
-  itemValueReason: number
+  type: string
+  rarity: number
+  itemValue: number
+  itemValueAp: number
 }
