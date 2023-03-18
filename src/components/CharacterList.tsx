@@ -1,8 +1,9 @@
-import { Alignment, Button, Menu, Navbar, Spinner, Tag } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Alignment, Button, ButtonGroup, Menu, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import { ContextMenu2, Popover2 } from '@blueprintjs/popover2'
 import deepEqual from 'deep-equal'
-import { atom, SetStateAction, useAtom, useAtomValue } from 'jotai'
+import { atom, SetStateAction, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+import { uniq } from 'ramda'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList, ListChildComponentProps, ListItemKeySelector } from 'react-window'
@@ -88,11 +89,81 @@ function renderCharacterStatus(
   )
 }
 
+function CharacterContextMenu({ character }: { character: Character }) {
+  const atoms = useInject(UserDataAtomHolder)
+  const setData = useSetAtom(atoms.dataAtom)
+  const [param, setParam] = useAtom(queryParamAtom)
+
+  return (
+    <Menu>
+      {param.mode === ListMode.WithGoal ? (
+        <>
+          <ButtonGroup minimal={true}>
+            <Button
+              icon={'double-chevron-up'}
+              onClick={() => {
+                setData('modify', (d) => {
+                  const index = d.goalOrder.indexOf(character.key)
+                  if (index >= 0) {
+                    d.goalOrder.splice(index, 1)
+                  }
+                  d.goalOrder.unshift(character.key)
+                })
+                setParam((e) => ({ ...e }))
+              }}
+            />
+            <Button
+              icon={'chevron-up'}
+              onClick={() => {
+                setData('modify', (d) => {
+                  const index = d.goalOrder.indexOf(character.key)
+                  if (index >= 1) {
+                    d.goalOrder.splice(index, 1)
+                    d.goalOrder.splice(index - 1, 0, character.key)
+                  }
+                })
+                setParam((e) => ({ ...e }))
+              }}
+            />
+            <Button
+              icon={'chevron-down'}
+              onClick={() => {
+                setData('modify', (d) => {
+                  const index = d.goalOrder.indexOf(character.key)
+                  if (index >= 0 && index < d.goalOrder.length - 1) {
+                    d.goalOrder.splice(index, 1)
+                    d.goalOrder.splice(index + 1, 0, character.key)
+                  }
+                })
+                setParam((e) => ({ ...e }))
+              }}
+            />
+            <Button
+              icon={'double-chevron-down'}
+              onClick={() => {
+                setData('modify', (d) => {
+                  const index = d.goalOrder.indexOf(character.key)
+                  if (index >= 0) {
+                    d.goalOrder.splice(index, 1)
+                  }
+                  d.goalOrder.push(character.key)
+                })
+                setParam((e) => ({ ...e }))
+              }}
+            />
+          </ButtonGroup>
+        </>
+      ) : null}
+    </Menu>
+  )
+}
+
 function CharacterMenu({ character, style }: { character: Character; style?: React.CSSProperties }) {
   const atoms = useInject(UserDataAtomHolder)
   const charId = character.key
   const currentCharacter = useAtomValue(atoms.currentCharacter(charId))
   const goalCharacter = useAtomValue(atoms.goalCharacter(charId))
+  const param = useAtomValue(queryParamAtom)
 
   const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 0)
   const uniX = uniEquips.find((x) => x.raw.typeName2.toUpperCase() == 'X')
@@ -109,31 +180,33 @@ function CharacterMenu({ character, style }: { character: Character; style?: Rea
 
   return (
     <li role="none" className="cpp-char-menu-master" style={style}>
-      <a role="menuitem" tabIndex={0} className="bp4-menu-item cpp-char-menu-char">
-        <>
-          <span className="bp4-menu-item-icon">
-            <CachedImg
-              src={character.avatar}
-              width={'100%'}
-              height={'100%'}
-              alt={character.key}
-              title={character.key}
-            />
-          </span>
-          <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp4-text-overflow-ellipsis" title={character.raw.name}>
-              {character.raw.name}
+      <ContextMenu2 content={<CharacterContextMenu character={character} />}>
+        <a role="menuitem" tabIndex={0} className="bp4-menu-item cpp-char-menu-char">
+          <>
+            <span className="bp4-menu-item-icon">
+              <CachedImg
+                src={character.avatar}
+                width={'100%'}
+                height={'100%'}
+                alt={character.key}
+                title={character.key}
+              />
+            </span>
+            <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <div className="bp4-text-overflow-ellipsis" title={character.raw.name}>
+                {character.raw.name}
+              </div>
+              <div
+                className="bp4-text-overflow-ellipsis"
+                title={character.raw.appellation}
+                style={{ fontWeight: 'normal', opacity: 0.75 }}
+              >
+                {character.raw.appellation}
+              </div>
             </div>
-            <div
-              className="bp4-text-overflow-ellipsis"
-              title={character.raw.appellation}
-              style={{ fontWeight: 'normal', opacity: 0.75 }}
-            >
-              {character.raw.appellation}
-            </div>
-          </div>
-        </>
-      </a>
+          </>
+        </a>
+      </ContextMenu2>
       <Popover2
         usePortal={true}
         popoverClassName={'cpp-popover2'}
@@ -194,6 +267,7 @@ async function listCharactersQuery(container: Container, param: ListCharactersQu
   const ud = store.get(atoms.rootAtom)
 
   const matcher = buildMatcher(param.query)
+  const realOrder = store.get(atoms.goalOrder)
 
   return Object.values(dm.data.characters)
     .filter((x) => {
@@ -212,6 +286,11 @@ async function listCharactersQuery(container: Container, param: ListCharactersQu
       return true
     })
     .sort((a, b) => {
+      if (param.mode == ListMode.WithGoal) {
+        const aa = realOrder.indexOf(a.key)
+        const bb = realOrder.indexOf(b.key)
+        return aa - bb
+      }
       // const goalA = +!!ud.goal[a.key]
       // const goalB = +!!ud.goal[b.key]
 
@@ -326,13 +405,6 @@ export function CharacterList() {
   const refresh = () => {
     send(container, param)
   }
-
-  useEffect(
-    () => refresh(),
-    [
-      /* intended */
-    ],
-  )
 
   useEffect(() => refresh(), [param])
 

@@ -3,7 +3,7 @@ import produce, { Draft } from 'immer'
 import { Atom, atom, PrimitiveAtom, WritableAtom } from 'jotai'
 import { atomFamily } from 'jotai/utils'
 import { AtomFamily } from 'jotai/vanilla/utils/atomFamily'
-import { clone, sum, T } from 'ramda'
+import { clone, sum, uniq } from 'ramda'
 import { SetStateAction } from 'react'
 import { Constructor, Inject } from '../container'
 import { txatom } from '../txatom'
@@ -44,6 +44,7 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
           value = newUserData()
         }
         if (!value.items) value.items = {}
+        if (!value.goalOrder) value.goalOrder = Object.keys(value.goal)
         return value
       },
       (get, set, value) =>
@@ -61,14 +62,17 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
   const doRewrite = (charId: string, data: Draft<UserData>) => {
     const [c, g] = rewriteCharacters(dm, charId, data.current[charId], data.goal[charId])
     if (c) {
-      data.current[charId]
+      data.current[charId] = c
     } else {
       delete data.current[charId]
     }
+    const goalIndex = data.goalOrder.indexOf(charId)
     if (g) {
       data.goal[charId] = g
+      if (goalIndex < 0) data.goalOrder.push(charId)
     } else {
       delete data.goal[charId]
+      if (goalIndex >= 0) data.goalOrder.splice(goalIndex, 1)
     }
   }
 
@@ -241,9 +245,17 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
     `allCharacterIds`,
   )
 
+  const goalOrder = withDebugLabel(
+    atom((get) => {
+      const data = get(dataAtom)
+      return uniq([...data.goalOrder, ...Object.keys(data.goal)])
+    }),
+    'goalOrder',
+  )
+
   const allGoalTasks = withDebugLabel(
     atom((get) => {
-      return Object.keys(get(goalCharacters)).flatMap((x) => get(goalTasks(x)))
+      return get(goalOrder).flatMap((x) => get(goalTasks(x)))
     }),
     `allGoalTasks`,
   )
@@ -294,6 +306,7 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
   return {
     ...tx,
     rootAtom,
+    goalOrder,
     itemQuantities,
     itemQuantity,
     currentCharacter,
@@ -450,6 +463,7 @@ export interface UserData {
   current: Record<string, CharacterStatus>
   goal: Record<string, CharacterStatus>
   items: Record<string, number>
+  goalOrder: string[]
 }
 
 export interface CharacterStatus {
@@ -470,6 +484,7 @@ export function newUserData(): UserData {
     current: {},
     goal: {},
     items: {},
+    goalOrder: [],
   }
 }
 

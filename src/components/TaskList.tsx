@@ -355,6 +355,9 @@ export function TaskMenu({
               <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
                 <div className="bp4-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
                   {character.raw.name}
+                  <span style={{ paddingLeft: '0.5em', fontWeight: 'normal', opacity: 0.75 }}>
+                    {character.raw.appellation}
+                  </span>
                 </div>
               </div>
             </div>

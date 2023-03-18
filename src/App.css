@@ -114,11 +114,11 @@ body {
   flex-direction: row;
 }
 
-.cpp-char-menu-master > a {
+.cpp-char-menu-master > * {
   flex: 1;
 }
 
-.cpp-char-menu-master > a:first-child {
+.cpp-char-menu-master > *:first-child {
   flex-shrink: 1;
   overflow: hidden;
 }
