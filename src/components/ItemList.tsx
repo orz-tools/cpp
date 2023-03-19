@@ -367,7 +367,7 @@ export function ItemMenu({ item }: { item: Item }) {
   )
 }
 
-enum Category {
+export enum Category {
   Gold = '0',
   Rarity4 = '1',
   Rarity3 = '2',
@@ -381,7 +381,7 @@ enum Category {
   Unknown = '9',
 }
 
-const CategoryNames = {
+export const CategoryNames = {
   [Category.Gold]: '钱和经验',
   [Category.Rarity4]: '金材料',
   [Category.Rarity3]: '紫材料',
@@ -450,7 +450,7 @@ const byCategory = groupBy<Item, Category>((i) => {
   return Category.Unknown
 })
 
-function buildItemList(dm: DataManager) {
+export function buildItemList(dm: DataManager) {
   return Object.entries(
     byCategory(
       Object.values(dm.data.items)

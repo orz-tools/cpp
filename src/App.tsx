@@ -6,6 +6,7 @@ import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton } from './components/Config'
 import { ItemList } from './components/ItemList'
+import { SynthesisList } from './components/SynthesisList'
 import { TaskList } from './components/TaskList'
 import { ValueOptionButton } from './components/Value'
 import { useInject } from './hooks/useContainer'
@@ -86,6 +87,16 @@ function App() {
           }}
         >
           <TaskList />
+        </section>
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
+            width: '250px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <SynthesisList />
         </section>
         <section
           className={Classes.ELEVATION_1}

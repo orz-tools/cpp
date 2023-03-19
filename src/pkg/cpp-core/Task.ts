@@ -21,7 +21,7 @@ export enum TaskCostStatus {
 export interface TaskExtra {
   status: TaskStatus
   costStatus: TaskCostStatus[]
-  costConsumed: number[]
+  quantityCanConsume: number[]
   costSynthesised: number[]
   valueTotal: number[]
   valueFulfilled: number[]
@@ -30,7 +30,7 @@ export interface TaskExtra {
 export const emptyTaskExtra: TaskExtra = {
   status: TaskStatus.AllUnmet,
   costStatus: [],
-  costConsumed: [],
+  quantityCanConsume: [],
   costSynthesised: [],
   valueTotal: [],
   valueFulfilled: [],
@@ -54,13 +54,13 @@ export function generateTaskExtra(
     result: boolean | undefined
     newQuantities?: Record<string, number>
     costStatus: TaskCostStatus[]
-    costConsumed: number[]
+    quantityCanConsume: number[]
     costSynthesised: number[]
     valueTotal: number[]
     valueFulfilled: number[]
   } => {
     const costStatus: TaskCostStatus[] = new Array(inputCosts.length).fill(TaskCostStatus.Completable)
-    const costConsumed: number[] = new Array(inputCosts.length).fill(0)
+    const quantityCanConsume: number[] = new Array(inputCosts.length).fill(0)
     const costSynthesised: number[] = new Array(inputCosts.length).fill(0)
     const valueTotal: number[] = new Array(inputCosts.length).fill(0)
     const valueFulfilled: number[] = new Array(inputCosts.length).fill(0)
@@ -77,7 +77,7 @@ export function generateTaskExtra(
       const quantity = newQuantities[cost.itemId] || 0
       if (quantity >= cost.quantity) {
         if (cost.root) {
-          costConsumed[cost.source] += quantity
+          quantityCanConsume[cost.source] += quantity
         }
         valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * cost.quantity
         valueFulfilled[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * cost.quantity
@@ -86,7 +86,7 @@ export function generateTaskExtra(
         const left = cost.quantity - quantity
         if (quantity > 0) {
           if (cost.root) {
-            costConsumed[cost.source] += quantity
+            quantityCanConsume[cost.source] += quantity
           }
           valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * quantity
           valueFulfilled[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * quantity
@@ -119,7 +119,7 @@ export function generateTaskExtra(
           }
         } else if (cost.itemId == ITEM_VIRTUAL_EXP) {
           if (cost.root) {
-            costConsumed[cost.source] += sum(
+            quantityCanConsume[cost.source] += sum(
               Object.values(dm.raw.exItems.expItems).map((x) => (newQuantities[x.id] || 0) * x.gainExp),
             )
           }
@@ -155,7 +155,7 @@ export function generateTaskExtra(
       result: needSynthesis,
       newQuantities: newQuantities,
       costStatus,
-      costConsumed,
+      quantityCanConsume,
       costSynthesised,
       valueFulfilled,
       valueTotal,
@@ -168,7 +168,7 @@ export function generateTaskExtra(
     const taskExtra: TaskExtra = {
       status: TaskStatus.AllUnmet,
       costStatus: emptyTaskExtra.costStatus,
-      costConsumed: emptyTaskExtra.costConsumed,
+      quantityCanConsume: emptyTaskExtra.quantityCanConsume,
       costSynthesised: emptyTaskExtra.costSynthesised,
       valueFulfilled: emptyTaskExtra.valueFulfilled,
       valueTotal: emptyTaskExtra.valueTotal,
@@ -178,10 +178,10 @@ export function generateTaskExtra(
     if (task.type._ == 'join') {
       taskExtra.status = TaskStatus.Manually
     } else {
-      const { result, newQuantities, costStatus, costConsumed, costSynthesised, valueFulfilled, valueTotal } =
+      const { result, newQuantities, costStatus, quantityCanConsume, costSynthesised, valueFulfilled, valueTotal } =
         consumeItems(task.requires)
       taskExtra.costStatus = costStatus
-      taskExtra.costConsumed = costConsumed
+      taskExtra.quantityCanConsume = quantityCanConsume
       taskExtra.costSynthesised = costSynthesised
       taskExtra.valueFulfilled = valueFulfilled
       taskExtra.valueTotal = valueTotal

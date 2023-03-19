@@ -152,7 +152,7 @@ export function TaskMenu({
       stack={x}
       style={hideCosts ? {} : { marginLeft: 22 }}
       status={extra.costStatus[i]}
-      consumed={extra.costConsumed[i]}
+      consumed={extra.quantityCanConsume[i]}
       synthesised={extra.costSynthesised[i]}
     />
   ))

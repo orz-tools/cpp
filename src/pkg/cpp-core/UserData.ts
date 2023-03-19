@@ -708,7 +708,7 @@ function generateTasks(
   return tasks
 }
 
-function generateIndirects(
+export function generateIndirects(
   dm: DataManager,
   inputRequirements: Record<string, number>,
   inputQuantities: Record<string, number>,
