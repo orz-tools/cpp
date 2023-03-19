@@ -194,7 +194,7 @@ export class DataManager {
       id: `shop-32001`,
       itemId: '32001',
       quantity: 1,
-      costs: [{ itemId: '4006', quantity: 20 }],
+      costs: [{ itemId: '4006', quantity: 90 }],
     })
 
     // for (const formula of formulas) {
