@@ -160,7 +160,7 @@ export function ValueTagProgressBar({
         paddingLeft: 4,
         paddingRight: 4,
         opacity: hasValue(value) ? 1 : 0.25,
-        backgroundImage: `linear-gradient(to right, ${color}, ${color} ${percent.toFixed(
+        backgroundImage: `linear-gradient(to left, ${color}, ${color} ${percent.toFixed(
           2,
         )}%, transparent ${percent.toFixed(2)}%, transparent)`,
       }}

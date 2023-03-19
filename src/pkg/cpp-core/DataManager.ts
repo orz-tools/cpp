@@ -368,6 +368,10 @@ export class Item {
         return this.dm.data.items['3272'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
       case '3283': // 特种双芯片
         return this.dm.data.items['3282'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
+      default:
+        if (this.dm.raw.exItems.expItems[this.key]) {
+          return this.dm.raw.yituliuValue.find((x) => x.itemId == this.key)?.itemValueAp! / 0.625
+        }
     }
     return this.dm.raw.yituliuValue.find((x) => x.itemId == this.key)?.itemValueAp
   }
