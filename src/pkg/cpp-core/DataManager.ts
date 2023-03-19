@@ -175,6 +175,7 @@ export class DataManager {
           ...(i.goldCost > 0 ? [{ itemId: ITEM_GOLD, quantity: i.goldCost }] : []),
         ],
         tags: [],
+        apCost: i.apCost / 360000,
       }
       if (this.raw.exItems.items[i.itemId].rarity === 2 && i.formulaType === 'F_EVOLVE') {
         formula.tags.push(FormulaTag.WorkshopRarity2)
@@ -228,6 +229,7 @@ interface Formula {
     quantity: number
   }[]
   tags: FormulaTag[]
+  apCost?: number
 }
 
 export enum FormulaTag {

@@ -1,4 +1,17 @@
-import { Alert, Alignment, Button, Menu, MenuDivider, Navbar, NumericInput, Tag } from '@blueprintjs/core'
+import {
+  Alert,
+  Alignment,
+  Button,
+  ButtonGroup,
+  Icon,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  Navbar,
+  NumericInput,
+  Tag,
+} from '@blueprintjs/core'
+import { Popover2 } from '@blueprintjs/popover2'
 import { atom, useAtom, useAtomValue, useSetAtom, useStore, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, pick, sum, uniq } from 'ramda'
@@ -39,6 +52,102 @@ export function ItemQuantityEditor({ item, style }: { item: Item; style?: React.
   )
 }
 
+export function ItemSynthesisPopover({ item }: { item: Item }) {
+  const dm = useInject(DataManager)
+  const atoms = useInject(UserDataAtomHolder)
+  const quantities = useAtomValue(atoms.itemQuantities)
+  const setData = useSetAtom(atoms.dataAtom)
+  const formula = useMemo(() => dm.data.formulas.find((x) => x.itemId == item.key), [dm, item.key])
+  const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
+  const [times, setTimes] = useState(1)
+
+  if (!formula)
+    return (
+      <>
+        无法合成{item.raw.name}，<i>谁让你来的？</i>
+      </>
+    )
+
+  const synTimes = [24, 12, 6, 3, 1]
+  const maxTimes = Math.max(
+    0,
+    Math.min(...formula.costs.map((x) => Math.floor((quantities[x.itemId] || 0) / x.quantity))),
+  )
+  if (maxTimes > 0) {
+    while (synTimes[0] > maxTimes) {
+      synTimes.shift()
+    }
+    if (synTimes[0] !== maxTimes && maxTimes < 24) {
+      synTimes.unshift(maxTimes)
+    }
+  } else {
+    synTimes.splice(0, synTimes.length - 1)
+  }
+
+  return (
+    <Menu style={{ width: '250px' }}>
+      <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        {synTimes.map((t) => {
+          return (
+            <Button
+              key={t}
+              disabled={t > maxTimes}
+              text={
+                <span>
+                  <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5, margin: 0 }} />
+                  {t}
+                </span>
+              }
+              style={{ opacity: formula.apCost && t > 24 / formula.apCost ? 0.5 : 1 }}
+              onMouseEnter={() => setTimes(t)}
+              onMouseLeave={() => setTimes(1)}
+              onClick={() => {
+                setData('modify', (d) => {
+                  d.items[item.key] = (d.items[item.key] || 0) + t * formula.quantity
+                  formula.costs.forEach((cost) => {
+                    d.items[cost.itemId] = (d.items[cost.itemId] || 0) - t * cost.quantity
+                  })
+                })
+              }}
+            />
+          )
+        })}
+      </ButtonGroup>
+      <MenuDivider />
+      <MenuItem
+        icon={<CachedImg src={item.icon} width={'20'} height={'20'} alt={item.key} title={item.key} />}
+        text={
+          <>
+            <span>{item.raw.name}</span>
+            <span style={{ float: 'right' }}>
+              <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5 }} />
+              {times * formula.quantity}/{quantity}
+            </span>
+          </>
+        }
+      />
+      <MenuDivider title={`制作 ${times} 次所需`} />
+      {formula.costs.map((cost) => {
+        const citem = dm.data.items[cost.itemId]
+        return (
+          <MenuItem
+            key={cost.itemId}
+            icon={<CachedImg src={citem.icon} width={'20'} height={'20'} alt={citem.key} title={citem.key} />}
+            text={
+              <>
+                <span>{citem.raw.name}</span>
+                <span style={{ float: 'right' }}>
+                  {times * cost.quantity}/{quantities[cost.itemId] || 0}
+                </span>
+              </>
+            }
+          />
+        )
+      })}
+    </Menu>
+  )
+}
+
 export function ItemTaskRequirements({ item }: { item: Item }) {
   const dm = useInject(DataManager)
   const formula = useMemo(() => dm.data.formulas.find((x) => x.itemId == item.key), [dm, item.key])
@@ -71,26 +180,26 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
             textAlign: 'right',
             opacity:
               itemListParam.mode == 'all' || itemListParam.mode === 'goal'
-                ? goal + goalIndirects - quantity - synable > 0
+                ? goal + goalIndirects - quantity - Math.min(synable, goal + goalIndirects) > 0
                   ? 1
                   : 0.4
                 : 0,
           }}
         >
-          <span>{goal + goalIndirects - quantity - synable}</span>
+          <span>{goal + goalIndirects - quantity - Math.min(synable, goal + goalIndirects)}</span>
         </div>
         <div
           style={{
             textAlign: 'right',
             opacity:
               itemListParam.mode == 'all' || itemListParam.mode === 'finished'
-                ? finished + finishedIndirects - quantity - synable > 0
+                ? finished + finishedIndirects - quantity - Math.min(synable, finished + finishedIndirects) > 0
                   ? 1
                   : 0.4
                 : 0,
           }}
         >
-          <span>{finished + finishedIndirects - quantity - synable}</span>
+          <span>{finished + finishedIndirects - quantity - Math.min(synable, finished + finishedIndirects)}</span>
         </div>
       </div>
       <a
@@ -99,34 +208,36 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
         className="bp4-menu-item cpp-item-menu"
         style={{ lineHeight: '21px', padding: 0, fontWeight: 'normal', visibility: !formula ? 'hidden' : undefined }}
       >
-        <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="可合成">
-          <div
-            style={{
-              textAlign: 'right',
-              opacity:
-                itemListParam.mode == 'all' || itemListParam.mode === 'goal'
-                  ? canSyn && synableReal > 0
-                    ? 1
-                    : 0.4
-                  : 0,
-            }}
-          >
-            <span>{synableReal}</span>
+        <Popover2 content={<ItemSynthesisPopover item={item} />} usePortal={true} placement={'bottom-end'}>
+          <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="可合成">
+            <div
+              style={{
+                textAlign: 'right',
+                opacity:
+                  itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+                    ? canSyn && Math.min(synableReal, goal + goalIndirects) > 0
+                      ? 1
+                      : 0.4
+                    : 0,
+              }}
+            >
+              <span>{Math.min(synableReal, goal + goalIndirects)}</span>
+            </div>
+            <div
+              style={{
+                textAlign: 'right',
+                opacity:
+                  itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+                    ? canSyn && Math.min(synableReal, finished + finishedIndirects) > 0
+                      ? 1
+                      : 0.4
+                    : 0,
+              }}
+            >
+              <span>{Math.min(synableReal, finished + finishedIndirects)}</span>
+            </div>
           </div>
-          <div
-            style={{
-              textAlign: 'right',
-              opacity:
-                itemListParam.mode == 'all' || itemListParam.mode === 'finished'
-                  ? canSyn && synableReal > 0
-                    ? 1
-                    : 0.4
-                  : 0,
-            }}
-          >
-            <span>{synableReal}</span>
-          </div>
-        </div>
+        </Popover2>
       </a>
       <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="还需">
         <div
