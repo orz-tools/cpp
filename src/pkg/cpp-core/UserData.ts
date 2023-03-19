@@ -8,6 +8,7 @@ import { SetStateAction } from 'react'
 import { Constructor, Inject } from '../container'
 import { txatom } from '../txatom'
 import { Character, DataManager, FormulaTag, ITEM_GOLD, ITEM_VIRTUAL_EXP } from './DataManager'
+import { generateTaskExtra, sortTask } from './Task'
 
 function withDebugLabel<T extends Atom<any>>(t: T, label?: string): T {
   t.debugLabel = label
@@ -323,6 +324,20 @@ function buildAtoms(
     'allFinishedIndirects',
   )
 
+  const sortedGoalTasks = withDebugLabel(
+    atom((get) => {
+      return sortTask(get(allGoalTasks))
+    }),
+    `sortedGoalTasks`,
+  )
+
+  const goalTasksWithExtra = withDebugLabel(
+    atom((get) => {
+      return generateTaskExtra(dm, get(sortedGoalTasks), get(forbiddenFormulaTagsAtom), get(itemQuantities))
+    }),
+    `goalTasksWithExtra`,
+  )
+
   return {
     ...tx,
     rootAtom,
@@ -347,6 +362,8 @@ function buildAtoms(
     allFinishedIndirects,
     allGoalIndirectsDetails,
     allFinishedIndirectsDetails,
+    sortedGoalTasks,
+    goalTasksWithExtra,
   }
 }
 

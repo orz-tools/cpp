@@ -1,19 +1,18 @@
-import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar, Spinner } from '@blueprintjs/core'
+import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
 import { ContextMenu2, MenuItem2 } from '@blueprintjs/popover2'
-import { atom, useAtom, useAtomValue, useStore, WritableAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { clone, intersection, sortBy, sum } from 'ramda'
+import { sortBy, sum } from 'ramda'
 import React, { SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ListChildComponentProps, ListItemKeySelector, VariableSizeList } from 'react-window'
-import { useContainer, useInject } from '../hooks/useContainer'
-import { useRequest } from '../hooks/useRequest'
-import { Container } from '../pkg/container'
-import { Character, DataManager, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
-import { Task as TaskDisplay, TaskType, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
+import { useInject } from '../hooks/useContainer'
+import { Character, DataManager } from '../pkg/cpp-core/DataManager'
+import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
+import { Task, TaskType, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
 import { CachedImg } from './Icons'
-import { ValueTag, ValueTagProgressBar } from './Value'
+import { ValueTagProgressBar } from './Value'
 
 interface TaskListQueryParam {
   hideCosts: boolean
@@ -34,223 +33,6 @@ const queryParamAtom: WritableAtom<
   (get, set, value: TaskListQueryParam | SetStateAction<TaskListQueryParam>) =>
     set(queryParamStorageAtom, typeof value === 'function' ? value(get(queryParamAtom)) : value),
 )
-
-enum TaskStatus {
-  Completable,
-  Synthesizable,
-  DependencyUnmet,
-  AllUnmet,
-  Manually,
-}
-
-enum TaskCostStatus {
-  Completable,
-  Synthesizable,
-  AllUnmet,
-}
-
-interface TaskExtra {
-  status: TaskStatus
-  costStatus: TaskCostStatus[]
-  costConsumed: number[]
-  costSynthesised: number[]
-  valueTotal: number[]
-  valueFulfilled: number[]
-}
-const emptyTaskExtra: TaskExtra = {
-  status: TaskStatus.AllUnmet,
-  costStatus: [],
-  costConsumed: [],
-  costSynthesised: [],
-  valueTotal: [],
-  valueFulfilled: [],
-}
-
-async function taskListQuery(
-  container: Container,
-  param: TaskListQueryParam,
-): Promise<{ result: [TaskDisplay, TaskExtra][]; hideCosts: boolean }> {
-  const dm = container.get(DataManager)
-  const store = container.get(Store).store
-  const atoms = container.get(UserDataAtomHolder)
-  const tasks = store.get(atoms.allGoalTasks)
-  const forbiddenFormulaTags = store.get(atoms.forbiddenFormulaTagsAtom)
-  let quantities = clone(store.get(atoms.itemQuantities))
-
-  const consumeItems = (
-    inputCosts: { itemId: string; quantity: number }[],
-  ): {
-    result: boolean | undefined
-    newQuantities?: Record<string, number>
-    costStatus: TaskCostStatus[]
-    costConsumed: number[]
-    costSynthesised: number[]
-    valueTotal: number[]
-    valueFulfilled: number[]
-  } => {
-    const costStatus: TaskCostStatus[] = new Array(inputCosts.length).fill(TaskCostStatus.Completable)
-    const costConsumed: number[] = new Array(inputCosts.length).fill(0)
-    const costSynthesised: number[] = new Array(inputCosts.length).fill(0)
-    const valueTotal: number[] = new Array(inputCosts.length).fill(0)
-    const valueFulfilled: number[] = new Array(inputCosts.length).fill(0)
-    let needSynthesis: boolean | undefined = false
-    const newQuantities = clone(quantities)
-    const queue: { itemId: string; quantity: number; source: number; root: boolean }[] = inputCosts.map((x, i) => ({
-      ...x,
-      source: i,
-      root: true,
-    }))
-    while (queue.length > 0) {
-      const cost = queue.shift()!
-      // if (cost.itemId !== ITEM_VIRTUAL_EXP) {
-      const quantity = newQuantities[cost.itemId] || 0
-      if (quantity >= cost.quantity) {
-        if (cost.root) {
-          costConsumed[cost.source] += quantity
-        }
-        valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * cost.quantity
-        valueFulfilled[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * cost.quantity
-        newQuantities[cost.itemId] = quantity - cost.quantity
-      } else {
-        const left = cost.quantity - quantity
-        if (quantity > 0) {
-          if (cost.root) {
-            costConsumed[cost.source] += quantity
-          }
-          valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * quantity
-          valueFulfilled[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * quantity
-          newQuantities[cost.itemId] = 0
-        }
-
-        const formula = dm.data.formulas.find(
-          (x) => x.itemId == cost.itemId && intersection(forbiddenFormulaTags || [], x.tags || []).length === 0,
-        )
-        if (formula) {
-          if (cost.root) {
-            costSynthesised[cost.source] += left
-          }
-          if (needSynthesis === false) {
-            needSynthesis = true
-          }
-          if (costStatus[cost.source] === TaskCostStatus.Completable) {
-            costStatus[cost.source] = TaskCostStatus.Synthesizable
-          }
-          const times = Math.ceil(left / formula.quantity)
-          const extra = times * formula.quantity - left
-          newQuantities[cost.itemId] = (newQuantities[cost.itemId] || 0) + extra
-          for (const formulaCost of formula.costs) {
-            queue.push({
-              itemId: formulaCost.itemId,
-              quantity: formulaCost.quantity * times,
-              source: cost.source,
-              root: false,
-            })
-          }
-        } else if (cost.itemId == ITEM_VIRTUAL_EXP) {
-          if (cost.root) {
-            costConsumed[cost.source] += sum(
-              Object.values(dm.raw.exItems.expItems).map((x) => (newQuantities[x.id] || 0) * x.gainExp),
-            )
-          }
-          let exp = cost.quantity
-          valueTotal[cost.source] += (dm.data.items[ITEM_VIRTUAL_EXP].valueAsAp || 0) * exp
-          const expItems = Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)
-          for (const expItem of expItems) {
-            if (!newQuantities[expItem.id]) continue
-            const need = Math.min(newQuantities[expItem.id], Math.floor(exp / expItem.gainExp))
-            exp -= need * expItem.gainExp
-            valueFulfilled[cost.source] += (dm.data.items[expItem.id].valueAsAp || 0) * need
-            newQuantities[expItem.id] = newQuantities[expItem.id] - need
-          }
-          const smallestExpItemWithQuantity = expItems.reverse().find((x) => newQuantities[x.id] > 0)
-          if (exp === 0) {
-          } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity.gainExp) {
-            exp = 0
-            valueFulfilled[cost.source] += (dm.data.items[smallestExpItemWithQuantity.id].valueAsAp || 0) * 1
-            newQuantities[smallestExpItemWithQuantity.id] -= 1
-          } else {
-            needSynthesis = undefined
-            costStatus[cost.source] = TaskCostStatus.AllUnmet
-          }
-        } else {
-          valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * left
-          // continue for task cost status
-          needSynthesis = undefined
-          costStatus[cost.source] = TaskCostStatus.AllUnmet
-        }
-      }
-    }
-    return {
-      result: needSynthesis,
-      newQuantities: newQuantities,
-      costStatus,
-      costConsumed,
-      costSynthesised,
-      valueFulfilled,
-      valueTotal,
-    }
-  }
-
-  const sortedTasks = tasks
-  const map = new Map<TaskDisplay, TaskExtra>()
-  const result: [TaskDisplay, TaskExtra][] = []
-  for (const task of sortedTasks) {
-    const taskExtra: TaskExtra = {
-      status: TaskStatus.AllUnmet,
-      costStatus: emptyTaskExtra.costStatus,
-      costConsumed: emptyTaskExtra.costConsumed,
-      costSynthesised: emptyTaskExtra.costSynthesised,
-      valueFulfilled: emptyTaskExtra.valueFulfilled,
-      valueTotal: emptyTaskExtra.valueTotal,
-    }
-    map.set(task, taskExtra)
-    result.push([task, taskExtra])
-    if (task.type._ == 'join') {
-      taskExtra.status = TaskStatus.Manually
-    } else {
-      const { result, newQuantities, costStatus, costConsumed, costSynthesised, valueFulfilled, valueTotal } =
-        consumeItems(task.requires)
-      taskExtra.costStatus = costStatus
-      taskExtra.costConsumed = costConsumed
-      taskExtra.costSynthesised = costSynthesised
-      taskExtra.valueFulfilled = valueFulfilled
-      taskExtra.valueTotal = valueTotal
-      quantities = newQuantities!
-      if (result == null) {
-        taskExtra.status = TaskStatus.AllUnmet
-      } else {
-        if (result) {
-          taskExtra.status = TaskStatus.Synthesizable
-        } else {
-          taskExtra.status = TaskStatus.Completable
-        }
-
-        const dependencyUnmet = !task.depends.every((x) => {
-          const tx = map.get(x)
-          if (!tx) return false
-          switch (tx.status) {
-            case TaskStatus.AllUnmet:
-              return false
-            case TaskStatus.Completable:
-              return true
-            case TaskStatus.DependencyUnmet:
-              return false
-            case TaskStatus.Synthesizable:
-              return true
-            case TaskStatus.Manually:
-              return false
-          }
-        })
-
-        if (dependencyUnmet) {
-          taskExtra.status = TaskStatus.DependencyUnmet
-        }
-      }
-    }
-  }
-
-  return { result: tasks.map((x) => [x, map.get(x)!]), hideCosts: param.hideCosts }
-}
 
 function TaskDisplay({ type, character }: { type: TaskType; character: Character }) {
   switch (type._) {
@@ -280,7 +62,7 @@ function throwBad(p: never): never {
   throw new Error(`Missing switch coverage: ${p}`)
 }
 
-function TaskContextMenu({ task, extra }: { task: TaskDisplay; extra: TaskExtra }) {
+function TaskContextMenu({ task, extra }: { task: Task; extra: TaskExtra }) {
   const atoms = useInject(UserDataAtomHolder)
   const store = useInject(Store).store
   const consumeCost = () => {
@@ -345,7 +127,7 @@ export function TaskMenu({
   nextSame,
   hideCosts,
 }: {
-  task: TaskDisplay
+  task: Task
   extra: TaskExtra
   style?: React.CSSProperties
   same?: boolean
@@ -457,8 +239,8 @@ function ItemStack({
   consumed,
   synthesised,
 }: {
-  task: TaskDisplay
-  stack: TaskDisplay['requires'][0]
+  task: Task
+  stack: Task['requires'][0]
   style?: React.CSSProperties
   status: TaskCostStatus
   consumed: number
@@ -514,44 +296,18 @@ function HideCostsButton() {
   )
 }
 
-const emptyList: [TaskDisplay, TaskExtra][] = []
+const emptyList: [Task, TaskExtra][] = []
 export function TaskList() {
+  const atoms = useInject(UserDataAtomHolder)
   const param = useAtomValue(queryParamAtom)
 
-  const container = useContainer()
-  const { send, response, loading } = useRequest(taskListQuery)
-
-  const refresh = () => {
-    send(container, param)
-  }
-
-  useEffect(
-    () => refresh(),
-    [
-      /* intended */
-    ],
-  )
-
-  useEffect(() => refresh(), [param])
-
-  const atoms = useInject(UserDataAtomHolder)
-  useEffect(() => {
-    refresh()
-  }, [
-    send,
-    param,
-    useAtomValue(atoms.allGoalTasks),
-    useAtomValue(atoms.itemQuantities),
-    useAtomValue(atoms.forbiddenFormulaTagsAtom),
-  ])
-
-  const hideCosts = response?.hideCosts || false
-  const list = response?.result || emptyList
-  const listRef = useRef<VariableSizeList<[TaskDisplay, TaskExtra][]>>(
-    undefined as unknown as VariableSizeList<[TaskDisplay, TaskExtra][]>,
+  const hideCosts = param.hideCosts || false
+  const list = useAtomValue(atoms.goalTasksWithExtra)
+  const listRef = useRef<VariableSizeList<[Task, TaskExtra][]>>(
+    undefined as unknown as VariableSizeList<[Task, TaskExtra][]>,
   )
   const child = useCallback(
-    ({ index, data, style }: ListChildComponentProps<[TaskDisplay, TaskExtra][]>) => (
+    ({ index, data, style }: ListChildComponentProps<[Task, TaskExtra][]>) => (
       <TaskMenu
         style={style}
         task={data[index][0]}
@@ -563,7 +319,7 @@ export function TaskList() {
     ),
     [param],
   )
-  const itemKey = useCallback<ListItemKeySelector<[TaskDisplay, TaskExtra][]>>((index, data) => data[index][0].id, [])
+  const itemKey = useCallback<ListItemKeySelector<[Task, TaskExtra][]>>((index, data) => data[index][0].id, [])
   const itemSize = useCallback<(index: number) => number>(
     (index) => {
       const same = list[index - 1]?.[0].charId == list[index][0].charId
@@ -578,19 +334,12 @@ export function TaskList() {
   useEffect(() => {
     if (!listRef.current) return
     listRef.current.resetAfterIndex(0)
-  }, [list])
+  }, [list, param])
 
   return (
     <>
       <Navbar>
-        <Navbar.Group align={Alignment.RIGHT}>
-          <Button
-            icon={loading ? <Spinner size={16} /> : 'refresh'}
-            minimal={true}
-            disabled={loading}
-            onClick={refresh}
-          />
-        </Navbar.Group>
+        <Navbar.Group align={Alignment.RIGHT}></Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
           <HideCostsButton />
         </Navbar.Group>
