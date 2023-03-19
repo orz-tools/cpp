@@ -6,6 +6,7 @@ import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ItemList } from './components/ItemList'
 import { TaskList } from './components/TaskList'
+import { ValueOptionButton } from './components/Value'
 import { useInject } from './hooks/useContainer'
 import { DataManager } from './pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from './pkg/cpp-core/UserData'
@@ -50,6 +51,7 @@ function App() {
           <Navbar.Divider />
           <UndoButtons />
           <Navbar.Divider />
+          <ValueOptionButton />
         </Navbar.Group>
       </Navbar>
       <div className="App">
@@ -66,7 +68,7 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '580px',
+            width: '620px',
             display: 'flex',
             flexDirection: 'column',
           }}

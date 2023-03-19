@@ -1,13 +1,14 @@
 import { Alert, Alignment, Button, Menu, MenuDivider, Navbar, NumericInput, Tag } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue, useSetAtom, useStore, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { groupBy, head, map, pick, pluck, sum, tail, uniq } from 'ramda'
+import { groupBy, map, pick, sum, uniq } from 'ramda'
 import React, { SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useInject } from '../hooks/useContainer'
 import { DataManager, Item, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
 import { CachedImg } from './Icons'
+import { ValueTag, ValueTagProgressBar } from './Value'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
@@ -156,7 +157,7 @@ export function ItemMenu({ item }: { item: Item }) {
               {item.raw.name}
             </div>
             <div className="bp4-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
-              {item.valueAsApString ? `≈AP ${item.valueAsApString}` : ''}
+              <ValueTag value={item.valueAsAp} minimal={true} single={true} />
             </div>
           </div>
         </>
@@ -373,7 +374,7 @@ function AllValue() {
       return value * v
     }),
   )
-  return <Button minimal={true} text={`库存`} rightIcon={<Tag round={true}>AP {a.toFixed(0)}</Tag>} />
+  return <Button minimal={true} text={`库存`} rightIcon={<ValueTag value={a} />} />
 }
 
 function AllGoalValue({ finished = false }: { finished?: boolean }) {
@@ -393,7 +394,7 @@ function AllGoalValue({ finished = false }: { finished?: boolean }) {
       (allGoalsIndirectsDetails.indirects[k] || 0) -
       (allGoalsIndirectsDetails.synthisisedRequirements[k] || 0)
     const remaining = Math.max(0, total - (quantites[k] || 0))
-    console.log(finished, dataManager.data.items[k].raw.name, k, total, remaining)
+    // console.log(finished, dataManager.data.items[k].raw.name, k, total, remaining)
     const value = dataManager.data.items[k].valueAsAp
     if (value == null) return [0, 0]
     return [value * total, value * remaining]
@@ -402,24 +403,11 @@ function AllGoalValue({ finished = false }: { finished?: boolean }) {
   const total = sum(map((x) => x[0]!, data))
   const remaining = sum(map((x) => x[1]!, data))
 
-  const percent = (1 - (remaining + 0.0000001) / (total + 0.0000001)) * 100
-
   return (
     <Button
       minimal={true}
       text={finished ? `毕业` : `计划`}
-      rightIcon={
-        <Tag
-          round={true}
-          style={{
-            background: `linear-gradient(to left, #2d72d2, #2d72d2 ${percent.toFixed(2)}%, #5f6b7c ${percent.toFixed(
-              2,
-            )}%, #5f6b7c)`,
-          }}
-        >
-          AP {remaining.toFixed(0)}/{total.toFixed(0)}
-        </Tag>
-      }
+      rightIcon={<ValueTagProgressBar value={remaining} maxValue={total} />}
       active={param.mode === targetMode}
       onClick={() => {
         setParam((p) => ({ ...p, mode: p.mode === targetMode ? 'all' : targetMode }))
