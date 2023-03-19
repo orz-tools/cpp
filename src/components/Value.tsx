@@ -8,6 +8,7 @@ enum ValueType {
   Ap = 'ap',
   Diamond = 'diamond',
   Yuan = 'yuan',
+  Time = 'time',
 }
 
 const ValueIcon = {
@@ -18,18 +19,21 @@ const ValueIcon = {
       <span style={{ fontSize: '150%' }}>￥</span>
     </span>
   ),
+  [ValueType.Time]: 'time',
 } satisfies Record<ValueType, IconName | MaybeElement>
 
 const ValueName = {
   [ValueType.Ap]: 'AP',
   [ValueType.Diamond]: '源石',
   [ValueType.Yuan]: '人民币',
+  [ValueType.Time]: '时间',
 } satisfies Record<ValueType, string>
 
 const ValueDescription = {
   [ValueType.Ap]: null,
   [ValueType.Diamond]: '(按 1 源石 = 135 AP)',
   [ValueType.Yuan]: '(按 648 元 = 185 源石)',
+  [ValueType.Time]: '(按每小时回复 10 AP)',
 } satisfies Record<ValueType, React.ReactNode>
 
 interface ValueParam {
@@ -70,19 +74,37 @@ function format(value: number | null | undefined, param: ValueParam, single: boo
       return (value / 135).toFixed(single ? 5 : 1)
     case ValueType.Yuan:
       return ((value / 135 / 185) * 648).toFixed(single ? 6 : 2)
+    case ValueType.Time:
+      return formatTime((value / 10) * 3600)
     default:
       throwBad(param.type)
   }
 }
 
+function formatTime(seconds: number) {
+  if (seconds > 86400) {
+    return `${(seconds / 86400).toFixed(2)}d`
+  }
+  if (seconds > 3600) {
+    return `${(seconds / 3600).toFixed(2)}h`
+  }
+  if (seconds > 60) {
+    return `${(seconds / 60).toFixed(2)}m`
+  }
+  if (seconds > 1) {
+    return `${seconds.toFixed(2)}s`
+  }
+  return `${(seconds * 1000).toFixed(0)}ms`
+}
+
 function formatAll(value: number | null | undefined) {
   if (!hasValue(value)) return '暂无价值'
 
-  return [
-    `${ValueName[ValueType.Ap]} ${format(value, { type: ValueType.Ap }, true)}`,
-    `${ValueName[ValueType.Diamond]} ${format(value, { type: ValueType.Diamond }, true)}`,
-    `${ValueName[ValueType.Yuan]} ${format(value, { type: ValueType.Yuan }, true)}`,
-  ].join('\n')
+  return Object.values(ValueType)
+    .map((x) => {
+      return `${ValueName[x]} ${format(value, { type: x }, true)}`
+    })
+    .join('\n')
 }
 
 export function ValueTag({
@@ -101,7 +123,11 @@ export function ValueTag({
       minimal={minimal}
       round={true}
       icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[param.type]} />}
-      style={{ opacity: hasValue(value) ? 1 : 0.25 }}
+      style={{
+        paddingLeft: 4,
+        paddingRight: 4,
+        opacity: hasValue(value) ? 1 : 0.25,
+      }}
       title={formatAll(value)}
     >
       {format(value, param, single)}
@@ -131,6 +157,8 @@ export function ValueTagProgressBar({
       round={true}
       icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[param.type]} />}
       style={{
+        paddingLeft: 4,
+        paddingRight: 4,
         opacity: hasValue(value) ? 1 : 0.25,
         backgroundImage: `linear-gradient(to right, ${color}, ${color} ${percent.toFixed(
           2,
@@ -170,9 +198,9 @@ export function ValueOptionButton() {
       minimal={true}
       content={
         <Menu>
-          <SetValueOptionMenuItem type={ValueType.Ap} />
-          <SetValueOptionMenuItem type={ValueType.Diamond} />
-          <SetValueOptionMenuItem type={ValueType.Yuan} />
+          {Object.values(ValueType).map((x) => (
+            <SetValueOptionMenuItem type={x} key={x} />
+          ))}
         </Menu>
       }
       position="bottom-left"
