@@ -1,7 +1,7 @@
 import { Alert, Alignment, Button, Menu, MenuDivider, Navbar, NumericInput, Tag } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue, useSetAtom, useStore, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { groupBy, pick, sum } from 'ramda'
+import { groupBy, head, map, pick, pluck, sum, tail, uniq } from 'ramda'
 import React, { SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useInject } from '../hooks/useContainer'
 import { DataManager, Item, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
@@ -376,57 +376,53 @@ function AllValue() {
   return <Button minimal={true} text={`库存`} rightIcon={<Tag round={true}>AP {a.toFixed(0)}</Tag>} />
 }
 
-function AllGoalValue() {
+function AllGoalValue({ finished = false }: { finished?: boolean }) {
   const dataManager = useInject(DataManager)
   const atoms = useInject(UserDataAtomHolder)
   const quantites = useAtomValue(atoms.itemQuantities)
-  const allGoals = useAtomValue(atoms.allGoalTaskRequirements)
-  const [param, setParam] = useAtom(itemListParamAtom)
-
-  const a = sum(
-    Object.entries(allGoals).map(([k, v]) => {
-      const count = Math.max(0, v - (quantites[k] || 0))
-      const value = dataManager.data.items[k].valueAsAp
-      if (value == null) return 0
-      return value * count
-    }),
+  const allGoals = useAtomValue(finished ? atoms.allFinishedTaskRequirements : atoms.allGoalTaskRequirements)
+  const allGoalsIndirectsDetails = useAtomValue(
+    finished ? atoms.allFinishedIndirectsDetails : atoms.allGoalIndirectsDetails,
   )
+  const [param, setParam] = useAtom(itemListParamAtom)
+  const targetMode = finished ? 'finished' : 'goal'
+
+  const data = uniq([...Object.keys(allGoals), ...Object.keys(allGoalsIndirectsDetails.indirects)]).map((k) => {
+    const total =
+      (allGoals[k] || 0) +
+      (allGoalsIndirectsDetails.indirects[k] || 0) -
+      (allGoalsIndirectsDetails.synthisisedRequirements[k] || 0)
+    const remaining = Math.max(0, total - (quantites[k] || 0))
+    console.log(finished, dataManager.data.items[k].raw.name, k, total, remaining)
+    const value = dataManager.data.items[k].valueAsAp
+    if (value == null) return [0, 0]
+    return [value * total, value * remaining]
+  })
+
+  const total = sum(map((x) => x[0]!, data))
+  const remaining = sum(map((x) => x[1]!, data))
+
+  const percent = (1 - (remaining + 0.0000001) / (total + 0.0000001)) * 100
+
   return (
     <Button
       minimal={true}
-      text={`计划`}
-      rightIcon={<Tag round={true}>AP {a.toFixed(0)}</Tag>}
-      active={param.mode == 'goal'}
+      text={finished ? `毕业` : `计划`}
+      rightIcon={
+        <Tag
+          round={true}
+          style={{
+            background: `linear-gradient(to left, #2d72d2, #2d72d2 ${percent.toFixed(2)}%, #5f6b7c ${percent.toFixed(
+              2,
+            )}%, #5f6b7c)`,
+          }}
+        >
+          AP {remaining.toFixed(0)}/{total.toFixed(0)}
+        </Tag>
+      }
+      active={param.mode === targetMode}
       onClick={() => {
-        setParam((p) => ({ ...p, mode: p.mode === 'goal' ? 'all' : 'goal' }))
-      }}
-    />
-  )
-}
-
-function AllFinishedValue() {
-  const dataManager = useInject(DataManager)
-  const atoms = useInject(UserDataAtomHolder)
-  const quantites = useAtomValue(atoms.itemQuantities)
-  const allFinished = useAtomValue(atoms.allFinishedTaskRequirements)
-  const [param, setParam] = useAtom(itemListParamAtom)
-
-  const a = sum(
-    Object.entries(allFinished).map(([k, v]) => {
-      const count = Math.max(0, v - (quantites[k] || 0))
-      const value = dataManager.data.items[k].valueAsAp
-      if (value == null) return 0
-      return value * count
-    }),
-  )
-  return (
-    <Button
-      minimal={true}
-      text={`毕业`}
-      rightIcon={<Tag round={true}>AP {a.toFixed(0)}</Tag>}
-      active={param.mode == 'finished'}
-      onClick={() => {
-        setParam((p) => ({ ...p, mode: p.mode === 'finished' ? 'all' : 'finished' }))
+        setParam((p) => ({ ...p, mode: p.mode === targetMode ? 'all' : targetMode }))
       }}
     />
   )
@@ -491,7 +487,7 @@ export function ItemList() {
           <HideCompletedButton />
           <AllValue />
           <AllGoalValue />
-          <AllFinishedValue />
+          <AllGoalValue finished={true} />
         </Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} className="cpp-item-menu-master">

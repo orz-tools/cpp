@@ -289,16 +289,30 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
     'allFinishedTaskRequirements',
   )
 
-  const allGoalIndirects = withDebugLabel(
+  const allGoalIndirectsDetails = withDebugLabel(
     atom((get) => {
       return generateIndirects(dm, get(allGoalTaskRequirements), get(itemQuantities))
+    }),
+    'allGoalIndirectsDetails',
+  )
+
+  const allFinishedIndirectsDetails = withDebugLabel(
+    atom((get) => {
+      return generateIndirects(dm, get(allFinishedTaskRequirements), get(itemQuantities))
+    }),
+    'allFinishedIndirectsDetails',
+  )
+
+  const allGoalIndirects = withDebugLabel(
+    atom((get) => {
+      return get(allGoalIndirectsDetails).indirects
     }),
     'allGoalIndirects',
   )
 
   const allFinishedIndirects = withDebugLabel(
     atom((get) => {
-      return generateIndirects(dm, get(allFinishedTaskRequirements), get(itemQuantities))
+      return get(allFinishedIndirectsDetails).indirects
     }),
     'allFinishedIndirects',
   )
@@ -325,6 +339,8 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
     allFinishedTaskRequirements,
     allGoalIndirects,
     allFinishedIndirects,
+    allGoalIndirectsDetails,
+    allFinishedIndirectsDetails,
   }
 }
 
@@ -673,10 +689,11 @@ function generateIndirects(
   dm: DataManager,
   inputRequirements: Record<string, number>,
   inputQuantities: Record<string, number>,
-): Record<string, number> {
+) {
   const indirects: Record<string, number> = {}
   const quantities: Record<string, number> = clone(inputQuantities)
   const unsatisfiedRequirements: Record<string, number> = {}
+  const synthisisedRequirements: Record<string, number> = {}
 
   function pass(requirements: Record<string, number>): void {
     const newRequirements: Record<string, number> = {}
@@ -693,6 +710,7 @@ function generateIndirects(
         }
 
         const times = Math.ceil(diff / formula.quantity)
+        synthisisedRequirements[itemId] = (synthisisedRequirements[itemId] || 0) + times * formula.quantity
         for (const cost of formula.costs) {
           const newRequirement = times * cost.quantity
           newRequirements[cost.itemId] = (newRequirements[cost.itemId] || 0) + newRequirement
@@ -717,6 +735,7 @@ function generateIndirects(
       quantities[expItem.id] = 0
       if (exp < 0) break
     }
+    synthisisedRequirements[ITEM_VIRTUAL_EXP] = unsatisfiedRequirements[ITEM_VIRTUAL_EXP] - exp
     if (exp > 0) {
       const ls6 = Math.ceil(exp / 10000)
       exp -= ls6 * 10000
@@ -726,5 +745,5 @@ function generateIndirects(
     delete unsatisfiedRequirements[ITEM_VIRTUAL_EXP]
   }
 
-  return indirects
+  return { indirects, unsatisfiedRequirements, synthisisedRequirements }
 }
