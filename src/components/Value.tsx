@@ -2,6 +2,7 @@ import { Button, Icon, IconName, MaybeElement, Menu, MenuItem, Tag } from '@blue
 import { Popover2 } from '@blueprintjs/popover2'
 import { atom, SetStateAction, useAtom, useAtomValue, useSetAtom, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+import React from 'react'
 
 enum ValueType {
   Ap = 'ap',
@@ -24,6 +25,12 @@ const ValueName = {
   [ValueType.Diamond]: '源石',
   [ValueType.Yuan]: '人民币',
 } satisfies Record<ValueType, string>
+
+const ValueDescription = {
+  [ValueType.Ap]: null,
+  [ValueType.Diamond]: '(按 1 源石 = 135 AP)',
+  [ValueType.Yuan]: '(按 648 元 = 185 源石)',
+} satisfies Record<ValueType, React.ReactNode>
 
 interface ValueParam {
   type: ValueType
@@ -143,7 +150,11 @@ export function SetValueOptionMenuItem({ type }: { type: ValueType }) {
   return (
     <MenuItem
       icon={ValueIcon[type]}
-      text={ValueName[type]}
+      text={
+        <>
+          {ValueName[type]} <span style={{ opacity: 0.75, fontWeight: 'normal' }}>{ValueDescription[type]}</span>
+        </>
+      }
       active={param.type === type}
       onClick={() => setParam((x) => ({ ...x, type: type }))}
     />
