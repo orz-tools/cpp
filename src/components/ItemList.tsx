@@ -77,7 +77,7 @@ export function ItemSynthesisPopover({ item }: { item: Item }) {
     while (synTimes[0] > maxTimes) {
       synTimes.shift()
     }
-    if (synTimes[0] !== maxTimes && maxTimes < 24) {
+    if (synTimes[0] !== maxTimes && ((formula.apCost && maxTimes < 24) || !formula.apCost)) {
       synTimes.unshift(maxTimes)
     }
   } else {
@@ -87,11 +87,15 @@ export function ItemSynthesisPopover({ item }: { item: Item }) {
   return (
     <Menu style={{ width: '300px' }}>
       <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-        <span style={{ marginLeft: 10 }}>
-          {'心情 '}
-          {formula.apCost}
-        </span>
-        <div style={{ flex: 1 }} />
+        {formula.apCost ? (
+          <>
+            <span style={{ marginLeft: 10 }}>
+              {'心情 '}
+              {formula.apCost}
+            </span>
+            <div style={{ flex: 1 }} />
+          </>
+        ) : null}
         {synTimes.map((t) => {
           return (
             <Button
