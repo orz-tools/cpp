@@ -374,7 +374,7 @@ function AllValue() {
       return value * v
     }),
   )
-  return <Button minimal={true} text={`库存`} rightIcon={<ValueTag value={a} />} />
+  return <ValueTag value={a} minimal={true} />
 }
 
 function AllGoalValue({ finished = false }: { finished?: boolean }) {
@@ -469,11 +469,11 @@ export function ItemList() {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}>
+          <AllValue />
           <ImportButton />
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
           <HideCompletedButton />
-          <AllValue />
           <AllGoalValue />
           <AllGoalValue finished={true} />
         </Navbar.Group>
