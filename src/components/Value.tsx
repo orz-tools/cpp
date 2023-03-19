@@ -139,10 +139,12 @@ export function ValueTagProgressBar({
   value,
   maxValue,
   minimal,
+  style,
 }: {
   value: number | null | undefined
   maxValue: number | null | undefined
   minimal?: boolean
+  style?: React.CSSProperties
 }) {
   const param = useAtomValue(valueParamAtom)
 
@@ -163,6 +165,7 @@ export function ValueTagProgressBar({
         backgroundImage: `linear-gradient(to left, ${color}, ${color} ${percent.toFixed(
           2,
         )}%, transparent ${percent.toFixed(2)}%, transparent)`,
+        ...style,
       }}
       title={formatAll(value) + '\n\n/////\n\n' + formatAll(maxValue)}
     >

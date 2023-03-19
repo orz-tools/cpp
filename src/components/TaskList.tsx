@@ -13,6 +13,7 @@ import { Character, DataManager, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataMa
 import { Task as TaskDisplay, TaskType, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
 import { CachedImg } from './Icons'
+import { ValueTag, ValueTagProgressBar } from './Value'
 
 interface TaskListQueryParam {
   hideCosts: boolean
@@ -53,8 +54,17 @@ interface TaskExtra {
   costStatus: TaskCostStatus[]
   costConsumed: number[]
   costSynthesised: number[]
+  valueTotal: number[]
+  valueFulfilled: number[]
 }
-const emptyTaskExtra: TaskExtra = { status: TaskStatus.AllUnmet, costStatus: [], costConsumed: [], costSynthesised: [] }
+const emptyTaskExtra: TaskExtra = {
+  status: TaskStatus.AllUnmet,
+  costStatus: [],
+  costConsumed: [],
+  costSynthesised: [],
+  valueTotal: [],
+  valueFulfilled: [],
+}
 
 async function taskListQuery(
   container: Container,
@@ -74,10 +84,14 @@ async function taskListQuery(
     costStatus: TaskCostStatus[]
     costConsumed: number[]
     costSynthesised: number[]
+    valueTotal: number[]
+    valueFulfilled: number[]
   } => {
     const costStatus: TaskCostStatus[] = new Array(inputCosts.length).fill(TaskCostStatus.Completable)
     const costConsumed: number[] = new Array(inputCosts.length).fill(0)
     const costSynthesised: number[] = new Array(inputCosts.length).fill(0)
+    const valueTotal: number[] = new Array(inputCosts.length).fill(0)
+    const valueFulfilled: number[] = new Array(inputCosts.length).fill(0)
     let needSynthesis: boolean | undefined = false
     const newQuantities = clone(quantities)
     const queue: { itemId: string; quantity: number; source: number; root: boolean }[] = inputCosts.map((x, i) => ({
@@ -93,6 +107,8 @@ async function taskListQuery(
         if (cost.root) {
           costConsumed[cost.source] += quantity
         }
+        valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * cost.quantity
+        valueFulfilled[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * cost.quantity
         newQuantities[cost.itemId] = quantity - cost.quantity
       } else {
         const left = cost.quantity - quantity
@@ -100,6 +116,8 @@ async function taskListQuery(
           if (cost.root) {
             costConsumed[cost.source] += quantity
           }
+          valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * quantity
+          valueFulfilled[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * quantity
           newQuantities[cost.itemId] = 0
         }
 
@@ -132,30 +150,42 @@ async function taskListQuery(
             )
           }
           let exp = cost.quantity
+          valueTotal[cost.source] += (dm.data.items[ITEM_VIRTUAL_EXP].valueAsAp || 0) * exp
           const expItems = Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)
           for (const expItem of expItems) {
             if (!newQuantities[expItem.id]) continue
             const need = Math.min(newQuantities[expItem.id], Math.floor(exp / expItem.gainExp))
             exp -= need * expItem.gainExp
+            valueFulfilled[cost.source] += (dm.data.items[expItem.id].valueAsAp || 0) * need
             newQuantities[expItem.id] = newQuantities[expItem.id] - need
           }
           const smallestExpItemWithQuantity = expItems.reverse().find((x) => newQuantities[x.id] > 0)
           if (exp === 0) {
           } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity.gainExp) {
             exp = 0
+            valueFulfilled[cost.source] += (dm.data.items[smallestExpItemWithQuantity.id].valueAsAp || 0) * 1
             newQuantities[smallestExpItemWithQuantity.id] -= 1
           } else {
             needSynthesis = undefined
             costStatus[cost.source] = TaskCostStatus.AllUnmet
           }
         } else {
+          valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * left
           // continue for task cost status
           needSynthesis = undefined
           costStatus[cost.source] = TaskCostStatus.AllUnmet
         }
       }
     }
-    return { result: needSynthesis, newQuantities: newQuantities, costStatus, costConsumed, costSynthesised }
+    return {
+      result: needSynthesis,
+      newQuantities: newQuantities,
+      costStatus,
+      costConsumed,
+      costSynthesised,
+      valueFulfilled,
+      valueTotal,
+    }
   }
 
   const sortedTasks = tasks
@@ -167,16 +197,21 @@ async function taskListQuery(
       costStatus: emptyTaskExtra.costStatus,
       costConsumed: emptyTaskExtra.costConsumed,
       costSynthesised: emptyTaskExtra.costSynthesised,
+      valueFulfilled: emptyTaskExtra.valueFulfilled,
+      valueTotal: emptyTaskExtra.valueTotal,
     }
     map.set(task, taskExtra)
     result.push([task, taskExtra])
     if (task.type._ == 'join') {
       taskExtra.status = TaskStatus.Manually
     } else {
-      const { result, newQuantities, costStatus, costConsumed, costSynthesised } = consumeItems(task.requires)
+      const { result, newQuantities, costStatus, costConsumed, costSynthesised, valueFulfilled, valueTotal } =
+        consumeItems(task.requires)
       taskExtra.costStatus = costStatus
       taskExtra.costConsumed = costConsumed
       taskExtra.costSynthesised = costSynthesised
+      taskExtra.valueFulfilled = valueFulfilled
+      taskExtra.valueTotal = valueTotal
       quantities = newQuantities!
       if (result == null) {
         taskExtra.status = TaskStatus.AllUnmet
@@ -368,7 +403,19 @@ export function TaskMenu({
         <ContextMenu2 content={<TaskContextMenu task={task} extra={extra} />}>
           <MenuItem2
             style={{ fontWeight: 'normal' }}
-            text={<TaskDisplay type={task.type} character={character} />}
+            text={
+              <>
+                {extra.status == TaskStatus.AllUnmet ? (
+                  <ValueTagProgressBar
+                    value={sum(extra.valueTotal) - sum(extra.valueFulfilled)}
+                    maxValue={sum(extra.valueTotal)}
+                    minimal={true}
+                    style={{ float: 'right' }}
+                  />
+                ) : null}
+                <TaskDisplay type={task.type} character={character} />
+              </>
+            }
             icon={StatusIcon[extra.status]}
             popoverProps={{ usePortal: true, matchTargetWidth: true }}
           >
@@ -547,7 +594,7 @@ export function TaskList() {
               overscanCount={5}
               height={height}
               itemCount={list.length}
-              estimatedItemSize={(hideCosts ? 30 : 30 * 5) + 11}
+              estimatedItemSize={hideCosts ? 30 : 30 * 5 + 11}
               itemSize={itemSize}
               width={width}
               itemKey={itemKey}
