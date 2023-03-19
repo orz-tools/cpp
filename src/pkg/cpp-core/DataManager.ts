@@ -176,7 +176,9 @@ export class DataManager {
         ],
         tags: [],
       }
-      if (this.raw.exItems.items[i.itemId].rarity === 2) formula.tags.push(FormulaTag.WorkshopRarity2)
+      if (this.raw.exItems.items[i.itemId].rarity === 2 && i.formulaType === 'F_EVOLVE') {
+        formula.tags.push(FormulaTag.WorkshopRarity2)
+      }
       formulas.push(formula)
     }
 

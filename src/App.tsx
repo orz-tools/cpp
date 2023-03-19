@@ -70,7 +70,7 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '620px',
+            width: '720px',
             display: 'flex',
             flexDirection: 'column',
           }}

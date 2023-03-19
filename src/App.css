@@ -189,9 +189,10 @@ body {
   content: attr(data-label);
   position: absolute;
   left: 4px;
-  top: 2px;
+  top: 0px;
   font-size: 80%;
   color: black;
   opacity: 0.25;
   pointer-events: none;
+  line-height: 21px;
 }

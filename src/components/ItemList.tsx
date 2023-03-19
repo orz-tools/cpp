@@ -1,7 +1,7 @@
 import { Alert, Alignment, Button, Menu, MenuDivider, Navbar, NumericInput, Tag } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue, useSetAtom, useStore, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { groupBy, map, pick, sum, uniq } from 'ramda'
+import { groupBy, intersection, map, pick, sum, uniq } from 'ramda'
 import React, { SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useInject } from '../hooks/useContainer'
 import { DataManager, Item, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
@@ -40,17 +40,94 @@ export function ItemQuantityEditor({ item, style }: { item: Item; style?: React.
 }
 
 export function ItemTaskRequirements({ item }: { item: Item }) {
+  const dm = useInject(DataManager)
+  const formula = useMemo(() => dm.data.formulas.find((x) => x.itemId == item.key), [dm, item.key])
   const atoms = useInject(UserDataAtomHolder)
+  const quantities = useAtomValue(atoms.itemQuantities)
   const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
   const goal = useAtomValue(atoms.allGoalTaskRequirements)[item.key] || 0
   const finished = useAtomValue(atoms.allFinishedTaskRequirements)[item.key] || 0
   const goalIndirects = useAtomValue(atoms.allGoalIndirects)[item.key] || 0
   const finishedIndirects = useAtomValue(atoms.allFinishedIndirects)[item.key] || 0
-
   const itemListParam = useAtomValue(itemListParamAtom)
+  const forbiddenFormulaTags = useAtomValue(atoms.forbiddenFormulaTagsAtom)
+
+  const synableReal = formula
+    ? Math.max(0, Math.min(...formula.costs.map((x) => Math.floor((quantities[x.itemId] || 0) / x.quantity)))) *
+      formula.quantity
+    : 0
+  const canSyn = formula && intersection(forbiddenFormulaTags, formula.tags).length == 0
+  const synable = canSyn ? synableReal : 0
 
   return (
     <>
+      <div
+        className="cpp-goal-counter"
+        style={{ width: '6em', visibility: !formula || synable == 0 ? 'hidden' : undefined }}
+        data-label="合成后"
+      >
+        <div
+          style={{
+            textAlign: 'right',
+            opacity:
+              itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+                ? goal + goalIndirects - quantity - synable > 0
+                  ? 1
+                  : 0.4
+                : 0,
+          }}
+        >
+          <span>{goal + goalIndirects - quantity - synable}</span>
+        </div>
+        <div
+          style={{
+            textAlign: 'right',
+            opacity:
+              itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+                ? finished + finishedIndirects - quantity - synable > 0
+                  ? 1
+                  : 0.4
+                : 0,
+          }}
+        >
+          <span>{finished + finishedIndirects - quantity - synable}</span>
+        </div>
+      </div>
+      <a
+        role="menuitem"
+        tabIndex={0}
+        className="bp4-menu-item cpp-item-menu"
+        style={{ lineHeight: '21px', padding: 0, fontWeight: 'normal', visibility: !formula ? 'hidden' : undefined }}
+      >
+        <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="可合成">
+          <div
+            style={{
+              textAlign: 'right',
+              opacity:
+                itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+                  ? canSyn && synableReal > 0
+                    ? 1
+                    : 0.4
+                  : 0,
+            }}
+          >
+            <span>{synableReal}</span>
+          </div>
+          <div
+            style={{
+              textAlign: 'right',
+              opacity:
+                itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+                  ? canSyn && synableReal > 0
+                    ? 1
+                    : 0.4
+                  : 0,
+            }}
+          >
+            <span>{synableReal}</span>
+          </div>
+        </div>
+      </a>
       <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="还需">
         <div
           style={{
