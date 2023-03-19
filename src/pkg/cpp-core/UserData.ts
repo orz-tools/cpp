@@ -3,11 +3,11 @@ import produce, { Draft } from 'immer'
 import { Atom, atom, PrimitiveAtom, WritableAtom } from 'jotai'
 import { atomFamily } from 'jotai/utils'
 import { AtomFamily } from 'jotai/vanilla/utils/atomFamily'
-import { clone, sum, uniq } from 'ramda'
+import { clone, intersection, sum, union, uniq } from 'ramda'
 import { SetStateAction } from 'react'
 import { Constructor, Inject } from '../container'
 import { txatom } from '../txatom'
-import { Character, DataManager, ITEM_GOLD, ITEM_VIRTUAL_EXP } from './DataManager'
+import { Character, DataManager, FormulaTag, ITEM_GOLD, ITEM_VIRTUAL_EXP } from './DataManager'
 
 function withDebugLabel<T extends Atom<any>>(t: T, label?: string): T {
   t.debugLabel = label
@@ -20,10 +20,12 @@ const UserDataAtoms = class UserDataAtoms {} as Constructor<ReturnType<typeof bu
 export class UserDataAtomHolder extends UserDataAtoms {
   dataManager = Inject(DataManager)
   baseAtom!: PrimitiveAtom<UserData | undefined>
+  forbiddenFormulaTagsAtom!: PrimitiveAtom<FormulaTag[]>
 
-  public setAtom(atom: PrimitiveAtom<UserData | undefined>) {
-    this.baseAtom = atom
-    Object.assign(this, buildAtoms(this.baseAtom, this.dataManager))
+  public setAtom(baseAtom: PrimitiveAtom<UserData | undefined>, forbiddenFormulaTagsAtom: PrimitiveAtom<FormulaTag[]>) {
+    this.baseAtom = baseAtom
+    this.forbiddenFormulaTagsAtom = forbiddenFormulaTagsAtom
+    Object.assign(this, buildAtoms(this.baseAtom, this.forbiddenFormulaTagsAtom, this.dataManager))
   }
 }
 
@@ -35,7 +37,11 @@ export const emptyCharacterStatus = Object.freeze<CharacterStatus>({
   modLevel: Object.freeze({}),
 })
 
-function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManager) {
+function buildAtoms(
+  baseAtom: PrimitiveAtom<UserData | undefined>,
+  forbiddenFormulaTagsAtom: PrimitiveAtom<FormulaTag[]>,
+  dm: DataManager,
+) {
   const rootAtom: PrimitiveAtom<UserData> = withDebugLabel(
     atom(
       (get) => {
@@ -291,14 +297,14 @@ function buildAtoms(baseAtom: PrimitiveAtom<UserData | undefined>, dm: DataManag
 
   const allGoalIndirectsDetails = withDebugLabel(
     atom((get) => {
-      return generateIndirects(dm, get(allGoalTaskRequirements), get(itemQuantities))
+      return generateIndirects(dm, get(allGoalTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
     }),
     'allGoalIndirectsDetails',
   )
 
   const allFinishedIndirectsDetails = withDebugLabel(
     atom((get) => {
-      return generateIndirects(dm, get(allFinishedTaskRequirements), get(itemQuantities))
+      return generateIndirects(dm, get(allFinishedTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
     }),
     'allFinishedIndirectsDetails',
   )
@@ -689,6 +695,7 @@ function generateIndirects(
   dm: DataManager,
   inputRequirements: Record<string, number>,
   inputQuantities: Record<string, number>,
+  forbiddenFormulaTags: FormulaTag[],
 ) {
   const indirects: Record<string, number> = {}
   const quantities: Record<string, number> = clone(inputQuantities)
@@ -703,7 +710,9 @@ function generateIndirects(
       if (diff > 0) {
         quantities[itemId] = 0
 
-        const formula = dm.data.formulas.find((x) => x.itemId == itemId)
+        const formula = dm.data.formulas.find(
+          (x) => x.itemId == itemId && intersection(forbiddenFormulaTags || [], x.tags || []).length === 0,
+        )
         if (!formula) {
           unsatisfiedRequirements[itemId] = (unsatisfiedRequirements[itemId] || 0) + diff
           continue

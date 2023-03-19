@@ -174,7 +174,9 @@ export class DataManager {
           ...i.costs.map((x) => ({ itemId: x.id, quantity: x.count })),
           ...(i.goldCost > 0 ? [{ itemId: ITEM_GOLD, quantity: i.goldCost }] : []),
         ],
+        tags: [],
       }
+      if (this.raw.exItems.items[i.itemId].rarity === 2) formula.tags.push(FormulaTag.WorkshopRarity2)
       formulas.push(formula)
     }
 
@@ -185,6 +187,7 @@ export class DataManager {
         itemId: i.itemId,
         quantity: i.count,
         costs: [...i.costs.map((x) => ({ itemId: x.id, quantity: x.count }))],
+        tags: [],
       }
       formulas.push(formula)
     }
@@ -195,6 +198,7 @@ export class DataManager {
       itemId: '32001',
       quantity: 1,
       costs: [{ itemId: '4006', quantity: 90 }],
+      tags: [],
     })
 
     // for (const formula of formulas) {
@@ -221,6 +225,11 @@ interface Formula {
     itemId: string
     quantity: number
   }[]
+  tags: FormulaTag[]
+}
+
+export enum FormulaTag {
+  WorkshopRarity2 = 'workshop_rarity_2',
 }
 
 export class Character {

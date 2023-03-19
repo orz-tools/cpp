@@ -4,6 +4,7 @@ import { Provider } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import ReactDOM from 'react-dom/client'
 import { AppWrapper } from './App'
+import { forbiddenFormulaTagsAtom } from './components/Config'
 import { ContainerContext } from './hooks/useContainer'
 import './index.css'
 import { Container } from './pkg/container'
@@ -15,7 +16,7 @@ const container = new Container()
 void container.get(DataManager).init()
 
 const atoms = container.get(UserDataAtomHolder)
-atoms.setAtom(atomWithStorage<UserData | undefined>('cpp_userdata', undefined))
+atoms.setAtom(atomWithStorage<UserData | undefined>('cpp_userdata', undefined), forbiddenFormulaTagsAtom)
 
 const store = container.get(Store).store
 store.sub(atoms.undoCounterAtom, () => {

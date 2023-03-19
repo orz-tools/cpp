@@ -1,15 +1,8 @@
 import { Button, Icon, IconName, MaybeElement, Menu, MenuItem, Tag } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
-import { atom, SetStateAction, useAtom, useAtomValue, useSetAtom, WritableAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { useAtom, useAtomValue } from 'jotai'
 import React from 'react'
-
-enum ValueType {
-  Ap = 'ap',
-  Diamond = 'diamond',
-  Yuan = 'yuan',
-  Time = 'time',
-}
+import { ValueType, valueTypeAtom } from './Config'
 
 const ValueIcon = {
   [ValueType.Ap]: 'predictive-analysis',
@@ -36,25 +29,6 @@ const ValueDescription = {
   [ValueType.Time]: '(按每小时回复 10 AP)',
 } satisfies Record<ValueType, React.ReactNode>
 
-interface ValueParam {
-  type: ValueType
-}
-
-const valueParamStorageAtom = atomWithStorage<ValueParam>('cpp_value_param', undefined as any)
-const valueParamAtom: WritableAtom<ValueParam, [ValueParam | SetStateAction<ValueParam>], void> = atom<
-  ValueParam,
-  [ValueParam | SetStateAction<ValueParam>],
-  void
->(
-  (get) => {
-    const value = Object.assign({}, get(valueParamStorageAtom) || {})
-    if (value.type == null) value.type = ValueType.Ap
-    return value
-  },
-  (get, set, value: ValueParam | SetStateAction<ValueParam>) =>
-    set(valueParamStorageAtom, typeof value === 'function' ? value(get(valueParamAtom)) : value),
-)
-
 function throwBad(p: never): never {
   throw new Error(`Missing switch coverage: ${p}`)
 }
@@ -64,10 +38,10 @@ function hasValue(value: number | null | undefined): value is number {
   return true
 }
 
-function format(value: number | null | undefined, param: ValueParam, single: boolean = false) {
+function format(value: number | null | undefined, type: ValueType, single: boolean = false) {
   if (!hasValue(value)) return 'N/A'
 
-  switch (param.type) {
+  switch (type) {
     case ValueType.Ap:
       return value.toFixed(single ? 4 : 0)
     case ValueType.Diamond:
@@ -77,7 +51,7 @@ function format(value: number | null | undefined, param: ValueParam, single: boo
     case ValueType.Time:
       return formatTime((value / 10) * 3600)
     default:
-      throwBad(param.type)
+      throwBad(type)
   }
 }
 
@@ -102,7 +76,7 @@ function formatAll(value: number | null | undefined) {
 
   return Object.values(ValueType)
     .map((x) => {
-      return `${ValueName[x]} ${format(value, { type: x }, true)}`
+      return `${ValueName[x]} ${format(value, x, true)}`
     })
     .join('\n')
 }
@@ -116,13 +90,13 @@ export function ValueTag({
   minimal?: boolean
   single?: boolean
 }) {
-  const param = useAtomValue(valueParamAtom)
+  const type = useAtomValue(valueTypeAtom)
 
   return (
     <Tag
       minimal={minimal}
       round={true}
-      icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[param.type]} />}
+      icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[type]} />}
       style={{
         paddingLeft: 4,
         paddingRight: 4,
@@ -130,7 +104,7 @@ export function ValueTag({
       }}
       title={formatAll(value)}
     >
-      {format(value, param, single)}
+      {format(value, type, single)}
     </Tag>
   )
 }
@@ -146,7 +120,7 @@ export function ValueTagProgressBar({
   minimal?: boolean
   style?: React.CSSProperties
 }) {
-  const param = useAtomValue(valueParamAtom)
+  const type = useAtomValue(valueTypeAtom)
 
   const v = (value || 0) + 0.00000001
   const mv = (maxValue || 0) + 0.00000001
@@ -157,7 +131,7 @@ export function ValueTagProgressBar({
     <Tag
       minimal={minimal}
       round={true}
-      icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[param.type]} />}
+      icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[type]} />}
       style={{
         paddingLeft: 4,
         paddingRight: 4,
@@ -169,15 +143,15 @@ export function ValueTagProgressBar({
       }}
       title={formatAll(value) + '\n\n/////\n\n' + formatAll(maxValue)}
     >
-      {format(value, param)}
+      {format(value, type)}
       {'/'}
-      {format(maxValue, param)}
+      {format(maxValue, type)}
     </Tag>
   )
 }
 
 export function SetValueOptionMenuItem({ type }: { type: ValueType }) {
-  const [param, setParam] = useAtom(valueParamAtom)
+  const [ctype, setType] = useAtom(valueTypeAtom)
   return (
     <MenuItem
       icon={ValueIcon[type]}
@@ -186,14 +160,14 @@ export function SetValueOptionMenuItem({ type }: { type: ValueType }) {
           {ValueName[type]} <span style={{ opacity: 0.75, fontWeight: 'normal' }}>{ValueDescription[type]}</span>
         </>
       }
-      active={param.type === type}
-      onClick={() => setParam((x) => ({ ...x, type: type }))}
+      active={ctype === type}
+      onClick={() => setType(type)}
     />
   )
 }
 
 export function ValueOptionButton() {
-  const param = useAtomValue(valueParamAtom)
+  const type = useAtomValue(valueTypeAtom)
 
   return (
     <Popover2
@@ -208,8 +182,8 @@ export function ValueOptionButton() {
       }
       position="bottom-left"
     >
-      <Button icon={ValueIcon[param.type]} minimal={true} rightIcon={'chevron-down'}>
-        {ValueName[param.type]}
+      <Button icon={ValueIcon[type]} minimal={true} rightIcon={'chevron-down'}>
+        {ValueName[type]}
       </Button>
     </Popover2>
   )

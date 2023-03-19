@@ -2,7 +2,7 @@ import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar,
 import { ContextMenu2, MenuItem2 } from '@blueprintjs/popover2'
 import { atom, useAtom, useAtomValue, useStore, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { clone, sortBy, sum } from 'ramda'
+import { clone, intersection, sortBy, sum } from 'ramda'
 import React, { SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ListChildComponentProps, ListItemKeySelector, VariableSizeList } from 'react-window'
@@ -74,6 +74,7 @@ async function taskListQuery(
   const store = container.get(Store).store
   const atoms = container.get(UserDataAtomHolder)
   const tasks = store.get(atoms.allGoalTasks)
+  const forbiddenFormulaTags = store.get(atoms.forbiddenFormulaTagsAtom)
   let quantities = clone(store.get(atoms.itemQuantities))
 
   const consumeItems = (
@@ -121,7 +122,9 @@ async function taskListQuery(
           newQuantities[cost.itemId] = 0
         }
 
-        const formula = dm.data.formulas.find((x) => x.itemId == cost.itemId)
+        const formula = dm.data.formulas.find(
+          (x) => x.itemId == cost.itemId && intersection(forbiddenFormulaTags || [], x.tags || []).length === 0,
+        )
         if (formula) {
           if (cost.root) {
             costSynthesised[cost.source] += left
@@ -534,7 +537,13 @@ export function TaskList() {
   const atoms = useInject(UserDataAtomHolder)
   useEffect(() => {
     refresh()
-  }, [send, param, useAtomValue(atoms.allGoalTasks), useAtomValue(atoms.itemQuantities)])
+  }, [
+    send,
+    param,
+    useAtomValue(atoms.allGoalTasks),
+    useAtomValue(atoms.itemQuantities),
+    useAtomValue(atoms.forbiddenFormulaTagsAtom),
+  ])
 
   const hideCosts = response?.hideCosts || false
   const list = response?.result || emptyList
