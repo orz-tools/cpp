@@ -29,13 +29,11 @@ export function SynthesisList() {
   const forbiddenFormulaTags = useAtomValue(atoms.forbiddenFormulaTagsAtom)
   const indirectDetails = generateIndirects(dm, requirements, itemQuantities, forbiddenFormulaTags)
 
-  console.log(indirectDetails)
-
   return (
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}></Navbar.Group>
-        <Navbar.Group align={Alignment.LEFT}></Navbar.Group>
+        <Navbar.Group align={Alignment.LEFT}>现在可以合成的物品</Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
         {itemGroups.map(([key, allItems]) => {
@@ -80,30 +78,4 @@ function SynthesisMenu({ item, target }: { item: Item; target: number }) {
       <ItemSynthesisPopover item={item} />
     </MenuItem2>
   )
-  // <li role="none">
-  //   <a
-  //     role="menuitem"
-  //     tabIndex={0}
-  //     style={{ flexShrink: 1, overflow: 'hidden' }}
-  //   >
-  //     <>
-  //       <span className="bp4-menu-item-icon">
-
-  //       </span>
-  //       <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-  //         <div className="bp4-text-overflow-ellipsis" title={item.raw.name}>
-  //           {item.raw.name}
-  //         </div>
-  //         <div className="bp4-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
-  //           <ValueTag value={item.valueAsAp} minimal={true} single={true} />
-  //         </div>
-  //       </div>
-  //     </>
-  //   </a>
-  //   <div style={{}}>
-  //     <ItemQuantityEditor item={item} style={{ width: '6em', textAlign: 'right' }} />
-  //   </div>
-  //   <ItemTaskRequirements item={item} />
-  // </li>
-  // )
 }
