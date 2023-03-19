@@ -168,7 +168,7 @@ export function TaskMenu({
         >
           <>
             <span className="bp4-menu-item-icon">
-              <CachedImg src={character.avatar} width={'16'} height={'16'} alt={task.id} title={task.id} />
+              <CachedImg src={character.avatar} width={'16'} height={'16'} alt={character.key} title={character.key} />
             </span>
 
             <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -187,6 +187,7 @@ export function TaskMenu({
       <Menu style={{ padding: 0 }}>
         <ContextMenu2 content={<TaskContextMenu task={task} extra={extra} />}>
           <MenuItem2
+            title={task.id}
             style={{ fontWeight: 'normal' }}
             text={
               <>
