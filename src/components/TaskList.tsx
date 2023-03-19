@@ -296,7 +296,6 @@ function HideCostsButton() {
   )
 }
 
-const emptyList: [Task, TaskExtra][] = []
 export function TaskList() {
   const atoms = useInject(UserDataAtomHolder)
   const param = useAtomValue(queryParamAtom)
