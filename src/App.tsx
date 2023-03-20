@@ -62,7 +62,7 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '750px',
+            width: '730px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -82,7 +82,7 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '320px',
+            width: '270px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -92,7 +92,7 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '250px',
+            width: '220px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -102,7 +102,7 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '300px',
+            width: '250px',
             display: 'flex',
             flexDirection: 'column',
           }}
