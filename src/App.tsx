@@ -5,6 +5,7 @@ import './App.css'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton } from './components/Config'
+import { FarmList } from './components/FarmList'
 import { ItemList } from './components/ItemList'
 import { SynthesisList } from './components/SynthesisList'
 import { TaskList } from './components/TaskList'
@@ -97,6 +98,16 @@ function App() {
           }}
         >
           <SynthesisList />
+        </section>
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
+            width: '300px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <FarmList />
         </section>
         <section
           className={Classes.ELEVATION_1}

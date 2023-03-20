@@ -1,3 +1,4 @@
+import localForage from 'localforage'
 import pProps from 'p-props'
 import {
   ExcelBuildingData,
@@ -5,9 +6,10 @@ import {
   ExcelItemTable,
   ExcelPatchCharacterTable,
   ExcelSkillTable,
+  ExcelStageTable,
   ExcelUniEquipTable,
 } from './excelTypes'
-import localForage from 'localforage'
+import { PenguinMatrix } from './penguinTypes'
 import { YituliuValue } from './yituliuTypes'
 
 const STORAGE_PREFIX = 'cpp_dm_'
@@ -57,7 +59,13 @@ export class DataManager {
       exBuilding: DataManager.loadJson<ExcelBuildingData>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/building_data.json',
       ),
+      exStage: DataManager.loadJson<ExcelStageTable>(
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/stage_table.json',
+      ),
       yituliuValue: DataManager.loadJson<YituliuValue[]>('https://backend.yituliu.site/api/item/export/json'),
+      penguinMatrix: DataManager.loadJson<PenguinMatrix>(
+        'https://penguin-stats.io/PenguinStats/api/v2/result/matrix?server=CN',
+      ),
     }
     return (await pProps(task)) as any as { [K in keyof typeof task]: Awaited<(typeof task)[K]> }
   }

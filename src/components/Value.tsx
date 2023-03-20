@@ -85,10 +85,12 @@ export function ValueTag({
   value,
   minimal,
   single,
+  style,
 }: {
   value: number | null | undefined
   minimal?: boolean
   single?: boolean
+  style?: React.CSSProperties
 }) {
   const type = useAtomValue(valueTypeAtom)
 
@@ -101,6 +103,7 @@ export function ValueTag({
         paddingLeft: 4,
         paddingRight: 4,
         opacity: hasValue(value) ? 1 : 0.25,
+        ...style,
       }}
       title={formatAll(value)}
     >

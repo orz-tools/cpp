@@ -889,3 +889,217 @@ export namespace ExcelBuildingData {
     rank: number
   }
 }
+
+export interface ExcelStageTable {
+  stages: { [key: string]: ExcelStageTable.Stage }
+  runeStageGroups: any
+  mapThemes: { [key: string]: ExcelStageTable.MapTheme }
+  tileInfo: { [key: string]: ExcelStageTable.TileInfo }
+  forceOpenTable: { [key: string]: ExcelStageTable.ForceOpenTable }
+  timelyStageDropInfo: { [key: string]: ExcelStageTable.TimelyStageDropInfo }
+  timelyTable: { [key: string]: ExcelStageTable.TimelyTable }
+  stageValidInfo: { [key: string]: ExcelStageTable.StageValidInfo }
+  stageFogInfo: { [key: string]: ExcelStageTable.StageFogInfo }
+  stageStartConds: { [key: string]: ExcelStageTable.StageStartCond }
+  diffGroupTable: { [key: string]: ExcelStageTable.DiffGroupTable }
+  storyStageShowGroup: { [key: string]: ExcelStageTable.StoryStageShowGroup }
+  specialBattleFinishStageData: { [key: string]: ExcelStageTable.SpecialBattleFinishStageData }
+  recordRewardData: any
+  apProtectZoneInfo: { [key: string]: ExcelStageTable.ApProtectZoneInfo }
+  spNormalStageIdFor4StarList: string[]
+}
+
+export namespace ExcelStageTable {
+  export interface ApProtectZoneInfo {
+    zoneId: string
+    timeRanges: StageValidInfo[]
+  }
+
+  export interface StageValidInfo {
+    startTs: number
+    endTs: number
+  }
+
+  export interface DiffGroupTable {
+    normalId: string
+    toughId: null | string
+    easyId: string
+  }
+
+  export interface ForceOpenTable {
+    id: string
+    startTime: number
+    endTime: number
+    forceOpenList: string[]
+  }
+
+  export interface MapTheme {
+    themeId: string
+    unitColor: string
+    buildableColor: null | string
+    themeType: null | string
+    trapTintColor: null | string
+  }
+
+  export interface SpecialBattleFinishStageData {
+    stageId: string
+    skipAccomplishPerform: boolean
+  }
+
+  export interface StageFogInfo {
+    lockId: string
+    fogType: string
+    stageId: string
+    lockName: string
+    lockDesc: string
+    unlockItemId: string
+    unlockItemType: string
+    unlockItemNum: number
+    preposedStageId: string
+    preposedLockId: null | string
+  }
+
+  export interface StageStartCond {
+    requireChars: RequireChar[]
+    excludeAssists: string[]
+    isNotPass: boolean
+  }
+
+  export interface RequireChar {
+    charId: string
+    evolvePhase: number
+  }
+
+  export interface Stage {
+    stageType: string
+    difficulty: string
+    performanceStageFlag: string
+    diffGroup: string
+    unlockCondition: UnlockCondition[]
+    stageId: string
+    levelId: null | string
+    zoneId: string
+    code: string
+    name: null | string
+    description: null | string
+    hardStagedId: null | string
+    dangerLevel: null | string
+    dangerPoint: number
+    loadingPicId: string
+    canPractice: boolean
+    canBattleReplay: boolean
+    apCost: number
+    apFailReturn: number
+    etItemId: null | string
+    etCost: number
+    etFailReturn: number
+    etButtonStyle: null | string
+    apProtectTimes: number
+    diamondOnceDrop: number
+    practiceTicketCost: number
+    dailyStageDifficulty: number
+    expGain: number
+    goldGain: number
+    loseExpGain: number
+    loseGoldGain: number
+    passFavor: number
+    completeFavor: number
+    slProgress: number
+    displayMainItem: null | string
+    hilightMark: boolean
+    bossMark: boolean
+    isPredefined: boolean
+    isHardPredefined: boolean
+    isSkillSelectablePredefined: boolean
+    isStoryOnly: boolean
+    appearanceStyle: number
+    stageDropInfo: DropInfo
+    startButtonOverrideId: null | string
+    isStagePatch: boolean
+    mainStageId: null | string
+    extraCondition?: ExtraCondition[]
+    extraInfo?: ExtraInfo[]
+    canUseTrapTool?: boolean
+    canUseTech?: boolean
+    canUseCharm?: boolean
+  }
+
+  export interface ExtraCondition {
+    index: number
+    template: string
+    unlockParam: string[]
+  }
+
+  export interface ExtraInfo {
+    stageId: string
+    rewards: Reward[]
+    progressInfo: ProgressInfo
+  }
+
+  export interface ProgressInfo {
+    progressType: string
+    descList: { [key: string]: string } | null
+  }
+
+  export interface Reward {
+    id: string
+    count: number
+    type: string
+  }
+
+  export interface DropInfo {
+    firstPassRewards: null
+    firstCompleteRewards: null
+    passRewards: null
+    completeRewards: null
+    displayRewards: DisplayReward[]
+    displayDetailRewards: DisplayReward[]
+  }
+
+  export interface DisplayReward {
+    occPercent?: number
+    type: string
+    id: string
+    dropType: number
+  }
+
+  export interface UnlockCondition {
+    stageId: string
+    completeState: number
+  }
+
+  export interface StoryStageShowGroup {
+    [key: string]: StoryStageShowGroupSub
+  }
+
+  export interface StoryStageShowGroupSub {
+    displayRecordId: string
+    stageId: string
+    accordingStageId: null | string
+    diffGroup: number
+  }
+
+  export interface TileInfo {
+    tileKey: string
+    name: string
+    description: string
+    isFunctional: boolean
+  }
+
+  export interface TimelyStageDropInfo {
+    startTs: number
+    endTs: number
+    stagePic: null | string
+    dropPicId: null | string
+    stageUnlock: string
+    entranceDownPicId: null | string
+    entranceUpPicId: null | string
+    timelyGroupId: string
+    weeklyPicId: null | string
+    apSupplyOutOfDateDict: Record<string, number>
+  }
+
+  export interface TimelyTable {
+    dropInfo: { [key: string]: DropInfo }
+  }
+}
