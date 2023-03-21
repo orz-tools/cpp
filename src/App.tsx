@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
-import { ConfigButton } from './components/Config'
+import { ConfigButton, StageButton } from './components/ConfigUi'
 import { FarmList } from './components/FarmList'
 import { ItemList } from './components/ItemList'
 import { SynthesisList } from './components/SynthesisList'
@@ -55,6 +55,7 @@ function App() {
           <UndoButtons />
           <Navbar.Divider />
           <ValueOptionButton />
+          <StageButton />
           <ConfigButton />
         </Navbar.Group>
       </Navbar>

@@ -4,6 +4,12 @@ import Lpsolver, { IModel } from 'javascript-lp-solver'
 import { intersection, sortBy } from 'ramda'
 import { ExcelStageTable } from './excelTypes'
 
+export const diffGroupName = {
+  NORMAL: '标准',
+  TOUGH: '磨难',
+  EASY: '剧情',
+} as Record<string, string>
+
 export class FarmPlannerFactory {
   dataManager = Inject(DataManager)
 
@@ -38,6 +44,7 @@ export class FarmPlannerFactory {
       if (i.start > now || (i.end && i.end < now)) continue
       if (!this.dataManager.data.items[i.itemId]) continue
       if (!this.dataManager.raw.exStage.stages[i.stageId]) continue
+      if (i.stageId.startsWith('wk_armor_')) continue // SK-...
 
       const stageInfo = this.dataManager.raw.exStage.stages[i.stageId]
       let stage = map.get(i.stageId)
@@ -62,36 +69,43 @@ export class FarmPlannerFactory {
       }
     }
 
-    {
-      const stageInfo = this.dataManager.raw.exStage.stages['wk_melee_6']
+    const makeCE = (stageId: string, gold: number) => {
+      const stageInfo = this.dataManager.raw.exStage.stages[stageId]
       const stage = {
         excel: stageInfo,
         varRow: {},
         samples: Infinity,
-        dropInfo: { [ITEM_GOLD]: 10000 },
+        dropInfo: { [ITEM_GOLD]: gold },
         sortedDropInfo: [],
       } as FarmPlannerFactory['stageInfo'][any]
       stage.varRow[`ap`] = stageInfo.apCost
-      stage.varRow[`item:${ITEM_GOLD}`] = 10000
-      map.set('wk_melee_6', stage)
-      this.stageInfo['wk_melee_6'] = stage
+      stage.varRow[`item:${ITEM_GOLD}`] = gold
+      map.set(stageId, stage)
+      this.stageInfo[stageId] = stage
     }
+    makeCE('wk_melee_6', 10000)
+    makeCE('wk_melee_5', 7500)
+    makeCE('wk_melee_4', 5700)
+    makeCE('wk_melee_3', 4100)
+    makeCE('wk_melee_2', 2800)
+    makeCE('wk_melee_1', 1700)
 
-    {
-      const stageInfo = this.dataManager.raw.exStage.stages['wk_toxic_5']
+    const makeAP = (stageId: string, ticket: number) => {
+      const stageInfo = this.dataManager.raw.exStage.stages[stageId]
       const stage = {
         excel: stageInfo,
         varRow: {},
         samples: Infinity,
-        dropInfo: { ['4006']: 21, [ITEM_GOLD]: stageInfo.apCost * 12 },
+        dropInfo: { ['4006']: ticket, [ITEM_GOLD]: stageInfo.apCost * 12 },
         sortedDropInfo: [],
       } as FarmPlannerFactory['stageInfo'][any]
       stage.varRow[`ap`] = stageInfo.apCost
-      stage.varRow[`item:4006`] = 21
+      stage.varRow[`item:4006`] = ticket
       stage.varRow[`item:${ITEM_GOLD}`] = stageInfo.apCost * 12
-      map.set('wk_toxic_5', stage)
-      this.stageInfo['wk_toxic_5'] = stage
+      map.set(stageId, stage)
+      this.stageInfo[stageId] = stage
     }
+    makeAP('wk_toxic_5', 21)
 
     for (const i of Object.values(this.stageInfo)) {
       i.sortedDropInfo = sortBy((i) => {
@@ -106,7 +120,7 @@ export class FarmPlannerFactory {
     return this.stageInfo
   }
 
-  async build(options: { forbiddenFormulaTags: FormulaTag[] }) {
+  async build(options: { forbiddenFormulaTags: FormulaTag[]; forbiddenStageIds: string[] }) {
     const model: IModel<ModelSolutionVar, ModelInternalVar> = {
       optimize: 'ap',
       opType: 'min',
@@ -139,6 +153,7 @@ export class FarmPlannerFactory {
 
     const stageInfo = this.getStageInfo()
     for (const [k, v] of Object.entries(stageInfo)) {
+      if (options.forbiddenStageIds.includes(k)) continue
       model.variables[`battle:${k}`] = v.varRow
       // model.ints![`battle:${k}`] = true
     }

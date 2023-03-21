@@ -1,5 +1,4 @@
-import { Alignment, Button, Icon, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
-import target from '@blueprintjs/icons/lib/esm/generated-icons/16px/paths/target'
+import { Alignment, Button, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { sortBy } from 'ramda'
 import { useCallback, useEffect } from 'react'
 import { useContainer, useInject } from '../hooks/useContainer'
@@ -7,9 +6,10 @@ import { useRequest } from '../hooks/useRequest'
 import { Container } from '../pkg/container'
 import { DataManager } from '../pkg/cpp-core/DataManager'
 import { ExcelStageTable } from '../pkg/cpp-core/excelTypes'
-import { FarmPlannerFactory } from '../pkg/cpp-core/FarmPlanner'
+import { diffGroupName, FarmPlannerFactory } from '../pkg/cpp-core/FarmPlanner'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
+import { forbiddenFormulaTagsAtom, forbiddenStageIdsAtom } from './Config'
 import { CachedImg } from './Icons'
 import { ValueTag } from './Value'
 
@@ -28,8 +28,9 @@ export async function plan(container: Container) {
   const store = container.get(Store).store
   const quantities = store.get(atoms.itemQuantities)
   const requirements = store.get(atoms.allGoalTaskRequirements)
-  const forbiddenFormulaTags = store.get(atoms.forbiddenFormulaTagsAtom)
-  const planner = await factory.build({ forbiddenFormulaTags })
+  const forbiddenFormulaTags = store.get(forbiddenFormulaTagsAtom)
+  const forbiddenStageIds = store.get(forbiddenStageIdsAtom)
+  const planner = await factory.build({ forbiddenFormulaTags, forbiddenStageIds })
   planner.setRequirements(requirements)
   planner.setQuantity(quantities)
   const result = await planner.run()
@@ -104,7 +105,10 @@ export function StageLine({ run }: { run: StageRun }) {
             </span>
             <span style={{ display: 'inline-flex' }}>
               <Tag>
-                <code style={{ fontSize: '110%' }}>{run.stage.code}</code>
+                <code style={{ fontSize: '110%' }}>
+                  {diffGroupName[run.stage.diffGroup] || ''}
+                  {run.stage.code}
+                </code>
               </Tag>
               {`×${run.count}`}
             </span>

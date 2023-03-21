@@ -1,11 +1,7 @@
-import { Menu, Button, MenuItem } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
-import { WritableAtom, atom, useAtom } from 'jotai'
+import { atom, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { type, without } from 'ramda'
-import React, { SetStateAction } from 'react'
+import { SetStateAction } from 'react'
 import { FormulaTag } from '../pkg/cpp-core/DataManager'
-import { SetValueOptionMenuItem } from './Value'
 
 export enum ValueType {
   Ap = 'ap',
@@ -17,6 +13,7 @@ export enum ValueType {
 export interface Preference {
   valueType: ValueType
   forbiddenFormulaTags: FormulaTag[]
+  forbiddenStageIds: string[]
 }
 
 const preferenceStorageAtom = atomWithStorage<Preference>('cpp_preference', undefined as any)
@@ -29,6 +26,7 @@ export const preferenceAtom: WritableAtom<Preference, [Preference | SetStateActi
     const value = Object.assign({}, get(preferenceStorageAtom) || {})
     if (value.valueType == null) value.valueType = ValueType.Ap
     if (value.forbiddenFormulaTags == null) value.forbiddenFormulaTags = []
+    if (value.forbiddenStageIds == null) value.forbiddenStageIds = []
     return value
   },
   (get, set, value: Preference | SetStateAction<Preference>) =>
@@ -55,36 +53,12 @@ export const forbiddenFormulaTagsAtom = atom(
   },
 )
 
-export function ForbiddenFormulaTag({ tag, text }: { tag: FormulaTag; text: React.ReactNode }) {
-  const [tags, setTags] = useAtom(forbiddenFormulaTagsAtom)
-  return (
-    <MenuItem
-      icon={tags.includes(tag) ? 'tick' : 'blank'}
-      text={text}
-      onClick={() =>
-        setTags((t) => {
-          if (t.includes(tag)) return without([tag], t)
-          return [...t, tag]
-        })
-      }
-    />
-  )
-}
-export function ConfigButton() {
-  return (
-    <Popover2
-      usePortal={true}
-      minimal={true}
-      content={
-        <Menu>
-          <ForbiddenFormulaTag tag={FormulaTag.WorkshopRarity2} text="不从绿材料合成蓝材料" />
-        </Menu>
-      }
-      position="bottom-left"
-    >
-      <Button icon={'properties'} minimal={true} rightIcon={'chevron-down'}>
-        选项
-      </Button>
-    </Popover2>
-  )
-}
+export const forbiddenStageIdsAtom = atom(
+  (get) => get(preferenceAtom).forbiddenStageIds || [],
+  (get, set, value: string[] | SetStateAction<string[]>) => {
+    set(preferenceAtom, (r) => ({
+      ...r,
+      forbiddenStageIds: typeof value === 'function' ? value(get(preferenceAtom).forbiddenStageIds || []) : value,
+    }))
+  },
+)
