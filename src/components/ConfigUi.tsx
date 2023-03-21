@@ -76,6 +76,10 @@ function makeNumericSortable(x: string) {
   return x.replace(/\d+/g, (y) => String(y).padStart(20, '0'))
 }
 
+const zoneNameOverrides: Record<string, string> = {
+  weekly_chips: '芯片搜索',
+}
+
 const zoneReplacement: Record<string, string> = {
   weekly_1: 'weekly_chips',
   weekly_2: 'weekly_chips',
@@ -84,7 +88,8 @@ const zoneReplacement: Record<string, string> = {
 }
 
 export function StagePopover() {
-  const stageInfo = useInject(FarmPlannerFactory).getStageInfo()
+  const factory = useInject(FarmPlannerFactory)
+  const stageInfo = factory.getStageInfo()
   const allStageIds = Object.keys(stageInfo)
   const grouped = sortBy(
     (x) => makeNumericSortable(x[0]),
@@ -96,21 +101,23 @@ export function StagePopover() {
           return zoneId
         },
         sortBy((x) => {
-          const dg = stageInfo[x].excel.diffGroup
           return makeNumericSortable(x)
         }, allStageIds),
       ),
     ),
   )
-  console.log(grouped)
 
   return (
     <div style={{ minWidth: '200px', maxWidth: '60vw', maxHeight: '80vh', overflow: 'auto' }}>
       {grouped.map(([k, stages]) => {
+        const zoneName = zoneNameOverrides[k] ? zoneNameOverrides[k] : factory.zoneNames[k]
         return (
           <>
             <Card style={{ padding: 15 }}>
-              <h5 style={{ margin: 0, padding: 0 }}>{k}</h5>
+              <h4 style={{ margin: 0, padding: 0 }}>
+                {zoneName}
+                <span style={{ opacity: 0.5, fontWeight: 'normal' }}> ({k})</span>
+              </h4>
               {stages.map((x) => {
                 return <ForbiddenStageIdTag stageId={x} />
               })}

@@ -1103,3 +1103,119 @@ export namespace ExcelStageTable {
     dropInfo: { [key: string]: DropInfo }
   }
 }
+
+export interface ExcelRetroTable {
+  stageList: { [key: string]: ExcelStageTable.Stage }
+  zoneToRetro: Record<string, string>
+  retroActList: Record<
+    string,
+    {
+      retroId: string
+      type: number
+      linkedActId: string[]
+      startTime: number
+      trailStartTime: number
+      index: number
+      name: string
+      detail: string
+      haveTrail: boolean
+      customActId: string | null
+      customActType: string
+    }
+  >
+}
+
+export interface ExcelZoneTable {
+  zones: { [key: string]: ExcelZoneTable.Zone }
+  weeklyAdditionInfo: { [key: string]: ExcelZoneTable.WeeklyAdditionInfo }
+  zoneValidInfo: { [key: string]: ExcelZoneTable.ZoneValidInfo }
+  mainlineAdditionInfo: { [key: string]: ExcelZoneTable.MainlineAdditionInfo }
+  zoneRecordGroupedData: { [key: string]: ExcelZoneTable.ZoneRecordGroupedData }
+  zoneRecordRewardData: Record<string, string[]>
+}
+
+export namespace ExcelZoneTable {
+  export interface MainlineAdditionInfo {
+    zoneId: string
+    chapterId: string
+    preposedZoneId: null | string
+    zoneIndex: number
+    startStageId: string
+    endStageId: string
+    mainlneBgName: string
+    recapId: string
+    recapPreStageId: string
+    buttonName: string
+    buttonStyle: string
+    spoilAlert: boolean
+    zoneOpenTime: number
+    diffGroup: number[]
+  }
+
+  export interface WeeklyAdditionInfo {
+    daysOfWeek: number[]
+    type: string
+  }
+
+  export interface ZoneRecordGroupedData {
+    zoneId: string
+    records: Record[]
+    unlockData: UnlockData
+  }
+
+  export interface Record {
+    recordId: string
+    zoneId: string
+    recordTitleName: string
+    preRecordId: null | string
+    nodeTitle1: null | string
+    nodeTitle2: null | string
+    rewards: Reward[]
+  }
+
+  export interface Reward {
+    bindStageId: string
+    stageDiff1: number
+    stageDiff: number
+    picRes: null | string
+    textPath: null | string
+    textDesc: null | string
+    recordReward: RecordReward[] | null
+  }
+
+  export interface RecordReward {
+    id: string
+    count: number
+    type: string
+  }
+
+  export interface UnlockData {
+    noteId: string
+    zoneId: string
+    initialName: string
+    finalName: null | string
+    accordingExposeId: null | string
+    initialDes: string
+    finalDes: null | string
+    remindDes: null | string
+  }
+
+  export interface ZoneValidInfo {
+    startTs: number
+    endTs: number
+  }
+
+  export interface Zone {
+    zoneID: string
+    zoneIndex: number
+    type: string
+    zoneNameFirst: null | string
+    zoneNameSecond: null | string
+    zoneNameTitleCurrent: null | string
+    zoneNameTitleUnCurrent: null | string
+    zoneNameTitleEx: null | string
+    zoneNameThird: null | string
+    lockedText: null | string
+    canPreview: boolean
+  }
+}

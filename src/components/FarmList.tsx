@@ -39,11 +39,12 @@ export async function plan(container: Container) {
   }
 
   let ap = 0
+  const stageInfo = factory.getStageInfo()
   const stageRuns: StageRun[] = []
   for (const [k, v] of Object.entries(result)) {
     if (k.startsWith('battle:')) {
       const stageId = k.slice('battle:'.length)
-      const stage = dm.raw.exStage.stages[stageId]
+      const stage = stageInfo[stageId].excel
       const count = Math.ceil(Number(v || 0))
       stageRuns.push({ stageId, stage, count, apCost: count * stage.apCost })
       ap += count * stage.apCost

@@ -5,9 +5,11 @@ import {
   ExcelCharacterTable,
   ExcelItemTable,
   ExcelPatchCharacterTable,
+  ExcelRetroTable,
   ExcelSkillTable,
   ExcelStageTable,
   ExcelUniEquipTable,
+  ExcelZoneTable,
 } from './excelTypes'
 import { PenguinMatrix } from './penguinTypes'
 import { YituliuValue } from './yituliuTypes'
@@ -61,6 +63,12 @@ export class DataManager {
       ),
       exStage: DataManager.loadJson<ExcelStageTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/stage_table.json',
+      ),
+      exRetro: DataManager.loadJson<ExcelRetroTable>(
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/retro_table.json',
+      ),
+      exZone: DataManager.loadJson<ExcelZoneTable>(
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/zone_table.json',
       ),
       yituliuValue: DataManager.loadJson<YituliuValue[]>('https://backend.yituliu.site/api/item/export/json'),
       penguinMatrix: DataManager.loadJson<PenguinMatrix>(

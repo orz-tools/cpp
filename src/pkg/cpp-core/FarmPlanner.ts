@@ -13,7 +13,8 @@ export const diffGroupName = {
 export class FarmPlannerFactory {
   dataManager = Inject(DataManager)
 
-  stageInfo: Record<
+  zoneNames: Record<string, string> = {}
+  private stageInfo: Record<
     string,
     {
       excel: ExcelStageTable.Stage
@@ -33,7 +34,20 @@ export class FarmPlannerFactory {
     const now = Date.now()
     const map = new Map<string, FarmPlannerFactory['stageInfo'][any]>()
     this.stageInfo = {}
+    this.zoneNames = {}
     this.cacheExpiresAt = Infinity
+    const loadZoneName = (stageInfo: ExcelStageTable.Stage, isRetro: boolean) => {
+      if (this.zoneNames[stageInfo.zoneId]) return
+      if (isRetro) {
+        const retroId = this.dataManager.raw.exRetro.zoneToRetro[stageInfo.zoneId]
+        if (retroId) {
+          this.zoneNames[stageInfo.zoneId] = this.dataManager.raw.exRetro.retroActList[retroId]?.name
+        }
+      } else {
+        const zone = this.dataManager.raw.exZone.zones[stageInfo.zoneId]
+        this.zoneNames[stageInfo.zoneId] = [zone?.zoneNameFirst || '', zone?.zoneNameSecond || ''].join(' ')
+      }
+    }
     for (const i of this.dataManager.raw.penguinMatrix.matrix) {
       if (i.start && i.start > now) {
         this.cacheExpiresAt = Math.min(this.cacheExpiresAt, i.start)
@@ -43,15 +57,27 @@ export class FarmPlannerFactory {
       }
       if (i.start > now || (i.end && i.end < now)) continue
       if (!this.dataManager.data.items[i.itemId]) continue
-      if (!this.dataManager.raw.exStage.stages[i.stageId]) continue
-      if (i.stageId.startsWith('wk_armor_')) continue // SK-...
 
-      const stageInfo = this.dataManager.raw.exStage.stages[i.stageId]
-      let stage = map.get(i.stageId)
+      let stageId = i.stageId
+      if (stageId.startsWith('wk_armor_')) continue // SK-...
+
+      let stageInfo = this.dataManager.raw.exStage.stages[stageId]
+      let isRetro = false
+      if (stageId.endsWith('_perm')) {
+        stageId = stageId.slice(0, stageId.length - 5)
+        stageInfo = this.dataManager.raw.exRetro.stageList[stageId]
+        isRetro = true
+      }
+      if (!stageInfo) {
+        continue
+      }
+      loadZoneName(stageInfo, isRetro)
+
+      let stage = map.get(stageId)
       if (!stage) {
         stage = { excel: stageInfo, varRow: {}, samples: 0, dropInfo: {}, sortedDropInfo: [] }
-        map.set(i.stageId, stage)
-        this.stageInfo[i.stageId] = stage
+        map.set(stageId, stage)
+        this.stageInfo[stageId] = stage
 
         if (!stageInfo.apCost) console.log(stageInfo)
         stage.varRow[`ap`] = stageInfo.apCost
@@ -82,6 +108,7 @@ export class FarmPlannerFactory {
       stage.varRow[`item:${ITEM_GOLD}`] = gold
       map.set(stageId, stage)
       this.stageInfo[stageId] = stage
+      loadZoneName(stageInfo, false)
     }
     makeCE('wk_melee_6', 10000)
     makeCE('wk_melee_5', 7500)
@@ -104,6 +131,7 @@ export class FarmPlannerFactory {
       stage.varRow[`item:${ITEM_GOLD}`] = stageInfo.apCost * 12
       map.set(stageId, stage)
       this.stageInfo[stageId] = stage
+      loadZoneName(stageInfo, false)
     }
     makeAP('wk_toxic_5', 21)
 
