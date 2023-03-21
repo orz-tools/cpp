@@ -96,6 +96,7 @@ export function StageLine({ run }: { run: StageRun }) {
   return (
     <>
       <MenuItem
+        title={run.stageId}
         text={
           <>
             <span style={{ float: 'right', display: 'inline-flex' }}>

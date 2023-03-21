@@ -73,17 +73,20 @@ function TaskContextMenu({ task, extra }: { task: Task; extra: TaskExtra }) {
       })
     }
   }
+
   const completeTask = () => {
     store.set(atoms.currentCharacter(task.charId), (d) => {
       const type = task.type
       switch (type._) {
         case 'elite':
           d.elite = type.elite
+          d.level = 1
           break
         case 'join':
           d.level = 1
           break
         case 'level':
+          d.elite = type.elite
           d.level = type.to
           break
         case 'mod':
@@ -106,7 +109,7 @@ function TaskContextMenu({ task, extra }: { task: Task; extra: TaskExtra }) {
       <MenuItem
         text={'完成'}
         icon={'tick-circle'}
-        disabled={extra.status !== TaskStatus.Completable}
+        disabled={extra.status !== TaskStatus.Completable || !!task.depends.length}
         onClick={() => {
           store.set(atoms.dataAtom, 'transact', () => {
             consumeCost()
@@ -114,7 +117,12 @@ function TaskContextMenu({ task, extra }: { task: Task; extra: TaskExtra }) {
           })
         }}
       />
-      <MenuItem text={'强制完成（不消耗材料）'} icon={'cross-circle'} onClick={completeTask} />
+      <MenuItem
+        text={'强制完成（不消耗材料）'}
+        disabled={!!task.depends.length}
+        icon={'cross-circle'}
+        onClick={completeTask}
+      />
     </Menu>
   )
 }
@@ -187,7 +195,7 @@ export function TaskMenu({
       <Menu style={{ padding: 0 }}>
         <ContextMenu2 content={<TaskContextMenu task={task} extra={extra} />}>
           <MenuItem2
-            title={task.id}
+            // title={task.id}
             style={{ fontWeight: 'normal' }}
             text={
               <>
