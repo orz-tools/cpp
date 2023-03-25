@@ -203,7 +203,7 @@ export class FarmPlannerFactory {
         }),
     )
 
-    return new FarmPlanner(model)
+    return new FarmPlanner(model, this.dataManager)
   }
 }
 
@@ -220,7 +220,7 @@ export class FarmPlanner {
   feasible = new Set<string>()
   unfeasible = new Set<string>()
 
-  constructor(private model: IModel<ModelSolutionVar, ModelInternalVar>) {
+  constructor(private model: IModel<ModelSolutionVar, ModelInternalVar>, private dataManager: DataManager) {
     for (const [k, v] of Object.entries(this.model.variables)) {
       if (k === 'have') continue
       for (const [kk, vv] of Object.entries(v!)) {
@@ -251,9 +251,16 @@ export class FarmPlanner {
   }
 
   public setQuantity(quantities: Record<string, number>) {
+    const expItems = Object.fromEntries(
+      Object.values(this.dataManager.raw.exItems.expItems).map((x) => [x.id, x.gainExp]),
+    )
     const h = this.model.variables.have!
     for (const [k, v] of Object.entries(quantities)) {
-      h[`item:${k}`] = v
+      if (expItems[k]) {
+        h[`item:${ITEM_VIRTUAL_EXP}`] = (h[`item:${ITEM_VIRTUAL_EXP}`] || 0) + v * expItems[k]
+      } else {
+        h[`item:${k}`] = v
+      }
     }
   }
 
@@ -262,6 +269,8 @@ export class FarmPlanner {
       this.model.variables[`unfeasible:${i}`] = { [i]: 1 }
     }
     // delete this.model.ints
-    return Lpsolver.Solve(this.model, 1e-4)
+    const result = Lpsolver.Solve(this.model, 1e-4)
+    console.log(this.model, result)
+    return result
   }
 }
