@@ -41,54 +41,74 @@ export class DataManager {
   }
   public data!: Awaited<ReturnType<DataManager['transform']>>
 
-  async loadRaw() {
+  async refresh() {
+    return await this.loadRaw(true)
+  }
+
+  async loadRaw(refresh?: boolean) {
     const task = {
       exCharacters: DataManager.loadJson<ExcelCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json',
+        refresh,
       ),
       exPatchCharacters: DataManager.loadJson<ExcelPatchCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/char_patch_table.json',
+        refresh,
       ),
       exSkills: DataManager.loadJson<ExcelSkillTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/skill_table.json',
+        refresh,
       ),
       exUniEquips: DataManager.loadJson<ExcelUniEquipTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/uniequip_table.json',
+        refresh,
       ),
       exItems: DataManager.loadJson<ExcelItemTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/item_table.json',
+        refresh,
       ),
       exBuilding: DataManager.loadJson<ExcelBuildingData>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/building_data.json',
+        refresh,
       ),
       exStage: DataManager.loadJson<ExcelStageTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/stage_table.json',
+        refresh,
       ),
       exRetro: DataManager.loadJson<ExcelRetroTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/retro_table.json',
+        refresh,
       ),
       exZone: DataManager.loadJson<ExcelZoneTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/zone_table.json',
+        refresh,
       ),
-      yituliuValue: DataManager.loadJson<YituliuValue[]>('https://backend.yituliu.site/api/item/export/json'),
+      yituliuValue: DataManager.loadJson<YituliuValue[]>('https://backend.yituliu.site/api/item/export/json', refresh),
       penguinMatrix: DataManager.loadJson<PenguinMatrix>(
         'https://penguin-stats.io/PenguinStats/api/v2/result/matrix?server=CN',
+        refresh,
       ),
     }
     return (await pProps(task)) as any as { [K in keyof typeof task]: Awaited<(typeof task)[K]> }
   }
   public raw!: Awaited<ReturnType<DataManager['loadRaw']>>
 
-  private static async loadJson<T>(url: string, key = url): Promise<T> {
+  private static async loadJson<T>(url: string, refresh: boolean = false, key = url): Promise<T> {
     const fullKey = `${STORAGE_PREFIX}${key}`
+    const timeKey = `${STORAGE_PREFIX}--time--${key}`
     const existing = (await store.getItem<string>(fullKey)) || ''
-    if (existing) {
+    if (!refresh && existing) {
       try {
         return JSON.parse(existing)
       } catch {}
     }
-    const result = await (await fetch(url)).json()
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}: status ${response.status} ${response.statusText}`)
+    }
+    const result = await response.json()
     await store.setItem(fullKey, JSON.stringify(result))
+    await store.setItem(timeKey, Date.now())
     return result
   }
 

@@ -13,6 +13,7 @@ import { ValueOptionButton } from './components/Value'
 import { useInject } from './hooks/useContainer'
 import { DataManager } from './pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from './pkg/cpp-core/UserData'
+import { useRequest } from './hooks/useRequest'
 
 function UndoButtons() {
   const atoms = useInject(UserDataAtomHolder)
@@ -42,6 +43,20 @@ function UndoButtons() {
   )
 }
 
+function ReloadDataButton() {
+  const dm = useInject(DataManager)
+  const { loading, send } = useRequest(async () => {
+    await dm.refresh()
+    location.reload()
+  })
+
+  return (
+    <>
+      <Button icon="refresh" disabled={loading} text="重载数据" minimal={true} onClick={() => send()} />
+    </>
+  )
+}
+
 function App() {
   return (
     <>
@@ -57,6 +72,9 @@ function App() {
           <ValueOptionButton />
           <StageButton />
           <ConfigButton />
+        </Navbar.Group>
+        <Navbar.Group align={Alignment.RIGHT}>
+          <ReloadDataButton />
         </Navbar.Group>
       </Navbar>
       <div className="App">
@@ -141,7 +159,12 @@ export function AppWrapper() {
   }, [dm])
 
   if (!dm.initialized) {
-    return <Spinner size={200} />
+    return (
+      <>
+        <Spinner size={200} />
+        <ReloadDataButton />
+      </>
+    )
   }
 
   return <App />
