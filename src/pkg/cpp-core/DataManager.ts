@@ -129,6 +129,7 @@ export class DataManager {
     const result = await response.json()
     await store.setItem(fullKey, JSON.stringify(result))
     await store.setItem(timeKey, Date.now())
+    console.log(`Updated ${url}`)
     return result
   }
 
