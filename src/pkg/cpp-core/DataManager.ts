@@ -84,7 +84,7 @@ export class DataManager {
         refresh,
       ),
       yituliuValue: DataManager.loadJson<YituliuValue[]>(
-        'https://backend.yituliu.site/api/item/export/json',
+        'https://backend.yituliu.site/item/export/json',
         refresh,
         undefined,
         () => [],
