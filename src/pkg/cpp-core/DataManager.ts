@@ -112,19 +112,28 @@ export class DataManager {
         return JSON.parse(existing)
       } catch {}
     }
-    const response = await fetch(url)
-    if (!response.ok) {
+    let log = undefined
+    let response: Response | undefined = undefined
+    try {
+      response = await fetch(url)
+      if (!response.ok) {
+        log = `status ${response.status} ${response.statusText}`
+      }
+    } catch (e: any) {
+      log = String(e?.message || '')
+    }
+    if (log !== undefined || !response) {
       if (existing) {
         try {
-          console.warn(`Failed to fetch ${url}: status ${response.status} ${response.statusText}, using existing`)
+          console.warn(`Failed to fetch ${url}: ${log}, using existing`)
           return JSON.parse(existing)
         } catch {}
       }
       if (shitDefault !== undefined) {
-        console.warn(`Failed to fetch ${url}: status ${response.status} ${response.statusText}, using shit default`)
+        console.warn(`Failed to fetch ${url}: ${log}, using shit default`)
         return shitDefault()
       }
-      throw new Error(`Failed to fetch ${url}: status ${response.status} ${response.statusText}`)
+      throw new Error(`Failed to fetch ${url}: ${log}`)
     }
     const result = await response.json()
     await store.setItem(fullKey, JSON.stringify(result))
