@@ -83,7 +83,12 @@ export class DataManager {
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/zone_table.json',
         refresh,
       ),
-      yituliuValue: DataManager.loadJson<YituliuValue[]>('https://backend.yituliu.site/api/item/export/json', refresh, undefined, () => []),
+      yituliuValue: DataManager.loadJson<YituliuValue[]>(
+        'https://backend.yituliu.site/api/item/export/json',
+        refresh,
+        undefined,
+        () => [],
+      ),
       penguinMatrix: DataManager.loadJson<PenguinMatrix>(
         'https://penguin-stats.io/PenguinStats/api/v2/result/matrix?server=CN',
         refresh,
@@ -93,7 +98,12 @@ export class DataManager {
   }
   public raw!: Awaited<ReturnType<DataManager['loadRaw']>>
 
-  private static async loadJson<T>(url: string, refresh: boolean = false, key = url, shitDefault: (() => T) | undefined = undefined): Promise<T> {
+  private static async loadJson<T>(
+    url: string,
+    refresh: boolean = false,
+    key = url,
+    shitDefault: (() => T) | undefined = undefined,
+  ): Promise<T> {
     const fullKey = `${STORAGE_PREFIX}${key}`
     const timeKey = `${STORAGE_PREFIX}--time--${key}`
     const existing = (await store.getItem<string>(fullKey)) || ''
@@ -104,7 +114,14 @@ export class DataManager {
     }
     const response = await fetch(url)
     if (!response.ok) {
+      if (existing) {
+        try {
+          console.warn(`Failed to fetch ${url}: status ${response.status} ${response.statusText}, using existing`)
+          return JSON.parse(existing)
+        } catch {}
+      }
       if (shitDefault !== undefined) {
+        console.warn(`Failed to fetch ${url}: status ${response.status} ${response.statusText}, using shit default`)
         return shitDefault()
       }
       throw new Error(`Failed to fetch ${url}: status ${response.status} ${response.statusText}`)
