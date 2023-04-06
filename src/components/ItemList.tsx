@@ -476,6 +476,7 @@ export function buildItemList(dm: DataManager) {
           if (x.key.startsWith('act')) return false
           if (x.key.startsWith('tier')) return false
           if (x.key.startsWith('p_char')) return false
+          if (x.key.startsWith('class_p_char')) return false
           return true
         })
         .sort((a, b) => {
