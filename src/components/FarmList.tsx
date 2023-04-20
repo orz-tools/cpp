@@ -21,13 +21,13 @@ interface StageRun {
 }
 
 /*factory: FarmPlannerFactory, requirements: Record<string, number>, quantity: Record<string, number>*/
-export async function plan(container: Container) {
+export async function plan(container: Container, finished: boolean) {
   const factory = container.get(FarmPlannerFactory)
   const dm = container.get(DataManager)
   const atoms = container.get(UserDataAtomHolder)
   const store = container.get(Store).store
   const quantities = store.get(atoms.itemQuantities)
-  const requirements = store.get(atoms.allGoalTaskRequirements)
+  const requirements = store.get(finished ? atoms.allFinishedTaskRequirements : atoms.allGoalTaskRequirements)
   const forbiddenFormulaTags = store.get(forbiddenFormulaTagsAtom)
   const forbiddenStageIds = store.get(forbiddenStageIdsAtom)
   const planner = await factory.build({ forbiddenFormulaTags, forbiddenStageIds })
@@ -57,7 +57,8 @@ export async function plan(container: Container) {
 export function FarmList() {
   const container = useContainer()
   const { loading, response, send, error } = useRequest(plan)
-  const refresh = useCallback(() => send(container), [container, send])
+  const refresh = useCallback(() => send(container, false), [container, send])
+  const refreshAll = useCallback(() => send(container, true), [container, send])
   useEffect(() => {
     if (error) {
       console.log(error)
@@ -73,6 +74,7 @@ export function FarmList() {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}>
+          <Button text={''} minimal={true} disabled={loading} onClick={refreshAll} />
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
             minimal={true}
