@@ -119,7 +119,7 @@ export function StagePopover() {
                 <span style={{ opacity: 0.5, fontWeight: 'normal' }}> ({k})</span>
               </h4>
               {stages.map((x) => {
-                return <ForbiddenStageIdTag stageId={x} />
+                return <ForbiddenStageIdTag stageId={x} key={x} />
               })}
             </Card>
           </>

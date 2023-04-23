@@ -48,7 +48,14 @@ export class FarmPlannerFactory {
         this.zoneNames[stageInfo.zoneId] = [zone?.zoneNameFirst || '', zone?.zoneNameSecond || ''].join(' ')
       }
     }
+    const matrixKeys = new Set(this.dataManager.raw.penguinMatrix.matrix.map((x) => x.stageId))
+    for (const stageId of matrixKeys) {
+      if (stageId.endsWith('_rep')) {
+        matrixKeys.delete(stageId.slice(0, stageId.length - 4) + '_perm')
+      }
+    }
     for (const i of this.dataManager.raw.penguinMatrix.matrix) {
+      if (!matrixKeys.has(i.stageId)) continue
       if (i.start && i.start > now) {
         this.cacheExpiresAt = Math.min(this.cacheExpiresAt, i.start)
       }
@@ -65,6 +72,7 @@ export class FarmPlannerFactory {
       let isRetro = false
       if (stageId.endsWith('_rep')) {
         stageId = stageId.slice(0, stageId.length - 4)
+        stageInfo = this.dataManager.raw.exStage.stages[stageId]
       } else if (stageId.endsWith('_perm')) {
         stageId = stageId.slice(0, stageId.length - 5)
         stageInfo = this.dataManager.raw.exRetro.stageList[stageId]
