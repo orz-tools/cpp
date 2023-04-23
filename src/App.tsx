@@ -14,6 +14,7 @@ import { useInject } from './hooks/useContainer'
 import { DataManager } from './pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from './pkg/cpp-core/UserData'
 import { useRequest } from './hooks/useRequest'
+import { LogList } from './components/LogList'
 
 function UndoButtons() {
   const atoms = useInject(UserDataAtomHolder)
@@ -131,7 +132,17 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '350px',
+            width: '300px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <LogList />
+        </section>
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
+            width: '300px',
             display: 'flex',
             flexDirection: 'column',
           }}

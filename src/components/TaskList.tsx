@@ -7,7 +7,7 @@ import React, { SetStateAction, useCallback, useEffect, useMemo, useRef } from '
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ListChildComponentProps, ListItemKeySelector, VariableSizeList } from 'react-window'
 import { useInject } from '../hooks/useContainer'
-import { Character, DataManager } from '../pkg/cpp-core/DataManager'
+import { Character, DataManager, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
 import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
 import { Task, TaskType, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { Store } from '../Store'
@@ -63,14 +63,48 @@ function throwBad(p: never): never {
 }
 
 function TaskContextMenu({ task, extra }: { task: Task; extra: TaskExtra }) {
+  const dm = useInject(DataManager)
   const atoms = useInject(UserDataAtomHolder)
   const store = useInject(Store).store
   const consumeCost = () => {
     for (const i of task.requires) {
-      store.set(atoms.itemQuantity(i.itemId), (e) => {
-        console.assert(e - i.quantity > 0)
-        return e - i.quantity
-      })
+      if (i.itemId == ITEM_VIRTUAL_EXP) {
+        let exp = i.quantity
+        const expItems = Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)
+        const quantities: Record<string, number> = Object.create(null)
+        const cost: Record<string, number> = Object.create(null)
+        for (const expItem of expItems) {
+          quantities[expItem.id] = store.get(atoms.itemQuantity(expItem.id))
+          cost[expItem.id] = 0
+        }
+        for (const expItem of expItems) {
+          if (!quantities[expItem.id]) continue
+          const need = Math.min(quantities[expItem.id], Math.floor(exp / expItem.gainExp))
+          exp -= need * expItem.gainExp
+          quantities[expItem.id] = quantities[expItem.id] - need
+          cost[expItem.id] += need
+        }
+        const smallestExpItemWithQuantity = expItems.reverse().find((x) => quantities[x.id] > 0)
+        if (exp === 0) {
+        } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity.gainExp) {
+          exp = 0
+          quantities[smallestExpItemWithQuantity.id] -= 1
+          cost[smallestExpItemWithQuantity.id] += 1
+        } else {
+          console.assert(false, 'virtual exp failed')
+        }
+        for (const [itemId, quantity] of Object.entries(cost)) {
+          store.set(atoms.itemQuantity(itemId), (e) => {
+            console.assert(e - quantity > 0, 'exp item failed')
+            return e - quantity
+          })
+        }
+      } else {
+        store.set(atoms.itemQuantity(i.itemId), (e) => {
+          console.assert(e - i.quantity > 0, 'normal item failed')
+          return e - i.quantity
+        })
+      }
     }
   }
 

@@ -151,7 +151,7 @@ export class FarmPlannerFactory {
         if (expItems[i[0]]) {
           return 1000 + expItems[i[0]]
         }
-        return -i[1]
+        return -(this.dataManager.data.items[i[0]].valueAsAp || 0) * i[1]
       }, Object.entries(i.dropInfo))
     }
 

@@ -11,7 +11,7 @@ export function AboutList() {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}></Navbar.Group>
-        <Navbar.Group align={Alignment.LEFT}></Navbar.Group>
+        <Navbar.Group align={Alignment.LEFT}>关于</Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
         <MenuDivider title="联系" />
