@@ -63,7 +63,9 @@ export class FarmPlannerFactory {
 
       let stageInfo = this.dataManager.raw.exStage.stages[stageId]
       let isRetro = false
-      if (stageId.endsWith('_perm')) {
+      if (stageId.endsWith('_rep')) {
+        stageId = stageId.slice(0, stageId.length - 4)
+      } else if (stageId.endsWith('_perm')) {
         stageId = stageId.slice(0, stageId.length - 5)
         stageInfo = this.dataManager.raw.exRetro.stageList[stageId]
         isRetro = true
