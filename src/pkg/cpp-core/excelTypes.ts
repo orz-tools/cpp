@@ -107,7 +107,8 @@ export namespace ExcelCharacterTable {
     skillId: null | string
     overridePrefabKey: null | string
     overrideTokenKey: null | string
-    levelUpCostCond: LevelUpCostCond[]
+    specializeLevelUpData?: LevelUpCostCond[]
+    levelUpCostCond?: LevelUpCostCond[]
     unlockCond: UnlockCond
   }
 

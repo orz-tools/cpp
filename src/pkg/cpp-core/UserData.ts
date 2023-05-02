@@ -644,7 +644,7 @@ function generateTasks(
       skillDep = add(
         { _: 'skill', to: skillLevel + 1 },
         [
-          ...(character.raw.allSkillLvlup[skillLevel - 1].lvlUpCost || []).map((x) => ({
+          ...(character.allSkillLvlup[skillLevel - 1].lvlUpCost || []).map((x) => ({
             itemId: x.id,
             quantity: x.count,
           })),
@@ -662,16 +662,17 @@ function generateTasks(
     const sg = goal.skillMaster[skillId] || sc
     let sDep: typeof dep = undefined
     if (sg > 0) meetEliteLevel(2, 1)
+    const sdata = character.skills.find((x) => x[0].skillId == skillId)?.[0]
+    const data = sdata?.specializeLevelUpData || sdata?.levelUpCostCond
+    if (!data) continue
     while (sc < sg) {
       sDep = add(
         { _: 'skillMaster', skillId: skillId, to: sc + 1 },
         [
-          ...(character.skills.find((x) => x[0].skillId == skillId)?.[0].levelUpCostCond[sc].levelUpCost || []).map(
-            (x) => ({
-              itemId: x.id,
-              quantity: x.count,
-            }),
-          ),
+          ...(data[sc].levelUpCost || []).map((x) => ({
+            itemId: x.id,
+            quantity: x.count,
+          })),
         ],
         dep,
         skillDep,

@@ -47,6 +47,10 @@ export class DataManager {
 
   async loadRaw(refresh?: boolean) {
     const task = {
+      exCharacters1: DataManager.loadJson<ExcelCharacterTable>(
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/627efb6d7009f66135aac5f19d145026ac28f3f8/zh_CN/gamedata/excel/character_table.json',
+        refresh,
+      ),
       exCharacters: DataManager.loadJson<ExcelCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json',
         refresh,
@@ -163,6 +167,7 @@ export class DataManager {
       Object.entries(this.raw.exItems.items).map(([key, raw]) => [key, new Item(key, raw, this)]),
     )
     items[ITEM_VIRTUAL_EXP] = new ExpItem(ITEM_VIRTUAL_EXP, this)
+    items[ITEM_UNKNOWN_SHIT] = new UnknownShitItem(ITEM_UNKNOWN_SHIT, this)
 
     return items
   }
@@ -317,6 +322,10 @@ export class Character {
 
   private readonly patches: (readonly [string, ExcelCharacterTable.Character])[] = []
 
+  get v1raw() {
+    return this.dm.raw.exCharacters1[this.key]
+  }
+
   get avatar() {
     return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/avatar/${encodeURIComponent(
       this.key,
@@ -355,7 +364,14 @@ export class Character {
   }
 
   get rarity() {
-    return this.raw.rarity
+    return {
+      TIER_1: 0,
+      TIER_2: 1,
+      TIER_3: 2,
+      TIER_4: 3,
+      TIER_5: 4,
+      TIER_6: 5,
+    }[this.raw.rarity]!
   }
 
   get maxElite() {
@@ -368,6 +384,26 @@ export class Character {
 
   get modUnlockLevel() {
     return this.dm.data.constants.modUnlockLevel[this.rarity]
+  }
+
+  get allSkillLvlup() {
+    if (this.raw?.allSkillLvlup) {
+      return this.raw.allSkillLvlup
+    }
+    if (this.v1raw?.allSkillLvlup) {
+      return this.v1raw.allSkillLvlup
+    }
+    const cost: ExcelCharacterTable.AllSkillLvlup = {
+      lvlUpCost: [
+        {
+          count: 0,
+          id: ITEM_UNKNOWN_SHIT,
+          type: UnknownShitItem.itemType,
+        },
+      ],
+      unlockCond: null as any,
+    }
+    return [cost, cost, cost, cost, cost, cost, cost]
   }
 }
 
@@ -485,5 +521,37 @@ export class ExpItem extends Item {
   }
 }
 
+export class UnknownShitItem extends Item {
+  static itemType = '#__UNKNOWN_SHIT'
+
+  constructor(key: string, dm: DataManager) {
+    super(
+      key,
+      {
+        itemId: key,
+        name: '未知材料~(￣▽￣)~*',
+        description: '暂时没有数据捏~(￣▽￣)~*',
+        rarity: 4,
+        iconId: 'AP_GAMEPLAY',
+        overrideBkg: null,
+        stackIconId: null,
+        sortId: 10005,
+        usage: '不知道捏~(￣▽￣)~*',
+        obtainApproach: '~(￣▽￣)~*',
+        classifyType: ExcelItemTable.ClassifyType.None,
+        itemType: UnknownShitItem.itemType,
+        stageDropList: [],
+        buildingProductList: [],
+      },
+      dm,
+    )
+  }
+
+  protected override _generateValueAsAp() {
+    return NaN
+  }
+}
+
 export const ITEM_GOLD = '4001'
 export const ITEM_VIRTUAL_EXP = '##EXP'
+export const ITEM_UNKNOWN_SHIT = '#__UNKNOWN_SHIT'

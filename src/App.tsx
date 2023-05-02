@@ -82,6 +82,16 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
+            width: '300px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <LogList />
+        </section>
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
             width: '730px',
             display: 'flex',
             flexDirection: 'column',
@@ -128,16 +138,6 @@ function App() {
           }}
         >
           <FarmList />
-        </section>
-        <section
-          className={Classes.ELEVATION_1}
-          style={{
-            width: '300px',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <LogList />
         </section>
         <section
           className={Classes.ELEVATION_1}
