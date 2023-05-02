@@ -548,7 +548,7 @@ export class UnknownShitItem extends Item {
   }
 
   protected override _generateValueAsAp() {
-    return NaN
+    return undefined
   }
 }
 
