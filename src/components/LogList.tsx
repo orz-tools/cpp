@@ -10,6 +10,7 @@ const externalLinkProps = {
 } satisfies React.AnchorHTMLAttributes<HTMLAnchorElement>
 
 const logs = [
+  { date: '2023-05-03', type: 'fix', desc: '换用 yuanyan3060 的数据源' },
   { date: '2023-05-02', type: 'fix', desc: '随便适配一下新数据，但不完全工作' },
   { date: '2023-04-23', type: 'optimize', desc: '以价值排序刷图产物' },
   { date: '2023-04-23', type: 'fix', desc: '任务完成时正确消耗经验道具' },
@@ -36,9 +37,10 @@ export function LogList() {
           return (
             <React.Fragment key={k}>
               <MenuDivider title={k} />
-              {v.map((vv) => {
+              {v.map((vv, index) => {
                 return (
                   <MenuItem
+                    key={index}
                     icon={vv.type in iconMap ? (iconMap as any)[vv.type] : ''}
                     text={<div style={{ fontWeight: 'normal', opacity: 0.75 }}>{vv.desc}</div>}
                     multiline={true}
