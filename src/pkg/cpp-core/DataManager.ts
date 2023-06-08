@@ -23,11 +23,17 @@ const store = localForage.createInstance({
 export class DataManager {
   async init() {
     this.initialized = false
-    this.raw = await this.loadRaw()
-    this.data = await this.transform()
+    try {
+      this.raw = await this.loadRaw()
+      this.data = await this.transform()
+    } catch (e) {
+      this.error = e as any
+      throw e
+    }
     this.initialized = true
   }
   public initialized: boolean = false
+  public error?: Error
 
   async transform() {
     return {
@@ -52,39 +58,39 @@ export class DataManager {
         refresh,
       ),
       exCharacters: DataManager.loadJson<ExcelCharacterTable>(
-        'https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/master/gamedata/excel/character_table.json',
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json',
         refresh,
       ),
       exPatchCharacters: DataManager.loadJson<ExcelPatchCharacterTable>(
-        'https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/master/gamedata/excel/char_patch_table.json',
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/char_patch_table.json',
         refresh,
       ),
       exSkills: DataManager.loadJson<ExcelSkillTable>(
-        'https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/master/gamedata/excel/skill_table.json',
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/skill_table.json',
         refresh,
       ),
       exUniEquips: DataManager.loadJson<ExcelUniEquipTable>(
-        'https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/master/gamedata/excel/uniequip_table.json',
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/uniequip_table.json',
         refresh,
       ),
       exItems: DataManager.loadJson<ExcelItemTable>(
-        'https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/master/gamedata/excel/item_table.json',
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/item_table.json',
         refresh,
       ),
       exBuilding: DataManager.loadJson<ExcelBuildingData>(
-        'https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/master/gamedata/excel/building_data.json',
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/building_data.json',
         refresh,
       ),
       exStage: DataManager.loadJson<ExcelStageTable>(
-        'https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/master/gamedata/excel/stage_table.json',
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/stage_table.json',
         refresh,
       ),
       exRetro: DataManager.loadJson<ExcelRetroTable>(
-        'https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/master/gamedata/excel/retro_table.json',
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/retro_table.json',
         refresh,
       ),
       exZone: DataManager.loadJson<ExcelZoneTable>(
-        'https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/master/gamedata/excel/zone_table.json',
+        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/zone_table.json',
         refresh,
       ),
       yituliuValue: DataManager.loadJson<YituliuValue[]>(
@@ -322,10 +328,6 @@ export class Character {
 
   private readonly patches: (readonly [string, ExcelCharacterTable.Character])[] = []
 
-  get v1raw() {
-    return this.dm.raw.exCharacters1[this.key]
-  }
-
   get avatar() {
     return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/avatar/${encodeURIComponent(
       this.key,
@@ -395,9 +397,6 @@ export class Character {
   get allSkillLvlup() {
     if (this.raw?.allSkillLvlup) {
       return this.raw.allSkillLvlup
-    }
-    if (this.v1raw?.allSkillLvlup) {
-      return this.v1raw.allSkillLvlup
     }
     const cost: ExcelCharacterTable.AllSkillLvlup = {
       lvlUpCost: [

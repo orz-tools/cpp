@@ -1,6 +1,6 @@
 import { Alignment, Button, Classes, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useState } from 'react'
+import { ErrorInfo, useEffect, useState } from 'react'
 import './App.css'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
@@ -15,6 +15,7 @@ import { DataManager } from './pkg/cpp-core/DataManager'
 import { UserDataAtomHolder } from './pkg/cpp-core/UserData'
 import { useRequest } from './hooks/useRequest'
 import { LogList } from './components/LogList'
+import React from 'react'
 
 function UndoButtons() {
   const atoms = useInject(UserDataAtomHolder)
@@ -155,12 +156,12 @@ function App() {
   )
 }
 
-export function AppWrapper() {
+function SuperAppWrapper() {
   const dm = useInject(DataManager)
   const [, setTicker] = useState(0)
   useEffect(() => {
     let timer: null | ReturnType<typeof setInterval> = setInterval(() => {
-      if (dm.initialized) {
+      if (dm.error || dm.initialized) {
         clearTimeout(timer!)
         timer = null
         setTicker((x) => x + 1)
@@ -168,6 +169,8 @@ export function AppWrapper() {
     }, 100)
     return () => void (timer && clearTimeout(timer!))
   }, [dm])
+
+  if (dm.error) throw dm.error
 
   if (!dm.initialized) {
     return (
@@ -179,4 +182,49 @@ export function AppWrapper() {
   }
 
   return <App />
+}
+
+export function AppWrapper() {
+  return (
+    <ErrorBoundary>
+      <SuperAppWrapper />
+    </ErrorBoundary>
+  )
+}
+
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error?: Error }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error: error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error('error occurred!', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <>
+          <h1>Oops!</h1>
+
+          <Navbar>
+            <Navbar.Group align={Alignment.LEFT}>
+              你不妨试试
+              <ReloadDataButton />
+            </Navbar.Group>
+          </Navbar>
+
+          {this.state.error ? <pre>{this.state.error.message}</pre> : null}
+          {this.state.error ? <pre>{this.state.error.stack}</pre> : null}
+        </>
+      )
+    }
+
+    return this.props.children
+  }
 }
