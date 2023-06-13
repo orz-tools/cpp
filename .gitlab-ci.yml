@@ -3,6 +3,7 @@ build:
   script:
     - yarn
     - yarn build
+    - cp dist/index.html dist/404.html
     - |
       tar c dist | curl \
         -s \
