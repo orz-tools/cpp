@@ -1,31 +1,51 @@
 import { FocusStyleManager } from '@blueprintjs/core'
-import { Provider } from 'jotai'
 import ReactDOM from 'react-dom/client'
-import { AppWrapper } from './App'
-import { Cpp, CppContext } from './Cpp'
-import './index.css'
-import { ArknightsAdapter } from './pkg/cpp-arknights/GameAdapter'
-
-const storagePrefix = 'cpp_'
-const cpp = new Cpp(storagePrefix, '', new ArknightsAdapter())
-void cpp.gameAdapter.getDataManager().init()
-
-Object.assign(globalThis, {
-  $cpp: cpp,
-  $dm: cpp.gameAdapter.getDataManager(),
-  $ga: cpp.gameAdapter,
-  $store: cpp.store,
-  $atoms: cpp.atoms,
-})
-
+import { Home } from './components/Home'
+import { runCpp } from './entry'
+import { formatProfileName, games } from './profiles'
 FocusStyleManager.onlyShowFocusOnTabs()
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  // <React.StrictMode>
-  <Provider store={cpp.store}>
-    <CppContext.Provider value={cpp}>
-      <AppWrapper />
-    </CppContext.Provider>
-  </Provider>,
-  // </React.StrictMode>,
-)
+async function runApp() {
+  const pathName = location.pathname
+  if (pathName[0] != '/') throw new Error('location pathname not started with /')
+
+  const parts = pathName.split('/')
+  if (parts[0]) throw new Error('location parts 0 invalid')
+
+  const game = parts[1]
+  if (!game) {
+    return runHome()
+  }
+  if (!Object.prototype.hasOwnProperty.call(games, game)) throw new Error('invalid game name')
+
+  const profile = parts[2] || ''
+
+  let storagePrefix = `cpp[${encodeURIComponent(game)}][${encodeURIComponent(profile)}]`
+  if (game === 'arknights' && profile === '') storagePrefix = `cpp_`
+
+  if (parts.length > 3) throw new Error('invalid parts.length')
+
+  if (profile && !localStorage.getItem(storagePrefix + 'userdata')) {
+    if (!confirm('profile ' + formatProfileName(game, profile) + ' does not exist. do you want to create it?')) {
+      location.href = '/'
+      return
+    }
+  }
+  const gameAdapter = games[game as any as keyof typeof games]()
+  runCpp(storagePrefix, profile, gameAdapter)
+}
+
+function runHome() {
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<Home />)
+}
+
+runApp().catch((e) => {
+  const he = document.getElementById('root') as HTMLElement
+  he.innerText = `ERROR: ${e.message}`
+  he.appendChild(document.createElement('br'))
+  const a = document.createElement('a')
+  he.appendChild(a)
+  a.href = '/'
+  a.text = 'go back to home'
+  console.error(e)
+})

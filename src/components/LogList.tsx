@@ -4,7 +4,8 @@ import React, { useMemo } from 'react'
 import { useGameAdapter } from '../Cpp'
 
 const logs = [
-  // { date: '2023-06-13', type: 'optimize', desc: '分裂！支持多个游戏角色' },
+  { date: '2023-06-13', type: 'optimize', desc: '支持一些其他游戏' },
+  { date: '2023-06-13', type: 'optimize', desc: '支持多个游戏角色' },
   { date: '2023-06-08', game: ['arknights'], type: 'fix', desc: '换回 Kengxxiao 的数据源 🌚' },
   { date: '2023-05-03', game: ['arknights'], type: 'fix', desc: '换用 yuanyan3060 的数据源' },
   { date: '2023-05-02', game: ['arknights'], type: 'fix', desc: '随便适配一下新数据，但不完全工作' },

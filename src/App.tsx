@@ -1,6 +1,6 @@
-import { Alignment, Button, Classes, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import { Alignment, Button, Classes, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { useAtomValue, useSetAtom } from 'jotai'
-import React, { ErrorInfo, useEffect, useState } from 'react'
+import React, { ErrorInfo, useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList } from './components/AboutList'
@@ -13,6 +13,8 @@ import { SynthesisList } from './components/SynthesisList'
 import { TaskList } from './components/TaskList'
 import { ValueOptionButton } from './components/Value'
 import { useRequest } from './hooks/useRequest'
+import { Popover2 } from '@blueprintjs/popover2'
+import { formatProfileName, getProfiles } from './profiles'
 
 function UndoButtons() {
   const atoms = useAtoms()
@@ -57,6 +59,25 @@ function ReloadDataButton() {
   )
 }
 
+function ProfileMenu() {
+  const profiles = useMemo(() => getProfiles().filter((x) => !x[2]), [])
+  const cpp = useCpp()
+  return (
+    <>
+      {profiles.map((profile) => (
+        <MenuItem
+          key={profile[0] + '/' + profile[1]}
+          href={`/${encodeURIComponent(profile[0])}/${encodeURIComponent(profile[1])}`}
+          text={<code>{formatProfileName(profile[0], profile[1])}</code>}
+          active={profile[0] === cpp.gameAdapter.getCodename() && profile[1] === cpp.instanceName}
+        />
+      ))}
+      <MenuDivider />
+      <MenuItem text="Home" icon="home" href="/" />
+    </>
+  )
+}
+
 function App() {
   const cpp = useCpp()
   const ga = useGameAdapter()
@@ -67,11 +88,22 @@ function App() {
           <Navbar.Heading style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
             <img src="/favicon.png" alt="Closure++ logo" width="24" height="24" title="" style={{ marginRight: 4 }} />
             <code>{`Closure`}</code>
-            <Button minimal style={{ paddingLeft: 0, paddingRight: 0 }}>
-              <code>
-                [{ga.getCodename().toUpperCase()}][{JSON.stringify(cpp.instanceName)}]
-              </code>
-            </Button>
+            <Popover2
+              usePortal={true}
+              minimal={true}
+              content={
+                <Menu>
+                  <ProfileMenu />
+                </Menu>
+              }
+              position="bottom-left"
+            >
+              <Button minimal style={{ paddingLeft: 0, paddingRight: 0 }}>
+                <code>
+                  [{ga.getCodename().toUpperCase()}][{JSON.stringify(cpp.instanceName)}]
+                </code>
+              </Button>
+            </Popover2>
             <code>{`++`}</code>
             {/* <code>{`Closure++`}</code> */}
           </Navbar.Heading>
