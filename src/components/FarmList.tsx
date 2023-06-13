@@ -107,8 +107,9 @@ export function StageLine({ run }: { run: StageRun }) {
           </>
         }
       ></MenuItem>
-      {stageInfo.sortedDropInfo.map(([k, v]) => {
+      {stageInfo.sortedDropInfo.map(([k, v, z]) => {
         const item = ga.getItem(k)
+        const value = Number.isFinite(z) ? v / z : v
         return (
           <MenuItem
             key={k}
@@ -117,7 +118,7 @@ export function StageLine({ run }: { run: StageRun }) {
             text={
               <>
                 <span>{item.name}</span>
-                <span style={{ float: 'right' }}>{(v * run.count).toFixed(2).replace(/\.?0+$/, '')}</span>
+                <span style={{ float: 'right' }}>{(value * run.count).toFixed(2).replace(/\.?0+$/, '')}</span>
               </>
             }
           />

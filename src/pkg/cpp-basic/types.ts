@@ -47,6 +47,7 @@ export interface ICharacter {
 }
 
 export interface IStageInfo {
+  readonly sortKey: string
   readonly id: string
   readonly name: string
   readonly code: string
@@ -62,6 +63,10 @@ export abstract class BasicStageInfo implements IStageInfo {
   abstract code: string
   abstract name: string
   abstract zoneId: string
+
+  get sortKey(): string {
+    return this.id
+  }
 
   constructor(protected ga: IGameAdapter<any>) {}
 
@@ -116,7 +121,7 @@ export abstract class BasicStageInfo implements IStageInfo {
     this.cachedVarRow = undefined
   }
 
-  addDrop(itemId: string, drops: number, samples: number = Infinity) {
+  addDrop(itemId: string, drops: number, samples: number = Infinity): this {
     if (!this.dropInfo[itemId]) {
       this.dropInfo[itemId] = [drops, samples]
     } else {
@@ -129,5 +134,6 @@ export abstract class BasicStageInfo implements IStageInfo {
       }
     }
     this.clearCache()
+    return this
   }
 }

@@ -80,7 +80,7 @@ export function CharacterStatusEliteLevelSection() {
       {character.maxElite >= 0 &&
       !(
         currentStatus &&
-        (currentStatus.elite > 0 || (currentStatus.elite == 0 && currentStatus.level >= character.maxLevels[0]))
+        (currentStatus.elite > 0 || (currentStatus.elite == 0 && currentStatus.level > character.maxLevels[0]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -94,7 +94,7 @@ export function CharacterStatusEliteLevelSection() {
       {character.maxElite >= 1 &&
       !(
         currentStatus &&
-        (currentStatus.elite > 1 || (currentStatus.elite == 1 && currentStatus.level >= character.maxLevels[1]))
+        (currentStatus.elite > 1 || (currentStatus.elite == 1 && currentStatus.level > character.maxLevels[1]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -108,7 +108,7 @@ export function CharacterStatusEliteLevelSection() {
       {character.maxElite >= 2 &&
       !(
         currentStatus &&
-        (currentStatus.elite > 2 || (currentStatus.elite == 2 && currentStatus.level >= character.maxLevels[2]))
+        (currentStatus.elite > 2 || (currentStatus.elite == 2 && currentStatus.level > character.maxLevels[2]))
       ) ? (
         <div>
           <ButtonGroup>

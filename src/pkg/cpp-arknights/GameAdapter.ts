@@ -259,10 +259,6 @@ class ArknightsStageInfo extends BasicStageInfo {
   }
 }
 
-const zoneNameOverrides: Record<string, string> = {
-  weekly_chips: '芯片搜索',
-}
-
 const zoneReplacement: Record<string, string> = {
   weekly_1: 'weekly_chips',
   weekly_2: 'weekly_chips',

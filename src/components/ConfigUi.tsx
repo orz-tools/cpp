@@ -89,7 +89,7 @@ export function StagePopover() {
           return stageInfo[x].zoneId
         },
         sortBy((x) => {
-          return makeNumericSortable(x)
+          return makeNumericSortable(stageInfo[x].sortKey)
         }, allStageIds),
       ),
     ),

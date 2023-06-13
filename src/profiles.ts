@@ -1,8 +1,10 @@
 import { ArknightsAdapter } from './pkg/cpp-arknights/GameAdapter'
-import { IGameAdapter, IGame } from './pkg/cpp-basic'
+import { IGame, IGameAdapter } from './pkg/cpp-basic'
+import { Re1999Adapter } from './pkg/cpp-re1999/GameAdapter'
 
 export const games = {
   arknights: () => new ArknightsAdapter(),
+  reverse1999: () => new Re1999Adapter(),
 } satisfies Record<string, () => IGameAdapter<IGame>>
 
 export function getProfiles() {
@@ -17,7 +19,7 @@ export function getProfiles() {
     }
     if (!key.endsWith(']userdata')) continue
     if (!key.startsWith('cpp[')) continue
-    const sk = key.substring('cpp['.length, key.length - 'cpp['.length - ']userdata'.length)
+    const sk = key.slice('cpp['.length, key.length - ']userdata'.length)
     const pos = sk.indexOf('][')
     if (pos < 0) continue
     const a = sk.substring(0, pos)
