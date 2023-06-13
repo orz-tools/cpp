@@ -2,7 +2,7 @@ import { Button, Icon, IconName, MaybeElement, Menu, MenuItem, Tag } from '@blue
 import { Popover2 } from '@blueprintjs/popover2'
 import { useAtom, useAtomValue } from 'jotai'
 import React from 'react'
-import { ValueType, valueTypeAtom } from './Config'
+import { Cpp, ValueType, useCpp } from '../Cpp'
 
 const ValueIcon = {
   [ValueType.Ap]: 'predictive-analysis',
@@ -92,7 +92,8 @@ export function ValueTag({
   single?: boolean
   style?: React.CSSProperties
 }) {
-  const type = useAtomValue(valueTypeAtom)
+  const cpp = useCpp()
+  const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
 
   return (
     <Tag
@@ -123,7 +124,8 @@ export function ValueTagProgressBar({
   minimal?: boolean
   style?: React.CSSProperties
 }) {
-  const type = useAtomValue(valueTypeAtom)
+  const cpp = useCpp()
+  const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
 
   const v = (value || 0) + 0.00000001
   const mv = (maxValue || 0) + 0.00000001
@@ -154,7 +156,8 @@ export function ValueTagProgressBar({
 }
 
 export function SetValueOptionMenuItem({ type }: { type: ValueType }) {
-  const [ctype, setType] = useAtom(valueTypeAtom)
+  const cpp = useCpp()
+  const [ctype, setType] = useAtom(cpp.preferenceAtoms.valueTypeAtom)
   return (
     <MenuItem
       icon={ValueIcon[type]}
@@ -170,7 +173,8 @@ export function SetValueOptionMenuItem({ type }: { type: ValueType }) {
 }
 
 export function ValueOptionButton() {
-  const type = useAtomValue(valueTypeAtom)
+  const cpp = useCpp()
+  const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
 
   return (
     <Popover2

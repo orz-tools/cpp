@@ -1,24 +1,21 @@
 import { Alignment, Button, Classes, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ErrorInfo, useEffect, useState } from 'react'
+import React, { ErrorInfo, useEffect, useState } from 'react'
 import './App.css'
+import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, StageButton } from './components/ConfigUi'
 import { FarmList } from './components/FarmList'
 import { ItemList } from './components/ItemList'
+import { LogList } from './components/LogList'
 import { SynthesisList } from './components/SynthesisList'
 import { TaskList } from './components/TaskList'
 import { ValueOptionButton } from './components/Value'
-import { useInject } from './hooks/useContainer'
-import { DataManager } from './pkg/cpp-core/DataManager'
-import { UserDataAtomHolder } from './pkg/cpp-core/UserData'
 import { useRequest } from './hooks/useRequest'
-import { LogList } from './components/LogList'
-import React from 'react'
 
 function UndoButtons() {
-  const atoms = useInject(UserDataAtomHolder)
+  const atoms = useAtoms()
   const setData = useSetAtom(atoms.dataAtom)
   const undoCounter = useAtomValue(atoms.undoCounterAtom)
   const redoCounter = useAtomValue(atoms.redoCounterAtom)
@@ -46,7 +43,8 @@ function UndoButtons() {
 }
 
 function ReloadDataButton() {
-  const dm = useInject(DataManager)
+  const ga = useGameAdapter()
+  const dm = ga.getDataManager()
   const { loading, send } = useRequest(async () => {
     await dm.refresh()
     location.reload()
@@ -60,13 +58,22 @@ function ReloadDataButton() {
 }
 
 function App() {
+  const cpp = useCpp()
+  const ga = useGameAdapter()
   return (
     <>
       <Navbar fixedToTop={true}>
         <Navbar.Group align={Alignment.LEFT}>
           <Navbar.Heading style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
             <img src="/favicon.png" alt="Closure++ logo" width="24" height="24" title="" style={{ marginRight: 4 }} />
-            Closure++
+            <code>{`Closure`}</code>
+            <Button minimal style={{ paddingLeft: 0, paddingRight: 0 }}>
+              <code>
+                [{ga.getCodename().toUpperCase()}][{JSON.stringify(cpp.instanceName)}]
+              </code>
+            </Button>
+            <code>{`++`}</code>
+            {/* <code>{`Closure++`}</code> */}
           </Navbar.Heading>
           <Navbar.Divider />
           <UndoButtons />
@@ -157,7 +164,8 @@ function App() {
 }
 
 function SuperAppWrapper() {
-  const dm = useInject(DataManager)
+  const ga = useGameAdapter()
+  const dm = ga.getDataManager()
   const [, setTicker] = useState(0)
   useEffect(() => {
     let timer: null | ReturnType<typeof setInterval> = setInterval(() => {
@@ -214,7 +222,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 
           <Navbar>
             <Navbar.Group align={Alignment.LEFT}>
-              你不妨试试
+              您不妨试试
               <ReloadDataButton />
             </Navbar.Group>
           </Navbar>

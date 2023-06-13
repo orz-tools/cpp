@@ -3,13 +3,11 @@ import { Popover2 } from '@blueprintjs/popover2'
 import { useAtom, useAtomValue } from 'jotai'
 import { groupBy, sortBy, without } from 'ramda'
 import React from 'react'
-import { useInject } from '../hooks/useContainer'
-import { FormulaTag } from '../pkg/cpp-core/DataManager'
-import { diffGroupName, FarmPlannerFactory } from '../pkg/cpp-core/FarmPlanner'
-import { forbiddenFormulaTagsAtom, forbiddenStageIdsAtom } from './Config'
+import { useAtoms, useCpp, useGameAdapter } from '../Cpp'
 
-export function ForbiddenFormulaTag({ tag, text }: { tag: FormulaTag; text: React.ReactNode }) {
-  const [tags, setTags] = useAtom(forbiddenFormulaTagsAtom)
+export function ForbiddenFormulaTag({ tag, text }: { tag: string; text: React.ReactNode }) {
+  const atoms = useAtoms()
+  const [tags, setTags] = useAtom(atoms.forbiddenFormulaTagsAtom)
   return (
     <MenuItem
       icon={tags.includes(tag) ? 'tick' : 'blank'}
@@ -25,13 +23,17 @@ export function ForbiddenFormulaTag({ tag, text }: { tag: FormulaTag; text: Reac
 }
 
 export function ConfigButton() {
+  const ga = useGameAdapter()
+  const tags = Object.entries(ga.getFormulaTagNames())
   return (
     <Popover2
       usePortal={true}
       minimal={true}
       content={
         <Menu>
-          <ForbiddenFormulaTag tag={FormulaTag.WorkshopRarity2} text="不从绿材料合成蓝材料" />
+          {tags.map(([k, v]) => {
+            return <ForbiddenFormulaTag key={k} tag={k} text={v} />
+          })}
         </Menu>
       }
       position="bottom-left"
@@ -44,21 +46,20 @@ export function ConfigButton() {
 }
 
 export function ForbiddenStageIdTag({ stageId }: { stageId: string }) {
-  const stageInfo = useInject(FarmPlannerFactory).getStageInfo()
+  const ga = useGameAdapter()
+  const stageInfo = ga.getStageInfos()
   const stage = stageInfo[stageId]
-  const [ids, setIds] = useAtom(forbiddenStageIdsAtom)
+  const cpp = useCpp()
+  const [ids, setIds] = useAtom(cpp.preferenceAtoms.forbiddenStageIdsAtom)
 
   return (
     <Checkbox
       style={{ marginBottom: 0 }}
       checked={!ids.includes(stageId)}
-      title={`${stageId}: ${stage.excel.name}`}
+      title={`${stageId}: ${stage.name}`}
       labelElement={
         <>
-          <code title={`${stageId}: ${stage.excel.name}`}>
-            {diffGroupName[stage.excel.diffGroup]}
-            {stage.excel.code}
-          </code>
+          <code title={`${stageId}: ${stage.name}`}>{stage.code}</code>
         </>
       }
       inline={true}
@@ -76,29 +77,16 @@ function makeNumericSortable(x: string) {
   return x.replace(/\d+/g, (y) => String(y).padStart(20, '0'))
 }
 
-const zoneNameOverrides: Record<string, string> = {
-  weekly_chips: '芯片搜索',
-}
-
-const zoneReplacement: Record<string, string> = {
-  weekly_1: 'weekly_chips',
-  weekly_2: 'weekly_chips',
-  weekly_3: 'weekly_chips',
-  weekly_4: 'weekly_chips',
-}
-
 export function StagePopover() {
-  const factory = useInject(FarmPlannerFactory)
-  const stageInfo = factory.getStageInfo()
+  const ga = useGameAdapter()
+  const stageInfo = ga.getStageInfos()
   const allStageIds = Object.keys(stageInfo)
   const grouped = sortBy(
     (x) => makeNumericSortable(x[0]),
     Object.entries(
       groupBy(
         (x: string) => {
-          const zoneId = stageInfo[x].excel.zoneId
-          if (zoneReplacement[zoneId]) return zoneReplacement[zoneId]
-          return zoneId
+          return stageInfo[x].zoneId
         },
         sortBy((x) => {
           return makeNumericSortable(x)
@@ -110,7 +98,7 @@ export function StagePopover() {
   return (
     <div style={{ minWidth: '200px', maxWidth: '60vw', maxHeight: '80vh', overflow: 'auto' }}>
       {grouped.map(([k, stages]) => {
-        const zoneName = zoneNameOverrides[k] ? zoneNameOverrides[k] : factory.zoneNames[k]
+        const zoneName = ga.getZoneNames()[k] || k
         return (
           <>
             <Card style={{ padding: 15 }}>
@@ -130,8 +118,10 @@ export function StagePopover() {
 }
 
 export function StageButton() {
-  const stageInfo = useInject(FarmPlannerFactory).getStageInfo()
-  const forbiddenStageIds = useAtomValue(forbiddenStageIdsAtom)
+  const ga = useGameAdapter()
+  const cpp = useCpp()
+  const stageInfo = ga.getStageInfos()
+  const forbiddenStageIds = useAtomValue(cpp.preferenceAtoms.forbiddenStageIdsAtom)
   const allStageIds = Object.keys(stageInfo)
   const now = without(forbiddenStageIds, allStageIds).length
   const all = allStageIds.length

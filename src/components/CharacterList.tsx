@@ -1,22 +1,23 @@
-import { Alignment, Button, ButtonGroup, Menu, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import { Alignment, Button, ButtonGroup, Menu, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { ContextMenu2, Popover2 } from '@blueprintjs/popover2'
 import deepEqual from 'deep-equal'
-import { atom, SetStateAction, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { SetStateAction, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { uniq } from 'ramda'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList, ListChildComponentProps, ListItemKeySelector } from 'react-window'
+import { Cpp, useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
-import { CachedImg, EmptyIcon, LevelIcon, SkillIcon, UniEquipIcon } from '../components/Icons'
-import { useContainer, useInject } from '../hooks/useContainer'
+import { CachedImg } from '../components/Icons'
 import { useRequest } from '../hooks/useRequest'
-import { Container } from '../pkg/container'
-import { Character, DataManager, UniEquip } from '../pkg/cpp-core/DataManager'
-import { CharacterStatus, emptyCharacterStatus, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
-import { Store } from '../Store'
+import { ICharacter, IGame } from '../pkg/cpp-basic'
+import { useComponents } from '../hooks/useComponents'
 
-function Hide({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) {
+export function Hide({
+  children,
+  hide,
+  alreadyHide,
+}: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) {
   return (
     <div
       style={
@@ -32,65 +33,17 @@ function Hide({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: b
   )
 }
 
-function renderCharacterStatus(
-  status: CharacterStatus,
-  character: Character,
-  uniX?: UniEquip,
-  uniY?: UniEquip,
-  current?: CharacterStatus,
+function renderCharacterStatus<G extends IGame>(
+  status: G['characterStatus'],
+  character: ICharacter,
+  current?: G['characterStatus'],
   alreadyHide: boolean = false,
 ) {
-  return (
-    <>
-      <Hide
-        hide={current ? status.elite == current.elite && status.level == current.level : false}
-        alreadyHide={alreadyHide}
-      >
-        <LevelIcon level={status} />
-      </Hide>
-      {uniX ? (
-        <Hide
-          hide={current ? (status.modLevel[uniX.key] || 0) == (current.modLevel[uniX.key] || 0) : false}
-          alreadyHide={alreadyHide}
-        >
-          <UniEquipIcon uniEquip={uniX} key={uniX.key} level={status.modLevel[uniX.key] || 0} />
-        </Hide>
-      ) : (
-        <EmptyIcon />
-      )}
-      {uniY ? (
-        <Hide
-          hide={current ? (status.modLevel[uniY.key] || 0) == (current.modLevel[uniY.key] || 0) : false}
-          alreadyHide={alreadyHide}
-        >
-          <UniEquipIcon uniEquip={uniY} key={uniY.key} level={status.modLevel[uniY.key] || 0} />
-        </Hide>
-      ) : (
-        <EmptyIcon />
-      )}
-      {character.skills.slice(0, 3).map(([, skill]) => (
-        <Hide
-          hide={
-            current
-              ? status.skillLevel == current.skillLevel &&
-                (status.skillMaster[skill.key] || 0) == (current.skillMaster[skill.key] || 0)
-              : false
-          }
-          key={skill.key}
-          alreadyHide={alreadyHide}
-        >
-          <SkillIcon skill={skill} level={status.skillLevel} master={status.skillMaster[skill.key] || 0} />
-        </Hide>
-      ))}
-      {new Array(3 - (character.raw.skills?.length || 0)).fill(0).map((_, i) => (
-        <EmptyIcon key={i} />
-      ))}
-    </>
-  )
+  return <>{JSON.stringify(status)}</>
 }
 
-function CharacterContextMenu({ character }: { character: Character }) {
-  const atoms = useInject(UserDataAtomHolder)
+function CharacterContextMenu({ character }: { character: ICharacter }) {
+  const atoms = useAtoms<IGame>()
   const setData = useSetAtom(atoms.dataAtom)
   const [param, setParam] = useAtom(queryParamAtom)
 
@@ -158,25 +111,22 @@ function CharacterContextMenu({ character }: { character: Character }) {
   )
 }
 
-function CharacterMenu({ character, style }: { character: Character; style?: React.CSSProperties }) {
-  const atoms = useInject(UserDataAtomHolder)
+function CharacterMenu<G extends IGame>({ character, style }: { character: ICharacter; style?: React.CSSProperties }) {
+  const atoms = useAtoms<G>()
+  const ga = useGameAdapter<G>()
+  const uda = ga.getUserDataAdapter()
   const charId = character.key
   const currentCharacter = useAtomValue(atoms.currentCharacter(charId))
   const goalCharacter = useAtomValue(atoms.goalCharacter(charId))
-  const param = useAtomValue(queryParamAtom)
 
-  const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 0)
-  const uniX = uniEquips.find((x) => x.raw.typeName2.toUpperCase() == 'X')
-  const uniY = uniEquips.find((x) => x.raw.typeName2.toUpperCase() == 'Y')
   const goalSame = useMemo(
     () => deepEqual(currentCharacter, goalCharacter, { strict: true }),
     [currentCharacter, goalCharacter],
   )
   const finished = useAtomValue(atoms.isCharacterFinished(charId))
-
-  if ([uniX, uniY].filter((x) => !!x).length != uniEquips.length) {
-    console.warn('character extra uniEquips', character, uniEquips)
-  }
+  const c = useComponents()
+  const render = c.renderCharacterStatus || renderCharacterStatus
+  const CSP = c.CharacterStatusPopover || CharacterStatusPopover
 
   return (
     <li role="none" className="cpp-char-menu-master" style={style}>
@@ -193,15 +143,15 @@ function CharacterMenu({ character, style }: { character: Character; style?: Rea
               />
             </span>
             <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div className="bp4-text-overflow-ellipsis" title={character.raw.name}>
-                {character.raw.name}
+              <div className="bp4-text-overflow-ellipsis" title={character.name}>
+                {character.name}
               </div>
               <div
                 className="bp4-text-overflow-ellipsis"
-                title={character.raw.appellation}
+                title={character.appellation}
                 style={{ fontWeight: 'normal', opacity: 0.75 }}
               >
-                {character.raw.appellation}
+                {character.appellation}
               </div>
             </div>
           </>
@@ -210,32 +160,31 @@ function CharacterMenu({ character, style }: { character: Character; style?: Rea
       <Popover2
         usePortal={true}
         popoverClassName={'cpp-popover2'}
-        content={<CharacterStatusPopover character={character} isGoal={false} />}
+        content={<CSP character={character} isGoal={false} />}
         placement="bottom"
       >
         <a
           role="menuitem"
           tabIndex={0}
           className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-current"
-          style={{ opacity: currentCharacter.level === 0 ? 0.25 : 1 }}
+          style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
         >
-          {renderCharacterStatus(currentCharacter, character, uniX, uniY)}
+          {render(currentCharacter, character)}
         </a>
       </Popover2>
       <Popover2
         usePortal={true}
         popoverClassName={'cpp-popover2'}
-        content={<CharacterStatusPopover character={character} isGoal={true} />}
+        content={<CSP character={character} isGoal={true} />}
         placement="bottom"
       >
         <a
           role="menuitem"
           tabIndex={0}
           className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
-          // style={{ opacity: goalCharacter.level === 0 ? 0.25 : 1 }}
           style={{ opacity: finished ? 0 : goalSame ? 0.25 : 1 }}
         >
-          {renderCharacterStatus(goalCharacter, character, uniX, uniY, currentCharacter, goalSame)}
+          {render(goalCharacter, character, currentCharacter, goalSame)}
         </a>
       </Popover2>
     </li>
@@ -260,29 +209,30 @@ function buildMatcher(query: string): (x: string) => boolean {
   return (x: string) => x.toLowerCase().includes(trimmed)
 }
 
-async function listCharactersQuery(container: Container, param: ListCharactersQueryParam) {
-  const dm = container.get(DataManager)
-  const store = container.get(Store).store
-  const atoms = container.get(UserDataAtomHolder)
+async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListCharactersQueryParam) {
+  const ga = cpp.gameAdapter
+  const store = cpp.store
+  const atoms = cpp.atoms.atoms
   const ud = store.get(atoms.rootAtom)
+  const uda = ga.getUserDataAdapter()
 
   const matcher = buildMatcher(param.query)
   const realOrder = store.get(atoms.goalOrder)
+  const emptyCharacterStatus = uda.getFrozenEmptyCharacterStatus()
 
-  return Object.values(dm.data.characters)
+  return Object.values(uda.getAllCharacterIds())
+    .map((x) => ga.getCharacter(x))
     .filter((x) => {
-      if (!x.raw.displayNumber) return false
-      if (!(matcher(x.raw.name) || matcher(x.raw.appellation) || matcher(x.key))) return false
+      if (!(matcher(x.name) || matcher(x.appellation) || matcher(x.key))) return false
 
       if (param.mode == ListMode.WithGoal) {
         return !!ud.goal[x.key]
       } else if (param.mode == ListMode.Absent) {
-        return (ud.current[x.key] || emptyCharacterStatus).level == 0
+        return uda.isAbsentCharacter(x, ud.current[x.key] || emptyCharacterStatus)
       } else if (param.mode == ListMode.Fav) {
         const current = ud.current[x.key] || emptyCharacterStatus
-        return !!ud.goal[x.key] || (current.elite < 2 && !store.get(atoms.isCharacterFinished(x.key)))
+        return !!ud.goal[x.key] || (uda.isFavCharacter(x, current) && !store.get(atoms.isCharacterFinished(x.key)))
       }
-      // if (x.raw.rarity !== 5) return false
       return true
     })
     .sort((a, b) => {
@@ -291,23 +241,11 @@ async function listCharactersQuery(container: Container, param: ListCharactersQu
         const bb = realOrder.indexOf(b.key)
         return aa - bb
       }
-      // const goalA = +!!ud.goal[a.key]
-      // const goalB = +!!ud.goal[b.key]
-
-      // if (goalA > goalB) return -1
-      // if (goalA < goalB) return 1
-
-      if (a.raw.rarity > b.raw.rarity) return -1
-      if (a.raw.rarity < b.raw.rarity) return 1
 
       const stA = ud.current[a.key] || emptyCharacterStatus
       const stB = ud.current[b.key] || emptyCharacterStatus
-      if (stA.elite > stB.elite) return -1
-      if (stA.elite < stB.elite) return 1
 
-      if (stA.level > stB.level) return -1
-      if (stA.level < stB.level) return 1
-
+      return uda.compareCharacter(a, b, stA, stB)
       return 0
     })
 }
@@ -324,7 +262,6 @@ interface ListCharactersQueryParam {
   mode: ListMode
 }
 
-// const queryParamAtom = atom<ListCharactersQueryParam>({ query: '', mode: ListMode.Fav })
 const queryParamStorageAtom = atomWithStorage<ListCharactersQueryParam>('cpp_query_param', undefined as any)
 const queryParamAtom = atom(
   (get) => {
@@ -361,7 +298,7 @@ function QuerySearchBox() {
 
 function QueryBuilder() {
   const [param, setParam] = useAtom(queryParamAtom)
-  const atoms = useInject(UserDataAtomHolder)
+  const atoms = useAtoms()
   const data = useAtomValue(atoms.dataAtom)
   const goalCount = Object.keys(data.goal).length
   return (
@@ -399,23 +336,23 @@ function QueryBuilder() {
 export function CharacterList() {
   const param = useAtomValue(queryParamAtom)
 
-  const container = useContainer()
+  const cpp = useCpp()
   const { send, response, loading } = useRequest(listCharactersQuery)
 
   const refresh = () => {
-    send(container, param)
+    send(cpp, param)
   }
 
   useEffect(() => refresh(), [param])
 
   const list = response || []
   const child = useCallback(
-    ({ index, data, style }: ListChildComponentProps<Character[]>) => (
+    ({ index, data, style }: ListChildComponentProps<ICharacter[]>) => (
       <CharacterMenu style={style} character={data[index]} />
     ),
     [],
   )
-  const itemKey = useCallback<ListItemKeySelector<Character[]>>((index, data) => data[index].key, [])
+  const itemKey = useCallback<ListItemKeySelector<ICharacter[]>>((index, data) => data[index].key, [])
 
   return (
     <>

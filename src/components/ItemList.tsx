@@ -9,29 +9,29 @@ import {
   MenuItem,
   Navbar,
   NumericInput,
-  Tag,
 } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
-import { atom, useAtom, useAtomValue, useSetAtom, useStore, WritableAtom } from 'jotai'
+import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, pick, sum, uniq } from 'ramda'
 import React, { SetStateAction, useEffect, useMemo, useState } from 'react'
-import { useInject } from '../hooks/useContainer'
-import { DataManager, Item, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
-import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
-import { Store } from '../Store'
+import { useAtoms, useGameAdapter } from '../Cpp'
+import { useComponents } from '../hooks/useComponents'
+import { Arknights } from '../pkg/cpp-arknights'
+import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
-export function ItemQuantityEditor({ item, style }: { item: Item; style?: React.CSSProperties }) {
-  const atoms = useInject(UserDataAtomHolder)
+export function ItemQuantityEditor<G extends IGame>({ item, style }: { item: IItem; style?: React.CSSProperties }) {
+  const ga = useGameAdapter<G>()
+  const atoms = useAtoms<G>()
   const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
   const [input, setInput] = useState(formatter(quantity))
   useEffect(() => setInput(formatter(quantity)), [quantity])
 
-  if (item.key === ITEM_VIRTUAL_EXP) {
+  if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
     return <NumericInput value={input} style={style} disabled={true} />
   }
   return (
@@ -52,19 +52,19 @@ export function ItemQuantityEditor({ item, style }: { item: Item; style?: React.
   )
 }
 
-export function ItemSynthesisPopover({ item }: { item: Item }) {
-  const dm = useInject(DataManager)
-  const atoms = useInject(UserDataAtomHolder)
+export function ItemSynthesisPopover<G extends IGame>({ item }: { item: IItem }) {
+  const ga = useGameAdapter<G>()
+  const atoms = useAtoms<G>()
   const quantities = useAtomValue(atoms.itemQuantities)
   const setData = useSetAtom(atoms.dataAtom)
-  const formula = useMemo(() => dm.data.formulas.find((x) => x.itemId == item.key), [dm, item.key])
+  const formula = useMemo(() => ga.getFormulas().find((x) => x.itemId == item.key), [ga, item.key])
   const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
   const [times, setTimes] = useState(1)
 
   if (!formula)
     return (
       <>
-        无法合成{item.raw.name}，<i>谁让你来的？</i>
+        无法合成{item.name}，<i>谁让你来的？</i>
       </>
     )
 
@@ -127,7 +127,7 @@ export function ItemSynthesisPopover({ item }: { item: Item }) {
         icon={<CachedImg src={item.icon} width={'20'} height={'20'} alt={item.key} title={item.key} />}
         text={
           <>
-            <span>{item.raw.name}</span>
+            <span>{item.name}</span>
             <span style={{ float: 'right' }}>
               <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5 }} />
               {times * formula.quantity}/{quantity}
@@ -137,14 +137,14 @@ export function ItemSynthesisPopover({ item }: { item: Item }) {
       />
       <MenuDivider title={`制作 ${times} 次所需`} />
       {formula.costs.map((cost) => {
-        const citem = dm.data.items[cost.itemId]
+        const citem = ga.getItem(cost.itemId)
         return (
           <MenuItem
             key={cost.itemId}
             icon={<CachedImg src={citem.icon} width={'20'} height={'20'} alt={citem.key} title={citem.key} />}
             text={
               <>
-                <span>{citem.raw.name}</span>
+                <span>{citem.name}</span>
                 <span style={{ float: 'right' }}>
                   {times * cost.quantity}/{quantities[cost.itemId] || 0}
                 </span>
@@ -157,10 +157,10 @@ export function ItemSynthesisPopover({ item }: { item: Item }) {
   )
 }
 
-export function ItemTaskRequirements({ item }: { item: Item }) {
-  const dm = useInject(DataManager)
-  const formula = useMemo(() => dm.data.formulas.find((x) => x.itemId == item.key), [dm, item.key])
-  const atoms = useInject(UserDataAtomHolder)
+export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem }) {
+  const ga = useGameAdapter<G>()
+  const formula = useMemo(() => ga.getFormulas().find((x) => x.itemId == item.key), [ga, item.key])
+  const atoms = useAtoms<G>()
   const quantities = useAtomValue(atoms.itemQuantities)
   const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
   const goal = useAtomValue(atoms.allGoalTaskRequirements)[item.key] || 0
@@ -336,7 +336,7 @@ export function ItemTaskRequirements({ item }: { item: Item }) {
   )
 }
 
-export function ItemMenu({ item }: { item: Item }) {
+export function ItemMenu({ item }: { item: IItem }) {
   return (
     <li role="none">
       <a
@@ -350,8 +350,8 @@ export function ItemMenu({ item }: { item: Item }) {
             <CachedImg src={item.icon} width={'100%'} height={'100%'} alt={item.key} title={item.key} />
           </span>
           <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp4-text-overflow-ellipsis" title={item.raw.name}>
-              {item.raw.name}
+            <div className="bp4-text-overflow-ellipsis" title={item.name}>
+              {item.name}
             </div>
             <div className="bp4-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
               <ValueTag value={item.valueAsAp} minimal={true} single={true} />
@@ -367,125 +367,12 @@ export function ItemMenu({ item }: { item: Item }) {
   )
 }
 
-export enum Category {
-  Gold = '0',
-  Rarity4 = '1',
-  Rarity3 = '2',
-  Rarity2 = '3',
-  Rarity1 = '4',
-  Rarity0 = '5',
-  ModSkill = '7',
-  ChipsDual = '81',
-  ChipsHard = '82',
-  ChipsEasy = '83',
-  Unknown = '9',
-}
-
-export const CategoryNames = {
-  [Category.Gold]: '钱和经验',
-  [Category.Rarity4]: '金材料',
-  [Category.Rarity3]: '紫材料',
-  [Category.Rarity2]: '蓝材料',
-  [Category.Rarity1]: '绿材料',
-  [Category.Rarity0]: '灰材料',
-  [Category.ModSkill]: '技能、模组和胶水',
-  [Category.ChipsDual]: '双芯片',
-  [Category.ChipsHard]: '芯片组',
-  [Category.ChipsEasy]: '芯片',
-  [Category.Unknown]: '其他',
-} satisfies Record<Category, string>
-
-const myCategories = {
-  '4001': Category.Gold, // 龙门币
-  [ITEM_VIRTUAL_EXP]: Category.Gold,
-  '2004': Category.Gold, // 高级作战记录
-  '2003': Category.Gold, // 中级作战记录
-  '2002': Category.Gold, // 初级作战记录
-  '2001': Category.Gold, // 基础作战记录
-
-  '3303': Category.ModSkill, // 技巧概要·卷3
-  '3302': Category.ModSkill, // 技巧概要·卷2
-  '3301': Category.ModSkill, // 技巧概要·卷1
-  mod_unlock_token: Category.ModSkill, // 模组数据块
-  mod_update_token_2: Category.ModSkill, // 数据增补仪
-  mod_update_token_1: Category.ModSkill, // 数据增补条
-  '4006': Category.Gold, // 采购凭证
-  '32001': Category.ModSkill, // 芯片助剂
-
-  '3213': Category.ChipsDual, // 先锋双芯片
-  '3223': Category.ChipsDual, // 近卫双芯片
-  '3233': Category.ChipsDual, // 重装双芯片
-  '3243': Category.ChipsDual, // 狙击双芯片
-  '3253': Category.ChipsDual, // 术师双芯片
-  '3263': Category.ChipsDual, // 医疗双芯片
-  '3273': Category.ChipsDual, // 辅助双芯片
-  '3283': Category.ChipsDual, // 特种双芯片
-
-  '3212': Category.ChipsHard, // 先锋芯片组
-  '3222': Category.ChipsHard, // 近卫芯片组
-  '3232': Category.ChipsHard, // 重装芯片组
-  '3242': Category.ChipsHard, // 狙击芯片组
-  '3252': Category.ChipsHard, // 术师芯片组
-  '3262': Category.ChipsHard, // 医疗芯片组
-  '3272': Category.ChipsHard, // 辅助芯片组
-  '3282': Category.ChipsHard, // 特种芯片组
-
-  '3211': Category.ChipsEasy, // 先锋芯片
-  '3221': Category.ChipsEasy, // 近卫芯片
-  '3231': Category.ChipsEasy, // 重装芯片
-  '3241': Category.ChipsEasy, // 狙击芯片
-  '3251': Category.ChipsEasy, // 术师芯片
-  '3261': Category.ChipsEasy, // 医疗芯片
-  '3271': Category.ChipsEasy, // 辅助芯片
-  '3281': Category.ChipsEasy, // 特种芯片
-} satisfies Record<string, Category>
-
-const byCategory = groupBy<Item, Category>((i) => {
-  if (Object.hasOwn(myCategories, i.key)) return (myCategories as any)[i.key]
-  if (i.raw.rarity === 4) return Category.Rarity4
-  if (i.raw.rarity === 3) return Category.Rarity3
-  if (i.raw.rarity === 2) return Category.Rarity2
-  if (i.raw.rarity === 1) return Category.Rarity1
-  if (i.raw.rarity === 0) return Category.Rarity0
-  return Category.Unknown
+const byCategory = groupBy<IItem, string>((i) => {
+  return i.inventoryCategory
 })
 
-export function buildItemList(dm: DataManager) {
-  return Object.entries(
-    byCategory(
-      Object.values(dm.data.items)
-        .filter((x) => {
-          if (!['MATERIAL', 'CARD_EXP', 'GOLD', '##EXP_VIRTUAL'].includes(x.raw.itemType)) return false
-          if (
-            [
-              '3105', // 龙骨
-              '3401', // 家具零件
-              '3133', // 高级加固建材
-              '3132', // 进阶加固建材
-              '3131', // 基础加固建材
-              '3114', // 碳素组
-              '3113', // 碳素
-              '3112', // 碳
-              'STORY_REVIEW_COIN', // 事相碎片
-              '3141', // 源石碎片
-              '3003', // 赤金
-            ].includes(x.key)
-          ) {
-            return false
-          }
-          if (x.key.startsWith('act')) return false
-          if (x.key.startsWith('tier')) return false
-          if (x.key.startsWith('p_char')) return false
-          if (x.key.startsWith('class_p_char')) return false
-          return true
-        })
-        .sort((a, b) => {
-          if (a.raw.sortId < b.raw.sortId) return -1
-          if (a.raw.sortId > b.raw.sortId) return 1
-          return 0
-        }),
-    ),
-  ).sort(([a], [b]) => {
+export function buildItemList(ga: IGameAdapter<IGame>) {
+  return Object.entries(byCategory(ga.getInventoryItems())).sort(([a], [b]) => {
     return a > b ? 1 : a < b ? -1 : 0
   })
 }
@@ -495,10 +382,10 @@ const pickRetainableItems = pick([
   '4006', // 采购凭证
 ])
 
-function ImportButton() {
-  const dataManager = useInject(DataManager)
-  const atoms = useInject(UserDataAtomHolder)
-  const store = useInject(Store).store
+function ArknightsMAAItemImportButton<G extends Arknights>() {
+  const ga = useGameAdapter<G>()
+  const atoms = useAtoms<G>()
+  const store = useStore()
   const setData = useSetAtom(atoms.dataAtom)
   const [isOpen, setIsOpen] = useState(false)
   const [msg, setMsg] = useState('')
@@ -515,7 +402,7 @@ function ImportButton() {
             if (!data) return
             const quans = Object.fromEntries(
               Object.entries(data).filter(([key, value]) => {
-                return Object.hasOwn(dataManager.data.items, key) && key[0] !== '#' && typeof value === 'number'
+                return !!ga.getItem(key) && key[0] !== '#' && typeof value === 'number'
               }),
             )
             const before = store.get(atoms.itemQuantities)
@@ -532,14 +419,12 @@ function ImportButton() {
               const allKeys = new Set([...Object.keys(before), ...Object.keys(after)])
               let count = 0
               for (const i of allKeys) {
-                const item = dataManager.data.items[i]
+                const item = ga.getItem(i)
                 const b = before[i] || 0
                 const a = after[i] || 0
                 if (a - b === 0) continue
                 const v = item.valueAsAp == null ? undefined : (a - b) * item.valueAsAp
-                msg.push(
-                  `${item.raw.name}\t${b} -> ${a}\t${a - b > 0 ? '+' : '-'}${Math.abs(a - b)}\tAP ${v?.toFixed(3)}`,
-                )
+                msg.push(`${item.name}\t${b} -> ${a}\t${a - b > 0 ? '+' : '-'}${Math.abs(a - b)}\tAP ${v?.toFixed(3)}`)
                 if (v != null) {
                   count += v
                 }
@@ -560,14 +445,14 @@ function ImportButton() {
   )
 }
 
-function AllValue() {
-  const dataManager = useInject(DataManager)
-  const atoms = useInject(UserDataAtomHolder)
+function AllValue<G extends IGame>() {
+  const ga = useGameAdapter<G>()
+  const atoms = useAtoms<G>()
   const quantites = useAtomValue(atoms.itemQuantities)
 
   const a = sum(
     Object.entries(quantites).map(([k, v]) => {
-      const value = dataManager.data.items[k].valueAsAp
+      const value = ga.getItem(k).valueAsAp
       if (value == null) return 0
       return value * v
     }),
@@ -575,9 +460,9 @@ function AllValue() {
   return <ValueTag value={a} minimal={true} />
 }
 
-function AllGoalValue({ finished = false }: { finished?: boolean }) {
-  const dataManager = useInject(DataManager)
-  const atoms = useInject(UserDataAtomHolder)
+function AllGoalValue<G extends IGame>({ finished = false }: { finished?: boolean }) {
+  const ga = useGameAdapter<G>()
+  const atoms = useAtoms<G>()
   const quantites = useAtomValue(atoms.itemQuantities)
   const allGoals = useAtomValue(finished ? atoms.allFinishedTaskRequirements : atoms.allGoalTaskRequirements)
   const allGoalsIndirectsDetails = useAtomValue(
@@ -593,7 +478,7 @@ function AllGoalValue({ finished = false }: { finished?: boolean }) {
       (allGoalsIndirectsDetails.synthisisedRequirements[k] || 0)
     const remaining = Math.max(0, total - (quantites[k] || 0))
     // console.log(finished, dataManager.data.items[k].raw.name, k, total, remaining)
-    const value = dataManager.data.items[k].valueAsAp
+    const value = ga.getItem(k).valueAsAp
     if (value == null) return [0, 0]
     return [value * total, value * remaining]
   })
@@ -651,24 +536,25 @@ const itemListParamAtom: WritableAtom<ItemListParam, [ItemListParam | SetStateAc
     set(itemListParamStorageAtom, typeof value === 'function' ? value(get(itemListParamAtom)) : value),
 )
 
-export function ItemList() {
+export function ItemList<G extends IGame>() {
   const param = useAtomValue(itemListParamAtom)
-  const dataManager = useInject(DataManager)
-  const itemGroups = useMemo(() => buildItemList(dataManager), [dataManager])
-  const atoms = useInject(UserDataAtomHolder)
+  const ga = useGameAdapter<G>()
+  const itemGroups = useMemo(() => buildItemList(ga), [ga])
+  const atoms = useAtoms<G>()
   const store = useStore()
-  const quantities = useAtomValue(atoms.itemQuantities)
   const goals = useAtomValue(atoms.allGoalTaskRequirements)
   const finished = useAtomValue(atoms.allFinishedTaskRequirements)
   const goalIndirects = useAtomValue(atoms.allGoalIndirects)
   const finishedIndirects = useAtomValue(atoms.allFinishedIndirects)
+  const categoryNames = ga.getInventoryCategories()
+  const { ItemImportButton } = useComponents()
 
   return (
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}>
           <AllValue />
-          <ImportButton />
+          {ItemImportButton && <ItemImportButton />}
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
           <HideCompletedButton />
@@ -692,7 +578,7 @@ export function ItemList() {
 
           return (
             <React.Fragment key={key}>
-              <MenuDivider title={CategoryNames[key as Category]} />
+              <MenuDivider title={categoryNames[key]} />
               {items.map((x) => (
                 <ItemMenu key={x.key} item={x} />
               ))}

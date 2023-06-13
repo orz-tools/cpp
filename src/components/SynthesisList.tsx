@@ -2,17 +2,17 @@ import { Alignment, Icon, Menu, MenuDivider, Navbar } from '@blueprintjs/core'
 import { MenuItem2 } from '@blueprintjs/popover2'
 import { useAtomValue } from 'jotai'
 import React, { useMemo } from 'react'
-import { useInject } from '../hooks/useContainer'
-import { DataManager, Item, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
+import { useAtoms, useGameAdapter } from '../Cpp'
+import { IItem } from '../pkg/cpp-basic'
 import { TaskStatus } from '../pkg/cpp-core/Task'
-import { generateIndirects, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
+import { generateIndirects } from '../pkg/cpp-core/UserData'
 import { CachedImg } from './Icons'
-import { buildItemList, Category, CategoryNames, ItemSynthesisPopover } from './ItemList'
+import { ItemSynthesisPopover, buildItemList } from './ItemList'
 
 export function SynthesisList() {
-  const atoms = useInject(UserDataAtomHolder)
-  const dm = useInject(DataManager)
-  const itemGroups = useMemo(() => buildItemList(dm), [dm])
+  const ga = useGameAdapter()
+  const atoms = useAtoms()
+  const itemGroups = useMemo(() => buildItemList(ga), [ga])
   const tasks = useAtomValue(atoms.goalTasksWithExtra)
   const requirements = useMemo(() => {
     const requirements: Record<string, number> = {}
@@ -27,7 +27,8 @@ export function SynthesisList() {
   }, [tasks])
   const itemQuantities = useAtomValue(atoms.itemQuantities)
   const forbiddenFormulaTags = useAtomValue(atoms.forbiddenFormulaTagsAtom)
-  const indirectDetails = generateIndirects(dm, requirements, itemQuantities, forbiddenFormulaTags)
+  const indirectDetails = generateIndirects(ga, requirements, itemQuantities, forbiddenFormulaTags)
+  const categoryNames = ga.getInventoryCategories()
 
   return (
     <>
@@ -38,14 +39,14 @@ export function SynthesisList() {
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
         {itemGroups.map(([key, allItems]) => {
           const items = allItems.filter((x) => {
-            if (x.key === ITEM_VIRTUAL_EXP) return false
+            if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), x.key)) return false
             return (indirectDetails.synthisisedRequirements[x.key] || 0) > 0
           })
           if (!items.length) return null
 
           return (
             <React.Fragment key={key}>
-              <MenuDivider title={CategoryNames[key as Category]} />
+              <MenuDivider title={categoryNames[key]} />
               {items.map((x) => (
                 <SynthesisMenu key={x.key} item={x} target={indirectDetails.synthisisedRequirements[x.key] || 0} />
               ))}
@@ -57,8 +58,8 @@ export function SynthesisList() {
   )
 }
 
-function SynthesisMenu({ item, target }: { item: Item; target: number }) {
-  const atoms = useInject(UserDataAtomHolder)
+function SynthesisMenu({ item, target }: { item: IItem; target: number }) {
+  const atoms = useAtoms()
   const quantity = useAtomValue(atoms.itemQuantity(item.key))
   return (
     <MenuItem2
@@ -67,7 +68,7 @@ function SynthesisMenu({ item, target }: { item: Item; target: number }) {
       icon={<CachedImg src={item.icon} width={'100%'} height={'100%'} alt={item.key} title={item.key} />}
       text={
         <>
-          <span>{item.raw.name}</span>
+          <span>{item.name}</span>
           <span style={{ float: 'right' }}>
             <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5 }} />
             {target}/{quantity}

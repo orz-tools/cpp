@@ -1,36 +1,28 @@
 import { Alignment, Button, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { sortBy } from 'ramda'
 import { useCallback, useEffect } from 'react'
-import { useContainer, useInject } from '../hooks/useContainer'
+import { Cpp, useAtoms, useCpp, useGameAdapter, useStore } from '../Cpp'
 import { useRequest } from '../hooks/useRequest'
-import { Container } from '../pkg/container'
-import { DataManager } from '../pkg/cpp-core/DataManager'
-import { ExcelStageTable } from '../pkg/cpp-core/excelTypes'
-import { diffGroupName, FarmPlannerFactory } from '../pkg/cpp-core/FarmPlanner'
-import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
-import { Store } from '../Store'
-import { forbiddenFormulaTagsAtom, forbiddenStageIdsAtom } from './Config'
+import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
 import { ValueTag } from './Value'
 
 interface StageRun {
   stageId: string
-  stage: ExcelStageTable.Stage
+  stage: IStageInfo
   count: number
   apCost: number
 }
 
-/*factory: FarmPlannerFactory, requirements: Record<string, number>, quantity: Record<string, number>*/
-export async function plan(container: Container, finished: boolean) {
-  const factory = container.get(FarmPlannerFactory)
-  const dm = container.get(DataManager)
-  const atoms = container.get(UserDataAtomHolder)
-  const store = container.get(Store).store
+export async function plan(cpp: Cpp<IGame>, finished: boolean) {
+  const ga = cpp.gameAdapter
+  const atoms = cpp.atoms.atoms
+  const store = cpp.store
   const quantities = store.get(atoms.itemQuantities)
   const requirements = store.get(finished ? atoms.allFinishedTaskRequirements : atoms.allGoalTaskRequirements)
-  const forbiddenFormulaTags = store.get(forbiddenFormulaTagsAtom)
-  const forbiddenStageIds = store.get(forbiddenStageIdsAtom)
-  const planner = await factory.build({ forbiddenFormulaTags, forbiddenStageIds })
+  const forbiddenFormulaTags = store.get(cpp.preferenceAtoms.forbiddenFormulaTagsAtom)
+  const forbiddenStageIds = store.get(cpp.preferenceAtoms.forbiddenStageIdsAtom)
+  const planner = await FarmPlanner.create(ga, { forbiddenFormulaTags, forbiddenStageIds })
   planner.setRequirements(requirements)
   planner.setQuantity(quantities)
   const result = await planner.run()
@@ -39,15 +31,15 @@ export async function plan(container: Container, finished: boolean) {
   }
 
   let ap = 0
-  const stageInfo = factory.getStageInfo()
+  const stageInfo = ga.getStageInfos()
   const stageRuns: StageRun[] = []
   for (const [k, v] of Object.entries(result)) {
     if (k.startsWith('battle:')) {
       const stageId = k.slice('battle:'.length)
-      const stage = stageInfo[stageId].excel
+      const stage = stageInfo[stageId]
       const count = Math.ceil(Number(v || 0))
-      stageRuns.push({ stageId, stage, count, apCost: count * stage.apCost })
-      ap += count * stage.apCost
+      stageRuns.push({ stageId, stage, count, apCost: count * stage.ap })
+      ap += count * stage.ap
     }
   }
 
@@ -55,10 +47,10 @@ export async function plan(container: Container, finished: boolean) {
 }
 
 export function FarmList() {
-  const container = useContainer()
+  const cpp = useCpp()
   const { loading, response, send, error } = useRequest(plan)
-  const refresh = useCallback(() => send(container, false), [container, send])
-  const refreshAll = useCallback(() => send(container, true), [container, send])
+  const refresh = useCallback(() => send(cpp, false), [cpp, send])
+  const refreshAll = useCallback(() => send(cpp, true), [cpp, send])
   useEffect(() => {
     if (error) {
       console.log(error)
@@ -94,8 +86,8 @@ export function FarmList() {
 }
 
 export function StageLine({ run }: { run: StageRun }) {
-  const stageInfo = useInject(FarmPlannerFactory).getStageInfo()[run.stageId]
-  const dm = useInject(DataManager)
+  const ga = useGameAdapter()
+  const stageInfo = ga.getStageInfos()[run.stageId]
 
   return (
     <>
@@ -108,10 +100,7 @@ export function StageLine({ run }: { run: StageRun }) {
             </span>
             <span style={{ display: 'inline-flex' }}>
               <Tag>
-                <code style={{ fontSize: '110%' }}>
-                  {diffGroupName[run.stage.diffGroup] || ''}
-                  {run.stage.code}
-                </code>
+                <code style={{ fontSize: '110%' }}>{run.stage.code}</code>
               </Tag>
               {`×${run.count}`}
             </span>
@@ -119,7 +108,7 @@ export function StageLine({ run }: { run: StageRun }) {
         }
       ></MenuItem>
       {stageInfo.sortedDropInfo.map(([k, v]) => {
-        const item = dm.data.items[k]
+        const item = ga.getItem(k)
         return (
           <MenuItem
             key={k}
@@ -127,7 +116,7 @@ export function StageLine({ run }: { run: StageRun }) {
             icon={<CachedImg src={item.icon} width={'100%'} height={'100%'} alt={item.key} title={item.key} />}
             text={
               <>
-                <span>{item.raw.name}</span>
+                <span>{item.name}</span>
                 <span style={{ float: 'right' }}>{(v * run.count).toFixed(2).replace(/\.?0+$/, '')}</span>
               </>
             }

@@ -1,16 +1,14 @@
 import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
 import { ContextMenu2, MenuItem2 } from '@blueprintjs/popover2'
-import { atom, useAtom, useAtomValue, WritableAtom } from 'jotai'
+import { WritableAtom, atom, useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { sortBy, sum } from 'ramda'
 import React, { SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ListChildComponentProps, ListItemKeySelector, VariableSizeList } from 'react-window'
-import { useInject } from '../hooks/useContainer'
-import { Character, DataManager, ITEM_VIRTUAL_EXP } from '../pkg/cpp-core/DataManager'
+import { useAtoms, useGameAdapter, useStore } from '../Cpp'
+import { IGame, Task } from '../pkg/cpp-basic'
 import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
-import { Task, TaskType, UserDataAtomHolder } from '../pkg/cpp-core/UserData'
-import { Store } from '../Store'
 import { CachedImg } from './Icons'
 import { ValueTagProgressBar } from './Value'
 
@@ -34,62 +32,42 @@ const queryParamAtom: WritableAtom<
     set(queryParamStorageAtom, typeof value === 'function' ? value(get(queryParamAtom)) : value),
 )
 
-function TaskDisplay({ type, character }: { type: TaskType; character: Character }) {
-  switch (type._) {
-    case 'join':
-      return <>招募</>
-    case 'skill':
-      return <>{`技能 ${type.to} 级`}</>
-    case 'elite':
-      return <>{`精${'零一二'[type.elite]}`}</>
-    case 'level':
-      return <>{`精${'零一二'[type.elite]}等级 ${type.from} -> ${type.to}`}</>
-    case 'skillMaster': {
-      const skillIndex = character.skills.findIndex((x) => x[0].skillId == type.skillId)
-      const skill = character.skills[skillIndex]
-      return <>{`${skillIndex + 1} 技能专${'一二三'[type.to - 1]}: ${skill[1].raw.levels[0].name}`}</>
-    }
-    case 'mod': {
-      const uniEquip = character.uniEquips.find((x) => x.key == type.modId)!
-      return <>{`${uniEquip.raw.typeName2.toUpperCase()} 模组 ${type.to} 级: ${uniEquip.raw.uniEquipName}`}</>
-    }
-    default:
-      throwBad(type)
-  }
+function TaskDisplay<G extends IGame>({ type, charId }: { type: G['characterTaskType']; charId: string }) {
+  const ga = useGameAdapter()
+  return <>{ga.getUserDataAdapter().formatTaskAsString(type, charId)}</>
 }
 
-function throwBad(p: never): never {
-  throw new Error(`Missing switch coverage: ${p}`)
-}
+function TaskContextMenu<G extends IGame>({ task, extra }: { task: Task<G>; extra: TaskExtra }) {
+  const store = useStore()
+  const atoms = useAtoms<G>()
+  const ga = useGameAdapter<G>()
 
-function TaskContextMenu({ task, extra }: { task: Task; extra: TaskExtra }) {
-  const dm = useInject(DataManager)
-  const atoms = useInject(UserDataAtomHolder)
-  const store = useInject(Store).store
   const consumeCost = () => {
     for (const i of task.requires) {
-      if (i.itemId == ITEM_VIRTUAL_EXP) {
+      const allExpItems = ga.getExpItems()
+      if (Object.prototype.hasOwnProperty.call(allExpItems, i.itemId)) {
         let exp = i.quantity
-        const expItems = Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)
+        const thisExpItems = allExpItems[i.itemId]
+        const expItems = Object.entries(thisExpItems).sort((a, b) => -a[1] + b[1])
         const quantities: Record<string, number> = Object.create(null)
         const cost: Record<string, number> = Object.create(null)
         for (const expItem of expItems) {
-          quantities[expItem.id] = store.get(atoms.itemQuantity(expItem.id))
-          cost[expItem.id] = 0
+          quantities[expItem[0]] = store.get(atoms.itemQuantity(expItem[0]))
+          cost[expItem[0]] = 0
         }
         for (const expItem of expItems) {
-          if (!quantities[expItem.id]) continue
-          const need = Math.min(quantities[expItem.id], Math.floor(exp / expItem.gainExp))
-          exp -= need * expItem.gainExp
-          quantities[expItem.id] = quantities[expItem.id] - need
-          cost[expItem.id] += need
+          if (!quantities[expItem[0]]) continue
+          const need = Math.min(quantities[expItem[0]], Math.floor(exp / expItem[1]))
+          exp -= need * expItem[1]
+          quantities[expItem[0]] = quantities[expItem[0]] - need
+          cost[expItem[0]] += need
         }
-        const smallestExpItemWithQuantity = expItems.reverse().find((x) => quantities[x.id] > 0)
+        const smallestExpItemWithQuantity = expItems.reverse().find((x) => quantities[x[0]] > 0)
         if (exp === 0) {
-        } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity.gainExp) {
+        } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
           exp = 0
-          quantities[smallestExpItemWithQuantity.id] -= 1
-          cost[smallestExpItemWithQuantity.id] += 1
+          quantities[smallestExpItemWithQuantity[0]] -= 1
+          cost[smallestExpItemWithQuantity[0]] += 1
         } else {
           console.assert(false, 'virtual exp failed')
         }
@@ -110,31 +88,7 @@ function TaskContextMenu({ task, extra }: { task: Task; extra: TaskExtra }) {
 
   const completeTask = () => {
     store.set(atoms.currentCharacter(task.charId), (d) => {
-      const type = task.type
-      switch (type._) {
-        case 'elite':
-          d.elite = type.elite
-          d.level = 1
-          break
-        case 'join':
-          d.level = 1
-          break
-        case 'level':
-          d.elite = type.elite
-          d.level = type.to
-          break
-        case 'mod':
-          d.modLevel[type.modId] = type.to
-          break
-        case 'skill':
-          d.skillLevel = type.to
-          break
-        case 'skillMaster':
-          d.skillMaster[type.skillId] = type.to
-          break
-        default:
-          throwBad(type)
-      }
+      ga.getUserDataAdapter().completeTask(task.type, task.charId, d)
     })
   }
 
@@ -161,7 +115,7 @@ function TaskContextMenu({ task, extra }: { task: Task; extra: TaskExtra }) {
   )
 }
 
-export function TaskMenu({
+export function TaskMenu<G extends IGame>({
   task,
   extra,
   style,
@@ -169,26 +123,26 @@ export function TaskMenu({
   nextSame,
   hideCosts,
 }: {
-  task: Task
+  task: Task<G>
   extra: TaskExtra
   style?: React.CSSProperties
   same?: boolean
   nextSame?: boolean
   hideCosts: boolean
 }) {
-  const dm = useInject(DataManager)
-  const character = dm.data.characters[task.charId]
+  const ga = useGameAdapter<G>()
+  const character = ga.getCharacter(task.charId)
   const sortedRequires = useMemo(
     () =>
       sortBy(
-        (a) => dm.data.items[a[0].itemId].raw.sortId,
+        (a) => ga.getItem(a[0].itemId).sortId,
         task.requires.map((r, i) => [r, i] as const),
       ),
-    [dm, task.requires],
+    [ga, task.requires],
   )
 
   const renderedCosts = sortedRequires.map(([x, i]) => (
-    <ItemStack
+    <ItemStack<G>
       key={x.itemId}
       task={task}
       stack={x}
@@ -216,9 +170,9 @@ export function TaskMenu({
             <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
               <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
                 <div className="bp4-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
-                  {character.raw.name}
+                  {character.name}
                   <span style={{ paddingLeft: '0.5em', fontWeight: 'normal', opacity: 0.75 }}>
-                    {character.raw.appellation}
+                    {character.appellation}
                   </span>
                 </div>
               </div>
@@ -241,7 +195,7 @@ export function TaskMenu({
                     style={{ float: 'right' }}
                   />
                 ) : null}
-                <TaskDisplay type={task.type} character={character} />
+                <TaskDisplay type={task.type} charId={character.key} />
               </>
             }
             icon={StatusIcon[extra.status]}
@@ -274,7 +228,7 @@ const CostStatusIcon = {
   [TaskCostStatus.Synthesizable]: 'build',
 } satisfies { [K in TaskCostStatus]: IconName }
 
-function ItemStack({
+function ItemStack<G extends IGame>({
   stack,
   task,
   style,
@@ -282,15 +236,15 @@ function ItemStack({
   consumed,
   synthesised,
 }: {
-  task: Task
-  stack: Task['requires'][0]
+  task: Task<G>
+  stack: Task<G>['requires'][0]
   style?: React.CSSProperties
   status: TaskCostStatus
   consumed: number
   synthesised: number
 }) {
-  const dm = useInject(DataManager)
-  const item = dm.data.items[stack.itemId]
+  const ga = useGameAdapter<G>()
+  const item = ga.getItem(stack.itemId)
   return (
     <MenuItem
       key={stack.itemId}
@@ -303,7 +257,7 @@ function ItemStack({
       onContextMenu={preventDefault}
       text={
         <>
-          <span>{item.raw.name}</span>
+          <span>{item.name}</span>
           <span style={{ float: 'right' }}>
             {consumed > 0 || (consumed <= 0 && synthesised <= 0) ? consumed : undefined}
             {consumed > 0 && synthesised > 0 ? ' + ' : undefined}
@@ -339,18 +293,18 @@ function HideCostsButton() {
   )
 }
 
-export function TaskList() {
-  const atoms = useInject(UserDataAtomHolder)
+export function TaskList<G extends IGame>() {
+  const atoms = useAtoms<G>()
   const param = useAtomValue(queryParamAtom)
 
   const hideCosts = param.hideCosts || false
   const list = useAtomValue(atoms.goalTasksWithExtra)
-  const listRef = useRef<VariableSizeList<[Task, TaskExtra][]>>(
-    undefined as unknown as VariableSizeList<[Task, TaskExtra][]>,
+  const listRef = useRef<VariableSizeList<[Task<G>, TaskExtra][]>>(
+    undefined as unknown as VariableSizeList<[Task<G>, TaskExtra][]>,
   )
   const child = useCallback(
-    ({ index, data, style }: ListChildComponentProps<[Task, TaskExtra][]>) => (
-      <TaskMenu
+    ({ index, data, style }: ListChildComponentProps<[Task<G>, TaskExtra][]>) => (
+      <TaskMenu<G>
         style={style}
         task={data[index][0]}
         extra={data[index][1]}
@@ -361,7 +315,7 @@ export function TaskList() {
     ),
     [param],
   )
-  const itemKey = useCallback<ListItemKeySelector<[Task, TaskExtra][]>>((index, data) => data[index][0].id, [])
+  const itemKey = useCallback<ListItemKeySelector<[Task<G>, TaskExtra][]>>((index, data) => data[index][0].id, [])
   const itemSize = useCallback<(index: number) => number>(
     (index) => {
       const same = list[index - 1]?.[0].charId == list[index][0].charId

@@ -1,5 +1,5 @@
-import localForage from 'localforage'
-import pProps from 'p-props'
+import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
+import { Arknights } from './types'
 import {
   ExcelBuildingData,
   ExcelCharacterTable,
@@ -10,30 +10,15 @@ import {
   ExcelStageTable,
   ExcelUniEquipTable,
   ExcelZoneTable,
-} from './excelTypes'
-import { PenguinMatrix } from './penguinTypes'
-import { YituliuValue } from './yituliuTypes'
+} from './sources/excelTypes'
+import { PenguinMatrix } from './sources/penguinTypes'
+import { YituliuValue } from './sources/yituliuTypes'
+import { Category, myCategories } from './GameAdapter'
 
-const STORAGE_PREFIX = 'cpp_dm_'
-
-const store = localForage.createInstance({
-  name: 'cpp_dm',
-})
-
-export class DataManager {
-  async init() {
-    this.initialized = false
-    try {
-      this.raw = await this.loadRaw()
-      this.data = await this.transform()
-    } catch (e) {
-      this.error = e as any
-      throw e
-    }
-    this.initialized = true
+export class ArknightsDataManager extends BasicDataManager<Arknights> {
+  constructor() {
+    super('cpp_dm_')
   }
-  public initialized: boolean = false
-  public error?: Error
 
   async transform() {
     return {
@@ -45,111 +30,60 @@ export class DataManager {
       formulas: this.generateFormulas(),
     }
   }
-  public data!: Awaited<ReturnType<DataManager['transform']>>
 
-  async refresh() {
-    return await this.loadRaw(true)
-  }
-
-  async loadRaw(refresh?: boolean) {
-    const task = {
-      exCharacters1: DataManager.loadJson<ExcelCharacterTable>(
+  getLoadRawTasks(refresh?: boolean | undefined) {
+    return {
+      exCharacters1: this.loadJson<ExcelCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/627efb6d7009f66135aac5f19d145026ac28f3f8/zh_CN/gamedata/excel/character_table.json',
         refresh,
       ),
-      exCharacters: DataManager.loadJson<ExcelCharacterTable>(
+      exCharacters: this.loadJson<ExcelCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json',
         refresh,
       ),
-      exPatchCharacters: DataManager.loadJson<ExcelPatchCharacterTable>(
+      exPatchCharacters: this.loadJson<ExcelPatchCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/char_patch_table.json',
         refresh,
       ),
-      exSkills: DataManager.loadJson<ExcelSkillTable>(
+      exSkills: this.loadJson<ExcelSkillTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/skill_table.json',
         refresh,
       ),
-      exUniEquips: DataManager.loadJson<ExcelUniEquipTable>(
+      exUniEquips: this.loadJson<ExcelUniEquipTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/uniequip_table.json',
         refresh,
       ),
-      exItems: DataManager.loadJson<ExcelItemTable>(
+      exItems: this.loadJson<ExcelItemTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/item_table.json',
         refresh,
       ),
-      exBuilding: DataManager.loadJson<ExcelBuildingData>(
+      exBuilding: this.loadJson<ExcelBuildingData>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/building_data.json',
         refresh,
       ),
-      exStage: DataManager.loadJson<ExcelStageTable>(
+      exStage: this.loadJson<ExcelStageTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/stage_table.json',
         refresh,
       ),
-      exRetro: DataManager.loadJson<ExcelRetroTable>(
+      exRetro: this.loadJson<ExcelRetroTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/retro_table.json',
         refresh,
       ),
-      exZone: DataManager.loadJson<ExcelZoneTable>(
+      exZone: this.loadJson<ExcelZoneTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/zone_table.json',
         refresh,
       ),
-      yituliuValue: DataManager.loadJson<YituliuValue[]>(
+      yituliuValue: this.loadJson<YituliuValue[]>(
         'https://backend.yituliu.site/item/export/json',
         refresh,
         undefined,
         () => [],
       ),
-      penguinMatrix: DataManager.loadJson<PenguinMatrix>(
+      penguinMatrix: this.loadJson<PenguinMatrix>(
         'https://penguin-stats.io/PenguinStats/api/v2/result/matrix?server=CN',
         refresh,
       ),
     }
-    return (await pProps(task)) as any as { [K in keyof typeof task]: Awaited<(typeof task)[K]> }
-  }
-  public raw!: Awaited<ReturnType<DataManager['loadRaw']>>
-
-  private static async loadJson<T>(
-    url: string,
-    refresh: boolean = false,
-    key = url,
-    shitDefault: (() => T) | undefined = undefined,
-  ): Promise<T> {
-    const fullKey = `${STORAGE_PREFIX}${key}`
-    const timeKey = `${STORAGE_PREFIX}--time--${key}`
-    const existing = (await store.getItem<string>(fullKey)) || ''
-    if (!refresh && existing) {
-      try {
-        return JSON.parse(existing)
-      } catch {}
-    }
-    let log = undefined
-    let response: Response | undefined = undefined
-    try {
-      response = await fetch(url)
-      if (!response.ok) {
-        log = `status ${response.status} ${response.statusText}`
-      }
-    } catch (e: any) {
-      log = String(e?.message || '')
-    }
-    if (log !== undefined || !response) {
-      if (existing) {
-        try {
-          console.warn(`Failed to fetch ${url}: ${log}, using existing`)
-          return JSON.parse(existing)
-        } catch {}
-      }
-      if (shitDefault !== undefined) {
-        console.warn(`Failed to fetch ${url}: ${log}, using shit default`)
-        return shitDefault()
-      }
-      throw new Error(`Failed to fetch ${url}: ${log}`)
-    }
-    const result = await response.json()
-    await store.setItem(fullKey, JSON.stringify(result))
-    await store.setItem(timeKey, Date.now())
-    console.log(`Updated ${url}`)
-    return result
   }
 
   private generateCharacters() {
@@ -172,8 +106,8 @@ export class DataManager {
     const items = Object.fromEntries(
       Object.entries(this.raw.exItems.items).map(([key, raw]) => [key, new Item(key, raw, this)]),
     )
-    items[ITEM_VIRTUAL_EXP] = new ExpItem(ITEM_VIRTUAL_EXP, this)
-    items[ITEM_UNKNOWN_SHIT] = new UnknownShitItem(ITEM_UNKNOWN_SHIT, this)
+    items[AK_ITEM_VIRTUAL_EXP] = new ExpItem(AK_ITEM_VIRTUAL_EXP, this)
+    items[AK_ITEM_UNKNOWN_SHIT] = new UnknownShitItem(AK_ITEM_UNKNOWN_SHIT, this)
 
     return items
   }
@@ -249,13 +183,13 @@ export class DataManager {
         quantity: i.count,
         costs: [
           ...i.costs.map((x) => ({ itemId: x.id, quantity: x.count })),
-          ...(i.goldCost > 0 ? [{ itemId: ITEM_GOLD, quantity: i.goldCost }] : []),
+          ...(i.goldCost > 0 ? [{ itemId: AK_ITEM_GOLD, quantity: i.goldCost }] : []),
         ],
         tags: [],
         apCost: i.apCost / 360000,
       }
       if (this.raw.exItems.items[i.itemId].rarity === 2 && i.formulaType === 'F_EVOLVE') {
-        formula.tags.push(FormulaTag.WorkshopRarity2)
+        formula.tags.push(ArknightsFormulaTag.WorkshopRarity2)
       }
       formulas.push(formula)
     }
@@ -293,37 +227,30 @@ export class DataManager {
   }
 }
 
-export function formatItemStack(dm: DataManager, { itemId, quantity }: { itemId: string; quantity: number }) {
-  return `${dm.raw.exItems.items[itemId]?.name || itemId} x${quantity}`
+export interface CharacterLevel {
+  elite: number
+  level: number
 }
 
-interface Formula {
-  id: string
-  itemId: string
-  quantity: number
-  costs: {
-    itemId: string
-    quantity: number
-  }[]
-  tags: FormulaTag[]
-  apCost?: number
-}
-
-export enum FormulaTag {
-  WorkshopRarity2 = 'workshop_rarity_2',
-}
-
-export class Character {
+export class Character implements ICharacter {
   constructor(
     public readonly key: string,
     public readonly raw: ExcelCharacterTable.Character,
-    private readonly dm: DataManager,
+    private readonly dm: ArknightsDataManager,
   ) {
     if (dm.raw.exPatchCharacters.infos[key]) {
       this.patches = dm.raw.exPatchCharacters.infos[key].tmplIds
         .map((x) => [x, dm.raw.exPatchCharacters.patchChars[x]] as const)
         .filter((x) => !!x[1])
     }
+  }
+
+  get name(): string {
+    return this.raw.name
+  }
+
+  get appellation(): string {
+    return this.raw.appellation
   }
 
   private readonly patches: (readonly [string, ExcelCharacterTable.Character])[] = []
@@ -402,7 +329,7 @@ export class Character {
       lvlUpCost: [
         {
           count: 0,
-          id: ITEM_UNKNOWN_SHIT,
+          id: AK_ITEM_UNKNOWN_SHIT,
           type: UnknownShitItem.itemType,
         },
       ],
@@ -416,7 +343,7 @@ export class Skill {
   constructor(
     public readonly key: string,
     public readonly raw: ExcelSkillTable.Skill,
-    private readonly dm: DataManager,
+    private readonly dm: ArknightsDataManager,
   ) {}
 
   get icon() {
@@ -430,7 +357,7 @@ export class UniEquip {
   constructor(
     public readonly key: string,
     public readonly raw: ExcelUniEquipTable.UniEquip,
-    private readonly dm: DataManager,
+    private readonly dm: ArknightsDataManager,
   ) {}
 
   get icon() {
@@ -440,12 +367,24 @@ export class UniEquip {
   }
 }
 
-export class Item {
+function makeNumericSortable(x: string) {
+  return x.replace(/\d+/g, (y) => String(y).padStart(20, '0'))
+}
+
+export class Item implements IItem {
   constructor(
     public readonly key: string,
     public readonly raw: ExcelItemTable.Item,
-    protected readonly dm: DataManager,
+    protected readonly dm: ArknightsDataManager,
   ) {}
+
+  get sortId(): string {
+    return makeNumericSortable(this.raw.sortId.toFixed(0))
+  }
+
+  get name(): string {
+    return this.raw.name
+  }
 
   get icon() {
     return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/item/${encodeURIComponent(
@@ -495,10 +434,20 @@ export class Item {
     }
     return this.dm.raw.yituliuValue.find((x) => x.itemId == this.key)?.itemValueAp
   }
+
+  get inventoryCategory(): string {
+    if (Object.hasOwn(myCategories, this.key)) return (myCategories as any)[this.key]
+    if (this.raw.rarity === 4) return Category.Rarity4
+    if (this.raw.rarity === 3) return Category.Rarity3
+    if (this.raw.rarity === 2) return Category.Rarity2
+    if (this.raw.rarity === 1) return Category.Rarity1
+    if (this.raw.rarity === 0) return Category.Rarity0
+    return Category.Unknown
+  }
 }
 
 export class ExpItem extends Item {
-  constructor(key: string, dm: DataManager) {
+  constructor(key: string, dm: ArknightsDataManager) {
     super(
       key,
       {
@@ -529,7 +478,7 @@ export class ExpItem extends Item {
 export class UnknownShitItem extends Item {
   static itemType = '#__UNKNOWN_SHIT'
 
-  constructor(key: string, dm: DataManager) {
+  constructor(key: string, dm: ArknightsDataManager) {
     super(
       key,
       {
@@ -557,6 +506,14 @@ export class UnknownShitItem extends Item {
   }
 }
 
-export const ITEM_GOLD = '4001'
-export const ITEM_VIRTUAL_EXP = '##EXP'
-export const ITEM_UNKNOWN_SHIT = '#__UNKNOWN_SHIT'
+export const AK_ITEM_GOLD = '4001'
+export const AK_ITEM_VIRTUAL_EXP = '##EXP'
+export const AK_ITEM_UNKNOWN_SHIT = '#__UNKNOWN_SHIT'
+
+export enum ArknightsFormulaTag {
+  WorkshopRarity2 = 'workshop_rarity_2',
+}
+
+export const formulaTagNames = {
+  [ArknightsFormulaTag.WorkshopRarity2]: '不从绿材料合成蓝材料',
+} satisfies Record<ArknightsFormulaTag, string>

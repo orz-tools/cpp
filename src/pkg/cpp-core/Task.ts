@@ -1,8 +1,5 @@
 import { clone, intersection, sum } from 'ramda'
-import { Store } from '../../Store'
-import { Container } from '../container'
-import { DataManager, FormulaTag, ITEM_VIRTUAL_EXP } from './DataManager'
-import { Task, UserDataAtomHolder } from './UserData'
+import { IGame, IGameAdapter, Task } from '../cpp-basic'
 
 export enum TaskStatus {
   Completable,
@@ -36,16 +33,17 @@ export const emptyTaskExtra: TaskExtra = {
   valueFulfilled: [],
 }
 
-export function sortTask(tasks: Task[]) {
+export function sortTask(tasks: Task<any>[]) {
   return tasks
 }
 
-export function generateTaskExtra(
-  dm: DataManager,
-  tasks: Task[],
-  forbiddenFormulaTags: FormulaTag[],
+export function generateTaskExtra<G extends IGame>(
+  ga: IGameAdapter<G>,
+  tasks: Task<G>[],
+  forbiddenFormulaTags: string[],
   itemQuantities: Record<string, number>,
-): [Task, TaskExtra][] {
+): [Task<G>, TaskExtra][] {
+  const allExpItems = ga.getExpItems()
   let quantities = clone(itemQuantities)
 
   const consumeItems = (
@@ -79,8 +77,8 @@ export function generateTaskExtra(
         if (cost.root) {
           quantityCanConsume[cost.source] += quantity
         }
-        valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * cost.quantity
-        valueFulfilled[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * cost.quantity
+        valueTotal[cost.source] += (ga.getItem(cost.itemId).valueAsAp || 0) * cost.quantity
+        valueFulfilled[cost.source] += (ga.getItem(cost.itemId).valueAsAp || 0) * cost.quantity
         newQuantities[cost.itemId] = quantity - cost.quantity
       } else {
         const left = cost.quantity - quantity
@@ -88,14 +86,14 @@ export function generateTaskExtra(
           if (cost.root) {
             quantityCanConsume[cost.source] += quantity
           }
-          valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * quantity
-          valueFulfilled[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * quantity
+          valueTotal[cost.source] += (ga.getItem(cost.itemId).valueAsAp || 0) * quantity
+          valueFulfilled[cost.source] += (ga.getItem(cost.itemId).valueAsAp || 0) * quantity
           newQuantities[cost.itemId] = 0
         }
 
-        const formula = dm.data.formulas.find(
-          (x) => x.itemId == cost.itemId && intersection(forbiddenFormulaTags || [], x.tags || []).length === 0,
-        )
+        const formula = ga
+          .getFormulas()
+          .find((x) => x.itemId == cost.itemId && intersection(forbiddenFormulaTags || [], x.tags || []).length === 0)
         if (formula) {
           if (cost.root) {
             costSynthesised[cost.source] += left
@@ -117,34 +115,36 @@ export function generateTaskExtra(
               root: false,
             })
           }
-        } else if (cost.itemId == ITEM_VIRTUAL_EXP) {
+        } else if (Object.prototype.hasOwnProperty.call(allExpItems, cost.itemId)) {
+          const thisExpItem = allExpItems[cost.itemId]
           if (cost.root) {
             quantityCanConsume[cost.source] += sum(
-              Object.values(dm.raw.exItems.expItems).map((x) => (newQuantities[x.id] || 0) * x.gainExp),
+              Object.entries(thisExpItem.value).map(([id, exp]) => (newQuantities[id] || 0) * exp),
             )
           }
           let exp = cost.quantity
-          valueTotal[cost.source] += (dm.data.items[ITEM_VIRTUAL_EXP].valueAsAp || 0) * exp
-          const expItems = Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)
-          for (const expItem of expItems) {
+          valueTotal[cost.source] += (ga.getItem(cost.itemId).valueAsAp || 0) * exp
+          const expItems = Object.entries(thisExpItem.value).sort((a, b) => -a[1] + b[1])
+          for (const expItem_ of expItems) {
+            const expItem = { id: expItem_[0], gainExp: expItem_[1] }
             if (!newQuantities[expItem.id]) continue
             const need = Math.min(newQuantities[expItem.id], Math.floor(exp / expItem.gainExp))
             exp -= need * expItem.gainExp
-            valueFulfilled[cost.source] += (dm.data.items[expItem.id].valueAsAp || 0) * need
+            valueFulfilled[cost.source] += (ga.getItem(expItem.id).valueAsAp || 0) * need
             newQuantities[expItem.id] = newQuantities[expItem.id] - need
           }
-          const smallestExpItemWithQuantity = expItems.reverse().find((x) => newQuantities[x.id] > 0)
+          const smallestExpItemWithQuantity = expItems.reverse().find((x) => newQuantities[x[0]] > 0)
           if (exp === 0) {
-          } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity.gainExp) {
+          } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
             exp = 0
-            valueFulfilled[cost.source] += (dm.data.items[smallestExpItemWithQuantity.id].valueAsAp || 0) * 1
-            newQuantities[smallestExpItemWithQuantity.id] -= 1
+            valueFulfilled[cost.source] += (ga.getItem(smallestExpItemWithQuantity[0]).valueAsAp || 0) * 1
+            newQuantities[smallestExpItemWithQuantity[0]] -= 1
           } else {
             needSynthesis = undefined
             costStatus[cost.source] = TaskCostStatus.AllUnmet
           }
         } else {
-          valueTotal[cost.source] += (dm.data.items[cost.itemId].valueAsAp || 0) * left
+          valueTotal[cost.source] += (ga.getItem(cost.itemId).valueAsAp || 0) * left
           // continue for task cost status
           needSynthesis = undefined
           costStatus[cost.source] = TaskCostStatus.AllUnmet
@@ -162,8 +162,8 @@ export function generateTaskExtra(
     }
   }
 
-  const map = new Map<Task, TaskExtra>()
-  const result: [Task, TaskExtra][] = []
+  const map = new Map<Task<G>, TaskExtra>()
+  const result: [Task<G>, TaskExtra][] = []
   for (const task of tasks) {
     const taskExtra: TaskExtra = {
       status: TaskStatus.AllUnmet,
@@ -175,7 +175,7 @@ export function generateTaskExtra(
     }
     map.set(task, taskExtra)
     result.push([task, taskExtra])
-    if (task.type._ == 'join') {
+    if (ga.getUserDataAdapter().isManuallyTask(task)) {
       taskExtra.status = TaskStatus.Manually
     } else {
       const { result, newQuantities, costStatus, quantityCanConsume, costSynthesised, valueFulfilled, valueTotal } =

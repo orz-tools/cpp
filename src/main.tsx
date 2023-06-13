@@ -1,44 +1,31 @@
 import { FocusStyleManager } from '@blueprintjs/core'
 import { Provider } from 'jotai'
-// import { DevTools } from 'jotai-devtools'
-import { atomWithStorage } from 'jotai/utils'
 import ReactDOM from 'react-dom/client'
 import { AppWrapper } from './App'
-import { forbiddenFormulaTagsAtom } from './components/Config'
-import { ContainerContext } from './hooks/useContainer'
+import { Cpp, CppContext } from './Cpp'
 import './index.css'
-import { Container } from './pkg/container'
-import { DataManager } from './pkg/cpp-core/DataManager'
-import { UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
-import { Store } from './Store'
+import { ArknightsAdapter } from './pkg/cpp-arknights/GameAdapter'
 
-const container = new Container()
-void container.get(DataManager).init()
-
-const atoms = container.get(UserDataAtomHolder)
-atoms.setAtom(atomWithStorage<UserData | undefined>('cpp_userdata', undefined), forbiddenFormulaTagsAtom)
-
-const store = container.get(Store).store
-store.sub(atoms.undoCounterAtom, () => {
-  console.log('undo counter changed', store.get(atoms.undoCounterAtom))
-})
-store.sub(atoms.dataAtom, () => {})
+const storagePrefix = 'cpp_'
+const cpp = new Cpp(storagePrefix, '', new ArknightsAdapter())
+void cpp.gameAdapter.getDataManager().init()
 
 Object.assign(globalThis, {
-  $dm: container.get(DataManager),
-  $store: store,
-  $atoms: atoms,
+  $cpp: cpp,
+  $dm: cpp.gameAdapter.getDataManager(),
+  $ga: cpp.gameAdapter,
+  $store: cpp.store,
+  $atoms: cpp.atoms,
 })
 
 FocusStyleManager.onlyShowFocusOnTabs()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <React.StrictMode>
-  <Provider store={store}>
-    {/* <DevTools store={store} /> */}
-    <ContainerContext.Provider value={container}>
+  <Provider store={cpp.store}>
+    <CppContext.Provider value={cpp}>
       <AppWrapper />
-    </ContainerContext.Provider>
+    </CppContext.Provider>
   </Provider>,
   // </React.StrictMode>,
 )
