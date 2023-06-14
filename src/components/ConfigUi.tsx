@@ -100,7 +100,7 @@ export function StagePopover() {
       {grouped.map(([k, stages]) => {
         const zoneName = ga.getZoneNames()[k] || k
         return (
-          <>
+          <React.Fragment key={k}>
             <Card style={{ padding: 15 }}>
               <h4 style={{ margin: 0, padding: 0 }}>
                 {zoneName}
@@ -110,7 +110,7 @@ export function StagePopover() {
                 return <ForbiddenStageIdTag stageId={x} key={x} />
               })}
             </Card>
-          </>
+          </React.Fragment>
         )
       })}
     </div>

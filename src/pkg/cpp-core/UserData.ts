@@ -1,6 +1,6 @@
 import deepEqual from 'deep-equal'
-import produce, { Draft } from 'immer'
-import { Atom, atom, PrimitiveAtom, WritableAtom } from 'jotai'
+import { Draft, produce } from 'immer'
+import { Atom, PrimitiveAtom, WritableAtom, atom } from 'jotai'
 import { atomFamily } from 'jotai/utils'
 import { AtomFamily } from 'jotai/vanilla/utils/atomFamily'
 import { clone, intersection, sum, uniq } from 'ramda'
@@ -283,6 +283,7 @@ function buildAtoms<G extends IGame>(
 
   const allGoalIndirectsDetails = withDebugLabel(
     atom((get) => {
+      console.log('allGoalIndirectsDetails')
       return generateIndirects(ga, get(allGoalTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
     }),
     'allGoalIndirectsDetails',

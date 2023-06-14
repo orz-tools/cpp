@@ -1,7 +1,6 @@
-import produce, { applyPatches, Draft, Patch, produceWithPatches } from 'immer'
-import { atom, PrimitiveAtom } from 'jotai'
-import { enablePatches } from 'immer'
 import deepEqual from 'deep-equal'
+import { Draft, Patch, applyPatches, enablePatches, produce, produceWithPatches } from 'immer'
+import { PrimitiveAtom, atom } from 'jotai'
 
 enablePatches()
 
