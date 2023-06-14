@@ -167,12 +167,12 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     }
 
     const findByCode = (code: string) => Object.values(this.stageInfo).find((x) => x.code === code)
-    findByCode('LP-1')!.addDrop(RE_ITEM_GOLD, 4200).valid = true
-    findByCode('LP-2')!.addDrop(RE_ITEM_GOLD, 5700).valid = true
-    findByCode('LP-3')!.addDrop(RE_ITEM_GOLD, 7400).valid = true
-    findByCode('LP-4')!.addDrop(RE_ITEM_GOLD, 8800).valid = true
-    findByCode('LP-5')!.addDrop(RE_ITEM_GOLD, 10350).valid = true
-    findByCode('LP-6')!.addDrop(RE_ITEM_GOLD, 12500).valid = true
+    findByCode('LP-1')!.addDrop(RE_ITEM_EXP, 4200).valid = true
+    findByCode('LP-2')!.addDrop(RE_ITEM_EXP, 5700).valid = true
+    findByCode('LP-3')!.addDrop(RE_ITEM_EXP, 7400).valid = true
+    findByCode('LP-4')!.addDrop(RE_ITEM_EXP, 8800).valid = true
+    findByCode('LP-5')!.addDrop(RE_ITEM_EXP, 10350).valid = true
+    findByCode('LP-6')!.addDrop(RE_ITEM_EXP, 12500).valid = true
 
     findByCode('MA-1')!.addDrop(RE_ITEM_GOLD, 2600).valid = true
     findByCode('MA-2')!.addDrop(RE_ITEM_GOLD, 3600).valid = true
