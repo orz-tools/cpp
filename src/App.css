@@ -94,19 +94,19 @@ body {
 }
 
 .cpp-uniequip-shining-blue {
-  background-image: url(./assets/shining_blue.png);
+  background-image: url(./components/arknights/assets/shining_blue.png);
 }
 .cpp-uniequip-shining-green {
-  background-image: url(./assets/shining_green.png);
+  background-image: url(./components/arknights/assets/shining_green.png);
 }
 .cpp-uniequip-shining-grey {
-  background-image: url(./assets/shining_grey.png);
+  background-image: url(./components/arknights/assets/shining_grey.png);
 }
 .cpp-uniequip-shining-red {
-  background-image: url(./assets/shining_red.png);
+  background-image: url(./components/arknights/assets/shining_red.png);
 }
 .cpp-uniequip-shining-yellow {
-  background-image: url(./assets/shining_yellow.png);
+  background-image: url(./components/arknights/assets/shining_yellow.png);
 }
 
 .cpp-char-menu-master {
@@ -119,6 +119,7 @@ body {
 }
 
 .cpp-char-menu-master > *:first-child {
+  flex-grow: 114514;
   flex-shrink: 1;
   overflow: hidden;
 }

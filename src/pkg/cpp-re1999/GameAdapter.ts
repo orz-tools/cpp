@@ -1,23 +1,24 @@
 import { sortBy } from 'ramda'
+import { GameName } from '../../games'
 import { BasicStageInfo, ExpItem, IGameAdapter } from '../cpp-basic'
+import { CurrencyItem, Item, Re1999DataManager, parseConsume } from './DataManager'
+import { Re1999UserDataAdapter } from './UserDataAdapter'
 import {
-  Re1999DataManager,
-  Character,
-  formulaTagNames,
+  ExChapter,
+  ExChapterType,
+  ExEpisode,
+  ExEpisodeType,
   RE_ITEM_EXP,
   RE_ITEM_GOLD,
-  CurrencyItem,
-  Item,
-  parseConsume,
-} from './DataManager'
-import { Re1999UserDataAdapter } from './UserDataAdapter'
-import { ExChapter, ExChapterType, ExEpisode, ExEpisodeType, Re1999, Re1999CharacterStatus } from './types'
+  Re1999,
+  formulaTagNames,
+} from './types'
 
 export class Re1999Adapter implements IGameAdapter<Re1999> {
   dataManager = new Re1999DataManager()
   userDataAdapter = new Re1999UserDataAdapter(this.dataManager)
 
-  static codename: string = 'reverse1999'
+  static codename: string = GameName.Re1999
   getCodename(): string {
     return Re1999Adapter.codename
   }
@@ -368,12 +369,6 @@ class Re1999StageInfo extends BasicStageInfo {
     }, di)
   }
 }
-
-const zoneNameOverrides: Record<string, string> = {
-  weekly_chips: '芯片搜索',
-}
-
-const zoneReplacement: Record<string, string> = {}
 
 export enum Category {
   Gold = '0',

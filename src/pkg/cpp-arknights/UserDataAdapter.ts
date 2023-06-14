@@ -1,8 +1,14 @@
 import deepEqual from 'deep-equal'
 import { sum } from 'ramda'
 import { IUserDataAdapter, Task } from '../cpp-basic'
-import { Arknights, ArknightsCharacterStatus, ArknightsCharacterTaskType } from './types'
-import { AK_ITEM_GOLD, AK_ITEM_VIRTUAL_EXP, ArknightsDataManager, Character } from './DataManager'
+import {
+  AK_ITEM_GOLD,
+  AK_ITEM_VIRTUAL_EXP,
+  Arknights,
+  ArknightsCharacterStatus,
+  ArknightsCharacterTaskType,
+} from './types'
+import { ArknightsDataManager, Character } from './DataManager'
 import { Draft } from 'immer'
 
 const emptyCharacterStatus = Object.freeze<ArknightsCharacterStatus>({

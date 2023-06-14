@@ -1,10 +1,9 @@
-import { createStore } from 'jotai'
-import React, { useContext } from 'react'
+import { WritableAtom, atom, createStore } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+import React, { SetStateAction, useContext } from 'react'
+import { IGameComponent } from './components/types'
 import { IGame, IGameAdapter } from './pkg/cpp-basic'
 import { UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
-import { atom, WritableAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
-import { SetStateAction } from 'react'
 
 export interface Preference {
   valueType: ValueType
@@ -24,6 +23,7 @@ export class Cpp<G extends IGame> {
     public readonly storagePrefix: string,
     public readonly instanceName: string,
     public readonly gameAdapter: IGameAdapter<G>,
+    public readonly gameComponent: IGameComponent,
   ) {
     this.preferenceAtoms = this.createPreferenceAtoms()
 

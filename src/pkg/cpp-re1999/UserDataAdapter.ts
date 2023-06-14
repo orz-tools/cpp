@@ -1,8 +1,8 @@
 import deepEqual from 'deep-equal'
 import { sum } from 'ramda'
 import { IUserDataAdapter, Task } from '../cpp-basic'
-import { Re1999, Re1999CharacterStatus, Re1999CharacterTaskType } from './types'
-import { RE_ITEM_EXP, RE_ITEM_GOLD, Re1999DataManager, Character } from './DataManager'
+import { RE_ITEM_EXP, RE_ITEM_GOLD, Re1999, Re1999CharacterStatus, Re1999CharacterTaskType } from './types'
+import { Re1999DataManager, Character } from './DataManager'
 import { Draft } from 'immer'
 
 const emptyCharacterStatus = Object.freeze<Re1999CharacterStatus>({

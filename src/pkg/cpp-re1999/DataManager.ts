@@ -307,10 +307,3 @@ export class CurrencyItem implements IItem {
     return Category.Gold
   }
 }
-
-export const RE_ITEM_GOLD = '2#3'
-export const RE_ITEM_EXP = '2#5'
-
-export enum Re1999FormulaTag {}
-
-export const formulaTagNames = {} satisfies Record<Re1999FormulaTag, string>

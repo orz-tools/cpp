@@ -1,15 +1,16 @@
 import { sortBy } from 'ramda'
+import { GameName } from '../../games'
 import { BasicStageInfo, ExpItem, IGameAdapter } from '../cpp-basic'
-import { AK_ITEM_GOLD, AK_ITEM_VIRTUAL_EXP, ArknightsDataManager, Character, formulaTagNames } from './DataManager'
+import { ArknightsDataManager } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
 import { ExcelStageTable } from './sources/excelTypes'
-import { Arknights, ArknightsCharacterStatus } from './types'
+import { AK_ITEM_GOLD, AK_ITEM_VIRTUAL_EXP, Arknights, formulaTagNames } from './types'
 
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
   dataManager = new ArknightsDataManager()
   userDataAdapter = new ArknightsUserDataAdapter(this.dataManager)
 
-  static codename: string = 'arknights'
+  static codename: string = GameName.Arknights
   getCodename(): string {
     return ArknightsAdapter.codename
   }

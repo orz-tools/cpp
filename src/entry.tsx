@@ -2,11 +2,17 @@ import { Provider } from 'jotai'
 import ReactDOM from 'react-dom/client'
 import { AppWrapper } from './App'
 import { Cpp, CppContext } from './Cpp'
+import { IGameComponent } from './components/types'
 import './index.css'
 import { IGameAdapter } from './pkg/cpp-basic'
 
-export function runCpp(storagePrefix: string, instanceName: string, gameAdapter: IGameAdapter<any>) {
-  const cpp = new Cpp(storagePrefix, instanceName, gameAdapter)
+export function runCpp(
+  storagePrefix: string,
+  instanceName: string,
+  gameAdapter: IGameAdapter<any>,
+  gameComponent: IGameComponent,
+) {
+  const cpp = new Cpp(storagePrefix, instanceName, gameAdapter, gameComponent)
   void cpp.gameAdapter.getDataManager().init()
 
   Object.assign(globalThis, {

@@ -2,7 +2,9 @@ import { FocusStyleManager } from '@blueprintjs/core'
 import ReactDOM from 'react-dom/client'
 import { Home } from './components/Home'
 import { runCpp } from './entry'
-import { formatProfileName, games } from './profiles'
+import { formatProfileName } from './profiles'
+import { GameName, gameAdapterLoaders, gameComponentLoaders } from './games'
+
 FocusStyleManager.onlyShowFocusOnTabs()
 
 async function runApp() {
@@ -12,11 +14,11 @@ async function runApp() {
   const parts = pathName.split('/')
   if (parts[0]) throw new Error('location parts 0 invalid')
 
-  const game = parts[1]
+  const game = parts[1] as GameName
   if (!game) {
     return runHome()
   }
-  if (!Object.prototype.hasOwnProperty.call(games, game)) throw new Error('invalid game name')
+  if (!Object.prototype.hasOwnProperty.call(gameAdapterLoaders, game)) throw new Error('invalid game name')
 
   const profile = parts[2] || ''
 
@@ -31,8 +33,9 @@ async function runApp() {
       return
     }
   }
-  const gameAdapter = games[game as any as keyof typeof games]()
-  runCpp(storagePrefix, profile, gameAdapter)
+
+  const [gameAdapter, gameComponent] = await Promise.all([gameAdapterLoaders[game](), gameComponentLoaders[game]()])
+  runCpp(storagePrefix, profile, gameAdapter, gameComponent)
 }
 
 function runHome() {

@@ -1,9 +1,9 @@
-import { Button, ButtonGroup, Checkbox, Classes, Intent, NumericInput, Tag } from '@blueprintjs/core'
+import { Button, ButtonGroup, Checkbox, Intent, NumericInput, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useContext, useEffect, useState } from 'react'
-import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
-import { Re1999, Character } from '../../pkg/cpp-re1999'
 import { useAtoms } from '../../Cpp'
+import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
+import { Character, Re1999 } from '../../pkg/cpp-re1999'
 
 const setStatusAtomTypeHolder = () =>
   useSetAtom(null as any as ReturnType<UserDataAtomHolder<Re1999>['atoms']['goalCharacter']>)

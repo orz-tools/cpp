@@ -20,3 +20,15 @@ export type ArknightsCharacterTaskType =
   | { _: 'skill'; to: number }
   | { _: 'skillMaster'; skillId: string; to: number }
   | { _: 'mod'; modId: string; to: number }
+
+export const AK_ITEM_GOLD = '4001'
+export const AK_ITEM_VIRTUAL_EXP = '##EXP'
+export const AK_ITEM_UNKNOWN_SHIT = '#__UNKNOWN_SHIT'
+
+export enum ArknightsFormulaTag {
+  WorkshopRarity2 = 'workshop_rarity_2',
+}
+
+export const formulaTagNames = {
+  [ArknightsFormulaTag.WorkshopRarity2]: '不从绿材料合成蓝材料',
+} satisfies Record<ArknightsFormulaTag, string>
