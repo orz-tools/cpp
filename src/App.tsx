@@ -127,6 +127,16 @@ function App() {
             flexDirection: 'column',
           }}
         >
+          <AboutList />
+        </section>
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
+            width: '300px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <LogList />
         </section>
         <section
@@ -142,32 +152,12 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '720px',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <ItemList />
-        </section>
-        <section
-          className={Classes.ELEVATION_1}
-          style={{
             width: '270px',
             display: 'flex',
             flexDirection: 'column',
           }}
         >
           <TaskList />
-        </section>
-        <section
-          className={Classes.ELEVATION_1}
-          style={{
-            width: '220px',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <SynthesisList />
         </section>
         <section
           className={Classes.ELEVATION_1}
@@ -182,12 +172,22 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '300px',
+            width: '220px',
             display: 'flex',
             flexDirection: 'column',
           }}
         >
-          <AboutList />
+          <SynthesisList />
+        </section>
+        <section
+          className={Classes.ELEVATION_1}
+          style={{
+            width: '720px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <ItemList />
         </section>
         <section></section>
       </div>

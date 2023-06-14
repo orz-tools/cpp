@@ -28,6 +28,10 @@ export interface Formula {
 
 export interface ExpItem {
   value: Record<string, number>
+  indirectStage: {
+    itemId: string
+    quantity: number
+  }[]
 }
 
 export interface IItem {

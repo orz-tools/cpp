@@ -41,10 +41,11 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
       exCharacterTalent: (async () =>
         (await import('./data/character_talent.json')).default as any as ExCharacterTalent[])(),
       drops: (async () =>
-        (await import('./data/drops.json')).default as any as Record<
-          string,
-          { count: number; cost: number; drops: Record<string, number> }
-        >)(),
+        (await import('./data/drops.json')).default as {
+          updatedAt: string
+          sourceUrl: string
+          levelReport: Record<string, { count: number; cost: number; drops: Record<string, number> }>
+        })(),
     }
   }
 

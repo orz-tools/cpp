@@ -85,6 +85,11 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         value: Object.fromEntries(
           Object.entries(this.dataManager.raw.exItems.expItems).map(([_key, value]) => [value.id, value.gainExp]),
         ),
+        indirectStage: [
+          // LS-6
+          { itemId: '2003', quantity: 2 },
+          { itemId: '2004', quantity: 4 },
+        ],
       },
     }
     return this._expItems

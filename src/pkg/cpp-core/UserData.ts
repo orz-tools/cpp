@@ -290,6 +290,7 @@ function buildAtoms<G extends IGame>(
 
   const allFinishedIndirectsDetails = withDebugLabel(
     atom((get) => {
+      console.log('allFinishedIndirectsDetails')
       return generateIndirects(ga, get(allFinishedTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
     }),
     'allFinishedIndirectsDetails',
@@ -414,25 +415,30 @@ export function generateIndirects<G extends IGame>(
 
   pass(inputRequirements)
 
-  /* // FIXME:
-  if (unsatisfiedRequirements[ITEM_VIRTUAL_EXP]) {
-    let exp = unsatisfiedRequirements[ITEM_VIRTUAL_EXP]
-    for (const expItem of Object.values(dm.raw.exItems.expItems).sort((a, b) => -a.gainExp + b.gainExp)) {
-      if (!quantities[expItem.id]) continue
-      const fulfilled = quantities[expItem.id] * expItem.gainExp
-      exp -= fulfilled
-      quantities[expItem.id] = 0
-      if (exp < 0) break
+  for (const [virtualExpItemId, thisExpItem] of Object.entries(ga.getExpItems())) {
+    if (unsatisfiedRequirements[virtualExpItemId] && unsatisfiedRequirements[virtualExpItemId] > 0) {
+      let exp = unsatisfiedRequirements[virtualExpItemId]
+      for (const expItem of Object.entries(thisExpItem.value).sort((a, b) => -a[1] + b[1])) {
+        if (!quantities[expItem[0]]) continue
+        const count = Math.min(quantities[expItem[0]], Math.ceil(exp / expItem[1]))
+        const fulfilled = count * expItem[1]
+        exp -= fulfilled
+        quantities[expItem[0]] -= count
+        indirects[expItem[0]] = (indirects[expItem[0]] || 0) + count
+        if (exp <= 0) break
+      }
+      synthisisedRequirements[virtualExpItemId] = unsatisfiedRequirements[virtualExpItemId] - exp
+      if (exp > 0) {
+        const value = sum(thisExpItem.indirectStage.map((x) => thisExpItem.value[x.itemId] * x.quantity))
+        const clears = Math.ceil(exp / value)
+        exp -= clears * value
+        for (const i of thisExpItem.indirectStage) {
+          indirects[i.itemId] = (indirects[i.itemId] || 0) + i.quantity * clears
+        }
+      }
+      delete unsatisfiedRequirements[virtualExpItemId]
     }
-    synthisisedRequirements[ITEM_VIRTUAL_EXP] = unsatisfiedRequirements[ITEM_VIRTUAL_EXP] - exp
-    if (exp > 0) {
-      const ls6 = Math.ceil(exp / 10000)
-      exp -= ls6 * 10000
-      indirects['2004'] = (indirects['2004'] || 0) + 4 * ls6
-      indirects['2003'] = (indirects['2003'] || 0) + 2 * ls6
-    }
-    delete unsatisfiedRequirements[ITEM_VIRTUAL_EXP]
-  }*/
+  }
 
   return { indirects, unsatisfiedRequirements, synthisisedRequirements }
 }

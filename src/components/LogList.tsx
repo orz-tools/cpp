@@ -4,6 +4,8 @@ import React, { useMemo } from 'react'
 import { useGameAdapter } from '../Cpp'
 
 const logs = [
+  { date: '2023-06-08', game: ['arknights'], type: 'fix', desc: '修复经验间接计算问题' },
+  { date: '2023-06-14', type: 'optimize', desc: '优化分栏顺序' },
   { date: '2023-06-13', type: 'optimize', desc: '支持一些其他游戏' },
   { date: '2023-06-13', type: 'optimize', desc: '支持多个游戏角色' },
   { date: '2023-06-08', game: ['arknights'], type: 'fix', desc: '换回 Kengxxiao 的数据源 🌚' },

@@ -146,8 +146,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       badEpisodes.length = 0
     }
 
-    for (const [key, value] of Object.entries(this.dataManager.raw.drops)) {
-      if (key[0] === '$') continue
+    for (const [key, value] of Object.entries(this.dataManager.raw.drops.levelReport)) {
       const stage = Object.values(this.stageInfo).find((x) => x.dropCode == key)
       if (!stage) {
         throw new Error('cannot find stage from drop ' + key)
