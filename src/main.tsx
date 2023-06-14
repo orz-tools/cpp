@@ -35,6 +35,7 @@ async function runApp() {
   }
 
   const [gameAdapter, gameComponent] = await Promise.all([gameAdapterLoaders[game](), gameComponentLoaders[game]()])
+  document.title = 'Closure' + formatProfileName(game, profile) + '++'
   runCpp(storagePrefix, profile, gameAdapter, gameComponent)
 }
 
