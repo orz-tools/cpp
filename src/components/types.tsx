@@ -6,4 +6,6 @@ export interface IGameComponent {
   ItemImportButton?: React.FC
   CharacterStatusPopover?: React.FC<{ character: any; isGoal: boolean }>
   renderCharacterStatus?: (status: any, character: any, current?: any, alreadyHide?: boolean) => any
+  charStatusWidth?: number
+  style?: string
 }

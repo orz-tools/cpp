@@ -1,0 +1,68 @@
+.cpp-char-avatar {
+  position: relative;
+}
+
+.cpp-char-avatar::before {
+  display: block;
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 50px;
+  height: 50px;
+  z-index: -1;
+  background-size: 60px 60px;
+  background-repeat: no-repeat;
+  background-position: -6px -6px;
+}
+
+.cpp-char-rarity-0 .cpp-char-avatar::before {
+  background-image: url(/src/components/re1999/assets/bp_quality_01.png);
+}
+
+.cpp-char-rarity-1 .cpp-char-avatar::before {
+  background-image: url(/src/components/re1999/assets/bp_quality_02.png);
+}
+
+.cpp-char-rarity-2 .cpp-char-avatar::before {
+  background-image: url(/src/components/re1999/assets/bp_quality_03.png);
+}
+
+.cpp-char-rarity-3 .cpp-char-avatar::before {
+  background-image: url(/src/components/re1999/assets/bp_quality_04.png);
+}
+
+.cpp-char-rarity-4 .cpp-char-avatar::before {
+  background-image: url(/src/components/re1999/assets/bp_quality_05.png);
+}
+
+.cpp-char-rarity-5 .cpp-char-avatar::before {
+  background-image: url(/src/components/re1999/assets/bp_quality_06.png);
+}
+
+.cpp-char-menu-char > div {
+  background-repeat: no-repeat;
+  background-size: 24px 24px;
+  background-position-y: center;
+  background-position-x: 0px;
+  padding-left: 29px;
+}
+
+.career-1 .cpp-char-menu-char > div {
+  background-image: url(/src/components/re1999/assets/sx_icon_1.png);
+}
+.career-2 .cpp-char-menu-char > div {
+  background-image: url(/src/components/re1999/assets/sx_icon_2.png);
+}
+.career-3 .cpp-char-menu-char > div {
+  background-image: url(/src/components/re1999/assets/sx_icon_3.png);
+}
+.career-4 .cpp-char-menu-char > div {
+  background-image: url(/src/components/re1999/assets/sx_icon_4.png);
+}
+.career-5 .cpp-char-menu-char > div {
+  background-image: url(/src/components/re1999/assets/sx_icon_5.png);
+}
+.career-6 .cpp-char-menu-char > div {
+  background-image: url(/src/components/re1999/assets/sx_icon_6.png);
+}

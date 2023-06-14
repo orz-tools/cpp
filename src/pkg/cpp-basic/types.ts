@@ -46,8 +46,10 @@ export interface IItem {
 export interface ICharacter {
   readonly key: string
   readonly avatar: string
+  readonly rarity: number
   readonly name: string
   readonly appellation: string
+  readonly characterViewExtraClass?: string[]
 }
 
 export interface IStageInfo {

@@ -129,11 +129,19 @@ function CharacterMenu<G extends IGame>({ character, style }: { character: IChar
   const CSP = c.CharacterStatusPopover || CharacterStatusPopover
 
   return (
-    <li role="none" className="cpp-char-menu-master" style={style}>
+    <li
+      role="none"
+      className={[
+        'cpp-char-menu-master',
+        'cpp-char-rarity-' + character.rarity,
+        ...(character.characterViewExtraClass || []),
+      ].join(' ')}
+      style={style}
+    >
       <ContextMenu2 content={<CharacterContextMenu character={character} />}>
         <a role="menuitem" tabIndex={0} className="bp4-menu-item cpp-char-menu-char">
           <>
-            <span className="bp4-menu-item-icon">
+            <span className="bp4-menu-item-icon cpp-char-avatar">
               <CachedImg
                 src={character.avatar}
                 width={'100%'}

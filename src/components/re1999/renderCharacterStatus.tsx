@@ -1,6 +1,6 @@
 import { Character, Re1999 } from '../../pkg/cpp-re1999'
 import { Hide } from '../CharacterList'
-import { LevelIcon } from './Icons'
+import { LevelIcon, ResonateIcon } from './Icons'
 
 export function renderCharacterStatus(
   status: Re1999['characterStatus'],
@@ -15,6 +15,9 @@ export function renderCharacterStatus(
         alreadyHide={alreadyHide}
       >
         <LevelIcon level={status} />
+      </Hide>
+      <Hide hide={current ? status.resonate == current.resonate : false} alreadyHide={alreadyHide}>
+        <ResonateIcon level={status.resonate} />
       </Hide>
     </>
   )

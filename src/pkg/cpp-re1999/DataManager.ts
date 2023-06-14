@@ -159,6 +159,10 @@ export class Character implements ICharacter {
     return this.dm.data.constants.maxLevel[this.rarity]
   }
 
+  get characterViewExtraClass() {
+    return [`career-${this.raw.career}`]
+  }
+
   insightCost(insight: number) {
     const result: { itemId: string; quantity: number }[] = []
     const row = this.dm.raw.exCharacterRank.find((x) => x.heroId === this.raw.id && x.rank - 1 === insight)

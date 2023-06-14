@@ -2,7 +2,7 @@ import { Alignment, Button, Classes, Menu, MenuDivider, MenuItem, Navbar, Spinne
 import { useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, useEffect, useMemo, useState } from 'react'
 import './App.css'
-import { useAtoms, useCpp, useGameAdapter } from './Cpp'
+import { Cpp, useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, StageButton } from './components/ConfigUi'
@@ -80,9 +80,12 @@ function ProfileMenu() {
 
 function App() {
   const cpp = useCpp()
+  const defaultCharStatusWidth = 43 * 6
+  const charStatusWidth = cpp.gameComponent.charStatusWidth || defaultCharStatusWidth
   const ga = useGameAdapter()
   return (
     <>
+      {cpp.gameComponent.style ? <style dangerouslySetInnerHTML={{ __html: cpp.gameComponent.style }} /> : null}
       <Navbar fixedToTop={true}>
         <Navbar.Group align={Alignment.LEFT}>
           <Navbar.Heading style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -142,7 +145,7 @@ function App() {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '730px',
+            width: Math.max(730 - defaultCharStatusWidth * 2 + charStatusWidth * 2, 560),
             display: 'flex',
             flexDirection: 'column',
           }}
