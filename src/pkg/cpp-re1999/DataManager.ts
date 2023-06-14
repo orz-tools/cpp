@@ -160,7 +160,7 @@ export class Character implements ICharacter {
   }
 
   get characterViewExtraClass() {
-    return [`career-${this.raw.career}`]
+    return [`career-${this.raw.career}`, `dmgtype-${this.raw.dmgType}`]
   }
 
   insightCost(insight: number) {

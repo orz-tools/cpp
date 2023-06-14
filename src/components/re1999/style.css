@@ -43,7 +43,7 @@
 .cpp-char-menu-char > div {
   background-repeat: no-repeat;
   background-size: 24px 24px;
-  background-position-y: center;
+  background-position-y: 0px;
   background-position-x: 0px;
   padding-left: 29px;
 }
@@ -65,4 +65,30 @@
 }
 .career-6 .cpp-char-menu-char > div {
   background-image: url(/src/components/re1999/assets/sx_icon_6.png);
+}
+
+.cpp-char-menu-char > div {
+  position: relative;
+}
+
+.cpp-char-menu-char > div::before {
+  content: '';
+  display: block;
+  filter: brightness(0);
+  width: 24px;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 22px;
+}
+
+.dmgtype-1 .cpp-char-menu-char > div::before {
+  background-image: url(/src/components/re1999/assets/dmgtype1.png);
+}
+
+.dmgtype-2 .cpp-char-menu-char > div::before {
+  background-image: url(/src/components/re1999/assets/dmgtype2.png);
 }
