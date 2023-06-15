@@ -451,7 +451,7 @@
     "needProductionLevel": 2,
     "needEpisodeId": 0,
     "icon": "icon_shensuixiaxiang",
-    "rare": 4,
+    "rare": 3,
     "useDesc": "解锁如愿甘泉中对应配方",
     "desc": "这座雕塑中储藏着万物的匮乏与希望，它象征着枯槁，也蕴藏着生息，它的神秘近在咫尺，却难以摸索。"
   },
@@ -554,7 +554,7 @@
     "id": 3001104,
     "type": 2,
     "showType": 301,
-    "name": "铂金金通灵板造形",
+    "name": "铂金通灵板造形",
     "costMaterial": "1#111002#2|1#110403#4",
     "costScore": "2#3#500",
     "costTime": 0,

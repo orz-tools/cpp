@@ -37,7 +37,7 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
       exFormulas: (async () => (await import('./data/formula.json')).default as any as ExFormula[])(),
       exCharacterRank: (async () => (await import('./data/character_rank.json')).default as any as ExCharacterRank[])(),
       exCharacterConsume: (async () =>
-        (await import('./data/character_consume.json')).default as any as ExCharacterConsume[])(),
+        (await import('./data/character_cosume.json')).default as any as ExCharacterConsume[])(),
       exCharacterTalent: (async () =>
         (await import('./data/character_talent.json')).default as any as ExCharacterTalent[])(),
       drops: (async () =>
@@ -164,7 +164,6 @@ export class Character implements ICharacter {
   }
 
   insightCost(insight: number) {
-    const result: { itemId: string; quantity: number }[] = []
     const row = this.dm.raw.exCharacterRank.find((x) => x.heroId === this.raw.id && x.rank - 1 === insight)
     if (!row) return []
     return parseConsume(row.consume)

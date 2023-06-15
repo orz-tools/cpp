@@ -2,122 +2,122 @@
   {
     "heroId": 3002,
     "talentId": 1,
-    "talentMould": 3,
-    "exclusive": "63#1",
+    "talentMould": 1,
+    "exclusive": "61#1",
     "requirement": 2,
     "consume": ""
   },
   {
     "heroId": 3002,
     "talentId": 2,
-    "talentMould": 3,
-    "exclusive": "63#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 3,
-    "talentMould": 3,
-    "exclusive": "63#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5|1#110101#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 4,
-    "talentMould": 3,
-    "exclusive": "63#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#5|1#110401#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 5,
-    "talentMould": 3,
-    "exclusive": "63#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#5|1#110202#3|1#110302#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 6,
-    "talentMould": 3,
-    "exclusive": "63#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#30000|1#120012#5|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 7,
-    "talentMould": 3,
-    "exclusive": "63#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#6|1#110103#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 8,
-    "talentMould": 3,
-    "exclusive": "63#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110203#4|1#110402#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 9,
-    "talentMould": 3,
-    "exclusive": "63#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#8|1#110303#5|1#110202#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 10,
-    "talentMould": 3,
-    "exclusive": "63#6",
+    "talentMould": 1,
+    "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120003#1|1#120013#5|1#110403#6|1#110103#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 11,
-    "talentMould": 3,
-    "exclusive": "63#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120003#1|2#3#120000|1#120013#5|1#111003#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 12,
-    "talentMould": 3,
-    "exclusive": "63#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120003#1|1#120013#6|1#110104#4|1#110503#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 13,
-    "talentMould": 3,
-    "exclusive": "63#8",
+    "talentMould": 1,
+    "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120003#1|1#120013#6|1#110204#5|1#110403#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 14,
-    "talentMould": 3,
-    "exclusive": "63#9",
+    "talentMould": 1,
+    "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120003#1|1#120013#8|1#111004#2|1#110304#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3002,
     "talentId": 15,
-    "talentMould": 3,
-    "exclusive": "63#10",
+    "talentMould": 1,
+    "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120003#1|1#120013#8|1#111005#3|1#110204#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3003,
@@ -642,122 +642,122 @@
   {
     "heroId": 3008,
     "talentId": 1,
-    "talentMould": 4,
-    "exclusive": "64#1",
+    "talentMould": 1,
+    "exclusive": "61#1",
     "requirement": 2,
     "consume": ""
   },
   {
     "heroId": 3008,
     "talentId": 2,
-    "talentMould": 4,
-    "exclusive": "64#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 3,
-    "talentMould": 4,
-    "exclusive": "64#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5|1#110101#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 4,
-    "talentMould": 4,
-    "exclusive": "64#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#5|1#110401#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 5,
-    "talentMould": 4,
-    "exclusive": "64#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#5|1#110202#3|1#110302#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 6,
-    "talentMould": 4,
-    "exclusive": "64#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#30000|1#120012#5|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 7,
-    "talentMould": 4,
-    "exclusive": "64#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#6|1#110103#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 8,
-    "talentMould": 4,
-    "exclusive": "64#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110203#4|1#110402#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 9,
-    "talentMould": 4,
-    "exclusive": "64#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#8|1#110303#5|1#110202#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 10,
-    "talentMould": 4,
-    "exclusive": "64#6",
+    "talentMould": 1,
+    "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120004#1|1#120013#5|1#110403#6|1#110103#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 11,
-    "talentMould": 4,
-    "exclusive": "64#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120004#1|2#3#120000|1#120013#5|1#111003#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 12,
-    "talentMould": 4,
-    "exclusive": "64#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#6|1#110104#4|1#110503#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 13,
-    "talentMould": 4,
-    "exclusive": "64#8",
+    "talentMould": 1,
+    "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#6|1#110204#5|1#110403#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 14,
-    "talentMould": 4,
-    "exclusive": "64#9",
+    "talentMould": 1,
+    "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#8|1#111004#2|1#110304#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3008,
     "talentId": 15,
-    "talentMould": 4,
-    "exclusive": "64#10",
+    "talentMould": 1,
+    "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#8|1#111005#3|1#110204#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3009,
@@ -1762,122 +1762,122 @@
   {
     "heroId": 3019,
     "talentId": 1,
-    "talentMould": 4,
-    "exclusive": "64#1",
+    "talentMould": 1,
+    "exclusive": "61#1",
     "requirement": 2,
     "consume": ""
   },
   {
     "heroId": 3019,
     "talentId": 2,
-    "talentMould": 4,
-    "exclusive": "64#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 3,
-    "talentMould": 4,
-    "exclusive": "64#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#4|1#110101#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 4,
-    "talentMould": 4,
-    "exclusive": "64#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#4|1#110401#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 5,
-    "talentMould": 4,
-    "exclusive": "64#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#4|1#110202#3|1#110302#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 6,
-    "talentMould": 4,
-    "exclusive": "64#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#25000|1#120012#4|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 7,
-    "talentMould": 4,
-    "exclusive": "64#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#5|1#110103#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 8,
-    "talentMould": 4,
-    "exclusive": "64#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#5|1#110203#4|1#110402#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 9,
-    "talentMould": 4,
-    "exclusive": "64#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110303#5|1#110202#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 10,
-    "talentMould": 4,
-    "exclusive": "64#6",
+    "talentMould": 1,
+    "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120004#1|1#120013#4|1#110403#6|1#110103#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 11,
-    "talentMould": 4,
-    "exclusive": "64#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120004#1|2#3#100000|1#120013#4|1#111003#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 12,
-    "talentMould": 4,
-    "exclusive": "64#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#5|1#110104#3|1#110503#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 13,
-    "talentMould": 4,
-    "exclusive": "64#8",
+    "talentMould": 1,
+    "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#5|1#110204#4|1#110403#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 14,
-    "talentMould": 4,
-    "exclusive": "64#9",
+    "talentMould": 1,
+    "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#6|1#111004#1|1#110304#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3019,
     "talentId": 15,
-    "talentMould": 4,
-    "exclusive": "64#10",
+    "talentMould": 1,
+    "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#6|1#111005#2|1#110204#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3020,
@@ -2013,7 +2013,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2021,7 +2021,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5|1#110101#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2029,7 +2029,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#5|1#110401#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2037,7 +2037,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#5|1#110202#3|1#110302#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2045,7 +2045,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#30000|1#120012#5|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2053,7 +2053,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#6|1#110103#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2061,7 +2061,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110203#4|1#110402#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2069,7 +2069,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#8|1#110303#5|1#110202#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2077,7 +2077,7 @@
     "talentMould": 1,
     "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120001#1|1#120013#5|1#110403#6|1#110103#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2085,7 +2085,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120001#1|2#3#120000|1#120013#5|1#111003#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2093,7 +2093,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#6|1#110104#4|1#110503#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2101,7 +2101,7 @@
     "talentMould": 1,
     "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#6|1#110204#5|1#110403#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2109,7 +2109,7 @@
     "talentMould": 1,
     "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#8|1#111004#2|1#110304#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3021,
@@ -2117,7 +2117,7 @@
     "talentMould": 1,
     "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#8|1#111005#3|1#110204#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3022,
@@ -5242,122 +5242,122 @@
   {
     "heroId": 3053,
     "talentId": 1,
-    "talentMould": 4,
-    "exclusive": "64#1",
+    "talentMould": 1,
+    "exclusive": "61#1",
     "requirement": 2,
     "consume": ""
   },
   {
     "heroId": 3053,
     "talentId": 2,
-    "talentMould": 4,
-    "exclusive": "64#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 3,
-    "talentMould": 4,
-    "exclusive": "64#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5|1#110401#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 4,
-    "talentMould": 4,
-    "exclusive": "64#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#5|1#110201#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 5,
-    "talentMould": 4,
-    "exclusive": "64#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#5|1#110302#3|1#110202#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 6,
-    "talentMould": 4,
-    "exclusive": "64#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#30000|1#120012#5|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 7,
-    "talentMould": 4,
-    "exclusive": "64#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#6|1#110403#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 8,
-    "talentMould": 4,
-    "exclusive": "64#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110503#4|1#110302#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 9,
-    "talentMould": 4,
-    "exclusive": "64#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#8|1#110103#4|1#110102#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 10,
-    "talentMould": 4,
-    "exclusive": "64#6",
+    "talentMould": 1,
+    "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120004#1|1#120013#5|1#110203#6|1#110503#8"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 11,
-    "talentMould": 4,
-    "exclusive": "64#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120004#1|2#3#120000|1#120013#5|1#111003#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 12,
-    "talentMould": 4,
-    "exclusive": "64#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#6|1#110204#4|1#110403#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 13,
-    "talentMould": 4,
-    "exclusive": "64#8",
+    "talentMould": 1,
+    "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#6|1#110304#5|1#110203#7"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 14,
-    "talentMould": 4,
-    "exclusive": "64#9",
+    "talentMould": 1,
+    "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#8|1#111004#2|1#110104#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3053,
     "talentId": 15,
-    "talentMould": 4,
-    "exclusive": "64#10",
+    "talentMould": 1,
+    "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#8|1#111005#3|1#110304#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3054,
@@ -5533,7 +5533,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5541,7 +5541,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5|1#110201#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5549,7 +5549,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#5|1#110301#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5557,7 +5557,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#5|1#110102#3|1#110402#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5565,7 +5565,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#30000|1#120012#5|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5573,7 +5573,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#6|1#110203#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5581,7 +5581,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110303#4|1#110402#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5589,7 +5589,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#8|1#110403#6|1#110502#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5597,7 +5597,7 @@
     "talentMould": 1,
     "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120003#1|1#120013#5|1#110503#6|1#110103#8"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5605,7 +5605,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120003#1|2#3#120000|1#120013#5|1#111003#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5613,7 +5613,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120003#1|1#120013#6|1#110304#4|1#110203#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5621,7 +5621,7 @@
     "talentMould": 1,
     "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120003#1|1#120013#6|1#110404#5|1#110103#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5629,7 +5629,7 @@
     "talentMould": 1,
     "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120003#1|1#120013#8|1#111005#2|1#110404#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3056,
@@ -5637,7 +5637,7 @@
     "talentMould": 1,
     "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120003#1|1#120013#8|1#111006#3|1#110504#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3057,
@@ -5893,7 +5893,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5901,7 +5901,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#4|1#110101#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5909,7 +5909,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#4|1#110401#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5917,7 +5917,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#4|1#110202#3|1#110302#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5925,7 +5925,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#25000|1#120012#4|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5933,7 +5933,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#5|1#110103#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5941,7 +5941,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#5|1#110203#4|1#110402#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5949,7 +5949,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110303#5|1#110202#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5957,7 +5957,7 @@
     "talentMould": 1,
     "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120002#1|1#120013#4|1#110403#6|1#110103#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5965,7 +5965,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120002#1|2#3#100000|1#120013#4|1#111003#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5973,7 +5973,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120002#1|1#120013#5|1#110104#3|1#110503#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5981,7 +5981,7 @@
     "talentMould": 1,
     "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120002#1|1#120013#5|1#110204#4|1#110403#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5989,7 +5989,7 @@
     "talentMould": 1,
     "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120002#1|1#120013#6|1#111004#1|1#110304#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3060,
@@ -5997,7 +5997,7 @@
     "talentMould": 1,
     "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120002#1|1#120013#6|1#111005#2|1#110204#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6013,7 +6013,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6021,7 +6021,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#4|1#110401#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6029,7 +6029,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#4|1#110201#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6037,7 +6037,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#4|1#110302#3|1#110202#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6045,7 +6045,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#25000|1#120012#4|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6053,7 +6053,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#5|1#110403#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6061,7 +6061,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#5|1#110503#4|1#110302#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6069,7 +6069,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110103#4|1#110102#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6077,7 +6077,7 @@
     "talentMould": 1,
     "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120001#1|1#120013#4|1#110203#6|1#110503#8"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6085,7 +6085,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120001#1|2#3#100000|1#120013#4|1#111003#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6093,7 +6093,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#5|1#110204#3|1#110403#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6101,7 +6101,7 @@
     "talentMould": 1,
     "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#5|1#110304#4|1#110203#7"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6109,7 +6109,7 @@
     "talentMould": 1,
     "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#6|1#111004#1|1#110104#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3061,
@@ -6117,7 +6117,7 @@
     "talentMould": 1,
     "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#6|1#111005#2|1#110304#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3062,
@@ -6493,7 +6493,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6501,7 +6501,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5|1#110501#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6509,7 +6509,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#5|1#110301#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6517,7 +6517,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#5|1#110502#4|1#110102#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6525,7 +6525,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#30000|1#120012#5|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6533,7 +6533,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#6|1#110303#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6541,7 +6541,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110403#3|1#110202#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6549,7 +6549,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#8|1#110503#5|1#110302#8"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6557,7 +6557,7 @@
     "talentMould": 1,
     "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120001#1|1#120013#5|1#110103#6|1#110403#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6565,7 +6565,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120001#1|2#3#120000|1#120013#5|1#111003#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6573,7 +6573,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#6|1#110504#4|1#110103#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6581,7 +6581,7 @@
     "talentMould": 1,
     "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#6|1#110104#5|1#110303#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6589,7 +6589,7 @@
     "talentMould": 1,
     "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#8|1#111006#2|1#110204#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3070,
@@ -6597,7 +6597,7 @@
     "talentMould": 1,
     "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#8|1#111004#3|1#110404#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6613,7 +6613,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6621,7 +6621,7 @@
     "talentMould": 1,
     "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#4|1#110201#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6629,7 +6629,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#4|1#110301#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6637,7 +6637,7 @@
     "talentMould": 1,
     "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#4|1#110102#3|1#110402#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6645,7 +6645,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#25000|1#120012#4|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6653,7 +6653,7 @@
     "talentMould": 1,
     "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#5|1#110203#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6661,7 +6661,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#5|1#110303#4|1#110402#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6669,7 +6669,7 @@
     "talentMould": 1,
     "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110403#6|1#110502#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6677,7 +6677,7 @@
     "talentMould": 1,
     "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120001#1|1#120013#4|1#110503#6|1#110103#8"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6685,7 +6685,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120001#1|2#3#100000|1#120013#4|1#111003#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6693,7 +6693,7 @@
     "talentMould": 1,
     "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#5|1#110304#3|1#110203#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6701,7 +6701,7 @@
     "talentMould": 1,
     "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#5|1#110404#4|1#110103#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6709,7 +6709,7 @@
     "talentMould": 1,
     "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#6|1#111005#1|1#110404#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3071,
@@ -6717,127 +6717,127 @@
     "talentMould": 1,
     "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120001#1|1#120013#6|1#111006#2|1#110504#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 1,
-    "talentMould": 4,
-    "exclusive": "64#1",
+    "talentMould": 1,
+    "exclusive": "61#1",
     "requirement": 2,
     "consume": ""
   },
   {
     "heroId": 3072,
     "talentId": 2,
-    "talentMould": 4,
-    "exclusive": "64#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 3,
-    "talentMould": 4,
-    "exclusive": "64#2",
+    "talentMould": 1,
+    "exclusive": "61#2",
     "requirement": 2,
-    "consume": "1#120011#5|1#110501#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 4,
-    "talentMould": 4,
-    "exclusive": "64#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120011#5|1#110301#4|1#111001#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 5,
-    "talentMould": 4,
-    "exclusive": "64#3",
+    "talentMould": 1,
+    "exclusive": "61#3",
     "requirement": 2,
-    "consume": "1#120012#5|1#110502#4|1#110102#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 6,
-    "talentMould": 4,
-    "exclusive": "64#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "2#3#30000|1#120012#5|1#111002#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 7,
-    "talentMould": 4,
-    "exclusive": "64#4",
+    "talentMould": 1,
+    "exclusive": "61#4",
     "requirement": 3,
-    "consume": "1#120012#6|1#110303#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 8,
-    "talentMould": 4,
-    "exclusive": "64#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#6|1#110403#3|1#110202#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 9,
-    "talentMould": 4,
-    "exclusive": "64#5",
+    "talentMould": 1,
+    "exclusive": "61#5",
     "requirement": 3,
-    "consume": "1#120012#8|1#110503#5|1#110302#8"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 10,
-    "talentMould": 4,
-    "exclusive": "64#6",
+    "talentMould": 1,
+    "exclusive": "61#6",
     "requirement": 3,
-    "consume": "1#120004#1|1#120013#5|1#110103#6|1#110403#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 11,
-    "talentMould": 4,
-    "exclusive": "64#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120004#1|2#3#120000|1#120013#5|1#111003#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 12,
-    "talentMould": 4,
-    "exclusive": "64#7",
+    "talentMould": 1,
+    "exclusive": "61#7",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#6|1#110504#4|1#110103#5"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 13,
-    "talentMould": 4,
-    "exclusive": "64#8",
+    "talentMould": 1,
+    "exclusive": "61#8",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#6|1#110104#5|1#110303#6"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 14,
-    "talentMould": 4,
-    "exclusive": "64#9",
+    "talentMould": 1,
+    "exclusive": "61#9",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#8|1#111006#2|1#110204#3"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 3072,
     "talentId": 15,
-    "talentMould": 4,
-    "exclusive": "64#10",
+    "talentMould": 1,
+    "exclusive": "61#10",
     "requirement": 4,
-    "consume": "1#120004#1|1#120013#8|1#111004#3|1#110404#4"
+    "consume": "1#120011#1"
   },
   {
     "heroId": 9994,

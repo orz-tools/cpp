@@ -112,22 +112,6 @@
     "sources": "202"
   },
   {
-    "id": 12,
-    "name": "？",
-    "rare": 5,
-    "highQuality": 1,
-    "icon": "214",
-    "smallIcon": "",
-    "useDesc": "？",
-    "desc": "？",
-    "recoverTime": 0,
-    "recoverNum": 0,
-    "recoverLimit": 0,
-    "dayRecoverNum": 0,
-    "maxLimit": 999999999,
-    "sources": ""
-  },
-  {
     "id": 6,
     "name": "未知道具",
     "rare": 4,
@@ -206,5 +190,53 @@
     "dayRecoverNum": 0,
     "maxLimit": 999999999,
     "sources": "1201|1202"
+  },
+  {
+    "id": 111,
+    "name": "帕帕币",
+    "rare": 3,
+    "highQuality": 0,
+    "icon": "100101",
+    "smallIcon": "",
+    "useDesc": "可于“雷米特杯”纪念品店兑换奖励商品。\n仅限[雷米特杯失窃案]活动举办期间使用。",
+    "desc": "“感谢你对报刊事业的支持”，为表彰那些完整读完一整个系列报刊的读者而精心制作的纪念币。做工精巧，可用于纪念，也可用于兑换一些别有趣味的商品。",
+    "recoverTime": 0,
+    "recoverNum": 0,
+    "recoverLimit": 0,
+    "dayRecoverNum": 0,
+    "maxLimit": 999999999,
+    "sources": "10011105"
+  },
+  {
+    "id": 1111,
+    "name": "可阅次数",
+    "rare": 3,
+    "highQuality": 0,
+    "icon": "100102",
+    "smallIcon": "",
+    "useDesc": "此为“闪烁侧刊”扉页上的一句友善的提醒。可用于挑战UTTU零售。\n仅限[UTTU闪烁集会]举办期间使用。\n<color=#e47124>活动期间每日5：00（UTC+8）自动获得5次</color>",
+    "desc": "读者的节制是一种珍贵的美德。我们相信，你已于本刊中寻得了诸多趣味。无论如何，不必一口气读上太多。",
+    "recoverTime": 0,
+    "recoverNum": 0,
+    "recoverLimit": 10,
+    "dayRecoverNum": 5,
+    "maxLimit": 100,
+    "sources": ""
+  },
+  {
+    "id": 1112,
+    "name": "UTTU购物票据",
+    "rare": 3,
+    "highQuality": 0,
+    "icon": "214",
+    "smallIcon": "",
+    "useDesc": "由《UTTU》杂志提供的票据，可于[市场货架]处进行兑换。\n仅限[UTTU闪烁集会-昨日金杯]活动举办期间使用。",
+    "desc": "辛勤的犒赏。它与丰富的学识、精明的领悟、恒久的耐性同行。",
+    "recoverTime": 0,
+    "recoverNum": 0,
+    "recoverLimit": 0,
+    "dayRecoverNum": 0,
+    "maxLimit": 999999999,
+    "sources": ""
   }
 ]
