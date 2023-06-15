@@ -375,11 +375,6 @@ export function buildItemList(ga: IGameAdapter<IGame>) {
   })
 }
 
-const pickRetainableItems = pick([
-  '4001', // 龙门币
-  '4006', // 采购凭证
-])
-
 function AllValue<G extends IGame>() {
   const ga = useGameAdapter<G>()
   const atoms = useAtoms<G>()

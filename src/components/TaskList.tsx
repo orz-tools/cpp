@@ -48,7 +48,7 @@ function TaskContextMenu<G extends IGame>({ task, extra }: { task: Task<G>; extr
       if (Object.prototype.hasOwnProperty.call(allExpItems, i.itemId)) {
         let exp = i.quantity
         const thisExpItems = allExpItems[i.itemId]
-        const expItems = Object.entries(thisExpItems).sort((a, b) => -a[1] + b[1])
+        const expItems = Object.entries(thisExpItems.value).sort((a, b) => -a[1] + b[1])
         const quantities: Record<string, number> = Object.create(null)
         const cost: Record<string, number> = Object.create(null)
         for (const expItem of expItems) {
