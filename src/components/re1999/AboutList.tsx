@@ -34,6 +34,12 @@ export function AboutCredits() {
           </>
         }
       ></MenuItem>
+      <MenuItem
+        icon={'code'}
+        text="yuanyan3060/Reverse1999Resource"
+        href={'https://github.com/yuanyan3060/Reverse1999Resource'}
+        {...externalLinkProps}
+      />
     </>
   )
 }

@@ -5,6 +5,7 @@ import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
 const logs = [
+  { date: '2023-06-21', game: [GameName.Re1999], type: 'optimize', desc: '使用 yuanyan3060 提供的解包数据' },
   { date: '2023-06-14', game: [GameName.Arknights], type: 'fix', desc: '修复经验间接计算问题' },
   { date: '2023-06-14', type: 'optimize', desc: '优化分栏顺序' },
   { date: '2023-06-13', type: 'optimize', desc: '支持一些其他游戏' },

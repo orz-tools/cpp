@@ -29,17 +29,42 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
 
   getLoadRawTasks(refresh?: boolean | undefined) {
     return {
-      exChapters: (async () => (await import('./data/chapter.json')).default as any as ExChapter[])(),
-      exEpisodes: (async () => (await import('./data/episode.json')).default as any as ExEpisode[])(),
-      exCharacters: (async () => (await import('./data/character.json')).default as any as ExCharacter[])(),
-      exItems: (async () => (await import('./data/item.json')).default as any as ExItem[])(),
-      exCurrencies: (async () => (await import('./data/currency.json')).default as any as ExCurrency[])(),
-      exFormulas: (async () => (await import('./data/formula.json')).default as any as ExFormula[])(),
-      exCharacterRank: (async () => (await import('./data/character_rank.json')).default as any as ExCharacterRank[])(),
-      exCharacterConsume: (async () =>
-        (await import('./data/character_cosume.json')).default as any as ExCharacterConsume[])(),
-      exCharacterTalent: (async () =>
-        (await import('./data/character_talent.json')).default as any as ExCharacterTalent[])(),
+      exChapters: this.loadJson<ExChapter[]>(
+        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/chapter.json',
+        refresh,
+      ),
+      exEpisodes: this.loadJson<ExEpisode[]>(
+        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/episode.json',
+        refresh,
+      ),
+      exCharacters: this.loadJson<ExCharacter[]>(
+        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/character.json',
+        refresh,
+      ),
+      exItems: this.loadJson<ExItem[]>(
+        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/item.json',
+        refresh,
+      ),
+      exCurrencies: this.loadJson<ExCurrency[]>(
+        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/currency.json',
+        refresh,
+      ),
+      exFormulas: this.loadJson<ExFormula[]>(
+        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/formula.json',
+        refresh,
+      ),
+      exCharacterRank: this.loadJson<ExCharacterRank[]>(
+        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/character_rank.json',
+        refresh,
+      ),
+      exCharacterConsume: this.loadJson<ExCharacterConsume[]>(
+        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/character_cosume.json',
+        refresh,
+      ),
+      exCharacterTalent: this.loadJson<ExCharacterTalent[]>(
+        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/character_talent.json',
+        refresh,
+      ),
       drops: (async () =>
         (await import('./data/drops.json')).default as {
           updatedAt: string
@@ -144,7 +169,7 @@ export class Character implements ICharacter {
   }
 
   get avatar() {
-    return ''
+    return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/HeadIconSmall/${this.raw.skinId}.png`
   }
 
   get rarity() {
@@ -223,7 +248,7 @@ export class Item implements IItem {
   }
 
   get icon() {
-    return ''
+    return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Item/${this.raw.icon}.png`
   }
 
   private _valueAsAp?: [number | undefined]

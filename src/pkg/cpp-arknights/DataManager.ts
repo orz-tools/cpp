@@ -33,10 +33,6 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
 
   getLoadRawTasks(refresh?: boolean | undefined) {
     return {
-      exCharacters1: this.loadJson<ExcelCharacterTable>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/627efb6d7009f66135aac5f19d145026ac28f3f8/zh_CN/gamedata/excel/character_table.json',
-        refresh,
-      ),
       exCharacters: this.loadJson<ExcelCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json',
         refresh,
