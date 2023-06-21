@@ -8,6 +8,7 @@ export function CachedImg({
   alt,
   title,
   style,
+  className,
 }: {
   src: string
   width?: JSX.IntrinsicElements['img']['width']
@@ -15,6 +16,7 @@ export function CachedImg({
   alt?: JSX.IntrinsicElements['img']['alt']
   title?: JSX.IntrinsicElements['img']['title']
   style?: JSX.IntrinsicElements['img']['style']
+  className?: JSX.IntrinsicElements['img']['className']
 }) {
   const data = load(src)
   const [, render] = useState(0)
@@ -31,7 +33,7 @@ export function CachedImg({
   if (!(typeof data === 'string')) {
     return <img width={width} height={height} alt={''} title={title} style={style} />
   }
-  return <img src={data} width={width} height={height} alt={alt} title={title} style={style} />
+  return <img src={data} width={width} height={height} alt={alt} title={title} style={style} className={className} />
 }
 
 export function EmptyIcon() {

@@ -345,7 +345,14 @@ export function ItemMenu({ item }: { item: IItem }) {
       >
         <>
           <span className="bp4-menu-item-icon">
-            <CachedImg src={item.icon} width={'100%'} height={'100%'} alt={item.key} title={item.key} />
+            <CachedImg
+              src={item.icon}
+              width={'100%'}
+              height={'100%'}
+              alt={item.key}
+              title={item.key}
+              className="cpp-item-icon"
+            />
           </span>
           <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <div className="bp4-text-overflow-ellipsis" title={item.name}>

@@ -114,7 +114,16 @@ export function StageLine({ run }: { run: StageRun }) {
           <MenuItem
             key={k}
             style={{ fontWeight: 'normal' }}
-            icon={<CachedImg src={item.icon} width={'100%'} height={'100%'} alt={item.key} title={item.key} />}
+            icon={
+              <CachedImg
+                src={item.icon}
+                width={'100%'}
+                height={'100%'}
+                alt={item.key}
+                title={item.key}
+                className="cpp-item-icon"
+              />
+            }
             text={
               <>
                 <span>{item.name}</span>

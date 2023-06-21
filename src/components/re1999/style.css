@@ -92,3 +92,7 @@
 .dmgtype-2 .cpp-char-menu-char > div::before {
   background-image: url(/src/components/re1999/assets/dmgtype2.png);
 }
+
+img.cpp-item-icon {
+  transform: scale(1.5);
+}
