@@ -39,7 +39,7 @@ function hasValue(value: number | null | undefined): value is number {
 }
 
 function format(value: number | null | undefined, type: ValueType, single = false) {
-  if (!hasValue(value)) return 'N/A'
+  if (!hasValue(value)) return '?'
 
   switch (type) {
     case ValueType.Ap:
@@ -131,6 +131,24 @@ export function ValueTagProgressBar({
   const mv = (maxValue || 0) + 0.00000001
   const percent = (1 - v / mv) * 100
   const color = minimal ? '#215db044' : '#2d72d2'
+
+  if ((maxValue || 0) === 0) {
+    return (
+      <Tag
+        minimal={minimal}
+        round={true}
+        icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[type]} />}
+        style={{
+          paddingLeft: 4,
+          paddingRight: 4,
+          opacity: 0.25,
+          ...style,
+        }}
+      >
+        ?
+      </Tag>
+    )
+  }
 
   return (
     <Tag
