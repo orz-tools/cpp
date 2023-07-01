@@ -2,6 +2,7 @@ import {
   Alignment,
   Button,
   ButtonGroup,
+  Dialog,
   Icon,
   Menu,
   MenuDivider,
@@ -19,6 +20,7 @@ import { useComponents } from '../hooks/useComponents'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
 import { ValueTag, ValueTagProgressBar } from './Value'
+import { InventorySyncer } from './InventorySyncer'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
@@ -41,7 +43,6 @@ export function ItemQuantityEditor<G extends IGame>({ item, style }: { item: IIt
       onBlur={() => {
         if (input === formatter(quantity)) return
         setQuantity(parser(input))
-        setInput(formatter(quantity))
       }}
       onButtonClick={(_, valueAsString) => {
         setQuantity(parser(valueAsString))
@@ -387,14 +388,16 @@ function AllValue<G extends IGame>() {
   const atoms = useAtoms<G>()
   const quantites = useAtomValue(atoms.itemQuantities)
 
+  let valid = false
   const a = sum(
     Object.entries(quantites).map(([k, v]) => {
       const value = ga.getItem(k).valueAsAp
       if (value == null) return 0
+      valid = true
       return value * v
     }),
   )
-  return <ValueTag value={a} minimal={true} />
+  return <ValueTag value={valid ? a : null} minimal={true} />
 }
 
 function AllGoalValue<G extends IGame>({ finished = false }: { finished?: boolean }) {
@@ -473,6 +476,25 @@ const itemListParamAtom: WritableAtom<ItemListParam, [ItemListParam | SetStateAc
     set(itemListParamStorageAtom, typeof value === 'function' ? value(get(itemListParamAtom)) : value),
 )
 
+export function SyncButton() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <Button
+        minimal={true}
+        icon={'fullscreen'}
+        title={'按游戏内仓库排布形式展示'}
+        onClick={() => {
+          setOpen(true)
+        }}
+      />
+      <Dialog isOpen={open} isCloseButtonShown={true} onClose={() => setOpen(false)}>
+        <InventorySyncer />
+      </Dialog>
+    </>
+  )
+}
+
 export function ItemList<G extends IGame>() {
   const param = useAtomValue(itemListParamAtom)
   const ga = useGameAdapter<G>()
@@ -490,8 +512,10 @@ export function ItemList<G extends IGame>() {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}>
+          总价值
           <AllValue />
           {ItemImportButton && <ItemImportButton />}
+          <SyncButton />
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
           <HideCompletedButton />

@@ -290,7 +290,7 @@ function buildAtoms<G extends IGame>(
 
   const allGoalIndirectsDetails = withDebugLabel(
     atom((get) => {
-      console.log('allGoalIndirectsDetails')
+      // console.log('allGoalIndirectsDetails')
       return generateIndirects(ga, get(allGoalTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
     }),
     'allGoalIndirectsDetails',
@@ -298,7 +298,7 @@ function buildAtoms<G extends IGame>(
 
   const allFinishedIndirectsDetails = withDebugLabel(
     atom((get) => {
-      console.log('allFinishedIndirectsDetails')
+      // console.log('allFinishedIndirectsDetails')
       return generateIndirects(ga, get(allFinishedTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
     }),
     'allFinishedIndirectsDetails',

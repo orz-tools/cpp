@@ -5,6 +5,7 @@ import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
 const logs = [
+  { date: '2023-07-02', type: 'optimize', desc: '增加“按游戏内仓库排布形式展示”按钮' },
   { date: '2023-07-01', type: 'optimize', desc: '计算结果中展示暂无可计算来源的材料' },
   { date: '2023-07-01', game: [GameName.Re1999], type: 'optimize', desc: '优化道具排序顺序' },
   { date: '2023-07-01', type: 'fix', desc: '修复重载数据按钮' },

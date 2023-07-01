@@ -35,7 +35,13 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     return CategoryNames
   }
 
-  public getInventoryItems() {
+  public getInventoryPages(): Record<string, string> {
+    return {
+      material: '养成材料',
+    }
+  }
+
+  public getInventoryItems(page?: string) {
     return Object.values(this.dataManager.data.items)
       .filter((x) => {
         if (!['MATERIAL', 'CARD_EXP', 'GOLD', '##EXP_VIRTUAL'].includes(x.raw.itemType)) return false
@@ -66,6 +72,11 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         if (a.raw.sortId < b.raw.sortId) return -1
         if (a.raw.sortId > b.raw.sortId) return 1
         return 0
+      })
+      .filter((x) => {
+        if (!page) return true
+        if ([AK_ITEM_VIRTUAL_EXP].includes(x.key)) return false
+        return ![AK_ITEM_GOLD, '4006'].includes(x.key)
       })
   }
 

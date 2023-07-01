@@ -197,3 +197,88 @@ body {
   pointer-events: none;
   line-height: 21px;
 }
+
+.cpp-isv {
+  display: grid;
+  max-height: 80vh;
+  max-width: 100%;
+}
+
+.cpp-isv-horizontal {
+  width: 100vw;
+}
+
+.cpp-isv-vertical {
+  height: 100vh;
+}
+
+.cpp-isv-item {
+  position: relative;
+  display: inline-block;
+}
+
+.cpp-isv > .cpp-isv-item > div {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.cpp-isv > .cpp-isv-item > img {
+  visibility: hidden;
+}
+
+.cpp-isv.cpp-isv-horizontal > .cpp-isv-item > img {
+  height: 100%;
+  visibility: hidden;
+}
+
+.cpp-isv.cpp-isv-vertical > .cpp-isv-item > img {
+  width: 100%;
+  visibility: hidden;
+}
+
+.cpp-isviv {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cpp-isviv > img.cpp-item-icon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.cpp-isviv-label-wrapper {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: inline-block;
+  padding: 0;
+  margin-right: 10%;
+  margin-bottom: 10%;
+}
+
+.cpp-isviv-label-wrapper span,
+.cpp-isviv-label-wrapper input {
+  color: white;
+  font-family: monospace;
+  font-size: 20px;
+  line-height: 1em;
+}
+.cpp-isviv-label-wrapper input {
+  opacity: 0.8;
+  background-color: black;
+  padding: 0.2em 0.5em;
+  text-align: right;
+}
+
+.cpp-isv-gap > *,
+.cpp-isv-gap button {
+  width: 100%;
+  height: 100%;
+}

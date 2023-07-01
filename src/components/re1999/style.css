@@ -96,3 +96,7 @@
 img.cpp-item-icon {
   transform: scale(1.5);
 }
+
+.cpp-isv img.cpp-item-icon {
+  transform: none !important;
+}

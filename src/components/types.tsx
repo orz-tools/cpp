@@ -1,5 +1,11 @@
 import React from 'react'
 
+export interface ItemSimulatedViewConfig {
+  limit: number
+  horizontal: boolean
+  viewMaxSize: number
+}
+
 export interface IGameComponent {
   AboutCopyright?: React.FC
   AboutCredits?: React.FC
@@ -8,4 +14,5 @@ export interface IGameComponent {
   renderCharacterStatus?: (status: any, character: any, current?: any, alreadyHide?: boolean) => any
   charStatusWidth?: number
   style?: string
+  itemSimulatedViewConfig?: ItemSimulatedViewConfig
 }

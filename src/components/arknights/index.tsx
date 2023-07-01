@@ -10,4 +10,5 @@ export const ArknightsComponents: IGameComponent = {
   ItemImportButton,
   CharacterStatusPopover,
   renderCharacterStatus,
+  itemSimulatedViewConfig: { limit: 3, horizontal: true, viewMaxSize: 500 },
 }

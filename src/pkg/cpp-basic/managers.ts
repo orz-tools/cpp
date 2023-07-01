@@ -9,7 +9,8 @@ export interface IGameAdapter<G extends IGame> {
   getCharacter(key: string): ICharacter
   getItem(key: string): IItem
   getInventoryCategories(): Record<string, string>
-  getInventoryItems(): IItem[]
+  getInventoryPages(): Record<string, string>
+  getInventoryItems(page?: string): IItem[]
   getFormulas(): Formula[]
   getExpItems(): Record<string, ExpItem>
   getExpItemValue(key: string): [number, string] | null | undefined

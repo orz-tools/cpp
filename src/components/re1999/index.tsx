@@ -11,4 +11,5 @@ export const Re1999Components: IGameComponent = {
   renderCharacterStatus,
   charStatusWidth: 43 * 2,
   style,
+  itemSimulatedViewConfig: { limit: 6, horizontal: false, viewMaxSize: 1000 },
 }

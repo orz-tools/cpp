@@ -43,7 +43,13 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     return CategoryNames
   }
 
-  public getInventoryItems() {
+  public getInventoryPages() {
+    return {
+      material: '素材',
+    }
+  }
+
+  public getInventoryItems(page?: string) {
     return Object.values(this.dataManager.data.items)
       .map((x) => x as Item | CurrencyItem)
       .filter((x) => {
@@ -57,14 +63,18 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       })
       .sort((a, b) => {
         if (a.isCurrency === false && b.isCurrency === false) {
-          if (a.raw.subType < b.raw.subType) return 1
-          if (a.raw.subType > b.raw.subType) return -1
+          if (a.raw.subType < b.raw.subType) return -1
+          if (a.raw.subType > b.raw.subType) return 1
           if (a.raw.rare < b.raw.rare) return 1
           if (a.raw.rare > b.raw.rare) return -1
         }
         if (a.sortId < b.sortId) return 1
         if (a.sortId > b.sortId) return -1
         return 0
+      })
+      .filter((x) => {
+        if (!page) return true
+        return ![RE_ITEM_EXP, RE_ITEM_GOLD].includes(x.key)
       })
   }
 
