@@ -41,7 +41,6 @@
     "@vitejs/plugin-react-swc": "^3.3.2",
     "@vitest/ui": "^0.32.0",
     "eslint": "^8.42.0",
-    "jotai-devtools": "^0.5.3",
     "prettier": "^2.8.8",
     "rollup-plugin-visualizer": "^5.9.2",
     "typescript": "^5.1.3",
