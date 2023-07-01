@@ -20,7 +20,7 @@ export abstract class BasicDataManager<G extends IGame> {
     }
     this.initialized = true
   }
-  public initialized: boolean = false
+  public initialized = false
   public error?: Error
 
   abstract transform(): Promise<any>
@@ -33,7 +33,7 @@ export abstract class BasicDataManager<G extends IGame> {
   async loadRaw(refresh?: boolean): Promise<{
     [K in keyof Awaited<ReturnType<this['getLoadRawTasks']>>]: Awaited<Awaited<ReturnType<this['getLoadRawTasks']>>[K]>
   }> {
-    const task = this.getLoadRawTasks() as Awaited<ReturnType<this['getLoadRawTasks']>>
+    const task = this.getLoadRawTasks(refresh) as Awaited<ReturnType<this['getLoadRawTasks']>>
     return (await pProps(task)) as any as { [K in keyof typeof task]: Awaited<(typeof task)[K]> }
   }
   public raw!: {
@@ -44,7 +44,7 @@ export abstract class BasicDataManager<G extends IGame> {
 
   protected async loadJson<T>(
     url: string,
-    refresh: boolean = false,
+    refresh = false,
     key = url,
     shitDefault: (() => T) | undefined = undefined,
   ): Promise<T> {
