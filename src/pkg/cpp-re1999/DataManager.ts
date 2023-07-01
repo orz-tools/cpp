@@ -296,6 +296,8 @@ export class Item implements IItem {
         return Category.Insight3
     }
     if (this.raw.subType === 12) return Category.Resonate
+    if (this.raw.subType === 18) return Category.Equip
+    if (this.raw.subType === 19) return Category.Room
     if (this.raw.rare === 1) return Category.Rarity1
     if (this.raw.rare === 2) return Category.Rarity2
     if (this.raw.rare === 3) return Category.Rarity3
@@ -324,7 +326,7 @@ export class CurrencyItem implements IItem {
   }
 
   public get icon() {
-    return ''
+    return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Currency/${this.raw.icon}.png`
   }
 
   private _valueAsAp?: [number | undefined]

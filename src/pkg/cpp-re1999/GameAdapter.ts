@@ -49,12 +49,21 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       .filter((x) => {
         if ([RE_ITEM_EXP, RE_ITEM_GOLD].includes(x.key)) return true
         if (x.isCurrency) return false
+        if (!x.raw.isShow) return false
         if (![11, 12].includes(x.raw.subType)) return false
+        // 18 for Equip
+        // 19 for Room
         return true
       })
       .sort((a, b) => {
-        if (a.sortId < b.sortId) return -1
-        if (a.sortId > b.sortId) return 1
+        if (a.isCurrency === false && b.isCurrency === false) {
+          if (a.raw.subType < b.raw.subType) return 1
+          if (a.raw.subType > b.raw.subType) return -1
+          if (a.raw.rare < b.raw.rare) return 1
+          if (a.raw.rare > b.raw.rare) return -1
+        }
+        if (a.sortId < b.sortId) return 1
+        if (a.sortId > b.sortId) return -1
         return 0
       })
   }
@@ -222,94 +231,6 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
         continue
       }
     }
-    // const loadZoneName = (stageInfo: ExcelStageTable.Stage, isRetro: boolean) => {
-    //   if (this.zoneNames[stageInfo.zoneId]) return
-    //   if (isRetro) {
-    //     const retroId = this.dataManager.raw.exRetro.zoneToRetro[stageInfo.zoneId]
-    //     if (retroId) {
-    //       this.zoneNames[stageInfo.zoneId] = this.dataManager.raw.exRetro.retroActList[retroId]?.name
-    //     }
-    //   } else {
-    //     const zone = this.dataManager.raw.exZone.zones[stageInfo.zoneId]
-    //     this.zoneNames[stageInfo.zoneId] = [zone?.zoneNameFirst || '', zone?.zoneNameSecond || ''].join(' ')
-    //   }
-    // }
-    // const matrixKeys = new Set(this.dataManager.raw.penguinMatrix.matrix.map((x) => x.stageId))
-    // for (const stageId of matrixKeys) {
-    //   if (stageId.endsWith('_rep')) {
-    //     matrixKeys.delete(stageId.slice(0, stageId.length - 4) + '_perm')
-    //   }
-    // }
-    // for (const i of this.dataManager.raw.penguinMatrix.matrix) {
-    //   if (!matrixKeys.has(i.stageId)) continue
-    //   if (i.start && i.start > now) {
-    //     this.cacheExpiresAt = Math.min(this.cacheExpiresAt, i.start)
-    //   }
-    //   if (i.end && i.end > now) {
-    //     this.cacheExpiresAt = Math.min(this.cacheExpiresAt, i.end)
-    //   }
-    //   if (i.start > now || (i.end && i.end < now)) continue
-    //   if (!this.dataManager.data.items[i.itemId]) continue
-
-    //   let stageId = i.stageId
-    //   if (stageId.startsWith('wk_armor_')) continue // SK-...
-
-    //   let stageInfo = this.dataManager.raw.exStage.stages[stageId]
-    //   let isRetro = false
-    //   if (stageId.endsWith('_rep')) {
-    //     stageId = stageId.slice(0, stageId.length - 4)
-    //     stageInfo = this.dataManager.raw.exStage.stages[stageId]
-    //   } else if (stageId.endsWith('_perm')) {
-    //     stageId = stageId.slice(0, stageId.length - 5)
-    //     stageInfo = this.dataManager.raw.exRetro.stageList[stageId]
-    //     isRetro = true
-    //   }
-    //   if (!stageInfo) {
-    //     continue
-    //   }
-    //   loadZoneName(stageInfo, isRetro)
-
-    //   let stage = map.get(stageId)
-    //   if (!stage) {
-    //     stage = new Re1999StageInfo(this, stageInfo)
-    //     map.set(stageId, stage)
-    //     this.stageInfo[stageId] = stage
-
-    //     if (!stageInfo.apCost) console.log(stageInfo)
-    //     stage.setAp(stageInfo.apCost)
-    //     stage.addDrop(AK_ITEM_GOLD, stageInfo.apCost * 12)
-    //   }
-
-    //   stage.addDrop(i.itemId, i.quantity, i.times)
-    // }
-
-    // const makeCE = (stageId: string, gold: number) => {
-    //   const stageInfo = this.dataManager.raw.exStage.stages[stageId]
-    //   const stage = new Re1999StageInfo(this, stageInfo)
-    //   stage.setAp(stageInfo.apCost)
-    //   stage.addDrop(AK_ITEM_GOLD, gold)
-    //   map.set(stageId, stage)
-    //   this.stageInfo[stageId] = stage
-    //   loadZoneName(stageInfo, false)
-    // }
-    // makeCE('wk_melee_6', 10000)
-    // makeCE('wk_melee_5', 7500)
-    // makeCE('wk_melee_4', 5700)
-    // makeCE('wk_melee_3', 4100)
-    // makeCE('wk_melee_2', 2800)
-    // makeCE('wk_melee_1', 1700)
-
-    // const makeAP = (stageId: string, ticket: number) => {
-    //   const stageInfo = this.dataManager.raw.exStage.stages[stageId]
-    //   const stage = new Re1999StageInfo(this, stageInfo)
-    //   stage.setAp(stageInfo.apCost)
-    //   stage.addDrop('4006', ticket)
-    //   stage.addDrop(AK_ITEM_GOLD, stageInfo.apCost * 12)
-    //   map.set(stageId, stage)
-    //   this.stageInfo[stageId] = stage
-    //   loadZoneName(stageInfo, false)
-    // }
-    // makeAP('wk_toxic_5', 21)
 
     return this.stageInfo
   }
@@ -371,15 +292,17 @@ class Re1999StageInfo extends BasicStageInfo {
 
 export enum Category {
   Gold = '0',
-  Rarity5 = '1',
-  Rarity4 = '2',
-  Rarity3 = '3',
-  Rarity2 = '4',
-  Rarity1 = '5',
-  Resonate = '7',
-  Insight3 = '81',
-  Insight2 = '82',
-  Insight1 = '83',
+  Rarity5 = '11',
+  Rarity4 = '12',
+  Rarity3 = '13',
+  Rarity2 = '14',
+  Rarity1 = '15',
+  Insight3 = '31',
+  Insight2 = '32',
+  Insight1 = '33',
+  Resonate = '4',
+  Equip = '5',
+  Room = '6',
   Unknown = '9',
 }
 
@@ -390,10 +313,12 @@ export const CategoryNames = {
   [Category.Rarity3]: '紫材料',
   [Category.Rarity2]: '蓝材料',
   [Category.Rarity1]: '绿材料',
-  [Category.Resonate]: '共鸣',
   [Category.Insight3]: '洞悉三',
   [Category.Insight2]: '洞悉二',
   [Category.Insight1]: '洞悉一',
+  [Category.Resonate]: '共鸣',
+  [Category.Equip]: '心相',
+  [Category.Room]: '荒原',
   [Category.Unknown]: '其他',
 } satisfies Record<Category, string>
 
