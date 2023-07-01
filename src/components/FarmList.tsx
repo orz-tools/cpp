@@ -34,6 +34,8 @@ export async function plan(cpp: Cpp<IGame>, finished: boolean) {
   let ap = 0
   const stageInfo = ga.getStageInfos()
   const stageRuns: StageRun[] = []
+  const unfeasibleItems: Record<string, number> = Object.create(null)
+  let hasUnfeasibleItems = false
   for (const [k, v] of Object.entries(result)) {
     if (k.startsWith('battle:')) {
       const stageId = k.slice('battle:'.length)
@@ -41,10 +43,19 @@ export async function plan(cpp: Cpp<IGame>, finished: boolean) {
       const count = Math.ceil(Number(v || 0))
       stageRuns.push({ stageId, stage, count, apCost: count * stage.ap })
       ap += count * stage.ap
+    } else if (k.startsWith('unfeasible:item:')) {
+      const itemId = k.slice('unfeasible:item:'.length)
+      const count = Math.ceil(Number(v || 0))
+      unfeasibleItems[itemId] = count
+      hasUnfeasibleItems = true
     }
   }
 
-  return { stageRuns: sortBy((a) => -a.apCost, stageRuns), ap }
+  return {
+    stageRuns: sortBy((a) => -a.apCost, stageRuns),
+    ap,
+    unfeasibleItems: hasUnfeasibleItems ? unfeasibleItems : undefined,
+  }
 }
 
 export function FarmList() {
@@ -81,6 +92,7 @@ export function FarmList() {
         {response?.stageRuns.map((run) => (
           <StageLine run={run} key={run.stageId} />
         ))}
+        {response?.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
       </Menu>
     </>
   )
@@ -129,6 +141,43 @@ export function StageLine({ run }: { run: StageRun }) {
               <>
                 <span>{item.name}</span>
                 <span style={{ float: 'right' }}>{(value * run.count).toFixed(2).replace(/\.?0+$/, '')}</span>
+              </>
+            }
+          />
+        )
+      })}
+      <MenuDivider />
+    </>
+  )
+}
+
+export function UnfeasibleLine({ items }: { items: Record<string, number> }) {
+  const ga = useGameAdapter()
+
+  return (
+    <>
+      <MenuItem text={'暂无可计算来源'} />
+      {Object.entries(items).map(([k, v]) => {
+        const item = ga.getItem(k)
+        const value = v
+        return (
+          <MenuItem
+            key={k}
+            style={{ fontWeight: 'normal' }}
+            icon={
+              <CachedImg
+                src={item.icon}
+                width={'100%'}
+                height={'100%'}
+                alt={item.key}
+                title={item.key}
+                className="cpp-item-icon"
+              />
+            }
+            text={
+              <>
+                <span>{item.name}</span>
+                <span style={{ float: 'right' }}>{value.toFixed(2).replace(/\.?0+$/, '')}</span>
               </>
             }
           />
