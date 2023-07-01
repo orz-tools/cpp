@@ -1,4 +1,5 @@
 import { Alignment, Button, Classes, Menu, MenuItem, Navbar, NumericInput } from '@blueprintjs/core'
+import { Popover2 } from '@blueprintjs/popover2'
 import { useAtomValue } from 'jotai'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
@@ -6,9 +7,6 @@ import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, IItem } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
-import { Popover2 } from '@blueprintjs/popover2'
-import { ItemImportButton } from './arknights/ItemList'
-import { SyncButton } from './ItemList'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)

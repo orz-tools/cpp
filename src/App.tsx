@@ -1,15 +1,4 @@
-import {
-  Alignment,
-  Button,
-  Classes,
-  Dialog,
-  Menu,
-  MenuDivider,
-  MenuItem,
-  Navbar,
-  Spinner,
-  Tag,
-} from '@blueprintjs/core'
+import { Alignment, Button, Classes, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import { useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, useEffect, useMemo, useState } from 'react'
@@ -19,7 +8,6 @@ import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, StageButton } from './components/ConfigUi'
 import { FarmList } from './components/FarmList'
-import { InventorySyncer } from './components/InventorySyncer'
 import { ItemList } from './components/ItemList'
 import { LogList } from './components/LogList'
 import { SynthesisList } from './components/SynthesisList'
