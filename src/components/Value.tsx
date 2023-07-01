@@ -2,7 +2,7 @@ import { Button, Icon, IconName, MaybeElement, Menu, MenuItem, Tag } from '@blue
 import { Popover2 } from '@blueprintjs/popover2'
 import { useAtom, useAtomValue } from 'jotai'
 import React from 'react'
-import { Cpp, ValueType, useCpp } from '../Cpp'
+import { ValueType, useCpp } from '../Cpp'
 
 const ValueIcon = {
   [ValueType.Ap]: 'predictive-analysis',
@@ -38,7 +38,7 @@ function hasValue(value: number | null | undefined): value is number {
   return true
 }
 
-function format(value: number | null | undefined, type: ValueType, single: boolean = false) {
+function format(value: number | null | undefined, type: ValueType, single = false) {
   if (!hasValue(value)) return 'N/A'
 
   switch (type) {

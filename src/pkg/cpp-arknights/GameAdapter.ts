@@ -7,35 +7,35 @@ import { ExcelStageTable } from './sources/excelTypes'
 import { AK_ITEM_GOLD, AK_ITEM_VIRTUAL_EXP, Arknights, formulaTagNames } from './types'
 
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
-  dataManager = new ArknightsDataManager()
-  userDataAdapter = new ArknightsUserDataAdapter(this.dataManager)
+  private dataManager = new ArknightsDataManager()
+  private userDataAdapter = new ArknightsUserDataAdapter(this.dataManager)
 
-  static codename: string = GameName.Arknights
-  getCodename(): string {
+  public static codename: string = GameName.Arknights
+  public getCodename(): string {
     return ArknightsAdapter.codename
   }
 
-  getDataManager() {
+  public getDataManager() {
     return this.dataManager
   }
 
-  getUserDataAdapter() {
+  public getUserDataAdapter() {
     return this.userDataAdapter
   }
 
-  getFormulaTagNames() {
+  public getFormulaTagNames() {
     return formulaTagNames
   }
 
-  getItem(key: string) {
+  public getItem(key: string) {
     return this.dataManager.data.items[key]
   }
 
-  getInventoryCategories(): Record<string, string> {
+  public getInventoryCategories(): Record<string, string> {
     return CategoryNames
   }
 
-  getInventoryItems() {
+  public getInventoryItems() {
     return Object.values(this.dataManager.data.items)
       .filter((x) => {
         if (!['MATERIAL', 'CARD_EXP', 'GOLD', '##EXP_VIRTUAL'].includes(x.raw.itemType)) return false
@@ -69,22 +69,22 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       })
   }
 
-  getCharacter(key: string) {
+  public getCharacter(key: string) {
     return this.dataManager.data.characters[key]
   }
 
-  getFormulas() {
+  public getFormulas() {
     return this.dataManager.data.formulas
   }
 
-  _expItems?: Record<string, ExpItem>
-  getExpItems(): Record<string, ExpItem> {
+  private _expItems?: Record<string, ExpItem>
+  public getExpItems(): Record<string, ExpItem> {
     if (this._expItems) return this._expItems
 
     this._expItems = {
       [AK_ITEM_VIRTUAL_EXP]: {
         value: Object.fromEntries(
-          Object.entries(this.dataManager.raw.exItems.expItems).map(([_key, value]) => [value.id, value.gainExp]),
+          Object.entries(this.dataManager.raw.exItems.expItems).map(([, value]) => [value.id, value.gainExp]),
         ),
         indirectStage: [
           // LS-6
@@ -96,8 +96,8 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     return this._expItems
   }
 
-  _expItemValueMap?: Map<string, [number, string]>
-  getExpItemValue(key: string): [number, string] | null | undefined {
+  private _expItemValueMap?: Map<string, [number, string]>
+  public getExpItemValue(key: string): [number, string] | null | undefined {
     if (!this._expItemValueMap) {
       const allExpItems = this.getExpItems()
       const map = new Map<string, [number, string]>()
@@ -111,16 +111,16 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     return this._expItemValueMap.get(key)
   }
 
-  zoneNames: Record<string, string> = {}
-  stageInfo: Record<string, ArknightsStageInfo> = undefined as any
-  cacheExpiresAt: number = Infinity
+  private zoneNames: Record<string, string> = {}
+  private stageInfo: Record<string, ArknightsStageInfo> = undefined as any
+  private cacheExpiresAt = Infinity
 
-  getZoneNames() {
+  public getZoneNames() {
     this.getStageInfos()
     return this.zoneNames
   }
 
-  getStageInfos() {
+  public getStageInfos() {
     if (this.stageInfo && Date.now() < this.cacheExpiresAt) return this.stageInfo
 
     const now = Date.now()
@@ -229,23 +229,23 @@ const diffGroupName = {
 } as Record<string, string>
 
 class ArknightsStageInfo extends BasicStageInfo {
-  constructor(ga: ArknightsAdapter, private excel: ExcelStageTable.Stage) {
+  public constructor(ga: ArknightsAdapter, private excel: ExcelStageTable.Stage) {
     super(ga)
   }
 
-  get id(): string {
+  public get id(): string {
     return this.excel.stageId
   }
 
-  get code(): string {
+  public get code(): string {
     return `${diffGroupName[this.excel.diffGroup] || ''}${this.excel.code}`
   }
 
-  get name(): string {
+  public get name(): string {
     return `${this.excel.name}`
   }
 
-  get zoneId(): string {
+  public get zoneId(): string {
     if (Object.prototype.hasOwnProperty.call(zoneReplacement, this.excel.zoneId)) {
       return zoneReplacement[this.excel.zoneId]
     }

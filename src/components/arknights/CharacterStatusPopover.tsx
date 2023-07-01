@@ -1,22 +1,21 @@
 import { Button, ButtonGroup, Checkbox, Classes, Intent, NumericInput, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { useContext, useEffect, useState } from 'react'
+import { useAtoms } from '../../Cpp'
+import { Arknights, Character } from '../../pkg/cpp-arknights'
+import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import m0 from './assets/m0.png'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
 import m3 from './assets/m3.png'
-import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
-import { Arknights, Character } from '../../pkg/cpp-arknights'
-import { useAtoms } from '../../Cpp'
-import { ICharacter } from '../../pkg/cpp-basic'
 
-const setStatusAtomTypeHolder = () =>
+const useTypeHolderForSetStatusAtom = () =>
   useSetAtom(null as any as ReturnType<UserDataAtomHolder<Arknights>['atoms']['goalCharacter']>)
 
 const EditorContext = React.createContext<{
   status: Arknights['characterStatus']
   currentStatus?: Arknights['characterStatus']
-  setStatus: ReturnType<typeof setStatusAtomTypeHolder>
+  setStatus: ReturnType<typeof useTypeHolderForSetStatusAtom>
   character: Character
 }>(undefined as any)
 
@@ -25,11 +24,11 @@ export function EliteLevelInput({ elite }: { elite: number }) {
   const [input, setInput] = useState(String(status.level))
   useEffect(() => setInput(String(status.level)), [status.level])
 
-  if (status.elite != elite) return <></>
+  if (status.elite !== elite) return <></>
   return (
     <NumericInput
       value={input}
-      min={currentStatus ? (currentStatus.elite == elite ? currentStatus.level : 1) : 1}
+      min={currentStatus ? (currentStatus.elite === elite ? currentStatus.level : 1) : 1}
       max={character.maxLevels[elite]}
       onValueChange={(_, valueAsString) => setInput(valueAsString)}
       onBlur={() => {
@@ -51,7 +50,7 @@ export function EliteLevelInput({ elite }: { elite: number }) {
 
 export function EliteLevelButton({ elite, level, color }: { elite: number; level: number; color?: string }) {
   const { status, setStatus, currentStatus } = useContext(EditorContext)
-  const already = status.elite > elite || (status.elite == elite && status.level >= level)
+  const already = status.elite > elite || (status.elite === elite && status.level >= level)
   return (
     <Button
       onClick={() =>
@@ -62,7 +61,7 @@ export function EliteLevelButton({ elite, level, color }: { elite: number; level
       }
       disabled={
         currentStatus
-          ? currentStatus.elite > elite || (currentStatus.elite == elite && currentStatus.level > level)
+          ? currentStatus.elite > elite || (currentStatus.elite === elite && currentStatus.level > level)
           : false
       }
       intent={already ? Intent.PRIMARY : Intent.NONE}
@@ -74,13 +73,13 @@ export function EliteLevelButton({ elite, level, color }: { elite: number; level
 }
 
 export function CharacterStatusEliteLevelSection() {
-  const { status, setStatus, currentStatus, character } = useContext(EditorContext)
+  const { currentStatus, character } = useContext(EditorContext)
   return (
     <>
       {character.maxElite >= 0 &&
       !(
         currentStatus &&
-        (currentStatus.elite > 0 || (currentStatus.elite == 0 && currentStatus.level > character.maxLevels[0]))
+        (currentStatus.elite > 0 || (currentStatus.elite === 0 && currentStatus.level > character.maxLevels[0]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -94,7 +93,7 @@ export function CharacterStatusEliteLevelSection() {
       {character.maxElite >= 1 &&
       !(
         currentStatus &&
-        (currentStatus.elite > 1 || (currentStatus.elite == 1 && currentStatus.level > character.maxLevels[1]))
+        (currentStatus.elite > 1 || (currentStatus.elite === 1 && currentStatus.level > character.maxLevels[1]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -108,7 +107,7 @@ export function CharacterStatusEliteLevelSection() {
       {character.maxElite >= 2 &&
       !(
         currentStatus &&
-        (currentStatus.elite > 2 || (currentStatus.elite == 2 && currentStatus.level > character.maxLevels[2]))
+        (currentStatus.elite > 2 || (currentStatus.elite === 2 && currentStatus.level > character.maxLevels[2]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -123,7 +122,7 @@ export function CharacterStatusEliteLevelSection() {
                   key={lv}
                   elite={2}
                   level={lv}
-                  color={lv == character.modUnlockLevel ? 'rgba(0,0,255,0.25)' : undefined}
+                  color={lv === character.modUnlockLevel ? 'rgba(0,0,255,0.25)' : undefined}
                 />
               ))}
             <EliteLevelInput elite={2} />
@@ -137,7 +136,7 @@ export function CharacterStatusEliteLevelSection() {
 export function SkillButton({ level }: { level: number }) {
   const { status, setStatus, currentStatus } = useContext(EditorContext)
   const already = status.skillLevel >= level
-  const needElite = status.elite == 0 ? level >= 5 : false
+  const needElite = status.elite === 0 ? level >= 5 : false
   const disabled = currentStatus ? currentStatus.skillLevel > level : false
   return (
     <Button
@@ -182,20 +181,20 @@ export function SkillMasterButton({ skillId, level }: { skillId: string; level: 
       disabled={disabled}
       intent={already ? Intent.PRIMARY : needElite ? Intent.WARNING : Intent.NONE}
       icon={<img src={[m0, m1, m2, m3][level]} width="100%" height="100%" />}
-    ></Button>
+    />
   )
 }
 
 export function CharacterStatusSkillMasterSection() {
-  const { status, setStatus, currentStatus, character } = useContext(EditorContext)
+  const { currentStatus, character } = useContext(EditorContext)
   if (!character.skills.length) return <></>
   if (character.rarity < 3) return <></>
-  const all = currentStatus ? character.skills.every(([, skill]) => currentStatus.skillMaster[skill.key] == 3) : false
+  const all = currentStatus ? character.skills.every(([, skill]) => currentStatus.skillMaster[skill.key] === 3) : false
   if (all) return <></>
 
   return (
     <>
-      {character.skills.map(([cSkill, skill], index) => {
+      {character.skills.map(([, skill], index) => {
         return (
           <div key={skill.key}>
             <ButtonGroup className={Classes.DARK}>
@@ -249,18 +248,18 @@ export function ModButton({ modId, level }: { modId: string; level: number }) {
 }
 
 export function CharacterStatusModSection() {
-  const { status, setStatus, currentStatus, character } = useContext(EditorContext)
+  const { currentStatus, character } = useContext(EditorContext)
   if (character.rarity < 3) return <></>
 
   const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 0)
   if (!uniEquips.length) return <></>
 
-  const all = currentStatus ? uniEquips.every((equip) => currentStatus.modLevel[equip.key] == 3) : false
+  const all = currentStatus ? uniEquips.every((equip) => currentStatus.modLevel[equip.key] === 3) : false
   if (all) return <></>
 
   return (
     <>
-      {uniEquips.map((equip, index) => {
+      {uniEquips.map((equip) => {
         return (
           <div key={equip.key}>
             <ButtonGroup className={Classes.DARK}>
@@ -287,7 +286,7 @@ export function CharacterStatusModSection() {
 }
 
 export function CharacterStatusSkillSection() {
-  const { status, setStatus, currentStatus, character } = useContext(EditorContext)
+  const { currentStatus, character } = useContext(EditorContext)
   if (!character.skills.length) return <></>
   if ((currentStatus?.skillLevel || 0) >= 7) return <></>
 

@@ -22,6 +22,7 @@
     "ramda": "^0.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-use-event-hook": "^0.9.6",
     "react-virtualized-auto-sizer": "^1.0.20",
     "react-window": "^1.8.9"
   },

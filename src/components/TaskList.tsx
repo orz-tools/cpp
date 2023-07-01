@@ -64,6 +64,7 @@ function TaskContextMenu<G extends IGame>({ task, extra }: { task: Task<G>; extr
         }
         const smallestExpItemWithQuantity = expItems.reverse().find((x) => quantities[x[0]] > 0)
         if (exp === 0) {
+          //
         } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
           exp = 0
           quantities[smallestExpItemWithQuantity[0]] -= 1
@@ -187,7 +188,7 @@ export function TaskMenu<G extends IGame>({
             style={{ fontWeight: 'normal' }}
             text={
               <>
-                {extra.status == TaskStatus.AllUnmet ? (
+                {extra.status === TaskStatus.AllUnmet ? (
                   <ValueTagProgressBar
                     value={sum(extra.valueTotal) - sum(extra.valueFulfilled)}
                     maxValue={sum(extra.valueTotal)}
@@ -230,7 +231,6 @@ const CostStatusIcon = {
 
 function ItemStack<G extends IGame>({
   stack,
-  task,
   style,
   status,
   consumed,
@@ -273,7 +273,7 @@ function ItemStack<G extends IGame>({
         </>
       }
       style={{ fontWeight: 'normal', ...style }}
-    ></MenuItem>
+    />
   )
 }
 
@@ -308,8 +308,8 @@ export function TaskList<G extends IGame>() {
         style={style}
         task={data[index][0]}
         extra={data[index][1]}
-        same={data[index - 1]?.[0].charId == data[index][0].charId}
-        nextSame={data[index + 1]?.[0].charId == data[index][0].charId}
+        same={data[index - 1]?.[0].charId === data[index][0].charId}
+        nextSame={data[index + 1]?.[0].charId === data[index][0].charId}
         hideCosts={param.hideCosts}
       />
     ),
@@ -318,8 +318,8 @@ export function TaskList<G extends IGame>() {
   const itemKey = useCallback<ListItemKeySelector<[Task<G>, TaskExtra][]>>((index, data) => data[index][0].id, [])
   const itemSize = useCallback<(index: number) => number>(
     (index) => {
-      const same = list[index - 1]?.[0].charId == list[index][0].charId
-      const nextSame = list[index + 1]?.[0].charId == list[index][0].charId
+      const same = list[index - 1]?.[0].charId === list[index][0].charId
+      const nextSame = list[index + 1]?.[0].charId === list[index][0].charId
       const costs = hideCosts ? 0 : list[index][0].requires.length * 30
       const base = costs + (same ? 0 : 30) + 30 + (hideCosts && nextSame ? 0 : 11)
       return base
@@ -335,7 +335,7 @@ export function TaskList<G extends IGame>() {
   return (
     <>
       <Navbar>
-        <Navbar.Group align={Alignment.RIGHT}></Navbar.Group>
+        <Navbar.Group align={Alignment.RIGHT} />
         <Navbar.Group align={Alignment.LEFT}>
           <HideCostsButton />
         </Navbar.Group>

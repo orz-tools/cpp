@@ -12,7 +12,7 @@ export function AboutCopyright() {
           </div>
         </>
       }
-    ></MenuItem>
+    />
   )
 }
 
@@ -33,7 +33,7 @@ export function AboutCredits() {
             </div>
           </>
         }
-      ></MenuItem>
+      />
       <MenuItem
         icon={'code'}
         text="yuanyan3060/Reverse1999Resource"

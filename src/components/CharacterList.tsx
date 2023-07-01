@@ -12,6 +12,7 @@ import { CachedImg } from '../components/Icons'
 import { useRequest } from '../hooks/useRequest'
 import { ICharacter, IGame } from '../pkg/cpp-basic'
 import { useComponents } from '../hooks/useComponents'
+import useEvent from 'react-use-event-hook'
 
 export function Hide({
   children,
@@ -37,8 +38,9 @@ function renderCharacterStatus<G extends IGame>(
   status: G['characterStatus'],
   character: ICharacter,
   current?: G['characterStatus'],
-  alreadyHide: boolean = false,
+  alreadyHide = false,
 ) {
+  alreadyHide.toString()
   return <>{JSON.stringify(status)}</>
 }
 
@@ -133,7 +135,7 @@ function CharacterMenu<G extends IGame>({ character, style }: { character: IChar
       role="none"
       className={[
         'cpp-char-menu-master',
-        'cpp-char-rarity-' + character.rarity,
+        `cpp-char-rarity-${character.rarity}`,
         ...(character.characterViewExtraClass || []),
       ].join(' ')}
       style={style}
@@ -218,6 +220,8 @@ function buildMatcher(query: string): (x: string) => boolean {
 }
 
 async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListCharactersQueryParam) {
+  await Promise.resolve()
+
   const ga = cpp.gameAdapter
   const store = cpp.store
   const atoms = cpp.atoms.atoms
@@ -233,18 +237,18 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
     .filter((x) => {
       if (!(matcher(x.name) || matcher(x.appellation) || matcher(x.key))) return false
 
-      if (param.mode == ListMode.WithGoal) {
+      if (param.mode === ListMode.WithGoal) {
         return !!ud.goal[x.key]
-      } else if (param.mode == ListMode.Absent) {
+      } else if (param.mode === ListMode.Absent) {
         return uda.isAbsentCharacter(x, ud.current[x.key] || emptyCharacterStatus)
-      } else if (param.mode == ListMode.Fav) {
+      } else if (param.mode === ListMode.Fav) {
         const current = ud.current[x.key] || emptyCharacterStatus
         return !!ud.goal[x.key] || (uda.isFavCharacter(x, current) && !store.get(atoms.isCharacterFinished(x.key)))
       }
       return true
     })
     .sort((a, b) => {
-      if (param.mode == ListMode.WithGoal) {
+      if (param.mode === ListMode.WithGoal) {
         const aa = realOrder.indexOf(a.key)
         const bb = realOrder.indexOf(b.key)
         return aa - bb
@@ -314,26 +318,26 @@ function QueryBuilder() {
       <QuerySearchBox />
       <Button
         minimal={true}
-        active={param.mode == ListMode.Fav}
+        active={param.mode === ListMode.Fav}
         text="想看的"
         onClick={() => setParam((x) => ({ ...x, mode: ListMode.Fav }))}
       />
       <Button
         minimal={true}
-        active={param.mode == ListMode.All}
+        active={param.mode === ListMode.All}
         text="全部"
         onClick={() => setParam((x) => ({ ...x, mode: ListMode.All }))}
       />
       <Button
         minimal={true}
-        active={param.mode == ListMode.WithGoal}
+        active={param.mode === ListMode.WithGoal}
         text="计划"
         rightIcon={goalCount > 0 ? <Tag round={true}>{goalCount}</Tag> : undefined}
         onClick={() => setParam((x) => ({ ...x, mode: ListMode.WithGoal }))}
       />
       <Button
         minimal={true}
-        active={param.mode == ListMode.Absent}
+        active={param.mode === ListMode.Absent}
         text="缺席"
         onClick={() => setParam((x) => ({ ...x, mode: ListMode.Absent }))}
       />
@@ -347,11 +351,11 @@ export function CharacterList() {
   const cpp = useCpp()
   const { send, response, loading } = useRequest(listCharactersQuery)
 
-  const refresh = () => {
+  const refresh = useEvent(() => {
     send(cpp, param)
-  }
+  })
 
-  useEffect(() => refresh(), [param])
+  useEffect(() => refresh(), [param, refresh])
 
   const list = response || []
   const child = useCallback(

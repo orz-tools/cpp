@@ -15,35 +15,35 @@ import {
 } from './types'
 
 export class Re1999Adapter implements IGameAdapter<Re1999> {
-  dataManager = new Re1999DataManager()
-  userDataAdapter = new Re1999UserDataAdapter(this.dataManager)
+  public dataManager = new Re1999DataManager()
+  public userDataAdapter = new Re1999UserDataAdapter(this.dataManager)
 
-  static codename: string = GameName.Re1999
-  getCodename(): string {
+  public static codename: string = GameName.Re1999
+  public getCodename(): string {
     return Re1999Adapter.codename
   }
 
-  getDataManager() {
+  public getDataManager() {
     return this.dataManager
   }
 
-  getUserDataAdapter() {
+  public getUserDataAdapter() {
     return this.userDataAdapter
   }
 
-  getFormulaTagNames() {
+  public getFormulaTagNames() {
     return formulaTagNames
   }
 
-  getItem(key: string) {
+  public getItem(key: string) {
     return this.dataManager.data.items[key]
   }
 
-  getInventoryCategories(): Record<string, string> {
+  public getInventoryCategories(): Record<string, string> {
     return CategoryNames
   }
 
-  getInventoryItems() {
+  public getInventoryItems() {
     return Object.values(this.dataManager.data.items)
       .map((x) => x as Item | CurrencyItem)
       .filter((x) => {
@@ -59,20 +59,20 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       })
   }
 
-  getCharacter(key: string) {
+  public getCharacter(key: string) {
     return this.dataManager.data.characters[key]
   }
 
-  getFormulas() {
+  public getFormulas() {
     return this.dataManager.data.formulas
   }
 
-  getExpItems(): Record<string, ExpItem> {
+  public getExpItems(): Record<string, ExpItem> {
     return {}
   }
 
-  _expItemValueMap?: Map<string, [number, string]>
-  getExpItemValue(key: string): [number, string] | null | undefined {
+  private _expItemValueMap?: Map<string, [number, string]>
+  public getExpItemValue(key: string): [number, string] | null | undefined {
     if (!this._expItemValueMap) {
       const allExpItems = this.getExpItems()
       const map = new Map<string, [number, string]>()
@@ -86,32 +86,30 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     return this._expItemValueMap.get(key)
   }
 
-  zoneNames: Record<string, string> = {}
-  stageInfo: Record<string, Re1999StageInfo> = undefined as any
-  cacheExpiresAt: number = Infinity
+  private zoneNames: Record<string, string> = {}
+  private stageInfo: Record<string, Re1999StageInfo> = undefined as any
+  private cacheExpiresAt = Infinity
 
-  getZoneNames() {
+  public getZoneNames() {
     this.getStageInfos()
     return this.zoneNames
   }
 
-  getStageInfos() {
+  public getStageInfos() {
     if (this.stageInfo && Date.now() < this.cacheExpiresAt) return this.stageInfo
 
-    const now = Date.now()
-    const map = new Map<string, Re1999StageInfo>()
     this.stageInfo = {}
     this.zoneNames = {}
     this.cacheExpiresAt = Infinity
 
     const episodes = this.dataManager.raw.exEpisodes.slice(0)
     const badEpisodes: ExEpisode[] = []
-    while (true) {
+    for (;;) {
       let flag = false
       while (episodes.length > 0) {
         const episode = episodes.shift()!
         if (![ExEpisodeType.Story, ExEpisodeType.Normal, ExEpisodeType.Boss].includes(episode.type)) continue
-        const chapter = this.dataManager.raw.exChapters.find((x) => x.id == episode.chapterId)
+        const chapter = this.dataManager.raw.exChapters.find((x) => x.id === episode.chapterId)
         if (!chapter || !chapter.chapterIndex || chapter.type === ExChapterType.Simulate) continue
 
         const previous = episode.preEpisode ? this.stageInfo[String(episode.preEpisode)] : null
@@ -121,10 +119,10 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
         }
 
         let number = previous ? previous.number + 1 : 1
-        if (previous && previous.chapter != chapter) number = 1
+        if (previous && previous.chapter !== chapter) number = 1
         if (chapter.type === ExChapterType.Hard) {
-          if (!previous) throw new Error('hard without previous! ' + episode.id)
-          number = previous!.number
+          if (!previous) throw new Error(`hard without previous! ${episode.id}`)
+          number = previous.number
         }
 
         let zoneId = String(chapter.id)
@@ -148,18 +146,19 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     }
 
     for (const [key, value] of Object.entries(this.dataManager.raw.drops.levelReport)) {
-      const stage = Object.values(this.stageInfo).find((x) => x.dropCode == key)
+      const stage = Object.values(this.stageInfo).find((x) => x.dropCode === key)
       if (!stage) {
         throw new Error('cannot find stage from drop ' + key)
       }
       if (stage.ap !== value.cost) throw new Error('ap mismatch from drop ' + key)
       if (value.count < 5) continue
       stage.valid = true
-      for (let [itemName, drop] of Object.entries(value.drops)) {
+      for (const [inputItemName, drop] of Object.entries(value.drops)) {
+        let itemName = inputItemName
         if (itemName === '秘银原石') {
           itemName = '银矿原石'
         }
-        const itemId = this.getInventoryItems().find((x) => x.name == itemName)?.key
+        const itemId = this.getInventoryItems().find((x) => x.name === itemName)?.key
         if (!itemId) throw new Error('invalid drop ' + key + ' ' + itemName)
 
         stage.addDrop(itemId, drop, value.count)
@@ -317,7 +316,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
 }
 
 class Re1999StageInfo extends BasicStageInfo {
-  constructor(
+  public constructor(
     ga: Re1999Adapter,
     public episode: ExEpisode,
     public chapter: ExChapter,
@@ -334,7 +333,7 @@ class Re1999StageInfo extends BasicStageInfo {
     }
 
     const apCost = parseConsume(episode.cost)
-    if (apCost.length == 0) {
+    if (apCost.length === 0) {
       this.setAp(0)
     } else if (apCost.length !== 1 || apCost[0].itemId !== '2#4') {
       throw new Error('invalid episode apCost: ' + JSON.stringify(this))
@@ -343,19 +342,19 @@ class Re1999StageInfo extends BasicStageInfo {
     }
   }
 
-  public valid: boolean = false
+  public valid = false
 
-  get id(): string {
+  public get id(): string {
     return String(this.episode.id)
   }
 
-  get name(): string {
+  public get name(): string {
     return this.episode.name
   }
 
-  code: string
-  dropCode: string
-  get sortKey(): string {
+  public code: string
+  public dropCode: string
+  public get sortKey(): string {
     return this.code
   }
 

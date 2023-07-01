@@ -12,7 +12,7 @@ export function AboutCopyright() {
           </div>
         </>
       }
-    ></MenuItem>
+    />
   )
 }
 
@@ -32,7 +32,7 @@ export function AboutCredits() {
             </div>
           </>
         }
-      ></MenuItem>
+      />
       <MenuItem icon={'link'} text="明日方舟一图流" href={'https://yituliu.site/'} {...externalLinkProps} />
       <MenuItem
         icon={'link'}

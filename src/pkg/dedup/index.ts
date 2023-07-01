@@ -7,9 +7,9 @@ type PromiseValue<PromiseType, Otherwise = PromiseType> = PromiseType extends Pr
 type AsyncReturnType<Target extends AsyncFunction> = PromiseValue<ReturnType<Target>>
 
 export class DedupPool<K> {
-  pool = new Map<K, PromiseLike<any>>()
+  private pool = new Map<K, PromiseLike<any>>()
 
-  async run<F extends (...args: any[]) => PromiseLike<any>>(
+  public async run<F extends (...args: any[]) => PromiseLike<any>>(
     key: K,
     generator: F,
     ...args: Parameters<F>
@@ -25,7 +25,7 @@ export class DedupPool<K> {
         if (this.pool.get(key) === pending) {
           this.pool.delete(key)
         } else {
-          // tslint:disable-next-line: no-unsafe-finally
+          // eslint-disable-next-line no-unsafe-finally
           throw new Error('WTF? This should never happen')
         }
       }
@@ -34,7 +34,7 @@ export class DedupPool<K> {
     return await pending
   }
 
-  async wait(key: K): Promise<void> {
+  public async wait(key: K): Promise<void> {
     const pending = this.pool.get(key)
     if (pending) {
       await pending

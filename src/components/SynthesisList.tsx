@@ -33,7 +33,7 @@ export function SynthesisList() {
   return (
     <>
       <Navbar>
-        <Navbar.Group align={Alignment.RIGHT}></Navbar.Group>
+        <Navbar.Group align={Alignment.RIGHT} />
         <Navbar.Group align={Alignment.LEFT}>现在可以合成的物品</Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>

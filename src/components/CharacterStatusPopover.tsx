@@ -4,13 +4,13 @@ import { useAtoms } from '../Cpp'
 import { ICharacter, IGame } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 
-const setStatusAtomTypeHolder = () =>
+const useTypeHolderForSetStatusAtom = () =>
   useSetAtom(null as any as ReturnType<UserDataAtomHolder<IGame>['atoms']['goalCharacter']>)
 
 const EditorContext = React.createContext<{
   status: IGame['characterStatus']
   currentStatus?: IGame['characterStatus']
-  setStatus: ReturnType<typeof setStatusAtomTypeHolder>
+  setStatus: ReturnType<typeof useTypeHolderForSetStatusAtom>
   character: ICharacter
 }>(undefined as any)
 

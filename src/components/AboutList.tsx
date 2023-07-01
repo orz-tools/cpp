@@ -1,4 +1,4 @@
-import { Alignment, Navbar, Menu, MenuItem, Blockquote, MenuDivider } from '@blueprintjs/core'
+import { Alignment, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
 import { useComponents } from '../hooks/useComponents'
 
 export const externalLinkProps = {
@@ -12,7 +12,7 @@ export function AboutList() {
   return (
     <>
       <Navbar>
-        <Navbar.Group align={Alignment.RIGHT}></Navbar.Group>
+        <Navbar.Group align={Alignment.RIGHT} />
         <Navbar.Group align={Alignment.LEFT}>关于</Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
@@ -23,7 +23,7 @@ export function AboutList() {
           href={'mailto:cpp@ouomail.com'}
           {...externalLinkProps}
           text={<span style={{ userSelect: 'text' }}>cpp@ouomail.com</span>}
-        ></MenuItem>
+        />
         <MenuDivider title="警告" />
         <MenuItem
           multiline={true}
@@ -34,7 +34,7 @@ export function AboutList() {
               </div>
             </>
           }
-        ></MenuItem>
+        />
         <MenuDivider title="声明" />
         {AboutCopyright && <AboutCopyright />}
         <MenuDivider title="鸣谢" />

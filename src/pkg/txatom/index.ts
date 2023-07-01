@@ -4,7 +4,7 @@ import { PrimitiveAtom, atom } from 'jotai'
 
 enablePatches()
 
-interface TxStorage<T extends {}> {
+interface TxStorage<T extends object> {
   head?: T
   startHead?: T
   undos: { directPatches: Patch[]; inversePatches: Patch[] }[]
@@ -14,24 +14,24 @@ interface TxStorage<T extends {}> {
   inversePatches: Patch[]
 }
 
-type TxStorageAction<T extends {}> =
+type TxStorageAction<T extends object> =
   | [action: 'update', doc: T, directPatches: Patch[], inversePatches: Patch[]]
   | [action: 'begin']
   | [action: 'commit']
   | [action: 'undo']
   | [action: 'redo']
 
-export type TxDataAction<T extends {}> =
+export type TxDataAction<T extends object> =
   | [action: 'modify', draft: (draft: Draft<T>) => void]
   | [action: 'transact', task: () => any]
   | [action: 'undo']
   | [action: 'redo']
 
-function emptyStorage<T extends {}>(): TxStorage<T> {
+function emptyStorage<T extends object>(): TxStorage<T> {
   return { undos: [], redos: [], level: 0, directPatches: [], inversePatches: [] }
 }
 
-export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number = 10) {
+export function txatom<T extends object>(baseAtom: PrimitiveAtom<T>, history = 10) {
   const txStorageAtom = atom(emptyStorage<T>())
 
   const txAtom = atom<TxStorage<T>, TxStorageAction<T>, void>(
@@ -50,7 +50,7 @@ export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number
           )
           break
 
-        case 'commit':
+        case 'commit': {
           let conflicts = false
           set(
             txStorageAtom,
@@ -59,7 +59,7 @@ export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number
                 draft.level -= 1
               }
 
-              if (draft.level == 0) {
+              if (draft.level === 0) {
                 if (storage.startHead! !== get(baseAtom)) {
                   conflicts = true
                   draft.undos = []
@@ -93,18 +93,19 @@ export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number
           if (conflicts) {
             throw new Error('Data changed externally durning transaction!')
           }
-          if (storage.level == 0 && 'head' in storage) {
+          if (storage.level === 0 && 'head' in storage) {
             set(baseAtom, storage.head!)
           }
           break
+        }
 
         case 'begin':
           set(
             txStorageAtom,
             (storage = produce(storage, (draft) => {
-              if (draft.level == 0) {
-                console.assert(draft.directPatches.length == 0)
-                console.assert(draft.inversePatches.length == 0)
+              if (draft.level === 0) {
+                console.assert(draft.directPatches.length === 0)
+                console.assert(draft.inversePatches.length === 0)
 
                 const ext = get(baseAtom)
                 if ('head' in storage && storage.head !== ext) {
@@ -123,7 +124,7 @@ export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number
           {
             const base = get(baseAtom)
             if (storage.level !== 0) throw new Error('Cannot undo in transaction!')
-            if (storage.undos.length == 0) throw new Error('Cannot undo since there is no undo history!')
+            if (storage.undos.length === 0) throw new Error('Cannot undo since there is no undo history!')
             if (storage.head !== base) throw new Error('Cannot undo since head changed!')
             if (!('head' in storage)) throw new Error("Cannot undo since head doesn't exist!")
             const patches = storage.undos[storage.undos.length - 1]
@@ -143,7 +144,7 @@ export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number
           {
             const base = get(baseAtom)
             if (storage.level !== 0) throw new Error('Cannot redo in transaction!')
-            if (storage.redos.length == 0) throw new Error('Cannot redo since there is no redo history!')
+            if (storage.redos.length === 0) throw new Error('Cannot redo since there is no redo history!')
             if (storage.head !== base) throw new Error('Cannot redo since head changed!')
             if (!('head' in storage)) throw new Error("Cannot redo since head doesn't exist!")
             const patches = storage.redos[0]
@@ -174,7 +175,7 @@ export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number
       switch (action[0]) {
         case 'modify': {
           const level = get(txAtom).level
-          if (level == 0) {
+          if (level === 0) {
             set(txAtom, 'begin')
           }
           try {
@@ -182,7 +183,7 @@ export function txatom<T extends {}>(baseAtom: PrimitiveAtom<T>, history: number
             const [result, directPatches, inversePatches] = produceWithPatches(base, action[1])
             set(txAtom, 'update', result, directPatches, inversePatches)
           } finally {
-            if (level == 0) {
+            if (level === 0) {
               set(txAtom, 'commit')
             }
           }

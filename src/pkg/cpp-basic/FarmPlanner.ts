@@ -18,13 +18,15 @@ export interface CreateFarmPlannerOptions {
 }
 
 export class FarmPlanner<G extends IGame> {
-  feasible = new Set<string>()
-  unfeasible = new Set<string>()
+  private feasible = new Set<string>()
+  private unfeasible = new Set<string>()
 
   public static async create<G extends IGame>(
     ga: IGameAdapter<G>,
     options: CreateFarmPlannerOptions,
   ): Promise<FarmPlanner<G>> {
+    await Promise.resolve()
+
     const model: IModel<FarmModelSolutionVar, FarmModelInternalVar> = {
       optimize: 'ap',
       opType: 'min',
@@ -72,7 +74,7 @@ export class FarmPlanner<G extends IGame> {
     return new FarmPlanner(model, ga)
   }
 
-  constructor(private model: IModel<FarmModelSolutionVar, FarmModelInternalVar>, private ga: IGameAdapter<G>) {
+  public constructor(private model: IModel<FarmModelSolutionVar, FarmModelInternalVar>, private ga: IGameAdapter<G>) {
     for (const [k, v] of Object.entries(this.model.variables)) {
       if (k === 'have') continue
       for (const [kk, vv] of Object.entries(v!)) {
@@ -122,6 +124,7 @@ export class FarmPlanner<G extends IGame> {
   }
 
   public async run() {
+    await Promise.resolve()
     for (const i of this.unfeasible) {
       this.model.variables[`unfeasible:${i}`] = { [i]: 1 }
     }

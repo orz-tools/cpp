@@ -2,7 +2,9 @@ import { useCallback, useState } from 'react'
 
 export type RequestApi<A extends any[], T> = (...args: A) => Promise<T>
 
-const noop = () => {}
+const noop = () => {
+  //
+}
 
 type RequestInternalState<D> = {
   response: D | undefined

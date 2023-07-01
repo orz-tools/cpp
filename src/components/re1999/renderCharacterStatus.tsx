@@ -6,17 +6,17 @@ export function renderCharacterStatus(
   status: Re1999['characterStatus'],
   character: Character,
   current?: Re1999['characterStatus'],
-  alreadyHide: boolean = false,
+  alreadyHide = false,
 ) {
   return (
     <>
       <Hide
-        hide={current ? status.insight == current.insight && status.level == current.level : false}
+        hide={current ? status.insight === current.insight && status.level === current.level : false}
         alreadyHide={alreadyHide}
       >
         <LevelIcon level={status} />
       </Hide>
-      <Hide hide={current ? status.resonate == current.resonate : false} alreadyHide={alreadyHide}>
+      <Hide hide={current ? status.resonate === current.resonate : false} alreadyHide={alreadyHide}>
         <ResonateIcon level={status.resonate} />
       </Hide>
     </>

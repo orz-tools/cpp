@@ -51,7 +51,7 @@ function MAAItemImportButton<G extends Arknights>() {
             const after = store.get(atoms.itemQuantities)
             {
               // FIXME: 挪走
-              let msg = [] as string[]
+              const msg = [] as string[]
               const allKeys = new Set([...Object.keys(before), ...Object.keys(after)])
               let count = 0
               for (const i of allKeys) {

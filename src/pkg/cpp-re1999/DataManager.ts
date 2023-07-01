@@ -14,11 +14,12 @@ import {
 } from './types'
 
 export class Re1999DataManager extends BasicDataManager<Re1999> {
-  constructor() {
+  public constructor() {
     super('re1999_')
   }
 
-  async transform() {
+  public async transform() {
+    await Promise.resolve()
     return {
       characters: this.generateCharacters(),
       items: this.generateItems(),
@@ -27,7 +28,7 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
     }
   }
 
-  getLoadRawTasks(refresh?: boolean | undefined) {
+  public getLoadRawTasks(refresh?: boolean | undefined) {
     return {
       exChapters: this.loadJson<ExChapter[]>(
         'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/chapter.json',
@@ -78,16 +79,16 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
     return Object.fromEntries(
       Object.entries(this.raw.exCharacters)
         .filter((x) => x[1].isOnline === '1')
-        .map(([key, raw]) => [String(raw.id), new Character(String(raw.id), raw, this)]),
+        .map(([, raw]) => [String(raw.id), new Character(String(raw.id), raw, this)]),
     )
   }
 
   private generateItems() {
     const items = Object.fromEntries(
-      Object.entries(this.raw.exItems).map(([key, raw]) => [`${raw.id}`, new Item(`${raw.id}`, raw, this)]),
+      Object.entries(this.raw.exItems).map(([, raw]) => [`${raw.id}`, new Item(`${raw.id}`, raw, this)]),
     )
     const currencies = Object.fromEntries(
-      Object.entries(this.raw.exCurrencies).map(([key, raw]) => [
+      Object.entries(this.raw.exCurrencies).map(([, raw]) => [
         `2#${raw.id}`,
         new CurrencyItem(`2#${raw.id}`, raw, this),
       ]),
@@ -114,7 +115,7 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
           break
         }
       }
-      const consume = (level == 1 ? '2#5#0|2#3#0' : i.cosume).match(/^2#5#(\d+)\|2#3#(\d+)$/)
+      const consume = (level === 1 ? '2#5#0|2#3#0' : i.cosume).match(/^2#5#(\d+)\|2#3#(\d+)$/)
       if (!consume) throw new Error('failed to parse consume data ' + JSON.stringify(i))
       const exp = parseInt(consume[1], 10)
       const gold = parseInt(consume[2], 10)
@@ -158,65 +159,69 @@ export interface CharacterLevel {
 }
 
 export class Character implements ICharacter {
-  constructor(public readonly key: string, public readonly raw: ExCharacter, private readonly dm: Re1999DataManager) {}
+  public constructor(
+    public readonly key: string,
+    public readonly raw: ExCharacter,
+    private readonly dm: Re1999DataManager,
+  ) {}
 
-  get name(): string {
+  public get name(): string {
     return this.raw.name
   }
 
-  get appellation(): string {
+  public get appellation(): string {
     return this.raw.nameEng
   }
 
-  get avatar() {
+  public get avatar() {
     return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/HeadIconSmall/${this.raw.skinId}.png`
   }
 
-  get rarity() {
+  public get rarity() {
     return this.raw.rare
   }
 
-  get maxInsight() {
+  public get maxInsight() {
     return this.maxLevels.length - 1
   }
 
-  get maxLevels() {
+  public get maxLevels() {
     return this.dm.data.constants.maxLevel[this.rarity]
   }
 
-  get characterViewExtraClass() {
+  public get characterViewExtraClass() {
     return [`career-${this.raw.career}`, `dmgtype-${this.raw.dmgType}`]
   }
 
-  insightCost(insight: number) {
+  public insightCost(insight: number) {
     const row = this.dm.raw.exCharacterRank.find((x) => x.heroId === this.raw.id && x.rank - 1 === insight)
     if (!row) return []
     return parseConsume(row.consume)
   }
 
-  _resonates?: ExCharacterTalent[]
-  get resonates() {
+  private _resonates?: ExCharacterTalent[]
+  public get resonates() {
     if (!this._resonates) this._resonates = this.dm.raw.exCharacterTalent.filter((x) => x.heroId === this.raw.id)
     return this._resonates
   }
 
-  _maxResonate?: number
-  get maxResonate() {
+  private _maxResonate?: number
+  public get maxResonate() {
     if (this._maxResonate === undefined) {
       this._maxResonate = Math.max(...this.resonates.map((x) => x.talentId), 1)
     }
     return this._maxResonate
   }
 
-  resonateInsightRequires(resonate: number) {
-    return this.resonates.find((x) => x.talentId == resonate)!.requirement - 1
+  public resonateInsightRequires(resonate: number) {
+    return this.resonates.find((x) => x.talentId === resonate)!.requirement - 1
   }
 
-  resonateCost(resonate: number) {
-    return parseConsume(this.resonates.find((x) => x.talentId == resonate)!.consume)
+  public resonateCost(resonate: number) {
+    return parseConsume(this.resonates.find((x) => x.talentId === resonate)!.consume)
   }
 
-  maxResonateAtInsight(insight: number) {
+  public maxResonateAtInsight(insight: number) {
     return Math.max(...this.resonates.filter((x) => x.requirement - 1 === insight).map((x) => x.talentId), 1)
   }
 }
@@ -237,26 +242,30 @@ function makeNumericSortable(x: string) {
 }
 
 export class Item implements IItem {
-  constructor(public readonly key: string, public readonly raw: ExItem, protected readonly dm: Re1999DataManager) {}
+  public constructor(
+    public readonly key: string,
+    public readonly raw: ExItem,
+    protected readonly dm: Re1999DataManager,
+  ) {}
 
-  get sortId(): string {
+  public get sortId(): string {
     return '3-' + makeNumericSortable(this.raw.id.toFixed(0))
   }
 
-  get name(): string {
+  public get name(): string {
     return this.raw.name
   }
 
-  get icon() {
+  public get icon() {
     return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Item/${this.raw.icon}.png`
   }
 
   private _valueAsAp?: [number | undefined]
-  get valueAsAp(): number | undefined {
+  public get valueAsAp(): number | undefined {
     return (this._valueAsAp || (this._valueAsAp = [this._generateValueAsAp()]))[0]
   }
 
-  get valueAsApString(): string {
+  public get valueAsApString(): string {
     if (this.valueAsAp == null) return ''
     return this.valueAsAp
       .toFixed(4)
@@ -268,7 +277,7 @@ export class Item implements IItem {
     return undefined
   }
 
-  get inventoryCategory(): string {
+  public get inventoryCategory(): string {
     switch (this.key) {
       case '115011':
       case '115021':
@@ -286,40 +295,44 @@ export class Item implements IItem {
       case '115043':
         return Category.Insight3
     }
-    if (this.raw.subType == 12) return Category.Resonate
-    if (this.raw.rare == 1) return Category.Rarity1
-    if (this.raw.rare == 2) return Category.Rarity2
-    if (this.raw.rare == 3) return Category.Rarity3
-    if (this.raw.rare == 4) return Category.Rarity4
-    if (this.raw.rare == 5) return Category.Rarity5
+    if (this.raw.subType === 12) return Category.Resonate
+    if (this.raw.rare === 1) return Category.Rarity1
+    if (this.raw.rare === 2) return Category.Rarity2
+    if (this.raw.rare === 3) return Category.Rarity3
+    if (this.raw.rare === 4) return Category.Rarity4
+    if (this.raw.rare === 5) return Category.Rarity5
     return Category.Unknown
   }
 
-  isCurrency: false = false
+  public isCurrency = false as const
 }
 
 export class CurrencyItem implements IItem {
-  constructor(public readonly key: string, public readonly raw: ExCurrency, protected readonly dm: Re1999DataManager) {}
+  public constructor(
+    public readonly key: string,
+    public readonly raw: ExCurrency,
+    protected readonly dm: Re1999DataManager,
+  ) {}
 
-  isCurrency: true = true
-  get sortId(): string {
+  public isCurrency = true as const
+  public get sortId(): string {
     return '1-' + makeNumericSortable(this.raw.id.toFixed(0))
   }
 
-  get name(): string {
+  public get name(): string {
     return this.raw.name
   }
 
-  get icon() {
+  public get icon() {
     return ''
   }
 
   private _valueAsAp?: [number | undefined]
-  get valueAsAp(): number | undefined {
+  public get valueAsAp(): number | undefined {
     return (this._valueAsAp || (this._valueAsAp = [this._generateValueAsAp()]))[0]
   }
 
-  get valueAsApString(): string {
+  public get valueAsApString(): string {
     if (this.valueAsAp == null) return ''
     return this.valueAsAp
       .toFixed(4)
@@ -331,7 +344,7 @@ export class CurrencyItem implements IItem {
     return undefined
   }
 
-  get inventoryCategory(): string {
+  public get inventoryCategory(): string {
     return Category.Gold
   }
 }

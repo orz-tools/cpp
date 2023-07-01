@@ -1,4 +1,6 @@
-export interface ExcelCharacterTable extends Record<string, ExcelCharacterTable.Character> {}
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-empty-interface */
+export type ExcelCharacterTable = Record<string, ExcelCharacterTable.Character>
 
 export namespace ExcelCharacterTable {
   export interface AllSkillLvlup {
@@ -218,7 +220,7 @@ export interface ExcelPatchCharacterTable {
   >
 }
 
-export interface ExcelSkillTable extends Record<string, ExcelSkillTable.Skill> {}
+export type ExcelSkillTable = Record<string, ExcelSkillTable.Skill>
 
 export namespace ExcelSkillTable {
   export interface SpData {
@@ -294,7 +296,7 @@ export namespace ExcelUniEquipTable {
     type: string
   }
 
-  export interface PerLevelItemCosts extends Record<number, ItemCost[]> {}
+  export type PerLevelItemCosts = Record<number, ItemCost[]>
 
   export interface UniEquip {
     uniEquipId: string
@@ -704,7 +706,7 @@ export namespace ExcelBuildingData {
     specSkillLvlLimit?: number
   }
 
-  export interface Layouts extends Record<string, Layout> {}
+  export type Layouts = Record<string, Layout>
 
   export interface Layout {
     id: string
@@ -713,7 +715,7 @@ export namespace ExcelBuildingData {
     storeys: Storeys
   }
 
-  export interface CleanCosts extends Record<string, CleanCost> {}
+  export type CleanCosts = Record<string, CleanCost>
 
   export interface CleanCost {
     id: string
@@ -745,7 +747,7 @@ export namespace ExcelBuildingData {
     col: number
   }
 
-  export interface Storeys extends Record<string, Storey> {}
+  export type Storeys = Record<string, Storey>
 
   export interface Storey {
     id: string
@@ -803,7 +805,7 @@ export namespace ExcelBuildingData {
     obstacleId: null
   }
 
-  export interface RoomUnlockConds extends Record<string, RoomUnlockCond> {}
+  export type RoomUnlockConds = Record<string, RoomUnlockCond>
 
   export interface RoomUnlockCondNumber {
     type: string

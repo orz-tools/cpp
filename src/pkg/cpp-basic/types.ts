@@ -65,20 +65,20 @@ export interface IStageInfo {
 }
 
 export abstract class BasicStageInfo implements IStageInfo {
-  abstract id: string
-  abstract code: string
-  abstract name: string
-  abstract zoneId: string
+  public abstract id: string
+  public abstract code: string
+  public abstract name: string
+  public abstract zoneId: string
 
-  get sortKey(): string {
+  public get sortKey(): string {
     return this.id
   }
 
-  constructor(protected ga: IGameAdapter<any>) {}
+  public constructor(protected ga: IGameAdapter<any>) {}
 
   public dropInfo: Record<string, [drops: number, samples: number]> = {}
 
-  private _ap: number = 0
+  private _ap = 0
   public setAp(ap: number) {
     this._ap = ap
     this.clearCache()
@@ -88,7 +88,7 @@ export abstract class BasicStageInfo implements IStageInfo {
   }
 
   private cachedSortedDropInfo?: [itemId: string, drops: number, samples: number][]
-  get sortedDropInfo(): [itemId: string, drops: number, samples: number][] {
+  public get sortedDropInfo(): [itemId: string, drops: number, samples: number][] {
     if (!this.cachedSortedDropInfo) {
       this.cachedSortedDropInfo = this.sortDropInfo(Object.entries(this.dropInfo).map((x) => [x[0], x[1][0], x[1][1]]))
     }
@@ -102,7 +102,7 @@ export abstract class BasicStageInfo implements IStageInfo {
   }
 
   private cachedVarRow?: { [K in FarmModelSolutionVar | FarmModelInternalVar]?: number }
-  get varRow(): { [K in FarmModelSolutionVar | FarmModelInternalVar]?: number } {
+  public get varRow(): { [K in FarmModelSolutionVar | FarmModelInternalVar]?: number } {
     if (!this.cachedVarRow) {
       this.cachedVarRow = {}
       const vr = this.cachedVarRow
@@ -127,7 +127,7 @@ export abstract class BasicStageInfo implements IStageInfo {
     this.cachedVarRow = undefined
   }
 
-  addDrop(itemId: string, drops: number, samples: number = Infinity): this {
+  public addDrop(itemId: string, drops: number, samples = Infinity): this {
     if (!this.dropInfo[itemId]) {
       this.dropInfo[itemId] = [drops, samples]
     } else {

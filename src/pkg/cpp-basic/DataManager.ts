@@ -6,10 +6,11 @@ const store = localForage.createInstance({
   name: 'cpp_dm',
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export abstract class BasicDataManager<G extends IGame> {
-  constructor(private storagePrefix: string) {}
+  public constructor(private storagePrefix: string) {}
 
-  async init() {
+  public async init() {
     this.initialized = false
     try {
       this.raw = await this.loadRaw()
@@ -23,14 +24,14 @@ export abstract class BasicDataManager<G extends IGame> {
   public initialized = false
   public error?: Error
 
-  abstract transform(): Promise<any>
+  public abstract transform(): Promise<any>
   public data!: Awaited<ReturnType<this['transform']>>
 
-  async refresh() {
+  public async refresh() {
     return await this.loadRaw(true)
   }
 
-  async loadRaw(refresh?: boolean): Promise<{
+  public async loadRaw(refresh?: boolean): Promise<{
     [K in keyof Awaited<ReturnType<this['getLoadRawTasks']>>]: Awaited<Awaited<ReturnType<this['getLoadRawTasks']>>[K]>
   }> {
     const task = this.getLoadRawTasks(refresh) as Awaited<ReturnType<this['getLoadRawTasks']>>
@@ -40,7 +41,7 @@ export abstract class BasicDataManager<G extends IGame> {
     [K in keyof Awaited<ReturnType<this['getLoadRawTasks']>>]: Awaited<Awaited<ReturnType<this['getLoadRawTasks']>>[K]>
   }
 
-  abstract getLoadRawTasks(refresh?: boolean): Record<string, Promise<any>>
+  public abstract getLoadRawTasks(refresh?: boolean): Record<string, Promise<any>>
 
   protected async loadJson<T>(
     url: string,
@@ -54,7 +55,9 @@ export abstract class BasicDataManager<G extends IGame> {
     if (!refresh && existing) {
       try {
         return JSON.parse(existing)
-      } catch {}
+      } catch {
+        //
+      }
     }
     let log = undefined
     let response: Response | undefined = undefined
@@ -71,7 +74,9 @@ export abstract class BasicDataManager<G extends IGame> {
         try {
           console.warn(`Failed to fetch ${url}: ${log}, using existing`)
           return JSON.parse(existing)
-        } catch {}
+        } catch {
+          //
+        }
       }
       if (shitDefault !== undefined) {
         console.warn(`Failed to fetch ${url}: ${log}, using shit default`)

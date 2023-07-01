@@ -1,6 +1,8 @@
 import deepEqual from 'deep-equal'
+import { Draft } from 'immer'
 import { sum } from 'ramda'
 import { IUserDataAdapter, Task } from '../cpp-basic'
+import { ArknightsDataManager, Character } from './DataManager'
 import {
   AK_ITEM_GOLD,
   AK_ITEM_VIRTUAL_EXP,
@@ -8,8 +10,6 @@ import {
   ArknightsCharacterStatus,
   ArknightsCharacterTaskType,
 } from './types'
-import { ArknightsDataManager, Character } from './DataManager'
-import { Draft } from 'immer'
 
 const emptyCharacterStatus = Object.freeze<ArknightsCharacterStatus>({
   elite: 0,
@@ -20,9 +20,14 @@ const emptyCharacterStatus = Object.freeze<ArknightsCharacterStatus>({
 })
 
 export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
-  constructor(public dataManager: ArknightsDataManager) {}
+  public constructor(public dataManager: ArknightsDataManager) {}
 
-  compareCharacter(a: Character, b: Character, stA: ArknightsCharacterStatus, stB: ArknightsCharacterStatus): number {
+  public compareCharacter(
+    a: Character,
+    b: Character,
+    stA: ArknightsCharacterStatus,
+    stB: ArknightsCharacterStatus,
+  ): number {
     if (a.rarity > b.rarity) return -1
     if (a.rarity < b.rarity) return 1
 
@@ -35,30 +40,30 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     return 0
   }
 
-  isAbsentCharacter(c: Character, st: ArknightsCharacterStatus) {
-    return st.level == 0
+  public isAbsentCharacter(c: Character, st: ArknightsCharacterStatus) {
+    return st.level === 0
   }
 
-  isFavCharacter(c: Character, st: ArknightsCharacterStatus) {
+  public isFavCharacter(c: Character, st: ArknightsCharacterStatus) {
     return st.elite < 2
   }
 
-  getAllCharacterIds(): string[] {
+  public getAllCharacterIds(): string[] {
     return Object.entries(this.dataManager.data.characters)
       .filter(([, v]) => !!v.raw.displayNumber)
       .map(([k]) => k)
   }
 
-  getFrozenEmptyCharacterStatus(): ArknightsCharacterStatus {
+  public getFrozenEmptyCharacterStatus(): ArknightsCharacterStatus {
     return emptyCharacterStatus
   }
 
-  isManuallyTask(task: Task<Arknights>) {
+  public isManuallyTask(task: Task<Arknights>) {
     return task.type._ === 'join'
   }
 
-  generateTasksForCharacter(charId: string, current: ArknightsCharacterStatus, goal: ArknightsCharacterStatus) {
-    if (current == goal) return []
+  public generateTasksForCharacter(charId: string, current: ArknightsCharacterStatus, goal: ArknightsCharacterStatus) {
+    if (current === goal) return []
     const dataManager = this.dataManager
     const character = dataManager.data.characters[charId]
 
@@ -177,7 +182,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       const sg = goal.skillMaster[skillId] || sc
       let sDep: typeof dep = undefined
       if (sg > 0) meetEliteLevel(2, 1)
-      const sdata = character.skills.find((x) => x[0].skillId == skillId)?.[0]
+      const sdata = character.skills.find((x) => x[0].skillId === skillId)?.[0]
       const data = sdata?.specializeLevelUpData || sdata?.levelUpCostCond
       if (!data) continue
       while (sc < sg) {
@@ -207,7 +212,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
         mDep = add(
           { _: 'mod', modId: modId, to: mc + 1 },
           [
-            ...(character.uniEquips.find((x) => x.key == modId)?.raw.itemCost?.[mc + 1] || []).map((x) => ({
+            ...(character.uniEquips.find((x) => x.key === modId)?.raw.itemCost?.[mc + 1] || []).map((x) => ({
               itemId: x.id,
               quantity: x.count,
             })),
@@ -224,7 +229,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     return tasks
   }
 
-  formatTaskAsString(type: ArknightsCharacterTaskType, charId: string) {
+  public formatTaskAsString(type: ArknightsCharacterTaskType, charId: string) {
     const character = this.dataManager.data.characters[charId]
     switch (type._) {
       case 'join':
@@ -236,12 +241,12 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       case 'level':
         return `精${'零一二'[type.elite]}等级 ${type.from} -> ${type.to}`
       case 'skillMaster': {
-        const skillIndex = character.skills.findIndex((x) => x[0].skillId == type.skillId)
+        const skillIndex = character.skills.findIndex((x) => x[0].skillId === type.skillId)
         const skill = character.skills[skillIndex]
         return `${skillIndex + 1} 技能专${'一二三'[type.to - 1]}: ${skill[1].raw.levels[0].name}`
       }
       case 'mod': {
-        const uniEquip = character.uniEquips.find((x) => x.key == type.modId)!
+        const uniEquip = character.uniEquips.find((x) => x.key === type.modId)!
         return `${uniEquip.raw.typeName2.toUpperCase()} 模组 ${type.to} 级: ${uniEquip.raw.uniEquipName}`
       }
       default:
@@ -249,7 +254,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     }
   }
 
-  completeTask(type: ArknightsCharacterTaskType, charId: string, d: Draft<ArknightsCharacterStatus>) {
+  public completeTask(type: ArknightsCharacterTaskType, charId: string, d: Draft<ArknightsCharacterStatus>) {
     switch (type._) {
       case 'elite':
         d.elite = type.elite
@@ -276,7 +281,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     }
   }
 
-  finishedCharacterStatus(charId: string) {
+  public finishedCharacterStatus(charId: string) {
     const char = this.dataManager.data.characters[charId]
     return {
       elite: char.maxElite,
@@ -290,7 +295,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     }
   }
 
-  rewriteCharacter(charId: string, status: Draft<ArknightsCharacterStatus>) {
+  public rewriteCharacter(charId: string, status: Draft<ArknightsCharacterStatus>) {
     const char = this.dataManager.data.characters[charId]
     if (status.elite < 0 || !isFinite(status.elite)) status.elite = 0
     if (status.level < 0 || !isFinite(status.level)) status.level = 0
@@ -317,7 +322,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     status.skillLevel = parseInt(String(status.skillLevel))
     if (!isFinite(status.skillLevel)) status.skillLevel = 1
     if (status.skillLevel < 1) status.skillLevel = 1
-    if (char.skills.length == 0) {
+    if (char.skills.length === 0) {
       status.skillLevel = 1
     } else {
       if (status.elite < 1) {
@@ -358,7 +363,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     }
   }
 
-  rewriteGoal(charId: string, current: Draft<ArknightsCharacterStatus>, goal: Draft<ArknightsCharacterStatus>) {
+  public rewriteGoal(charId: string, current: Draft<ArknightsCharacterStatus>, goal: Draft<ArknightsCharacterStatus>) {
     const char = this.dataManager.data.characters[charId]
 
     if (goal.elite < current.elite) {
@@ -389,7 +394,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     }
   }
 
-  rewriteCharacters(
+  public rewriteCharacters(
     charId: string,
     current: Draft<ArknightsCharacterStatus> | undefined,
     goal: Draft<ArknightsCharacterStatus> | undefined,

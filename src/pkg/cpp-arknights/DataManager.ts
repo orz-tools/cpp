@@ -1,5 +1,5 @@
 import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
-import { AK_ITEM_GOLD, AK_ITEM_UNKNOWN_SHIT, AK_ITEM_VIRTUAL_EXP, Arknights, ArknightsFormulaTag } from './types'
+import { Category, myCategories } from './GameAdapter'
 import {
   ExcelBuildingData,
   ExcelCharacterTable,
@@ -13,14 +13,15 @@ import {
 } from './sources/excelTypes'
 import { PenguinMatrix } from './sources/penguinTypes'
 import { YituliuValue } from './sources/yituliuTypes'
-import { Category, myCategories } from './GameAdapter'
+import { AK_ITEM_GOLD, AK_ITEM_UNKNOWN_SHIT, AK_ITEM_VIRTUAL_EXP, Arknights, ArknightsFormulaTag } from './types'
 
 export class ArknightsDataManager extends BasicDataManager<Arknights> {
-  constructor() {
+  public constructor() {
     super('cpp_dm_')
   }
 
-  async transform() {
+  public async transform() {
+    await Promise.resolve()
     return {
       characters: this.generateCharacters(),
       skills: this.generateSkills(),
@@ -31,7 +32,7 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
     }
   }
 
-  getLoadRawTasks(refresh?: boolean | undefined) {
+  public getLoadRawTasks(refresh?: boolean | undefined) {
     return {
       exCharacters: this.loadJson<ExcelCharacterTable>(
         'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json',
@@ -229,7 +230,7 @@ export interface CharacterLevel {
 }
 
 export class Character implements ICharacter {
-  constructor(
+  public constructor(
     public readonly key: string,
     public readonly raw: ExcelCharacterTable.Character,
     private readonly dm: ArknightsDataManager,
@@ -241,28 +242,28 @@ export class Character implements ICharacter {
     }
   }
 
-  get name(): string {
+  public get name(): string {
     return this.raw.name
   }
 
-  get appellation(): string {
+  public get appellation(): string {
     return this.raw.appellation
   }
 
   private readonly patches: (readonly [string, ExcelCharacterTable.Character])[] = []
 
-  get avatar() {
+  public get avatar() {
     return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/avatar/${encodeURIComponent(
       this.key,
     )}.png`
   }
 
-  get rawSkills() {
+  public get rawSkills() {
     return [...(this.raw.skills || []), ...this.patches.flatMap((x) => x[1].skills)]
   }
 
   private _skills?: [ExcelCharacterTable.Skill, Skill][]
-  get skills() {
+  public get skills() {
     return (
       this._skills ||
       (this._skills = this.rawSkills
@@ -271,7 +272,7 @@ export class Character implements ICharacter {
     )
   }
 
-  get rawUniEquips() {
+  public get rawUniEquips() {
     return [
       ...(this.dm.raw.exUniEquips.charEquip[this.key] || []),
       ...this.patches.flatMap((x) => this.dm.raw.exUniEquips.charEquip[x[0]] || []),
@@ -279,7 +280,7 @@ export class Character implements ICharacter {
   }
 
   private _uniEquips?: UniEquip[]
-  get uniEquips() {
+  public get uniEquips() {
     return (this._uniEquips ||
       (this._uniEquips = (this.dm.raw.exUniEquips.charEquip[this.key] || [])
         .map((x) => this.dm.data.uniEquips[x])
@@ -288,7 +289,7 @@ export class Character implements ICharacter {
         )))!
   }
 
-  get rarity() {
+  public get rarity() {
     return {
       TIER_1: 0,
       TIER_2: 1,
@@ -305,19 +306,19 @@ export class Character implements ICharacter {
     }[this.raw.rarity]!
   }
 
-  get maxElite() {
+  public get maxElite() {
     return this.maxLevels.length - 1
   }
 
-  get maxLevels() {
+  public get maxLevels() {
     return this.dm.data.constants.maxLevel[this.rarity]
   }
 
-  get modUnlockLevel() {
+  public get modUnlockLevel() {
     return this.dm.data.constants.modUnlockLevel[this.rarity]
   }
 
-  get allSkillLvlup() {
+  public get allSkillLvlup() {
     if (this.raw?.allSkillLvlup) {
       return this.raw.allSkillLvlup
     }
@@ -336,13 +337,13 @@ export class Character implements ICharacter {
 }
 
 export class Skill {
-  constructor(
+  public constructor(
     public readonly key: string,
     public readonly raw: ExcelSkillTable.Skill,
     private readonly dm: ArknightsDataManager,
   ) {}
 
-  get icon() {
+  public get icon() {
     return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/skill/skill_icon_${encodeURIComponent(
       this.raw.iconId || this.raw.skillId,
     )}.png`
@@ -350,13 +351,13 @@ export class Skill {
 }
 
 export class UniEquip {
-  constructor(
+  public constructor(
     public readonly key: string,
     public readonly raw: ExcelUniEquipTable.UniEquip,
     private readonly dm: ArknightsDataManager,
   ) {}
 
-  get icon() {
+  public get icon() {
     return `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/equip/type/${encodeURIComponent(
       this.raw.typeIcon.toLowerCase(),
     )}.png`
@@ -368,32 +369,32 @@ function makeNumericSortable(x: string) {
 }
 
 export class Item implements IItem {
-  constructor(
+  public constructor(
     public readonly key: string,
     public readonly raw: ExcelItemTable.Item,
     protected readonly dm: ArknightsDataManager,
   ) {}
 
-  get sortId(): string {
+  public get sortId(): string {
     return makeNumericSortable(this.raw.sortId.toFixed(0))
   }
 
-  get name(): string {
+  public get name(): string {
     return this.raw.name
   }
 
-  get icon() {
+  public get icon() {
     return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/item/${encodeURIComponent(
       this.raw.iconId,
     )}.png`
   }
 
   private _valueAsAp?: [number | undefined]
-  get valueAsAp(): number | undefined {
+  public get valueAsAp(): number | undefined {
     return (this._valueAsAp || (this._valueAsAp = [this._generateValueAsAp()]))[0]
   }
 
-  get valueAsApString(): string {
+  public get valueAsApString(): string {
     if (this.valueAsAp == null) return ''
     return this.valueAsAp
       .toFixed(4)
@@ -425,13 +426,15 @@ export class Item implements IItem {
         return this.dm.data.items['3282'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
       default:
         if (this.dm.raw.exItems.expItems[this.key]) {
-          return this.dm.raw.yituliuValue.find((x) => x.itemId == this.key)?.itemValueAp! / 0.625
+          const ap = this.dm.raw.yituliuValue.find((x) => x.itemId === this.key)?.itemValueAp
+          if (ap == null) return NaN
+          return ap / 0.625
         }
     }
-    return this.dm.raw.yituliuValue.find((x) => x.itemId == this.key)?.itemValueAp
+    return this.dm.raw.yituliuValue.find((x) => x.itemId === this.key)?.itemValueAp
   }
 
-  get inventoryCategory(): string {
+  public get inventoryCategory(): string {
     if (Object.hasOwn(myCategories, this.key)) return (myCategories as any)[this.key]
     if (this.raw.rarity === 4) return Category.Rarity4
     if (this.raw.rarity === 3) return Category.Rarity3
@@ -443,7 +446,7 @@ export class Item implements IItem {
 }
 
 export class ExpItem extends Item {
-  constructor(key: string, dm: ArknightsDataManager) {
+  public constructor(key: string, dm: ArknightsDataManager) {
     super(
       key,
       {
@@ -472,9 +475,9 @@ export class ExpItem extends Item {
 }
 
 export class UnknownShitItem extends Item {
-  static itemType = '#__UNKNOWN_SHIT'
+  public static itemType = '#__UNKNOWN_SHIT'
 
-  constructor(key: string, dm: ArknightsDataManager) {
+  public constructor(key: string, dm: ArknightsDataManager) {
     super(
       key,
       {

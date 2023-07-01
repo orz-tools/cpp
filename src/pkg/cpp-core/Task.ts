@@ -93,7 +93,7 @@ export function generateTaskExtra<G extends IGame>(
 
         const formula = ga
           .getFormulas()
-          .find((x) => x.itemId == cost.itemId && intersection(forbiddenFormulaTags || [], x.tags || []).length === 0)
+          .find((x) => x.itemId === cost.itemId && intersection(forbiddenFormulaTags || [], x.tags || []).length === 0)
         if (formula) {
           if (cost.root) {
             costSynthesised[cost.source] += left
@@ -135,6 +135,7 @@ export function generateTaskExtra<G extends IGame>(
           }
           const smallestExpItemWithQuantity = expItems.reverse().find((x) => newQuantities[x[0]] > 0)
           if (exp === 0) {
+            //
           } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
             exp = 0
             valueFulfilled[cost.source] += (ga.getItem(smallestExpItemWithQuantity[0]).valueAsAp || 0) * 1

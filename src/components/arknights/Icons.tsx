@@ -1,11 +1,11 @@
+import { CharacterLevel, Skill, UniEquip } from '../../pkg/cpp-arknights'
+import { CachedImg } from '../Icons'
 import elite0 from './assets/elite0-small.png'
 import elite1 from './assets/elite1-small.png'
 import elite2 from './assets/elite2-small.png'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
 import m3 from './assets/m3.png'
-import { CharacterLevel, Skill, UniEquip } from '../../pkg/cpp-arknights'
-import { CachedImg } from '../Icons'
 
 export function SkillIcon({ skill, level, master }: { skill: Skill; level?: number; master?: number }) {
   const name = skill.raw.levels[0].name
@@ -31,7 +31,7 @@ export function UniEquipIcon({ uniEquip, level }: { uniEquip: UniEquip; level?: 
           `cpp-uniequip-shining-${uniEquip.raw.equipShiningColor}`,
         ].join(' ')}
         style={{
-          ...(level == 0
+          ...(level === 0
             ? {
                 filter: 'grayscale(1.0)',
               }
@@ -45,7 +45,7 @@ export function UniEquipIcon({ uniEquip, level }: { uniEquip: UniEquip; level?: 
           alt={name}
           title={name}
           style={{
-            ...(level == 0
+            ...(level === 0
               ? {
                   opacity: 0.5,
                 }
@@ -85,7 +85,7 @@ export function LevelTarget2({ source, target }: { source: CharacterLevel; targe
           className="target"
           style={{
             backgroundColor: 'black',
-            opacity: target.elite == source.elite && target.level == source.level ? 0 : 1,
+            opacity: target.elite === source.elite && target.level === source.level ? 0 : 1,
           }}
         >
           <img src={[elite0, elite1, elite2][target.elite]} />

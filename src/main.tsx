@@ -2,14 +2,14 @@ import { FocusStyleManager } from '@blueprintjs/core'
 import ReactDOM from 'react-dom/client'
 import { Home } from './components/Home'
 import { runCpp } from './entry'
-import { formatProfileName } from './profiles'
 import { GameName, gameAdapterLoaders, gameComponentLoaders } from './games'
+import { formatProfileName } from './profiles'
 
 FocusStyleManager.onlyShowFocusOnTabs()
 
 async function runApp() {
   const pathName = location.pathname
-  if (pathName[0] != '/') throw new Error('location pathname not started with /')
+  if (pathName[0] !== '/') throw new Error('location pathname not started with /')
 
   const parts = pathName.split('/')
   if (parts[0]) throw new Error('location parts 0 invalid')

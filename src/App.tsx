@@ -1,8 +1,9 @@
 import { Alignment, Button, Classes, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import { Popover2 } from '@blueprintjs/popover2'
 import { useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, useEffect, useMemo, useState } from 'react'
 import './App.css'
-import { Cpp, useAtoms, useCpp, useGameAdapter } from './Cpp'
+import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, StageButton } from './components/ConfigUi'
@@ -13,7 +14,6 @@ import { SynthesisList } from './components/SynthesisList'
 import { TaskList } from './components/TaskList'
 import { ValueOptionButton } from './components/Value'
 import { useRequest } from './hooks/useRequest'
-import { Popover2 } from '@blueprintjs/popover2'
 import { formatProfileName, getProfiles } from './profiles'
 
 function UndoButtons() {
@@ -210,7 +210,7 @@ function SuperAppWrapper() {
         setTicker((x) => x + 1)
       }
     }, 100)
-    return () => void (timer && clearTimeout(timer!))
+    return () => void (timer && clearTimeout(timer))
   }, [dm])
 
   if (dm.error) throw dm.error
@@ -236,20 +236,20 @@ export function AppWrapper() {
 }
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error?: Error }> {
-  constructor(props: { children: React.ReactNode }) {
+  public constructor(props: { children: React.ReactNode }) {
     super(props)
     this.state = { hasError: false }
   }
 
-  static getDerivedStateFromError(error: Error) {
+  public static getDerivedStateFromError(error: Error) {
     return { hasError: true, error: error }
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     console.error('error occurred!', error, errorInfo)
   }
 
-  render() {
+  public render() {
     if (this.state.hasError) {
       return (
         <>

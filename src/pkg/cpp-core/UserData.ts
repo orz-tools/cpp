@@ -15,11 +15,11 @@ function withDebugLabel<T extends Atom<any>>(t: T, label?: string): T {
 }
 
 export class UserDataAtomHolder<G extends IGame> {
-  baseAtom!: PrimitiveAtom<UserData<G> | undefined>
-  forbiddenFormulaTagsAtom!: PrimitiveAtom<string[]>
-  atoms!: ReturnType<typeof buildAtoms<G>>
+  public baseAtom!: PrimitiveAtom<UserData<G> | undefined>
+  public forbiddenFormulaTagsAtom!: PrimitiveAtom<string[]>
+  public atoms!: ReturnType<typeof buildAtoms<G>>
 
-  constructor(public readonly gameAdapter: IGameAdapter<G>) {}
+  public constructor(public readonly gameAdapter: IGameAdapter<G>) {}
 
   public setAtom(baseAtom: PrimitiveAtom<UserData<G> | undefined>, forbiddenFormulaTagsAtom: PrimitiveAtom<string[]>) {
     this.baseAtom = baseAtom
@@ -45,7 +45,7 @@ function buildAtoms<G extends IGame>(
         return value
       },
       (get, set, value) =>
-        set(baseAtom, (v) => {
+        set(baseAtom, () => {
           if (typeof value === 'function') return value(get(rootAtom))
           return value
         }),
@@ -89,9 +89,11 @@ function buildAtoms<G extends IGame>(
         return withDebugLabel(
           atom(
             (get) => {
-              return sum(Object.entries(thisExpItem.value).map((x) => (get(itemQuantity(x[0])) as number) * x[1]))
+              return sum(Object.entries(thisExpItem.value).map((x) => get(itemQuantity(x[0])) * x[1]))
             },
-            (get, set, value: SetStateAction<number>) => {},
+            () => {
+              //
+            },
           ),
           `itemQuantity(${itemId})`,
         )
@@ -125,7 +127,10 @@ function buildAtoms<G extends IGame>(
                 ) || ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()) as Draft<G['characterStatus']>
               })
               set(dataAtom, 'modify', (data) => {
-                data.goal[charId] = produce(data.goal[charId] || data.current[charId], () => {}) || data.current[charId]
+                data.goal[charId] =
+                  produce(data.goal[charId] || data.current[charId], () => {
+                    //
+                  }) || data.current[charId]
               })
               set(dataAtom, 'modify', (data) => {
                 doRewrite(charId, data)
@@ -148,7 +153,9 @@ function buildAtoms<G extends IGame>(
               set(dataAtom, 'modify', (data) => {
                 data.current[charId] = (produce(
                   data.current[charId] || ga.getUserDataAdapter().getFrozenEmptyCharacterStatus(),
-                  () => {},
+                  () => {
+                    //
+                  },
                 ) || ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()) as Draft<G['characterStatus']>
               })
               set(dataAtom, 'modify', (data) => {
@@ -168,7 +175,7 @@ function buildAtoms<G extends IGame>(
   const characterFinishedStatus = atomFamily(
     (charId: string) =>
       withDebugLabel(
-        atom((get) => {
+        atom(() => {
           return ga.getUserDataAdapter().finishedCharacterStatus(charId)
         }),
         `characterFinishedStatus(${charId})`,
@@ -231,7 +238,7 @@ function buildAtoms<G extends IGame>(
   )
 
   const allCharacterIds = withDebugLabel(
-    atom((get) => {
+    atom(() => {
       return ga.getUserDataAdapter().getAllCharacterIds()
     }),
     `allCharacterIds`,
@@ -393,7 +400,7 @@ export function generateIndirects<G extends IGame>(
 
         const formula = ga
           .getFormulas()
-          .find((x) => x.itemId == itemId && intersection(forbiddenFormulaTags || [], x.tags || []).length === 0)
+          .find((x) => x.itemId === itemId && intersection(forbiddenFormulaTags || [], x.tags || []).length === 0)
         if (!formula) {
           unsatisfiedRequirements[itemId] = (unsatisfiedRequirements[itemId] || 0) + diff
           continue

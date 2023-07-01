@@ -1,9 +1,9 @@
 import deepEqual from 'deep-equal'
+import { Draft } from 'immer'
 import { sum } from 'ramda'
 import { IUserDataAdapter, Task } from '../cpp-basic'
+import { Character, Re1999DataManager } from './DataManager'
 import { RE_ITEM_EXP, RE_ITEM_GOLD, Re1999, Re1999CharacterStatus, Re1999CharacterTaskType } from './types'
-import { Re1999DataManager, Character } from './DataManager'
-import { Draft } from 'immer'
 
 const emptyCharacterStatus = Object.freeze<Re1999CharacterStatus>({
   insight: 0,
@@ -12,9 +12,9 @@ const emptyCharacterStatus = Object.freeze<Re1999CharacterStatus>({
 })
 
 export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
-  constructor(public dataManager: Re1999DataManager) {}
+  public constructor(public dataManager: Re1999DataManager) {}
 
-  compareCharacter(a: Character, b: Character, stA: Re1999CharacterStatus, stB: Re1999CharacterStatus): number {
+  public compareCharacter(a: Character, b: Character, stA: Re1999CharacterStatus, stB: Re1999CharacterStatus): number {
     if (a.rarity > b.rarity) return -1
     if (a.rarity < b.rarity) return 1
 
@@ -27,15 +27,15 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
     return 0
   }
 
-  isAbsentCharacter(c: Character, st: Re1999CharacterStatus) {
-    return st.level == 0
+  public isAbsentCharacter(c: Character, st: Re1999CharacterStatus) {
+    return st.level === 0
   }
 
-  isFavCharacter(c: Character, st: Re1999CharacterStatus) {
+  public isFavCharacter(c: Character, st: Re1999CharacterStatus) {
     return st.insight < 3
   }
 
-  getAllCharacterIds(): string[] {
+  public getAllCharacterIds(): string[] {
     return (
       Object.entries(this.dataManager.data.characters)
         // .filter(([, v]) => !!v.raw.isOnline)
@@ -43,16 +43,16 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
     )
   }
 
-  getFrozenEmptyCharacterStatus(): Re1999CharacterStatus {
+  public getFrozenEmptyCharacterStatus(): Re1999CharacterStatus {
     return emptyCharacterStatus
   }
 
-  isManuallyTask(task: Task<Re1999>) {
+  public isManuallyTask(task: Task<Re1999>) {
     return task.type._ === 'join'
   }
 
-  generateTasksForCharacter(charId: string, current: Re1999CharacterStatus, goal: Re1999CharacterStatus) {
-    if (current == goal) return []
+  public generateTasksForCharacter(charId: string, current: Re1999CharacterStatus, goal: Re1999CharacterStatus) {
+    if (current === goal) return []
     const dataManager = this.dataManager
     const character = dataManager.data.characters[charId]
 
@@ -144,8 +144,8 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
     return tasks
   }
 
-  formatTaskAsString(type: Re1999CharacterTaskType, charId: string) {
-    const character = this.dataManager.data.characters[charId]
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public formatTaskAsString(type: Re1999CharacterTaskType, charId: string) {
     switch (type._) {
       case 'join':
         return `招募`
@@ -161,7 +161,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
     }
   }
 
-  completeTask(type: Re1999CharacterTaskType, charId: string, d: Draft<Re1999CharacterStatus>) {
+  public completeTask(type: Re1999CharacterTaskType, charId: string, d: Draft<Re1999CharacterStatus>) {
     switch (type._) {
       case 'insight':
         d.insight = type.insight
@@ -182,7 +182,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
     }
   }
 
-  finishedCharacterStatus(charId: string) {
+  public finishedCharacterStatus(charId: string) {
     const char = this.dataManager.data.characters[charId]
     return {
       insight: char.maxInsight,
@@ -191,7 +191,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
     }
   }
 
-  rewriteCharacter(charId: string, status: Draft<Re1999CharacterStatus>) {
+  public rewriteCharacter(charId: string, status: Draft<Re1999CharacterStatus>) {
     const char = this.dataManager.data.characters[charId]
     if (status.insight < 0 || !isFinite(status.insight)) status.insight = 0
     if (status.level < 0 || !isFinite(status.level)) status.level = 0
@@ -221,9 +221,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
       status.resonate = char.maxResonateAtInsight(status.insight)
   }
 
-  rewriteGoal(charId: string, current: Draft<Re1999CharacterStatus>, goal: Draft<Re1999CharacterStatus>) {
-    const char = this.dataManager.data.characters[charId]
-
+  public rewriteGoal(charId: string, current: Draft<Re1999CharacterStatus>, goal: Draft<Re1999CharacterStatus>) {
     if (goal.insight < current.insight) {
       goal.insight = current.insight
       goal.level = current.level
@@ -238,7 +236,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
     }
   }
 
-  rewriteCharacters(
+  public rewriteCharacters(
     charId: string,
     current: Draft<Re1999CharacterStatus> | undefined,
     goal: Draft<Re1999CharacterStatus> | undefined,

@@ -38,7 +38,7 @@ export class Cpp<G extends IGame> {
   public atoms: UserDataAtomHolder<G>
   public preferenceAtoms: ReturnType<Cpp<G>['createPreferenceAtoms']>
 
-  createPreferenceAtoms() {
+  public createPreferenceAtoms() {
     const preferenceStorageAtom = atomWithStorage<Preference>(this.storagePrefix + 'preference', undefined as any)
     const preferenceAtom: WritableAtom<Preference, [Preference | SetStateAction<Preference>], void> = atom<
       Preference,

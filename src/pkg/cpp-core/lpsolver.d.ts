@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/explicit-member-accessibility */
 declare module 'javascript-lp-solver' {
   /**
    * Specifies how to constrain a variable in the model.

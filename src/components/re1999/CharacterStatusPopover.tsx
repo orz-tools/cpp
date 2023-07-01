@@ -5,13 +5,13 @@ import { useAtoms } from '../../Cpp'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import { Character, Re1999 } from '../../pkg/cpp-re1999'
 
-const setStatusAtomTypeHolder = () =>
+const useTypeHolderForSetStatusAtom = () =>
   useSetAtom(null as any as ReturnType<UserDataAtomHolder<Re1999>['atoms']['goalCharacter']>)
 
 const EditorContext = React.createContext<{
   status: Re1999['characterStatus']
   currentStatus?: Re1999['characterStatus']
-  setStatus: ReturnType<typeof setStatusAtomTypeHolder>
+  setStatus: ReturnType<typeof useTypeHolderForSetStatusAtom>
   character: Character
 }>(undefined as any)
 
@@ -20,11 +20,11 @@ export function InsightLevelInput({ insight }: { insight: number }) {
   const [input, setInput] = useState(String(status.level))
   useEffect(() => setInput(String(status.level)), [status.level])
 
-  if (status.insight != insight) return <></>
+  if (status.insight !== insight) return <></>
   return (
     <NumericInput
       value={input}
-      min={currentStatus ? (currentStatus.insight == insight ? currentStatus.level : 1) : 1}
+      min={currentStatus ? (currentStatus.insight === insight ? currentStatus.level : 1) : 1}
       max={character.maxLevels[insight]}
       onValueChange={(_, valueAsString) => setInput(valueAsString)}
       onBlur={() => {
@@ -46,7 +46,7 @@ export function InsightLevelInput({ insight }: { insight: number }) {
 
 export function InsightLevelButton({ insight, level, color }: { insight: number; level: number; color?: string }) {
   const { status, setStatus, currentStatus } = useContext(EditorContext)
-  const already = status.insight > insight || (status.insight == insight && status.level >= level)
+  const already = status.insight > insight || (status.insight === insight && status.level >= level)
   return (
     <Button
       onClick={() =>
@@ -57,7 +57,7 @@ export function InsightLevelButton({ insight, level, color }: { insight: number;
       }
       disabled={
         currentStatus
-          ? currentStatus.insight > insight || (currentStatus.insight == insight && currentStatus.level > level)
+          ? currentStatus.insight > insight || (currentStatus.insight === insight && currentStatus.level > level)
           : false
       }
       intent={already ? Intent.PRIMARY : Intent.NONE}
@@ -69,13 +69,13 @@ export function InsightLevelButton({ insight, level, color }: { insight: number;
 }
 
 export function CharacterStatusInsightLevelSection() {
-  const { status, setStatus, currentStatus, character } = useContext(EditorContext)
+  const { currentStatus, character } = useContext(EditorContext)
   return (
     <>
       {character.maxInsight >= 0 &&
       !(
         currentStatus &&
-        (currentStatus.insight > 0 || (currentStatus.insight == 0 && currentStatus.level > character.maxLevels[0]))
+        (currentStatus.insight > 0 || (currentStatus.insight === 0 && currentStatus.level > character.maxLevels[0]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -95,7 +95,7 @@ export function CharacterStatusInsightLevelSection() {
       {character.maxInsight >= 1 &&
       !(
         currentStatus &&
-        (currentStatus.insight > 1 || (currentStatus.insight == 1 && currentStatus.level > character.maxLevels[1]))
+        (currentStatus.insight > 1 || (currentStatus.insight === 1 && currentStatus.level > character.maxLevels[1]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -115,7 +115,7 @@ export function CharacterStatusInsightLevelSection() {
       {character.maxInsight >= 2 &&
       !(
         currentStatus &&
-        (currentStatus.insight > 2 || (currentStatus.insight == 2 && currentStatus.level > character.maxLevels[2]))
+        (currentStatus.insight > 2 || (currentStatus.insight === 2 && currentStatus.level > character.maxLevels[2]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -135,7 +135,7 @@ export function CharacterStatusInsightLevelSection() {
       {character.maxInsight >= 3 &&
       !(
         currentStatus &&
-        (currentStatus.insight > 3 || (currentStatus.insight == 3 && currentStatus.level > character.maxLevels[3]))
+        (currentStatus.insight > 3 || (currentStatus.insight === 3 && currentStatus.level > character.maxLevels[3]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -181,7 +181,7 @@ export function ResonateButton({ level }: { level: number }) {
 }
 
 export function CharacterStatusResonateSection() {
-  const { status, setStatus, currentStatus, character } = useContext(EditorContext)
+  const { currentStatus, character } = useContext(EditorContext)
   if ((currentStatus?.resonate || 0) >= 15) return <></>
 
   return (

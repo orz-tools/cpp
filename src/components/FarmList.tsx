@@ -1,7 +1,8 @@
 import { Alignment, Button, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { sortBy } from 'ramda'
-import { useCallback, useEffect } from 'react'
-import { Cpp, useAtoms, useCpp, useGameAdapter, useStore } from '../Cpp'
+import { useEffect } from 'react'
+import useEvent from 'react-use-event-hook'
+import { Cpp, useCpp, useGameAdapter } from '../Cpp'
 import { useRequest } from '../hooks/useRequest'
 import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
@@ -49,8 +50,8 @@ export async function plan(cpp: Cpp<IGame>, finished: boolean) {
 export function FarmList() {
   const cpp = useCpp()
   const { loading, response, send, error } = useRequest(plan)
-  const refresh = useCallback(() => send(cpp, false), [cpp, send])
-  const refreshAll = useCallback(() => send(cpp, true), [cpp, send])
+  const refresh = useEvent(() => send(cpp, false))
+  const refreshAll = useEvent(() => send(cpp, true))
   useEffect(() => {
     if (error) {
       console.log(error)
@@ -60,7 +61,7 @@ export function FarmList() {
   useEffect(() => {
     const i = setTimeout(refresh, 1000)
     return () => clearTimeout(i)
-  }, [])
+  }, [refresh])
 
   return (
     <>
@@ -106,7 +107,7 @@ export function StageLine({ run }: { run: StageRun }) {
             </span>
           </>
         }
-      ></MenuItem>
+      />
       {stageInfo.sortedDropInfo.map(([k, v, z]) => {
         const item = ga.getItem(k)
         const value = Number.isFinite(z) ? v / z : v

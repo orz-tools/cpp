@@ -12,7 +12,7 @@ import {
 import { Popover2 } from '@blueprintjs/popover2'
 import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { groupBy, intersection, map, pick, sum, uniq } from 'ramda'
+import { groupBy, intersection, map, sum, uniq } from 'ramda'
 import React, { SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useAtoms, useGameAdapter } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
@@ -55,7 +55,7 @@ export function ItemSynthesisPopover<G extends IGame>({ item }: { item: IItem })
   const atoms = useAtoms<G>()
   const quantities = useAtomValue(atoms.itemQuantities)
   const setData = useSetAtom(atoms.dataAtom)
-  const formula = useMemo(() => ga.getFormulas().find((x) => x.itemId == item.key), [ga, item.key])
+  const formula = useMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
   const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
   const [times, setTimes] = useState(1)
 
@@ -157,7 +157,7 @@ export function ItemSynthesisPopover<G extends IGame>({ item }: { item: IItem })
 
 export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem }) {
   const ga = useGameAdapter<G>()
-  const formula = useMemo(() => ga.getFormulas().find((x) => x.itemId == item.key), [ga, item.key])
+  const formula = useMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
   const atoms = useAtoms<G>()
   const quantities = useAtomValue(atoms.itemQuantities)
   const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
@@ -172,21 +172,21 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
     ? Math.max(0, Math.min(...formula.costs.map((x) => Math.floor((quantities[x.itemId] || 0) / x.quantity)))) *
       formula.quantity
     : 0
-  const canSyn = formula && intersection(forbiddenFormulaTags, formula.tags).length == 0
+  const canSyn = formula && intersection(forbiddenFormulaTags, formula.tags).length === 0
   const synable = canSyn ? synableReal : 0
 
   return (
     <>
       <div
         className="cpp-goal-counter"
-        style={{ width: '6em', visibility: !formula || synable == 0 ? 'hidden' : undefined }}
+        style={{ width: '6em', visibility: !formula || synable === 0 ? 'hidden' : undefined }}
         data-label="合成后"
       >
         <div
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+              itemListParam.mode === 'all' || itemListParam.mode === 'goal'
                 ? goal + goalIndirects - quantity - Math.min(synable, goal + goalIndirects) > 0
                   ? 1
                   : 0.4
@@ -199,7 +199,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+              itemListParam.mode === 'all' || itemListParam.mode === 'finished'
                 ? finished + finishedIndirects - quantity - Math.min(synable, finished + finishedIndirects) > 0
                   ? 1
                   : 0.4
@@ -221,7 +221,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
               style={{
                 textAlign: 'right',
                 opacity:
-                  itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+                  itemListParam.mode === 'all' || itemListParam.mode === 'goal'
                     ? canSyn && Math.min(synableReal, goal + goalIndirects) > 0
                       ? 1
                       : 0.4
@@ -234,7 +234,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
               style={{
                 textAlign: 'right',
                 opacity:
-                  itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+                  itemListParam.mode === 'all' || itemListParam.mode === 'finished'
                     ? canSyn && Math.min(synableReal, finished + finishedIndirects) > 0
                       ? 1
                       : 0.4
@@ -251,7 +251,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+              itemListParam.mode === 'all' || itemListParam.mode === 'goal'
                 ? goal + goalIndirects - quantity > 0
                   ? 1
                   : 0.4
@@ -264,7 +264,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+              itemListParam.mode === 'all' || itemListParam.mode === 'finished'
                 ? finished + finishedIndirects - quantity > 0
                   ? 1
                   : 0.4
@@ -279,7 +279,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+              itemListParam.mode === 'all' || itemListParam.mode === 'goal'
                 ? goal > 0 && goal - quantity > 0
                   ? 1
                   : 0.4
@@ -292,7 +292,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+              itemListParam.mode === 'all' || itemListParam.mode === 'finished'
                 ? finished > 0 && finished - quantity > 0
                   ? 1
                   : 0.4
@@ -307,7 +307,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode == 'all' || itemListParam.mode === 'goal'
+              itemListParam.mode === 'all' || itemListParam.mode === 'goal'
                 ? goalIndirects > 0 && goal + goalIndirects - quantity > 0
                   ? 1
                   : 0.4
@@ -320,7 +320,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode == 'all' || itemListParam.mode === 'finished'
+              itemListParam.mode === 'all' || itemListParam.mode === 'finished'
                 ? finishedIndirects > 0 && finished + finishedIndirects - quantity > 0
                   ? 1
                   : 0.4
@@ -465,7 +465,7 @@ const itemListParamAtom: WritableAtom<ItemListParam, [ItemListParam | SetStateAc
 >(
   (get) => {
     const value = Object.assign({}, get(itemListParamStorageAtom) || {})
-    if (!value.mode) value.mode == 'all'
+    if (!value.mode) value.mode === 'all'
     if (value.hideCompleted == null) value.hideCompleted = false
     return value
   },
