@@ -185,7 +185,10 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
         tags: [],
         apCost: i.apCost / 360000,
       }
-      if (this.raw.exItems.items[i.itemId].rarity === 2 && i.formulaType === 'F_EVOLVE') {
+      if (
+        (this.raw.exItems.items[i.itemId].rarity === 2 || this.raw.exItems.items[i.itemId].rarity === 'TIER_3') &&
+        i.formulaType === 'F_EVOLVE'
+      ) {
         formula.tags.push(ArknightsFormulaTag.WorkshopRarity2)
       }
       formulas.push(formula)
@@ -434,13 +437,30 @@ export class Item implements IItem {
     return this.dm.raw.yituliuValue.find((x) => x.itemId === this.key)?.itemValueAp
   }
 
+  public get rarity() {
+    return {
+      TIER_1: 0,
+      TIER_2: 1,
+      TIER_3: 2,
+      TIER_4: 3,
+      TIER_5: 4,
+      TIER_6: 5,
+      0: 0,
+      1: 1,
+      2: 2,
+      3: 3,
+      4: 4,
+      5: 5,
+    }[this.raw.rarity]!
+  }
+
   public get inventoryCategory(): string {
     if (Object.hasOwn(myCategories, this.key)) return (myCategories as any)[this.key]
-    if (this.raw.rarity === 4) return Category.Rarity4
-    if (this.raw.rarity === 3) return Category.Rarity3
-    if (this.raw.rarity === 2) return Category.Rarity2
-    if (this.raw.rarity === 1) return Category.Rarity1
-    if (this.raw.rarity === 0) return Category.Rarity0
+    if (this.rarity === 4) return Category.Rarity4
+    if (this.rarity === 3) return Category.Rarity3
+    if (this.rarity === 2) return Category.Rarity2
+    if (this.rarity === 1) return Category.Rarity1
+    if (this.rarity === 0) return Category.Rarity0
     return Category.Unknown
   }
 }

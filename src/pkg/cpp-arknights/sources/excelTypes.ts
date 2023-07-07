@@ -382,7 +382,7 @@ export namespace ExcelItemTable {
     itemId: string
     name: string
     description: null | string
-    rarity: number
+    rarity: number | string
     iconId: string
     overrideBkg: null
     stackIconId: null | string
