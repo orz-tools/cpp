@@ -125,11 +125,12 @@ export function StageLine({ run }: { run: StageRun }) {
                 {`×${run.count}`}
               </span>
             </div>
-            {Number.isFinite(samples) ? (
-              <div style={{ marginTop: '0.25em' }}>
+            <div style={{ marginTop: '0.5em' }}>
+              <span style={{ display: 'inline-flex' }}>
+                <ValueTag value={run.stage.ap} minimal={true} />
                 {Number.isFinite(samples) ? <SampleTag minimal sample={samples} /> : ''}
-              </div>
-            ) : null}
+              </span>
+            </div>
           </>
         }
       />

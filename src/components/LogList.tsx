@@ -5,6 +5,7 @@ import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
 const logs = [
+  { date: '2023-07-09', type: 'optimize', desc: '刷本规划中增加单次理智和样本数显示' },
   { date: '2023-07-09', game: [GameName.Arknights], type: 'fix', desc: '修复 Firefox 下仓库展示' },
   { date: '2023-07-09', game: [GameName.Re1999], type: 'optimize', desc: '优化货币图标' },
   { date: '2023-07-07', game: [GameName.Arknights], type: 'fix', desc: '适配新解包物品稀有度格式' },
