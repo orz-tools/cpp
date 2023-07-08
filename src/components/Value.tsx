@@ -113,6 +113,32 @@ export function ValueTag({
   )
 }
 
+export function SampleTag({
+  sample,
+  minimal,
+  style,
+}: {
+  sample: number | null | undefined
+  minimal?: boolean
+  style?: React.CSSProperties
+}) {
+  return Number.isFinite(sample) ? (
+    <Tag
+      minimal={minimal}
+      round={true}
+      icon={<Icon color={minimal ? undefined : 'white'} icon={'lab-test'} />}
+      style={{
+        paddingLeft: 4,
+        paddingRight: 4,
+        ...style,
+      }}
+      title={'样本数'}
+    >
+      {sample}
+    </Tag>
+  ) : null
+}
+
 export function ValueTagProgressBar({
   value,
   maxValue,

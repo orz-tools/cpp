@@ -326,7 +326,7 @@ export class CurrencyItem implements IItem {
   }
 
   public get icon() {
-    return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Currency/${this.raw.icon}.png`
+    return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/CurrencyItem/${this.raw.icon}.png`
   }
 
   private _valueAsAp?: [number | undefined]

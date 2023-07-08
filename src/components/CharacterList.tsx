@@ -293,6 +293,7 @@ function QuerySearchBox() {
       <div className="bp4-input-group {{.modifier}}">
         <span className="bp4-icon bp4-icon-search"></span>
         <input
+          style={{ width: '200px' }}
           className="bp4-input"
           type="search"
           dir="auto"

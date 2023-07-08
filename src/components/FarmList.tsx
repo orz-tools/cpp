@@ -6,7 +6,7 @@ import { Cpp, useCpp, useGameAdapter } from '../Cpp'
 import { useRequest } from '../hooks/useRequest'
 import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
-import { ValueTag } from './Value'
+import { SampleTag, ValueTag } from './Value'
 
 interface StageRun {
   stageId: string
@@ -101,6 +101,12 @@ export function FarmList() {
 export function StageLine({ run }: { run: StageRun }) {
   const ga = useGameAdapter()
   const stageInfo = ga.getStageInfos()[run.stageId]
+  const samples = Math.max(
+    -Infinity,
+    ...Object.values(run.stage.dropInfo)
+      .map((x) => x[1])
+      .filter((x) => Number.isFinite(x)),
+  )
 
   return (
     <>
@@ -108,15 +114,22 @@ export function StageLine({ run }: { run: StageRun }) {
         title={run.stageId}
         text={
           <>
-            <span style={{ float: 'right', display: 'inline-flex' }}>
-              <ValueTag value={run.apCost} minimal={true} />
-            </span>
-            <span style={{ display: 'inline-flex' }}>
-              <Tag>
-                <code style={{ fontSize: '110%' }}>{run.stage.code}</code>
-              </Tag>
-              {`×${run.count}`}
-            </span>
+            <div>
+              <span style={{ float: 'right', display: 'inline-flex' }}>
+                <ValueTag value={run.apCost} minimal={true} />
+              </span>
+              <span style={{ display: 'inline-flex' }}>
+                <Tag>
+                  <code style={{ fontSize: '110%' }}>{run.stage.code}</code>
+                </Tag>
+                {`×${run.count}`}
+              </span>
+            </div>
+            {Number.isFinite(samples) ? (
+              <div style={{ marginTop: '0.25em' }}>
+                {Number.isFinite(samples) ? <SampleTag minimal sample={samples} /> : ''}
+              </div>
+            ) : null}
           </>
         }
       />

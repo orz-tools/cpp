@@ -1,9 +1,10 @@
-import { Button, Card, Checkbox, Menu, MenuItem } from '@blueprintjs/core'
+import { Button, Card, Checkbox, Menu, MenuItem, Tag } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import { useAtom, useAtomValue } from 'jotai'
 import { groupBy, sortBy, without } from 'ramda'
 import React from 'react'
 import { useAtoms, useCpp, useGameAdapter } from '../Cpp'
+import { SampleTag } from './Value'
 
 export function ForbiddenFormulaTag({ tag, text }: { tag: string; text: React.ReactNode }) {
   const atoms = useAtoms()
@@ -51,6 +52,12 @@ export function ForbiddenStageIdTag({ stageId }: { stageId: string }) {
   const stage = stageInfo[stageId]
   const cpp = useCpp()
   const [ids, setIds] = useAtom(cpp.preferenceAtoms.forbiddenStageIdsAtom)
+  const samples = Math.max(
+    -Infinity,
+    ...Object.values(stage.dropInfo)
+      .map((x) => x[1])
+      .filter((x) => Number.isFinite(x)),
+  )
 
   return (
     <Checkbox
@@ -60,6 +67,9 @@ export function ForbiddenStageIdTag({ stageId }: { stageId: string }) {
       labelElement={
         <>
           <code title={`${stageId}: ${stage.name}`}>{stage.code}</code>
+          {Number.isFinite(samples) ? (
+            <SampleTag minimal sample={samples} style={{ marginLeft: '0.25em', verticalAlign: 'top' }} />
+          ) : null}
         </>
       }
       inline={true}
@@ -102,9 +112,8 @@ export function StagePopover() {
         return (
           <React.Fragment key={k}>
             <Card style={{ padding: 15 }}>
-              <h4 style={{ margin: 0, padding: 0 }}>
+              <h4 style={{ margin: 0, padding: 0 }} title={k}>
                 {zoneName}
-                <span style={{ opacity: 0.5, fontWeight: 'normal' }}> ({k})</span>
               </h4>
               {stages.map((x) => {
                 return <ForbiddenStageIdTag stageId={x} key={x} />

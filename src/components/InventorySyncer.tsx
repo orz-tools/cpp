@@ -7,6 +7,7 @@ import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, IItem } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
+import useResizeObserver from 'use-resize-observer'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
@@ -74,6 +75,10 @@ export function ItemQuantityEditor<G extends IGame>({
   )
 }
 
+const noop = function <T>(t: T): T {
+  return t
+}
+
 export function ItemSimulatedView({
   page,
   itemQuantities,
@@ -88,6 +93,8 @@ export function ItemSimulatedView({
   const { itemSimulatedViewConfig } = useComponents()
   const ga = useGameAdapter()
   const items = useMemo(() => ga.getInventoryItems(page), [ga, page])
+  const itemRef = useRef<HTMLDivElement | null>(null)
+  useResizeObserver
   const config = itemSimulatedViewConfig || { limit: 3, horizontal: true, viewMaxSize: 500 }
   const [focus, setFocus] = useState(undefined as string | undefined)
   const createNewItem = useEvent((itemId: string) => {
@@ -95,6 +102,7 @@ export function ItemSimulatedView({
     setItemQuantity(itemId, 1)
     setFocus(itemId)
   })
+  const { height } = useResizeObserver({ ref: itemRef, round: noop })
 
   const availableItems = useMemo(() => items.filter((x) => itemQuantities[x.key] > 0), [items, itemQuantities])
   const count = (showAll ? items : availableItems).length
@@ -156,7 +164,9 @@ export function ItemSimulatedView({
           <div
             className="cpp-isv-item"
             key={item.key}
+            ref={i === 0 ? itemRef : undefined}
             style={{
+              ...(config.horizontal && height !== undefined ? { width: height } : {}),
               [config.horizontal ? 'gridRowStart' : 'gridColumnStart']: x * 2 + 2,
               [config.horizontal ? 'gridRowEnd' : 'gridColumnEnd']: x * 2 + 3,
               [config.horizontal ? 'gridColumnStart' : 'gridRowStart']: y * 2 + 2,
