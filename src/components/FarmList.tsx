@@ -86,7 +86,9 @@ export function FarmList() {
             onClick={refresh}
           />
         </Navbar.Group>
-        <Navbar.Group align={Alignment.LEFT}>{response ? <ValueTag value={response.ap} /> : '刷什么'}</Navbar.Group>
+        <Navbar.Group align={Alignment.LEFT}>
+          {response ? <ValueTag value={response.ap} intent={'primary'} /> : '刷什么'}
+        </Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
         {response?.stageRuns.map((run) => (
@@ -116,7 +118,7 @@ export function StageLine({ run }: { run: StageRun }) {
           <>
             <div>
               <span style={{ float: 'right', display: 'inline-flex' }}>
-                <ValueTag value={run.apCost} minimal={true} />
+                <ValueTag value={run.apCost} minimal={true} intent={'primary'} />
               </span>
               <span style={{ display: 'inline-flex' }}>
                 <Tag>
@@ -127,7 +129,7 @@ export function StageLine({ run }: { run: StageRun }) {
             </div>
             <div style={{ marginTop: '0.5em' }}>
               <span style={{ display: 'inline-flex' }}>
-                <ValueTag value={run.stage.ap} minimal={true} />
+                <ValueTag value={run.stage.ap} minimal={true} intent={'primary'} />
                 {Number.isFinite(samples) ? <SampleTag minimal sample={samples} /> : ''}
               </span>
             </div>

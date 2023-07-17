@@ -72,6 +72,11 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
           sourceUrl: string
           levelReport: Record<string, { count: number; cost: number; drops: Record<string, number> }>
         })(),
+      values: (async () =>
+        (await import('./data/values.json')).default as {
+          updatedAt: string
+          values: Record<string, string>
+        })(),
     }
   }
 
@@ -274,7 +279,27 @@ export class Item implements IItem {
   }
 
   protected _generateValueAsAp() {
-    return undefined
+    switch (this.key) {
+      case '115011':
+      case '115021':
+      case '115031':
+      case '115041':
+        return 18 / 2
+      case '115012':
+      case '115022':
+      case '115032':
+      case '115042':
+        return 24 / 2
+      case '115013':
+      case '115023':
+      case '115033':
+      case '115043':
+        return 30 / 2
+    }
+    const m = this.dm.raw.values.values
+    const k = this.raw.id.toFixed(0)
+    if (!Object.hasOwnProperty.call(m, k)) return undefined
+    return parseFloat(m[k])
   }
 
   public get inventoryCategory(): string {
@@ -343,6 +368,12 @@ export class CurrencyItem implements IItem {
   }
 
   protected _generateValueAsAp() {
+    switch (this.key) {
+      case '2#5':
+        return 2700 / 1350000
+      case '2#3':
+        return 3150 / 1134000
+    }
     return undefined
   }
 

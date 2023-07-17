@@ -1,4 +1,4 @@
-import { Button, Icon, IconName, MaybeElement, Menu, MenuItem, Tag } from '@blueprintjs/core'
+import { Button, Icon, IconName, Intent, MaybeElement, Menu, MenuItem, Tag } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import { useAtom, useAtomValue } from 'jotai'
 import React from 'react'
@@ -86,11 +86,13 @@ export function ValueTag({
   minimal,
   single,
   style,
+  intent,
 }: {
   value: number | null | undefined
   minimal?: boolean
   single?: boolean
   style?: React.CSSProperties
+  intent?: Intent
 }) {
   const cpp = useCpp()
   const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
@@ -107,6 +109,7 @@ export function ValueTag({
         ...style,
       }}
       title={formatAll(value)}
+      intent={intent}
     >
       {format(value, type, single)}
     </Tag>

@@ -5,6 +5,8 @@ import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
 const logs = [
+  { date: '2023-07-17', game: [GameName.Re1999], type: 'optimize', desc: '追加材料掉率表中的价值数据' },
+  { date: '2023-07-17', type: 'optimize', desc: '区分价值“体力”（蓝黑色）和实际体力（蓝色）' },
   { date: '2023-07-09', type: 'optimize', desc: '刷本规划中增加单次理智和样本数显示' },
   { date: '2023-07-09', game: [GameName.Arknights], type: 'fix', desc: '修复 Firefox 下仓库展示' },
   { date: '2023-07-09', game: [GameName.Re1999], type: 'optimize', desc: '优化货币图标' },
