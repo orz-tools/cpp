@@ -171,6 +171,7 @@ export function ValueTagProgressBar({
           paddingLeft: 4,
           paddingRight: 4,
           opacity: 0.25,
+          filter: 'grayscale(0.5)',
           ...style,
         }}
       >
@@ -191,6 +192,7 @@ export function ValueTagProgressBar({
         backgroundImage: `linear-gradient(to left, ${color}, ${color} ${percent.toFixed(
           2,
         )}%, transparent ${percent.toFixed(2)}%, transparent)`,
+        filter: 'grayscale(0.5)',
         ...style,
       }}
       title={formatAll(value) + '\n\n/////\n\n' + formatAll(maxValue)}
