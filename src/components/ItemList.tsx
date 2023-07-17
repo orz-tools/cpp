@@ -123,7 +123,16 @@ export function ItemSynthesisPopover<G extends IGame>({ item }: { item: IItem })
       </ButtonGroup>
       <MenuDivider />
       <MenuItem
-        icon={<CachedImg src={item.icon} width={'20'} height={'20'} alt={item.key} title={item.key} />}
+        icon={
+          <CachedImg
+            className="cpp-item-icon"
+            src={item.icon}
+            width={'20'}
+            height={'20'}
+            alt={item.key}
+            title={item.key}
+          />
+        }
         text={
           <>
             <span>{item.name}</span>
@@ -140,7 +149,16 @@ export function ItemSynthesisPopover<G extends IGame>({ item }: { item: IItem })
         return (
           <MenuItem
             key={cost.itemId}
-            icon={<CachedImg src={citem.icon} width={'20'} height={'20'} alt={citem.key} title={citem.key} />}
+            icon={
+              <CachedImg
+                className="cpp-item-icon"
+                src={citem.icon}
+                width={'20'}
+                height={'20'}
+                alt={citem.key}
+                title={citem.key}
+              />
+            }
             text={
               <>
                 <span>{citem.name}</span>

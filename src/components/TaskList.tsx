@@ -251,7 +251,14 @@ function ItemStack<G extends IGame>({
       icon={
         <div style={{ display: 'flex' }}>
           <Icon icon={CostStatusIcon[status]} size={16} style={{ padding: 2 }} />
-          <CachedImg src={item.icon} width={'20'} height={'20'} alt={item.key} title={item.key} />
+          <CachedImg
+            className={'cpp-item-icon'}
+            src={item.icon}
+            width={'20'}
+            height={'20'}
+            alt={item.key}
+            title={item.key}
+          />
         </div>
       }
       onContextMenu={preventDefault}

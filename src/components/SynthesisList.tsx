@@ -65,7 +65,16 @@ function SynthesisMenu({ item, target }: { item: IItem; target: number }) {
     <MenuItem2
       style={{ fontWeight: 'normal' }}
       popoverProps={{ interactionKind: 'click' }}
-      icon={<CachedImg src={item.icon} width={'100%'} height={'100%'} alt={item.key} title={item.key} />}
+      icon={
+        <CachedImg
+          className="cpp-item-icon"
+          src={item.icon}
+          width={'100%'}
+          height={'100%'}
+          alt={item.key}
+          title={item.key}
+        />
+      }
       text={
         <>
           <span>{item.name}</span>
