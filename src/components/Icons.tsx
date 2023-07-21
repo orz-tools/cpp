@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { load } from '../pkg/blobcache'
+import { badUrl, load } from '../pkg/blobcache'
 
 export function CachedImg({
   src,
@@ -31,9 +31,32 @@ export function CachedImg({
   })
 
   if (!(typeof data === 'string')) {
-    return <img width={width} height={height} alt={''} title={title} style={style} />
+    return <img width={width} height={height} alt={''} title={title} style={style} className={className} />
   }
-  return <img src={data} width={width} height={height} alt={alt} title={title} style={style} className={className} />
+
+  const bad = data === badUrl
+  return (
+    <img
+      src={data}
+      width={width}
+      height={height}
+      alt={alt}
+      title={title}
+      style={{
+        ...style,
+        overflow: 'hidden',
+        overflowWrap: 'break-word',
+        ...(bad
+          ? {
+              opacity: 0.25,
+              color: 'red',
+              border: '1px solid red',
+            }
+          : {}),
+      }}
+      className={(className || '') + ' ' + (bad ? 'cpp-bad-img' : '')}
+    />
+  )
 }
 
 export function EmptyIcon() {

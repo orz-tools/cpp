@@ -69,8 +69,8 @@ function SynthesisMenu({ item, target }: { item: IItem; target: number }) {
         <CachedImg
           className="cpp-item-icon"
           src={item.icon}
-          width={'100%'}
-          height={'100%'}
+          width={'20'}
+          height={'20'}
           alt={item.key}
           title={item.key}
         />

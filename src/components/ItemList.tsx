@@ -366,8 +366,8 @@ export function ItemMenu({ item }: { item: IItem }) {
           <span className="bp4-menu-item-icon">
             <CachedImg
               src={item.icon}
-              width={'100%'}
-              height={'100%'}
+              width={'40'}
+              height={'40'}
               alt={item.key}
               title={item.key}
               className="cpp-item-icon"

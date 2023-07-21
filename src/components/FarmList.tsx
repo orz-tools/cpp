@@ -146,8 +146,8 @@ export function StageLine({ run }: { run: StageRun }) {
             icon={
               <CachedImg
                 src={item.icon}
-                width={'100%'}
-                height={'100%'}
+                width={'20'}
+                height={'20'}
                 alt={item.key}
                 title={item.key}
                 className="cpp-item-icon"
@@ -183,8 +183,8 @@ export function UnfeasibleLine({ items }: { items: Record<string, number> }) {
             icon={
               <CachedImg
                 src={item.icon}
-                width={'100%'}
-                height={'100%'}
+                width={'20'}
+                height={'20'}
                 alt={item.key}
                 title={item.key}
                 className="cpp-item-icon"
