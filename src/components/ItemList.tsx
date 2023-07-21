@@ -506,7 +506,7 @@ export function SyncButton() {
           setOpen(true)
         }}
       />
-      <Dialog isOpen={open} isCloseButtonShown={true} onClose={() => setOpen(false)}>
+      <Dialog isOpen={open} onClose={() => setOpen(false)}>
         <InventorySyncer />
       </Dialog>
     </>

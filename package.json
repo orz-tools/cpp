@@ -12,6 +12,7 @@
     "@blueprintjs/core": "^4.20.1",
     "@blueprintjs/icons": "^4.16.0",
     "@blueprintjs/popover2": "^1.14.9",
+    "date-fns": "^2.30.0",
     "deep-equal": "^2.2.1",
     "immer": "^10.0.2",
     "javascript-lp-solver": "^0.4.24",

@@ -1,11 +1,13 @@
 import type { IGameComponent } from '../types'
-import { AboutCopyright, AboutCredits } from './AboutList'
+import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from './AboutList'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
 
 export const Re1999Components: IGameComponent = {
   AboutCopyright,
+  AboutDataSources,
+  AboutThirdParty,
   AboutCredits,
   CharacterStatusPopover,
   renderCharacterStatus,

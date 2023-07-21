@@ -183,7 +183,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       let sDep: typeof dep = undefined
       if (sg > 0) meetEliteLevel(2, 1)
       const sdata = character.skills.find((x) => x[0].skillId === skillId)?.[0]
-      const data = sdata?.specializeLevelUpData || sdata?.levelUpCostCond
+      const data = sdata?.levelUpCostCond
       if (!data) continue
       while (sc < sg) {
         sDep = add(
@@ -247,7 +247,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       }
       case 'mod': {
         const uniEquip = character.uniEquips.find((x) => x.key === type.modId)!
-        return `${uniEquip.raw.typeName2.toUpperCase()} 模组 ${type.to} 级: ${uniEquip.raw.uniEquipName}`
+        return `${uniEquip.raw.typeName2!.toUpperCase()} 模组 ${type.to} 级: ${uniEquip.raw.uniEquipName}`
       }
       default:
         throwBad(type)
@@ -290,7 +290,9 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       skillMaster: char.maxElite >= 2 ? Object.fromEntries(char.skills.map(([, skill]) => [skill.key, 3])) : {},
       modLevel:
         char.maxElite >= 2
-          ? Object.fromEntries(char.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 0).map((mod) => [mod.key, 3]))
+          ? Object.fromEntries(
+              char.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0').map((mod) => [mod.key, 3]),
+            )
           : {},
     }
   }

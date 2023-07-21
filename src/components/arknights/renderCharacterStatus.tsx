@@ -9,9 +9,9 @@ export function renderCharacterStatus(
   current?: Arknights['characterStatus'],
   alreadyHide = false,
 ) {
-  const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 0)
-  const uniX = uniEquips.find((x) => x.raw.typeName2.toUpperCase() === 'X')
-  const uniY = uniEquips.find((x) => x.raw.typeName2.toUpperCase() === 'Y')
+  const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
+  const uniX = uniEquips.find((x) => x.raw.typeName2!.toUpperCase() === 'X')
+  const uniY = uniEquips.find((x) => x.raw.typeName2!.toUpperCase() === 'Y')
   if ([uniX, uniY].filter((x) => !!x).length !== uniEquips.length) {
     console.warn('character extra uniEquips', character, uniEquips)
   }

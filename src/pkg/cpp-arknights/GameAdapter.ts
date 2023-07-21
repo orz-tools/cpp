@@ -3,8 +3,14 @@ import { GameName } from '../../games'
 import { BasicStageInfo, ExpItem, IGameAdapter } from '../cpp-basic'
 import { ArknightsDataManager } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
-import { ExcelStageTable } from './sources/excelTypes'
-import { AK_ITEM_GOLD, AK_ITEM_VIRTUAL_EXP, Arknights, formulaTagNames } from './types'
+import {
+  AK_ITEM_GOLD,
+  AK_ITEM_UNKNOWN_SHIT,
+  AK_ITEM_VIRTUAL_EXP,
+  Arknights,
+  ArknightsKengxxiao,
+  formulaTagNames,
+} from './types'
 
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
   private dataManager = new ArknightsDataManager()
@@ -58,6 +64,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
             'STORY_REVIEW_COIN', // 事相碎片
             '3141', // 源石碎片
             '3003', // 赤金
+            AK_ITEM_UNKNOWN_SHIT,
           ].includes(x.key)
         ) {
           return false
@@ -139,7 +146,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     this.stageInfo = {}
     this.zoneNames = {}
     this.cacheExpiresAt = Infinity
-    const loadZoneName = (stageInfo: ExcelStageTable.Stage, isRetro: boolean) => {
+    const loadZoneName = (stageInfo: ArknightsKengxxiao['exStage']['stages'][''], isRetro: boolean) => {
       if (this.zoneNames[stageInfo.zoneId]) return
       if (isRetro) {
         const retroId = this.dataManager.raw.exRetro.zoneToRetro[stageInfo.zoneId]
@@ -240,7 +247,7 @@ const diffGroupName = {
 } as Record<string, string>
 
 class ArknightsStageInfo extends BasicStageInfo {
-  public constructor(ga: ArknightsAdapter, private excel: ExcelStageTable.Stage) {
+  public constructor(ga: ArknightsAdapter, private excel: ArknightsKengxxiao['exStage']['stages']['']) {
     super(ga)
   }
 

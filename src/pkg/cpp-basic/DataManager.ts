@@ -1,18 +1,18 @@
 import localForage from 'localforage'
-import pProps from 'p-props'
 import { IGame } from './types'
+import { DataContainerObject, IDataContainer, getLastCheckedAt, load } from '../dccache'
 
-const store = localForage.createInstance({
-  name: 'cpp_dm',
-})
+// HACK
+void localForage.dropInstance({ name: 'cpp_dm' })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export abstract class BasicDataManager<G extends IGame> {
-  public constructor(private storagePrefix: string) {}
+  public readonly dataObjectMap = new Map<DataContainerObject<any>, IDataContainer>()
 
   public async init() {
     this.initialized = false
     try {
+      await this.loadDataObjects()
       this.raw = await this.loadRaw()
       this.data = await this.transform()
     } catch (e) {
@@ -28,66 +28,56 @@ export abstract class BasicDataManager<G extends IGame> {
   public data!: Awaited<ReturnType<this['transform']>>
 
   public async refresh() {
-    return await this.loadRaw(true)
+    let refreshed = false
+    await this.loadDataObjects(true, () => (refreshed = true))
+    return refreshed
   }
 
-  public async loadRaw(refresh?: boolean): Promise<{
-    [K in keyof Awaited<ReturnType<this['getLoadRawTasks']>>]: Awaited<Awaited<ReturnType<this['getLoadRawTasks']>>[K]>
-  }> {
-    const task = this.getLoadRawTasks(refresh) as Awaited<ReturnType<this['getLoadRawTasks']>>
-    return (await pProps(task)) as any as { [K in keyof typeof task]: Awaited<(typeof task)[K]> }
-  }
-  public raw!: {
-    [K in keyof Awaited<ReturnType<this['getLoadRawTasks']>>]: Awaited<Awaited<ReturnType<this['getLoadRawTasks']>>[K]>
-  }
+  public abstract loadRaw(refresh?: boolean): Promise<any>
+  public raw!: Awaited<ReturnType<this['loadRaw']>>
 
-  public abstract getLoadRawTasks(refresh?: boolean): Record<string, Promise<any>>
-
-  protected async loadJson<T>(
-    url: string,
-    refresh = false,
-    key = url,
-    shitDefault: (() => T) | undefined = undefined,
-  ): Promise<T> {
-    const fullKey = `${this.storagePrefix}${key}`
-    const timeKey = `${this.storagePrefix}--time--${key}`
-    const existing = (await store.getItem<string>(fullKey)) || ''
-    if (!refresh && existing) {
-      try {
-        return JSON.parse(existing)
-      } catch {
-        //
-      }
+  public get<T extends object>(d: DataContainerObject<T>): IDataContainer<T> {
+    if (!this.dataObjectMap.has(d)) {
+      throw new Error(`DataContainerObject ${d.name} not found`)
     }
-    let log = undefined
-    let response: Response | undefined = undefined
-    try {
-      response = await fetch(url)
-      if (!response.ok) {
-        log = `status ${response.status} ${response.statusText}`
+    return this.dataObjectMap.get(d)! as any as IDataContainer<T>
+  }
+
+  public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
+    return Promise.resolve([])
+  }
+
+  protected async loadDataObjects(refresh?: boolean | undefined, onRefreshed?: () => any) {
+    const dos = await this.getRequiredDataObjects()
+    await Promise.all(
+      dos.map(async (x) => {
+        this.dataObjectMap.set(x, await load(x, refresh, onRefreshed))
+      }),
+    )
+  }
+
+  public async checkUpdates() {
+    const dos = await this.getRequiredDataObjects()
+    let showNotification = false
+    for (const x of dos) {
+      const l = await getLastCheckedAt(x)
+      if (Date.now() - l < x.autoUpdateThreshold) {
+        continue
       }
-    } catch (e: any) {
-      log = String(e?.message || '')
-    }
-    if (log !== undefined || !response) {
-      if (existing) {
-        try {
-          console.warn(`Failed to fetch ${url}: ${log}, using existing`)
-          return JSON.parse(existing)
-        } catch {
-          //
+
+      let refreshed = false
+      const previous = this.dataObjectMap.get(x)
+      const result = await load(x, false, () => (refreshed = true))
+      if (refreshed) {
+        if (previous) {
+          if (result.version.timestamp - previous?.version.timestamp > x.autoUpdateNotificationThreshold) {
+            showNotification = true
+          }
+        } else {
+          showNotification = true
         }
       }
-      if (shitDefault !== undefined) {
-        console.warn(`Failed to fetch ${url}: ${log}, using shit default`)
-        return shitDefault()
-      }
-      throw new Error(`Failed to fetch ${url}: ${log}`)
     }
-    const result = await response.json()
-    await store.setItem(fullKey, JSON.stringify(result))
-    await store.setItem(timeKey, Date.now())
-    console.log(`Updated ${url}`)
-    return result
+    return showNotification
   }
 }

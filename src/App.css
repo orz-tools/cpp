@@ -282,3 +282,26 @@ body {
   width: 100%;
   height: 100%;
 }
+
+.cpp-menu-semi-secondary {
+  opacity: 0.75;
+  font-weight: normal;
+}
+
+.cpp-menu-secondary {
+  font-size: 85%;
+  line-height: 1.4em;
+  opacity: 0.75;
+  font-weight: normal;
+}
+
+.cpp-menu-not-interactive {
+  background-color: inherit !important;
+  cursor: auto !important;
+  outline: none !important;
+}
+
+.cpp-menu-indent {
+  padding: 0 !important;
+  margin-left: 22px !important;
+}

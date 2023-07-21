@@ -251,7 +251,7 @@ export function CharacterStatusModSection() {
   const { currentStatus, character } = useContext(EditorContext)
   if (character.rarity < 3) return <></>
 
-  const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 0)
+  const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
   if (!uniEquips.length) return <></>
 
   const all = currentStatus ? uniEquips.every((equip) => currentStatus.modLevel[equip.key] === 3) : false

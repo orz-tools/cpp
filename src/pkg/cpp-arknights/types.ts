@@ -1,4 +1,6 @@
 import { IGame } from '../cpp-basic/types'
+import { CppData_ArknightsKengxxiaoEnUs } from '../cpp-data-schemas/arknights-kengxxiao-en_US'
+import { CppData_ArknightsKengxxiaoZhCn } from '../cpp-data-schemas/arknights-kengxxiao-zh_CN'
 
 export interface Arknights extends IGame {
   characterStatus: ArknightsCharacterStatus
@@ -32,3 +34,5 @@ export enum ArknightsFormulaTag {
 export const formulaTagNames = {
   [ArknightsFormulaTag.WorkshopRarity2]: '不从绿材料合成蓝材料',
 } satisfies Record<ArknightsFormulaTag, string>
+
+export type ArknightsKengxxiao = CppData_ArknightsKengxxiaoZhCn | CppData_ArknightsKengxxiaoEnUs

@@ -1,23 +1,14 @@
 import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
-import { Category } from './GameAdapter'
+import { DataContainerObject } from '../dccache'
 import {
-  ExChapter,
-  ExCharacter,
-  ExCharacterConsume,
-  ExCharacterRank,
-  ExCharacterTalent,
-  ExCurrency,
-  ExEpisode,
-  ExFormula,
-  ExItem,
-  Re1999,
-} from './types'
+  Reverse1999HisBoundenDutyDropsObject,
+  Reverse1999HisBoundenDutyValuesObject,
+  Reverse1999Yuanyan3060Object,
+} from './DataObjects'
+import { Category } from './GameAdapter'
+import { Re1999, Reverse1999Yuanyan3060 } from './types'
 
 export class Re1999DataManager extends BasicDataManager<Re1999> {
-  public constructor() {
-    super('re1999_')
-  }
-
   public async transform() {
     await Promise.resolve()
     return {
@@ -28,56 +19,25 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
     }
   }
 
-  public getLoadRawTasks(refresh?: boolean | undefined) {
-    return {
-      exChapters: this.loadJson<ExChapter[]>(
-        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/chapter.json',
-        refresh,
-      ),
-      exEpisodes: this.loadJson<ExEpisode[]>(
-        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/episode.json',
-        refresh,
-      ),
-      exCharacters: this.loadJson<ExCharacter[]>(
-        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/character.json',
-        refresh,
-      ),
-      exItems: this.loadJson<ExItem[]>(
-        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/item.json',
-        refresh,
-      ),
-      exCurrencies: this.loadJson<ExCurrency[]>(
-        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/currency.json',
-        refresh,
-      ),
-      exFormulas: this.loadJson<ExFormula[]>(
-        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/formula.json',
-        refresh,
-      ),
-      exCharacterRank: this.loadJson<ExCharacterRank[]>(
-        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/character_rank.json',
-        refresh,
-      ),
-      exCharacterConsume: this.loadJson<ExCharacterConsume[]>(
-        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/character_cosume.json',
-        refresh,
-      ),
-      exCharacterTalent: this.loadJson<ExCharacterTalent[]>(
-        'https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Json/character_talent.json',
-        refresh,
-      ),
-      drops: (async () =>
-        (await import('./data/drops.json')).default as {
-          updatedAt: string
-          sourceUrl: string
-          levelReport: Record<string, { count: number; cost: number; drops: Record<string, number> }>
-        })(),
-      values: (async () =>
-        (await import('./data/values.json')).default as {
-          updatedAt: string
-          values: Record<string, string>
-        })(),
-    }
+  public $yy = new Reverse1999Yuanyan3060Object('zh_CN')
+  public $drops = new Reverse1999HisBoundenDutyDropsObject()
+  public $values = new Reverse1999HisBoundenDutyValuesObject()
+
+  public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
+    return Promise.resolve([this.$yy, this.$drops, this.$values])
+  }
+
+  public loadRaw() {
+    const yy = this.get(this.$yy)
+    const drops = this.get(this.$drops)
+    const values = this.get(this.$values)
+
+    return Promise.resolve(
+      Object.assign({}, yy.data, {
+        drops: drops.data,
+        values: values.data,
+      }),
+    )
   }
 
   private generateCharacters() {
@@ -166,7 +126,7 @@ export interface CharacterLevel {
 export class Character implements ICharacter {
   public constructor(
     public readonly key: string,
-    public readonly raw: ExCharacter,
+    public readonly raw: Reverse1999Yuanyan3060['exCharacters'][0],
     private readonly dm: Re1999DataManager,
   ) {}
 
@@ -204,7 +164,7 @@ export class Character implements ICharacter {
     return parseConsume(row.consume)
   }
 
-  private _resonates?: ExCharacterTalent[]
+  private _resonates?: Reverse1999Yuanyan3060['exCharacterTalent'][0][]
   public get resonates() {
     if (!this._resonates) this._resonates = this.dm.raw.exCharacterTalent.filter((x) => x.heroId === this.raw.id)
     return this._resonates
@@ -249,7 +209,7 @@ function makeNumericSortable(x: string) {
 export class Item implements IItem {
   public constructor(
     public readonly key: string,
-    public readonly raw: ExItem,
+    public readonly raw: Reverse1999Yuanyan3060['exItems'][0],
     protected readonly dm: Re1999DataManager,
   ) {}
 
@@ -337,7 +297,7 @@ export class Item implements IItem {
 export class CurrencyItem implements IItem {
   public constructor(
     public readonly key: string,
-    public readonly raw: ExCurrency,
+    public readonly raw: Reverse1999Yuanyan3060['exCurrencies'][0],
     protected readonly dm: Re1999DataManager,
   ) {}
 

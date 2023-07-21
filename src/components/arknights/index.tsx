@@ -1,11 +1,13 @@
 import type { IGameComponent } from '../types'
-import { AboutCopyright, AboutCredits } from './AboutList'
+import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from './AboutList'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { ItemImportButton } from './ItemList'
 import { renderCharacterStatus } from './renderCharacterStatus'
 
 export const ArknightsComponents: IGameComponent = {
   AboutCopyright,
+  AboutDataSources,
+  AboutThirdParty,
   AboutCredits,
   ItemImportButton,
   CharacterStatusPopover,

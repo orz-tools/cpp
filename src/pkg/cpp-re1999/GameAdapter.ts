@@ -4,13 +4,12 @@ import { BasicStageInfo, ExpItem, IGameAdapter } from '../cpp-basic'
 import { CurrencyItem, Item, Re1999DataManager, parseConsume } from './DataManager'
 import { Re1999UserDataAdapter } from './UserDataAdapter'
 import {
-  ExChapter,
   ExChapterType,
-  ExEpisode,
   ExEpisodeType,
   RE_ITEM_EXP,
   RE_ITEM_GOLD,
   Re1999,
+  Reverse1999Yuanyan3060,
   formulaTagNames,
 } from './types'
 
@@ -122,7 +121,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     this.cacheExpiresAt = Infinity
 
     const episodes = this.dataManager.raw.exEpisodes.slice(0)
-    const badEpisodes: ExEpisode[] = []
+    const badEpisodes: Reverse1999Yuanyan3060['exEpisodes'][0][] = []
     for (;;) {
       let flag = false
       while (episodes.length > 0) {
@@ -249,8 +248,8 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
 class Re1999StageInfo extends BasicStageInfo {
   public constructor(
     ga: Re1999Adapter,
-    public episode: ExEpisode,
-    public chapter: ExChapter,
+    public episode: Reverse1999Yuanyan3060['exEpisodes'][0],
+    public chapter: Reverse1999Yuanyan3060['exChapters'][0],
     public number: number,
     public zoneId: string,
   ) {

@@ -1,6 +1,20 @@
-import { Alignment, Button, Classes, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import {
+  Alignment,
+  AnchorButton,
+  Button,
+  Classes,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  Navbar,
+  Spinner,
+  Tag,
+} from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
@@ -15,6 +29,7 @@ import { TaskList } from './components/TaskList'
 import { ValueOptionButton } from './components/Value'
 import { useRequest } from './hooks/useRequest'
 import { formatProfileName, getProfiles } from './profiles'
+import { AppToaster } from './components/Toaster'
 
 function UndoButtons() {
   const atoms = useAtoms()
@@ -47,14 +62,31 @@ function UndoButtons() {
 function ReloadDataButton() {
   const ga = useGameAdapter()
   const dm = ga.getDataManager()
+  const setError = useSetAtom(errAtom)
   const { loading, send } = useRequest(async () => {
-    await dm.refresh()
-    location.reload()
+    const reload = AppToaster.show(
+      { message: '更新数据中…', isCloseButtonShown: false, timeout: 0, intent: 'primary' },
+      'reload',
+    )
+    try {
+      const r = await dm.refresh()
+      AppToaster.dismiss(reload)
+      if (r) {
+        AppToaster.show({ message: '数据已更新，正在重新载入…', intent: 'success' }, reload)
+        location.reload()
+      } else {
+        AppToaster.show({ message: '未找到新数据' }, reload)
+      }
+    } catch (e) {
+      console.log(e)
+      AppToaster.dismiss(reload)
+      setError({ error: e, context: '检查数据更新失败' })
+    }
   })
 
   return (
     <>
-      <Button icon="refresh" disabled={loading} text="重载数据" minimal={true} onClick={() => send()} />
+      <Button icon="refresh" disabled={loading} text="检查数据更新" minimal={true} onClick={() => send()} />
     </>
   )
 }
@@ -83,6 +115,23 @@ function App() {
   const defaultCharStatusWidth = 43 * 6
   const charStatusWidth = cpp.gameComponent.charStatusWidth || defaultCharStatusWidth
   const ga = useGameAdapter()
+
+  useEffect(() => {
+    void (async () => {
+      const result = await ga.getDataManager().checkUpdates()
+      if (result)
+        AppToaster.show({
+          message: '数据已更新，请重新载入页面',
+          intent: 'success',
+          action: {
+            text: '重新载入',
+            icon: 'refresh',
+            onClick: () => location.reload(),
+          },
+        })
+    })()
+  }, [ga])
+
   return (
     <>
       {cpp.gameComponent.style ? <style dangerouslySetInnerHTML={{ __html: cpp.gameComponent.style }} /> : null}
@@ -227,15 +276,26 @@ function SuperAppWrapper() {
 }
 
 export function AppWrapper() {
+  const c = useCpp()
+  const codename = c.gameAdapter.getCodename()
+  const instanceName = c.instanceName
   return (
-    <ErrorBoundary>
-      <SuperAppWrapper />
-    </ErrorBoundary>
+    <>
+      <ErrDialog codename={codename} instanceName={instanceName} />
+      <ErrorBoundary codename={codename} instanceName={instanceName}>
+        <SuperAppWrapper />
+      </ErrorBoundary>
+    </>
   )
 }
 
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error?: Error }> {
-  public constructor(props: { children: React.ReactNode }) {
+const errAtom = atom<{ error: any; context: string } | undefined>(undefined)
+
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode; instanceName: string; codename: string },
+  { hasError: boolean; error?: Error }
+> {
+  public constructor(props: { children: React.ReactNode; instanceName: string; codename: string }) {
     super(props)
     this.state = { hasError: false }
   }
@@ -251,22 +311,63 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
   public render() {
     if (this.state.hasError) {
       return (
-        <>
-          <h1>Oops!</h1>
-
-          <Navbar>
-            <Navbar.Group align={Alignment.LEFT}>
+        <Dialog
+          isOpen
+          title={`Closure${formatProfileName(this.props.codename, this.props.instanceName)}++ 遇到错误`}
+          icon="warning-sign"
+          isCloseButtonShown={false}
+        >
+          <DialogBody>
+            {this.state.error ? <h4>{this.state.error.message}</h4> : null}
+            {this.state.error ? <pre>{this.state.error.stack}</pre> : null}
+          </DialogBody>
+          <DialogFooter
+            actions={
+              <>
+                <AnchorButton href={'/'} minimal icon={'home'}>
+                  返回主页
+                </AnchorButton>
+              </>
+            }
+          >
+            <Button minimal disabled>
               您不妨试试
-              <ReloadDataButton />
-            </Navbar.Group>
-          </Navbar>
-
-          {this.state.error ? <pre>{this.state.error.message}</pre> : null}
-          {this.state.error ? <pre>{this.state.error.stack}</pre> : null}
-        </>
+            </Button>
+            <ReloadDataButton />
+          </DialogFooter>
+        </Dialog>
       )
     }
 
     return this.props.children
   }
+}
+
+export function ErrDialog({ instanceName, codename }: { instanceName: string; codename: string }) {
+  const [err, setErr] = useAtom(errAtom)
+
+  if (!err) return null
+  return (
+    <Dialog
+      isOpen
+      title={`Closure${formatProfileName(codename, instanceName)}++ ${err.context}`}
+      icon="warning-sign"
+      isCloseButtonShown={true}
+      onClose={() => setErr(undefined)}
+    >
+      <DialogBody>
+        {err.error ? <h4>{err.error.message}</h4> : null}
+        {err.error ? <pre>{err.error.stack}</pre> : null}
+      </DialogBody>
+      <DialogFooter
+        actions={
+          <>
+            <Button onClick={() => setErr(undefined)} minimal>
+              晓得了
+            </Button>
+          </>
+        }
+      />
+    </Dialog>
+  )
 }

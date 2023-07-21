@@ -1,23 +1,42 @@
 import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
+import { DataContainerObject } from '../dccache'
+import { ArknightsKengxxiaoObject, ArknightsPenguinObject, ArknightsYituliuObject } from './DataObjects'
 import { Category, myCategories } from './GameAdapter'
 import {
-  ExcelBuildingData,
-  ExcelCharacterTable,
-  ExcelItemTable,
-  ExcelPatchCharacterTable,
-  ExcelRetroTable,
-  ExcelSkillTable,
-  ExcelStageTable,
-  ExcelUniEquipTable,
-  ExcelZoneTable,
-} from './sources/excelTypes'
-import { PenguinMatrix } from './sources/penguinTypes'
-import { YituliuValue } from './sources/yituliuTypes'
-import { AK_ITEM_GOLD, AK_ITEM_UNKNOWN_SHIT, AK_ITEM_VIRTUAL_EXP, Arknights, ArknightsFormulaTag } from './types'
+  AK_ITEM_GOLD,
+  AK_ITEM_UNKNOWN_SHIT,
+  AK_ITEM_VIRTUAL_EXP,
+  Arknights,
+  ArknightsFormulaTag,
+  ArknightsKengxxiao,
+} from './types'
 
 export class ArknightsDataManager extends BasicDataManager<Arknights> {
-  public constructor() {
-    super('cpp_dm_')
+  public $kengxxiao = new ArknightsKengxxiaoObject('zh_CN')
+  public $yituliu = new ArknightsYituliuObject()
+  public $penguin = new ArknightsPenguinObject('CN')
+  public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
+    return Promise.resolve([this.$kengxxiao, this.$yituliu, this.$penguin])
+  }
+
+  public loadRaw() {
+    const k = this.get(this.$kengxxiao)
+    const yituliu = this.get(this.$yituliu)
+    const penguin = this.get(this.$penguin)
+
+    return Promise.resolve({
+      exCharacters: k.data.exCharacters,
+      exPatchCharacters: k.data.exPatchCharacters,
+      exSkills: k.data.exSkills,
+      exUniEquips: k.data.exUniEquips,
+      exItems: k.data.exItems,
+      exBuilding: k.data.exBuilding,
+      exStage: k.data.exStage,
+      exRetro: k.data.exRetro,
+      exZone: k.data.exZone,
+      yituliuValue: yituliu.data,
+      penguinMatrix: penguin.data,
+    })
   }
 
   public async transform() {
@@ -29,57 +48,6 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
       constants: this.generateConstants(),
       items: this.generateItems(),
       formulas: this.generateFormulas(),
-    }
-  }
-
-  public getLoadRawTasks(refresh?: boolean | undefined) {
-    return {
-      exCharacters: this.loadJson<ExcelCharacterTable>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json',
-        refresh,
-      ),
-      exPatchCharacters: this.loadJson<ExcelPatchCharacterTable>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/char_patch_table.json',
-        refresh,
-      ),
-      exSkills: this.loadJson<ExcelSkillTable>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/skill_table.json',
-        refresh,
-      ),
-      exUniEquips: this.loadJson<ExcelUniEquipTable>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/uniequip_table.json',
-        refresh,
-      ),
-      exItems: this.loadJson<ExcelItemTable>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/item_table.json',
-        refresh,
-      ),
-      exBuilding: this.loadJson<ExcelBuildingData>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/building_data.json',
-        refresh,
-      ),
-      exStage: this.loadJson<ExcelStageTable>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/stage_table.json',
-        refresh,
-      ),
-      exRetro: this.loadJson<ExcelRetroTable>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/retro_table.json',
-        refresh,
-      ),
-      exZone: this.loadJson<ExcelZoneTable>(
-        'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/zone_table.json',
-        refresh,
-      ),
-      yituliuValue: this.loadJson<YituliuValue[]>(
-        'https://backend.yituliu.site/item/export/json',
-        refresh,
-        undefined,
-        () => [],
-      ),
-      penguinMatrix: this.loadJson<PenguinMatrix>(
-        'https://penguin-stats.io/PenguinStats/api/v2/result/matrix?server=CN',
-        refresh,
-      ),
     }
   }
 
@@ -185,10 +153,7 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
         tags: [],
         apCost: i.apCost / 360000,
       }
-      if (
-        (this.raw.exItems.items[i.itemId].rarity === 2 || this.raw.exItems.items[i.itemId].rarity === 'TIER_3') &&
-        i.formulaType === 'F_EVOLVE'
-      ) {
+      if (this.raw.exItems.items[i.itemId].rarity === 'TIER_3' && i.formulaType === 'F_EVOLVE') {
         formula.tags.push(ArknightsFormulaTag.WorkshopRarity2)
       }
       formulas.push(formula)
@@ -235,7 +200,7 @@ export interface CharacterLevel {
 export class Character implements ICharacter {
   public constructor(
     public readonly key: string,
-    public readonly raw: ExcelCharacterTable.Character,
+    public readonly raw: ArknightsKengxxiao['exCharacters'][''],
     private readonly dm: ArknightsDataManager,
   ) {
     if (dm.raw.exPatchCharacters.infos[key]) {
@@ -253,7 +218,7 @@ export class Character implements ICharacter {
     return this.raw.appellation
   }
 
-  private readonly patches: (readonly [string, ExcelCharacterTable.Character])[] = []
+  private readonly patches: (readonly [string, ArknightsKengxxiao['exCharacters']['']])[] = []
 
   public get avatar() {
     return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/avatar/${encodeURIComponent(
@@ -265,12 +230,12 @@ export class Character implements ICharacter {
     return [...(this.raw.skills || []), ...this.patches.flatMap((x) => x[1].skills)]
   }
 
-  private _skills?: [ExcelCharacterTable.Skill, Skill][]
+  private _skills?: [ArknightsKengxxiao['exCharacters']['']['skills'][0], Skill][]
   public get skills() {
     return (
       this._skills ||
       (this._skills = this.rawSkills
-        .filter((x): x is ExcelCharacterTable.Skill & { skillId: string } => !!x.skillId)
+        .filter((x): x is ArknightsKengxxiao['exCharacters']['']['skills'][0] & { skillId: string } => !!x.skillId)
         .map((x) => [x, this.dm.data.skills[x.skillId]]))
     )
   }
@@ -325,7 +290,7 @@ export class Character implements ICharacter {
     if (this.raw?.allSkillLvlup) {
       return this.raw.allSkillLvlup
     }
-    const cost: ExcelCharacterTable.AllSkillLvlup = {
+    const cost: ArknightsKengxxiao['exCharacters']['']['allSkillLvlup'][0] = {
       lvlUpCost: [
         {
           count: 0,
@@ -342,7 +307,7 @@ export class Character implements ICharacter {
 export class Skill {
   public constructor(
     public readonly key: string,
-    public readonly raw: ExcelSkillTable.Skill,
+    public readonly raw: ArknightsKengxxiao['exSkills'][''],
     private readonly dm: ArknightsDataManager,
   ) {}
 
@@ -356,7 +321,7 @@ export class Skill {
 export class UniEquip {
   public constructor(
     public readonly key: string,
-    public readonly raw: ExcelUniEquipTable.UniEquip,
+    public readonly raw: ArknightsKengxxiao['exUniEquips']['equipDict'][''],
     private readonly dm: ArknightsDataManager,
   ) {}
 
@@ -374,7 +339,7 @@ function makeNumericSortable(x: string) {
 export class Item implements IItem {
   public constructor(
     public readonly key: string,
-    public readonly raw: ExcelItemTable.Item,
+    public readonly raw: ArknightsKengxxiao['exItems']['items'][''],
     protected readonly dm: ArknightsDataManager,
   ) {}
 
@@ -472,18 +437,16 @@ export class ExpItem extends Item {
       {
         itemId: key,
         name: '经验',
-        description: '竟有一种办法可以聚合四种作战记录。这么虚拟的物品，真的可以收下吗？真的吗？！',
-        rarity: 4,
+        // description: '竟有一种办法可以聚合四种作战记录。这么虚拟的物品，真的可以收下吗？真的吗？！',
+        rarity: 'TIER_5',
         iconId: 'EXP_PLAYER',
-        overrideBkg: null,
-        stackIconId: null,
         sortId: 10005,
-        usage: '聚合了作战录像的存储装置的装置，可以增加干员的经验值',
-        obtainApproach: '战斗获取',
-        classifyType: ExcelItemTable.ClassifyType.None,
+        // usage: '聚合了作战录像的存储装置的装置，可以增加干员的经验值',
+        // obtainApproach: '战斗获取',
+        classifyType: 'NONE',
         itemType: '##EXP_VIRTUAL',
-        stageDropList: [],
-        buildingProductList: [],
+        // stageDropList: [],
+        // buildingProductList: [],
       },
       dm,
     )
@@ -495,7 +458,7 @@ export class ExpItem extends Item {
 }
 
 export class UnknownShitItem extends Item {
-  public static itemType = '#__UNKNOWN_SHIT'
+  public static itemType = 'MATERIAL' as const
 
   public constructor(key: string, dm: ArknightsDataManager) {
     super(
@@ -503,18 +466,16 @@ export class UnknownShitItem extends Item {
       {
         itemId: key,
         name: '未知材料~(￣▽￣)~*',
-        description: '暂时没有数据捏~(￣▽￣)~*',
-        rarity: 4,
+        // description: '暂时没有数据捏~(￣▽￣)~*',
+        rarity: 'TIER_5',
         iconId: 'AP_GAMEPLAY',
-        overrideBkg: null,
-        stackIconId: null,
         sortId: 10005,
-        usage: '不知道捏~(￣▽￣)~*',
-        obtainApproach: '~(￣▽￣)~*',
-        classifyType: ExcelItemTable.ClassifyType.None,
+        // usage: '不知道捏~(￣▽￣)~*',
+        // obtainApproach: '~(￣▽￣)~*',
+        classifyType: 'NONE',
         itemType: UnknownShitItem.itemType,
-        stageDropList: [],
-        buildingProductList: [],
+        // stageDropList: [],
+        // buildingProductList: [],
       },
       dm,
     )
