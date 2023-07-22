@@ -40,6 +40,10 @@ export async function getLastCheckedAt(obj: DataContainerObject<any>) {
   return (await loadMeta(obj.name))?.lastCheckedAt || 0
 }
 
+export async function reset(obj: DataContainerObject<any>) {
+  await clearData(obj.name)
+}
+
 export function load<T extends object>(
   obj: DataContainerObject<T>,
   refresh?: boolean | undefined,

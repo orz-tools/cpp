@@ -1,6 +1,6 @@
 import localForage from 'localforage'
 import { IGame } from './types'
-import { DataContainerObject, IDataContainer, getLastCheckedAt, load } from '../dccache'
+import { DataContainerObject, IDataContainer, getLastCheckedAt, load, reset } from '../dccache'
 
 // HACK
 void localForage.dropInstance({ name: 'cpp_dm' })
@@ -60,6 +60,12 @@ export abstract class BasicDataManager<G extends IGame> {
         }
       }),
     )
+  }
+
+  public async reset() {
+    for (const x of await this.getRequiredDataObjects()) {
+      await reset(x)
+    }
   }
 
   public async checkUpdates() {

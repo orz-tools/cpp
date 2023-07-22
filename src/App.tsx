@@ -13,7 +13,7 @@ import {
   Spinner,
   Tag,
 } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { ContextMenu2, MenuItem2, Popover2 } from '@blueprintjs/popover2'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, useEffect, useMemo, useState } from 'react'
 import './App.css'
@@ -86,7 +86,22 @@ function ReloadDataButton() {
 
   return (
     <>
-      <Button icon="refresh" disabled={loading} text="检查数据更新" minimal={true} onClick={() => send()} />
+      <ContextMenu2
+        content={
+          <Menu>
+            <MenuItem2
+              text="重载数据"
+              icon={'reset'}
+              onClick={async () => {
+                await dm.reset()
+                location.reload()
+              }}
+            />
+          </Menu>
+        }
+      >
+        <Button icon="refresh" disabled={loading} text="检查数据更新" minimal={true} onClick={() => send()} />
+      </ContextMenu2>
     </>
   )
 }
