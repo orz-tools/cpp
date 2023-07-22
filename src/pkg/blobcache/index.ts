@@ -62,6 +62,7 @@ async function superfetch(url: string) {
   let originalError: any = null
   try {
     const res = await fetch(url)
+    if (res.status === 404) return res
     if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`, { cause: res })
     return res
   } catch (e) {

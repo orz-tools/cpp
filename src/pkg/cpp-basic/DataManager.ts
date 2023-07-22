@@ -21,6 +21,7 @@ export abstract class BasicDataManager<G extends IGame> {
     }
     this.initialized = true
   }
+  public loading = new Set<string>()
   public initialized = false
   public error?: Error
 
@@ -51,7 +52,12 @@ export abstract class BasicDataManager<G extends IGame> {
     const dos = await this.getRequiredDataObjects()
     await Promise.all(
       dos.map(async (x) => {
-        this.dataObjectMap.set(x, await load(x, refresh, onRefreshed))
+        this.loading.add(x.name)
+        try {
+          this.dataObjectMap.set(x, await load(x, refresh, onRefreshed))
+        } finally {
+          this.loading.delete(x.name)
+        }
       }),
     )
   }

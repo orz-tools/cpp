@@ -110,6 +110,35 @@ function ProfileMenu() {
   )
 }
 
+function ClosureButtonHeading() {
+  const cpp = useCpp()
+  const ga = useGameAdapter()
+  return (
+    <Navbar.Heading style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+      <img src="/favicon.png" alt="Closure++ logo" width="24" height="24" title="" style={{ marginRight: 4 }} />
+      <code>{`Closure`}</code>
+      <Popover2
+        usePortal={true}
+        minimal={true}
+        content={
+          <Menu>
+            <ProfileMenu />
+          </Menu>
+        }
+        position="bottom-left"
+      >
+        <Button minimal style={{ paddingLeft: 0, paddingRight: 0 }}>
+          <code>
+            [{ga.getCodename().toUpperCase()}][{JSON.stringify(cpp.instanceName)}]
+          </code>
+        </Button>
+      </Popover2>
+      <code>{`++`}</code>
+      {/* <code>{`Closure++`}</code> */}
+    </Navbar.Heading>
+  )
+}
+
 function App() {
   const cpp = useCpp()
   const defaultCharStatusWidth = 43 * 6
@@ -120,15 +149,18 @@ function App() {
     void (async () => {
       const result = await ga.getDataManager().checkUpdates()
       if (result)
-        AppToaster.show({
-          message: '数据已更新，请重新载入页面',
-          intent: 'success',
-          action: {
-            text: '重新载入',
-            icon: 'refresh',
-            onClick: () => location.reload(),
+        AppToaster.show(
+          {
+            message: '数据已更新，请重新载入页面',
+            intent: 'success',
+            action: {
+              text: '重新载入',
+              icon: 'refresh',
+              onClick: () => location.reload(),
+            },
           },
-        })
+          'auto-update',
+        )
     })()
   }, [ga])
 
@@ -137,28 +169,7 @@ function App() {
       {cpp.gameComponent.style ? <style dangerouslySetInnerHTML={{ __html: cpp.gameComponent.style }} /> : null}
       <Navbar fixedToTop={true}>
         <Navbar.Group align={Alignment.LEFT}>
-          <Navbar.Heading style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <img src="/favicon.png" alt="Closure++ logo" width="24" height="24" title="" style={{ marginRight: 4 }} />
-            <code>{`Closure`}</code>
-            <Popover2
-              usePortal={true}
-              minimal={true}
-              content={
-                <Menu>
-                  <ProfileMenu />
-                </Menu>
-              }
-              position="bottom-left"
-            >
-              <Button minimal style={{ paddingLeft: 0, paddingRight: 0 }}>
-                <code>
-                  [{ga.getCodename().toUpperCase()}][{JSON.stringify(cpp.instanceName)}]
-                </code>
-              </Button>
-            </Popover2>
-            <code>{`++`}</code>
-            {/* <code>{`Closure++`}</code> */}
-          </Navbar.Heading>
+          <ClosureButtonHeading />
           <Navbar.Divider />
           <UndoButtons />
           <Navbar.Divider />
@@ -264,15 +275,68 @@ function SuperAppWrapper() {
   if (dm.error) throw dm.error
 
   if (!dm.initialized) {
-    return (
-      <>
-        <Spinner size={200} />
-        <ReloadDataButton />
-      </>
-    )
+    return <Loading />
   }
 
   return <App />
+}
+
+export function Loading() {
+  const ga = useGameAdapter()
+  const dm = ga.getDataManager()
+  const [, setTicker] = useState(0)
+  const [status, setStatus] = useState('别急...')
+  useEffect(() => {
+    let timer: null | ReturnType<typeof setInterval> = setInterval(() => {
+      if (dm.loading.size > 0) {
+        setStatus(`仍在加载 ${[...dm.loading].join(', ')} 中...`)
+      } else {
+        setStatus('收拾中...')
+      }
+
+      if (dm.error || dm.initialized) {
+        setStatus('马上就好...')
+        clearTimeout(timer!)
+        timer = null
+        setTicker((x) => x + 1)
+      }
+    }, 100)
+    return () => void (timer && clearTimeout(timer))
+  }, [dm])
+
+  return (
+    <>
+      <Navbar fixedToTop={true}>
+        <Navbar.Group align={Alignment.LEFT}>
+          <ClosureButtonHeading />
+        </Navbar.Group>
+      </Navbar>
+      <div
+        className="App"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          overflow: 'auto',
+          flexDirection: 'column',
+        }}
+      >
+        <Spinner size={100} />
+        <h2 style={{ textAlign: 'center' }}>
+          <del>海记忆体知己，天涯霍位元人</del>
+          <br />
+          我们正在准备您的 Closure++
+          <br />
+          请稍候
+        </h2>
+        {status ? (
+          <div style={{ opacity: 0.5, position: 'absolute', textAlign: 'center', bottom: '5%', left: 0, right: 0 }}>
+            {status}
+          </div>
+        ) : null}
+      </div>
+    </>
+  )
 }
 
 export function AppWrapper() {
