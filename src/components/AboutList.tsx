@@ -44,7 +44,7 @@ export function AboutList() {
         <MenuItem
           icon={'envelope'}
           multiline={true}
-          href={''}
+          href={'mailto:cpp@ouomail.com'}
           {...externalLinkProps}
           text={
             <>
