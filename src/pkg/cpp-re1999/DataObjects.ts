@@ -23,6 +23,7 @@ interface Reverse1999HisBoundenDutyValues {
 export class Reverse1999HisBoundenDutyDropsObject extends DataContainerObject<Reverse1999HisBoundenDutyDrops> {
   public readonly name: string = 'reverse1999-hisboundenduty-drops'
   public autoUpdateNotificationThreshold = 86400_000 * 3
+  public autoUpdateThreshold = 0
 
   public getData(): Promise<IDataContainer<Reverse1999HisBoundenDutyDrops>> {
     return Promise.reject(new Error('Reverse1999HisBoundenDutyDropsObject.getData is useless.'))
@@ -51,6 +52,7 @@ export class Reverse1999HisBoundenDutyDropsObject extends DataContainerObject<Re
 export class Reverse1999HisBoundenDutyValuesObject extends DataContainerObject<Reverse1999HisBoundenDutyValues> {
   public readonly name: string = 'reverse1999-hisboundenduty-values'
   public autoUpdateNotificationThreshold = 86400_000 * 3
+  public autoUpdateThreshold = 0
 
   public getData(): Promise<IDataContainer<Reverse1999HisBoundenDutyValues>> {
     return Promise.reject(new Error('Reverse1999HisBoundenDutyValuesObject.getData is useless.'))
