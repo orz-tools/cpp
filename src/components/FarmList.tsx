@@ -143,6 +143,7 @@ export function StageLine({ run }: { run: StageRun }) {
           <MenuItem
             key={k}
             style={{ fontWeight: 'normal' }}
+            className="cpp-menu-not-interactive"
             icon={
               <CachedImg
                 src={item.icon}
@@ -178,6 +179,7 @@ export function UnfeasibleLine({ items }: { items: Record<string, number> }) {
         const value = v
         return (
           <MenuItem
+            className="cpp-menu-not-interactive"
             key={k}
             style={{ fontWeight: 'normal' }}
             icon={

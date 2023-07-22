@@ -160,7 +160,7 @@ export function TaskMenu<G extends IGame>({
         <a
           role="menuitem"
           tabIndex={0}
-          className="bp4-menu-item cpp-task-menu"
+          className="bp4-menu-item cpp-task-menu cpp-menu-not-interactive"
           style={{ flexShrink: 1, overflow: 'hidden' }}
         >
           <>
@@ -247,6 +247,7 @@ function ItemStack<G extends IGame>({
   const item = ga.getItem(stack.itemId)
   return (
     <MenuItem
+      className="cpp-menu-not-interactive"
       key={stack.itemId}
       icon={
         <div style={{ display: 'flex' }}>

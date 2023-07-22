@@ -359,7 +359,7 @@ export function ItemMenu({ item }: { item: IItem }) {
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp4-menu-item cpp-item-menu"
+        className="bp4-menu-item cpp-item-menu cpp-menu-not-interactive"
         style={{ flexShrink: 1, overflow: 'hidden' }}
       >
         <>
