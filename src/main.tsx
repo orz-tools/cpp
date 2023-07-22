@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { Home } from './components/Home'
 import { runCpp } from './entry'
 import { GameName, gameAdapterLoaders, gameComponentLoaders } from './games'
-import { formatProfileName } from './profiles'
+import { formatProfileName, getStoragePrefix } from './profiles'
 
 FocusStyleManager.onlyShowFocusOnTabs()
 
@@ -21,9 +21,7 @@ async function runApp() {
   if (!Object.prototype.hasOwnProperty.call(gameAdapterLoaders, game)) throw new Error('invalid game name')
 
   const profile = parts[2] || ''
-
-  let storagePrefix = `cpp[${encodeURIComponent(game)}][${encodeURIComponent(profile)}]`
-  if (game === 'arknights' && profile === '') storagePrefix = `cpp_`
+  const storagePrefix = getStoragePrefix(game, profile)
 
   if (parts.length > 3) throw new Error('invalid parts.length')
 

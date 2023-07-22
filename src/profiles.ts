@@ -38,3 +38,10 @@ export function getProfiles() {
 export function formatProfileName(game: string, instanceName: string) {
   return `[${game.toUpperCase()}][${JSON.stringify(instanceName)}]`
 }
+
+export function getStoragePrefix(game: string, instanceName: string) {
+  let storagePrefix = `cpp[${encodeURIComponent(game)}][${encodeURIComponent(instanceName)}]`
+  if (game === 'arknights' && instanceName === '') storagePrefix = `cpp_`
+
+  return storagePrefix
+}

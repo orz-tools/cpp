@@ -5,9 +5,10 @@ import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
 const logs = [
-  { date: '2023-07-22', type: 'optimize', desc: '优化统一部分 UI/UX' },
-  { date: '2023-07-22', type: 'optimize', desc: '重新设计数据更新功能' },
   { date: '2023-07-22', type: 'optimize', desc: '部分数据源迁移至 CDN' },
+  { date: '2023-07-22', type: 'optimize', desc: '重新设计数据更新功能' },
+  { date: '2023-07-22', type: 'optimize', desc: '优化统一部分 UI/UX' },
+  { date: '2023-07-22', type: 'optimize', desc: '增加用户数据管理（导入/导出）' },
   { date: '2023-07-17', game: [GameName.Re1999], type: 'optimize', desc: '追加材料掉率表中的价值数据' },
   { date: '2023-07-17', type: 'optimize', desc: '区分价值“体力”（蓝黑色）和实际体力（蓝色）' },
   { date: '2023-07-09', type: 'optimize', desc: '刷本规划中增加单次理智和样本数显示' },

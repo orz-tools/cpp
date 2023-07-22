@@ -30,6 +30,7 @@ import { ValueOptionButton } from './components/Value'
 import { useRequest } from './hooks/useRequest'
 import { formatProfileName, getProfiles } from './profiles'
 import { AppToaster } from './components/Toaster'
+import { UserDataManager } from './components/UserDataManager'
 
 function UndoButtons() {
   const atoms = useAtoms()
@@ -55,6 +56,19 @@ function UndoButtons() {
         onClick={() => setData('redo')}
         rightIcon={redoCounter > 0 ? <Tag round={true}>{redoCounter}</Tag> : undefined}
       />
+    </>
+  )
+}
+
+function DataManagerButton() {
+  const cpp = useCpp()
+  const game = cpp.gameAdapter.getCodename()
+  const instanceName = cpp.instanceName
+  const [show, setShow] = useState(false)
+  return (
+    <>
+      <Button minimal icon={'archive'} text="用户数据管理" onClick={() => setShow(true)} />
+      <UserDataManager game={game} instanceName={instanceName} isOpen={show} onClose={() => setShow(false)} />
     </>
   )
 }
@@ -193,6 +207,7 @@ function App() {
           <ConfigButton />
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
+          <DataManagerButton />
           <ReloadDataButton />
         </Navbar.Group>
       </Navbar>
@@ -368,7 +383,7 @@ export function AppWrapper() {
   )
 }
 
-const errAtom = atom<{ error: any; context: string } | undefined>(undefined)
+export const errAtom = atom<{ error: any; context: string } | undefined>(undefined)
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode; instanceName: string; codename: string },
@@ -409,10 +424,13 @@ class ErrorBoundary extends React.Component<
               </>
             }
           >
-            <Button minimal disabled>
-              您不妨试试
-            </Button>
-            <ReloadDataButton />
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <Button minimal disabled>
+                您不妨试试
+              </Button>
+              <ReloadDataButton />
+              <DataManagerButton />
+            </div>
           </DialogFooter>
         </Dialog>
       )
