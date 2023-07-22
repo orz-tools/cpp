@@ -29,11 +29,29 @@ export function AboutList() {
         />
         <MenuDivider title="联系" />
         <MenuItem
+          icon={'people'}
+          multiline={true}
+          href={
+            'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zFTyI8xNj6mivBd_h6hEoG3tRTPipBbH&authKey=jdONrgUlL5FP4QyYbxFJN46RSB2kr5IHYqmtEbzhegfTYGl%2FSH3tZqZpzMUDTa22&noverify=0&group_code=897997981'
+          }
+          {...externalLinkProps}
+          text={
+            <>
+              QQ 交流群<span style={{ marginLeft: '0.5em', fontWeight: 300 }}>897997981</span>
+            </>
+          }
+        />
+        <MenuItem
           icon={'envelope'}
           multiline={true}
-          href={'mailto:cpp@ouomail.com'}
+          href={''}
           {...externalLinkProps}
-          text={<span style={{ userSelect: 'text' }}>cpp@ouomail.com</span>}
+          text={
+            <>
+              邮箱
+              <span style={{ userSelect: 'text', marginLeft: '0.5em', fontWeight: 300 }}>cpp@ouomail.com</span>
+            </>
+          }
         />
         <MenuDivider title="数据源" />
         {AboutDataSources && <AboutDataSources />}
