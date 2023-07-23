@@ -1,9 +1,9 @@
 import { AnchorButton, Button, Dialog, DialogBody, DialogFooter, TextArea } from '@blueprintjs/core'
 import { useEffect, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { errAtom } from '../App'
 import { useStore } from '../Cpp'
 import { formatProfileName, getStoragePrefix } from '../profiles'
+import { ErrAtom } from './Err'
 
 export function UserDataManager({
   game,
@@ -93,7 +93,7 @@ function UserDataManagerContent({
       alert('数据已导入，将重新载入页面。')
       location.reload()
     } catch (e) {
-      store.set(errAtom, { error: e, context: '导入数据时遇到问题' })
+      store.set(ErrAtom, { error: e, context: '导入数据时遇到问题' })
     }
   })
 

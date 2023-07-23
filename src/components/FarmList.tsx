@@ -1,12 +1,16 @@
-import { Alignment, Button, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import { Alignment, Button, Icon, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { sortBy } from 'ramda'
 import { useEffect } from 'react'
 import useEvent from 'react-use-event-hook'
-import { Cpp, useCpp, useGameAdapter } from '../Cpp'
+import { Cpp, FarmLevel, FarmLevelNames, FarmLevelShortNames, useCpp, useGameAdapter, useStore } from '../Cpp'
 import { useRequest } from '../hooks/useRequest'
 import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
 import { SampleTag, ValueTag } from './Value'
+import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
+import { Atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { ErrAtom } from './Err'
+import { MenuItem2, Popover2 } from '@blueprintjs/popover2'
 
 interface StageRun {
   stageId: string
@@ -15,15 +19,65 @@ interface StageRun {
   apCost: number
 }
 
-export async function plan(cpp: Cpp<IGame>, finished: boolean) {
+enum Level {
+  Star = 1,
+  Goal = 2,
+  Finished = 3,
+}
+
+function getLevelTaskRequirementsAtom(atoms: UserDataAtomHolder<IGame>['atoms'], l: Level): Atom<Record<string, number>>
+
+function getLevelTaskRequirementsAtom(
+  atoms: UserDataAtomHolder<IGame>['atoms'],
+  l: Level | undefined,
+): Atom<Record<string, number>> | undefined
+
+function getLevelTaskRequirementsAtom(atoms: UserDataAtomHolder<IGame>['atoms'], l: Level | undefined) {
+  if (l === undefined) return undefined
+  switch (l) {
+    case Level.Star:
+      throw new Error('Star level not implemented')
+    case Level.Goal:
+      return atoms.allGoalTaskRequirements
+    case Level.Finished:
+      return atoms.allFinishedTaskRequirements
+  }
+  throw new Error('invalid level')
+}
+
+export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
+  console.log('new planning session')
   const ga = cpp.gameAdapter
   const atoms = cpp.atoms.atoms
   const store = cpp.store
   const quantities = store.get(atoms.itemQuantities)
-  const requirements = store.get(finished ? atoms.allFinishedTaskRequirements : atoms.allGoalTaskRequirements)
+  const considerAtom = getLevelTaskRequirementsAtom(atoms, consider)
+  const considerRequirements = considerAtom ? store.get(considerAtom) : undefined
+  const requirements = store.get(getLevelTaskRequirementsAtom(atoms, target))
   const forbiddenFormulaTags = store.get(cpp.preferenceAtoms.forbiddenFormulaTagsAtom)
   const forbiddenStageIds = store.get(cpp.preferenceAtoms.forbiddenStageIdsAtom)
-  const planner = await FarmPlanner.create(ga, { forbiddenFormulaTags, forbiddenStageIds })
+
+  const previousResult = considerRequirements
+    ? await (async () => {
+        console.log('pre-planning for consider level', Level[consider!])
+        const planner = await FarmPlanner.create(ga, { forbiddenFormulaTags, forbiddenStageIds })
+        planner.setRequirements(considerRequirements)
+        planner.setQuantity(quantities)
+        const result = await planner.run()
+        if (!result.feasible) {
+          return null
+        }
+        return result
+      })()
+    : undefined
+  if (previousResult === null) return null
+
+  if (previousResult) {
+    console.log('planning for target level', Level[target], 'with previous result', previousResult)
+  } else {
+    console.log('planning for target level', Level[target], 'directly')
+  }
+  const planner = await FarmPlanner.create(ga, { forbiddenFormulaTags, forbiddenStageIds }, previousResult)
   planner.setRequirements(requirements)
   planner.setQuantity(quantities)
   const result = await planner.run()
@@ -52,17 +106,52 @@ export async function plan(cpp: Cpp<IGame>, finished: boolean) {
   }
 
   return {
+    target: target,
+    consider: consider,
     stageRuns: sortBy((a) => -a.apCost, stageRuns),
     ap,
     unfeasibleItems: hasUnfeasibleItems ? unfeasibleItems : undefined,
   }
 }
 
+function FarmLevelButton({ level, refresh }: { level: FarmLevel; refresh?: (level: FarmLevel) => any }) {
+  const cpp = useCpp()
+  const farmLevelAtom = cpp.preferenceAtoms.farmLevelAtom
+  const [farmLevel, setFarmLevel] = useAtom(farmLevelAtom)
+  return (
+    <MenuItem2
+      text={FarmLevelNames[level]}
+      active={farmLevel === level}
+      onClick={() => {
+        setFarmLevel(level)
+        refresh && refresh(level)
+      }}
+    />
+  )
+}
+
 export function FarmList() {
   const cpp = useCpp()
   const { loading, response, send, error } = useRequest(plan)
-  const refresh = useEvent(() => send(cpp, false))
-  const refreshAll = useEvent(() => send(cpp, true))
+  const farmLevelAtom = cpp.preferenceAtoms.farmLevelAtom
+  const farmLevel = useAtomValue(farmLevelAtom)
+  const setErr = useSetAtom(ErrAtom)
+  const refresh = useEvent((f?: FarmLevel) => {
+    if (!f) f = farmLevel
+    try {
+      switch (f) {
+        case FarmLevel.Finished:
+          return send(cpp, Level.Finished)
+        case FarmLevel.Goal:
+          return send(cpp, Level.Goal)
+        case FarmLevel.GoalForFinished:
+          return send(cpp, Level.Goal, Level.Finished)
+      }
+      throw new Error('Invalid farm level')
+    } catch (e) {
+      setErr({ error: e, context: '刷本规划时遇到问题' })
+    }
+  })
   useEffect(() => {
     if (error) {
       console.log(error)
@@ -78,16 +167,32 @@ export function FarmList() {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}>
-          <Button text={''} minimal={true} disabled={loading} onClick={refreshAll} />
+          <Popover2
+            usePortal={true}
+            minimal={true}
+            content={
+              <Menu>
+                <FarmLevelButton level={FarmLevel.Goal} refresh={refresh} />
+                <FarmLevelButton level={FarmLevel.GoalForFinished} refresh={refresh} />
+                <MenuDivider />
+                <FarmLevelButton level={FarmLevel.Finished} refresh={refresh} />
+              </Menu>
+            }
+            position="bottom-right"
+          >
+            <Button minimal={true} rightIcon={<Icon size={10} icon="chevron-down" />} small style={{ marginRight: -5 }}>
+              {FarmLevelShortNames[farmLevel]}
+            </Button>
+          </Popover2>
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
             minimal={true}
             disabled={loading}
-            onClick={refresh}
+            onClick={() => refresh()}
           />
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
-          {response ? <ValueTag value={response.ap} intent={'primary'} /> : '刷什么'}
+          {response ? <ValueTag value={response.ap} intent={'primary'} /> : null}
         </Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>

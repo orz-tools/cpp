@@ -24,6 +24,7 @@ export class FarmPlanner<G extends IGame> {
   public static async create<G extends IGame>(
     ga: IGameAdapter<G>,
     options: CreateFarmPlannerOptions,
+    previousResult?: Awaited<ReturnType<FarmPlanner<G>['run']>>,
   ): Promise<FarmPlanner<G>> {
     await Promise.resolve()
 
@@ -46,8 +47,14 @@ export class FarmPlanner<G extends IGame> {
 
     for (const formula of ga.getFormulas()) {
       if (intersection(formula.tags, options.forbiddenFormulaTags).length !== 0) continue
+      if (previousResult) {
+        const p = previousResult[`formula:${formula.id}`] || 0
+        if (p <= 0) continue
+        model.constraints[`formula:${formula.id}`] = { min: 0, max: Math.ceil(p) }
+      }
 
       const item = {} as Exclude<(typeof model)['variables'][any], undefined>
+      item[`formula:${formula.itemId}`] = 1
       item[`item:${formula.itemId}`] = formula.quantity
       for (const cost of formula.costs) {
         item[`item:${cost.itemId}`] = -cost.quantity
@@ -59,7 +66,14 @@ export class FarmPlanner<G extends IGame> {
     const stageInfo = ga.getStageInfos()
     for (const [k, v] of Object.entries(stageInfo)) {
       if (options.forbiddenStageIds.includes(k)) continue
-      model.variables[`battle:${k}`] = v.varRow
+      if (previousResult) {
+        const p = previousResult[`battle:${k}`] || 0
+        if (p <= 0) continue
+        model.constraints[`battle:${k}`] = { min: 0, max: Math.ceil(p) }
+      }
+      model.variables[`battle:${k}`] = Object.assign({}, v.varRow, {
+        [`battle:${k}`]: 1,
+      })
     }
 
     Object.values(model.variables).forEach((c) =>

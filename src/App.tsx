@@ -14,23 +14,24 @@ import {
   Tag,
 } from '@blueprintjs/core'
 import { ContextMenu2, MenuItem2, Popover2 } from '@blueprintjs/popover2'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, StageButton } from './components/ConfigUi'
+import { ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { ItemList } from './components/ItemList'
 import { LogList } from './components/LogList'
 import { SynthesisList } from './components/SynthesisList'
 import { TaskList } from './components/TaskList'
+import { AppToaster } from './components/Toaster'
+import { UserDataManager } from './components/UserDataManager'
 import { ValueOptionButton } from './components/Value'
 import { useRequest } from './hooks/useRequest'
 import { formatProfileName, getProfiles } from './profiles'
-import { AppToaster } from './components/Toaster'
-import { UserDataManager } from './components/UserDataManager'
 
 function UndoButtons() {
   const atoms = useAtoms()
@@ -76,7 +77,7 @@ function DataManagerButton() {
 function ReloadDataButton() {
   const ga = useGameAdapter()
   const dm = ga.getDataManager()
-  const setError = useSetAtom(errAtom)
+  const setError = useSetAtom(ErrAtom)
   const { loading, send } = useRequest(async () => {
     const reload = AppToaster.show(
       { message: '更新数据中…', isCloseButtonShown: false, timeout: 0, intent: 'primary' },
@@ -383,8 +384,6 @@ export function AppWrapper() {
   )
 }
 
-export const errAtom = atom<{ error: any; context: string } | undefined>(undefined)
-
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode; instanceName: string; codename: string },
   { hasError: boolean; error?: Error }
@@ -441,7 +440,7 @@ class ErrorBoundary extends React.Component<
 }
 
 export function ErrDialog({ instanceName, codename }: { instanceName: string; codename: string }) {
-  const [err, setErr] = useAtom(errAtom)
+  const [err, setErr] = useAtom(ErrAtom)
 
   if (!err) return null
   return (

@@ -9,6 +9,7 @@ export interface Preference {
   valueType: ValueType
   forbiddenFormulaTags: string[]
   forbiddenStageIds: string[]
+  farmLevel: FarmLevel
 }
 
 export enum ValueType {
@@ -16,6 +17,33 @@ export enum ValueType {
   Diamond = 'diamond',
   Yuan = 'yuan',
   Time = 'time',
+}
+
+export enum FarmLevel {
+  StarOnly = 'star', // 星标 (最少体力)
+  StarForGoal = 'star_for_goal', // 星标 (以计划为目标)
+  StarForFinished = 'star_for_finished', // 星标 (以毕业为目标)
+  Goal = 'goal', // 计划 (最少体力)
+  GoalForFinished = 'goal_for_finished', // 计划 (以毕业为目标)
+  Finished = 'finished', // 毕业 (最少体力)
+}
+
+export const FarmLevelNames: Record<FarmLevel, string> = {
+  [FarmLevel.StarOnly]: '星标 (最少体力)',
+  [FarmLevel.StarForGoal]: '星标 (以计划为目标)',
+  [FarmLevel.StarForFinished]: '星标 (以毕业为目标)',
+  [FarmLevel.Goal]: '计划 (最少体力)',
+  [FarmLevel.GoalForFinished]: '计划 (以毕业为目标)',
+  [FarmLevel.Finished]: '毕业 (最少体力)',
+}
+
+export const FarmLevelShortNames: Record<FarmLevel, string> = {
+  [FarmLevel.StarOnly]: '仅星标',
+  [FarmLevel.StarForGoal]: '星标(计划)',
+  [FarmLevel.StarForFinished]: '星标(毕业)',
+  [FarmLevel.Goal]: '仅计划',
+  [FarmLevel.GoalForFinished]: '计划(毕业)',
+  [FarmLevel.Finished]: '毕业',
 }
 
 export class Cpp<G extends IGame> {
@@ -48,6 +76,7 @@ export class Cpp<G extends IGame> {
       (get) => {
         const value = Object.assign({}, get(preferenceStorageAtom) || {})
         if (value.valueType == null) value.valueType = ValueType.Ap
+        if (value.farmLevel == null) value.farmLevel = FarmLevel.GoalForFinished
         if (value.forbiddenFormulaTags == null) value.forbiddenFormulaTags = []
         if (value.forbiddenStageIds == null) value.forbiddenStageIds = []
         return value
@@ -87,12 +116,23 @@ export class Cpp<G extends IGame> {
       },
     )
 
+    const farmLevelAtom = atom(
+      (get) => get(preferenceAtom).farmLevel || [],
+      (get, set, value: FarmLevel | SetStateAction<FarmLevel>) => {
+        set(preferenceAtom, (r) => ({
+          ...r,
+          farmLevel: typeof value === 'function' ? value(get(preferenceAtom).farmLevel || []) : value,
+        }))
+      },
+    )
+
     return {
       preferenceAtom,
       preferenceStorageAtom,
       valueTypeAtom,
       forbiddenFormulaTagsAtom,
       forbiddenStageIdsAtom,
+      farmLevelAtom,
     }
   }
 }

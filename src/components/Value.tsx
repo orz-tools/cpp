@@ -111,6 +111,7 @@ export function ValueTag({
       title={formatAll(value)}
       intent={intent}
     >
+      {/* {intent ? undefined : '约 '} */}
       {format(value, type, single)}
     </Tag>
   )
@@ -197,6 +198,7 @@ export function ValueTagProgressBar({
       }}
       title={formatAll(value) + '\n\n/////\n\n' + formatAll(maxValue)}
     >
+      {/* {'约 '} */}
       {format(value, type)}
       {'/'}
       {format(maxValue, type)}
