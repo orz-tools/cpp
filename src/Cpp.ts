@@ -6,6 +6,7 @@ import { IGame, IGameAdapter } from './pkg/cpp-basic'
 import { UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
 
 export interface Preference {
+  v: number
   valueType: ValueType
   forbiddenFormulaTags: string[]
   forbiddenStageIds: string[]
@@ -75,10 +76,12 @@ export class Cpp<G extends IGame> {
     >(
       (get) => {
         const value = Object.assign({}, get(preferenceStorageAtom) || {})
+        if (!value.v) value.v = 0
         if (value.valueType == null) value.valueType = ValueType.Ap
-        if (value.farmLevel == null) value.farmLevel = FarmLevel.GoalForFinished
+        if (value.farmLevel == null) value.farmLevel = FarmLevel.Goal
         if (value.forbiddenFormulaTags == null) value.forbiddenFormulaTags = []
         if (value.forbiddenStageIds == null) value.forbiddenStageIds = []
+        value.v = 1
         return value
       },
       (get, set, value: Preference | SetStateAction<Preference>) =>

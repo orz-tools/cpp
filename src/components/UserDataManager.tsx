@@ -22,6 +22,7 @@ export function UserDataManager({
     if (isOpen) {
       try {
         const d = localStorage.getItem(storagePrefix + 'userdata')
+        const p = localStorage.getItem(storagePrefix + 'preference')
         if (!d) throw new Error('empty')
         const now = Date.now()
         const userdata = JSON.stringify({
@@ -31,6 +32,7 @@ export function UserDataManager({
           instanceName: instanceName,
           exportedAt: now,
           userdata: JSON.parse(d || ''),
+          preference: p ? JSON.parse(p) : undefined,
         })
         setData({ data: userdata, now: now })
       } catch (e) {
@@ -90,6 +92,11 @@ function UserDataManagerContent({
       if (v['game'] !== game) throw new Error(`game 不匹配，请不要把 ${v['game']} 导入到 ${game}。`)
       if (!v['userdata'] || typeof v['userdata'] !== 'object') throw new Error('userdata 根本无效。')
       localStorage.setItem(getStoragePrefix(game, instanceName) + 'userdata', JSON.stringify(v['userdata']))
+      if (!v['preference'] || typeof v['preference'] !== 'object') {
+        //
+      } else {
+        localStorage.setItem(getStoragePrefix(game, instanceName) + 'preference', JSON.stringify(v['preference']))
+      }
       alert('数据已导入，将重新载入页面。')
       location.reload()
     } catch (e) {
