@@ -26,7 +26,8 @@
     "react-use-event-hook": "^0.9.6",
     "react-virtualized-auto-sizer": "^1.0.20",
     "react-window": "^1.8.9",
-    "use-resize-observer": "^9.1.0"
+    "use-resize-observer": "^9.1.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@ainou/code-style": "^0.0.25",

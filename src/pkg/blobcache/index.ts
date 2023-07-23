@@ -57,11 +57,11 @@ export function load(url: string): string | Promise<string> {
 
 async function superfetch(url: string) {
   const github = parseGitHubRawUrl(url)
-  if (!github) return fetch(url)
+  if (!github) return fetch(url, { referrerPolicy: 'no-referrer' })
 
   let originalError: any = null
   try {
-    const res = await fetch(url)
+    const res = await fetch(url, { referrerPolicy: 'no-referrer' })
     if (res.status === 404) return res
     if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`, { cause: res })
     return res
@@ -71,7 +71,7 @@ async function superfetch(url: string) {
 
   for (const v of Object.values(githubRawTargets)) {
     try {
-      const res = await fetch(v(github))
+      const res = await fetch(v(github), { referrerPolicy: 'no-referrer' })
       if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`, { cause: res })
       return res
     } catch (e) {

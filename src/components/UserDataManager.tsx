@@ -21,6 +21,8 @@ export function UserDataManager({
   useEffect(() => {
     if (isOpen) {
       try {
+        const d = localStorage.getItem(storagePrefix + 'userdata')
+        if (!d) throw new Error('empty')
         const now = Date.now()
         const userdata = JSON.stringify({
           '@type': '@orz/cpp/dump',
@@ -28,7 +30,7 @@ export function UserDataManager({
           game: game,
           instanceName: instanceName,
           exportedAt: now,
-          userdata: JSON.parse(localStorage.getItem(storagePrefix + 'userdata') || '{}') || {},
+          userdata: JSON.parse(d || ''),
         })
         setData({ data: userdata, now: now })
       } catch (e) {
