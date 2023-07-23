@@ -25,7 +25,7 @@ export enum FarmLevel {
   StarForFinished = 'star_for_finished', // 星标 (以毕业为目标)
   Goal = 'goal', // 计划 (最少体力)
   GoalForFinished = 'goal_for_finished', // 计划 (以毕业为目标)
-  Finished = 'finished', // 毕业 (最少体力)
+  Finished = 'finished', // 毕业
 }
 
 export const FarmLevelNames: Record<FarmLevel, string> = {
@@ -34,7 +34,7 @@ export const FarmLevelNames: Record<FarmLevel, string> = {
   [FarmLevel.StarForFinished]: '星标 (以毕业为目标)',
   [FarmLevel.Goal]: '计划 (最少体力)',
   [FarmLevel.GoalForFinished]: '计划 (以毕业为目标)',
-  [FarmLevel.Finished]: '毕业 (最少体力)',
+  [FarmLevel.Finished]: '毕业',
 }
 
 export const FarmLevelShortNames: Record<FarmLevel, string> = {
