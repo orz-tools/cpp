@@ -21,19 +21,19 @@ export enum ValueType {
 }
 
 export enum FarmLevel {
-  StarOnly = 'star', // 星标 (最少体力)
+  StarOnly = 'star', // 仅星标
   StarForGoal = 'star_for_goal', // 星标 (以计划为目标)
   StarForFinished = 'star_for_finished', // 星标 (以毕业为目标)
-  Goal = 'goal', // 计划 (最少体力)
+  Goal = 'goal', // 仅计划
   GoalForFinished = 'goal_for_finished', // 计划 (以毕业为目标)
   Finished = 'finished', // 毕业
 }
 
 export const FarmLevelNames: Record<FarmLevel, string> = {
-  [FarmLevel.StarOnly]: '星标 (最少体力)',
+  [FarmLevel.StarOnly]: '仅星标',
   [FarmLevel.StarForGoal]: '星标 (以计划为目标)',
   [FarmLevel.StarForFinished]: '星标 (以毕业为目标)',
-  [FarmLevel.Goal]: '计划 (最少体力)',
+  [FarmLevel.Goal]: '仅计划',
   [FarmLevel.GoalForFinished]: '计划 (以毕业为目标)',
   [FarmLevel.Finished]: '毕业',
 }

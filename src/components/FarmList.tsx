@@ -1,16 +1,16 @@
 import { Alignment, Button, Icon, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import { MenuItem2, Popover2 } from '@blueprintjs/popover2'
+import { Atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { sortBy } from 'ramda'
 import { useEffect } from 'react'
 import useEvent from 'react-use-event-hook'
-import { Cpp, FarmLevel, FarmLevelNames, FarmLevelShortNames, useCpp, useGameAdapter, useStore } from '../Cpp'
+import { Cpp, FarmLevel, FarmLevelNames, FarmLevelShortNames, useCpp, useGameAdapter } from '../Cpp'
 import { useRequest } from '../hooks/useRequest'
 import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
+import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
+import { ErrAtom } from './Err'
 import { CachedImg } from './Icons'
 import { SampleTag, ValueTag } from './Value'
-import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
-import { Atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { ErrAtom } from './Err'
-import { MenuItem2, Popover2 } from '@blueprintjs/popover2'
 
 interface StageRun {
   stageId: string

@@ -124,7 +124,13 @@ export function DataObjectStatus({
     data.version.text.trim() !== new Date(data.version.timestamp).toJSON().replace(/\.\d+/g, '')
   return (
     <>
-      <MenuItem2 icon={'database'} text={title} title={title} href={href || data.version.sources[0] || undefined} />
+      <MenuItem2
+        icon={'database'}
+        text={title}
+        title={title}
+        href={href || data.version.sources[0] || undefined}
+        {...externalLinkProps}
+      />
       <Menu className="cpp-menu-indent">
         <MenuItem2
           className="cpp-menu-not-interactive"
