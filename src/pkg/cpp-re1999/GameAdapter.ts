@@ -126,9 +126,8 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       let flag = false
       while (episodes.length > 0) {
         const episode = episodes.shift()!
-        if (![ExEpisodeType.Story, ExEpisodeType.Normal, ExEpisodeType.Boss].includes(episode.type)) continue
         const chapter = this.dataManager.raw.exChapters.find((x) => x.id === episode.chapterId)
-        if (!chapter || !chapter.chapterIndex || chapter.type === ExChapterType.Simulate) continue
+        if (!chapter) continue
 
         const previous = episode.preEpisode ? this.stageInfo[String(episode.preEpisode)] : null
         if (episode.preEpisode && !previous) {
@@ -157,10 +156,22 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       }
       if (!badEpisodes.length) break
       if (!flag) {
-        throw new Error('cannot resolve preEpisode, pool remaining:' + badEpisodes.map((x) => x.id).join(','))
+        console.warn('cannot resolve preEpisode, pool remaining:', badEpisodes)
+        break
       }
       episodes.push(...badEpisodes)
       badEpisodes.length = 0
+    }
+
+    for (const stage of Object.values(this.stageInfo)) {
+      if ([ExEpisodeType.Story, ExEpisodeType.Normal, ExEpisodeType.Boss].includes(stage.episode.type)) {
+        continue
+      }
+      if (stage.chapter.chapterIndex && stage.chapter.type !== ExChapterType.Simulate) {
+        continue
+      }
+      delete this.stageInfo[stage.id]
+      continue
     }
 
     for (const [key, value] of Object.entries(this.dataManager.raw.drops.levelReport)) {
