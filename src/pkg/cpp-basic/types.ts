@@ -2,7 +2,7 @@ import type { FarmModelInternalVar, FarmModelSolutionVar } from './FarmPlanner'
 import { IGameAdapter } from './managers'
 
 export interface IGame {
-  characterStatus: unknown
+  characterStatus: object
   characterTaskType: unknown
 }
 

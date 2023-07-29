@@ -57,6 +57,24 @@ function buildAtoms<G extends IGame>(
   const { dataAtom } = tx
 
   const doRewrite = (charId: string, data: Draft<UserData<G>>) => {
+    const emptyKeys = Object.keys(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus())
+
+    if (data.current[charId]) {
+      Object.keys(data.current[charId]).forEach((x) => {
+        if (!emptyKeys.includes(x)) {
+          delete data.current[charId][x as keyof G['characterStatus']]
+        }
+      })
+    }
+
+    if (data.goal[charId]) {
+      Object.keys(data.goal[charId]).forEach((x) => {
+        if (!emptyKeys.includes(x)) {
+          delete data.goal[charId][x as keyof G['characterStatus']]
+        }
+      })
+    }
+
     const [c, g] = ga.getUserDataAdapter().rewriteCharacters(charId, data.current[charId], data.goal[charId])
     if (c) {
       data.current[charId] = c

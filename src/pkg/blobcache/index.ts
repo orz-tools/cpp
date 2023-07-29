@@ -1,6 +1,6 @@
 import localForage from 'localforage'
-import { DedupPool } from '../dedup'
 import pLimit from 'p-limit'
+import { DedupPool } from '../dedup'
 
 const blobStore = localForage.createInstance({
   name: 'cpp_blob',
@@ -14,6 +14,7 @@ function mime(url: string) {
   try {
     const p = new URL(url).pathname.toLowerCase()
     if (p.endsWith('.png')) return 'image/png'
+    if (p.endsWith('.webp')) return 'image/webp'
     return undefined
   } catch {
     return undefined
