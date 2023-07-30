@@ -19,8 +19,8 @@ import { useAtoms, useGameAdapter } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
-import { ValueTag, ValueTagProgressBar } from './Value'
 import { InventorySyncer } from './InventorySyncer'
+import { ValueTag, ValueTagProgressBar } from './Value'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
@@ -557,7 +557,7 @@ export function ItemList<G extends IGame>() {
 
           return (
             <React.Fragment key={key}>
-              <MenuDivider title={categoryNames[key]} />
+              <MenuDivider title={categoryNames[key] || key} />
               {items.map((x) => (
                 <ItemMenu key={x.key} item={x} />
               ))}

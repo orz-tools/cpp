@@ -459,7 +459,7 @@ export function generateIndirects<G extends IGame>(
         const clears = Math.ceil(exp / value)
         exp -= clears * value
         for (const i of thisExpItem.indirectStage) {
-          indirects[i.itemId] = (indirects[i.itemId] || 0) + i.quantity * clears
+          indirects[i.itemId] = (indirects[i.itemId] || 0) + Math.ceil(i.quantity * clears)
         }
       }
       delete unsatisfiedRequirements[virtualExpItemId]

@@ -1,5 +1,7 @@
+import { Button } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React from 'react'
+import useEvent from 'react-use-event-hook'
 import { useAtoms } from '../Cpp'
 import { ICharacter, IGame } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
@@ -29,12 +31,28 @@ export function CharacterStatusPopover<G extends IGame>({
   if (!isGoal) currentStatus = undefined
   const ctx = { status, setStatus, character, currentStatus }
 
+  const handleEdit = useEvent(() => {
+    setStatus((draft) => {
+      try {
+        const v = prompt('input new status', JSON.stringify(draft))
+        if (!v) return draft
+        const vv = JSON.parse(v)
+        if (typeof vv !== 'object') throw new Error('bad status')
+        return vv
+      } catch (e: any) {
+        alert(e?.message || e?.stack || String(e))
+        return draft
+      }
+    })
+  })
+
   return (
     <EditorContext.Provider value={ctx}>
       <div>
         {character.name} - {isGoal ? '培养目标' : '当前状态'}
       </div>
-      {JSON.stringify(status)}
+      <pre style={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap' }}>{JSON.stringify(status)}</pre>
+      <Button text={'update'} onClick={handleEdit} />
     </EditorContext.Provider>
   )
 }

@@ -148,7 +148,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
   public formatTaskAsString(type: Re1999CharacterTaskType, charId: string) {
     switch (type._) {
       case 'join':
-        return `招募`
+        return `征集`
       case 'insight':
         return `洞${'零一二三'[type.insight]}`
       case 'level':

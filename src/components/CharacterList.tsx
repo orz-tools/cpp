@@ -4,15 +4,15 @@ import deepEqual from 'deep-equal'
 import { SetStateAction, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import React, { useCallback, useEffect, useMemo } from 'react'
+import useEvent from 'react-use-event-hook'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList, ListChildComponentProps, ListItemKeySelector } from 'react-window'
 import { Cpp, useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
+import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import { ICharacter, IGame } from '../pkg/cpp-basic'
-import { useComponents } from '../hooks/useComponents'
-import useEvent from 'react-use-event-hook'
 
 export function Hide({
   children,
@@ -41,7 +41,35 @@ function renderCharacterStatus<G extends IGame>(
   alreadyHide = false,
 ) {
   alreadyHide.toString()
-  return <>{JSON.stringify(status)}</>
+  const s = Object.entries(status)
+    .map(([k, v]) => {
+      return `${k}:${JSON.stringify(v)}`
+    })
+    .join(', ')
+  return (
+    <>
+      <div style={{ height: 40, width: 200, zIndex: 0, overflow: 'hidden' }}>
+        <pre
+          style={{
+            margin: 0,
+            padding: 0,
+            color: 'white',
+            wordBreak: 'break-all',
+            whiteSpace: 'pre-wrap',
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+          }}
+        >
+          {s}
+        </pre>
+      </div>
+    </>
+  )
 }
 
 function CharacterContextMenu({ character }: { character: ICharacter }) {
