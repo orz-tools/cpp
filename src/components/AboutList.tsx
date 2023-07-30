@@ -92,6 +92,7 @@ export function DescriptionMenuItem(props: MenuItem2['props'] & { description?: 
           <MenuItem
             className="cpp-menu-not-interactive"
             multiline={true}
+            intent={props.intent}
             text={
               <>
                 <div className="cpp-menu-secondary">{props.description}</div>
@@ -109,26 +110,31 @@ export function DataObjectStatus({
   href,
   dataObj,
   copyright,
+  hideCommit,
 }: {
   title?: string
-  href?: string
+  href?: string | null
   dataObj: DataContainerObject<any>
   copyright?: React.ReactNode
+  hideCommit?: boolean
 }) {
   const cpp = useCpp()
   const dm = cpp.gameAdapter.getDataManager()
   const data = dm.get(dataObj)
-  const showCommit =
+  const shouldShowCommit =
+    !hideCommit &&
     data.version.text &&
     data.version.text.trim() !== new Date(data.version.timestamp).toJSON() &&
     data.version.text.trim() !== new Date(data.version.timestamp).toJSON().replace(/\.\d+/g, '')
+  const finalHref = href == null ? undefined : href || data.version.sources[0] || undefined
   return (
     <>
       <MenuItem2
         icon={'database'}
         text={title}
         title={title}
-        href={href || data.version.sources[0] || undefined}
+        href={finalHref}
+        className={finalHref ? '' : 'cpp-menu-not-interactive'}
         {...externalLinkProps}
       />
       <Menu className="cpp-menu-indent">
@@ -147,7 +153,7 @@ export function DataObjectStatus({
             </div>
           }
         />
-        {showCommit ? (
+        {shouldShowCommit ? (
           <MenuItem2
             multiline={true}
             href={data.version.sources[0] || undefined}
