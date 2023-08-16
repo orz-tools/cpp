@@ -28,10 +28,10 @@ export function AboutDataSources() {
         className="cpp-menu-not-interactive"
         description={
           <>
-            由于游戏数据来源已删库跑路，未缓存的图片资源将无法正常载入。在找到新的游戏数据来源前，也不会有后续更新。
+            由于之前提供的游戏数据的好心人已删库跑路，未缓存的图片资源将无法正常载入。至于游戏数据，有个别的好心人随缘更新。
             <br />
             <br />
-            如果您能提供游戏数据和图片资源，欢迎您和我们联系。
+            如果您能稳定提供游戏数据和图片资源，欢迎您和我们联系。
             <br />
             <br />
             此外，点击左上角 Logo 中的 <code>[REVERSE1999]</code>{' '}
@@ -39,7 +39,7 @@ export function AboutDataSources() {
           </>
         }
       />
-      <DataObjectStatus title="已经删库跑路的人解析的游戏数据" href={null} dataObj={dm.$yy} hideCommit />
+      <DataObjectStatus title="另一个好心人提供的游戏数据" href={null} dataObj={dm.$yy} />
       <DataObjectStatus
         title="伴春风而归的材料掉率共建表"
         href={'https://nga.178.com/read.php?tid=36522605'}
