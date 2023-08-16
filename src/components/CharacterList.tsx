@@ -1,12 +1,11 @@
 import { Alignment, Button, ButtonGroup, Menu, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { ContextMenu2, Popover2 } from '@blueprintjs/popover2'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { SetStateAction, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
-import AutoSizer from 'react-virtualized-auto-sizer'
-import { FixedSizeList, ListChildComponentProps, ListItemKeySelector } from 'react-window'
 import { Cpp, useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
@@ -387,13 +386,24 @@ export function CharacterList() {
   useEffect(() => refresh(), [param, refresh])
 
   const list = response || []
-  const child = useCallback(
-    ({ index, data, style }: ListChildComponentProps<ICharacter[]>) => (
-      <CharacterMenu style={style} character={data[index]} />
-    ),
-    [],
-  )
-  const itemKey = useCallback<ListItemKeySelector<ICharacter[]>>((index, data) => data[index].key, [])
+
+  const parentRef = useRef<HTMLUListElement>(null)
+
+  const rowVirtualizer = useVirtualizer({
+    count: list.length,
+    getScrollElement: () => parentRef.current,
+    getItemKey: (index) => list[index].key,
+    overscan: 5,
+    estimateSize: () => 50,
+  })
+
+  const remeasure = useEvent(() => {
+    rowVirtualizer.measure()
+  })
+
+  useEffect(() => {
+    remeasure()
+  }, [param, remeasure])
 
   return (
     <>
@@ -410,22 +420,32 @@ export function CharacterList() {
           <QueryBuilder />
         </Navbar.Group>
       </Navbar>
-      <Menu style={{ flex: 1, flexShrink: 1 }}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <FixedSizeList
-              overscanCount={5}
-              height={height}
-              itemCount={list.length}
-              itemSize={50}
-              width={width}
-              itemKey={itemKey}
-              itemData={list}
-            >
-              {child}
-            </FixedSizeList>
-          )}
-        </AutoSizer>
+      <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const index = virtualRow.index
+            return (
+              <CharacterMenu
+                key={virtualRow.key}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: `${virtualRow.size}px`,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+                character={list[index]}
+              />
+            )
+          })}
+        </div>
       </Menu>
     </>
   )

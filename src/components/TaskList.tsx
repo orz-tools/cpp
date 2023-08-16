@@ -1,11 +1,11 @@
 import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
 import { ContextMenu2, MenuItem2 } from '@blueprintjs/popover2'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { WritableAtom, atom, useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { sortBy, sum } from 'ramda'
 import React, { SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react'
-import AutoSizer from 'react-virtualized-auto-sizer'
-import { ListChildComponentProps, ListItemKeySelector, VariableSizeList } from 'react-window'
+import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { IGame, Task } from '../pkg/cpp-basic'
 import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
@@ -206,7 +206,7 @@ export function TaskMenu<G extends IGame>({
           </MenuItem2>
         </ContextMenu2>
         {hideCosts ? null : renderedCosts}
-        {nextSame ? <MenuDivider /> : null}
+        {nextSame && !hideCosts ? <MenuDivider /> : null}
       </Menu>
       {nextSame ? null : <MenuDivider />}
     </li>
@@ -307,23 +307,6 @@ export function TaskList<G extends IGame>() {
 
   const hideCosts = param.hideCosts || false
   const list = useAtomValue(atoms.goalTasksWithExtra)
-  const listRef = useRef<VariableSizeList<[Task<G>, TaskExtra][]>>(
-    undefined as unknown as VariableSizeList<[Task<G>, TaskExtra][]>,
-  )
-  const child = useCallback(
-    ({ index, data, style }: ListChildComponentProps<[Task<G>, TaskExtra][]>) => (
-      <TaskMenu<G>
-        style={style}
-        task={data[index][0]}
-        extra={data[index][1]}
-        same={data[index - 1]?.[0].charId === data[index][0].charId}
-        nextSame={data[index + 1]?.[0].charId === data[index][0].charId}
-        hideCosts={param.hideCosts}
-      />
-    ),
-    [param],
-  )
-  const itemKey = useCallback<ListItemKeySelector<[Task<G>, TaskExtra][]>>((index, data) => data[index][0].id, [])
   const itemSize = useCallback<(index: number) => number>(
     (index) => {
       const same = list[index - 1]?.[0].charId === list[index][0].charId
@@ -335,10 +318,23 @@ export function TaskList<G extends IGame>() {
     [list, hideCosts],
   )
 
+  const parentRef = useRef<HTMLUListElement>(null)
+
+  const rowVirtualizer = useVirtualizer({
+    count: list.length,
+    getScrollElement: () => parentRef.current,
+    getItemKey: (index) => list[index][0].id,
+    estimateSize: itemSize,
+    overscan: 5,
+  })
+
+  const remeasure = useEvent(() => {
+    rowVirtualizer.measure()
+  })
+
   useEffect(() => {
-    if (!listRef.current) return
-    listRef.current.resetAfterIndex(0)
-  }, [list, param])
+    remeasure()
+  }, [param, remeasure])
 
   return (
     <>
@@ -348,24 +344,36 @@ export function TaskList<G extends IGame>() {
           <HideCostsButton />
         </Navbar.Group>
       </Navbar>
-      <Menu style={{ flex: 1, flexShrink: 1 }}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <VariableSizeList
-              ref={listRef}
-              overscanCount={5}
-              height={height}
-              itemCount={list.length}
-              estimatedItemSize={hideCosts ? 30 : 30 * 5 + 11}
-              itemSize={itemSize}
-              width={width}
-              itemKey={itemKey}
-              itemData={list}
-            >
-              {child}
-            </VariableSizeList>
-          )}
-        </AutoSizer>
+      <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const index = virtualRow.index
+            return (
+              <TaskMenu<G>
+                key={virtualRow.key}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: `${virtualRow.size}px`,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+                task={list[index][0]}
+                extra={list[index][1]}
+                same={list[index - 1]?.[0].charId === list[index][0].charId}
+                nextSame={list[index + 1]?.[0].charId === list[index][0].charId}
+                hideCosts={param.hideCosts}
+              />
+            )
+          })}
+        </div>
       </Menu>
     </>
   )
