@@ -1,3 +1,4 @@
+import { BlobImages, blobImage } from '../blobcache'
 import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
 import { DataContainerObject } from '../dccache'
 import {
@@ -138,8 +139,17 @@ export class Character implements ICharacter {
     return this.raw.nameEng
   }
 
+  private _avatar?: [BlobImages]
   public get avatar() {
-    return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/HeadIconSmall/${this.raw.skinId}.png`
+    return (this._avatar || (this._avatar = [this.avatarGenerator]))[0]
+  }
+  private get avatarGenerator() {
+    return {
+      normal: blobImage(
+        [],
+        `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/HeadIconSmall/${this.raw.skinId}.png`,
+      ),
+    }
   }
 
   public get rarity() {
@@ -221,8 +231,20 @@ export class Item implements IItem {
     return this.raw.name
   }
 
+  private _icon?: [BlobImages]
   public get icon() {
-    return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Item/${this.raw.icon}.png`
+    return (this._icon || (this._icon = [this.iconGenerator]))[0]
+  }
+  private get iconGenerator() {
+    return {
+      normal: blobImage(
+        [],
+        `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Item/${this.raw.icon}.png`,
+      ),
+      soul: blobImage([
+        `https://raw.githubusercontent.com/orz-tools/cpp-soul/master/reverse1999/items/${this.raw.icon}.png`,
+      ]),
+    }
   }
 
   private _valueAsAp?: [number | undefined]
@@ -310,8 +332,20 @@ export class CurrencyItem implements IItem {
     return this.raw.name
   }
 
+  private _icon?: [BlobImages]
   public get icon() {
-    return `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/CurrencyItem/${this.raw.icon}.png`
+    return (this._icon || (this._icon = [this.iconGenerator]))[0]
+  }
+  private get iconGenerator() {
+    return {
+      normal: blobImage(
+        [],
+        `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/CurrencyItem/${this.raw.icon}.png`,
+      ),
+      soul: blobImage([
+        `https://raw.githubusercontent.com/orz-tools/cpp-soul/master/reverse1999/items/3-${this.raw.icon}.png`,
+      ]),
+    }
   }
 
   private _valueAsAp?: [number | undefined]

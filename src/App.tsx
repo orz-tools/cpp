@@ -20,7 +20,7 @@ import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
-import { ConfigButton, StageButton } from './components/ConfigUi'
+import { ConfigButton, SoulButton, StageButton } from './components/ConfigUi'
 import { ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { ItemList } from './components/ItemList'
@@ -206,6 +206,7 @@ function App() {
           <ValueOptionButton />
           <StageButton />
           <ConfigButton />
+          <SoulButton />
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <DataManagerButton />

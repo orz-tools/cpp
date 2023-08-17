@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Menu, MenuItem, Tag } from '@blueprintjs/core'
+import { Button, Card, Checkbox, Menu, MenuItem } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import { useAtom, useAtomValue } from 'jotai'
 import { groupBy, sortBy, without } from 'ramda'
@@ -141,5 +141,23 @@ export function StageButton() {
         关卡 {now}/{all}
       </Button>
     </Popover2>
+  )
+}
+
+export function SoulButton() {
+  const cpp = useCpp()
+  const [blobFlavour, setBlobFlavour] = useAtom(cpp.preferenceAtoms.blobFlavourAtom)
+
+  const handleClick = () => {
+    setBlobFlavour((a) => {
+      if (a === 'normal') return 'soul'
+      return 'normal'
+    })
+  }
+
+  return (
+    <Button icon={'phone'} minimal={true} active={blobFlavour === 'normal'} onClick={handleClick}>
+      ?
+    </Button>
   )
 }

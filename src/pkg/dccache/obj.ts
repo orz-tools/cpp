@@ -13,7 +13,7 @@ export abstract class DataContainerObject<T extends object> {
     if (o['@type'] !== CONTAINER_TYPE || o['@version'] !== CONTAINER_VERSION) {
       throw new Error(`DataContainer ${this.name} version not supported.`)
     }
-    if (o.version.schema && this.requiredSchema && o.version.schema !== this.requiredSchema) {
+    if (o.version.schema && this.requiredSchema && o.version.schema < this.requiredSchema) {
       throw new Error(
         `DataContainer ${this.name} schema not supported (expected=${this.requiredSchema}, actual=${o.version.schema}).`,
       )

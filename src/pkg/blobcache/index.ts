@@ -2,6 +2,21 @@ import localForage from 'localforage'
 import pLimit from 'p-limit'
 import { DedupPool } from '../dedup'
 
+export type BlobImage = {
+  id: string
+  urls: string[]
+}
+
+export type AnyBlobImage = string | BlobImage
+
+export type BlobFlavour = 'soul' | 'normal'
+export type BlobImages = string | Partial<Record<BlobFlavour, AnyBlobImage>>
+
+export function blobImage(urls: string[], id?: string): BlobImage | undefined {
+  if (!urls.length && id) return { id: id, urls: urls }
+  return urls[0] ? { id: id || urls[0], urls: urls } : undefined
+}
+
 const blobStore = localForage.createInstance({
   name: 'cpp_blob',
 })
@@ -28,32 +43,72 @@ function commit(url: string, blobUrl: string) {
 
 const limit = pLimit(8)
 
-export function load(url: string): string | Promise<string> {
-  if (blobMap.has(url)) {
-    return blobMap.get(url)!
+export function pure(url: BlobImages, prefer: BlobFlavour = 'soul'): BlobImage | undefined {
+  if (typeof url === 'string') {
+    return { id: url, urls: [url] }
+  }
+  const u = url[prefer] || url['normal'] || url['soul']
+  if (!u) return undefined
+  if (typeof u === 'string') {
+    return { id: u, urls: [u] }
+  }
+  return u
+}
+
+export function load(inputUrl: BlobImages, prefer?: BlobFlavour): string | Promise<string> {
+  const url = pure(inputUrl, prefer)
+  if (!url) return badUrl
+
+  if (blobMap.has(url.id)) {
+    return blobMap.get(url.id)!
   }
 
-  return pool.run(url, () =>
+  return pool.run(url.id, () =>
     limit(async () => {
-      const existing = (await blobStore.getItem(url)) as ArrayBuffer
+      const existing = (await blobStore.getItem(url.id)) as ArrayBuffer
       if (existing) {
-        const blobUrl = URL.createObjectURL(new Blob([existing], { type: mime(url) }))
-        return commit(url, blobUrl)
+        const blobUrl = URL.createObjectURL(new Blob([existing], { type: mime(url.id) }))
+        return commit(url.id, blobUrl)
+      }
+
+      if (!url.urls.length) {
+        return commit(url.id, badUrl)
       }
 
       try {
-        const res = await superfetch(url)
+        const res = await multifetch(url.urls)
         if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`, { cause: res })
         const ab = await res.arrayBuffer()
-        await blobStore.setItem(url, ab)
-        const blobUrl = URL.createObjectURL(new Blob([ab], { type: mime(url) }))
-        return commit(url, blobUrl)
+        await blobStore.setItem(url.id, ab)
+        const blobUrl = URL.createObjectURL(new Blob([ab], { type: mime(url.id) }))
+        return commit(url.id, blobUrl)
       } catch (e) {
-        console.error(`Cannot cache ${url}.`, e)
-        return commit(url, badUrl)
+        console.error(`Cannot cache ${JSON.stringify(url)}.`, e)
+        return commit(url.id, badUrl)
       }
     }),
   )
+}
+
+async function multifetch(urls: string[]) {
+  let originalError: any = null
+  for (const url of urls) {
+    try {
+      const result = await superfetch(url)
+      if (result.status === 404) {
+        console.warn(`Failed to load ${url}: 404`)
+        continue
+      }
+      return result
+    } catch (e) {
+      if (!originalError) {
+        originalError = e
+      }
+      continue
+    }
+  }
+
+  throw originalError
 }
 
 async function superfetch(url: string) {

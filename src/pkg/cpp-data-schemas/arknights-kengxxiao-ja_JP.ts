@@ -1,5 +1,5 @@
-/// Generated for arknights-kengxxiao-zh_CN
-export type CppData_ArknightsKengxxiaoZhCn = {
+/// Generated for arknights-kengxxiao-ja_JP
+export type CppData_ArknightsKengxxiaoJaJp = {
     exCharacters: {
         [x: string]: {
             name: string;

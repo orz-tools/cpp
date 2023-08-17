@@ -7,7 +7,7 @@ import { YituliuValue } from './sources/yituliuTypes'
 export class ArknightsKengxxiaoObject extends CppRepoObject<
   CppData_ArknightsKengxxiaoZhCn | CppData_ArknightsKengxxiaoEnUs
 > {
-  public requiredSchema = 1
+  public requiredSchema = 2
 
   public constructor(public readonly lang: 'en_US' | 'zh_CN') {
     super(`arknights-kengxxiao-${lang}`)

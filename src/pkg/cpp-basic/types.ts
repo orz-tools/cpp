@@ -1,3 +1,4 @@
+import { BlobImages } from '../blobcache'
 import type { FarmModelInternalVar, FarmModelSolutionVar } from './FarmPlanner'
 import { IGameAdapter } from './managers'
 
@@ -37,7 +38,7 @@ export interface ExpItem {
 export interface IItem {
   readonly key: string
   readonly name: string
-  readonly icon: string
+  readonly icon: BlobImages
   readonly sortId: string
   readonly valueAsAp: number | undefined
   readonly inventoryCategory: string
@@ -45,7 +46,7 @@ export interface IItem {
 
 export interface ICharacter {
   readonly key: string
-  readonly avatar: string
+  readonly avatar: BlobImages
   readonly rarity: number
   readonly name: string
   readonly appellation: string

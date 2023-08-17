@@ -1,3 +1,4 @@
+import { BlobImages, blobImage } from '../blobcache'
 import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
 import { DataContainerObject } from '../dccache'
 import { ArknightsKengxxiaoObject, ArknightsPenguinObject, ArknightsYituliuObject } from './DataObjects'
@@ -34,6 +35,10 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
       exStage: k.data.exStage,
       exRetro: k.data.exRetro,
       exZone: k.data.exZone,
+      exSkin: k.data.exSkin || {
+        buildinEvolveMap: {},
+        buildinPatchMap: {},
+      },
       yituliuValue: yituliu.data,
       penguinMatrix: penguin.data,
     })
@@ -220,10 +225,35 @@ export class Character implements ICharacter {
 
   private readonly patches: (readonly [string, ArknightsKengxxiao['exCharacters']['']])[] = []
 
+  public get defaultSkinId(): string {
+    return this.dm.raw.exSkin.buildinEvolveMap[this.key]?.['0'] || ''
+  }
+
+  private _avatar?: [BlobImages]
   public get avatar() {
-    return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/avatar/${encodeURIComponent(
+    return (this._avatar || (this._avatar = [this.avatarGenerator]))[0]
+  }
+  private get avatarGenerator() {
+    const yysrc = `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/avatar/${encodeURIComponent(
       this.key,
     )}.png`
+
+    const defaultSkinId = this.defaultSkinId
+    return {
+      normal: blobImage(
+        [
+          ...(defaultSkinId
+            ? [
+                `https://web.hycdn.cn/arknights/game/assets/char_skin/avatar/${encodeURIComponent(
+                  this.defaultSkinId,
+                )}.png`,
+              ]
+            : []),
+          yysrc,
+        ],
+        yysrc,
+      ),
+    }
   }
 
   public get rawSkills() {
@@ -311,10 +341,21 @@ export class Skill {
     private readonly dm: ArknightsDataManager,
   ) {}
 
+  private _icon?: [BlobImages]
   public get icon() {
-    return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/skill/skill_icon_${encodeURIComponent(
+    return (this._icon || (this._icon = [this.iconGenerator]))[0]
+  }
+  private get iconGenerator() {
+    const yysrc = `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/skill/skill_icon_${encodeURIComponent(
       this.raw.iconId || this.raw.skillId,
     )}.png`
+
+    return {
+      normal: blobImage(
+        [`https://web.hycdn.cn/arknights/game/assets/char_skill/${encodeURIComponent(this.raw.skillId)}.png`, yysrc],
+        yysrc,
+      ),
+    }
   }
 }
 
@@ -325,10 +366,27 @@ export class UniEquip {
     private readonly dm: ArknightsDataManager,
   ) {}
 
+  private _icon?: [BlobImages]
   public get icon() {
-    return `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/equip/type/${encodeURIComponent(
+    return (this._icon || (this._icon = [this.iconGenerator]))[0]
+  }
+  private get iconGenerator() {
+    const yysrc = `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/equip/type/${encodeURIComponent(
       this.raw.typeIcon.toLowerCase(),
     )}.png`
+
+    return {
+      normal: blobImage(
+        [
+          // TODO: hycdn's size is .... strange
+          // `https://web.hycdn.cn/arknights/game/assets/uniequip/type/icon/${encodeURIComponent(
+          //   this.raw.typeIcon.toLowerCase(),
+          // )}.png`,
+          yysrc,
+        ],
+        yysrc,
+      ),
+    }
   }
 }
 

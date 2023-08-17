@@ -3,11 +3,11 @@ import { Popover2 } from '@blueprintjs/popover2'
 import { useAtomValue } from 'jotai'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
+import useResizeObserver from 'use-resize-observer'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, IItem } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
-import useResizeObserver from 'use-resize-observer'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
@@ -233,7 +233,16 @@ function Gap({
             {items.map((x) => (
               <MenuItem
                 key={x.key}
-                icon={<CachedImg src={x.icon} width={'20'} height={'20'} alt={x.key} title={x.key} />}
+                icon={
+                  <CachedImg
+                    src={x.icon}
+                    width={'20'}
+                    height={'20'}
+                    alt={x.key}
+                    title={x.key}
+                    className={'cpp-item-icon'}
+                  />
+                }
                 text={x.name}
                 onClick={() => createNewItem(x.key)}
               />

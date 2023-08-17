@@ -2,6 +2,7 @@ import { WritableAtom, atom, createStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import React, { SetStateAction, useContext } from 'react'
 import { IGameComponent } from './components/types'
+import { BlobFlavour } from './pkg/blobcache'
 import { IGame, IGameAdapter } from './pkg/cpp-basic'
 import { UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
 
@@ -11,6 +12,7 @@ export interface Preference {
   forbiddenFormulaTags: string[]
   forbiddenStageIds: string[]
   farmLevel: FarmLevel
+  blobFlavour: BlobFlavour
 }
 
 export enum ValueType {
@@ -81,6 +83,7 @@ export class Cpp<G extends IGame> {
         if (value.farmLevel == null) value.farmLevel = FarmLevel.Goal
         if (value.forbiddenFormulaTags == null) value.forbiddenFormulaTags = []
         if (value.forbiddenStageIds == null) value.forbiddenStageIds = []
+        if (value.blobFlavour == null) value.blobFlavour = 'soul'
         value.v = 1
         return value
       },
@@ -129,6 +132,16 @@ export class Cpp<G extends IGame> {
       },
     )
 
+    const blobFlavourAtom = atom(
+      (get) => get(preferenceAtom).blobFlavour || [],
+      (get, set, value: BlobFlavour | SetStateAction<BlobFlavour>) => {
+        set(preferenceAtom, (r) => ({
+          ...r,
+          blobFlavour: typeof value === 'function' ? value(get(preferenceAtom).blobFlavour || []) : value,
+        }))
+      },
+    )
+
     return {
       preferenceAtom,
       preferenceStorageAtom,
@@ -136,6 +149,7 @@ export class Cpp<G extends IGame> {
       forbiddenFormulaTagsAtom,
       forbiddenStageIdsAtom,
       farmLevelAtom,
+      blobFlavourAtom,
     }
   }
 }

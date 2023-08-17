@@ -1,8 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { useEffect, useState } from 'react'
-import { badUrl, load } from '../pkg/blobcache'
+import { useCpp } from '../Cpp'
+import { BlobFlavour, BlobImages, badUrl, load } from '../pkg/blobcache'
 
 export function CachedImg({
   src,
+  flavour,
   width,
   height,
   alt,
@@ -10,7 +13,8 @@ export function CachedImg({
   style,
   className,
 }: {
-  src: string
+  src: BlobImages
+  flavour?: BlobFlavour
   width?: JSX.IntrinsicElements['img']['width']
   height?: JSX.IntrinsicElements['img']['height']
   alt?: JSX.IntrinsicElements['img']['alt']
@@ -18,7 +22,10 @@ export function CachedImg({
   style?: JSX.IntrinsicElements['img']['style']
   className?: JSX.IntrinsicElements['img']['className']
 }) {
-  const data = load(src)
+  const cpp = useCpp()
+  const blobFlavour = useAtomValue(cpp.preferenceAtoms.blobFlavourAtom)
+
+  const data = load(src, flavour || blobFlavour)
   const [, render] = useState(0)
 
   useEffect(() => {
