@@ -35,7 +35,7 @@ export function CachedImg({
     return () => {
       run = false
     }
-  })
+  }, [data])
 
   if (!(typeof data === 'string')) {
     return <img width={width} height={height} alt={''} title={title} style={style} className={className} />
