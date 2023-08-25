@@ -5,6 +5,8 @@ import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
 const logs = [
+  { date: '2023-08-25', type: 'optimize', desc: '优化计算性能' },
+  { date: '2023-08-25', type: 'fix', desc: '修复一些数字输不进去的问题' },
   { date: '2023-08-18', type: 'optimize', desc: '优化图片资源加载' },
   { date: '2023-08-16', type: 'optimize', desc: '优化列表性能' },
   { date: '2023-07-24', type: 'optimize', desc: '增加规划目标选择' },

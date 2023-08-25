@@ -23,6 +23,7 @@ export function InsightLevelInput({ insight }: { insight: number }) {
   if (status.insight !== insight) return <></>
   return (
     <NumericInput
+      allowNumericCharactersOnly={false}
       value={input}
       min={currentStatus ? (currentStatus.insight === insight ? currentStatus.level : 1) : 1}
       max={character.maxLevels[insight]}

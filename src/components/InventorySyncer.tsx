@@ -44,7 +44,7 @@ export function ItemQuantityEditor<G extends IGame>({
   }, [focus])
 
   if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
-    return <NumericInput value={input} style={style} disabled={true} />
+    return <NumericInput value={input} style={style} disabled={true} allowNumericCharactersOnly={false} />
   }
   return (
     <>
@@ -52,6 +52,7 @@ export function ItemQuantityEditor<G extends IGame>({
         {input}
       </span>
       <NumericInput
+        allowNumericCharactersOnly={false}
         buttonPosition="none"
         inputRef={ref}
         readOnly={!setItemQuantity}
@@ -61,6 +62,7 @@ export function ItemQuantityEditor<G extends IGame>({
         onValueChange={(_, valueAsString) => setInput(valueAsString)}
         onBlur={() => {
           if (input === formatter(quantity)) return
+          setInput(formatter(quantity))
           if (setItemQuantity) {
             setItemQuantity(item.key, parser(input))
           }

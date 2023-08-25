@@ -32,16 +32,18 @@ export function ItemQuantityEditor<G extends IGame>({ item, style }: { item: IIt
   useEffect(() => setInput(formatter(quantity)), [quantity])
 
   if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
-    return <NumericInput value={input} style={style} disabled={true} />
+    return <NumericInput value={input} style={style} disabled={true} allowNumericCharactersOnly={false} />
   }
   return (
     <NumericInput
+      allowNumericCharactersOnly={false}
       value={input}
       style={style}
       min={0}
       onValueChange={(_, valueAsString) => setInput(valueAsString)}
       onBlur={() => {
         if (input === formatter(quantity)) return
+        setInput(formatter(quantity))
         setQuantity(parser(input))
       }}
       onButtonClick={(_, valueAsString) => {

@@ -27,6 +27,7 @@ export function EliteLevelInput({ elite }: { elite: number }) {
   if (status.elite !== elite) return <></>
   return (
     <NumericInput
+      allowNumericCharactersOnly={false}
       value={input}
       min={currentStatus ? (currentStatus.elite === elite ? currentStatus.level : 1) : 1}
       max={character.maxLevels[elite]}
