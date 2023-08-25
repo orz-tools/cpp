@@ -9,6 +9,7 @@ import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { IGame, Task } from '../pkg/cpp-basic'
 import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
+import { CharacterContextMenu } from './CharacterList'
 import { CachedImg } from './Icons'
 import { ValueTagProgressBar } from './Value'
 
@@ -157,29 +158,37 @@ export function TaskMenu<G extends IGame>({
   return (
     <li role="none" style={style} className="cpp-task-menu-master">
       {same ? undefined : (
-        <a
-          role="menuitem"
-          tabIndex={0}
-          className="bp4-menu-item cpp-task-menu cpp-menu-not-interactive"
-          style={{ flexShrink: 1, overflow: 'hidden' }}
-        >
-          <>
-            <span className="bp4-menu-item-icon">
-              <CachedImg src={character.avatar} width={'16'} height={'16'} alt={character.key} title={character.key} />
-            </span>
+        <ContextMenu2 content={<CharacterContextMenu character={character} alwaysSorting={true} />}>
+          <a
+            role="menuitem"
+            tabIndex={0}
+            className="bp4-menu-item cpp-task-menu"
+            style={{ flexShrink: 1, overflow: 'hidden' }}
+          >
+            <>
+              <span className="bp4-menu-item-icon">
+                <CachedImg
+                  src={character.avatar}
+                  width={'16'}
+                  height={'16'}
+                  alt={character.key}
+                  title={character.key}
+                />
+              </span>
 
-            <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
-                <div className="bp4-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
-                  {character.name}
-                  <span style={{ paddingLeft: '0.5em', fontWeight: 'normal', opacity: 0.75 }}>
-                    {character.appellation}
-                  </span>
+              <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
+                  <div className="bp4-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
+                    {character.name}
+                    <span style={{ paddingLeft: '0.5em', fontWeight: 'normal', opacity: 0.75 }}>
+                      {character.appellation}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </>
-        </a>
+            </>
+          </a>
+        </ContextMenu2>
       )}
       <Menu style={{ padding: 0 }}>
         <ContextMenu2 content={<TaskContextMenu task={task} extra={extra} />}>

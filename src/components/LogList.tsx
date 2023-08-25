@@ -5,6 +5,7 @@ import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
 const logs = [
+  { date: '2023-08-25', type: 'optimize', desc: '角色头像右键菜单增加资料站链接' },
   { date: '2023-08-25', type: 'optimize', desc: '优化计算性能' },
   { date: '2023-08-25', type: 'fix', desc: '修复一些数字输不进去的问题' },
   { date: '2023-08-18', type: 'optimize', desc: '优化图片资源加载' },

@@ -9,6 +9,9 @@ export const externalLinkProps = {
   rel: 'noreferrer noopener',
   referrerPolicy: 'no-referrer',
   target: '_blank',
+  onContextMenu: (e) => {
+    e.stopPropagation()
+  },
 } satisfies React.AnchorHTMLAttributes<HTMLAnchorElement>
 
 export function AboutList() {

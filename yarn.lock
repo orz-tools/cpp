@@ -1934,6 +1934,7 @@ __metadata:
     javascript-lp-solver: ^0.4.24
     jotai: ^2.2.0
     localforage: ^1.10.0
+    node-fetch: ^3.3.2
     p-limit: ^4.0.0
     p-props: ^5.0.0
     prettier: ^2.8.8
@@ -1966,6 +1967,13 @@ __metadata:
   version: 3.1.1
   resolution: "csstype@npm:3.1.1"
   checksum: 1f7b4f5fdd955b7444b18ebdddf3f5c699159f13e9cf8ac9027ae4a60ae226aef9bbb14a6e12ca7dba3358b007cee6354b116e720262867c398de6c955ea451d
+  languageName: node
+  linkType: hard
+
+"data-uri-to-buffer@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "data-uri-to-buffer@npm:4.0.1"
+  checksum: 0d0790b67ffec5302f204c2ccca4494f70b4e2d940fea3d36b09f0bb2b8539c2e86690429eb1f1dc4bcc9e4df0644193073e63d9ee48ac9fce79ec1506e4aa4c
   languageName: node
   linkType: hard
 
@@ -2683,6 +2691,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fetch-blob@npm:^3.1.2, fetch-blob@npm:^3.1.4":
+  version: 3.2.0
+  resolution: "fetch-blob@npm:3.2.0"
+  dependencies:
+    node-domexception: ^1.0.0
+    web-streams-polyfill: ^3.0.3
+  checksum: f19bc28a2a0b9626e69fd7cf3a05798706db7f6c7548da657cbf5026a570945f5eeaedff52007ea35c8bcd3d237c58a20bf1543bc568ab2422411d762dd3d5bf
+  languageName: node
+  linkType: hard
+
 "fflate@npm:^0.7.4":
   version: 0.7.4
   resolution: "fflate@npm:0.7.4"
@@ -2741,6 +2759,15 @@ __metadata:
   dependencies:
     is-callable: ^1.1.3
   checksum: 6c48ff2bc63362319c65e2edca4a8e1e3483a2fabc72fbe7feaf8c73db94fc7861bd53bc02c8a66a0c1dd709da6b04eec42e0abdd6b40ce47305ae92a25e5d28
+  languageName: node
+  linkType: hard
+
+"formdata-polyfill@npm:^4.0.10":
+  version: 4.0.10
+  resolution: "formdata-polyfill@npm:4.0.10"
+  dependencies:
+    fetch-blob: ^3.1.2
+  checksum: 82a34df292afadd82b43d4a740ce387bc08541e0a534358425193017bf9fb3567875dc5f69564984b1da979979b70703aa73dee715a17b6c229752ae736dd9db
   languageName: node
   linkType: hard
 
@@ -3897,6 +3924,24 @@ __metadata:
     lower-case: ^2.0.2
     tslib: ^2.0.3
   checksum: 0b2ebc113dfcf737d48dde49cfebf3ad2d82a8c3188e7100c6f375e30eafbef9e9124aadc3becef237b042fd5eb0aad2fd78669c20972d045bbe7fea8ba0be5c
+  languageName: node
+  linkType: hard
+
+"node-domexception@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "node-domexception@npm:1.0.0"
+  checksum: ee1d37dd2a4eb26a8a92cd6b64dfc29caec72bff5e1ed9aba80c294f57a31ba4895a60fd48347cf17dd6e766da0ae87d75657dfd1f384ebfa60462c2283f5c7f
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "node-fetch@npm:3.3.2"
+  dependencies:
+    data-uri-to-buffer: ^4.0.0
+    fetch-blob: ^3.1.4
+    formdata-polyfill: ^4.0.10
+  checksum: 06a04095a2ddf05b0830a0d5302699704d59bda3102894ea64c7b9d4c865ecdff2d90fd042df7f5bc40337266961cb6183dcc808ea4f3000d024f422b462da92
   languageName: node
   linkType: hard
 
@@ -5403,6 +5448,13 @@ __metadata:
   dependencies:
     loose-envify: ^1.0.0
   checksum: 4f2cb6a9575e4faf71ddad9ad1ae7a00d0a75d24521c193fa464f30e6b04027bd97aa5d9546b0e13d3a150ab402eda216d59c1d0f2d6ca60124d96cd40dfa35c
+  languageName: node
+  linkType: hard
+
+"web-streams-polyfill@npm:^3.0.3":
+  version: 3.2.1
+  resolution: "web-streams-polyfill@npm:3.2.1"
+  checksum: b119c78574b6d65935e35098c2afdcd752b84268e18746606af149e3c424e15621b6f1ff0b42b2676dc012fc4f0d313f964b41a4b5031e525faa03997457da02
   languageName: node
   linkType: hard
 

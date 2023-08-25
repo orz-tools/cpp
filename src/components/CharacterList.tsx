@@ -1,4 +1,4 @@
-import { Alignment, Button, ButtonGroup, Menu, Navbar, Spinner, Tag } from '@blueprintjs/core'
+import { Alignment, Button, ButtonGroup, Menu, MenuDivider, Navbar, Spinner, Tag } from '@blueprintjs/core'
 import { ContextMenu2, Popover2 } from '@blueprintjs/popover2'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
@@ -71,16 +71,22 @@ function renderCharacterStatus<G extends IGame>(
   )
 }
 
-function CharacterContextMenu({ character }: { character: ICharacter }) {
+export function CharacterContextMenu({ character, alwaysSorting }: { character: ICharacter; alwaysSorting?: boolean }) {
+  const { CharacterContextMenuItems } = useComponents()
   const atoms = useAtoms<IGame>()
   const setData = useSetAtom(atoms.dataAtom)
   const [param, setParam] = useAtom(queryParamAtom)
+  const shouldRefresh = param.mode === ListMode.WithGoal
 
   return (
     <Menu>
-      {param.mode === ListMode.WithGoal ? (
+      {alwaysSorting || (alwaysSorting !== false && param.mode === ListMode.WithGoal) ? (
         <>
-          <ButtonGroup minimal={true}>
+          <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <>
+              <span style={{ marginLeft: 10 }}>{'角色计划排序'}</span>
+              <div style={{ flex: 1 }} />
+            </>
             <Button
               icon={'double-chevron-up'}
               onClick={() => {
@@ -91,7 +97,7 @@ function CharacterContextMenu({ character }: { character: ICharacter }) {
                   }
                   d.goalOrder.unshift(character.key)
                 })
-                setParam((e) => ({ ...e }))
+                shouldRefresh && setParam((e) => ({ ...e }))
               }}
             />
             <Button
@@ -104,7 +110,7 @@ function CharacterContextMenu({ character }: { character: ICharacter }) {
                     d.goalOrder.splice(index - 1, 0, character.key)
                   }
                 })
-                setParam((e) => ({ ...e }))
+                shouldRefresh && setParam((e) => ({ ...e }))
               }}
             />
             <Button
@@ -117,7 +123,7 @@ function CharacterContextMenu({ character }: { character: ICharacter }) {
                     d.goalOrder.splice(index + 1, 0, character.key)
                   }
                 })
-                setParam((e) => ({ ...e }))
+                shouldRefresh && setParam((e) => ({ ...e }))
               }}
             />
             <Button
@@ -130,12 +136,14 @@ function CharacterContextMenu({ character }: { character: ICharacter }) {
                   }
                   d.goalOrder.push(character.key)
                 })
-                setParam((e) => ({ ...e }))
+                shouldRefresh && setParam((e) => ({ ...e }))
               }}
             />
           </ButtonGroup>
+          <MenuDivider />
         </>
       ) : null}
+      {CharacterContextMenuItems ? <CharacterContextMenuItems character={character} /> : null}
     </Menu>
   )
 }

@@ -1,5 +1,6 @@
 import type { IGameComponent } from '../types'
 import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from './AboutList'
+import { CharacterContextMenuItems } from './CharacterContextMenuItems'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
@@ -9,6 +10,7 @@ export const Re1999Components: IGameComponent = {
   AboutDataSources,
   AboutThirdParty,
   AboutCredits,
+  CharacterContextMenuItems,
   CharacterStatusPopover,
   renderCharacterStatus,
   charStatusWidth: 43 * 2,

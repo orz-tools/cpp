@@ -1,4 +1,5 @@
 import React from 'react'
+import { ICharacter } from '../pkg/cpp-basic'
 
 export interface ItemSimulatedViewConfig {
   limit: number
@@ -12,6 +13,7 @@ export interface IGameComponent {
   AboutCredits?: React.FC
   AboutDataSources?: React.FC
   ItemImportButton?: React.FC
+  CharacterContextMenuItems?: React.FC<{ character: ICharacter }>
   CharacterStatusPopover?: React.FC<{ character: any; isGoal: boolean }>
   renderCharacterStatus?: (status: any, character: any, current?: any, alreadyHide?: boolean) => any
   charStatusWidth?: number
