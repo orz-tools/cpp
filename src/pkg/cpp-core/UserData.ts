@@ -140,17 +140,15 @@ function buildAtoms<G extends IGame>(
             set(dataAtom, 'transact', () => {
               set(dataAtom, 'modify', (data) => {
                 data.current[charId] = (produce(
-                  data.current[charId] || ga.getUserDataAdapter().getFrozenEmptyCharacterStatus(),
+                  data.current[charId] || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()),
                   value,
-                ) || ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()) as Draft<G['characterStatus']>
-              })
-              set(dataAtom, 'modify', (data) => {
+                ) || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus())) as Draft<G['characterStatus']>
+
                 data.goal[charId] =
-                  produce(data.goal[charId] || data.current[charId], () => {
+                  produce(data.goal[charId] || clone(data.current[charId]), () => {
                     //
-                  }) || data.current[charId]
-              })
-              set(dataAtom, 'modify', (data) => {
+                  }) || clone(data.current[charId])
+
                 doRewrite(charId, data)
               })
             })
@@ -170,16 +168,15 @@ function buildAtoms<G extends IGame>(
             set(dataAtom, 'transact', () => {
               set(dataAtom, 'modify', (data) => {
                 data.current[charId] = (produce(
-                  data.current[charId] || ga.getUserDataAdapter().getFrozenEmptyCharacterStatus(),
+                  data.current[charId] || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()),
                   () => {
-                    //
+                    /**/
                   },
-                ) || ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()) as Draft<G['characterStatus']>
-              })
-              set(dataAtom, 'modify', (data) => {
-                data.goal[charId] = produce(data.goal[charId] || data.current[charId], value) || data.current[charId]
-              })
-              set(dataAtom, 'modify', (data) => {
+                ) || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus())) as Draft<G['characterStatus']>
+
+                data.goal[charId] =
+                  produce(data.goal[charId] || clone(data.current[charId]), value) || clone(data.current[charId])
+
                 doRewrite(charId, data)
               })
             })
