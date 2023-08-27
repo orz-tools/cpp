@@ -67,5 +67,5 @@ export function CachedImg({
 }
 
 export function EmptyIcon() {
-  return <span className="bp4-menu-item-icon"></span>
+  return <span className="bp5-menu-item-icon"></span>
 }

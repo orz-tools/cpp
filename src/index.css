@@ -1,7 +1,6 @@
 @import url(normalize.css/normalize.css);
 @import url(@blueprintjs/icons/lib/css/blueprint-icons.css);
 @import url(@blueprintjs/core/lib/css/blueprint.css);
-@import url(@blueprintjs/popover2/lib/css/blueprint-popover2.css);
 
 :root,
 body {

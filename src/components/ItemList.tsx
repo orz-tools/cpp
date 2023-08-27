@@ -9,8 +9,8 @@ import {
   MenuItem,
   Navbar,
   NumericInput,
+  Popover,
 } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
 import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
@@ -233,10 +233,10 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp4-menu-item cpp-item-menu"
+        className="bp5-menu-item cpp-item-menu"
         style={{ lineHeight: '21px', padding: 0, fontWeight: 'normal', visibility: !formula ? 'hidden' : undefined }}
       >
-        <Popover2 content={<ItemSynthesisPopover item={item} />} usePortal={true} placement={'bottom-end'}>
+        <Popover content={<ItemSynthesisPopover item={item} />} usePortal={true} placement={'bottom-end'}>
           <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="可合成">
             <div
               style={{
@@ -265,7 +265,7 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
               <span>{Math.min(synableReal, finished + finishedIndirects)}</span>
             </div>
           </div>
-        </Popover2>
+        </Popover>
       </a>
       <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="还需">
         <div
@@ -361,11 +361,11 @@ export function ItemMenu({ item }: { item: IItem }) {
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp4-menu-item cpp-item-menu cpp-menu-not-interactive"
+        className="bp5-menu-item cpp-item-menu cpp-menu-not-interactive"
         style={{ flexShrink: 1, overflow: 'hidden' }}
       >
         <>
-          <span className="bp4-menu-item-icon">
+          <span className="bp5-menu-item-icon">
             <CachedImg
               src={item.icon}
               width={'40'}
@@ -375,11 +375,11 @@ export function ItemMenu({ item }: { item: IItem }) {
               className="cpp-item-icon"
             />
           </span>
-          <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp4-text-overflow-ellipsis" title={item.name}>
+          <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp5-text-overflow-ellipsis" title={item.name}>
               {item.name}
             </div>
-            <div className="bp4-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
+            <div className="bp5-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
               <ValueTag value={item.valueAsAp} minimal={true} single={true} />
             </div>
           </div>
@@ -545,7 +545,7 @@ export function ItemList<G extends IGame>() {
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} className="cpp-item-menu-master">
         {itemGroups.map(([key, allItems]) => {
-          const items = allItems.filter((x) => {
+          const items = allItems!.filter((x) => {
             if (!param.hideCompleted) return true
             switch (param.mode) {
               case 'goal':

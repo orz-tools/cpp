@@ -1,5 +1,4 @@
-import { Alignment, Button, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
-import { ContextMenu2, MenuItem2 } from '@blueprintjs/popover2'
+import { Alignment, Button, ContextMenu, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { WritableAtom, atom, useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
@@ -158,15 +157,15 @@ export function TaskMenu<G extends IGame>({
   return (
     <li role="none" style={style} className="cpp-task-menu-master">
       {same ? undefined : (
-        <ContextMenu2 content={<CharacterContextMenu character={character} alwaysSorting={true} />}>
+        <ContextMenu content={<CharacterContextMenu character={character} alwaysSorting={true} />}>
           <a
             role="menuitem"
             tabIndex={0}
-            className="bp4-menu-item cpp-task-menu"
+            className="bp5-menu-item cpp-task-menu"
             style={{ flexShrink: 1, overflow: 'hidden' }}
           >
             <>
-              <span className="bp4-menu-item-icon">
+              <span className="bp5-menu-item-icon">
                 <CachedImg
                   src={character.avatar}
                   width={'16'}
@@ -176,9 +175,9 @@ export function TaskMenu<G extends IGame>({
                 />
               </span>
 
-              <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
-                  <div className="bp4-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
+                  <div className="bp5-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
                     {character.name}
                     <span style={{ paddingLeft: '0.5em', fontWeight: 'normal', opacity: 0.75 }}>
                       {character.appellation}
@@ -188,11 +187,11 @@ export function TaskMenu<G extends IGame>({
               </div>
             </>
           </a>
-        </ContextMenu2>
+        </ContextMenu>
       )}
       <Menu style={{ padding: 0 }}>
-        <ContextMenu2 content={<TaskContextMenu task={task} extra={extra} />}>
-          <MenuItem2
+        <ContextMenu content={<TaskContextMenu task={task} extra={extra} />}>
+          <MenuItem
             // title={task.id}
             style={{ fontWeight: 'normal' }}
             text={
@@ -212,8 +211,8 @@ export function TaskMenu<G extends IGame>({
             popoverProps={{ usePortal: true, matchTargetWidth: true }}
           >
             {hideCosts && renderedCosts.length > 0 ? renderedCosts : null}
-          </MenuItem2>
-        </ContextMenu2>
+          </MenuItem>
+        </ContextMenu>
         {hideCosts ? null : renderedCosts}
         {nextSame && !hideCosts ? <MenuDivider /> : null}
       </Menu>

@@ -1,5 +1,4 @@
-import { Button, Card, Checkbox, Menu, MenuItem } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Card, Checkbox, Menu, MenuItem, Popover } from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
 import { groupBy, sortBy, without } from 'ramda'
 import React from 'react'
@@ -27,7 +26,7 @@ export function ConfigButton() {
   const ga = useGameAdapter()
   const tags = Object.entries(ga.getFormulaTagNames())
   return (
-    <Popover2
+    <Popover
       usePortal={true}
       minimal={true}
       content={
@@ -42,7 +41,7 @@ export function ConfigButton() {
       <Button icon={'properties'} minimal={true} rightIcon={'chevron-down'}>
         选项
       </Button>
-    </Popover2>
+    </Popover>
   )
 }
 
@@ -115,7 +114,7 @@ export function StagePopover() {
               <h4 style={{ margin: 0, padding: 0 }} title={k}>
                 {zoneName}
               </h4>
-              {stages.map((x) => {
+              {stages!.map((x) => {
                 return <ForbiddenStageIdTag stageId={x} key={x} />
               })}
             </Card>
@@ -136,11 +135,11 @@ export function StageButton() {
   const all = allStageIds.length
 
   return (
-    <Popover2 usePortal={true} minimal={true} content={<StagePopover />} position="bottom-left">
+    <Popover usePortal={true} minimal={true} content={<StagePopover />} position="bottom-left">
       <Button icon={'record'} minimal={true} rightIcon={'chevron-down'}>
         关卡 {now}/{all}
       </Button>
-    </Popover2>
+    </Popover>
   )
 }
 

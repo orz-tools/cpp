@@ -1,5 +1,4 @@
-import { Button, Dialog, DialogBody, InputGroup, Intent } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Dialog, DialogBody, InputGroup, Intent, Popover } from '@blueprintjs/core'
 import { Draft } from 'immer'
 import { useSetAtom } from 'jotai'
 import { useEffect, useRef, useState } from 'react'
@@ -192,7 +191,7 @@ export function SklandCharacterImportButton() {
             >
               {windowRef ? `放弃「提取装置」` : `使用「提取装置」`}
             </Button>
-            <Popover2
+            <Popover
               position="bottom"
               onOpened={focus}
               content={
@@ -209,7 +208,7 @@ export function SklandCharacterImportButton() {
               }
             >
               <Button minimal text={'粘贴 JSON'} />
-            </Popover2>
+            </Popover>
           </div>
         </DialogBody>
       </Dialog>

@@ -1,5 +1,15 @@
-import { Alignment, Button, ButtonGroup, Menu, MenuDivider, Navbar, Spinner, Tag } from '@blueprintjs/core'
-import { ContextMenu2, Popover2 } from '@blueprintjs/popover2'
+import {
+  Alignment,
+  Button,
+  ButtonGroup,
+  ContextMenu,
+  Menu,
+  MenuDivider,
+  Navbar,
+  Popover,
+  Spinner,
+  Tag,
+} from '@blueprintjs/core'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { SetStateAction, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -175,10 +185,10 @@ function CharacterMenu<G extends IGame>({ character, style }: { character: IChar
       ].join(' ')}
       style={style}
     >
-      <ContextMenu2 content={<CharacterContextMenu character={character} />}>
-        <a role="menuitem" tabIndex={0} className="bp4-menu-item cpp-char-menu-char">
+      <ContextMenu content={<CharacterContextMenu character={character} />}>
+        <a role="menuitem" tabIndex={0} className="bp5-menu-item cpp-char-menu-char">
           <>
-            <span className="bp4-menu-item-icon cpp-char-avatar">
+            <span className="bp5-menu-item-icon cpp-char-avatar">
               <CachedImg
                 src={character.avatar}
                 width={'100%'}
@@ -187,12 +197,12 @@ function CharacterMenu<G extends IGame>({ character, style }: { character: IChar
                 title={character.key}
               />
             </span>
-            <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div className="bp4-text-overflow-ellipsis" title={character.name}>
+            <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <div className="bp5-text-overflow-ellipsis" title={character.name}>
                 {character.name}
               </div>
               <div
-                className="bp4-text-overflow-ellipsis"
+                className="bp5-text-overflow-ellipsis"
                 title={character.appellation}
                 style={{ fontWeight: 'normal', opacity: 0.75 }}
               >
@@ -201,37 +211,37 @@ function CharacterMenu<G extends IGame>({ character, style }: { character: IChar
             </div>
           </>
         </a>
-      </ContextMenu2>
-      <Popover2
+      </ContextMenu>
+      <Popover
         usePortal={true}
-        popoverClassName={'cpp-popover2'}
+        popoverClassName={'cpp-popover'}
         content={<CSP character={character} isGoal={false} />}
         placement="bottom"
       >
         <a
           role="menuitem"
           tabIndex={0}
-          className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-current"
+          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-current"
           style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
         >
           {render(currentCharacter, character)}
         </a>
-      </Popover2>
-      <Popover2
+      </Popover>
+      <Popover
         usePortal={true}
-        popoverClassName={'cpp-popover2'}
+        popoverClassName={'cpp-popover'}
         content={<CSP character={character} isGoal={true} />}
         placement="bottom"
       >
         <a
           role="menuitem"
           tabIndex={0}
-          className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
+          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
           style={{ opacity: finished ? 0 : goalSame ? 0.25 : 1 }}
         >
           {render(goalCharacter, character, currentCharacter, goalSame)}
         </a>
-      </Popover2>
+      </Popover>
     </li>
   )
 }
@@ -325,11 +335,11 @@ function QuerySearchBox() {
   const [param, setParam] = useAtom(queryParamAtom)
   return (
     <>
-      <div className="bp4-input-group {{.modifier}}">
-        <span className="bp4-icon bp4-icon-search"></span>
+      <div className="bp5-input-group {{.modifier}}">
+        <span className="bp5-icon bp5-icon-search"></span>
         <input
           style={{ width: '200px' }}
-          className="bp4-input"
+          className="bp5-input"
           type="search"
           dir="auto"
           autoComplete="false"

@@ -1,5 +1,4 @@
-import { Button, Icon, IconName, Intent, MaybeElement, Menu, MenuItem, Tag } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Icon, IconName, Intent, MaybeElement, Menu, MenuItem, Popover, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
 import React from 'react'
 import { ValueType, useCpp } from '../Cpp'
@@ -228,7 +227,7 @@ export function ValueOptionButton() {
   const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
 
   return (
-    <Popover2
+    <Popover
       usePortal={true}
       minimal={true}
       content={
@@ -243,6 +242,6 @@ export function ValueOptionButton() {
       <Button icon={ValueIcon[type]} minimal={true} rightIcon={'chevron-down'}>
         {ValueName[type]}
       </Button>
-    </Popover2>
+    </Popover>
   )
 }

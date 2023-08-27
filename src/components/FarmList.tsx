@@ -1,5 +1,4 @@
-import { Alignment, Button, Icon, Menu, MenuDivider, MenuItem, Navbar, Spinner, Tag } from '@blueprintjs/core'
-import { MenuItem2, Popover2 } from '@blueprintjs/popover2'
+import { Alignment, Button, Icon, Menu, MenuDivider, MenuItem, Navbar, Popover, Spinner, Tag } from '@blueprintjs/core'
 import { Atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { sortBy } from 'ramda'
 import { useEffect } from 'react'
@@ -119,7 +118,7 @@ function FarmLevelButton({ level, refresh }: { level: FarmLevel; refresh?: (leve
   const farmLevelAtom = cpp.preferenceAtoms.farmLevelAtom
   const [farmLevel, setFarmLevel] = useAtom(farmLevelAtom)
   return (
-    <MenuItem2
+    <MenuItem
       text={FarmLevelNames[level]}
       active={farmLevel === level}
       onClick={() => {
@@ -167,7 +166,7 @@ export function FarmList() {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}>
-          <Popover2
+          <Popover
             usePortal={true}
             minimal={true}
             content={
@@ -183,7 +182,7 @@ export function FarmList() {
             <Button minimal={true} rightIcon={<Icon size={10} icon="chevron-down" />} small style={{ marginRight: -5 }}>
               {FarmLevelShortNames[farmLevel]}
             </Button>
-          </Popover2>
+          </Popover>
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
             minimal={true}
@@ -196,9 +195,7 @@ export function FarmList() {
         </Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
-        {response?.stageRuns.map((run) => (
-          <StageLine run={run} key={run.stageId} />
-        ))}
+        {response?.stageRuns.map((run) => <StageLine run={run} key={run.stageId} />)}
         {response?.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
       </Menu>
     </>

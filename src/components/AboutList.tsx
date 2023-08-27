@@ -1,5 +1,4 @@
-import { Alignment, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
-import { MenuItem2 } from '@blueprintjs/popover2'
+import { Alignment, Menu, MenuDivider, MenuItem, MenuItemProps, Navbar } from '@blueprintjs/core'
 import { format } from 'date-fns'
 import { useCpp } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
@@ -84,12 +83,12 @@ export function AboutList() {
   )
 }
 
-export function DescriptionMenuItem(props: MenuItem2['props'] & { description?: React.ReactNode }) {
+export function DescriptionMenuItem(props: MenuItemProps & { description?: React.ReactNode }) {
   const p = Object.assign({}, props)
   delete p.description
   return (
     <>
-      <MenuItem2 {...p} />
+      <MenuItem {...p} />
       {props.description != null ? (
         <Menu className="cpp-menu-indent">
           <MenuItem
@@ -132,7 +131,7 @@ export function DataObjectStatus({
   const finalHref = href == null ? undefined : href || data.version.sources[0] || undefined
   return (
     <>
-      <MenuItem2
+      <MenuItem
         icon={'database'}
         text={title}
         title={title}
@@ -141,7 +140,7 @@ export function DataObjectStatus({
         {...externalLinkProps}
       />
       <Menu className="cpp-menu-indent">
-        <MenuItem2
+        <MenuItem
           className="cpp-menu-not-interactive"
           text={
             <div className="cpp-menu-secondary" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -157,7 +156,7 @@ export function DataObjectStatus({
           }
         />
         {shouldShowCommit ? (
-          <MenuItem2
+          <MenuItem
             multiline={true}
             href={data.version.sources[0] || undefined}
             {...externalLinkProps}
@@ -170,7 +169,7 @@ export function DataObjectStatus({
           />
         ) : null}
         {copyright ? (
-          <MenuItem2
+          <MenuItem
             multiline={true}
             className="cpp-menu-not-interactive"
             text={<div className="cpp-menu-secondary">{copyright}</div>}

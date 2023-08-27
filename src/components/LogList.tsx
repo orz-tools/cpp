@@ -64,7 +64,7 @@ export function LogList() {
           return (
             <React.Fragment key={k}>
               <MenuDivider title={k} />
-              {v.map((vv, index) => {
+              {v!.map((vv, index) => {
                 return (
                   <MenuItem
                     key={index}

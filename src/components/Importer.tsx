@@ -223,9 +223,9 @@ function CharDiffViewRow({
       ].join(' ')}
       style={style}
     >
-      <a role="menuitem" tabIndex={0} className="bp4-menu-item cpp-char-menu-char cpp-menu-not-interactive">
+      <a role="menuitem" tabIndex={0} className="bp5-menu-item cpp-char-menu-char cpp-menu-not-interactive">
         <>
-          <span className="bp4-menu-item-icon cpp-char-avatar">
+          <span className="bp5-menu-item-icon cpp-char-avatar">
             <CachedImg
               src={character.avatar}
               width={'100%'}
@@ -234,12 +234,12 @@ function CharDiffViewRow({
               title={character.key}
             />
           </span>
-          <div className="bp4-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp4-text-overflow-ellipsis" title={character.name}>
+          <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp5-text-overflow-ellipsis" title={character.name}>
               {character.name}
             </div>
             <div
-              className="bp4-text-overflow-ellipsis"
+              className="bp5-text-overflow-ellipsis"
               title={character.appellation}
               style={{ fontWeight: 'normal', opacity: 0.75 }}
             >
@@ -252,7 +252,7 @@ function CharDiffViewRow({
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-current cpp-menu-not-interactive"
+        className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-current cpp-menu-not-interactive"
         style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
       >
         {render(currentCharacter, character, goalCharacter, false)}
@@ -260,7 +260,7 @@ function CharDiffViewRow({
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp4-menu-item cpp-char-menu-status cpp-char-menu-status-goal cpp-menu-not-interactive"
+        className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-goal cpp-menu-not-interactive"
         style={{ opacity: uda.isAbsentCharacter(character, goalCharacter) ? 0.25 : 1 }}
       >
         {render(goalCharacter, character, currentCharacter, false)}

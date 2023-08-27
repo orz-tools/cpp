@@ -3,6 +3,7 @@ import {
   AnchorButton,
   Button,
   Classes,
+  ContextMenu,
   Dialog,
   DialogBody,
   DialogFooter,
@@ -10,10 +11,10 @@ import {
   MenuDivider,
   MenuItem,
   Navbar,
+  Popover,
   Spinner,
   Tag,
 } from '@blueprintjs/core'
-import { ContextMenu2, MenuItem2, Popover2 } from '@blueprintjs/popover2'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, useEffect, useMemo, useState } from 'react'
 import './App.css'
@@ -102,10 +103,10 @@ function ReloadDataButton() {
 
   return (
     <>
-      <ContextMenu2
+      <ContextMenu
         content={
           <Menu>
-            <MenuItem2
+            <MenuItem
               text="重载数据"
               icon={'reset'}
               onClick={async () => {
@@ -117,7 +118,7 @@ function ReloadDataButton() {
         }
       >
         <Button icon="refresh" disabled={loading} text="检查数据更新" minimal={true} onClick={() => send()} />
-      </ContextMenu2>
+      </ContextMenu>
     </>
   )
 }
@@ -132,7 +133,7 @@ function ProfileMenu() {
           key={profile[0] + '/' + profile[1]}
           href={`/${encodeURIComponent(profile[0])}/${encodeURIComponent(profile[1])}`}
           text={<code>{formatProfileName(profile[0], profile[1])}</code>}
-          active={profile[0] === cpp.gameAdapter.getCodename() && profile[1] === cpp.instanceName}
+          active={profile[0].toString() === cpp.gameAdapter.getCodename() && profile[1] === cpp.instanceName}
         />
       ))}
       <MenuDivider />
@@ -148,7 +149,7 @@ function ClosureButtonHeading() {
     <Navbar.Heading style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
       <img src="/favicon.png" alt="Closure++ logo" width="24" height="24" title="" style={{ marginRight: 4 }} />
       <code>{`Closure`}</code>
-      <Popover2
+      <Popover
         usePortal={true}
         minimal={true}
         content={
@@ -163,7 +164,7 @@ function ClosureButtonHeading() {
             [{ga.getCodename().toUpperCase()}][{JSON.stringify(cpp.instanceName)}]
           </code>
         </Button>
-      </Popover2>
+      </Popover>
       <code>{`++`}</code>
       {/* <code>{`Closure++`}</code> */}
     </Navbar.Heading>

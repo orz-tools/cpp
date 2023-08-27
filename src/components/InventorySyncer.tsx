@@ -1,5 +1,4 @@
-import { Alignment, Button, Classes, Menu, MenuItem, Navbar, NumericInput } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Alignment, Button, Classes, Menu, MenuItem, Navbar, NumericInput, Popover } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
@@ -227,7 +226,7 @@ function Gap({
 }) {
   return (
     <div className="cpp-isv-gap" style={style}>
-      <Popover2
+      <Popover
         position="bottom-left"
         usePortal={true}
         content={
@@ -253,7 +252,7 @@ function Gap({
         }
       >
         <Button minimal tabIndex={-1} icon={'add'} />
-      </Popover2>
+      </Popover>
     </div>
   )
 }

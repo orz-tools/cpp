@@ -1,5 +1,4 @@
-import { Alignment, Icon, Menu, MenuDivider, Navbar } from '@blueprintjs/core'
-import { MenuItem2 } from '@blueprintjs/popover2'
+import { Alignment, Icon, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
 import React, { useMemo } from 'react'
 import { useAtoms, useGameAdapter } from '../Cpp'
@@ -38,7 +37,7 @@ export function SynthesisList() {
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
         {itemGroups.map(([key, allItems]) => {
-          const items = allItems.filter((x) => {
+          const items = allItems!.filter((x) => {
             if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), x.key)) return false
             return (indirectDetails.synthisisedRequirements[x.key] || 0) > 0
           })
@@ -62,7 +61,7 @@ function SynthesisMenu({ item, target }: { item: IItem; target: number }) {
   const atoms = useAtoms()
   const quantity = useAtomValue(atoms.itemQuantity(item.key))
   return (
-    <MenuItem2
+    <MenuItem
       style={{ fontWeight: 'normal' }}
       popoverProps={{ interactionKind: 'click' }}
       icon={
@@ -86,6 +85,6 @@ function SynthesisMenu({ item, target }: { item: IItem; target: number }) {
       }
     >
       <ItemSynthesisPopover item={item} />
-    </MenuItem2>
+    </MenuItem>
   )
 }

@@ -6,7 +6,7 @@ import danao from './assets/icon_danao01.png'
 
 export function LevelIcon({ level }: { level: CharacterLevel }) {
   return (
-    <span className="bp4-menu-item-icon">
+    <span className="bp5-menu-item-icon">
       <div className="cpp-simple-target">
         <img
           src={[undefined, dongxi1, dongxi2, dongxi3][level.insight]}
@@ -24,7 +24,7 @@ export function LevelIcon({ level }: { level: CharacterLevel }) {
 
 export function ResonateIcon({ level }: { level: number }) {
   return (
-    <span className="bp4-menu-item-icon">
+    <span className="bp5-menu-item-icon">
       <div className="cpp-simple-target">
         <img src={danao} width={'23'} style={{ marginBottom: '15px', marginLeft: 'auto', marginRight: 'auto' }} />
         <span style={{ top: 'auto', bottom: 0, right: 0, textAlign: 'center', background: 'transparent', height: 16 }}>

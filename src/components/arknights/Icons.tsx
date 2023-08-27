@@ -11,7 +11,7 @@ export function SkillIcon({ skill, level, master }: { skill: Skill; level?: numb
   const name = skill.raw.levels[0].name
 
   return (
-    <span className="bp4-menu-item-icon">
+    <span className="bp5-menu-item-icon">
       <div className="cpp-simple-target">
         <CachedImg src={skill.icon} width={'100%'} height={'100%'} alt={name} title={name} />
         {!level ? undefined : <span>{master && master > 0 ? <img src={[m1, m2, m3][master - 1]} /> : level}</span>}
@@ -23,7 +23,7 @@ export function SkillIcon({ skill, level, master }: { skill: Skill; level?: numb
 export function UniEquipIcon({ uniEquip, level }: { uniEquip: UniEquip; level?: number }) {
   const name = `${uniEquip.raw.uniEquipName} (${uniEquip.raw.typeName1}-${uniEquip.raw.typeName2})`
   return (
-    <span className="bp4-menu-item-icon">
+    <span className="bp5-menu-item-icon">
       <div
         className={[
           'cpp-simple-target',
@@ -60,7 +60,7 @@ export function UniEquipIcon({ uniEquip, level }: { uniEquip: UniEquip; level?: 
 
 export function LevelIcon({ level }: { level: CharacterLevel }) {
   return (
-    <span className="bp4-menu-item-icon">
+    <span className="bp5-menu-item-icon">
       <div className="cpp-simple-target">
         <img
           src={[elite0, elite1, elite2][level.elite]}
@@ -75,7 +75,7 @@ export function LevelIcon({ level }: { level: CharacterLevel }) {
 
 export function LevelTarget2({ source, target }: { source: CharacterLevel; target: CharacterLevel }) {
   return (
-    <span className="bp4-menu-item-icon">
+    <span className="bp5-menu-item-icon">
       <div className="cpp-level-target">
         <span className="source">
           <img src={[elite0, elite1, elite2][source.elite]} />

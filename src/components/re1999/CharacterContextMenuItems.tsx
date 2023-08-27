@@ -1,4 +1,4 @@
-import { MenuItem2 } from '@blueprintjs/popover2'
+import { MenuItem } from '@blueprintjs/core'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { externalLinkProps } from '../AboutList'
 import links from './links.json'
@@ -13,21 +13,21 @@ export function CharacterContextMenuItems({ character }: { character: ICharacter
 
   return (
     <>
-      <MenuItem2
+      <MenuItem
         {...externalLinkProps}
         icon={'id-number'}
         text={'在「灰机wiki」查看此角色'}
         href={`https://res1999.huijiwiki.com/wiki/${encodeURIComponent(`${character.name}`)}`}
       />
       {gamekee ? (
-        <MenuItem2
+        <MenuItem
           {...externalLinkProps}
           icon={'id-number'}
           text={'在「逆流的Rainstorm WIKI攻略组」查看此角色'}
           href={gamekee.url}
         />
       ) : null}
-      <MenuItem2
+      <MenuItem
         {...externalLinkProps}
         icon={'search'}
         text={'在「逆流的Rainstorm WIKI攻略组」搜索此角色名'}
