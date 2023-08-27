@@ -28,7 +28,11 @@ export function SklandCharacterImportButton() {
     startImportSession(() => {
       const dm = ga.getDataManager()
       const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
-      const data = SklandData.parse(JSON.parse(input))
+      let raw = JSON.parse(input)
+      if (typeof raw === 'object' && typeof raw.data === 'object') {
+        raw = raw.data
+      }
+      const data = SklandData.parse(raw)
       return (draft: Draft<UserData<Arknights>>, ctx: ImportContext) => {
         let shitEquip = false
         const keys = new Set(Object.keys(draft.current))
