@@ -5,6 +5,7 @@ import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
 const logs = [
+  { date: '2023-08-27', type: 'optimize', desc: '底层组件更新，优化整体性能' },
   { date: '2023-08-27', game: [GameName.Arknights], type: 'optimize', desc: '增加森空岛数据导入功能' },
   { date: '2023-08-25', type: 'optimize', desc: '角色头像右键菜单增加资料站链接' },
   { date: '2023-08-25', type: 'optimize', desc: '优化计算性能' },
