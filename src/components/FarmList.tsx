@@ -1,7 +1,7 @@
 import { Alignment, Button, Icon, Menu, MenuDivider, MenuItem, Navbar, Popover, Spinner, Tag } from '@blueprintjs/core'
 import { Atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { sortBy } from 'ramda'
-import { useEffect } from 'react'
+import { memo, useEffect } from 'react'
 import useEvent from 'react-use-event-hook'
 import { Cpp, FarmLevel, FarmLevelNames, FarmLevelShortNames, useCpp, useGameAdapter } from '../Cpp'
 import { useRequest } from '../hooks/useRequest'
@@ -113,7 +113,7 @@ export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
   }
 }
 
-function FarmLevelButton({ level, refresh }: { level: FarmLevel; refresh?: (level: FarmLevel) => any }) {
+const FarmLevelButton = memo(({ level, refresh }: { level: FarmLevel; refresh?: (level: FarmLevel) => any }) => {
   const cpp = useCpp()
   const farmLevelAtom = cpp.preferenceAtoms.farmLevelAtom
   const [farmLevel, setFarmLevel] = useAtom(farmLevelAtom)
@@ -127,9 +127,9 @@ function FarmLevelButton({ level, refresh }: { level: FarmLevel; refresh?: (leve
       }}
     />
   )
-}
+})
 
-export function FarmList() {
+export const FarmList = memo(() => {
   const cpp = useCpp()
   const { loading, response, send, error } = useRequest(plan)
   const farmLevelAtom = cpp.preferenceAtoms.farmLevelAtom
@@ -200,9 +200,9 @@ export function FarmList() {
       </Menu>
     </>
   )
-}
+})
 
-export function StageLine({ run }: { run: StageRun }) {
+export const StageLine = memo(({ run }: { run: StageRun }) => {
   const ga = useGameAdapter()
   const stageInfo = ga.getStageInfos()[run.stageId]
   const samples = Math.max(
@@ -268,9 +268,9 @@ export function StageLine({ run }: { run: StageRun }) {
       <MenuDivider />
     </>
   )
-}
+})
 
-export function UnfeasibleLine({ items }: { items: Record<string, number> }) {
+export const UnfeasibleLine = memo(({ items }: { items: Record<string, number> }) => {
   const ga = useGameAdapter()
 
   return (
@@ -306,4 +306,4 @@ export function UnfeasibleLine({ items }: { items: Record<string, number> }) {
       <MenuDivider />
     </>
   )
-}
+})

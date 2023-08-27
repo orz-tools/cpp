@@ -1,8 +1,9 @@
+import { memo } from 'react'
 import { useGameAdapter } from '../../Cpp'
 import { Re1999DataManager } from '../../pkg/cpp-re1999'
 import { DataObjectStatus, DescriptionMenuItem } from '../AboutList'
 
-export function AboutCopyright() {
+export const AboutCopyright = memo(() => {
   return (
     <>
       <DescriptionMenuItem
@@ -13,9 +14,9 @@ export function AboutCopyright() {
       />
     </>
   )
-}
+})
 
-export function AboutDataSources() {
+export const AboutDataSources = memo(() => {
   const ga = useGameAdapter()
   const dm = ga.getDataManager() as Re1999DataManager
 
@@ -56,9 +57,9 @@ export function AboutDataSources() {
       />
     </>
   )
-}
+})
 
-export function AboutCredits() {
+export const AboutCredits = memo(() => {
   return (
     <>
       <DescriptionMenuItem
@@ -69,8 +70,8 @@ export function AboutCredits() {
       />
     </>
   )
-}
+})
 
-export function AboutThirdParty() {
+export const AboutThirdParty = memo(() => {
   return <></>
-}
+})

@@ -14,7 +14,7 @@ import {
 import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
-import React, { SetStateAction, useEffect, useMemo, useState } from 'react'
+import React, { SetStateAction, memo, useEffect, useMemo, useState } from 'react'
 import { useAtoms, useGameAdapter } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
@@ -24,36 +24,38 @@ import { ValueTag, ValueTagProgressBar } from './Value'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
-export function ItemQuantityEditor<G extends IGame>({ item, style }: { item: IItem; style?: React.CSSProperties }) {
-  const ga = useGameAdapter<G>()
-  const atoms = useAtoms<G>()
-  const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
-  const [input, setInput] = useState(formatter(quantity))
-  useEffect(() => setInput(formatter(quantity)), [quantity])
+export const ItemQuantityEditor = memo(
+  <G extends IGame>({ item, style }: { item: IItem; style?: React.CSSProperties }) => {
+    const ga = useGameAdapter<G>()
+    const atoms = useAtoms<G>()
+    const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
+    const [input, setInput] = useState(formatter(quantity))
+    useEffect(() => setInput(formatter(quantity)), [quantity])
 
-  if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
-    return <NumericInput value={input} style={style} disabled={true} allowNumericCharactersOnly={false} />
-  }
-  return (
-    <NumericInput
-      allowNumericCharactersOnly={false}
-      value={input}
-      style={style}
-      min={0}
-      onValueChange={(_, valueAsString) => setInput(valueAsString)}
-      onBlur={() => {
-        if (input === formatter(quantity)) return
-        setInput(formatter(quantity))
-        setQuantity(parser(input))
-      }}
-      onButtonClick={(_, valueAsString) => {
-        setQuantity(parser(valueAsString))
-      }}
-    />
-  )
-}
+    if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
+      return <NumericInput value={input} style={style} disabled={true} allowNumericCharactersOnly={false} />
+    }
+    return (
+      <NumericInput
+        allowNumericCharactersOnly={false}
+        value={input}
+        style={style}
+        min={0}
+        onValueChange={(_, valueAsString) => setInput(valueAsString)}
+        onBlur={() => {
+          if (input === formatter(quantity)) return
+          setInput(formatter(quantity))
+          setQuantity(parser(input))
+        }}
+        onButtonClick={(_, valueAsString) => {
+          setQuantity(parser(valueAsString))
+        }}
+      />
+    )
+  },
+)
 
-export function ItemSynthesisPopover<G extends IGame>({ item }: { item: IItem }) {
+export const ItemSynthesisPopover = memo(<G extends IGame>({ item }: { item: IItem }) => {
   const ga = useGameAdapter<G>()
   const atoms = useAtoms<G>()
   const quantities = useAtomValue(atoms.itemQuantities)
@@ -174,9 +176,9 @@ export function ItemSynthesisPopover<G extends IGame>({ item }: { item: IItem })
       })}
     </Menu>
   )
-}
+})
 
-export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem }) {
+export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IItem }) => {
   const ga = useGameAdapter<G>()
   const formula = useMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
   const atoms = useAtoms<G>()
@@ -353,9 +355,9 @@ export function ItemTaskRequirements<G extends IGame>({ item }: { item: IItem })
       </div>
     </>
   )
-}
+})
 
-export function ItemMenu({ item }: { item: IItem }) {
+export const ItemMenu = memo(({ item }: { item: IItem }) => {
   return (
     <li role="none">
       <a
@@ -385,13 +387,15 @@ export function ItemMenu({ item }: { item: IItem }) {
           </div>
         </>
       </a>
-      <div style={{}}>
-        <ItemQuantityEditor item={item} style={{ width: '6em', textAlign: 'right' }} />
+      <div>
+        <ItemQuantityEditor item={item} style={itemQuantityStyle} />
       </div>
       <ItemTaskRequirements item={item} />
     </li>
   )
-}
+})
+
+const itemQuantityStyle: React.CSSProperties = { width: '6em', textAlign: 'right' }
 
 const byCategory = groupBy<IItem, string>((i) => {
   return i.inventoryCategory
@@ -403,7 +407,7 @@ export function buildItemList(ga: IGameAdapter<IGame>) {
   })
 }
 
-function AllValue<G extends IGame>() {
+const AllValue = memo(<G extends IGame>() => {
   const ga = useGameAdapter<G>()
   const atoms = useAtoms<G>()
   const quantites = useAtomValue(atoms.itemQuantities)
@@ -418,9 +422,9 @@ function AllValue<G extends IGame>() {
     }),
   )
   return <ValueTag value={valid ? a : null} minimal={true} />
-}
+})
 
-function AllGoalValue<G extends IGame>({ finished = false }: { finished?: boolean }) {
+const AllGoalValue = memo(<G extends IGame>({ finished = false }: { finished?: boolean }) => {
   const ga = useGameAdapter<G>()
   const atoms = useAtoms<G>()
   const quantites = useAtomValue(atoms.itemQuantities)
@@ -457,9 +461,9 @@ function AllGoalValue<G extends IGame>({ finished = false }: { finished?: boolea
       }}
     />
   )
-}
+})
 
-function HideCompletedButton() {
+const HideCompletedButton = memo(() => {
   const [param, setParam] = useAtom(itemListParamAtom)
   return (
     <Button
@@ -473,7 +477,7 @@ function HideCompletedButton() {
       }}
     />
   )
-}
+})
 
 interface ItemListParam {
   mode: 'all' | 'goal' | 'finished'
@@ -496,7 +500,7 @@ const itemListParamAtom: WritableAtom<ItemListParam, [ItemListParam | SetStateAc
     set(itemListParamStorageAtom, typeof value === 'function' ? value(get(itemListParamAtom)) : value),
 )
 
-export function SyncButton() {
+export const SyncButton = memo(() => {
   const [open, setOpen] = useState(false)
   return (
     <>
@@ -513,9 +517,9 @@ export function SyncButton() {
       </Dialog>
     </>
   )
-}
+})
 
-export function ItemList<G extends IGame>() {
+export const ItemList = memo(<G extends IGame>() => {
   const param = useAtomValue(itemListParamAtom)
   const ga = useGameAdapter<G>()
   const itemGroups = useMemo(() => buildItemList(ga), [ga])
@@ -569,4 +573,4 @@ export function ItemList<G extends IGame>() {
       </Menu>
     </>
   )
-}
+})

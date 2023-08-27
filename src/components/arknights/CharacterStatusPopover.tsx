@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Checkbox, Classes, Intent, NumericInput, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { memo, useContext, useEffect, useState } from 'react'
 import { useAtoms } from '../../Cpp'
 import { Arknights, Character } from '../../pkg/cpp-arknights'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
@@ -19,7 +19,7 @@ const EditorContext = React.createContext<{
   character: Character
 }>(undefined as any)
 
-export function EliteLevelInput({ elite }: { elite: number }) {
+export const EliteLevelInput = memo(({ elite }: { elite: number }) => {
   const { character, status, setStatus, currentStatus } = useContext(EditorContext)
   const [input, setInput] = useState(String(status.level))
   useEffect(() => setInput(String(status.level)), [status.level])
@@ -47,9 +47,9 @@ export function EliteLevelInput({ elite }: { elite: number }) {
       style={{ width: '3em', marginLeft: '1em' }}
     />
   )
-}
+})
 
-export function EliteLevelButton({ elite, level, color }: { elite: number; level: number; color?: string }) {
+export const EliteLevelButton = memo(({ elite, level, color }: { elite: number; level: number; color?: string }) => {
   const { status, setStatus, currentStatus } = useContext(EditorContext)
   const already = status.elite > elite || (status.elite === elite && status.level >= level)
   return (
@@ -71,16 +71,16 @@ export function EliteLevelButton({ elite, level, color }: { elite: number; level
       {level}
     </Button>
   )
-}
+})
 
-export function CharacterStatusEliteLevelSection() {
+export const CharacterStatusEliteLevelSection = memo(() => {
   const { currentStatus, character } = useContext(EditorContext)
   return (
     <>
       {character.maxElite >= 0 &&
       !(
         currentStatus &&
-        (currentStatus.elite > 0 || (currentStatus.elite === 0 && currentStatus.level > character.maxLevels[0]))
+        (currentStatus.elite > 0 || (currentStatus.elite === 0 && currentStatus.level >= character.maxLevels[0]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -94,7 +94,7 @@ export function CharacterStatusEliteLevelSection() {
       {character.maxElite >= 1 &&
       !(
         currentStatus &&
-        (currentStatus.elite > 1 || (currentStatus.elite === 1 && currentStatus.level > character.maxLevels[1]))
+        (currentStatus.elite > 1 || (currentStatus.elite === 1 && currentStatus.level >= character.maxLevels[1]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -108,7 +108,7 @@ export function CharacterStatusEliteLevelSection() {
       {character.maxElite >= 2 &&
       !(
         currentStatus &&
-        (currentStatus.elite > 2 || (currentStatus.elite === 2 && currentStatus.level > character.maxLevels[2]))
+        (currentStatus.elite > 2 || (currentStatus.elite === 2 && currentStatus.level >= character.maxLevels[2]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -132,9 +132,9 @@ export function CharacterStatusEliteLevelSection() {
       ) : undefined}
     </>
   )
-}
+})
 
-export function SkillButton({ level }: { level: number }) {
+export const SkillButton = memo(({ level }: { level: number }) => {
   const { status, setStatus, currentStatus } = useContext(EditorContext)
   const already = status.skillLevel >= level
   const needElite = status.elite === 0 ? level >= 5 : false
@@ -156,9 +156,9 @@ export function SkillButton({ level }: { level: number }) {
       {level}
     </Button>
   )
-}
+})
 
-export function SkillMasterButton({ skillId, level }: { skillId: string; level: number }) {
+export const SkillMasterButton = memo(({ skillId, level }: { skillId: string; level: number }) => {
   const { status, setStatus, currentStatus } = useContext(EditorContext)
   const master = status.skillMaster[skillId] || 0
   const currentMaster = currentStatus ? currentStatus.skillMaster[skillId] || 0 : undefined
@@ -184,9 +184,9 @@ export function SkillMasterButton({ skillId, level }: { skillId: string; level: 
       icon={<img src={[m0, m1, m2, m3][level]} width="100%" height="100%" />}
     />
   )
-}
+})
 
-export function CharacterStatusSkillMasterSection() {
+export const CharacterStatusSkillMasterSection = memo(() => {
   const { currentStatus, character } = useContext(EditorContext)
   if (!character.skills.length) return <></>
   if (character.rarity < 3) return <></>
@@ -217,9 +217,9 @@ export function CharacterStatusSkillMasterSection() {
       })}
     </>
   )
-}
+})
 
-export function ModButton({ modId, level }: { modId: string; level: number }) {
+export const ModButton = memo(({ modId, level }: { modId: string; level: number }) => {
   const { character, status, setStatus, currentStatus } = useContext(EditorContext)
   const master = status.modLevel[modId] || 0
   const currentMaster = currentStatus ? currentStatus.modLevel[modId] || 0 : undefined
@@ -246,9 +246,9 @@ export function ModButton({ modId, level }: { modId: string; level: number }) {
       {level}
     </Button>
   )
-}
+})
 
-export function CharacterStatusModSection() {
+export const CharacterStatusModSection = memo(() => {
   const { currentStatus, character } = useContext(EditorContext)
   if (character.rarity < 3) return <></>
 
@@ -284,7 +284,7 @@ export function CharacterStatusModSection() {
       })}
     </>
   )
-}
+})
 
 export function CharacterStatusSkillSection() {
   const { currentStatus, character } = useContext(EditorContext)
@@ -309,7 +309,7 @@ export function CharacterStatusSkillSection() {
   )
 }
 
-export function CharacterStatusPopover({ character, isGoal }: { character: Character; isGoal: boolean }) {
+export const CharacterStatusPopover = memo(({ character, isGoal }: { character: Character; isGoal: boolean }) => {
   const atoms = useAtoms<Arknights>()
   const charId = character.key
   const statusAtom = isGoal ? atoms.goalCharacter(charId) : atoms.currentCharacter(charId)
@@ -354,4 +354,4 @@ export function CharacterStatusPopover({ character, isGoal }: { character: Chara
       ) : undefined}
     </EditorContext.Provider>
   )
-}
+})

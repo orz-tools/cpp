@@ -1,9 +1,10 @@
 import { MenuItem } from '@blueprintjs/core'
+import { memo } from 'react'
 import { useGameAdapter } from '../../Cpp'
 import { ArknightsDataManager } from '../../pkg/cpp-arknights'
 import { DataObjectStatus, DescriptionMenuItem, externalLinkProps } from '../AboutList'
 
-export function AboutCopyright() {
+export const AboutCopyright = memo(() => {
   return (
     <>
       <DescriptionMenuItem
@@ -14,9 +15,9 @@ export function AboutCopyright() {
       />
     </>
   )
-}
+})
 
-export function AboutDataSources() {
+export const AboutDataSources = memo(() => {
   const ga = useGameAdapter()
   const dm = ga.getDataManager() as ArknightsDataManager
 
@@ -38,9 +39,9 @@ export function AboutDataSources() {
       <DataObjectStatus title="明日方舟一图流 材料价值数据" href={'https://yituliu.site/'} dataObj={dm.$yituliu} />
     </>
   )
-}
+})
 
-export function AboutThirdParty() {
+export const AboutThirdParty = memo(() => {
   return (
     <>
       {/* <MenuItem
@@ -63,8 +64,8 @@ export function AboutThirdParty() {
       />
     </>
   )
-}
+})
 
-export function AboutCredits() {
+export const AboutCredits = memo(() => {
   return <></>
-}
+})

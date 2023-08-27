@@ -1,11 +1,11 @@
 import { Button, Card, Checkbox, Menu, MenuItem, Popover } from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
 import { groupBy, sortBy, without } from 'ramda'
-import React from 'react'
+import React, { memo } from 'react'
 import { useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { SampleTag } from './Value'
 
-export function ForbiddenFormulaTag({ tag, text }: { tag: string; text: React.ReactNode }) {
+export const ForbiddenFormulaTag = memo(({ tag, text }: { tag: string; text: React.ReactNode }) => {
   const atoms = useAtoms()
   const [tags, setTags] = useAtom(atoms.forbiddenFormulaTagsAtom)
   return (
@@ -20,9 +20,9 @@ export function ForbiddenFormulaTag({ tag, text }: { tag: string; text: React.Re
       }
     />
   )
-}
+})
 
-export function ConfigButton() {
+export const ConfigButton = memo(() => {
   const ga = useGameAdapter()
   const tags = Object.entries(ga.getFormulaTagNames())
   return (
@@ -43,9 +43,9 @@ export function ConfigButton() {
       </Button>
     </Popover>
   )
-}
+})
 
-export function ForbiddenStageIdTag({ stageId }: { stageId: string }) {
+export const ForbiddenStageIdTag = memo(({ stageId }: { stageId: string }) => {
   const ga = useGameAdapter()
   const stageInfo = ga.getStageInfos()
   const stage = stageInfo[stageId]
@@ -80,13 +80,13 @@ export function ForbiddenStageIdTag({ stageId }: { stageId: string }) {
       }
     />
   )
-}
+})
 
 function makeNumericSortable(x: string) {
   return x.replace(/\d+/g, (y) => String(y).padStart(20, '0'))
 }
 
-export function StagePopover() {
+export const StagePopover = memo(() => {
   const ga = useGameAdapter()
   const stageInfo = ga.getStageInfos()
   const allStageIds = Object.keys(stageInfo)
@@ -123,9 +123,9 @@ export function StagePopover() {
       })}
     </div>
   )
-}
+})
 
-export function StageButton() {
+export const StageButton = memo(() => {
   const ga = useGameAdapter()
   const cpp = useCpp()
   const stageInfo = ga.getStageInfos()
@@ -141,9 +141,9 @@ export function StageButton() {
       </Button>
     </Popover>
   )
-}
+})
 
-export function SoulButton() {
+export const SoulButton = memo(() => {
   const cpp = useCpp()
   const [blobFlavour, setBlobFlavour] = useAtom(cpp.preferenceAtoms.blobFlavourAtom)
 
@@ -159,4 +159,4 @@ export function SoulButton() {
       ?
     </Button>
   )
-}
+})

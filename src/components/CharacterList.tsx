@@ -14,7 +14,7 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { SetStateAction, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { memo, useEffect, useMemo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
 import { Cpp, useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
@@ -23,25 +23,23 @@ import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import { ICharacter, IGame } from '../pkg/cpp-basic'
 
-export function Hide({
-  children,
-  hide,
-  alreadyHide,
-}: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) {
-  return (
-    <div
-      style={
-        alreadyHide
-          ? undefined
-          : {
-              opacity: hide ? 0.1 : 1,
-            }
-      }
-    >
-      {children}
-    </div>
-  )
-}
+export const Hide = memo(
+  ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
+    return (
+      <div
+        style={
+          alreadyHide
+            ? undefined
+            : {
+                opacity: hide ? 0.1 : 1,
+              }
+        }
+      >
+        {children}
+      </div>
+    )
+  },
+)
 
 export function renderCharacterStatus<G extends IGame>(
   status: G['characterStatus'],
@@ -81,170 +79,174 @@ export function renderCharacterStatus<G extends IGame>(
   )
 }
 
-export function CharacterContextMenu({ character, alwaysSorting }: { character: ICharacter; alwaysSorting?: boolean }) {
-  const { CharacterContextMenuItems } = useComponents()
-  const atoms = useAtoms<IGame>()
-  const setData = useSetAtom(atoms.dataAtom)
-  const [param, setParam] = useAtom(queryParamAtom)
-  const shouldRefresh = param.mode === ListMode.WithGoal
+export const CharacterContextMenu = memo(
+  ({ character, alwaysSorting }: { character: ICharacter; alwaysSorting?: boolean }) => {
+    const { CharacterContextMenuItems } = useComponents()
+    const atoms = useAtoms<IGame>()
+    const setData = useSetAtom(atoms.dataAtom)
+    const [param, setParam] = useAtom(queryParamAtom)
+    const shouldRefresh = param.mode === ListMode.WithGoal
 
-  return (
-    <Menu>
-      {alwaysSorting || (alwaysSorting !== false && param.mode === ListMode.WithGoal) ? (
-        <>
-          <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <>
-              <span style={{ marginLeft: 10 }}>{'角色计划排序'}</span>
-              <div style={{ flex: 1 }} />
-            </>
-            <Button
-              icon={'double-chevron-up'}
-              onClick={() => {
-                setData('modify', (d) => {
-                  const index = d.goalOrder.indexOf(character.key)
-                  if (index >= 0) {
-                    d.goalOrder.splice(index, 1)
-                  }
-                  d.goalOrder.unshift(character.key)
-                })
-                shouldRefresh && setParam((e) => ({ ...e }))
-              }}
-            />
-            <Button
-              icon={'chevron-up'}
-              onClick={() => {
-                setData('modify', (d) => {
-                  const index = d.goalOrder.indexOf(character.key)
-                  if (index >= 1) {
-                    d.goalOrder.splice(index, 1)
-                    d.goalOrder.splice(index - 1, 0, character.key)
-                  }
-                })
-                shouldRefresh && setParam((e) => ({ ...e }))
-              }}
-            />
-            <Button
-              icon={'chevron-down'}
-              onClick={() => {
-                setData('modify', (d) => {
-                  const index = d.goalOrder.indexOf(character.key)
-                  if (index >= 0 && index < d.goalOrder.length - 1) {
-                    d.goalOrder.splice(index, 1)
-                    d.goalOrder.splice(index + 1, 0, character.key)
-                  }
-                })
-                shouldRefresh && setParam((e) => ({ ...e }))
-              }}
-            />
-            <Button
-              icon={'double-chevron-down'}
-              onClick={() => {
-                setData('modify', (d) => {
-                  const index = d.goalOrder.indexOf(character.key)
-                  if (index >= 0) {
-                    d.goalOrder.splice(index, 1)
-                  }
-                  d.goalOrder.push(character.key)
-                })
-                shouldRefresh && setParam((e) => ({ ...e }))
-              }}
-            />
-          </ButtonGroup>
-          <MenuDivider />
-        </>
-      ) : null}
-      {CharacterContextMenuItems ? <CharacterContextMenuItems character={character} /> : null}
-    </Menu>
-  )
-}
-
-function CharacterMenu<G extends IGame>({ character, style }: { character: ICharacter; style?: React.CSSProperties }) {
-  const atoms = useAtoms<G>()
-  const ga = useGameAdapter<G>()
-  const uda = ga.getUserDataAdapter()
-  const charId = character.key
-  const currentCharacter = useAtomValue(atoms.currentCharacter(charId))
-  const goalCharacter = useAtomValue(atoms.goalCharacter(charId))
-
-  const goalSame = useMemo(
-    () => deepEqual(currentCharacter, goalCharacter, { strict: true }),
-    [currentCharacter, goalCharacter],
-  )
-  const finished = useAtomValue(atoms.isCharacterFinished(charId))
-  const c = useComponents()
-  const render = c.renderCharacterStatus || renderCharacterStatus
-  const CSP = c.CharacterStatusPopover || CharacterStatusPopover
-
-  return (
-    <li
-      role="none"
-      className={[
-        'cpp-char-menu-master',
-        `cpp-char-rarity-${character.rarity}`,
-        ...(character.characterViewExtraClass || []),
-      ].join(' ')}
-      style={style}
-    >
-      <ContextMenu content={<CharacterContextMenu character={character} />}>
-        <a role="menuitem" tabIndex={0} className="bp5-menu-item cpp-char-menu-char">
+    return (
+      <Menu>
+        {alwaysSorting || (alwaysSorting !== false && param.mode === ListMode.WithGoal) ? (
           <>
-            <span className="bp5-menu-item-icon cpp-char-avatar">
-              <CachedImg
-                src={character.avatar}
-                width={'100%'}
-                height={'100%'}
-                alt={character.key}
-                title={character.key}
+            <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+              <>
+                <span style={{ marginLeft: 10 }}>{'角色计划排序'}</span>
+                <div style={{ flex: 1 }} />
+              </>
+              <Button
+                icon={'double-chevron-up'}
+                onClick={() => {
+                  setData('modify', (d) => {
+                    const index = d.goalOrder.indexOf(character.key)
+                    if (index >= 0) {
+                      d.goalOrder.splice(index, 1)
+                    }
+                    d.goalOrder.unshift(character.key)
+                  })
+                  shouldRefresh && setParam((e) => ({ ...e }))
+                }}
               />
-            </span>
-            <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div className="bp5-text-overflow-ellipsis" title={character.name}>
-                {character.name}
-              </div>
-              <div
-                className="bp5-text-overflow-ellipsis"
-                title={character.appellation}
-                style={{ fontWeight: 'normal', opacity: 0.75 }}
-              >
-                {character.appellation}
-              </div>
-            </div>
+              <Button
+                icon={'chevron-up'}
+                onClick={() => {
+                  setData('modify', (d) => {
+                    const index = d.goalOrder.indexOf(character.key)
+                    if (index >= 1) {
+                      d.goalOrder.splice(index, 1)
+                      d.goalOrder.splice(index - 1, 0, character.key)
+                    }
+                  })
+                  shouldRefresh && setParam((e) => ({ ...e }))
+                }}
+              />
+              <Button
+                icon={'chevron-down'}
+                onClick={() => {
+                  setData('modify', (d) => {
+                    const index = d.goalOrder.indexOf(character.key)
+                    if (index >= 0 && index < d.goalOrder.length - 1) {
+                      d.goalOrder.splice(index, 1)
+                      d.goalOrder.splice(index + 1, 0, character.key)
+                    }
+                  })
+                  shouldRefresh && setParam((e) => ({ ...e }))
+                }}
+              />
+              <Button
+                icon={'double-chevron-down'}
+                onClick={() => {
+                  setData('modify', (d) => {
+                    const index = d.goalOrder.indexOf(character.key)
+                    if (index >= 0) {
+                      d.goalOrder.splice(index, 1)
+                    }
+                    d.goalOrder.push(character.key)
+                  })
+                  shouldRefresh && setParam((e) => ({ ...e }))
+                }}
+              />
+            </ButtonGroup>
+            <MenuDivider />
           </>
-        </a>
-      </ContextMenu>
-      <Popover
-        usePortal={true}
-        popoverClassName={'cpp-popover'}
-        content={<CSP character={character} isGoal={false} />}
-        placement="bottom"
+        ) : null}
+        {CharacterContextMenuItems ? <CharacterContextMenuItems character={character} /> : null}
+      </Menu>
+    )
+  },
+)
+
+const CharacterMenu = memo(
+  <G extends IGame>({ character, style }: { character: ICharacter; style?: React.CSSProperties }) => {
+    const atoms = useAtoms<G>()
+    const ga = useGameAdapter<G>()
+    const uda = ga.getUserDataAdapter()
+    const charId = character.key
+    const currentCharacter = useAtomValue(atoms.currentCharacter(charId))
+    const goalCharacter = useAtomValue(atoms.goalCharacter(charId))
+
+    const goalSame = useMemo(
+      () => deepEqual(currentCharacter, goalCharacter, { strict: true }),
+      [currentCharacter, goalCharacter],
+    )
+    const finished = useAtomValue(atoms.isCharacterFinished(charId))
+    const c = useComponents()
+    const render = c.renderCharacterStatus || renderCharacterStatus
+    const CSP = c.CharacterStatusPopover || CharacterStatusPopover
+
+    return (
+      <li
+        role="none"
+        className={[
+          'cpp-char-menu-master',
+          `cpp-char-rarity-${character.rarity}`,
+          ...(character.characterViewExtraClass || []),
+        ].join(' ')}
+        style={style}
       >
-        <a
-          role="menuitem"
-          tabIndex={0}
-          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-current"
-          style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
+        <ContextMenu content={<CharacterContextMenu character={character} />}>
+          <a role="menuitem" tabIndex={0} className="bp5-menu-item cpp-char-menu-char">
+            <>
+              <span className="bp5-menu-item-icon cpp-char-avatar">
+                <CachedImg
+                  src={character.avatar}
+                  width={'100%'}
+                  height={'100%'}
+                  alt={character.key}
+                  title={character.key}
+                />
+              </span>
+              <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div className="bp5-text-overflow-ellipsis" title={character.name}>
+                  {character.name}
+                </div>
+                <div
+                  className="bp5-text-overflow-ellipsis"
+                  title={character.appellation}
+                  style={{ fontWeight: 'normal', opacity: 0.75 }}
+                >
+                  {character.appellation}
+                </div>
+              </div>
+            </>
+          </a>
+        </ContextMenu>
+        <Popover
+          usePortal={true}
+          popoverClassName={'cpp-popover'}
+          content={<CSP character={character} isGoal={false} />}
+          placement="bottom"
         >
-          {render(currentCharacter, character)}
-        </a>
-      </Popover>
-      <Popover
-        usePortal={true}
-        popoverClassName={'cpp-popover'}
-        content={<CSP character={character} isGoal={true} />}
-        placement="bottom"
-      >
-        <a
-          role="menuitem"
-          tabIndex={0}
-          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
-          style={{ opacity: finished ? 0 : goalSame ? 0.25 : 1 }}
+          <a
+            role="menuitem"
+            tabIndex={0}
+            className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-current"
+            style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
+          >
+            {render(currentCharacter, character)}
+          </a>
+        </Popover>
+        <Popover
+          usePortal={true}
+          popoverClassName={'cpp-popover'}
+          content={<CSP character={character} isGoal={true} />}
+          placement="bottom"
         >
-          {render(goalCharacter, character, currentCharacter, goalSame)}
-        </a>
-      </Popover>
-    </li>
-  )
-}
+          <a
+            role="menuitem"
+            tabIndex={0}
+            className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
+            style={{ opacity: finished ? 0 : goalSame ? 0.25 : 1 }}
+          >
+            {render(goalCharacter, character, currentCharacter, goalSame)}
+          </a>
+        </Popover>
+      </li>
+    )
+  },
+)
 
 function buildMatcher(query: string): (x: string) => boolean {
   const trimmed = query.toLowerCase().trim()
@@ -331,7 +333,7 @@ const queryParamAtom = atom(
     set(queryParamStorageAtom, value),
 )
 
-function QuerySearchBox() {
+const QuerySearchBox = memo(() => {
   const [param, setParam] = useAtom(queryParamAtom)
   return (
     <>
@@ -352,9 +354,9 @@ function QuerySearchBox() {
       </div>
     </>
   )
-}
+})
 
-function QueryBuilder() {
+const QueryBuilder = memo(() => {
   const [param, setParam] = useAtom(queryParamAtom)
   const atoms = useAtoms()
   const data = useAtomValue(atoms.dataAtom)
@@ -389,9 +391,9 @@ function QueryBuilder() {
       />
     </>
   )
-}
+})
 
-export function CharacterList() {
+export const CharacterList = memo(() => {
   const { CharacterImportButton } = useComponents()
   const param = useAtomValue(queryParamAtom)
 
@@ -469,4 +471,4 @@ export function CharacterList() {
       </Menu>
     </>
   )
-}
+})

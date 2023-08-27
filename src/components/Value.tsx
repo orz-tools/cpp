@@ -1,6 +1,6 @@
 import { Button, Icon, IconName, Intent, MaybeElement, Menu, MenuItem, Popover, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
-import React from 'react'
+import React, { memo } from 'react'
 import { ValueType, useCpp } from '../Cpp'
 
 const ValueIcon = {
@@ -80,88 +80,23 @@ function formatAll(value: number | null | undefined) {
     .join('\n')
 }
 
-export function ValueTag({
-  value,
-  minimal,
-  single,
-  style,
-  intent,
-}: {
-  value: number | null | undefined
-  minimal?: boolean
-  single?: boolean
-  style?: React.CSSProperties
-  intent?: Intent
-}) {
-  const cpp = useCpp()
-  const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
+export const ValueTag = memo(
+  ({
+    value,
+    minimal,
+    single,
+    style,
+    intent,
+  }: {
+    value: number | null | undefined
+    minimal?: boolean
+    single?: boolean
+    style?: React.CSSProperties
+    intent?: Intent
+  }) => {
+    const cpp = useCpp()
+    const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
 
-  return (
-    <Tag
-      minimal={minimal}
-      round={true}
-      icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[type]} />}
-      style={{
-        paddingLeft: 4,
-        paddingRight: 4,
-        opacity: hasValue(value) ? 1 : 0.25,
-        ...style,
-      }}
-      title={formatAll(value)}
-      intent={intent}
-    >
-      {/* {intent ? undefined : '约 '} */}
-      {format(value, type, single)}
-    </Tag>
-  )
-}
-
-export function SampleTag({
-  sample,
-  minimal,
-  style,
-}: {
-  sample: number | null | undefined
-  minimal?: boolean
-  style?: React.CSSProperties
-}) {
-  return Number.isFinite(sample) ? (
-    <Tag
-      minimal={minimal}
-      round={true}
-      icon={<Icon color={minimal ? undefined : 'white'} icon={'lab-test'} />}
-      style={{
-        paddingLeft: 4,
-        paddingRight: 4,
-        ...style,
-      }}
-      title={'样本数'}
-    >
-      {sample}
-    </Tag>
-  ) : null
-}
-
-export function ValueTagProgressBar({
-  value,
-  maxValue,
-  minimal,
-  style,
-}: {
-  value: number | null | undefined
-  maxValue: number | null | undefined
-  minimal?: boolean
-  style?: React.CSSProperties
-}) {
-  const cpp = useCpp()
-  const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
-
-  const v = (value || 0) + 0.00000001
-  const mv = (maxValue || 0) + 0.00000001
-  const percent = (1 - v / mv) * 100
-  const color = minimal ? '#215db044' : '#2d72d2'
-
-  if ((maxValue || 0) === 0) {
     return (
       <Tag
         minimal={minimal}
@@ -170,42 +105,113 @@ export function ValueTagProgressBar({
         style={{
           paddingLeft: 4,
           paddingRight: 4,
-          opacity: 0.25,
+          opacity: hasValue(value) ? 1 : 0.25,
+          ...style,
+        }}
+        title={formatAll(value)}
+        intent={intent}
+      >
+        {/* {intent ? undefined : '约 '} */}
+        {format(value, type, single)}
+      </Tag>
+    )
+  },
+)
+
+export const SampleTag = memo(
+  ({
+    sample,
+    minimal,
+    style,
+  }: {
+    sample: number | null | undefined
+    minimal?: boolean
+    style?: React.CSSProperties
+  }) => {
+    return Number.isFinite(sample) ? (
+      <Tag
+        minimal={minimal}
+        round={true}
+        icon={<Icon color={minimal ? undefined : 'white'} icon={'lab-test'} />}
+        style={{
+          paddingLeft: 4,
+          paddingRight: 4,
+          ...style,
+        }}
+        title={'样本数'}
+      >
+        {sample}
+      </Tag>
+    ) : null
+  },
+)
+
+export const ValueTagProgressBar = memo(
+  ({
+    value,
+    maxValue,
+    minimal,
+    style,
+  }: {
+    value: number | null | undefined
+    maxValue: number | null | undefined
+    minimal?: boolean
+    style?: React.CSSProperties
+  }) => {
+    const cpp = useCpp()
+    const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
+
+    const v = (value || 0) + 0.00000001
+    const mv = (maxValue || 0) + 0.00000001
+    const percent = (1 - v / mv) * 100
+    const color = minimal ? '#215db044' : '#2d72d2'
+
+    if ((maxValue || 0) === 0) {
+      return (
+        <Tag
+          minimal={minimal}
+          round={true}
+          icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[type]} />}
+          style={{
+            paddingLeft: 4,
+            paddingRight: 4,
+            opacity: 0.25,
+            filter: 'grayscale(0.5)',
+            ...style,
+          }}
+        >
+          ?
+        </Tag>
+      )
+    }
+
+    return (
+      <Tag
+        minimal={minimal}
+        round={true}
+        icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[type]} />}
+        style={{
+          paddingLeft: 4,
+          paddingRight: 4,
+          opacity: hasValue(value) ? 1 : 0.25,
+          backgroundImage: `linear-gradient(to left, ${color}, ${color} ${percent.toFixed(
+            2,
+          )}%, transparent ${percent.toFixed(2)}%, transparent)`,
           filter: 'grayscale(0.5)',
           ...style,
         }}
+        title={formatAll(value) + '\n\n/////\n\n' + formatAll(maxValue)}
       >
-        ?
+        {/* {'约 '} */}
+        {format(value, type)}
+        {'/'}
+        {format(maxValue, type)}
       </Tag>
     )
-  }
+  },
+)
 
-  return (
-    <Tag
-      minimal={minimal}
-      round={true}
-      icon={<Icon color={minimal ? undefined : 'white'} icon={ValueIcon[type]} />}
-      style={{
-        paddingLeft: 4,
-        paddingRight: 4,
-        opacity: hasValue(value) ? 1 : 0.25,
-        backgroundImage: `linear-gradient(to left, ${color}, ${color} ${percent.toFixed(
-          2,
-        )}%, transparent ${percent.toFixed(2)}%, transparent)`,
-        filter: 'grayscale(0.5)',
-        ...style,
-      }}
-      title={formatAll(value) + '\n\n/////\n\n' + formatAll(maxValue)}
-    >
-      {/* {'约 '} */}
-      {format(value, type)}
-      {'/'}
-      {format(maxValue, type)}
-    </Tag>
-  )
-}
-
-export function SetValueOptionMenuItem({ type }: { type: ValueType }) {
+export const SetValueOptionMenuItem = memo(({ type }: { type: ValueType }) => {
   const cpp = useCpp()
   const [ctype, setType] = useAtom(cpp.preferenceAtoms.valueTypeAtom)
   return (
@@ -220,9 +226,9 @@ export function SetValueOptionMenuItem({ type }: { type: ValueType }) {
       onClick={() => setType(type)}
     />
   )
-}
+})
 
-export function ValueOptionButton() {
+export const ValueOptionButton = memo(() => {
   const cpp = useCpp()
   const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
 
@@ -244,4 +250,4 @@ export function ValueOptionButton() {
       </Button>
     </Popover>
   )
-}
+})

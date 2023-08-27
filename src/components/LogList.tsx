@@ -1,6 +1,6 @@
 import { Alignment, IconName, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
 import { groupBy, sortBy } from 'ramda'
-import React, { useMemo } from 'react'
+import React, { memo, useMemo } from 'react'
 import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
@@ -44,7 +44,7 @@ const iconMap = {
   fix: 'build',
 } satisfies Record<string, IconName>
 
-export function LogList() {
+export const LogList = memo(() => {
   const ga = useGameAdapter()
   const groupedLogs = useMemo(() => {
     const cn = ga.getCodename() as GameName
@@ -81,4 +81,4 @@ export function LogList() {
       </Menu>
     </>
   )
-}
+})

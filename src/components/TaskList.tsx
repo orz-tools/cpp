@@ -3,7 +3,7 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import { WritableAtom, atom, useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { sortBy, sum } from 'ramda'
-import React, { SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { SetStateAction, memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { IGame, Task } from '../pkg/cpp-basic'
@@ -32,12 +32,12 @@ const queryParamAtom: WritableAtom<
     set(queryParamStorageAtom, typeof value === 'function' ? value(get(queryParamAtom)) : value),
 )
 
-function TaskDisplay<G extends IGame>({ type, charId }: { type: G['characterTaskType']; charId: string }) {
+const TaskDisplay = memo(<G extends IGame>({ type, charId }: { type: G['characterTaskType']; charId: string }) => {
   const ga = useGameAdapter()
   return <>{ga.getUserDataAdapter().formatTaskAsString(type, charId)}</>
-}
+})
 
-function TaskContextMenu<G extends IGame>({ task, extra }: { task: Task<G>; extra: TaskExtra }) {
+const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>; extra: TaskExtra }) => {
   const store = useStore()
   const atoms = useAtoms<G>()
   const ga = useGameAdapter<G>()
@@ -114,112 +114,114 @@ function TaskContextMenu<G extends IGame>({ task, extra }: { task: Task<G>; extr
       />
     </Menu>
   )
-}
+})
 
-export function TaskMenu<G extends IGame>({
-  task,
-  extra,
-  style,
-  same,
-  nextSame,
-  hideCosts,
-}: {
-  task: Task<G>
-  extra: TaskExtra
-  style?: React.CSSProperties
-  same?: boolean
-  nextSame?: boolean
-  hideCosts: boolean
-}) {
-  const ga = useGameAdapter<G>()
-  const character = ga.getCharacter(task.charId)
-  const sortedRequires = useMemo(
-    () =>
-      sortBy(
-        (a) => ga.getItem(a[0].itemId).sortId,
-        task.requires.map((r, i) => [r, i] as const),
-      ),
-    [ga, task.requires],
-  )
+export const TaskMenu = memo(
+  <G extends IGame>({
+    task,
+    extra,
+    style,
+    same,
+    nextSame,
+    hideCosts,
+  }: {
+    task: Task<G>
+    extra: TaskExtra
+    style?: React.CSSProperties
+    same?: boolean
+    nextSame?: boolean
+    hideCosts: boolean
+  }) => {
+    const ga = useGameAdapter<G>()
+    const character = ga.getCharacter(task.charId)
+    const sortedRequires = useMemo(
+      () =>
+        sortBy(
+          (a) => ga.getItem(a[0].itemId).sortId,
+          task.requires.map((r, i) => [r, i] as const),
+        ),
+      [ga, task.requires],
+    )
 
-  const renderedCosts = sortedRequires.map(([x, i]) => (
-    <ItemStack<G>
-      key={x.itemId}
-      task={task}
-      stack={x}
-      style={hideCosts ? {} : { marginLeft: 22 }}
-      status={extra.costStatus[i]}
-      consumed={extra.quantityCanConsume[i]}
-      synthesised={extra.costSynthesised[i]}
-    />
-  ))
+    const renderedCosts = sortedRequires.map(([x, i]) => (
+      <ItemStack
+        key={x.itemId}
+        task={task}
+        stack={x}
+        style={hideCosts ? {} : { marginLeft: 22 }}
+        status={extra.costStatus[i]}
+        consumed={extra.quantityCanConsume[i]}
+        synthesised={extra.costSynthesised[i]}
+      />
+    ))
 
-  return (
-    <li role="none" style={style} className="cpp-task-menu-master">
-      {same ? undefined : (
-        <ContextMenu content={<CharacterContextMenu character={character} alwaysSorting={true} />}>
-          <a
-            role="menuitem"
-            tabIndex={0}
-            className="bp5-menu-item cpp-task-menu"
-            style={{ flexShrink: 1, overflow: 'hidden' }}
-          >
-            <>
-              <span className="bp5-menu-item-icon">
-                <CachedImg
-                  src={character.avatar}
-                  width={'16'}
-                  height={'16'}
-                  alt={character.key}
-                  title={character.key}
-                />
-              </span>
+    return (
+      <li role="none" style={style} className="cpp-task-menu-master">
+        {same ? undefined : (
+          <ContextMenu content={<CharacterContextMenu character={character} alwaysSorting={true} />}>
+            <a
+              role="menuitem"
+              tabIndex={0}
+              className="bp5-menu-item cpp-task-menu"
+              style={{ flexShrink: 1, overflow: 'hidden' }}
+            >
+              <>
+                <span className="bp5-menu-item-icon">
+                  <CachedImg
+                    src={character.avatar}
+                    width={'16'}
+                    height={'16'}
+                    alt={character.key}
+                    title={character.key}
+                  />
+                </span>
 
-              <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
-                  <div className="bp5-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
-                    {character.name}
-                    <span style={{ paddingLeft: '0.5em', fontWeight: 'normal', opacity: 0.75 }}>
-                      {character.appellation}
-                    </span>
+                <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
+                    <div className="bp5-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
+                      {character.name}
+                      <span style={{ paddingLeft: '0.5em', fontWeight: 'normal', opacity: 0.75 }}>
+                        {character.appellation}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </>
-          </a>
-        </ContextMenu>
-      )}
-      <Menu style={{ padding: 0 }}>
-        <ContextMenu content={<TaskContextMenu task={task} extra={extra} />}>
-          <MenuItem
-            // title={task.id}
-            style={{ fontWeight: 'normal' }}
-            text={
-              <>
-                {extra.status === TaskStatus.AllUnmet ? (
-                  <ValueTagProgressBar
-                    value={sum(extra.valueTotal) - sum(extra.valueFulfilled)}
-                    maxValue={sum(extra.valueTotal)}
-                    minimal={true}
-                    style={{ float: 'right' }}
-                  />
-                ) : null}
-                <TaskDisplay type={task.type} charId={character.key} />
               </>
-            }
-            icon={StatusIcon[extra.status]}
-            popoverProps={{ usePortal: true, matchTargetWidth: true }}
-          >
-            {hideCosts && renderedCosts.length > 0 ? renderedCosts : null}
-          </MenuItem>
-        </ContextMenu>
-        {hideCosts ? null : renderedCosts}
-        {nextSame && !hideCosts ? <MenuDivider /> : null}
-      </Menu>
-      {nextSame ? null : <MenuDivider />}
-    </li>
-  )
-}
+            </a>
+          </ContextMenu>
+        )}
+        <Menu style={{ padding: 0 }}>
+          <ContextMenu content={<TaskContextMenu task={task} extra={extra} />}>
+            <MenuItem
+              // title={task.id}
+              style={{ fontWeight: 'normal' }}
+              text={
+                <>
+                  {extra.status === TaskStatus.AllUnmet ? (
+                    <ValueTagProgressBar
+                      value={sum(extra.valueTotal) - sum(extra.valueFulfilled)}
+                      maxValue={sum(extra.valueTotal)}
+                      minimal={true}
+                      style={{ float: 'right' }}
+                    />
+                  ) : null}
+                  <TaskDisplay type={task.type} charId={character.key} />
+                </>
+              }
+              icon={StatusIcon[extra.status]}
+              popoverProps={{ usePortal: true, matchTargetWidth: true }}
+            >
+              {hideCosts && renderedCosts.length > 0 ? renderedCosts : null}
+            </MenuItem>
+          </ContextMenu>
+          {hideCosts ? null : renderedCosts}
+          {nextSame && !hideCosts ? <MenuDivider /> : null}
+        </Menu>
+        {nextSame ? null : <MenuDivider />}
+      </li>
+    )
+  },
+)
 
 const preventDefault = (e: React.MouseEvent<any, MouseEvent>) => e.preventDefault()
 
@@ -237,63 +239,65 @@ const CostStatusIcon = {
   [TaskCostStatus.Synthesizable]: 'build',
 } satisfies { [K in TaskCostStatus]: IconName }
 
-function ItemStack<G extends IGame>({
-  stack,
-  style,
-  status,
-  consumed,
-  synthesised,
-}: {
-  task: Task<G>
-  stack: Task<G>['requires'][0]
-  style?: React.CSSProperties
-  status: TaskCostStatus
-  consumed: number
-  synthesised: number
-}) {
-  const ga = useGameAdapter<G>()
-  const item = ga.getItem(stack.itemId)
-  return (
-    <MenuItem
-      className="cpp-menu-not-interactive"
-      key={stack.itemId}
-      icon={
-        <div style={{ display: 'flex' }}>
-          <Icon icon={CostStatusIcon[status]} size={16} style={{ padding: 2 }} />
-          <CachedImg
-            className={'cpp-item-icon'}
-            src={item.icon}
-            width={'20'}
-            height={'20'}
-            alt={item.key}
-            title={item.key}
-          />
-        </div>
-      }
-      onContextMenu={preventDefault}
-      text={
-        <>
-          <span>{item.name}</span>
-          <span style={{ float: 'right' }}>
-            {consumed > 0 || (consumed <= 0 && synthesised <= 0) ? consumed : undefined}
-            {consumed > 0 && synthesised > 0 ? ' + ' : undefined}
-            {synthesised > 0 ? (
-              <>
-                <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5 }} />
-                {synthesised}
-              </>
-            ) : undefined}
-            {' / '}
-            {stack.quantity}
-          </span>
-        </>
-      }
-      style={{ fontWeight: 'normal', ...style }}
-    />
-  )
-}
+const ItemStack = memo(
+  <G extends IGame>({
+    stack,
+    style,
+    status,
+    consumed,
+    synthesised,
+  }: {
+    task: Task<G>
+    stack: Task<G>['requires'][0]
+    style?: React.CSSProperties
+    status: TaskCostStatus
+    consumed: number
+    synthesised: number
+  }) => {
+    const ga = useGameAdapter<G>()
+    const item = ga.getItem(stack.itemId)
+    return (
+      <MenuItem
+        className="cpp-menu-not-interactive"
+        key={stack.itemId}
+        icon={
+          <div style={{ display: 'flex' }}>
+            <Icon icon={CostStatusIcon[status]} size={16} style={{ padding: 2 }} />
+            <CachedImg
+              className={'cpp-item-icon'}
+              src={item.icon}
+              width={'20'}
+              height={'20'}
+              alt={item.key}
+              title={item.key}
+            />
+          </div>
+        }
+        onContextMenu={preventDefault}
+        text={
+          <>
+            <span>{item.name}</span>
+            <span style={{ float: 'right' }}>
+              {consumed > 0 || (consumed <= 0 && synthesised <= 0) ? consumed : undefined}
+              {consumed > 0 && synthesised > 0 ? ' + ' : undefined}
+              {synthesised > 0 ? (
+                <>
+                  <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5 }} />
+                  {synthesised}
+                </>
+              ) : undefined}
+              {' / '}
+              {stack.quantity}
+            </span>
+          </>
+        }
+        style={{ fontWeight: 'normal', ...style }}
+      />
+    )
+  },
+)
 
-function HideCostsButton() {
+const HideCostsButton = memo(() => {
   const [param, setParam] = useAtom(queryParamAtom)
   return (
     <Button
@@ -307,9 +311,9 @@ function HideCostsButton() {
       }}
     />
   )
-}
+})
 
-export function TaskList<G extends IGame>() {
+export const TaskList = memo(<G extends IGame>() => {
   const atoms = useAtoms<G>()
   const param = useAtomValue(queryParamAtom)
 
@@ -363,7 +367,7 @@ export function TaskList<G extends IGame>() {
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const index = virtualRow.index
             return (
-              <TaskMenu<G>
+              <TaskMenu
                 key={virtualRow.key}
                 style={{
                   position: 'absolute',
@@ -385,4 +389,4 @@ export function TaskList<G extends IGame>() {
       </Menu>
     </>
   )
-}
+})

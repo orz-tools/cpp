@@ -1,9 +1,10 @@
+import { memo } from 'react'
 import { Importer } from './Importer'
 
-export function Holder() {
+export const Holder = memo(() => {
   return (
     <>
       <Importer />
     </>
   )
-}
+})

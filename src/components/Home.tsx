@@ -1,8 +1,8 @@
 import { Alignment, Navbar } from '@blueprintjs/core'
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { formatProfileName, getProfiles } from '../profiles'
 
-export function Home() {
+export const Home = memo(() => {
   const profiles = useMemo(() => getProfiles(), [])
   const aa = profiles.filter((x) => !x[2])
   const bb = profiles.filter((x) => x[2])
@@ -54,4 +54,4 @@ export function Home() {
       </div>
     </>
   )
-}
+})

@@ -1,7 +1,7 @@
 import { Alert, Button } from '@blueprintjs/core'
 import { useSetAtom, useStore } from 'jotai'
 import { pick } from 'ramda'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { useAtoms, useGameAdapter } from '../../Cpp'
 import { Arknights } from '../../pkg/cpp-arknights'
 
@@ -10,15 +10,15 @@ const pickRetainableItems = pick([
   '4006', // 采购凭证
 ])
 
-export function ItemImportButton() {
+export const ItemImportButton = memo(() => {
   return (
     <>
       <MAAItemImportButton />
     </>
   )
-}
+})
 
-function MAAItemImportButton<G extends Arknights>() {
+const MAAItemImportButton = memo(<G extends Arknights>() => {
   const ga = useGameAdapter<G>()
   const atoms = useAtoms<G>()
   const store = useStore()
@@ -79,4 +79,4 @@ function MAAItemImportButton<G extends Arknights>() {
       </Alert>
     </>
   )
-}
+})

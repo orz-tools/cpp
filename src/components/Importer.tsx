@@ -3,7 +3,7 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { Draft } from 'immer'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
@@ -39,7 +39,7 @@ interface State {
   warnings: string[]
 }
 
-export function Importer() {
+export const Importer = memo(() => {
   const importSession = useAtomValue(importSessionAtom)
   const [diff, setDiff] = useState<State | null>(null)
   const setErr = useSetAtom(ErrAtom)
@@ -96,9 +96,9 @@ export function Importer() {
       </Dialog>
     </>
   )
-}
+})
 
-export function DiffView({ diff }: { diff: State }) {
+const DiffView = memo(({ diff }: { diff: State }) => {
   const [tab, setTab] = useState<string | number>('char')
   const detail = useMemo(() => {
     const charDiffs = [] as { key: string; before: object; after: object }[]
@@ -137,9 +137,9 @@ export function DiffView({ diff }: { diff: State }) {
       </div>
     </>
   )
-}
+})
 
-export function CharDiffView({ charDiffs }: { charDiffs: { key: string; before: object; after: object }[] }) {
+const CharDiffView = memo(({ charDiffs }: { charDiffs: { key: string; before: object; after: object }[] }) => {
   const list = charDiffs || []
   const parentRef = useRef<HTMLUListElement>(null)
   const components = useComponents()
@@ -194,77 +194,73 @@ export function CharDiffView({ charDiffs }: { charDiffs: { key: string; before: 
       </Menu>
     </>
   )
-}
+})
 
-function CharDiffViewRow({
-  row,
-  style,
-}: {
-  row: { key: string; before: object; after: object }
-  style?: React.CSSProperties
-}) {
-  const ga = useGameAdapter()
-  const uda = ga.getUserDataAdapter()
-  const charId = row.key
-  const character = ga.getCharacter(charId)
-  const currentCharacter = row.before || uda.getFrozenEmptyCharacterStatus()
-  const goalCharacter = row.after || uda.getFrozenEmptyCharacterStatus()
+const CharDiffViewRow = memo(
+  ({ row, style }: { row: { key: string; before: object; after: object }; style?: React.CSSProperties }) => {
+    const ga = useGameAdapter()
+    const uda = ga.getUserDataAdapter()
+    const charId = row.key
+    const character = ga.getCharacter(charId)
+    const currentCharacter = row.before || uda.getFrozenEmptyCharacterStatus()
+    const goalCharacter = row.after || uda.getFrozenEmptyCharacterStatus()
 
-  const c = useComponents()
-  const render = c.renderCharacterStatus || renderCharacterStatus
+    const c = useComponents()
+    const render = c.renderCharacterStatus || renderCharacterStatus
 
-  return (
-    <li
-      role="none"
-      className={[
-        'cpp-char-menu-master',
-        `cpp-char-rarity-${character.rarity}`,
-        ...(character.characterViewExtraClass || []),
-      ].join(' ')}
-      style={style}
-    >
-      <a role="menuitem" tabIndex={0} className="bp5-menu-item cpp-char-menu-char cpp-menu-not-interactive">
-        <>
-          <span className="bp5-menu-item-icon cpp-char-avatar">
-            <CachedImg
-              src={character.avatar}
-              width={'100%'}
-              height={'100%'}
-              alt={character.key}
-              title={character.key}
-            />
-          </span>
-          <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp5-text-overflow-ellipsis" title={character.name}>
-              {character.name}
-            </div>
-            <div
-              className="bp5-text-overflow-ellipsis"
-              title={character.appellation}
-              style={{ fontWeight: 'normal', opacity: 0.75 }}
-            >
-              {character.appellation}
-            </div>
-          </div>
-        </>
-      </a>
-
-      <a
-        role="menuitem"
-        tabIndex={0}
-        className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-current cpp-menu-not-interactive"
-        style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
+    return (
+      <li
+        role="none"
+        className={[
+          'cpp-char-menu-master',
+          `cpp-char-rarity-${character.rarity}`,
+          ...(character.characterViewExtraClass || []),
+        ].join(' ')}
+        style={style}
       >
-        {render(currentCharacter, character, goalCharacter, false)}
-      </a>
-      <a
-        role="menuitem"
-        tabIndex={0}
-        className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-goal cpp-menu-not-interactive"
-        style={{ opacity: uda.isAbsentCharacter(character, goalCharacter) ? 0.25 : 1 }}
-      >
-        {render(goalCharacter, character, currentCharacter, false)}
-      </a>
-    </li>
-  )
-}
+        <a role="menuitem" tabIndex={0} className="bp5-menu-item cpp-char-menu-char cpp-menu-not-interactive">
+          <>
+            <span className="bp5-menu-item-icon cpp-char-avatar">
+              <CachedImg
+                src={character.avatar}
+                width={'100%'}
+                height={'100%'}
+                alt={character.key}
+                title={character.key}
+              />
+            </span>
+            <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <div className="bp5-text-overflow-ellipsis" title={character.name}>
+                {character.name}
+              </div>
+              <div
+                className="bp5-text-overflow-ellipsis"
+                title={character.appellation}
+                style={{ fontWeight: 'normal', opacity: 0.75 }}
+              >
+                {character.appellation}
+              </div>
+            </div>
+          </>
+        </a>
+
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-current cpp-menu-not-interactive"
+          style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
+        >
+          {render(currentCharacter, character, goalCharacter, false)}
+        </a>
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-goal cpp-menu-not-interactive"
+          style={{ opacity: uda.isAbsentCharacter(character, goalCharacter) ? 0.25 : 1 }}
+        >
+          {render(goalCharacter, character, currentCharacter, false)}
+        </a>
+      </li>
+    )
+  },
+)

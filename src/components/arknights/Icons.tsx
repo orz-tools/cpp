@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { CharacterLevel, Skill, UniEquip } from '../../pkg/cpp-arknights'
 import { CachedImg } from '../Icons'
 import elite0 from './assets/elite0-small.png'
@@ -7,7 +8,7 @@ import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
 import m3 from './assets/m3.png'
 
-export function SkillIcon({ skill, level, master }: { skill: Skill; level?: number; master?: number }) {
+export const SkillIcon = memo(({ skill, level, master }: { skill: Skill; level?: number; master?: number }) => {
   const name = skill.raw.levels[0].name
 
   return (
@@ -18,9 +19,9 @@ export function SkillIcon({ skill, level, master }: { skill: Skill; level?: numb
       </div>
     </span>
   )
-}
+})
 
-export function UniEquipIcon({ uniEquip, level }: { uniEquip: UniEquip; level?: number }) {
+export const UniEquipIcon = memo(({ uniEquip, level }: { uniEquip: UniEquip; level?: number }) => {
   const name = `${uniEquip.raw.uniEquipName} (${uniEquip.raw.typeName1}-${uniEquip.raw.typeName2})`
   return (
     <span className="bp5-menu-item-icon">
@@ -56,9 +57,9 @@ export function UniEquipIcon({ uniEquip, level }: { uniEquip: UniEquip; level?: 
       </div>
     </span>
   )
-}
+})
 
-export function LevelIcon({ level }: { level: CharacterLevel }) {
+export const LevelIcon = memo(({ level }: { level: CharacterLevel }) => {
   return (
     <span className="bp5-menu-item-icon">
       <div className="cpp-simple-target">
@@ -71,9 +72,9 @@ export function LevelIcon({ level }: { level: CharacterLevel }) {
       </div>
     </span>
   )
-}
+})
 
-export function LevelTarget2({ source, target }: { source: CharacterLevel; target: CharacterLevel }) {
+export const LevelTarget2 = memo(({ source, target }: { source: CharacterLevel; target: CharacterLevel }) => {
   return (
     <span className="bp5-menu-item-icon">
       <div className="cpp-level-target">
@@ -94,4 +95,4 @@ export function LevelTarget2({ source, target }: { source: CharacterLevel; targe
       </div>
     </span>
   )
-}
+})

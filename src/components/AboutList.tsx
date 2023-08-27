@@ -1,5 +1,6 @@
 import { Alignment, Menu, MenuDivider, MenuItem, MenuItemProps, Navbar } from '@blueprintjs/core'
 import { format } from 'date-fns'
+import { memo } from 'react'
 import { useCpp } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { DataContainerObject } from '../pkg/dccache'
@@ -13,7 +14,7 @@ export const externalLinkProps = {
   },
 } satisfies React.AnchorHTMLAttributes<HTMLAnchorElement>
 
-export function AboutList() {
+export const AboutList = memo(() => {
   const { AboutCopyright, AboutCredits, AboutThirdParty, AboutDataSources } = useComponents()
   return (
     <>
@@ -81,9 +82,9 @@ export function AboutList() {
       </Menu>
     </>
   )
-}
+})
 
-export function DescriptionMenuItem(props: MenuItemProps & { description?: React.ReactNode }) {
+export const DescriptionMenuItem = memo((props: MenuItemProps & { description?: React.ReactNode }) => {
   const p = Object.assign({}, props)
   delete p.description
   return (
@@ -105,77 +106,82 @@ export function DescriptionMenuItem(props: MenuItemProps & { description?: React
       ) : null}
     </>
   )
-}
+})
 
-export function DataObjectStatus({
-  title,
-  href,
-  dataObj,
-  copyright,
-  hideCommit,
-}: {
-  title?: string
-  href?: string | null
-  dataObj: DataContainerObject<any>
-  copyright?: React.ReactNode
-  hideCommit?: boolean
-}) {
-  const cpp = useCpp()
-  const dm = cpp.gameAdapter.getDataManager()
-  const data = dm.get(dataObj)
-  const shouldShowCommit =
-    !hideCommit &&
-    data.version.text &&
-    data.version.text.trim() !== new Date(data.version.timestamp).toJSON() &&
-    data.version.text.trim() !== new Date(data.version.timestamp).toJSON().replace(/\.\d+/g, '')
-  const finalHref = href == null ? undefined : href || data.version.sources[0] || undefined
-  return (
-    <>
-      <MenuItem
-        icon={'database'}
-        text={title}
-        title={title}
-        href={finalHref}
-        className={finalHref ? '' : 'cpp-menu-not-interactive'}
-        {...externalLinkProps}
-      />
-      <Menu className="cpp-menu-indent">
+export const DataObjectStatus = memo(
+  ({
+    title,
+    href,
+    dataObj,
+    copyright,
+    hideCommit,
+  }: {
+    title?: string
+    href?: string | null
+    dataObj: DataContainerObject<any>
+    copyright?: React.ReactNode
+    hideCommit?: boolean
+  }) => {
+    const cpp = useCpp()
+    const dm = cpp.gameAdapter.getDataManager()
+    const data = dm.get(dataObj)
+    const shouldShowCommit =
+      !hideCommit &&
+      data.version.text &&
+      data.version.text.trim() !== new Date(data.version.timestamp).toJSON() &&
+      data.version.text.trim() !== new Date(data.version.timestamp).toJSON().replace(/\.\d+/g, '')
+    const finalHref = href == null ? undefined : href || data.version.sources[0] || undefined
+    return (
+      <>
         <MenuItem
-          className="cpp-menu-not-interactive"
-          text={
-            <div className="cpp-menu-secondary" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              <span style={{ flex: 1 }}>更新于 {format(data.version.timestamp, 'yyyy-MM-dd HH:mm:ss')}</span>
-              {/* <Button
+          icon={'database'}
+          text={title}
+          title={title}
+          href={finalHref}
+          className={finalHref ? '' : 'cpp-menu-not-interactive'}
+          {...externalLinkProps}
+        />
+        <Menu className="cpp-menu-indent">
+          <MenuItem
+            className="cpp-menu-not-interactive"
+            text={
+              <div
+                className="cpp-menu-secondary"
+                style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+              >
+                <span style={{ flex: 1 }}>更新于 {format(data.version.timestamp, 'yyyy-MM-dd HH:mm:ss')}</span>
+                {/* <Button
                 minimal
                 icon={<Icon icon="refresh" size={10} />}
                 style={{ minWidth: 0, minHeight: 0, padding: '0px 2px', fontSize: 10.5 }}
               >
                 更新
               </Button> */}
-            </div>
-          }
-        />
-        {shouldShowCommit ? (
-          <MenuItem
-            multiline={true}
-            href={data.version.sources[0] || undefined}
-            {...externalLinkProps}
-            className={data.version.sources[0] ? '' : 'cpp-menu-not-interactive'}
-            text={
-              <pre className="cpp-menu-secondary" style={{ whiteSpace: 'pre-wrap', margin: 0, padding: 0 }}>
-                {data.version.text}
-              </pre>
+              </div>
             }
           />
-        ) : null}
-        {copyright ? (
-          <MenuItem
-            multiline={true}
-            className="cpp-menu-not-interactive"
-            text={<div className="cpp-menu-secondary">{copyright}</div>}
-          />
-        ) : null}
-      </Menu>
-    </>
-  )
-}
+          {shouldShowCommit ? (
+            <MenuItem
+              multiline={true}
+              href={data.version.sources[0] || undefined}
+              {...externalLinkProps}
+              className={data.version.sources[0] ? '' : 'cpp-menu-not-interactive'}
+              text={
+                <pre className="cpp-menu-secondary" style={{ whiteSpace: 'pre-wrap', margin: 0, padding: 0 }}>
+                  {data.version.text}
+                </pre>
+              }
+            />
+          ) : null}
+          {copyright ? (
+            <MenuItem
+              multiline={true}
+              className="cpp-menu-not-interactive"
+              text={<div className="cpp-menu-secondary">{copyright}</div>}
+            />
+          ) : null}
+        </Menu>
+      </>
+    )
+  },
+)

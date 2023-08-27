@@ -1,8 +1,9 @@
 import { MenuItem } from '@blueprintjs/core'
+import { memo } from 'react'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { externalLinkProps } from '../AboutList'
 
-export function CharacterContextMenuItems({ character }: { character: ICharacter }) {
+export const CharacterContextMenuItems = memo(({ character }: { character: ICharacter }) => {
   return (
     <>
       <MenuItem
@@ -31,4 +32,4 @@ export function CharacterContextMenuItems({ character }: { character: ICharacter
       />
     </>
   )
-}
+})

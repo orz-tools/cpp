@@ -76,7 +76,7 @@ export function CharacterStatusInsightLevelSection() {
       {character.maxInsight >= 0 &&
       !(
         currentStatus &&
-        (currentStatus.insight > 0 || (currentStatus.insight === 0 && currentStatus.level > character.maxLevels[0]))
+        (currentStatus.insight > 0 || (currentStatus.insight === 0 && currentStatus.level >= character.maxLevels[0]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -96,7 +96,7 @@ export function CharacterStatusInsightLevelSection() {
       {character.maxInsight >= 1 &&
       !(
         currentStatus &&
-        (currentStatus.insight > 1 || (currentStatus.insight === 1 && currentStatus.level > character.maxLevels[1]))
+        (currentStatus.insight > 1 || (currentStatus.insight === 1 && currentStatus.level >= character.maxLevels[1]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -116,7 +116,7 @@ export function CharacterStatusInsightLevelSection() {
       {character.maxInsight >= 2 &&
       !(
         currentStatus &&
-        (currentStatus.insight > 2 || (currentStatus.insight === 2 && currentStatus.level > character.maxLevels[2]))
+        (currentStatus.insight > 2 || (currentStatus.insight === 2 && currentStatus.level >= character.maxLevels[2]))
       ) ? (
         <div>
           <ButtonGroup>
@@ -136,7 +136,7 @@ export function CharacterStatusInsightLevelSection() {
       {character.maxInsight >= 3 &&
       !(
         currentStatus &&
-        (currentStatus.insight > 3 || (currentStatus.insight === 3 && currentStatus.level > character.maxLevels[3]))
+        (currentStatus.insight > 3 || (currentStatus.insight === 3 && currentStatus.level >= character.maxLevels[3]))
       ) ? (
         <div>
           <ButtonGroup>

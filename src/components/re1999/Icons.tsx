@@ -1,10 +1,11 @@
+import { memo } from 'react'
 import { CharacterLevel } from '../../pkg/cpp-re1999'
 import dongxi1 from './assets/dongxi_da_001.png'
 import dongxi2 from './assets/dongxi_da_002.png'
 import dongxi3 from './assets/dongxi_da_003.png'
 import danao from './assets/icon_danao01.png'
 
-export function LevelIcon({ level }: { level: CharacterLevel }) {
+export const LevelIcon = memo(({ level }: { level: CharacterLevel }) => {
   return (
     <span className="bp5-menu-item-icon">
       <div className="cpp-simple-target">
@@ -20,9 +21,9 @@ export function LevelIcon({ level }: { level: CharacterLevel }) {
       </div>
     </span>
   )
-}
+})
 
-export function ResonateIcon({ level }: { level: number }) {
+export const ResonateIcon = memo(({ level }: { level: number }) => {
   return (
     <span className="bp5-menu-item-icon">
       <div className="cpp-simple-target">
@@ -34,4 +35,4 @@ export function ResonateIcon({ level }: { level: number }) {
       </div>
     </span>
   )
-}
+})

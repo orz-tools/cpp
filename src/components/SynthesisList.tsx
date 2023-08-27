@@ -1,6 +1,6 @@
 import { Alignment, Icon, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
-import React, { useMemo } from 'react'
+import React, { memo, useMemo } from 'react'
 import { useAtoms, useGameAdapter } from '../Cpp'
 import { IItem } from '../pkg/cpp-basic'
 import { TaskStatus } from '../pkg/cpp-core/Task'
@@ -8,7 +8,7 @@ import { generateIndirects } from '../pkg/cpp-core/UserData'
 import { CachedImg } from './Icons'
 import { ItemSynthesisPopover, buildItemList } from './ItemList'
 
-export function SynthesisList() {
+export const SynthesisList = memo(() => {
   const ga = useGameAdapter()
   const atoms = useAtoms()
   const itemGroups = useMemo(() => buildItemList(ga), [ga])
@@ -55,9 +55,9 @@ export function SynthesisList() {
       </Menu>
     </>
   )
-}
+})
 
-function SynthesisMenu({ item, target }: { item: IItem; target: number }) {
+const SynthesisMenu = memo(({ item, target }: { item: IItem; target: number }) => {
   const atoms = useAtoms()
   const quantity = useAtomValue(atoms.itemQuantity(item.key))
   return (
@@ -87,4 +87,4 @@ function SynthesisMenu({ item, target }: { item: IItem; target: number }) {
       <ItemSynthesisPopover item={item} />
     </MenuItem>
   )
-}
+})

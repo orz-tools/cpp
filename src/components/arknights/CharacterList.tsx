@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogBody, InputGroup, Intent, Popover } from '@blueprintjs/core'
 import { Draft } from 'immer'
 import { useSetAtom } from 'jotai'
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { z } from 'zod'
 import { useGameAdapter } from '../../Cpp'
@@ -10,15 +10,15 @@ import { UserData } from '../../pkg/cpp-core/UserData'
 import { ErrAtom } from '../Err'
 import { ImportContext, useStartImportSession } from '../Importer'
 
-export function CharacterImportButton() {
+export const CharacterImportButton = memo(() => {
   return (
     <>
       <SklandCharacterImportButton />
     </>
   )
-}
+})
 
-export function SklandCharacterImportButton() {
+export const SklandCharacterImportButton = memo(() => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
   const [open, setOpen] = useState(false)
   const startImportSession = useStartImportSession()
@@ -163,8 +163,9 @@ export function SklandCharacterImportButton() {
     } else {
       const windowWidth = 500
       const windowHeight = 700
-      const left = (window.screenLeft || 0) + window.innerWidth / 2 - windowWidth / 2
-      const top = (window.screenTop || 0) + window.innerHeight / 2 - windowHeight / 2
+      const left = Math.floor((window.screenLeft || 0) + window.innerWidth / 2 - windowWidth / 2)
+      const top = Math.floor((window.screenTop || 0) + window.innerHeight / 2 - windowHeight / 2)
+      console.log(windowWidth, windowHeight, left, top)
       const popup = window.open(
         `https://skland.xkcdn.win/?${new URLSearchParams({
           appName: 'Closure++ 二游计算器',
@@ -172,7 +173,7 @@ export function SklandCharacterImportButton() {
           scopes: ['chars'].join(','),
         })}`,
         '_blank',
-        `width=${windowWidth},height=${windowHeight},left=${left},top=${top},toolbar=no,location=no,directories=no,status=no,menubar=no,copyhistory=no`,
+        `width=${windowWidth},height=${windowHeight},left=${left},top=${top},popup=yes`,
       )
       setWindowRef(popup)
     }
@@ -214,7 +215,7 @@ export function SklandCharacterImportButton() {
       </Dialog>
     </>
   )
-}
+})
 
 const noop = () => void 0
 
