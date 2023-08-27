@@ -349,7 +349,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       }
     }
 
-    if (char.rarity < 3 || status.skillLevel < 7) {
+    if (char.rarity < 3 || status.skillLevel < 7 || status.elite < 2) {
       status.skillMaster = {}
     } else {
       for (const [, skill] of char.skills) {
