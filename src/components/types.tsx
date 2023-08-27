@@ -12,6 +12,7 @@ export interface IGameComponent {
   AboutThirdParty?: React.FC
   AboutCredits?: React.FC
   AboutDataSources?: React.FC
+  CharacterImportButton?: React.FC
   ItemImportButton?: React.FC
   CharacterContextMenuItems?: React.FC<{ character: ICharacter }>
   CharacterStatusPopover?: React.FC<{ character: any; isGoal: boolean }>

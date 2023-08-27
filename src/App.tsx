@@ -23,6 +23,7 @@ import { CharacterList } from './components/CharacterList'
 import { ConfigButton, SoulButton, StageButton } from './components/ConfigUi'
 import { ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
+import { Holder } from './components/Holder'
 import { ItemList } from './components/ItemList'
 import { LogList } from './components/LogList'
 import { SynthesisList } from './components/SynthesisList'
@@ -285,6 +286,7 @@ function App() {
           <ItemList />
         </section>
       </div>
+      <Holder />
     </>
   )
 }
@@ -443,7 +445,12 @@ class ErrorBoundary extends React.Component<
 export function ErrDialog({ instanceName, codename }: { instanceName: string; codename: string }) {
   const [err, setErr] = useAtom(ErrAtom)
 
+  useEffect(() => {
+    if (err) console.error(err.context, err.error)
+  }, [err])
+
   if (!err) return null
+
   return (
     <Dialog
       isOpen

@@ -13,6 +13,16 @@ import {
 } from './types'
 
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
+  public getRealCharacterKey(charId: string) {
+    if (this.getCharacter(charId)) return charId
+    if (Object.hasOwn(this.dataManager.raw.exPatchCharacters.patchChars, charId)) {
+      for (const v of Object.values(this.dataManager.raw.exPatchCharacters.infos)) {
+        if (v.tmplIds.includes(charId)) return v.default
+      }
+    }
+    return charId
+  }
+
   private dataManager = new ArknightsDataManager()
   private userDataAdapter = new ArknightsUserDataAdapter(this.dataManager)
 

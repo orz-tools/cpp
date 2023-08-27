@@ -91,6 +91,21 @@ function buildAtoms<G extends IGame>(
     }
   }
 
+  const allDataAtom = withDebugLabel(
+    atom(
+      (get) => get(dataAtom),
+      (get, set, value: (draft: Draft<UserData<any>>) => any) => {
+        set(dataAtom, 'modify', (data) => {
+          value(data)
+          for (const charId of new Set([...Object.keys(data.current), ...Object.keys(data.goal)])) {
+            doRewrite(charId, data)
+          }
+        })
+      },
+    ),
+    'allDataAtom',
+  )
+
   const itemQuantities = withDebugLabel(
     atom((get) => get(dataAtom).items),
     'itemQuantities',
@@ -351,6 +366,7 @@ function buildAtoms<G extends IGame>(
     baseAtom,
     forbiddenFormulaTagsAtom,
     ...tx,
+    allDataAtom,
     rootAtom,
     goalOrder,
     itemQuantities,

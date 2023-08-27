@@ -33,7 +33,7 @@ export function Hide({
   )
 }
 
-function renderCharacterStatus<G extends IGame>(
+export function renderCharacterStatus<G extends IGame>(
   status: G['characterStatus'],
   character: ICharacter,
   current?: G['characterStatus'],
@@ -382,6 +382,7 @@ function QueryBuilder() {
 }
 
 export function CharacterList() {
+  const { CharacterImportButton } = useComponents()
   const param = useAtomValue(queryParamAtom)
 
   const cpp = useCpp()
@@ -417,6 +418,7 @@ export function CharacterList() {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}>
+          {CharacterImportButton && <CharacterImportButton />}
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
             minimal={true}

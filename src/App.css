@@ -313,3 +313,16 @@ body {
 .App > section {
   transform: rotateX(180deg);
 } */
+
+.cpp-importer-diff > .bp4-tabs {
+  height: 100%;
+}
+
+.cpp-importer-diff > .bp4-tabs > .bp4-tab-panel {
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+}
+.cpp-importer-diff > .bp4-tabs > .bp4-tab-panel .bp4-menu {
+  background-color: unset;
+}
