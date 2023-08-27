@@ -1,12 +1,14 @@
 import { Button, Dialog, DialogBody, InputGroup, Intent } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import { Draft } from 'immer'
-import { useRef, useState } from 'react'
+import { useSetAtom } from 'jotai'
+import { useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { z } from 'zod'
 import { useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
 import { UserData } from '../../pkg/cpp-core/UserData'
+import { ErrAtom } from '../Err'
 import { ImportContext, useStartImportSession } from '../Importer'
 
 export function CharacterImportButton() {
@@ -106,6 +108,72 @@ export function SklandCharacterImportButton() {
 
   const focusRef = useRef<HTMLInputElement>(null)
   const focus = useEvent(() => focusRef.current?.focus())
+  const setErr = useSetAtom(ErrAtom)
+
+  const [windowRef, setWindowRef] = useState<WindowProxy | null>(null)
+
+  useEffect(() => {
+    if (!windowRef) return
+    const timer = setInterval(() => {
+      if (windowRef.closed) setWindowRef((r) => (r === windowRef ? null : r))
+    }, 100)
+    return () => clearInterval(timer)
+  }, [windowRef])
+
+  const processMessage = useEvent((e: MessageEvent) => {
+    if (typeof e.data !== 'object') return
+    if (e.data?.from !== 'sklanding') return
+    let data = ''
+    try {
+      data = JSON.stringify(SklandingData.parse(e.data).data)
+    } catch (e) {
+      setErr({ error: e, context: '与「提取装置」互操作时遇到问题' })
+      return
+    }
+    handleData(data)
+    if (windowRef) {
+      try {
+        windowRef.close()
+        setWindowRef(null)
+      } catch {
+        //
+      }
+    }
+  })
+
+  useEffect(() => {
+    const handler: (typeof window)['onmessage'] = (e) => {
+      processMessage(e)
+    }
+    window.addEventListener('message', handler)
+    return () => window.removeEventListener('message', handler)
+  }, [processMessage])
+
+  const handleDevice = useEvent(() => {
+    if (windowRef) {
+      try {
+        windowRef.close()
+      } catch (e) {
+        console.error(e)
+      }
+      setWindowRef(null)
+    } else {
+      const windowWidth = 500
+      const windowHeight = 700
+      const left = (window.screenLeft || 0) + window.innerWidth / 2 - windowWidth / 2
+      const top = (window.screenTop || 0) + window.innerHeight / 2 - windowHeight / 2
+      const popup = window.open(
+        `https://skland.xkcdn.win/?${new URLSearchParams({
+          appName: 'Closure++ 二游计算器',
+          origin: window.origin,
+          scopes: ['chars'].join(','),
+        })}`,
+        '_blank',
+        `width=${windowWidth},height=${windowHeight},left=${left},top=${top},toolbar=no,location=no,directories=no,status=no,menubar=no,copyhistory=no`,
+      )
+      setWindowRef(popup)
+    }
+  })
 
   return (
     <>
@@ -113,8 +181,12 @@ export function SklandCharacterImportButton() {
       <Dialog isOpen={open} onClose={() => setOpen(false)} title={'从森空岛导入干员练度数据'} icon="import">
         <DialogBody>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
-            <Button style={{ fontSize: '200%', padding: '0.75em' }} intent={Intent.PRIMARY}>
-              使用「提取装置」
+            <Button
+              style={{ fontSize: '200%', padding: '0.75em' }}
+              intent={windowRef ? Intent.DANGER : Intent.PRIMARY}
+              onClick={handleDevice}
+            >
+              {windowRef ? `放弃「提取装置」` : `使用「提取装置」`}
             </Button>
             <Popover2
               position="bottom"
@@ -166,4 +238,11 @@ const SklandData = z.object({
       defaultEquipId: z.string(),
     }),
   ),
+})
+
+const SklandingData = z.object({
+  version: z.literal(1),
+  from: z.literal('sklanding'),
+  type: z.literal('arknights'),
+  data: SklandData,
 })
