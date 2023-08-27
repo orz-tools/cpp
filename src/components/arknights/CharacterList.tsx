@@ -181,8 +181,8 @@ export const SklandCharacterImportButton = memo(() => {
 
   return (
     <>
-      <Button icon={'import'} minimal={true} onClick={() => setOpen(true)} />
-      <Dialog isOpen={open} onClose={() => setOpen(false)} title={'从森空岛导入干员练度数据'} icon="import">
+      <Button icon={'log-in'} minimal={true} onClick={() => setOpen(true)} />
+      <Dialog isOpen={open} onClose={() => setOpen(false)} title={'从森空岛导入干员练度数据'} icon="log-in">
         <DialogBody>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
             <Button

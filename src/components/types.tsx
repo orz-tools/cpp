@@ -1,4 +1,5 @@
 import React from 'react'
+import { BlobFlavour } from '../pkg/blobcache'
 import { ICharacter } from '../pkg/cpp-basic'
 
 export interface ItemSimulatedViewConfig {
@@ -20,4 +21,5 @@ export interface IGameComponent {
   charStatusWidth?: number
   style?: string
   itemSimulatedViewConfig?: ItemSimulatedViewConfig
+  blobFlavours?: BlobFlavour[]
 }

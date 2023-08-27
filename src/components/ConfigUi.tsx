@@ -136,7 +136,7 @@ export const StageButton = memo(() => {
 
   return (
     <Popover usePortal={true} minimal={true} content={<StagePopover />} position="bottom-left">
-      <Button icon={'record'} minimal={true} rightIcon={'chevron-down'}>
+      <Button icon={'layers'} minimal={true} rightIcon={'chevron-down'}>
         关卡 {now}/{all}
       </Button>
     </Popover>
@@ -155,8 +155,16 @@ export const SoulButton = memo(() => {
   }
 
   return (
-    <Button icon={'phone'} minimal={true} active={blobFlavour === 'normal'} onClick={handleClick}>
-      ?
+    <Button icon={'image-rotate-right'} minimal={true} active={blobFlavour === 'normal'} onClick={handleClick}>
+      加载版权素材
     </Button>
   )
+})
+
+export const MaybeSoulButton = memo(() => {
+  const cpp = useCpp()
+  const blobFlavour = useAtomValue(cpp.preferenceAtoms.blobFlavourAtom)
+  const flavours = cpp.gameComponent.blobFlavours
+  const shouldShow = flavours?.length === 1 && blobFlavour === flavours[0] ? false : true
+  return shouldShow ? <SoulButton /> : null
 })

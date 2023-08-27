@@ -76,7 +76,7 @@ export const Importer = memo(() => {
   }, [importSession, work])
   return (
     <>
-      <Dialog icon={'import'} isOpen={diff !== null} onClose={close} title="导入结果">
+      <Dialog icon={'log-in'} isOpen={diff !== null} onClose={close} title="导入结果">
         {diff ? (
           <>
             <DiffView diff={diff} />

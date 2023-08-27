@@ -21,7 +21,7 @@ import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList } from './components/AboutList'
 import { CharacterList } from './components/CharacterList'
-import { ConfigButton, SoulButton, StageButton } from './components/ConfigUi'
+import { ConfigButton, MaybeSoulButton, StageButton } from './components/ConfigUi'
 import { ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { Holder } from './components/Holder'
@@ -70,7 +70,7 @@ function DataManagerButton() {
   const [show, setShow] = useState(false)
   return (
     <>
-      <Button minimal icon={'archive'} text="用户数据管理" onClick={() => setShow(true)} />
+      <Button minimal icon={'database'} text="用户数据管理" onClick={() => setShow(true)} />
       <UserDataManager game={game} instanceName={instanceName} isOpen={show} onClose={() => setShow(false)} />
     </>
   )
@@ -208,7 +208,7 @@ function App() {
           <ValueOptionButton />
           <StageButton />
           <ConfigButton />
-          <SoulButton />
+          <MaybeSoulButton />
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <DataManagerButton />

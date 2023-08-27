@@ -50,7 +50,7 @@ export const UserDataManager = memo(
         isOpen={isOpen}
         onClose={onClose}
         title={`Closure${formatProfileName(game, instanceName)}++ 用户数据管理`}
-        icon="archive"
+        icon="database"
       >
         <UserDataManagerContent data={data} game={game} instanceName={instanceName} />
       </Dialog>
@@ -137,7 +137,7 @@ const UserDataManagerContent = memo(
           actions={
             <>
               <Button minimal intent={'danger'} icon="trash" text="清空" onClick={resetData} />
-              <Button minimal intent={'primary'} icon="import" text="从文本框中导入" onClick={importData} />
+              <Button minimal intent={'primary'} icon="log-in" text="从文本框中导入" onClick={importData} />
             </>
           }
         >
@@ -145,7 +145,7 @@ const UserDataManagerContent = memo(
           <AnchorButton
             minimal
             href={data ? 'data:text/json,' + encodeURIComponent(data.data) : ''}
-            icon={'download'}
+            icon={'log-out'}
             target={'cpp-export-download-target'}
             text="导出为文件"
             download={data ? `cpp-dump-${game}-${instanceName}-${data.now}.json` : undefined}

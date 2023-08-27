@@ -28,7 +28,7 @@ const MAAItemImportButton = memo(<G extends Arknights>() => {
   return (
     <>
       <Button
-        icon={'import'}
+        icon={'log-in'}
         minimal={true}
         onClick={() => {
           try {

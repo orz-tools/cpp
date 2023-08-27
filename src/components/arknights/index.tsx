@@ -17,4 +17,5 @@ export const ArknightsComponents: IGameComponent = {
   CharacterStatusPopover,
   renderCharacterStatus,
   itemSimulatedViewConfig: { limit: 3, horizontal: true, viewMaxSize: 500 },
+  blobFlavours: ['normal'],
 }
