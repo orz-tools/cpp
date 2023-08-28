@@ -48,5 +48,8 @@
     "vite-node": "^0.34.3",
     "vitest": "^0.34.3"
   },
-  "packageManager": "yarn@3.4.1"
+  "packageManager": "yarn@3.4.1",
+  "resolutions": {
+    "@blueprintjs/icons@^5.1.5": "patch:@blueprintjs/icons@npm%3A5.1.5#./.yarn/patches/@blueprintjs-icons-npm-5.1.5-a849a30aab.patch"
+  }
 }

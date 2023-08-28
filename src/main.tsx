@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { Home } from './components/Home'
 import { runCpp } from './entry'
 import { GameName, gameAdapterLoaders, gameComponentLoaders } from './games'
+import './icons'
 import { formatProfileName, getStoragePrefix } from './profiles'
 
 FocusStyleManager.onlyShowFocusOnTabs()

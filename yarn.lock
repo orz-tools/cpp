@@ -328,7 +328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/icons@npm:^5.1.5":
+"@blueprintjs/icons@npm:5.1.5":
   version: 5.1.5
   resolution: "@blueprintjs/icons@npm:5.1.5"
   dependencies:
@@ -343,6 +343,24 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 74e9ee22f0d093b59664972825ae7de8a23493cfa7d4a679f76df0d6989e39746887a597532225ff6422910dd63fcfc61ed5ad2f2fab69cfe78c897e695f6464
+  languageName: node
+  linkType: hard
+
+"@blueprintjs/icons@patch:@blueprintjs/icons@npm%3A5.1.5#./.yarn/patches/@blueprintjs-icons-npm-5.1.5-a849a30aab.patch::locator=cpp%40workspace%3A.":
+  version: 5.1.5
+  resolution: "@blueprintjs/icons@patch:@blueprintjs/icons@npm%3A5.1.5#./.yarn/patches/@blueprintjs-icons-npm-5.1.5-a849a30aab.patch::version=5.1.5&hash=ea4ddc&locator=cpp%40workspace%3A."
+  dependencies:
+    change-case: ^4.1.2
+    classnames: ^2.3.1
+    tslib: ~2.5.0
+  peerDependencies:
+    "@types/react": ^16.14.32 || 17 || 18
+    react: ^16.8 || 17 || 18
+    react-dom: ^16.8 || 17 || 18
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 5244872bd959453fa3ed41df7c32bc11804b4f183fc17ab129a7d9c0306b13b8c471100200617508e24619f8114df4c932cc710c565220390514eb19ac55d78a
   languageName: node
   linkType: hard
 

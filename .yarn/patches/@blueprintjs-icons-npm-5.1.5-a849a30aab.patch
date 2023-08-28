@@ -1,0 +1,32 @@
+diff --git a/lib/esm/iconLoader.js b/lib/esm/iconLoader.js
+index ef0b4ab6e6c79dd059daefeeeda5f3177531d70a..21ae33ed03f50be134842c1f6e7636f77a87ab16 100644
+--- a/lib/esm/iconLoader.js
++++ b/lib/esm/iconLoader.js
+@@ -18,23 +18,10 @@ import { IconNames } from "./iconNames";
+ import { IconSize } from "./iconTypes";
+ import { wrapWithTimer } from "./loaderUtils";
+ function getLoaderFn(options) {
+-    return __awaiter(this, void 0, void 0, function () {
+-        var _a, loader;
+-        return __generator(this, function (_b) {
+-            switch (_b.label) {
+-                case 0:
+-                    _a = options.loader, loader = _a === void 0 ? singleton.defaultLoader : _a;
+-                    if (!(typeof loader === "function")) return [3 /*break*/, 1];
+-                    return [2 /*return*/, loader];
+-                case 1:
+-                    if (!(loader === "all")) return [3 /*break*/, 3];
+-                    return [4 /*yield*/, import("./paths-loaders/allPathsLoader")];
+-                case 2: return [2 /*return*/, (_b.sent()).allPathsLoader];
+-                case 3: return [4 /*yield*/, import("./paths-loaders/splitPathsBySizeLoader")];
+-                case 4: return [2 /*return*/, (_b.sent()).splitPathsBySizeLoader];
+-            }
+-        });
+-    });
++    var _a, loader;
++    _a = options.loader, loader = _a === void 0 ? singleton.defaultLoader : _a;
++    if (!(typeof loader === "function")) return () => Promise.resolve([]);
++    return loader;
+ }
+ /**
+  * Blueprint icons loader.
