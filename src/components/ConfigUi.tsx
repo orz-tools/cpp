@@ -163,8 +163,8 @@ export const SoulButton = memo(() => {
 
 export const MaybeSoulButton = memo(() => {
   const cpp = useCpp()
-  const blobFlavour = useAtomValue(cpp.preferenceAtoms.blobFlavourAtom)
+  // const blobFlavour = useAtomValue(cpp.preferenceAtoms.blobFlavourAtom)
   const flavours = cpp.gameComponent.blobFlavours
-  const shouldShow = flavours?.length === 1 && blobFlavour === flavours[0] ? false : true
+  const shouldShow = flavours?.length === 1 ? false : true
   return shouldShow ? <SoulButton /> : null
 })
