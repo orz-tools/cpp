@@ -44,6 +44,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.REFRESH, Paths16.Refresh],
       [IconNames.RESET, Paths16.Reset],
       [IconNames.SEARCH, Paths16.Search],
+      [IconNames.TH_DERIVED, Paths16.ThDerived],
       [IconNames.TICK_CIRCLE, Paths16.TickCircle],
       [IconNames.TICK, Paths16.Tick],
       [IconNames.TIME, Paths16.Time],

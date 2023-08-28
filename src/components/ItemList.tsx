@@ -16,8 +16,8 @@ import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
 import React, { SetStateAction, memo, useEffect, useMemo, useState } from 'react'
 import { useAtoms, useGameAdapter } from '../Cpp'
-import { useComponents } from '../hooks/useComponents'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
+import { useChamber } from './Chamber'
 import { CachedImg } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
 import { ValueTag, ValueTagProgressBar } from './Value'
@@ -501,21 +501,16 @@ const itemListParamAtom: WritableAtom<ItemListParam, [ItemListParam | SetStateAc
 )
 
 export const SyncButton = memo(() => {
-  const [open, setOpen] = useState(false)
+  const { add } = useChamber()
   return (
-    <>
-      <Button
-        minimal={true}
-        icon={'fullscreen'}
-        title={'按游戏内仓库排布形式展示'}
-        onClick={() => {
-          setOpen(true)
-        }}
-      />
-      <Dialog isOpen={open} onClose={() => setOpen(false)}>
-        <InventorySyncer />
-      </Dialog>
-    </>
+    <Button
+      minimal={true}
+      icon={'fullscreen'}
+      title={'按游戏内仓库排布形式展示'}
+      onClick={() => {
+        add(Dialog, { isOpen: true, children: <InventorySyncer /> })
+      }}
+    />
   )
 })
 
@@ -530,7 +525,6 @@ export const ItemList = memo(<G extends IGame>() => {
   const goalIndirects = useAtomValue(atoms.allGoalIndirects)
   const finishedIndirects = useAtomValue(atoms.allFinishedIndirects)
   const categoryNames = ga.getInventoryCategories()
-  const { ItemImportButton } = useComponents()
 
   return (
     <>
@@ -538,7 +532,6 @@ export const ItemList = memo(<G extends IGame>() => {
         <Navbar.Group align={Alignment.RIGHT}>
           总价值
           <AllValue />
-          {ItemImportButton && <ItemImportButton />}
           <SyncButton />
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>

@@ -10,20 +10,11 @@ import { UserData } from '../../pkg/cpp-core/UserData'
 import { ErrAtom } from '../Err'
 import { ImportContext, useStartImportSession } from '../Importer'
 
-export const CharacterImportButton = memo(() => {
-  return (
-    <>
-      <SklandCharacterImportButton />
-    </>
-  )
-})
-
-export const SklandCharacterImportButton = memo(() => {
+export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
-  const [open, setOpen] = useState(false)
   const startImportSession = useStartImportSession()
   const handleData = useEvent((input: string) => {
-    setOpen(false)
+    onClose()
     startImportSession(() => {
       const dm = ga.getDataManager()
       const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
@@ -180,40 +171,37 @@ export const SklandCharacterImportButton = memo(() => {
   })
 
   return (
-    <>
-      <Button icon={'log-in'} minimal={true} onClick={() => setOpen(true)} />
-      <Dialog isOpen={open} onClose={() => setOpen(false)} title={'从森空岛导入干员练度数据'} icon="log-in">
-        <DialogBody>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
-            <Button
-              style={{ fontSize: '200%', padding: '0.75em' }}
-              intent={windowRef ? Intent.DANGER : Intent.PRIMARY}
-              onClick={handleDevice}
-            >
-              {windowRef ? `放弃「提取装置」` : `使用「提取装置」`}
-            </Button>
-            <Popover
-              position="bottom"
-              onOpened={focus}
-              content={
-                <div style={{ padding: '1em' }}>
-                  <InputGroup
-                    onPaste={handleInput}
-                    value={''}
-                    placeholder="请在此粘贴..."
-                    inputRef={focusRef}
-                    style={{ width: '10em' }}
-                    onChange={noop}
-                  />
-                </div>
-              }
-            >
-              <Button minimal text={'粘贴 JSON'} />
-            </Popover>
-          </div>
-        </DialogBody>
-      </Dialog>
-    </>
+    <Dialog isOpen={true} onClose={onClose} title={'导入「森空岛」数据'} icon="log-in">
+      <DialogBody>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
+          <Button
+            style={{ fontSize: '200%', padding: '0.75em' }}
+            intent={windowRef ? Intent.DANGER : Intent.PRIMARY}
+            onClick={handleDevice}
+          >
+            {windowRef ? `放弃「提取装置」` : `使用「提取装置」`}
+          </Button>
+          <Popover
+            position="bottom"
+            onOpened={focus}
+            content={
+              <div style={{ padding: '1em' }}>
+                <InputGroup
+                  onPaste={handleInput}
+                  value={''}
+                  placeholder="请在此粘贴..."
+                  inputRef={focusRef}
+                  style={{ width: '10em' }}
+                  onChange={noop}
+                />
+              </div>
+            }
+          >
+            <Button minimal text={'粘贴 JSON'} />
+          </Popover>
+        </div>
+      </DialogBody>
+    </Dialog>
   )
 })
 

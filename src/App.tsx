@@ -16,26 +16,27 @@ import {
   Tag,
 } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { ErrorInfo, useEffect, useMemo, useState } from 'react'
+import React, { ErrorInfo, memo, useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList } from './components/AboutList'
+import { Chamber, ChamberPortal } from './components/Chamber'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, MaybeSoulButton, StageButton } from './components/ConfigUi'
 import { ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
-import { Holder } from './components/Holder'
 import { ItemList } from './components/ItemList'
 import { LogList } from './components/LogList'
 import { SynthesisList } from './components/SynthesisList'
 import { TaskList } from './components/TaskList'
 import { AppToaster } from './components/Toaster'
-import { UserDataManager } from './components/UserDataManager'
+import { UserDataManagerButton, UserDataManagerMenuItem } from './components/UserDataManager'
 import { ValueOptionButton } from './components/Value'
+import { useComponents } from './hooks/useComponents'
 import { useRequest } from './hooks/useRequest'
 import { formatProfileName, getProfiles } from './profiles'
 
-function UndoButtons() {
+const UndoButtons = memo(() => {
   const atoms = useAtoms()
   const setData = useSetAtom(atoms.dataAtom)
   const undoCounter = useAtomValue(atoms.undoCounterAtom)
@@ -61,22 +62,9 @@ function UndoButtons() {
       />
     </>
   )
-}
+})
 
-function DataManagerButton() {
-  const cpp = useCpp()
-  const game = cpp.gameAdapter.getCodename()
-  const instanceName = cpp.instanceName
-  const [show, setShow] = useState(false)
-  return (
-    <>
-      <Button minimal icon={'database'} text="用户数据管理" onClick={() => setShow(true)} />
-      <UserDataManager game={game} instanceName={instanceName} isOpen={show} onClose={() => setShow(false)} />
-    </>
-  )
-}
-
-function ReloadDataButton() {
+const ReloadDataButton = memo(() => {
   const ga = useGameAdapter()
   const dm = ga.getDataManager()
   const setError = useSetAtom(ErrAtom)
@@ -121,9 +109,9 @@ function ReloadDataButton() {
       </ContextMenu>
     </>
   )
-}
+})
 
-function ProfileMenu() {
+const ProfileMenu = memo(() => {
   const profiles = useMemo(() => getProfiles().filter((x) => !x[2]), [])
   const cpp = useCpp()
   return (
@@ -140,9 +128,9 @@ function ProfileMenu() {
       <MenuItem text="Home" icon="home" href="/" />
     </>
   )
-}
+})
 
-function ClosureButtonHeading() {
+const ClosureButtonHeading = memo(() => {
   const cpp = useCpp()
   const ga = useGameAdapter()
   return (
@@ -169,9 +157,9 @@ function ClosureButtonHeading() {
       {/* <code>{`Closure++`}</code> */}
     </Navbar.Heading>
   )
-}
+})
 
-function App() {
+const App = memo(() => {
   const cpp = useCpp()
   const defaultCharStatusWidth = 43 * 6
   const charStatusWidth = cpp.gameComponent.charStatusWidth || defaultCharStatusWidth
@@ -211,7 +199,7 @@ function App() {
           <MaybeSoulButton />
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
-          <DataManagerButton />
+          <DataDropdown />
           <ReloadDataButton />
         </Navbar.Group>
       </Navbar>
@@ -287,12 +275,34 @@ function App() {
           <ItemList />
         </section>
       </div>
-      <Holder />
     </>
   )
-}
+})
 
-function SuperAppWrapper() {
+const DataMenu = memo(() => {
+  const { ImporterMenuItems, ExporterMenuItems } = useComponents()
+  return (
+    <Menu>
+      <UserDataManagerMenuItem />
+      {ImporterMenuItems ? <MenuDivider /> : null}
+      {ImporterMenuItems ? <ImporterMenuItems /> : null}
+      {ExporterMenuItems ? <MenuDivider /> : null}
+      {ExporterMenuItems ? <ExporterMenuItems /> : null}
+    </Menu>
+  )
+})
+
+const DataDropdown = memo(() => {
+  return (
+    <Popover usePortal={true} minimal={true} content={<DataMenu />} position="bottom-right">
+      <Button icon={'th-derived'} minimal={true} rightIcon={'chevron-down'}>
+        导入/导出
+      </Button>
+    </Popover>
+  )
+})
+
+const SuperAppWrapper = memo(() => {
   const ga = useGameAdapter()
   const dm = ga.getDataManager()
   const [, setTicker] = useState(0)
@@ -314,9 +324,9 @@ function SuperAppWrapper() {
   }
 
   return <App />
-}
+})
 
-export function Loading() {
+export const Loading = memo(() => {
   const ga = useGameAdapter()
   const dm = ga.getDataManager()
   const [, setTicker] = useState(0)
@@ -372,21 +382,27 @@ export function Loading() {
       </div>
     </>
   )
-}
+})
 
-export function AppWrapper() {
+export const AppWrapper = memo(() => {
   const c = useCpp()
   const codename = c.gameAdapter.getCodename()
   const instanceName = c.instanceName
   return (
     <>
-      <ErrDialog codename={codename} instanceName={instanceName} />
-      <ErrorBoundary codename={codename} instanceName={instanceName}>
-        <SuperAppWrapper />
-      </ErrorBoundary>
+      <Chamber>
+        <ErrDialog codename={codename} instanceName={instanceName} />
+        <ErrorBoundary codename={codename} instanceName={instanceName}>
+          <Chamber>
+            <SuperAppWrapper />
+            <ChamberPortal />
+          </Chamber>
+        </ErrorBoundary>
+        <ChamberPortal />
+      </Chamber>
     </>
   )
-}
+})
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode; instanceName: string; codename: string },
@@ -432,7 +448,7 @@ class ErrorBoundary extends React.Component<
                 您不妨试试
               </Button>
               <ReloadDataButton />
-              <DataManagerButton />
+              <UserDataManagerButton />
             </div>
           </DialogFooter>
         </Dialog>
@@ -443,7 +459,7 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-export function ErrDialog({ instanceName, codename }: { instanceName: string; codename: string }) {
+export const ErrDialog = memo(({ instanceName, codename }: { instanceName: string; codename: string }) => {
   const [err, setErr] = useAtom(ErrAtom)
 
   useEffect(() => {
@@ -475,4 +491,4 @@ export function ErrDialog({ instanceName, codename }: { instanceName: string; co
       />
     </Dialog>
   )
-}
+})

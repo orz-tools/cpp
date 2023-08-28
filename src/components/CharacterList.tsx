@@ -394,7 +394,6 @@ const QueryBuilder = memo(() => {
 })
 
 export const CharacterList = memo(() => {
-  const { CharacterImportButton } = useComponents()
   const param = useAtomValue(queryParamAtom)
 
   const cpp = useCpp()
@@ -430,7 +429,6 @@ export const CharacterList = memo(() => {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}>
-          {CharacterImportButton && <CharacterImportButton />}
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
             minimal={true}

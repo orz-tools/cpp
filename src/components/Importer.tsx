@@ -2,31 +2,46 @@ import { Button, Callout, Dialog, DialogFooter, Menu, Tab, Tabs } from '@bluepri
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { Draft } from 'immer'
-import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { useSetAtom } from 'jotai'
+import { memo, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame } from '../pkg/cpp-basic'
 import { UserData } from '../pkg/cpp-core/UserData'
+import { useChamber } from './Chamber'
 import { renderCharacterStatus } from './CharacterList'
 import { ErrAtom } from './Err'
 import { CachedImg } from './Icons'
-
-const importSessionAtom = atom<null | ((current: Draft<UserData<any>>) => void)>(null)
 
 export interface ImportContext {
   addWarning(text: string): void
 }
 
 export function useStartImportSession() {
-  const setImportSession = useSetAtom(importSessionAtom)
   const setErr = useSetAtom(ErrAtom)
+  const atoms = useAtoms()
+  const store = useStore()
+  const { add } = useChamber()
 
   return <G extends IGame>(generatorGenerator: () => (draft: Draft<UserData<G>>, ctx: ImportContext) => void) => {
     try {
       const generator = generatorGenerator()
-      setImportSession(() => generator)
+      const warnings = [] as string[]
+      const ctx: ImportContext = {
+        addWarning(text: string) {
+          warnings.push(text)
+        },
+      }
+      const before = JSON.parse(JSON.stringify(store.get(atoms.allDataAtom)))
+      try {
+        store.set(atoms.allDataAtom, (draft) => generator(draft, ctx))
+      } catch (e) {
+        setErr({ error: e, context: '合并导入数据时遇到问题' })
+        return
+      }
+      const after = JSON.parse(JSON.stringify(store.get(atoms.allDataAtom)))
+      add(ImportResultDialog, { diff: { before, after, warnings } })
     } catch (e) {
       setErr({ error: e, context: '解析导入数据时遇到问题' })
     }
@@ -39,62 +54,33 @@ interface State {
   warnings: string[]
 }
 
-export const Importer = memo(() => {
-  const importSession = useAtomValue(importSessionAtom)
-  const [diff, setDiff] = useState<State | null>(null)
-  const setErr = useSetAtom(ErrAtom)
+const ImportResultDialog = memo(({ diff, onClose }: { diff: State; onClose: () => void }) => {
   const atoms = useAtoms()
   const store = useStore()
-
-  const close = useEvent(() => setDiff(null))
   const undoAndClose = useEvent(() => {
     store.set(atoms.dataAtom, 'undo')
-    setDiff(null)
+    onClose()
   })
 
-  const work = useEvent((generator: (current: Draft<UserData<any>>, ctx: ImportContext) => void) => {
-    const warnings = [] as string[]
-    const ctx: ImportContext = {
-      addWarning(text: string) {
-        warnings.push(text)
-      },
-    }
-    const before = JSON.parse(JSON.stringify(store.get(atoms.allDataAtom)))
-    try {
-      store.set(atoms.allDataAtom, (draft) => generator(draft, ctx))
-    } catch (e) {
-      setErr({ error: e, context: '合并导入数据时遇到问题' })
-      return
-    }
-    const after = JSON.parse(JSON.stringify(store.get(atoms.allDataAtom)))
-    setDiff({ before, after, warnings })
-  })
-
-  useEffect(() => {
-    if (!importSession) return
-    work(importSession)
-  }, [importSession, work])
   return (
-    <>
-      <Dialog icon={'log-in'} isOpen={diff !== null} onClose={close} title="导入结果">
-        {diff ? (
-          <>
-            <DiffView diff={diff} />
-            <DialogFooter
-              actions={
-                <Button onClick={close} minimal>
-                  中
-                </Button>
-              }
-            >
-              <Button icon="undo" onClick={undoAndClose} minimal>
-                撤销
+    <Dialog icon={'log-in'} isOpen={true} onClose={onClose} title="导入结果">
+      {diff ? (
+        <>
+          <DiffView diff={diff} />
+          <DialogFooter
+            actions={
+              <Button onClick={onClose} minimal>
+                中
               </Button>
-            </DialogFooter>
-          </>
-        ) : null}
-      </Dialog>
-    </>
+            }
+          >
+            <Button icon="undo" onClick={undoAndClose} minimal>
+              撤销
+            </Button>
+          </DialogFooter>
+        </>
+      ) : null}
+    </Dialog>
   )
 })
 

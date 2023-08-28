@@ -1,53 +1,40 @@
-import { AnchorButton, Button, Dialog, DialogBody, DialogFooter, TextArea } from '@blueprintjs/core'
+import { AnchorButton, Button, Dialog, DialogBody, DialogFooter, MenuItem, TextArea } from '@blueprintjs/core'
 import { memo, useEffect, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { useStore } from '../Cpp'
+import { useCpp, useStore } from '../Cpp'
 import { formatProfileName, getStoragePrefix } from '../profiles'
+import { useChamber } from './Chamber'
 import { ErrAtom } from './Err'
 
 export const UserDataManager = memo(
-  ({
-    game,
-    instanceName,
-    isOpen,
-    onClose,
-  }: {
-    game: string
-    instanceName: string
-    isOpen?: Dialog['props']['isOpen']
-    onClose?: Dialog['props']['onClose']
-  }) => {
+  ({ game, instanceName, onClose }: { game: string; instanceName: string; onClose?: Dialog['props']['onClose'] }) => {
     const storagePrefix = getStoragePrefix(game, instanceName)
     const [data, setData] = useState<{ data: string; now: number } | undefined>(undefined)
     useEffect(() => {
-      if (isOpen) {
-        try {
-          const d = localStorage.getItem(storagePrefix + 'userdata')
-          const p = localStorage.getItem(storagePrefix + 'preference')
-          if (!d) throw new Error('empty')
-          const now = Date.now()
-          const userdata = JSON.stringify({
-            '@type': '@orz/cpp/dump',
-            '@version': 1,
-            game: game,
-            instanceName: instanceName,
-            exportedAt: now,
-            userdata: JSON.parse(d || ''),
-            preference: p ? JSON.parse(p) : undefined,
-          })
-          setData({ data: userdata, now: now })
-        } catch (e) {
-          console.warn(e)
-          setData(undefined)
-        }
-      } else {
+      try {
+        const d = localStorage.getItem(storagePrefix + 'userdata')
+        const p = localStorage.getItem(storagePrefix + 'preference')
+        if (!d) throw new Error('empty')
+        const now = Date.now()
+        const userdata = JSON.stringify({
+          '@type': '@orz/cpp/dump',
+          '@version': 1,
+          game: game,
+          instanceName: instanceName,
+          exportedAt: now,
+          userdata: JSON.parse(d || ''),
+          preference: p ? JSON.parse(p) : undefined,
+        })
+        setData({ data: userdata, now: now })
+      } catch (e) {
+        console.warn(e)
         setData(undefined)
       }
-    }, [isOpen, storagePrefix, game, instanceName])
+    }, [storagePrefix, game, instanceName])
 
     return (
       <Dialog
-        isOpen={isOpen}
+        isOpen={true}
         onClose={onClose}
         title={`Closure${formatProfileName(game, instanceName)}++ 用户数据管理`}
         icon="database"
@@ -156,3 +143,42 @@ const UserDataManagerContent = memo(
     )
   },
 )
+
+export const UserDataManagerButton = memo(() => {
+  const cpp = useCpp()
+  const game = cpp.gameAdapter.getCodename()
+  const instanceName = cpp.instanceName
+  const { add } = useChamber()
+  return (
+    <Button
+      minimal
+      icon={'database'}
+      text="用户数据管理"
+      onClick={() => {
+        add(UserDataManager, {
+          game: game,
+          instanceName: instanceName,
+        })
+      }}
+    />
+  )
+})
+
+export const UserDataManagerMenuItem = memo(() => {
+  const cpp = useCpp()
+  const game = cpp.gameAdapter.getCodename()
+  const instanceName = cpp.instanceName
+  const { add } = useChamber()
+  return (
+    <MenuItem
+      icon={'database'}
+      text="用户数据管理"
+      onClick={() => {
+        add(UserDataManager, {
+          game: game,
+          instanceName: instanceName,
+        })
+      }}
+    />
+  )
+})
