@@ -41,6 +41,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.PULSE, Paths16.Pulse],
       [IconNames.REDO, Paths16.Redo],
       [IconNames.REFRESH, Paths16.Refresh],
+      [IconNames.RESET, Paths16.Reset],
       [IconNames.TICK, Paths16.Tick],
       [IconNames.TIME, Paths16.Time],
       [IconNames.TRASH, Paths16.Trash],
