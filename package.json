@@ -16,7 +16,7 @@
     "deep-equal": "^2.2.2",
     "immer": "^10.0.2",
     "javascript-lp-solver": "^0.4.24",
-    "jotai": "2.3",
+    "jotai": "2.2.0",
     "localforage": "^1.10.0",
     "p-limit": "^4.0.0",
     "p-props": "^5.0.0",

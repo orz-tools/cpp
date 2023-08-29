@@ -1725,7 +1725,7 @@ __metadata:
     eslint: ^8.48.0
     immer: ^10.0.2
     javascript-lp-solver: ^0.4.24
-    jotai: 2.3
+    jotai: 2.2.0
     localforage: ^1.10.0
     node-fetch: ^3.3.2
     p-limit: ^4.0.0
@@ -3148,18 +3148,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jotai@npm:2.3":
-  version: 2.3.1
-  resolution: "jotai@npm:2.3.1"
+"jotai@npm:2.2.0":
+  version: 2.2.0
+  resolution: "jotai@npm:2.2.0"
   peerDependencies:
-    "@types/react": ">=17.0.0"
     react: ">=17.0.0"
   peerDependenciesMeta:
-    "@types/react":
-      optional: true
     react:
       optional: true
-  checksum: c2e3dcb3206749cd7f63ab9cfec5d0bacd19ac8c1710e688716fcbdaa031c6bb78f10ed24ea8da65cd98b4dc3c04170c05eedb4d3284b9ad80858f834c69a914
+  checksum: 9925a0ced9615773302a2e6262e06f6f31524b8328eb57f07c12eddf4284ad8f9a472ae6d2dc1e1ecdf734e8862be7239cab176aa45eb999741e12d411e46f9e
   languageName: node
   linkType: hard
 
