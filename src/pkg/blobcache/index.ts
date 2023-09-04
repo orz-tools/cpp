@@ -1,6 +1,8 @@
+import { files } from 'browser-stream-tar'
 import localForage from 'localforage'
 import pLimit from 'p-limit'
 import { DedupPool } from '../dedup'
+import { packs, prefix } from './packs'
 
 export type BlobImage = {
   id: string
@@ -23,6 +25,7 @@ const blobStore = localForage.createInstance({
 
 const blobMap = new Map<string, string>()
 const pool = new DedupPool<string>()
+const packPool = new DedupPool<string>()
 export const badUrl = 'data:image/webp,'
 
 function mime(url: string) {
@@ -42,6 +45,7 @@ function commit(url: string, blobUrl: string) {
 }
 
 const limit = pLimit(8)
+const packLimit = pLimit(1)
 
 export function pure(url: BlobImages, prefer: BlobFlavour = 'soul'): BlobImage | undefined {
   if (typeof url === 'string') {
@@ -55,6 +59,32 @@ export function pure(url: BlobImages, prefer: BlobFlavour = 'soul'): BlobImage |
   return u
 }
 
+const loadedPack = new Set<string>()
+
+async function loadPack(packName: string) {
+  if (!Object.hasOwn(packs, packName)) return
+  if (loadedPack.has(packName)) return
+  loadedPack.add(packName)
+  const pack = packs[packName]
+  try {
+    const response = await fetch(`${prefix}${encodeURIComponent(packName)}.tar`)
+    if (!response.ok || !response.body)
+      throw new Error(`${response.status}: ${response.statusText}`, { cause: response })
+    for await (const file of files(response.body)) {
+      if (!Object.hasOwn(pack, file.name)) {
+        console.warn(`Unknown file ${file.name} in pack ${packName}.`)
+        continue
+      }
+      const id = pack[file.name]
+      const data = await streamToUint8Array(file.stream())
+      await blobStore.setItem(id, data)
+    }
+  } catch (e) {
+    console.error(`Cannot load pack ${packName}.`, e)
+    throw e
+  }
+}
+
 export function load(inputUrl: BlobImages, prefer?: BlobFlavour): string | Promise<string> {
   const url = pure(inputUrl, prefer)
   if (!url) return badUrl
@@ -63,20 +93,44 @@ export function load(inputUrl: BlobImages, prefer?: BlobFlavour): string | Promi
     return blobMap.get(url.id)!
   }
 
-  return pool.run(url.id, () =>
-    limit(async () => {
+  return pool.run(url.id, async () => {
+    const existing = (await blobStore.getItem(url.id)) as ArrayBuffer
+    if (existing) {
+      const blobUrl = URL.createObjectURL(new Blob([existing], { type: mime(url.id) }))
+      return commit(url.id, blobUrl)
+    }
+
+    let urls = url.urls || []
+    const pack = urls.find((v) => v.startsWith('pack:'))
+    if (pack) {
+      const packName = pack.replace(/^pack:/, '')
+      try {
+        await packPool.run(packName, async () => {
+          await packLimit(async () => {
+            await loadPack(packName)
+          })
+        })
+      } catch (e) {
+        // ignore
+      }
+
       const existing = (await blobStore.getItem(url.id)) as ArrayBuffer
       if (existing) {
         const blobUrl = URL.createObjectURL(new Blob([existing], { type: mime(url.id) }))
         return commit(url.id, blobUrl)
       }
 
-      if (!url.urls.length) {
-        return commit(url.id, badUrl)
-      }
+      return commit(url.id, badUrl)
+      urls = urls.filter((v) => !v.startsWith('pack:'))
+    }
 
+    if (!urls.length) {
+      return commit(url.id, badUrl)
+    }
+
+    return await limit(async () => {
       try {
-        const res = await multifetch(url.urls)
+        const res = await multifetch(urls)
         if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`, { cause: res })
         const ab = await res.arrayBuffer()
         await blobStore.setItem(url.id, ab)
@@ -86,8 +140,8 @@ export function load(inputUrl: BlobImages, prefer?: BlobFlavour): string | Promi
         console.error(`Cannot cache ${JSON.stringify(url)}.`, e)
         return commit(url.id, badUrl)
       }
-    }),
-  )
+    })
+  })
 }
 
 async function multifetch(urls: string[]) {
@@ -171,4 +225,25 @@ function parseGitHubRawUrl(url: string): { owner: string; repo: string; ref: str
   const ref = decodeURIComponent(parts[3])
   const path = parts.slice(4).join('/')
   return { owner, repo, ref, path }
+}
+
+async function streamToUint8Array(stream: ReadableStream) {
+  const reader = stream.getReader()
+
+  let buffer = new Uint8Array()
+
+  for (;;) {
+    const { done, value } = await reader.read()
+
+    if (done) {
+      break
+    }
+
+    const newBuffer = new Uint8Array(buffer.length + value.length)
+    newBuffer.set(buffer)
+    newBuffer.set(value, buffer.length)
+    buffer = newBuffer
+  }
+
+  return buffer
 }

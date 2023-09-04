@@ -1433,6 +1433,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"browser-stream-tar@npm:^1.2.5":
+  version: 1.2.5
+  resolution: "browser-stream-tar@npm:1.2.5"
+  checksum: ad394113e8c052d7c4ef8320d0a1078f5d4712ac6e20ced9f7ffd7a761e3137452ab9a0908a390a92ae2075816f1cf81858a53c667ae06b041f4e88f6e5eecf9
+  languageName: node
+  linkType: hard
+
 "browserslist@npm:^4.21.3":
   version: 4.21.5
   resolution: "browserslist@npm:4.21.5"
@@ -1720,6 +1727,7 @@ __metadata:
     "@typescript-eslint/parser": ^6.4.1
     "@vitejs/plugin-react-swc": ^3.3.2
     "@vitest/ui": ^0.34.3
+    browser-stream-tar: ^1.2.5
     date-fns: ^2.30.0
     deep-equal: ^2.2.2
     eslint: ^8.48.0

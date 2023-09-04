@@ -409,10 +409,11 @@ export class Item implements IItem {
     return this.raw.name
   }
 
-  public get icon() {
-    return `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/item/${encodeURIComponent(
+  public get icon(): BlobImages {
+    const yy = `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/item/${encodeURIComponent(
       this.raw.iconId,
     )}.png`
+    return { normal: blobImage(['pack:arknights-items-20230904', yy], yy) }
   }
 
   private _valueAsAp?: [number | undefined]
