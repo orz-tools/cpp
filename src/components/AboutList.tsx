@@ -56,6 +56,18 @@ export const AboutList = memo(() => {
             </>
           }
         />
+        <MenuItem
+          icon={'git-repo'}
+          multiline={true}
+          href={'https://github.com/orz-tools/cpp'}
+          {...externalLinkProps}
+          text={
+            <>
+              GitHub
+              <span style={{ marginLeft: '0.5em', fontWeight: 300 }}>AGPL-3.0-or-later</span>
+            </>
+          }
+        />
         <MenuDivider title="数据源" />
         {AboutDataSources && <AboutDataSources />}
         <MenuDivider title="其他" />
