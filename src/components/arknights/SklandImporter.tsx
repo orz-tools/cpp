@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogBody, InputGroup, Intent, Popover } from '@blueprintjs/core'
+import { Button, Callout, Dialog, DialogBody, InputGroup, Intent, Popover } from '@blueprintjs/core'
 import { Draft } from 'immer'
 import { useSetAtom } from 'jotai'
 import { memo, useEffect, useRef, useState } from 'react'
@@ -146,11 +146,10 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
   const handleDevice = useEvent(() => {
     if (windowRef) {
       try {
-        windowRef.close()
+        windowRef.focus()
       } catch (e) {
-        console.error(e)
+        alert('请在弹出的「提取装置」中继续操作')
       }
-      setWindowRef(null)
     } else {
       const windowWidth = 500
       const windowHeight = 700
@@ -182,34 +181,64 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     onClose()
   })
 
+  const handleBackdrop = useEvent(() => {
+    if (windowRef) {
+      try {
+        windowRef.focus()
+      } catch (e) {
+        alert('请在弹出的「提取装置」中继续操作')
+      }
+    } else {
+      handleClose()
+    }
+  })
+
   return (
-    <Dialog isOpen={true} onClose={handleClose} title={'导入「森空岛」数据'} icon="log-in">
+    <Dialog
+      isOpen={true}
+      onClose={handleClose}
+      title={'导入「森空岛」数据'}
+      icon="log-in"
+      canOutsideClickClose={false}
+      backdropProps={{ onClick: handleBackdrop }}
+    >
       <DialogBody>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
+          {windowRef ? <Callout intent="warning" title={'请在弹出窗口中继续操作'} /> : null}
           <Button
             style={{ fontSize: '200%', padding: '0.75em' }}
-            intent={windowRef ? Intent.DANGER : Intent.PRIMARY}
+            intent={windowRef ? Intent.PRIMARY : Intent.PRIMARY}
             onClick={handleDevice}
           >
-            {windowRef ? `放弃「提取装置」` : `使用「提取装置」`}
+            {windowRef ? `回到「提取装置」` : `使用「提取装置」`}
           </Button>
           <Popover
             position="bottom"
             onOpened={focus}
             content={
-              <div style={{ padding: '1em' }}>
-                <InputGroup
-                  onPaste={handleInput}
-                  value={''}
-                  placeholder="请在此粘贴..."
-                  inputRef={focusRef}
-                  style={{ width: '10em' }}
-                  onChange={noop}
-                />
-              </div>
+              <>
+                <Callout intent="danger" title={'你走错了？！'}>
+                  请您点击上方<strong>{windowRef ? '回到' : '使用'}「提取装置」</strong>继续。
+                  <br />
+                  <br />
+                  这是给无法使用「提取装置」的人提供的备用入口。
+                  <br />
+                  请勿在此粘贴任何凭据。
+                </Callout>
+                <div style={{ padding: '1em' }}>
+                  <InputGroup
+                    onPaste={handleInput}
+                    value={''}
+                    placeholder="请在此粘贴..."
+                    inputRef={focusRef}
+                    style={{ width: '100%' }}
+                    onChange={noop}
+                  />
+                </div>
+              </>
             }
           >
-            <Button minimal text={'粘贴 JSON'} />
+            <Button minimal text={'粘贴 JSON'} style={{ color: 'rgba(0, 0, 0, 0.25)' }} />
           </Popover>
         </div>
       </DialogBody>
