@@ -1,6 +1,7 @@
 import localForage from 'localforage'
-import { IGame } from './types'
+import { FriendlyError } from '../../components/Err'
 import { DataContainerObject, IDataContainer, getLastCheckedAt, load, reset } from '../dccache'
+import { IGame } from './types'
 
 // HACK
 void localForage.dropInstance({ name: 'cpp_dm' })
@@ -55,6 +56,12 @@ export abstract class BasicDataManager<G extends IGame> {
         this.loading.add(x.name)
         try {
           this.dataObjectMap.set(x, await load(x, refresh, onRefreshed))
+        } catch (e) {
+          const realE = e instanceof Error ? e : new Error(e as any)
+          const err = new FriendlyError(`Failed to load DataObject ${x.name}: ${realE.message}`, { cause: e })
+          if (realE.stack) err.stack = realE.stack
+          ;(err as any).friendly = `无法加载数据，请检查网络连接/更换网络/使用“加速器”/切换线路。`
+          throw err
         } finally {
           this.loading.delete(x.name)
         }

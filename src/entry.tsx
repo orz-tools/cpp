@@ -2,6 +2,7 @@ import { Provider } from 'jotai'
 import ReactDOM from 'react-dom/client'
 import { AppWrapper } from './App'
 import { Cpp, CppContext } from './Cpp'
+import { Err, ErrAtom } from './components/Err'
 import { IGameComponent } from './components/types'
 import './index.css'
 import { IGameAdapter } from './pkg/cpp-basic'
@@ -13,7 +14,14 @@ export function runCpp(
   gameComponent: IGameComponent,
 ) {
   const cpp = new Cpp(storagePrefix, instanceName, gameAdapter, gameComponent)
-  void cpp.gameAdapter.getDataManager().init()
+  void (async () => {
+    const result = await environmentCheck()
+    if (result) return cpp.store.set(ErrAtom, Object.assign({ context: '环境检测失败' }, result))
+
+    await cpp.gameAdapter.getDataManager().init()
+  })().catch((e) => {
+    cpp.store.set(ErrAtom, { error: e, context: '初始化失败' })
+  })
 
   Object.assign(globalThis, {
     $cpp: cpp,
@@ -32,4 +40,16 @@ export function runCpp(
     </Provider>,
     // </React.StrictMode>,
   )
+}
+
+async function environmentCheck(): Promise<Err | null> {
+  try {
+    if (!Object.entries) throw new Error('Object.entries is not defined')
+    if (!Object.fromEntries) throw new Error('Object.fromEntries is not defined')
+    if (!Object.hasOwn) throw new Error('Object.hasOwn is not defined')
+  } catch (e) {
+    return { error: e, friendly: '请更新您的浏览器。' }
+  }
+  await Promise.resolve()
+  return null
 }

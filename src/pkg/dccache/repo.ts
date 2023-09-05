@@ -1,4 +1,4 @@
-import { IDataContainerHeader, IDataContainer } from './dc'
+import { IDataContainer, IDataContainerHeader } from './dc'
 import { DataContainerObject } from './obj'
 
 const REPO_ROOT = 'https://cpp.xivcdn.com/data'

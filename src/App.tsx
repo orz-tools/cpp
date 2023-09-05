@@ -2,6 +2,7 @@ import {
   Alignment,
   AnchorButton,
   Button,
+  Callout,
   Classes,
   ContextMenu,
   Dialog,
@@ -23,7 +24,7 @@ import { AboutList } from './components/AboutList'
 import { Chamber, ChamberPortal } from './components/Chamber'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, MaybeSoulButton, StageButton } from './components/ConfigUi'
-import { ErrAtom } from './components/Err'
+import { Err, ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { ItemList } from './components/ItemList'
 import { LogList } from './components/LogList'
@@ -430,10 +431,7 @@ class ErrorBoundary extends React.Component<
           icon="warning-sign"
           isCloseButtonShown={false}
         >
-          <DialogBody>
-            {this.state.error ? <h4>{this.state.error.message}</h4> : null}
-            {this.state.error ? <pre>{this.state.error.stack}</pre> : null}
-          </DialogBody>
+          <DialogBody>{renderError({ error: this.state.error! })}</DialogBody>
           <DialogFooter
             actions={
               <>
@@ -476,10 +474,7 @@ export const ErrDialog = memo(({ instanceName, codename }: { instanceName: strin
       isCloseButtonShown={true}
       onClose={() => setErr(undefined)}
     >
-      <DialogBody>
-        {err.error ? <h4>{err.error.message}</h4> : null}
-        {err.error ? <pre>{err.error.stack}</pre> : null}
-      </DialogBody>
+      <DialogBody>{renderError(err)}</DialogBody>
       <DialogFooter
         actions={
           <>
@@ -492,3 +487,15 @@ export const ErrDialog = memo(({ instanceName, codename }: { instanceName: strin
     </Dialog>
   )
 })
+
+function renderError(err: Err) {
+  const friendly = String(err.friendly || err.error?.friendly || '')
+  return (
+    <>
+      {friendly ? <Callout intent="danger">{friendly}</Callout> : null}
+      {err.error ? <h4 style={{ marginTop: friendly ? undefined : 0 }}>{err.error.message}</h4> : null}
+      <pre style={{ whiteSpace: 'pre-wrap' }}>{navigator.userAgent}</pre>
+      {err.error ? <pre style={{ whiteSpace: 'pre-wrap' }}>{err.error.stack}</pre> : null}
+    </>
+  )
+}
