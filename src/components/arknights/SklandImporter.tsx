@@ -170,8 +170,20 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     }
   })
 
+  const handleClose = useEvent(() => {
+    if (windowRef) {
+      try {
+        windowRef.close()
+      } catch (e) {
+        console.error(e)
+      }
+      setWindowRef(null)
+    }
+    onClose()
+  })
+
   return (
-    <Dialog isOpen={true} onClose={onClose} title={'导入「森空岛」数据'} icon="log-in">
+    <Dialog isOpen={true} onClose={handleClose} title={'导入「森空岛」数据'} icon="log-in">
       <DialogBody>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
           <Button
