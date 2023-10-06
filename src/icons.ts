@@ -1,5 +1,6 @@
 import { IconName, IconNames, IconSize, Icons } from '@blueprintjs/icons'
 import * as Paths16 from '@blueprintjs/icons/lib/esm/generated/16px/paths'
+import * as Paths20 from '@blueprintjs/icons/lib/esm/generated/20px/paths'
 import { AppToaster } from './components/Toaster'
 import { DedupPool } from './pkg/dedup'
 
@@ -17,12 +18,16 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.CARET_UP, Paths16.CaretUp],
       [IconNames.CHART, Paths16.Chart],
       [IconNames.CHEVRON_DOWN, Paths16.ChevronDown],
+      [IconNames.CHEVRON_LEFT, Paths16.ChevronLeft],
+      [IconNames.CHEVRON_RIGHT, Paths16.ChevronRight],
       [IconNames.CHEVRON_UP, Paths16.ChevronUp],
-      [IconNames.CROSS_CIRCLE, Paths16.CrossCircle],
       [IconNames.CROSS, Paths16.Cross],
+      [IconNames.CROSS_CIRCLE, Paths16.CrossCircle],
       [IconNames.CUBE, Paths16.Cube],
       [IconNames.DATABASE, Paths16.Database],
       [IconNames.DOUBLE_CHEVRON_DOWN, Paths16.DoubleChevronDown],
+      [IconNames.DOUBLE_CHEVRON_LEFT, Paths16.DoubleChevronLeft],
+      [IconNames.DOUBLE_CHEVRON_RIGHT, Paths16.DoubleChevronRight],
       [IconNames.DOUBLE_CHEVRON_UP, Paths16.DoubleChevronUp],
       [IconNames.ENVELOPE, Paths16.Envelope],
       [IconNames.ERROR, Paths16.Error],
@@ -52,15 +57,15 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.STAR, Paths16.Star],
       [IconNames.STAR_EMPTY, Paths16.StarEmpty],
       [IconNames.TH_DERIVED, Paths16.ThDerived],
-      [IconNames.TICK_CIRCLE, Paths16.TickCircle],
       [IconNames.TICK, Paths16.Tick],
+      [IconNames.TICK_CIRCLE, Paths16.TickCircle],
       [IconNames.TIME, Paths16.Time],
       [IconNames.TRASH, Paths16.Trash],
       [IconNames.UNDO, Paths16.Undo],
       [IconNames.WARNING_SIGN, Paths16.WarningSign],
     ]),
   ],
-  [IconSize.LARGE, new Map([])],
+  [IconSize.LARGE, new Map([[IconNames.AUTOMATIC_UPDATES, Paths20.AutomaticUpdates]])],
 ])
 
 const pool = new DedupPool<`${IconName}-${IconSize}`>()

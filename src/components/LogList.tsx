@@ -1,8 +1,9 @@
-import { Alignment, IconName, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
+import { Drawer, IconName, Menu, MenuDivider, MenuItem } from '@blueprintjs/core'
 import { groupBy, sortBy } from 'ramda'
 import React, { memo, useMemo } from 'react'
 import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
+import { useChamber } from './Chamber'
 
 const logs = [
   {
@@ -19,6 +20,7 @@ const logs = [
       </div>
     ),
   },
+  { date: '2023-10-06', type: 'optimize', desc: '优化更新笔记入口' },
   { date: '2023-08-29', type: 'optimize', desc: '合并导入/导出入口' },
   { date: '2023-08-27', type: 'optimize', desc: '底层组件更新，优化整体性能' },
   { date: '2023-08-27', game: [GameName.Arknights], type: 'new', desc: '增加森空岛数据导入功能' },
@@ -61,42 +63,81 @@ const iconMap = {
   fix: 'build',
 } satisfies Record<string, IconName>
 
-export const LogList = memo(() => {
+export const LogPanel = memo(({ onClose }: { onClose: () => any }) => {
   const ga = useGameAdapter()
-  const groupedLogs = useMemo(() => {
-    const cn = ga.getCodename() as GameName
-    const sortedLogs = sortBy((x) => x.date, logs.reverse())
-      .reverse()
-      .filter((x) => (x.game ? x.game.includes(cn) : true))
-    return groupBy((x) => x.date, sortedLogs)
-  }, [ga])
+  const groupedLogs = useMemo(() => groupLog(ga.getCodename() as GameName), [ga])
   return (
-    <>
-      <Navbar>
-        <Navbar.Group align={Alignment.RIGHT} />
-        <Navbar.Group align={Alignment.LEFT}>更新日志</Navbar.Group>
-      </Navbar>
+    <Drawer
+      isOpen={true}
+      onClose={onClose}
+      position="left"
+      size={'300px'}
+      title={'更新笔记'}
+      icon={'automatic-updates'}
+    >
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
         {Object.entries(groupedLogs).map(([k, v]) => {
-          return (
-            <React.Fragment key={k}>
-              <MenuDivider title={k} />
-              {v!.map((vv, index) => {
-                return (
-                  <MenuItem
-                    key={index}
-                    className={vv.children ? undefined : 'cpp-menu-not-interactive'}
-                    icon={vv.type in iconMap ? (iconMap as any)[vv.type] : ''}
-                    text={<div className="cpp-menu-semi-secondary">{vv.desc}</div>}
-                    multiline={true}
-                    children={vv.children}
-                  />
-                )
-              })}
-            </React.Fragment>
-          )
+          return <LogGroup key={k} title={k} items={v!} />
         })}
       </Menu>
+    </Drawer>
+  )
+})
+
+const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: typeof logs }) => {
+  return (
+    <>
+      <MenuDivider title={title} />
+      {items.map((vv, index) => {
+        return (
+          <MenuItem
+            key={index}
+            className={vv.children ? undefined : 'cpp-menu-not-interactive'}
+            icon={vv.type in iconMap ? (iconMap as any)[vv.type] : ''}
+            text={<div className="cpp-menu-semi-secondary">{vv.desc}</div>}
+            multiline={true}
+            children={vv.children}
+            popoverProps={{ usePortal: true }}
+          />
+        )
+      })}
+    </>
+  )
+})
+
+function groupLog(codename: GameName) {
+  const sortedLogs = sortBy((x) => x.date, logs.reverse())
+    .reverse()
+    .filter((x) => (x.game ? x.game.includes(codename) : true))
+  return groupBy((x) => x.date, sortedLogs)
+}
+
+export const SimpleLogList = memo(() => {
+  const ga = useGameAdapter()
+  const groupedLogs = useMemo(() => Object.entries(groupLog(ga.getCodename() as GameName)), [ga])
+  const { add } = useChamber()
+
+  return (
+    <>
+      <LogGroup
+        title={
+          <>
+            <span style={{ float: 'right', fontWeight: 'normal' }}>截止 {groupedLogs[0][0]}</span>
+            近期更新
+          </>
+        }
+        items={groupedLogs
+          .slice(0, 3)
+          .map((x) => x[1]!)
+          .flat(1)}
+      />
+      <MenuItem
+        icon="double-chevron-right"
+        text="查看更多..."
+        onClick={() => {
+          add(LogPanel)
+        }}
+      />
     </>
   )
 })

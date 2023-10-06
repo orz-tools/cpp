@@ -4,6 +4,7 @@ import { memo } from 'react'
 import { useCpp } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { DataContainerObject } from '../pkg/dccache'
+import { SimpleLogList } from './LogList'
 
 export const externalLinkProps = {
   rel: 'noreferrer noopener',
@@ -23,13 +24,7 @@ export const AboutList = memo(() => {
         <Navbar.Group align={Alignment.LEFT}>关于</Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
-        <MenuDivider title="警告" />
-        <DescriptionMenuItem
-          className="cpp-menu-not-interactive"
-          icon={'warning-sign'}
-          text="数据千万条，备份第一条"
-          description="此工具仍在缓慢开发中。虽然一般不会丢，但请随时做好丢失数据的准备。您已被建议经常使用“用户数据管理”中的“导出为文件”功能……"
-        />
+        <SimpleLogList />
         <MenuDivider title="联系" />
         <MenuItem
           icon={'people'}
