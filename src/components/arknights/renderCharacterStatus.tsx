@@ -12,7 +12,8 @@ export function renderCharacterStatus(
   const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
   const uniX = uniEquips.find((x) => x.raw.typeName2!.toUpperCase() === 'X')
   const uniY = uniEquips.find((x) => x.raw.typeName2!.toUpperCase() === 'Y')
-  if ([uniX, uniY].filter((x) => !!x).length !== uniEquips.length) {
+  const uniZ = uniEquips.find((x) => x.raw.typeName2!.toUpperCase() === 'Z')
+  if ([uniX, uniY, uniZ].filter((x) => !!x).length !== uniEquips.length) {
     console.warn('character extra uniEquips', character, uniEquips)
   }
 
@@ -44,6 +45,14 @@ export function renderCharacterStatus(
       ) : (
         <EmptyIcon />
       )}
+      {uniZ ? (
+        <Hide
+          hide={current ? (status.modLevel[uniZ.key] || 0) === (current.modLevel[uniZ.key] || 0) : false}
+          alreadyHide={alreadyHide}
+        >
+          <UniEquipIcon uniEquip={uniZ} key={uniZ.key} level={status.modLevel[uniZ.key] || 0} />
+        </Hide>
+      ) : null}
       {character.skills.slice(0, 3).map(([, skill]) => (
         <Hide
           hide={
