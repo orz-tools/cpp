@@ -328,3 +328,11 @@ body {
 .cpp-importer-diff > .bp5-tabs > .bp5-tab-panel .bp5-menu {
   background-color: unset;
 }
+
+.cpp-menu-nosubmenu > span.bp5-submenu-icon {
+  display: none;
+}
+
+.cpp-menu-nosubmenu > div.bp5-fill {
+  margin-right: 0;
+}

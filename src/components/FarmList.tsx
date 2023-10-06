@@ -35,7 +35,7 @@ function getLevelTaskRequirementsAtom(atoms: UserDataAtomHolder<IGame>['atoms'],
   if (l === undefined) return undefined
   switch (l) {
     case Level.Star:
-      throw new Error('Star level not implemented')
+      return atoms.allStarredTaskRequirements
     case Level.Goal:
       return atoms.allGoalTaskRequirements
     case Level.Finished:
@@ -145,6 +145,12 @@ export const FarmList = memo(() => {
           return send(cpp, Level.Goal)
         case FarmLevel.GoalForFinished:
           return send(cpp, Level.Goal, Level.Finished)
+        case FarmLevel.StarOnly:
+          return send(cpp, Level.Star)
+        case FarmLevel.StarForGoal:
+          return send(cpp, Level.Star, Level.Goal)
+        case FarmLevel.StarForFinished:
+          return send(cpp, Level.Star, Level.Finished)
       }
       throw new Error('Invalid farm level')
     } catch (e) {
@@ -171,6 +177,10 @@ export const FarmList = memo(() => {
             minimal={true}
             content={
               <Menu>
+                <FarmLevelButton level={FarmLevel.StarOnly} refresh={refresh} />
+                <FarmLevelButton level={FarmLevel.StarForGoal} refresh={refresh} />
+                <FarmLevelButton level={FarmLevel.StarForFinished} refresh={refresh} />
+                <MenuDivider />
                 <FarmLevelButton level={FarmLevel.Goal} refresh={refresh} />
                 <FarmLevelButton level={FarmLevel.GoalForFinished} refresh={refresh} />
                 <MenuDivider />

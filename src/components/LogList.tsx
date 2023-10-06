@@ -5,33 +5,47 @@ import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 
 const logs = [
+  {
+    date: '2023-10-06',
+    type: 'new',
+    desc: '增加“优先培养（星标）”功能',
+    children: (
+      <div style={{ padding: 10 }}>
+        在任务列表中，右键一个任务，
+        <br />
+        在上下文菜单中选择相应选项，
+        <br />
+        即可标记为优先培养。
+      </div>
+    ),
+  },
   { date: '2023-08-29', type: 'optimize', desc: '合并导入/导出入口' },
   { date: '2023-08-27', type: 'optimize', desc: '底层组件更新，优化整体性能' },
-  { date: '2023-08-27', game: [GameName.Arknights], type: 'optimize', desc: '增加森空岛数据导入功能' },
-  { date: '2023-08-25', type: 'optimize', desc: '角色头像右键菜单增加资料站链接' },
+  { date: '2023-08-27', game: [GameName.Arknights], type: 'new', desc: '增加森空岛数据导入功能' },
+  { date: '2023-08-25', type: 'new', desc: '角色头像右键菜单增加资料站链接' },
   { date: '2023-08-25', type: 'optimize', desc: '优化计算性能' },
   { date: '2023-08-25', type: 'fix', desc: '修复一些数字输不进去的问题' },
   { date: '2023-08-18', type: 'optimize', desc: '优化图片资源加载' },
   { date: '2023-08-16', type: 'optimize', desc: '优化列表性能' },
-  { date: '2023-07-24', type: 'optimize', desc: '增加规划目标选择' },
+  { date: '2023-07-24', type: 'new', desc: '增加规划目标选择' },
   { date: '2023-07-22', type: 'optimize', desc: '部分数据源迁移至 CDN' },
   { date: '2023-07-22', type: 'optimize', desc: '重新设计数据更新功能' },
   { date: '2023-07-22', type: 'optimize', desc: '优化统一部分 UI/UX' },
-  { date: '2023-07-22', type: 'optimize', desc: '增加用户数据管理（导入/导出）' },
+  { date: '2023-07-22', type: 'new', desc: '增加用户数据管理（导入/导出）' },
   { date: '2023-07-17', game: [GameName.Re1999], type: 'optimize', desc: '追加材料掉率表中的价值数据' },
-  { date: '2023-07-17', type: 'optimize', desc: '区分价值“体力”（蓝黑色）和实际体力（蓝色）' },
-  { date: '2023-07-09', type: 'optimize', desc: '刷本规划中增加单次理智和样本数显示' },
+  { date: '2023-07-17', type: 'new', desc: '区分价值“体力”（蓝黑色）和实际体力（蓝色）' },
+  { date: '2023-07-09', type: 'new', desc: '刷本规划中增加单次理智和样本数显示' },
   { date: '2023-07-09', game: [GameName.Arknights], type: 'fix', desc: '修复 Firefox 下仓库展示' },
   { date: '2023-07-09', game: [GameName.Re1999], type: 'optimize', desc: '优化货币图标' },
   { date: '2023-07-07', game: [GameName.Arknights], type: 'fix', desc: '适配新解包物品稀有度格式' },
-  { date: '2023-07-02', type: 'optimize', desc: '增加“按游戏内仓库排布形式展示”按钮' },
+  { date: '2023-07-02', type: 'new', desc: '增加“按游戏内仓库排布形式展示”按钮' },
   { date: '2023-07-01', type: 'optimize', desc: '计算结果中展示暂无可计算来源的材料' },
   { date: '2023-07-01', game: [GameName.Re1999], type: 'optimize', desc: '优化道具排序顺序' },
   { date: '2023-07-01', type: 'fix', desc: '修复重载数据按钮' },
   { date: '2023-06-21', game: [GameName.Re1999], type: 'optimize', desc: '使用 yuanyan3060 提供的解包数据' },
   { date: '2023-06-14', game: [GameName.Arknights], type: 'fix', desc: '修复经验间接计算问题' },
   { date: '2023-06-14', type: 'optimize', desc: '优化分栏顺序' },
-  { date: '2023-06-13', type: 'optimize', desc: '支持一些其他游戏' },
+  { date: '2023-06-13', type: 'new', desc: '支持一些其他游戏' },
   { date: '2023-06-13', type: 'optimize', desc: '支持多个游戏角色' },
   { date: '2023-06-08', game: [GameName.Arknights], type: 'fix', desc: '换回 Kengxxiao 的数据源 🌚' },
   { date: '2023-05-03', game: [GameName.Arknights], type: 'fix', desc: '换用 yuanyan3060 的数据源' },
@@ -39,10 +53,11 @@ const logs = [
   { date: '2023-04-23', type: 'optimize', desc: '以价值排序刷图产物' },
   { date: '2023-04-23', type: 'fix', desc: '任务完成时正确消耗经验道具' },
   { date: '2023-04-23', game: [GameName.Arknights], type: 'fix', desc: '修复复刻的插曲关卡数据' },
-] as { date: string; game?: GameName[]; type: 'fix' | 'optimize'; desc: string }[]
+] as { date: string; game?: GameName[]; type: 'new' | 'fix' | 'optimize'; desc: string; children?: React.ReactNode }[]
 
 const iconMap = {
   optimize: 'key-command',
+  new: 'star',
   fix: 'build',
 } satisfies Record<string, IconName>
 
@@ -70,10 +85,11 @@ export const LogList = memo(() => {
                 return (
                   <MenuItem
                     key={index}
-                    className="cpp-menu-not-interactive"
+                    className={vv.children ? undefined : 'cpp-menu-not-interactive'}
                     icon={vv.type in iconMap ? (iconMap as any)[vv.type] : ''}
                     text={<div className="cpp-menu-semi-secondary">{vv.desc}</div>}
                     multiline={true}
+                    children={vv.children}
                   />
                 )
               })}

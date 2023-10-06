@@ -62,8 +62,9 @@ const SynthesisMenu = memo(({ item, target }: { item: IItem; target: number }) =
   const quantity = useAtomValue(atoms.itemQuantity(item.key))
   return (
     <MenuItem
+      className="cpp-menu-nosubmenu"
       style={{ fontWeight: 'normal' }}
-      popoverProps={{ interactionKind: 'click' }}
+      popoverProps={{ interactionKind: 'click', usePortal: true }}
       icon={
         <CachedImg
           className="cpp-item-icon"
@@ -83,6 +84,7 @@ const SynthesisMenu = memo(({ item, target }: { item: IItem; target: number }) =
           </span>
         </>
       }
+      submenuProps={{ style: { minWidth: '300px' } }}
     >
       <ItemSynthesisPopover item={item} />
     </MenuItem>

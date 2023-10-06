@@ -22,6 +22,12 @@ import { CachedImg } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
+enum Level {
+  Star = 1,
+  Goal = 2,
+  Finished = 3,
+}
+
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
 export const ItemQuantityEditor = memo(
@@ -88,7 +94,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item }: { item: IIt
   }
 
   return (
-    <Menu style={{ width: '300px' }}>
+    <>
       <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
         {formula.apCost ? (
           <>
@@ -174,7 +180,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item }: { item: IIt
           />
         )
       })}
-    </Menu>
+    </>
   )
 })
 
@@ -209,7 +215,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode === 'all' || itemListParam.mode === 'goal'
+              itemListParam.level == null || itemListParam.level === Level.Goal
                 ? goal + goalIndirects - quantity - Math.min(synable, goal + goalIndirects) > 0
                   ? 1
                   : 0.4
@@ -222,7 +228,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode === 'all' || itemListParam.mode === 'finished'
+              itemListParam.level == null || itemListParam.level === Level.Finished
                 ? finished + finishedIndirects - quantity - Math.min(synable, finished + finishedIndirects) > 0
                   ? 1
                   : 0.4
@@ -238,13 +244,21 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
         className="bp5-menu-item cpp-item-menu"
         style={{ lineHeight: '21px', padding: 0, fontWeight: 'normal', visibility: !formula ? 'hidden' : undefined }}
       >
-        <Popover content={<ItemSynthesisPopover item={item} />} usePortal={true} placement={'bottom-end'}>
+        <Popover
+          content={
+            <Menu style={{ minWidth: '300px' }}>
+              <ItemSynthesisPopover item={item} />
+            </Menu>
+          }
+          usePortal={true}
+          placement={'bottom-end'}
+        >
           <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="可合成">
             <div
               style={{
                 textAlign: 'right',
                 opacity:
-                  itemListParam.mode === 'all' || itemListParam.mode === 'goal'
+                  itemListParam.level == null || itemListParam.level === Level.Goal
                     ? canSyn && Math.min(synableReal, goal + goalIndirects) > 0
                       ? 1
                       : 0.4
@@ -257,7 +271,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
               style={{
                 textAlign: 'right',
                 opacity:
-                  itemListParam.mode === 'all' || itemListParam.mode === 'finished'
+                  itemListParam.level == null || itemListParam.level === Level.Finished
                     ? canSyn && Math.min(synableReal, finished + finishedIndirects) > 0
                       ? 1
                       : 0.4
@@ -274,7 +288,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode === 'all' || itemListParam.mode === 'goal'
+              itemListParam.level == null || itemListParam.level === Level.Goal
                 ? goal + goalIndirects - quantity > 0
                   ? 1
                   : 0.4
@@ -287,7 +301,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode === 'all' || itemListParam.mode === 'finished'
+              itemListParam.level == null || itemListParam.level === Level.Finished
                 ? finished + finishedIndirects - quantity > 0
                   ? 1
                   : 0.4
@@ -302,7 +316,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode === 'all' || itemListParam.mode === 'goal'
+              itemListParam.level == null || itemListParam.level === Level.Goal
                 ? goal > 0 && goal - quantity > 0
                   ? 1
                   : 0.4
@@ -315,7 +329,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode === 'all' || itemListParam.mode === 'finished'
+              itemListParam.level == null || itemListParam.level === Level.Finished
                 ? finished > 0 && finished - quantity > 0
                   ? 1
                   : 0.4
@@ -330,7 +344,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode === 'all' || itemListParam.mode === 'goal'
+              itemListParam.level == null || itemListParam.level === Level.Goal
                 ? goalIndirects > 0 && goal + goalIndirects - quantity > 0
                   ? 1
                   : 0.4
@@ -343,7 +357,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           style={{
             textAlign: 'right',
             opacity:
-              itemListParam.mode === 'all' || itemListParam.mode === 'finished'
+              itemListParam.level == null || itemListParam.level === Level.Finished
                 ? finishedIndirects > 0 && finished + finishedIndirects - quantity > 0
                   ? 1
                   : 0.4
@@ -424,16 +438,25 @@ const AllValue = memo(<G extends IGame>() => {
   return <ValueTag value={valid ? a : null} minimal={true} />
 })
 
-const AllGoalValue = memo(<G extends IGame>({ finished = false }: { finished?: boolean }) => {
+const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level; disabled?: boolean }) => {
   const ga = useGameAdapter<G>()
   const atoms = useAtoms<G>()
   const quantites = useAtomValue(atoms.itemQuantities)
-  const allGoals = useAtomValue(finished ? atoms.allFinishedTaskRequirements : atoms.allGoalTaskRequirements)
+  const allGoals = useAtomValue(
+    {
+      [Level.Finished]: atoms.allFinishedTaskRequirements,
+      [Level.Goal]: atoms.allGoalTaskRequirements,
+      [Level.Star]: atoms.allStarredTaskRequirements,
+    }[level],
+  )
   const allGoalsIndirectsDetails = useAtomValue(
-    finished ? atoms.allFinishedIndirectsDetails : atoms.allGoalIndirectsDetails,
+    {
+      [Level.Finished]: atoms.allFinishedIndirectsDetails,
+      [Level.Goal]: atoms.allGoalIndirectsDetails,
+      [Level.Star]: atoms.allStarredIndirectsDetails,
+    }[level],
   )
   const [param, setParam] = useAtom(itemListParamAtom)
-  const targetMode = finished ? 'finished' : 'goal'
 
   const data = uniq([...Object.keys(allGoals), ...Object.keys(allGoalsIndirectsDetails.indirects)]).map((k) => {
     const total =
@@ -453,11 +476,18 @@ const AllGoalValue = memo(<G extends IGame>({ finished = false }: { finished?: b
   return (
     <Button
       minimal={true}
-      text={finished ? `毕业` : `计划`}
+      disabled={disabled}
+      text={
+        {
+          [Level.Finished]: '毕业',
+          [Level.Goal]: '计划',
+          [Level.Star]: '星标',
+        }[level]
+      }
       rightIcon={<ValueTagProgressBar value={remaining} maxValue={total} />}
-      active={param.mode === targetMode}
+      active={param.level === level}
       onClick={() => {
-        setParam((p) => ({ ...p, mode: p.mode === targetMode ? 'all' : targetMode }))
+        setParam((p) => ({ ...p, level: p.level === level ? undefined : level }))
       }}
     />
   )
@@ -480,7 +510,8 @@ const HideCompletedButton = memo(() => {
 })
 
 interface ItemListParam {
-  mode: 'all' | 'goal' | 'finished'
+  mode?: 'all' | 'goal' | 'finished' // deprecated
+  level?: Level
   hideCompleted: boolean
 }
 
@@ -492,7 +523,18 @@ const itemListParamAtom: WritableAtom<ItemListParam, [ItemListParam | SetStateAc
 >(
   (get) => {
     const value = Object.assign({}, get(itemListParamStorageAtom) || {})
-    if (!value.mode) value.mode === 'all'
+    if (value.mode === 'all') {
+      value.level = undefined
+    } else if (value.level === Level.Goal) {
+      value.level = Level.Goal
+    } else if (value.level === Level.Finished) {
+      value.level = Level.Finished
+    }
+    delete value.mode
+    if (value.level != null && !Reflect.has(Level, value.level)) {
+      value.level = undefined
+    }
+
     if (value.hideCompleted == null) value.hideCompleted = false
     return value
   },
@@ -520,8 +562,10 @@ export const ItemList = memo(<G extends IGame>() => {
   const itemGroups = useMemo(() => buildItemList(ga), [ga])
   const atoms = useAtoms<G>()
   const store = useStore()
+  const stars = useAtomValue(atoms.allStarredTaskRequirements)
   const goals = useAtomValue(atoms.allGoalTaskRequirements)
   const finished = useAtomValue(atoms.allFinishedTaskRequirements)
+  const starIndirects = useAtomValue(atoms.allStarredIndirects)
   const goalIndirects = useAtomValue(atoms.allGoalIndirects)
   const finishedIndirects = useAtomValue(atoms.allFinishedIndirects)
   const categoryNames = ga.getInventoryCategories()
@@ -536,19 +580,21 @@ export const ItemList = memo(<G extends IGame>() => {
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
           <HideCompletedButton />
-          <AllGoalValue />
-          <AllGoalValue finished={true} />
+          <AllGoalValue level={Level.Star} disabled />
+          <AllGoalValue level={Level.Goal} />
+          <AllGoalValue level={Level.Finished} />
         </Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} className="cpp-item-menu-master">
         {itemGroups.map(([key, allItems]) => {
           const items = allItems!.filter((x) => {
             if (!param.hideCompleted) return true
-            switch (param.mode) {
-              case 'goal':
+            switch (param.level) {
+              case Level.Star:
+                return store.get(atoms.itemQuantity(x.key)) < (stars[x.key] || 0) + (starIndirects[x.key] || 0)
+              case Level.Goal:
                 return store.get(atoms.itemQuantity(x.key)) < (goals[x.key] || 0) + (goalIndirects[x.key] || 0)
-              case 'finished':
-              case 'all':
+              default:
                 return store.get(atoms.itemQuantity(x.key)) < (finished[x.key] || 0) + (finishedIndirects[x.key] || 0)
             }
           })

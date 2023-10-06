@@ -1,5 +1,6 @@
 import deepEqual from 'deep-equal'
 import { Draft } from 'immer'
+import stringify from 'json-stringify-deterministic'
 import { sum } from 'ramda'
 import { IUserDataAdapter, Task } from '../cpp-basic'
 import { ArknightsDataManager, Character } from './DataManager'
@@ -74,7 +75,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       ...depends: (Task<Arknights> | undefined)[]
     ): Task<Arknights> => {
       const task: Task<Arknights> = {
-        id: character.key + JSON.stringify(type),
+        id: `${character.key}:${stringify(type)}`,
         charId: character.key,
         type,
         requires,

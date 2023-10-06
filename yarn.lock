@@ -1734,6 +1734,7 @@ __metadata:
     immer: ^10.0.2
     javascript-lp-solver: ^0.4.24
     jotai: 2.2.0
+    json-stringify-deterministic: ^1.0.11
     localforage: ^1.10.0
     node-fetch: ^3.3.2
     p-limit: ^4.0.0
@@ -3206,6 +3207,13 @@ __metadata:
   version: 1.0.1
   resolution: "json-stable-stringify-without-jsonify@npm:1.0.1"
   checksum: cff44156ddce9c67c44386ad5cddf91925fe06b1d217f2da9c4910d01f358c6e3989c4d5a02683c7a5667f9727ff05831f7aa8ae66c8ff691c556f0884d49215
+  languageName: node
+  linkType: hard
+
+"json-stringify-deterministic@npm:^1.0.11":
+  version: 1.0.11
+  resolution: "json-stringify-deterministic@npm:1.0.11"
+  checksum: d7b9d999a9523b1bdc47037fbadf8e5e0ddfbd6a2138ec7ad71e314d213c40b904ef734ebdcedf90a7367ba4623dca4d4545a073197be1c11303ce91bf8217ba
   languageName: node
   linkType: hard
 

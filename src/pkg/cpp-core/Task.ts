@@ -33,10 +33,6 @@ export const emptyTaskExtra: TaskExtra = {
   valueFulfilled: [],
 }
 
-export function sortTask(tasks: Task<any>[]) {
-  return tasks
-}
-
 export function generateTaskExtra<G extends IGame>(
   ga: IGameAdapter<G>,
   tasks: Task<G>[],

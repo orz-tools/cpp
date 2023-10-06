@@ -8,6 +8,7 @@ import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { IGame, Task } from '../pkg/cpp-basic'
 import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
+import { StarStatus } from '../pkg/cpp-core/UserData'
 import { CharacterContextMenu } from './CharacterList'
 import { CachedImg } from './Icons'
 import { ValueTagProgressBar } from './Value'
@@ -87,9 +88,22 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
     }
   }
 
+  const stars = useAtomValue(atoms.stars)
+
   const completeTask = () => {
     store.set(atoms.currentCharacter(task.charId), (d) => {
       ga.getUserDataAdapter().completeTask(task.type, task.charId, d)
+    })
+  }
+
+  const starTask = () => {
+    store.set(atoms.stars, (d) => {
+      const pos = d.indexOf(task.id)
+      if (pos >= 0) {
+        d.splice(pos, 1)
+      } else {
+        d.push(task.id)
+      }
     })
   }
 
@@ -112,6 +126,8 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
         icon={'cross-circle'}
         onClick={completeTask}
       />
+      <MenuDivider />
+      <MenuItem text={'优先培养（星标）'} icon={'star'} active={stars.includes(task.id)} onClick={starTask} />
     </Menu>
   )
 })
@@ -134,6 +150,8 @@ export const TaskMenu = memo(
   }) => {
     const ga = useGameAdapter<G>()
     const character = ga.getCharacter(task.charId)
+    const detailsAtom = useAtoms().allStarredTasksDetails
+    const details = useAtomValue(detailsAtom)
     const sortedRequires = useMemo(
       () =>
         sortBy(
@@ -154,6 +172,28 @@ export const TaskMenu = memo(
         synthesised={extra.costSynthesised[i]}
       />
     ))
+
+    const starred = details.directStars.has(task)
+      ? StarStatus.Starred
+      : details.indirectStars.has(task)
+      ? StarStatus.Depended
+      : StarStatus.None
+
+    const starIcon: IconName | null = hideCosts
+      ? (
+          {
+            [StarStatus.None]: 'caret-right',
+            [StarStatus.Starred]: 'star',
+            [StarStatus.Depended]: 'star-empty',
+          } as const
+        )[starred]
+      : (
+          {
+            [StarStatus.None]: null,
+            [StarStatus.Starred]: 'star',
+            [StarStatus.Depended]: 'star-empty',
+          } as const
+        )[starred]
 
     return (
       <li role="none" style={style} className="cpp-task-menu-master">
@@ -193,22 +233,32 @@ export const TaskMenu = memo(
         <Menu style={{ padding: 0 }}>
           <ContextMenu content={<TaskContextMenu task={task} extra={extra} />}>
             <MenuItem
+              className="cpp-menu-nosubmenu"
               // title={task.id}
               style={{ fontWeight: 'normal' }}
-              text={
-                <>
-                  {extra.status === TaskStatus.AllUnmet ? (
-                    <ValueTagProgressBar
-                      value={sum(extra.valueTotal) - sum(extra.valueFulfilled)}
-                      maxValue={sum(extra.valueTotal)}
-                      minimal={true}
-                      style={{ float: 'right' }}
-                    />
-                  ) : null}
-                  <TaskDisplay type={task.type} charId={character.key} />
-                </>
-              }
               icon={StatusIcon[extra.status]}
+              text={
+                <div style={{ display: 'flex' }}>
+                  <div style={{ flex: 1, flexShrink: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <TaskDisplay type={task.type} charId={character.key} />
+                  </div>
+                  {extra.status === TaskStatus.AllUnmet ? (
+                    <div>
+                      <ValueTagProgressBar
+                        value={sum(extra.valueTotal) - sum(extra.valueFulfilled)}
+                        maxValue={sum(extra.valueTotal)}
+                        minimal={true}
+                        style={{ flexShrink: 0 }}
+                      />{' '}
+                    </div>
+                  ) : null}
+                  {starIcon == null ? null : (
+                    <div style={{ marginLeft: 4 }}>
+                      <Icon icon={starIcon} className="bp5-menu-item-icon" size={16} />
+                    </div>
+                  )}
+                </div>
+              }
               popoverProps={{ usePortal: true, matchTargetWidth: true }}
             >
               {hideCosts && renderedCosts.length > 0 ? renderedCosts : null}
@@ -275,9 +325,9 @@ const ItemStack = memo(
         }
         onContextMenu={preventDefault}
         text={
-          <>
-            <span>{item.name}</span>
-            <span style={{ float: 'right' }}>
+          <div style={{ display: 'flex' }}>
+            <span style={{ flex: 1, flexShrink: 1 }}>{item.name}</span>
+            <span>
               {consumed > 0 || (consumed <= 0 && synthesised <= 0) ? consumed : undefined}
               {consumed > 0 && synthesised > 0 ? ' + ' : undefined}
               {synthesised > 0 ? (
@@ -289,7 +339,7 @@ const ItemStack = memo(
               {' / '}
               {stack.quantity}
             </span>
-          </>
+          </div>
         }
         style={{ fontWeight: 'normal', ...style }}
       />

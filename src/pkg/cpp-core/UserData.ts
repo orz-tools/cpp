@@ -5,13 +5,19 @@ import { atomFamily } from 'jotai/utils'
 import { AtomFamily } from 'jotai/vanilla/utils/atomFamily'
 import { clone, intersection, sum, uniq } from 'ramda'
 import { SetStateAction } from 'react'
-import { IGame, IGameAdapter } from '../cpp-basic'
+import { IGame, IGameAdapter, Task } from '../cpp-basic'
 import { txatom } from '../txatom'
-import { generateTaskExtra, sortTask } from './Task'
+import { generateTaskExtra } from './Task'
 
 function withDebugLabel<T extends Atom<any>>(t: T, label?: string): T {
   t.debugLabel = label
   return t
+}
+
+export const enum StarStatus {
+  None,
+  Depended,
+  Starred,
 }
 
 export class UserDataAtomHolder<G extends IGame> {
@@ -42,6 +48,7 @@ function buildAtoms<G extends IGame>(
         }
         if (!value.items) value.items = {}
         if (!value.goalOrder) value.goalOrder = Object.keys(value.goal)
+        if (!value.starredTasks) value.starredTasks = []
         return value
       },
       (get, set, value) =>
@@ -154,6 +161,11 @@ function buildAtoms<G extends IGame>(
           (get, set, value: (draft: Draft<G['characterStatus']>) => any) => {
             set(dataAtom, 'transact', () => {
               set(dataAtom, 'modify', (data) => {
+                for (const i of get(allStarredTasksDetails).untouched) {
+                  const pos = data.starredTasks.indexOf(i)
+                  if (pos >= 0) data.starredTasks.splice(pos, 1)
+                }
+
                 data.current[charId] = (produce(
                   data.current[charId] || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()),
                   value,
@@ -182,6 +194,11 @@ function buildAtoms<G extends IGame>(
           (get, set, value: (draft: Draft<G['characterStatus']>) => any) => {
             set(dataAtom, 'transact', () => {
               set(dataAtom, 'modify', (data) => {
+                for (const i of get(allStarredTasksDetails).untouched) {
+                  const pos = data.starredTasks.indexOf(i)
+                  if (pos >= 0) data.starredTasks.splice(pos, 1)
+                }
+
                 data.current[charId] = (produce(
                   data.current[charId] || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()),
                   () => {
@@ -228,10 +245,12 @@ function buildAtoms<G extends IGame>(
     atom((get) => get(dataAtom).current),
     `currentCharacters`,
   )
+
   const goalCharacters = withDebugLabel(
     atom((get) => get(dataAtom).goal),
     `goalCharacters`,
   )
+
   const finishedCharacters = withDebugLabel(
     atom((get) => {
       return Object.fromEntries(get(allCharacterIds).map((k) => [k, get(characterFinishedStatus(k))]))
@@ -289,6 +308,66 @@ function buildAtoms<G extends IGame>(
     `allGoalTasks`,
   )
 
+  const allStarredTasksDetails = withDebugLabel(
+    atom((get) => {
+      const stars = get(dataAtom).starredTasks
+      const tasks = get(allGoalTasks)
+      const untouched = new Set(stars)
+      const directStars = new Set(
+        tasks.filter((x) => {
+          untouched.delete(x.id)
+          return stars.includes(x.id)
+          return x.charId.endsWith('tuye') && x.id.includes('6')
+        }),
+      )
+      const indirectStars = new Set<Task<G>>()
+
+      function visit(t: Task<G>) {
+        if (t.depends) {
+          for (const i of t.depends) {
+            indirectStars.add(i)
+            visit(i)
+          }
+        }
+      }
+      directStars.forEach(visit)
+
+      const starredTasks = tasks.filter((x) => directStars.has(x) || indirectStars.has(x))
+      const nonStarredTasks = tasks.filter((x) => !directStars.has(x) && !indirectStars.has(x))
+      return {
+        untouched,
+        directStars,
+        indirectStars,
+        sortedStarredTasks: starredTasks,
+        sortedGoalTasks: [...starredTasks, ...nonStarredTasks],
+      }
+    }),
+    `allStarredTasksDetails`,
+  )
+
+  const stars = withDebugLabel(
+    atom(
+      (get) => get(dataAtom).starredTasks || [],
+      (get, set, value: (draft: Draft<string[]>) => any) => {
+        set(dataAtom, 'modify', (data) => {
+          data.starredTasks = produce(data.starredTasks || [], value)
+          for (const i of get(allStarredTasksDetails).untouched) {
+            const pos = data.starredTasks.indexOf(i)
+            if (pos >= 0) data.starredTasks.splice(pos, 1)
+          }
+        })
+      },
+    ),
+    'stars',
+  )
+
+  const allStarredTasks = withDebugLabel(
+    atom((get) => {
+      return get(allStarredTasksDetails).sortedStarredTasks
+    }),
+    `allStarredTasks`,
+  )
+
   const allFinishedTasks = withDebugLabel(
     atom((get) => {
       return get(allCharacterIds).flatMap((x) => get(finishedTasks(x)))
@@ -296,11 +375,22 @@ function buildAtoms<G extends IGame>(
     `allFinishedTasks`,
   )
 
+  const allStarredTaskRequirements = withDebugLabel(
+    atom((get) => {
+      const result: Record<string, number> = {}
+      get(allStarredTasks).forEach(
+        (x) => x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
+      )
+      return result
+    }),
+    'allStarredTaskRequirements',
+  )
+
   const allGoalTaskRequirements = withDebugLabel(
     atom((get) => {
       const result: Record<string, number> = {}
-      get(allGoalTasks).forEach((x) =>
-        x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
+      get(allGoalTasks).forEach(
+        (x) => x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
       )
       return result
     }),
@@ -310,12 +400,20 @@ function buildAtoms<G extends IGame>(
   const allFinishedTaskRequirements = withDebugLabel(
     atom((get) => {
       const result: Record<string, number> = {}
-      get(allFinishedTasks).forEach((x) =>
-        x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
+      get(allFinishedTasks).forEach(
+        (x) => x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
       )
       return result
     }),
     'allFinishedTaskRequirements',
+  )
+
+  const allStarredIndirectsDetails = withDebugLabel(
+    atom((get) => {
+      // console.log('allStarredIndirectsDetails')
+      return generateIndirects(ga, get(allStarredTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
+    }),
+    'allStarredIndirectsDetails',
   )
 
   const allGoalIndirectsDetails = withDebugLabel(
@@ -334,6 +432,13 @@ function buildAtoms<G extends IGame>(
     'allFinishedIndirectsDetails',
   )
 
+  const allStarredIndirects = withDebugLabel(
+    atom((get) => {
+      return get(allStarredIndirectsDetails).indirects
+    }),
+    'allStarredIndirects',
+  )
+
   const allGoalIndirects = withDebugLabel(
     atom((get) => {
       return get(allGoalIndirectsDetails).indirects
@@ -348,11 +453,25 @@ function buildAtoms<G extends IGame>(
     'allFinishedIndirects',
   )
 
+  const sortedStarredTasks = withDebugLabel(
+    atom((get) => {
+      return get(allStarredTasks)
+    }),
+    `sortedStarredTasks`,
+  )
+
   const sortedGoalTasks = withDebugLabel(
     atom((get) => {
-      return sortTask(get(allGoalTasks))
+      return get(allStarredTasksDetails).sortedGoalTasks
     }),
     `sortedGoalTasks`,
+  )
+
+  const starredTasksWithExtra = withDebugLabel(
+    atom((get) => {
+      return generateTaskExtra(ga, get(sortedStarredTasks), get(forbiddenFormulaTagsAtom), get(itemQuantities))
+    }),
+    `starredTasksWithExtra`,
   )
 
   const goalTasksWithExtra = withDebugLabel(
@@ -369,6 +488,7 @@ function buildAtoms<G extends IGame>(
     allDataAtom,
     rootAtom,
     goalOrder,
+    stars,
     itemQuantities,
     itemQuantity,
     currentCharacter,
@@ -381,15 +501,22 @@ function buildAtoms<G extends IGame>(
     goalTasks,
     finishedTasks,
     allCharacterIds,
+    allStarredTasksDetails,
+    allStarredTasks,
     allGoalTasks,
     allFinishedTasks,
+    allStarredTaskRequirements,
     allGoalTaskRequirements,
     allFinishedTaskRequirements,
+    allStarredIndirects,
     allGoalIndirects,
     allFinishedIndirects,
+    allStarredIndirectsDetails,
     allGoalIndirectsDetails,
     allFinishedIndirectsDetails,
+    sortedStarredTasks,
     sortedGoalTasks,
+    starredTasksWithExtra,
     goalTasksWithExtra,
   }
 }
@@ -399,6 +526,7 @@ export interface UserData<G extends IGame> {
   goal: Record<string, G['characterStatus']>
   items: Record<string, number>
   goalOrder: string[]
+  starredTasks: string[]
 }
 
 export function newUserData<G extends IGame>(): UserData<G> {
@@ -407,6 +535,7 @@ export function newUserData<G extends IGame>(): UserData<G> {
     goal: {},
     items: {},
     goalOrder: [],
+    starredTasks: [],
   }
 }
 
