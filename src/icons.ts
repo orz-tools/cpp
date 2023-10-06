@@ -65,7 +65,14 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.WARNING_SIGN, Paths16.WarningSign],
     ]),
   ],
-  [IconSize.LARGE, new Map([[IconNames.AUTOMATIC_UPDATES, Paths20.AutomaticUpdates]])],
+  [
+    IconSize.LARGE,
+    new Map([
+      [IconNames.AUTOMATIC_UPDATES, Paths20.AutomaticUpdates],
+      [IconNames.ERROR, Paths20.Error],
+      [IconNames.WARNING_SIGN, Paths20.WarningSign],
+    ]),
+  ],
 ])
 
 const pool = new DedupPool<`${IconName}-${IconSize}`>()

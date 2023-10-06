@@ -467,6 +467,13 @@ function buildAtoms<G extends IGame>(
     `sortedGoalTasks`,
   )
 
+  const sortedFinishedTasks = withDebugLabel(
+    atom((get) => {
+      return uniq([...get(sortedGoalTasks), ...get(allFinishedTasks)])
+    }),
+    `sortedGoalTasks`,
+  )
+
   const starredTasksWithExtra = withDebugLabel(
     atom((get) => {
       return generateTaskExtra(ga, get(sortedStarredTasks), get(forbiddenFormulaTagsAtom), get(itemQuantities))
@@ -479,6 +486,13 @@ function buildAtoms<G extends IGame>(
       return generateTaskExtra(ga, get(sortedGoalTasks), get(forbiddenFormulaTagsAtom), get(itemQuantities))
     }),
     `goalTasksWithExtra`,
+  )
+
+  const finishedTasksWithExtra = withDebugLabel(
+    atom((get) => {
+      return generateTaskExtra(ga, get(sortedFinishedTasks), get(forbiddenFormulaTagsAtom), get(itemQuantities))
+    }),
+    `finishedTasksWithExtra`,
   )
 
   return {
@@ -516,8 +530,10 @@ function buildAtoms<G extends IGame>(
     allFinishedIndirectsDetails,
     sortedStarredTasks,
     sortedGoalTasks,
+    sortedFinishedTasks,
     starredTasksWithExtra,
     goalTasksWithExtra,
+    finishedTasksWithExtra,
   }
 }
 
@@ -544,12 +560,14 @@ export function generateIndirects<G extends IGame>(
   inputRequirements: Record<string, number>,
   inputQuantities: Record<string, number>,
   forbiddenFormulaTags: string[],
+  formulaUses: Record<string, number> | null = null,
 ) {
   const indirects: Record<string, number> = {}
   const quantities: Record<string, number> = clone(inputQuantities)
   const unsatisfiedRequirements: Record<string, number> = {}
   const synthisisedRequirements: Record<string, number> = {}
-
+  const remainingFormulaUses = formulaUses ? clone(formulaUses) : null
+  const unsatisfiedRequirementsDueToFormulaUses = formulaUses ? ({} as Record<string, number>) : null
   function pass(requirements: Record<string, number>): void {
     const newRequirements: Record<string, number> = {}
     for (const [itemId, requires] of Object.entries(requirements)) {
@@ -566,12 +584,24 @@ export function generateIndirects<G extends IGame>(
           continue
         }
 
-        const times = Math.ceil(diff / formula.quantity)
-        synthisisedRequirements[itemId] = (synthisisedRequirements[itemId] || 0) + times * formula.quantity
-        for (const cost of formula.costs) {
-          const newRequirement = times * cost.quantity
-          newRequirements[cost.itemId] = (newRequirements[cost.itemId] || 0) + newRequirement
-          indirects[cost.itemId] = (indirects[cost.itemId] || 0) + newRequirement
+        const allTimes = Math.ceil(diff / formula.quantity)
+        let times = allTimes
+        if (remainingFormulaUses) {
+          times = Math.min(times, Math.max(remainingFormulaUses[formula.id], 0) || 0)
+          remainingFormulaUses[formula.id] -= times
+        }
+        if (times < allTimes) {
+          unsatisfiedRequirements[itemId] = (unsatisfiedRequirements[itemId] || 0) + (diff - times * formula.quantity)
+          unsatisfiedRequirementsDueToFormulaUses![itemId] =
+            (unsatisfiedRequirementsDueToFormulaUses![itemId] || 0) + (diff - times * formula.quantity)
+        }
+        if (times > 0) {
+          synthisisedRequirements[itemId] = (synthisisedRequirements[itemId] || 0) + times * formula.quantity
+          for (const cost of formula.costs) {
+            const newRequirement = times * cost.quantity
+            newRequirements[cost.itemId] = (newRequirements[cost.itemId] || 0) + newRequirement
+            indirects[cost.itemId] = (indirects[cost.itemId] || 0) + newRequirement
+          }
         }
       } else {
         quantities[itemId] -= requires
@@ -608,5 +638,10 @@ export function generateIndirects<G extends IGame>(
     }
   }
 
-  return { indirects, unsatisfiedRequirements, synthisisedRequirements }
+  return {
+    indirects,
+    unsatisfiedRequirements,
+    synthisisedRequirements,
+    unsatisfiedRequirementsDueToFormulaUses,
+  }
 }

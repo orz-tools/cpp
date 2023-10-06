@@ -336,3 +336,19 @@ body {
 .cpp-menu-nosubmenu > div.bp5-fill {
   margin-right: 0;
 }
+
+.bp5-menu > .bp5-callout {
+  margin: -5px;
+  width: auto;
+  padding: 12px;
+  margin-bottom: 7px;
+}
+
+.bp5-menu > .bp5-callout + .bp5-menu-header {
+  border-top: none;
+  margin-top: -7px;
+}
+
+.bp5-menu > .bp5-callout + .bp5-menu-header:first-of-type {
+  margin-top: 0px;
+}

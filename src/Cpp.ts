@@ -22,6 +22,12 @@ export enum ValueType {
   Time = 'time',
 }
 
+export enum Level {
+  Star = 1,
+  Goal = 2,
+  Finished = 3,
+}
+
 export enum FarmLevel {
   StarOnly = 'star', // 仅星标
   StarForGoal = 'star_for_goal', // 星标 (以计划为目标)

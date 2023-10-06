@@ -1,14 +1,27 @@
-import { Alignment, Button, Icon, Menu, MenuDivider, MenuItem, Navbar, Popover, Spinner, Tag } from '@blueprintjs/core'
+import {
+  Alignment,
+  Button,
+  Icon,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  Navbar,
+  NonIdealState,
+  Popover,
+  Spinner,
+  Tag,
+} from '@blueprintjs/core'
 import { Atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { sortBy } from 'ramda'
 import { memo, useEffect } from 'react'
 import useEvent from 'react-use-event-hook'
-import { Cpp, FarmLevel, FarmLevelNames, FarmLevelShortNames, useCpp, useGameAdapter } from '../Cpp'
+import { Cpp, FarmLevel, FarmLevelNames, FarmLevelShortNames, Level, useCpp, useGameAdapter } from '../Cpp'
 import { useRequest } from '../hooks/useRequest'
 import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { ErrAtom } from './Err'
 import { CachedImg } from './Icons'
+import { SynthesisList, planSynthesisList } from './SynthesisList'
 import { SampleTag, ValueTag } from './Value'
 
 interface StageRun {
@@ -18,10 +31,9 @@ interface StageRun {
   apCost: number
 }
 
-enum Level {
-  Star = 1,
-  Goal = 2,
-  Finished = 3,
+export interface FormulaUse {
+  formulaId: string
+  times: number
 }
 
 function getLevelTaskRequirementsAtom(atoms: UserDataAtomHolder<IGame>['atoms'], l: Level): Atom<Record<string, number>>
@@ -87,6 +99,7 @@ export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
   let ap = 0
   const stageInfo = ga.getStageInfos()
   const stageRuns: StageRun[] = []
+  const formulaUses: FormulaUse[] = []
   const unfeasibleItems: Record<string, number> = Object.create(null)
   let hasUnfeasibleItems = false
   for (const [k, v] of Object.entries(result)) {
@@ -96,6 +109,10 @@ export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
       const count = Math.ceil(Number(v || 0))
       stageRuns.push({ stageId, stage, count, apCost: count * stage.ap })
       ap += count * stage.ap
+    } else if (k.startsWith('formula:')) {
+      const formulaId = k.slice('formula:'.length)
+      const count = Math.floor(Number(v || 0))
+      formulaUses.push({ formulaId, times: count })
     } else if (k.startsWith('unfeasible:item:')) {
       const itemId = k.slice('unfeasible:item:'.length)
       const count = Math.ceil(Number(v || 0))
@@ -104,12 +121,23 @@ export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
     }
   }
 
+  const dataAtomValue = store.get(atoms.dataAtom)
+  const preferenceAtomValue = store.get(cpp.preferenceAtoms.preferenceAtom)
+
   return {
     target: target,
     consider: consider,
     stageRuns: sortBy((a) => -a.apCost, stageRuns),
+    formulaUses,
     ap,
     unfeasibleItems: hasUnfeasibleItems ? unfeasibleItems : undefined,
+    synthesisList: target === Level.Finished ? undefined : planSynthesisList(cpp, target, formulaUses),
+    expired: () => {
+      return (
+        store.get(atoms.dataAtom) !== dataAtomValue ||
+        store.get(cpp.preferenceAtoms.preferenceAtom) !== preferenceAtomValue
+      )
+    },
   }
 }
 
@@ -157,6 +185,10 @@ export const FarmList = memo(() => {
       setErr({ error: e, context: '刷本规划时遇到问题' })
     }
   })
+
+  useAtomValue(cpp.atoms.atoms.dataAtom)
+  useAtomValue(cpp.preferenceAtoms.preferenceAtom)
+
   useEffect(() => {
     if (error) {
       console.log(error)
@@ -167,6 +199,14 @@ export const FarmList = memo(() => {
     const i = setTimeout(refresh, 1000)
     return () => clearTimeout(i)
   }, [refresh])
+
+  const expired = response && response.expired()
+  useEffect(() => {
+    if (expired) {
+      const i = setTimeout(refresh, 1000)
+      return () => clearTimeout(i)
+    }
+  }, [expired, refresh])
 
   return (
     <>
@@ -204,10 +244,39 @@ export const FarmList = memo(() => {
           {response ? <ValueTag value={response.ap} intent={'primary'} /> : null}
         </Navbar.Group>
       </Navbar>
-      <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
-        {response?.stageRuns.map((run) => <StageLine run={run} key={run.stageId} />)}
-        {response?.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
-      </Menu>
+      <div
+        style={{
+          display: 'flex',
+          flex: 1,
+          flexShrink: 1,
+          overflow: 'auto',
+          opacity: expired ? 0.5 : undefined,
+        }}
+      >
+        {response ? (
+          <>
+            <Menu className="bp5-elevation-1" style={{ width: 250, overflow: 'auto' }}>
+              {response.stageRuns.map((run) => (
+                <StageLine run={run} key={run.stageId} />
+              ))}
+              {response.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
+            </Menu>
+            {!response.synthesisList ? (
+              <div className="bp5-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
+                <NonIdealState title={'暂不支持计算毕业合成'} icon="warning-sign" />
+              </div>
+            ) : (
+              <Menu className="bp5-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
+                <SynthesisList data={response.synthesisList} refresh={refresh} />
+              </Menu>
+            )}
+          </>
+        ) : response === null ? (
+          <NonIdealState title={'线性规划失败'} icon="error" />
+        ) : response === undefined ? (
+          <NonIdealState title={'请稍后'} icon={<Spinner />} />
+        ) : null}
+      </div>
     </>
   )
 })

@@ -15,18 +15,12 @@ import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom, useStore } from 
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
 import React, { SetStateAction, memo, useEffect, useMemo, useState } from 'react'
-import { useAtoms, useGameAdapter } from '../Cpp'
+import { Level, useAtoms, useGameAdapter } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
 import { useChamber } from './Chamber'
 import { CachedImg } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
 import { ValueTag, ValueTagProgressBar } from './Value'
-
-enum Level {
-  Star = 1,
-  Goal = 2,
-  Finished = 3,
-}
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
@@ -61,7 +55,7 @@ export const ItemQuantityEditor = memo(
   },
 )
 
-export const ItemSynthesisPopover = memo(<G extends IGame>({ item }: { item: IItem }) => {
+export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { item: IItem; refresh?: () => any }) => {
   const ga = useGameAdapter<G>()
   const atoms = useAtoms<G>()
   const quantities = useAtomValue(atoms.itemQuantities)
@@ -126,6 +120,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item }: { item: IIt
                     d.items[cost.itemId] = (d.items[cost.itemId] || 0) - t * cost.quantity
                   })
                 })
+                refresh?.()
               }}
             />
           )

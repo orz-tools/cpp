@@ -3,9 +3,16 @@ import { groupBy, sortBy } from 'ramda'
 import React, { memo, useMemo } from 'react'
 import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
+import { externalLinkProps } from './AboutList'
 import { useChamber } from './Chamber'
 
 const logs = [
+  {
+    date: '2023-10-06',
+    type: 'optimize',
+    desc: '重写合成清单计算逻辑，对不划算的合成做出警告 (#4)',
+    href: 'https://github.com/orz-tools/cpp/issues/4',
+  },
   {
     date: '2023-10-06',
     type: 'new',
@@ -55,7 +62,14 @@ const logs = [
   { date: '2023-04-23', type: 'optimize', desc: '以价值排序刷图产物' },
   { date: '2023-04-23', type: 'fix', desc: '任务完成时正确消耗经验道具' },
   { date: '2023-04-23', game: [GameName.Arknights], type: 'fix', desc: '修复复刻的插曲关卡数据' },
-] as { date: string; game?: GameName[]; type: 'new' | 'fix' | 'optimize'; desc: string; children?: React.ReactNode }[]
+] as {
+  date: string
+  game?: GameName[]
+  type: 'new' | 'fix' | 'optimize'
+  desc: string
+  children?: React.ReactNode
+  href?: string
+}[]
 
 const iconMap = {
   optimize: 'key-command',
@@ -92,12 +106,14 @@ const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: typeof
         return (
           <MenuItem
             key={index}
-            className={vv.children ? undefined : 'cpp-menu-not-interactive'}
+            href={vv.href}
+            className={vv.children || vv.href ? undefined : 'cpp-menu-not-interactive'}
             icon={vv.type in iconMap ? (iconMap as any)[vv.type] : ''}
             text={<div className="cpp-menu-semi-secondary">{vv.desc}</div>}
             multiline={true}
             children={vv.children}
             popoverProps={{ usePortal: true }}
+            {...(vv.href ? externalLinkProps : {})}
           />
         )
       })}

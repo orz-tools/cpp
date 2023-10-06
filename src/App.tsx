@@ -27,7 +27,6 @@ import { ConfigButton, MaybeSoulButton, StageButton } from './components/ConfigU
 import { Err, ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { ItemList } from './components/ItemList'
-import { SynthesisList } from './components/SynthesisList'
 import { TaskList } from './components/TaskList'
 import { AppToaster } from './components/Toaster'
 import { UserDataManagerButton, UserDataManagerMenuItem } from './components/UserDataManager'
@@ -237,22 +236,12 @@ const App = memo(() => {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: '250px',
+            width: '470px',
             display: 'flex',
             flexDirection: 'column',
           }}
         >
           <FarmList />
-        </section>
-        <section
-          className={Classes.ELEVATION_1}
-          style={{
-            width: '220px',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <SynthesisList />
         </section>
         <section
           className={Classes.ELEVATION_1}
