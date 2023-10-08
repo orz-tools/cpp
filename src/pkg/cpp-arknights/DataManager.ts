@@ -413,7 +413,7 @@ export class Item implements IItem {
     const yy = `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/item/${encodeURIComponent(
       this.raw.iconId,
     )}.png`
-    return { normal: blobImage(['pack:arknights-items-20230904', yy], yy) }
+    return { normal: yy }
   }
 
   private _valueAsAp?: [number | undefined]

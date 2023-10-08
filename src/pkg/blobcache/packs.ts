@@ -95,4 +95,10 @@ export const packs = {
       `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/item/${i}.png`,
     ]),
   ),
+  'arknights-items-20231008': Object.fromEntries(
+    ['MTL_GOLD3', 'MTL_SL_XW', 'MTL_SL_XWB', 'MTL_SL_HT', 'MTL_SL_HTT'].map((i) => [
+      `${i}.webp`,
+      `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/item/${i}.png`,
+    ]),
+  ),
 } as Record<string, Record<string, string>>

@@ -65,6 +65,8 @@ async function loadPack(packName: string) {
   if (!Object.hasOwn(packs, packName)) return
   if (loadedPack.has(packName)) return
   loadedPack.add(packName)
+  if (await blobStore.getItem(`pack:${packName}`)) return
+
   const pack = packs[packName]
   try {
     const response = await fetch(`${prefix}${encodeURIComponent(packName)}.tar`)
@@ -79,6 +81,7 @@ async function loadPack(packName: string) {
       const data = await streamToUint8Array(file.stream())
       await blobStore.setItem(id, data)
     }
+    await blobStore.setItem(`pack:${packName}`, true)
   } catch (e) {
     console.error(`Cannot load pack ${packName}.`, e)
     throw e
@@ -100,10 +103,12 @@ export function load(inputUrl: BlobImages, prefer?: BlobFlavour): string | Promi
       return commit(url.id, blobUrl)
     }
 
-    let urls = url.urls || []
-    const pack = urls.find((v) => v.startsWith('pack:'))
+    const pack = Object.entries(packs).find((x) => {
+      const provides = Object.values(x[1])
+      return provides.includes(url.id)
+    })
     if (pack) {
-      const packName = pack.replace(/^pack:/, '')
+      const packName = pack[0]
       try {
         await packPool.run(packName, async () => {
           await packLimit(async () => {
@@ -119,11 +124,9 @@ export function load(inputUrl: BlobImages, prefer?: BlobFlavour): string | Promi
         const blobUrl = URL.createObjectURL(new Blob([existing], { type: mime(url.id) }))
         return commit(url.id, blobUrl)
       }
-
-      return commit(url.id, badUrl)
-      urls = urls.filter((v) => !v.startsWith('pack:'))
     }
 
+    const urls = url.urls || []
     if (!urls.length) {
       return commit(url.id, badUrl)
     }
