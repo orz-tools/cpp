@@ -35,6 +35,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.FONT, Paths16.Font],
       [IconNames.FULLSCREEN, Paths16.Fullscreen],
       [IconNames.GIT_REPO, Paths16.GitRepo],
+      [IconNames.HELP, Paths16.Help],
       [IconNames.HOME, Paths16.Home],
       [IconNames.ID_NUMBER, Paths16.IdNumber],
       [IconNames.IMAGE_ROTATE_RIGHT, Paths16.ImageRotateRight],

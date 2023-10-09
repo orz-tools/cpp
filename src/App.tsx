@@ -20,7 +20,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, memo, useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
-import { AboutList } from './components/AboutList'
+import { AboutList, HelpButton } from './components/AboutList'
 import { Chamber, ChamberPortal } from './components/Chamber'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, MaybeSoulButton, StageButton } from './components/ConfigUi'
@@ -200,6 +200,7 @@ const App = memo(() => {
         <Navbar.Group align={Alignment.RIGHT}>
           <DataDropdown />
           <ReloadDataButton />
+          <HelpButton />
         </Navbar.Group>
       </Navbar>
       <div className="App">

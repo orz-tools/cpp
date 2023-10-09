@@ -1,4 +1,4 @@
-import { Alignment, Menu, MenuDivider, MenuItem, MenuItemProps, Navbar } from '@blueprintjs/core'
+import { Alignment, AnchorButton, Menu, MenuDivider, MenuItem, MenuItemProps, Navbar } from '@blueprintjs/core'
 import { format } from 'date-fns'
 import { memo } from 'react'
 import { useCpp } from '../Cpp'
@@ -26,6 +26,12 @@ export const AboutList = memo(() => {
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
         <SimpleLogList />
         <MenuDivider title="联系" />
+        <MenuItem
+          href="https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp"
+          icon="help"
+          text={'帮助文档'}
+          {...externalLinkProps}
+        />
         <MenuItem
           icon={'people'}
           multiline={true}
@@ -79,6 +85,7 @@ export const AboutList = memo(() => {
         {AboutCopyright && <AboutCopyright />}
         <MenuDivider title="鸣谢" />
         {AboutCredits && <AboutCredits />}
+        <DescriptionMenuItem icon={'person'} text="若淇未央" {...externalLinkProps} description={'帮助文档撰写'} />
         <DescriptionMenuItem
           icon={'person'}
           text="西園寺玲咲 (SaionjiReisaki)"
@@ -96,7 +103,7 @@ export const DescriptionMenuItem = memo((props: MenuItemProps & { description?: 
   delete p.description
   return (
     <>
-      <MenuItem {...p} />
+      <MenuItem className={!props.href && !props.onClick ? 'cpp-menu-not-interactive' : undefined} {...p} />
       {props.description != null ? (
         <Menu className="cpp-menu-indent">
           <MenuItem
@@ -192,3 +199,15 @@ export const DataObjectStatus = memo(
     )
   },
 )
+
+export const HelpButton = memo(() => {
+  return (
+    <AnchorButton
+      href="https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp"
+      icon="help"
+      minimal={true}
+      text={'帮助'}
+      {...externalLinkProps}
+    />
+  )
+})
