@@ -8,6 +8,11 @@ import { useChamber } from './Chamber'
 
 const logs = [
   {
+    date: '2023-10-09',
+    type: 'fix',
+    desc: '修复一些线性规划失败的问题',
+  },
+  {
     date: '2023-10-06',
     type: 'optimize',
     desc: '重写合成清单计算逻辑，对不划算的合成做出警告 (#4)',

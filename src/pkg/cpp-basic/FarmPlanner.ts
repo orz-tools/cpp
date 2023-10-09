@@ -8,9 +8,8 @@ export type FarmModelSolutionVar =
   | `formula:${string}`
   // | `expItem:${string}`
   | `unfeasible:${string}`
-  | 'have'
   | 'ap'
-export type FarmModelInternalVar = `item:${string}` | 'init'
+export type FarmModelInternalVar = `item:${string}`
 
 export interface CreateFarmPlannerOptions {
   forbiddenFormulaTags: string[]
@@ -31,14 +30,8 @@ export class FarmPlanner<G extends IGame> {
     const model: IModel<FarmModelSolutionVar, FarmModelInternalVar> = {
       optimize: 'ap',
       opType: 'min',
-      constraints: {
-        init: { equal: 1 },
-      },
-      variables: {
-        have: {
-          init: 1,
-        },
-      },
+      constraints: {},
+      variables: {},
       ints: {},
       options: {
         timeout: 3_000,
@@ -85,24 +78,24 @@ export class FarmPlanner<G extends IGame> {
         .filter((x) => x.startsWith('item:'))
         .forEach((x) => {
           model.constraints[x as any] = { min: 0 }
-          model.variables.have![x as any] = 0
         }),
     )
 
     return new FarmPlanner(model, ga)
   }
 
-  public constructor(private model: IModel<FarmModelSolutionVar, FarmModelInternalVar>, private ga: IGameAdapter<G>) {
-    for (const [k, v] of Object.entries(this.model.variables)) {
-      if (k === 'have') continue
+  public constructor(
+    private model: IModel<FarmModelSolutionVar, FarmModelInternalVar>,
+    private ga: IGameAdapter<G>,
+  ) {
+    for (const [, v] of Object.entries(this.model.variables)) {
       for (const [kk, vv] of Object.entries(v!)) {
         if (!(vv! > 0)) continue
         this.feasible.add(kk)
       }
     }
 
-    for (const [k, v] of Object.entries(this.model.variables)) {
-      if (k === 'have') continue
+    for (const [, v] of Object.entries(this.model.variables)) {
       for (const [kk, vv] of Object.entries(v!)) {
         if (!(vv! < 0)) continue
         if (!this.feasible.has(kk) && !this.unfeasible.has(kk)) {
@@ -124,19 +117,30 @@ export class FarmPlanner<G extends IGame> {
 
   public setQuantity(quantities: Record<string, number>) {
     const allExpItems = this.ga.getExpItems()
-    const map = new Map<string, [number, string]>()
+    const expMap = new Map<string, [number, string]>()
     for (const [virtualExpItemId, thisExpItem] of Object.entries(allExpItems)) {
       for (const [item, value] of Object.entries(thisExpItem.value)) {
-        map.set(item, [value, virtualExpItemId])
+        expMap.set(item, [value, virtualExpItemId])
       }
     }
-    const h = this.model.variables.have!
+    const contribute = (kk: string, q: number) => {
+      const k = `item:${kk}` as const
+      if (!this.model.constraints[k]) {
+        this.model.constraints[k] = { min: 0 }
+      }
+      if (!this.feasible.has(k) && !this.unfeasible.has(k)) {
+        this.unfeasible.add(k)
+      }
+      const c = this.model.constraints[k]!
+      if (c.min == null) c.min = 0
+      c.min -= q
+    }
     for (const [k, v] of Object.entries(quantities)) {
-      if (map.has(k)) {
-        const [value, virtualExpItemId] = map.get(k)!
-        h[`item:${virtualExpItemId}`] = (h[`item:${virtualExpItemId}`] || 0) + v * value
+      if (expMap.has(k)) {
+        const [value, virtualExpItemId] = expMap.get(k)!
+        contribute(virtualExpItemId, v * value)
       } else {
-        h[`item:${k}`] = v
+        contribute(k, v)
       }
     }
   }
@@ -154,7 +158,7 @@ export class FarmPlanner<G extends IGame> {
       console.warn('failed to convert as minizinc input', e)
     }
     const result = Lpsolver.Solve(this.model, 1e-4)
-    console.log(this.model, result)
+    console.log('lpsolver result', this.model, result)
     return result
   }
 
@@ -184,8 +188,6 @@ export class FarmPlanner<G extends IGame> {
       }
     }
 
-    constraints.delete('init')
-
     const variables = new Map<string, { min?: number; max?: number }>()
     for (const [label, o] of constraints) {
       if (o.terms.size === 1 && o.terms.keys().next().value === label) {
@@ -202,11 +204,8 @@ export class FarmPlanner<G extends IGame> {
       }
     }
 
-    variables.delete('have')
-
     for (const [key, xx] of Object.entries(this.model.constraints || {})) {
       const x = xx || {}
-      if (key === 'init') continue
       if (constraints.has(key)) {
         const cc = constraints.get(key)!
         cc.min = x.min
@@ -216,19 +215,18 @@ export class FarmPlanner<G extends IGame> {
         cc.min = x.min
         cc.max = x.max
       } else {
-        throw new Error('unmigrated constraint: ' + key)
+        console.warn('unmigrated constraint: ' + key)
       }
     }
 
     const ap = constraints.get('ap')!
     if (!ap) throw new Error('target not found: ap')
     constraints.delete('ap')
-    console.log(constraints, variables)
+    console.log('minizinc converter context', constraints, variables)
 
     const result = []
     const output = []
     output.push('"{"')
-    result.push('int: have = 1;')
     for (const [key, x] of variables) {
       if (x.min == null && x.max == null) {
         result.push(`var int: ${alloc(key)};`)
