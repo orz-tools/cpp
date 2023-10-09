@@ -46,6 +46,18 @@ export class ArknightsYituliuObject extends DataContainerObject<YituliuValue[]> 
     }
 
     const now = new Date()
+    let data = await res.json()
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (e) {
+        console.error('fuck', data)
+      }
+    }
+    if (!data || !Array.isArray(data)) {
+      console.error('fuck', data)
+      data = []
+    }
     return {
       '@type': CONTAINER_TYPE,
       '@version': CONTAINER_VERSION,
@@ -57,7 +69,7 @@ export class ArknightsYituliuObject extends DataContainerObject<YituliuValue[]> 
         sources: ['https://yituliu.site/'],
         timestamp: now.getTime(),
       },
-      data: (await res.json()) as YituliuValue[],
+      data: data as YituliuValue[],
     }
   }
 }
