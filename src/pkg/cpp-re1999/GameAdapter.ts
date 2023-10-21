@@ -137,20 +137,23 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
 
         let number = previous ? previous.number + 1 : 1
         if (previous && previous.chapter !== chapter) number = 1
-        if (chapter.type === ExChapterType.Hard) {
+        if (chapter.type === (ExChapterType.Hard as number)) {
           if (!previous) throw new Error(`hard without previous! ${episode.id}`)
           number = previous.number
         }
 
         let zoneId = String(chapter.id)
         let zoneName = `${chapter.chapterIndex} ${chapter.name}`
-        if (chapter.type === ExChapterType.Hard) {
+        if (chapter.type === (ExChapterType.Hard as number)) {
           zoneId = previous!.zoneId
           zoneName = `${previous!.chapter.chapterIndex} ${previous!.chapter.name}`
         }
         this.zoneNames[zoneId] = zoneName
 
         const stageInfo = new Re1999StageInfo(this, episode, chapter, number, zoneId)
+        if (stageInfo.ap < 0) {
+          continue
+        }
         this.stageInfo[stageInfo.id] = stageInfo
         flag = true
       }
@@ -167,7 +170,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       if ([ExEpisodeType.Story, ExEpisodeType.Normal, ExEpisodeType.Boss].includes(stage.episode.type)) {
         continue
       }
-      if (stage.chapter.chapterIndex && stage.chapter.type !== ExChapterType.Simulate) {
+      if (stage.chapter.chapterIndex && stage.chapter.type !== (ExChapterType.Simulate as number)) {
         continue
       }
       delete this.stageInfo[stage.id]
@@ -265,11 +268,13 @@ class Re1999StageInfo extends BasicStageInfo {
     public zoneId: string,
   ) {
     super(ga)
-    this.code = `${this.chapter.type === ExChapterType.Hard ? '厄险' : ''}${this.chapter.chapterIndex}-${this.number}`
+    this.code = `${this.chapter.type === (ExChapterType.Hard as number) ? '厄险' : ''}${this.chapter.chapterIndex}-${
+      this.number
+    }`
     this.dropCode = ''
     if (this.chapter.chapterIndex.match(/^\d+[A-Z]+$/)) {
       this.dropCode = `${this.chapter.chapterIndex.replace(/[A-Z]/g, '')}-${this.number}${
-        this.chapter.type === ExChapterType.Hard ? '厄险' : '普通'
+        this.chapter.type === (ExChapterType.Hard as number) ? '厄险' : '普通'
       }`
     }
 
@@ -277,7 +282,8 @@ class Re1999StageInfo extends BasicStageInfo {
     if (apCost.length === 0) {
       this.setAp(0)
     } else if (apCost.length !== 1 || apCost[0].itemId !== '2#4') {
-      throw new Error('invalid episode apCost: ' + JSON.stringify(this))
+      this.setAp(-1)
+      console.warn('invalid episode apCost', this.episode)
     } else {
       this.setAp(apCost[0].quantity)
     }
