@@ -29,9 +29,6 @@ export const AboutDataSources = memo(() => {
         className="cpp-menu-not-interactive"
         description={
           <>
-            由于之前提供的游戏数据的好心人已删库跑路，未缓存的图片资源将无法正常载入。至于游戏数据，有个别的好心人随缘更新。
-            <br />
-            <br />
             如果您能稳定提供游戏数据和图片资源，欢迎您和我们联系。
             <br />
             <br />
@@ -40,7 +37,7 @@ export const AboutDataSources = memo(() => {
           </>
         }
       />
-      <DataObjectStatus title="另一个好心人提供的游戏数据" href={null} dataObj={dm.$yy} />
+      <DataObjectStatus title="游戏数据" href={null} dataObj={dm.$yy} />
       <DataObjectStatus
         title="伴春风而归的材料掉率共建表"
         href={'https://nga.178.com/read.php?tid=36522605'}
