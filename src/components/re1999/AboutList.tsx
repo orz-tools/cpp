@@ -27,17 +27,16 @@ export const AboutDataSources = memo(() => {
         icon="error"
         text="数据滞后警告"
         className="cpp-menu-not-interactive"
-        description={
-          <>
-            如果您能稳定提供游戏数据和图片资源，欢迎您和我们联系。
-            <br />
-            <br />
-            此外，点击左上角 Logo 中的 <code>[REVERSE1999]</code>{' '}
-            字样，在菜单中返回主页后，可以切换到本工具支持的其他游戏。祝您在本工具支持的其他游戏中也算得愉快！
-          </>
-        }
+        description={<>如果您能稳定提供游戏数据和图片资源，欢迎您和我们联系。</>}
       />
       <DataObjectStatus title="游戏数据" href={null} dataObj={dm.$yy} />
+      <DescriptionMenuItem
+        intent="danger"
+        icon="error"
+        text="数据滞后警告"
+        className="cpp-menu-not-interactive"
+        description={<>材料掉落数据和价值数据自 1.4 版本以来没有更新。如您能提供帮助，欢迎您和我们联系。</>}
+      />
       <DataObjectStatus
         title="伴春风而归的材料掉率共建表"
         href={'https://nga.178.com/read.php?tid=36522605'}
