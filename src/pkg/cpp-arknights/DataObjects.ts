@@ -24,26 +24,15 @@ export class ArknightsYituliuObject extends DataContainerObject<YituliuValue[]> 
   }
 
   public async getHeader(force?: boolean | undefined): Promise<IDataContainer<YituliuValue[]>> {
-    const res = await fetch('https://backend.yituliu.site/item/export/json')
-    if (!res.ok) {
-      return this.loadFallbackData()
-      if (force) {
+    let res: Response
+    try {
+      res = await fetch('https://backend.yituliu.site/item/export/json')
+      if (!res.ok) {
         throw new Error(`Failed to fetch yituliu: ${res.status} ${res.statusText}`)
       }
-      const now = new Date(0)
-      return {
-        '@type': CONTAINER_TYPE,
-        '@version': CONTAINER_VERSION,
-        name: this.name,
-        version: {
-          id: now.toJSON(),
-          text: '加载失败',
-          schema: 0,
-          sources: ['https://yituliu.site/'],
-          timestamp: now.getTime(),
-        },
-        data: [] satisfies YituliuValue[],
-      }
+    } catch (e) {
+      console.error('yituliu failed', e, force)
+      return this.loadFallbackData()
     }
 
     const now = new Date()
