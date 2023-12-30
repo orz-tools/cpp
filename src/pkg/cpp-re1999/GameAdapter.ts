@@ -177,13 +177,13 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       continue
     }
 
-    for (const [key, value] of Object.entries(this.dataManager.raw.drops.levelReport)) {
+    for (const [key, value] of this.rewriteLevels()) {
       const stage = Object.values(this.stageInfo).find((x) => x.dropCode === key)
       if (!stage) {
         throw new Error('cannot find stage from drop ' + key)
       }
       if (stage.ap !== value.cost) throw new Error('ap mismatch from drop ' + key)
-      if (value.count < 5) continue
+      if (value.count < 10) continue
       stage.valid = true
       for (const [inputItemName, drop] of Object.entries(value.drops)) {
         let itemName = inputItemName
@@ -256,6 +256,33 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     }
 
     return this.stageInfo
+  }
+
+  private rewriteLevels() {
+    const raw = Object.entries(this.dataManager.raw.drops.levelReport)
+    const result: typeof raw = []
+    const map = new Map<string, typeof raw>()
+    for (const row of raw) {
+      let key = row[0]
+      if (key.includes('(')) {
+        key = key.split('(')[0]
+      }
+      if (!map.has(key)) map.set(key, [])
+      map.get(key)!.push(row)
+    }
+    for (const row of map.values()) {
+      const x = row
+        .map((x) => {
+          const verMatch = x[0].match(/\)Ver(\d+)\.(\d+)$/)
+          let ver = 0
+          if (verMatch) ver = Number(verMatch[1]) * 1000 + Number(verMatch[2])
+          return [x, ver] as const
+        })
+        .sort((a, b) => b[1] - a[1])
+      const latest = x[0][0]
+      result.push([latest[0].split('(')[0], latest[1]])
+    }
+    return result
   }
 }
 
