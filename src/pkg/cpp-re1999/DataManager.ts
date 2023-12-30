@@ -21,8 +21,8 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
   }
 
   public $yy = new Reverse1999Yuanyan3060Object('zh_CN')
-  public $drops = new Reverse1999HisBoundenDutyDropsObject()
-  public $values = new Reverse1999HisBoundenDutyValuesObject()
+  public $drops = new Reverse1999HisBoundenDutyDropsObject('china')
+  public $values = new Reverse1999HisBoundenDutyValuesObject('china')
 
   public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
     return Promise.resolve([this.$yy, this.$drops, this.$values])
