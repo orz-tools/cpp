@@ -1,7 +1,7 @@
 import { BlobImages, blobImage } from '../blobcache'
 import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
 import { DataContainerObject } from '../dccache'
-import { ArknightsKengxxiaoObject, ArknightsPenguinObject, ArknightsYituliuObject } from './DataObjects'
+import { ArknightsKengxxiaoObject, ArknightsPenguinObject, ArknightsYituliuValuesObject } from './DataObjects'
 import { Category, myCategories } from './GameAdapter'
 import {
   AK_ITEM_GOLD,
@@ -14,7 +14,7 @@ import {
 
 export class ArknightsDataManager extends BasicDataManager<Arknights> {
   public $kengxxiao = new ArknightsKengxxiaoObject('zh_CN')
-  public $yituliu = new ArknightsYituliuObject()
+  public $yituliu = new ArknightsYituliuValuesObject()
   public $penguin = new ArknightsPenguinObject('CN')
   public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
     return Promise.resolve([this.$kengxxiao, this.$yituliu, this.$penguin])
@@ -39,7 +39,7 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
         buildinEvolveMap: {},
         buildinPatchMap: {},
       },
-      yituliuValue: yituliu.data,
+      yituliuValue: yituliu.data.values,
       penguinMatrix: penguin.data,
     })
   }

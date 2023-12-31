@@ -1,10 +1,13 @@
 import localForage from 'localforage'
 import { FriendlyError } from '../../components/Err'
-import { DataContainerObject, IDataContainer, getLastCheckedAt, load, reset } from '../dccache'
+import { DataContainerObject, IDataContainer, destroy, getLastCheckedAt, load, reset } from '../dccache'
 import { IGame } from './types'
 
 // HACK
 void localForage.dropInstance({ name: 'cpp_dm' })
+void destroy('reverse1999-hisboundenduty-drops')
+void destroy('reverse1999-hisboundenduty-values')
+void destroy('arknights-yituliu')
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export abstract class BasicDataManager<G extends IGame> {

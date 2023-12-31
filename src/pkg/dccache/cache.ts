@@ -44,6 +44,11 @@ export async function reset(obj: DataContainerObject<any>) {
   await clearData(obj.name)
 }
 
+export async function destroy(name: string) {
+  await clearData(name)
+  await store.removeItem(`meta:${name}`)
+}
+
 export function load<T extends object>(
   obj: DataContainerObject<T>,
   refresh?: boolean | undefined,
