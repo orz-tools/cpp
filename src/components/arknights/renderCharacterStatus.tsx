@@ -30,7 +30,12 @@ export function renderCharacterStatus(
           hide={current ? (status.modLevel[uniX.key] || 0) === (current.modLevel[uniX.key] || 0) : false}
           alreadyHide={alreadyHide}
         >
-          <UniEquipIcon uniEquip={uniX} key={uniX.key} level={status.modLevel[uniX.key] || 0} />
+          <UniEquipIcon
+            count={uniEquips.length}
+            uniEquip={uniX}
+            key={uniX.key}
+            level={status.modLevel[uniX.key] || 0}
+          />
         </Hide>
       ) : (
         <EmptyIcon />
@@ -40,7 +45,12 @@ export function renderCharacterStatus(
           hide={current ? (status.modLevel[uniY.key] || 0) === (current.modLevel[uniY.key] || 0) : false}
           alreadyHide={alreadyHide}
         >
-          <UniEquipIcon uniEquip={uniY} key={uniY.key} level={status.modLevel[uniY.key] || 0} />
+          <UniEquipIcon
+            count={uniEquips.length}
+            uniEquip={uniY}
+            key={uniY.key}
+            level={status.modLevel[uniY.key] || 0}
+          />
         </Hide>
       ) : (
         <EmptyIcon />
@@ -50,7 +60,12 @@ export function renderCharacterStatus(
           hide={current ? (status.modLevel[uniD.key] || 0) === (current.modLevel[uniD.key] || 0) : false}
           alreadyHide={alreadyHide}
         >
-          <UniEquipIcon uniEquip={uniD} key={uniD.key} level={status.modLevel[uniD.key] || 0} />
+          <UniEquipIcon
+            count={uniEquips.length}
+            uniEquip={uniD}
+            key={uniD.key}
+            level={status.modLevel[uniD.key] || 0}
+          />
         </Hide>
       ) : null}
       {character.skills.slice(0, 3).map(([, skill]) => (

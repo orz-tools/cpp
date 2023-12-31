@@ -21,43 +21,45 @@ export const SkillIcon = memo(({ skill, level, master }: { skill: Skill; level?:
   )
 })
 
-export const UniEquipIcon = memo(({ uniEquip, level }: { uniEquip: UniEquip; level?: number }) => {
-  const name = `${uniEquip.raw.uniEquipName} (${uniEquip.raw.typeName1}-${uniEquip.raw.typeName2})`
-  return (
-    <span className="bp5-menu-item-icon">
-      <div
-        className={[
-          'cpp-simple-target',
-          'cpp-uniequip-icon',
-          `cpp-uniequip-shining-${uniEquip.raw.equipShiningColor}`,
-        ].join(' ')}
-        style={{
-          ...(level === 0
-            ? {
-                filter: 'grayscale(1.0)',
-              }
-            : {}),
-        }}
-      >
-        <CachedImg
-          src={uniEquip.icon}
-          width={'75%'}
-          height={'75%'}
-          alt={name}
-          title={name}
+export const UniEquipIcon = memo(
+  ({ count, uniEquip, level }: { uniEquip: UniEquip; level?: number; count: number }) => {
+    const name = `${uniEquip.raw.uniEquipName} (${uniEquip.raw.typeName1}-${uniEquip.raw.typeName2})`
+    return (
+      <span className={['bp5-menu-item-icon', `cpp-uniequip-count-${count}`].join(' ')}>
+        <div
+          className={[
+            'cpp-simple-target',
+            'cpp-uniequip-icon',
+            `cpp-uniequip-shining-${uniEquip.raw.equipShiningColor}`,
+          ].join(' ')}
           style={{
             ...(level === 0
               ? {
-                  opacity: 0.5,
+                  filter: 'grayscale(1.0)',
                 }
               : {}),
           }}
-        />
-        {level != null ? <span>{level}</span> : undefined}
-      </div>
-    </span>
-  )
-})
+        >
+          <CachedImg
+            src={uniEquip.icon}
+            width={'75%'}
+            height={'75%'}
+            alt={name}
+            title={name}
+            style={{
+              ...(level === 0
+                ? {
+                    opacity: 0.5,
+                  }
+                : {}),
+            }}
+          />
+          {level != null ? <span>{level}</span> : undefined}
+        </div>
+      </span>
+    )
+  },
+)
 
 export const LevelIcon = memo(({ level }: { level: CharacterLevel }) => {
   return (
