@@ -1,5 +1,6 @@
 import { CppData_ArknightsKengxxiaoEnUs } from '../cpp-data-schemas/arknights-kengxxiao-en_US'
 import { CppData_ArknightsKengxxiaoZhCn } from '../cpp-data-schemas/arknights-kengxxiao-zh_CN'
+import { CppData_ArknightsYituliuOperatorsurvey } from '../cpp-data-schemas/arknights-yituliu-operatorsurvey'
 import { CppData_ArknightsYituliuValues } from '../cpp-data-schemas/arknights-yituliu-values'
 import { CONTAINER_TYPE, CONTAINER_VERSION, CppRepoObject, DataContainerObject, IDataContainer } from '../dccache'
 import { PenguinMatrix } from './sources/penguinTypes'
@@ -21,6 +22,16 @@ export class ArknightsYituliuValuesObject extends CppRepoObject<CppData_Arknight
 
   public constructor() {
     super(`arknights-yituliu-values`)
+  }
+}
+
+export class ArknightsYituliuOperatorSurveyObject extends CppRepoObject<CppData_ArknightsYituliuOperatorsurvey> {
+  public requiredSchema = 1
+  public autoUpdateNotificationThreshold = 86400_000 * 3
+  public autoUpdateThreshold = 0
+
+  public constructor() {
+    super(`arknights-yituliu-operatorsurvey`)
   }
 }
 

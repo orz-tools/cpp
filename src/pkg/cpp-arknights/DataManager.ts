@@ -1,7 +1,12 @@
 import { BlobImages, blobImage } from '../blobcache'
 import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
 import { DataContainerObject } from '../dccache'
-import { ArknightsKengxxiaoObject, ArknightsPenguinObject, ArknightsYituliuValuesObject } from './DataObjects'
+import {
+  ArknightsKengxxiaoObject,
+  ArknightsPenguinObject,
+  ArknightsYituliuOperatorSurveyObject,
+  ArknightsYituliuValuesObject,
+} from './DataObjects'
 import { Category, myCategories } from './GameAdapter'
 import {
   AK_ITEM_GOLD,
@@ -16,14 +21,17 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
   public $kengxxiao = new ArknightsKengxxiaoObject('zh_CN')
   public $yituliu = new ArknightsYituliuValuesObject()
   public $penguin = new ArknightsPenguinObject('CN')
+  public $survey = new ArknightsYituliuOperatorSurveyObject()
+
   public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
-    return Promise.resolve([this.$kengxxiao, this.$yituliu, this.$penguin])
+    return Promise.resolve([this.$kengxxiao, this.$yituliu, this.$penguin, this.$survey])
   }
 
   public loadRaw() {
     const k = this.get(this.$kengxxiao)
     const yituliu = this.get(this.$yituliu)
     const penguin = this.get(this.$penguin)
+    const survey = this.get(this.$survey)
 
     return Promise.resolve({
       exCharacters: k.data.exCharacters,
@@ -41,6 +49,7 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
       },
       yituliuValue: yituliu.data.values,
       penguinMatrix: penguin.data,
+      operatorSurvey: survey.data,
     })
   }
 

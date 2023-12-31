@@ -8,6 +8,12 @@ import { useChamber } from './Chamber'
 
 const logs = [
   {
+    date: '2023-12-31',
+    game: [GameName.Arknights],
+    type: 'optimize',
+    desc: '接入明日方舟一图流的干员练度统计数据',
+  },
+  {
     date: '2023-10-09',
     type: 'fix',
     desc: '修复一些线性规划失败的问题',
