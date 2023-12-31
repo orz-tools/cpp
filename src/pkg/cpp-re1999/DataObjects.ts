@@ -13,6 +13,8 @@ export class Reverse1999Yuanyan3060Object extends CppRepoObject<CppData_Reverse1
 
 export class Reverse1999HisBoundenDutyDropsObject extends CppRepoObject<CppData_Reverse1999HisboundendutyDropsChina> {
   public requiredSchema = 1
+  public autoUpdateNotificationThreshold = 86400_000 * 3
+  public autoUpdateThreshold = 0
 
   public constructor(public readonly region: 'china') {
     super(`reverse1999-hisboundenduty-drops-${region}`)
@@ -21,6 +23,8 @@ export class Reverse1999HisBoundenDutyDropsObject extends CppRepoObject<CppData_
 
 export class Reverse1999HisBoundenDutyValuesObject extends CppRepoObject<CppData_Reverse1999HisboundendutyValuesChina> {
   public requiredSchema = 1
+  public autoUpdateNotificationThreshold = 86400_000 * 3
+  public autoUpdateThreshold = 0
 
   public constructor(public readonly region: 'china') {
     super(`reverse1999-hisboundenduty-values-${region}`)
