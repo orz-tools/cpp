@@ -2,6 +2,7 @@ import { BlobImages, blobImage } from '../blobcache'
 import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
 import { DataContainerObject } from '../dccache'
 import {
+  ArknightsHeyboxOperatorSurveyObject,
   ArknightsKengxxiaoObject,
   ArknightsPenguinObject,
   ArknightsYituliuOperatorSurveyObject,
@@ -22,16 +23,18 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
   public $yituliu = new ArknightsYituliuValuesObject()
   public $penguin = new ArknightsPenguinObject('CN')
   public $surveyYituliu = new ArknightsYituliuOperatorSurveyObject()
+  public $surveyHeybox = new ArknightsHeyboxOperatorSurveyObject()
 
   public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
-    return Promise.resolve([this.$kengxxiao, this.$yituliu, this.$penguin, this.$surveyYituliu])
+    return Promise.resolve([this.$kengxxiao, this.$yituliu, this.$penguin, this.$surveyYituliu, this.$surveyHeybox])
   }
 
   public loadRaw() {
     const k = this.get(this.$kengxxiao)
     const yituliu = this.get(this.$yituliu)
     const penguin = this.get(this.$penguin)
-    const survey = this.get(this.$surveyYituliu)
+    const yituliuSurvey = this.get(this.$surveyYituliu)
+    const heyboxSurvey = this.get(this.$surveyHeybox)
 
     return Promise.resolve({
       exCharacters: k.data.exCharacters,
@@ -49,7 +52,8 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
       },
       yituliuValue: yituliu.data.values,
       penguinMatrix: penguin.data,
-      yituliuSurvey: survey.data,
+      yituliuSurvey: yituliuSurvey.data,
+      heyboxSurvey: heyboxSurvey.data,
     })
   }
 
@@ -63,11 +67,16 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
       items: this.generateItems(),
       formulas: this.generateFormulas(),
       yituliuSurvey: this.generateYituliuSurvey(),
+      heyboxSurvey: this.generateHeyboxSurvey(),
     }
   }
 
   private generateYituliuSurvey() {
     return Object.fromEntries(this.raw.yituliuSurvey.result.map((x) => [x.charId, x]))
+  }
+
+  private generateHeyboxSurvey() {
+    return Object.fromEntries(this.raw.heyboxSurvey.rows.map((x) => [x.i, x]))
   }
 
   private generateCharacters() {

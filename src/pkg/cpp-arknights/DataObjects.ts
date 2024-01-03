@@ -1,3 +1,4 @@
+import { CppData_ArknightsHeyboxOperatorsurvey } from '../cpp-data-schemas/arknights-heybox-operatorsurvey'
 import { CppData_ArknightsKengxxiaoEnUs } from '../cpp-data-schemas/arknights-kengxxiao-en_US'
 import { CppData_ArknightsKengxxiaoZhCn } from '../cpp-data-schemas/arknights-kengxxiao-zh_CN'
 import { CppData_ArknightsYituliuOperatorsurvey } from '../cpp-data-schemas/arknights-yituliu-operatorsurvey'
@@ -32,6 +33,16 @@ export class ArknightsYituliuOperatorSurveyObject extends CppRepoObject<CppData_
 
   public constructor() {
     super(`arknights-yituliu-operatorsurvey`)
+  }
+}
+
+export class ArknightsHeyboxOperatorSurveyObject extends CppRepoObject<CppData_ArknightsHeyboxOperatorsurvey> {
+  public requiredSchema = 1
+  public autoUpdateNotificationThreshold = 86400_000 * 3
+  public autoUpdateThreshold = 0
+
+  public constructor() {
+    super(`arknights-heybox-operatorsurvey`)
   }
 }
 

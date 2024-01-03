@@ -1,5 +1,5 @@
 import { WritableAtom, atom, createStore } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { atomFamily, atomWithStorage } from 'jotai/utils'
 import React, { SetStateAction, useContext } from 'react'
 import { IGameComponent } from './components/types'
 import { BlobFlavour } from './pkg/blobcache'
@@ -13,6 +13,7 @@ export interface Preference {
   forbiddenStageIds: string[]
   farmLevel: FarmLevel
   blobFlavour: BlobFlavour
+  game: Record<string, any>
 }
 
 export enum ValueType {
@@ -148,6 +149,23 @@ export class Cpp<G extends IGame> {
       },
     )
 
+    const gameAtom = atom(
+      (get) => get(preferenceAtom).game || {},
+      (get, set, value: Record<string, any> | SetStateAction<Record<string, any>>) => {
+        set(preferenceAtom, (r) => ({
+          ...r,
+          game: typeof value === 'function' ? value(get(preferenceAtom).game || {}) : value,
+        }))
+      },
+    )
+
+    const gameAtoms = atomFamily((key: string) =>
+      atom(
+        (get) => this.gameAdapter.readPreference(key, get(gameAtom)),
+        (get, set, value: any) => set(gameAtom, this.gameAdapter.writePreference(key, value, get(gameAtom))),
+      ),
+    )
+
     return {
       preferenceAtom,
       preferenceStorageAtom,
@@ -156,6 +174,8 @@ export class Cpp<G extends IGame> {
       forbiddenStageIdsAtom,
       farmLevelAtom,
       blobFlavourAtom,
+      gameAtom,
+      gameAtoms,
     }
   }
 }

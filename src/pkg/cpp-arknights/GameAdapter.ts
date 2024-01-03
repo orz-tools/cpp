@@ -3,6 +3,7 @@ import { GameName } from '../../games'
 import { BasicStageInfo, ExpItem, IGameAdapter } from '../cpp-basic'
 import { ArknightsDataManager } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
+import { SurveySourceKeys } from './survey'
 import {
   AK_ITEM_GOLD,
   AK_ITEM_UNKNOWN_SHIT,
@@ -12,7 +13,29 @@ import {
   formulaTagNames,
 } from './types'
 
+export const enum PreferenceKeys {
+  SurveySource = 'surveySource',
+}
+
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
+  public readPreference(key: PreferenceKeys, storage: Record<string, any>) {
+    if (key === PreferenceKeys.SurveySource) {
+      const value = storage[PreferenceKeys.SurveySource]
+      return SurveySourceKeys.includes(value) ? value : SurveySourceKeys[0]
+    }
+    return undefined
+  }
+
+  public writePreference(key: PreferenceKeys, value: any, storage: Record<string, any>): Record<string, any> {
+    if (key === PreferenceKeys.SurveySource) {
+      return {
+        ...storage,
+        [key]: value,
+      }
+    }
+    return storage
+  }
+
   public getRealCharacterKey(charId: string) {
     if (this.getCharacter(charId)) return charId
     if (Object.hasOwn(this.dataManager.raw.exPatchCharacters.patchChars, charId)) {
@@ -257,7 +280,10 @@ const diffGroupName = {
 } as Record<string, string>
 
 class ArknightsStageInfo extends BasicStageInfo {
-  public constructor(ga: ArknightsAdapter, private excel: ArknightsKengxxiao['exStage']['stages']['']) {
+  public constructor(
+    ga: ArknightsAdapter,
+    private excel: ArknightsKengxxiao['exStage']['stages'][''],
+  ) {
     super(ga)
   }
 

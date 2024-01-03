@@ -22,6 +22,14 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     return Re1999Adapter.codename
   }
 
+  public readPreference() {
+    return undefined
+  }
+
+  public writePreference(key: string, value: any, storage: Record<string, any>): Record<string, any> {
+    return storage
+  }
+
   public getDataManager() {
     return this.dataManager
   }
