@@ -49,7 +49,7 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
       },
       yituliuValue: yituliu.data.values,
       penguinMatrix: penguin.data,
-      operatorSurvey: survey.data,
+      yituliuSurvey: survey.data,
     })
   }
 
@@ -62,7 +62,12 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
       constants: this.generateConstants(),
       items: this.generateItems(),
       formulas: this.generateFormulas(),
+      yituliuSurvey: this.generateYituliuSurvey(),
     }
+  }
+
+  private generateYituliuSurvey() {
+    return Object.fromEntries(this.raw.yituliuSurvey.result.map((x) => [x.charId, x]))
   }
 
   private generateCharacters() {

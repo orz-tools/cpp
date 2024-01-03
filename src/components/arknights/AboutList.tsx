@@ -2,6 +2,7 @@ import { MenuItem } from '@blueprintjs/core'
 import { memo } from 'react'
 import { useGameAdapter } from '../../Cpp'
 import { ArknightsDataManager } from '../../pkg/cpp-arknights'
+import { YituliuSurveySource } from '../../pkg/cpp-arknights/survey'
 import { DataObjectStatus, DescriptionMenuItem, externalLinkProps } from '../AboutList'
 
 export const AboutCopyright = memo(() => {
@@ -38,8 +39,8 @@ export const AboutDataSources = memo(() => {
       />
       <DataObjectStatus title="明日方舟一图流 材料价值数据" href={'https://yituliu.site/'} dataObj={dm.$yituliu} />
       <DataObjectStatus
-        title="明日方舟一图流 干员练度统计数据"
-        href={YituliuSurveyURL}
+        title={YituliuSurveySource.Name}
+        href={YituliuSurveySource.URL}
         dataObj={dm.$survey}
         copyright={
           '来自明日方舟一图流的数据，除非另有声明，采用 知识共享 署名-非商业性使用 4.0 国际 许可协议 进行许可。转载、公开或以任何形式复制、发行、再传播明日方舟一图流的任何内容时，必须注明从明日方舟一图流转载，并提供版权标识、许可协议标识、免责标识和作品链接；且未经许可，不得将本站内容或由其衍生作品用于商业目的。'
@@ -48,8 +49,6 @@ export const AboutDataSources = memo(() => {
     </>
   )
 })
-
-export const YituliuSurveyURL = 'https://yituliu.site/survey/operators'
 
 export const AboutThirdParty = memo(() => {
   return (

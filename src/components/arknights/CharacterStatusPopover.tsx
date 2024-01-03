@@ -3,9 +3,9 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { memo, useContext, useEffect, useState } from 'react'
 import { useAtoms, useCpp } from '../../Cpp'
 import { Arknights, ArknightsDataManager, Character } from '../../pkg/cpp-arknights'
+import { SurveyProps, YituliuSurveySource } from '../../pkg/cpp-arknights/survey'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import { externalLinkProps } from '../AboutList'
-import { YituliuSurveyURL } from './AboutList'
 import m0 from './assets/m0.png'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
@@ -20,9 +20,7 @@ type IEditorContext = {
   setStatus: ReturnType<typeof useTypeHolderForSetStatusAtom>
   character: Character
   dm: ArknightsDataManager
-  surveyCount: number
-  survey?: ArknightsDataManager['raw']['operatorSurvey']['result'][0]
-  surveys: Record<string, ArknightsDataManager['raw']['operatorSurvey']['result'][0] | undefined>
+  surveySource?: YituliuSurveySource
 }
 
 const EditorContext = React.createContext<IEditorContext>(undefined as any)
@@ -82,7 +80,7 @@ export const EliteLevelButton = memo(({ elite, level, color }: { elite: number; 
 })
 
 export const CharacterStatusEliteLevelSection = memo(() => {
-  const { currentStatus, character, surveyCount, survey } = useContext(EditorContext)
+  const { currentStatus, character, surveySource } = useContext(EditorContext)
   return (
     <>
       {character.maxElite >= 0 &&
@@ -92,13 +90,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
       ) ? (
         <div>
           <ButtonGroup>
-            {survey ? (
-              <SurveyNumber
-                desc={'精零人数/持有人数'}
-                percent={survey?.elite.rank0}
-                samples={surveyCount * survey.own}
-              />
-            ) : null}
+            {surveySource ? <Survey survey={surveySource.elite0(character)} /> : null}
             <Tag large={true}>精零</Tag>
             <EliteLevelButton elite={0} level={1} />
             <EliteLevelButton elite={0} level={character.maxLevels[0]} />
@@ -113,13 +105,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
       ) ? (
         <div>
           <ButtonGroup>
-            {survey ? (
-              <SurveyNumber
-                desc={'精一人数/持有人数'}
-                percent={survey?.elite.rank1}
-                samples={surveyCount * survey.own}
-              />
-            ) : null}
+            {surveySource ? <Survey survey={surveySource.elite1(character)} /> : null}
             <Tag large={true}>精一</Tag>
             <EliteLevelButton elite={1} level={1} />
             <EliteLevelButton elite={1} level={character.maxLevels[1]} />
@@ -134,13 +120,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
       ) ? (
         <div>
           <ButtonGroup>
-            {survey ? (
-              <SurveyNumber
-                desc={'精二人数/持有人数'}
-                percent={survey?.elite.rank2}
-                samples={surveyCount * survey.own}
-              />
-            ) : null}
+            {surveySource ? <Survey survey={surveySource.elite2(character)} /> : null}
             <Tag large={true}>精二</Tag>
             <EliteLevelButton elite={2} level={1} />
             {new Array(character.maxLevels[2] / 10 + 1)
@@ -163,6 +143,19 @@ export const CharacterStatusEliteLevelSection = memo(() => {
   )
 })
 
+function sampleScaleOpacity(s: number) {
+  if (!Number.isFinite(s)) return 0.75
+  return 0.75 - (1 - Math.min(500, s) / 500) * 0.5
+}
+
+export const Survey = memo(({ survey }: { survey: SurveyProps | undefined }) => {
+  if (survey) {
+    return <SurveyNumber {...survey} />
+  } else {
+    return <SurveyDummy />
+  }
+})
+
 export const SurveyDummy = memo(() => {
   return (
     <Tag
@@ -182,14 +175,12 @@ export const SurveyDummy = memo(() => {
   )
 })
 
-function sampleScaleOpacity(s: number) {
-  return 0.75 - (1 - Math.min(500, s) / 500) * 0.5
-}
-
-export const SurveyNumber = memo(({ percent, samples, desc }: { percent: number; samples: number; desc: string }) => {
-  const s = Math.max(0, Math.round(Number.isFinite(samples) ? samples : 0))
+export const SurveyNumber = memo(({ percent, samples, desc }: SurveyProps) => {
+  const s = Math.max(0, Math.round(samples))
   const p = Number.isFinite(percent) ? percent : 0
-  const title = `${desc}\n${(p * 100).toFixed(5)}% (${Math.round(p * s)} / ${s})`
+  const title = `${desc}\n${(p * 100).toFixed(5)}%${
+    Number.isFinite(samples) ? ` (${Math.round(p * s)} / ${s})` : ' 未知样本数'
+  }`
   return (
     <Tag
       large={false}
@@ -276,7 +267,7 @@ export const SkillMasterButton = memo(
 )
 
 export const CharacterStatusSkillMasterSection = memo(() => {
-  const { currentStatus, character, surveys, surveyCount } = useContext(EditorContext)
+  const { currentStatus, character, surveySource } = useContext(EditorContext)
   if (!character.skills.length) return <></>
   if (character.rarity < 3) return <></>
   const all = currentStatus ? character.skills.every(([, skill]) => currentStatus.skillMaster[skill.key] === 3) : false
@@ -284,61 +275,17 @@ export const CharacterStatusSkillMasterSection = memo(() => {
 
   return (
     <>
-      {character.skills.map(([, skill, realCharId, charSkillIndex], index) => {
-        const survey = surveys[realCharId]
-        const skillsSurveys = survey ? [survey.skill1, survey.skill2, survey.skill3] : undefined
-        const ss = skillsSurveys?.[charSkillIndex]
+      {character.skills.map(([, skill, realCharId, charSkillIndex]) => {
+        const ss = surveySource?.skill(character, skill, realCharId, charSkillIndex)
         return (
           <div key={skill.key}>
-            {survey && ss ? (
-              <SurveyNumber
-                desc={'专精了此技能的人数（一级及以上）/精二人数'}
-                percent={ss.count / survey.elite.rank2}
-                samples={surveyCount * survey.own * survey.elite.rank2}
-              />
-            ) : null}
+            {surveySource ? <Survey survey={ss ? ss[0] : undefined} /> : null}
             <ButtonGroup className={Classes.DARK}>
-              <Tag large={true}>技能 {index + 1}</Tag>
+              <Tag large={true}>技能 {charSkillIndex + 1}</Tag>
               <SkillMasterButton skillId={skill.key} level={0} />
-              <SkillMasterButton
-                skillId={skill.key}
-                level={1}
-                survey={
-                  survey && ss
-                    ? {
-                        desc: '专精一级此技能的人数/专精了此技能的人数（一级及以上）',
-                        percent: ss.rank1 / ss.count,
-                        samples: surveyCount * survey.own * ss.count,
-                      }
-                    : undefined
-                }
-              />
-              <SkillMasterButton
-                skillId={skill.key}
-                level={2}
-                survey={
-                  survey && ss
-                    ? {
-                        desc: '专精二级此技能的人数/专精了此技能的人数（一级及以上）',
-                        percent: ss.rank2 / ss.count,
-                        samples: surveyCount * survey.own * ss.count,
-                      }
-                    : undefined
-                }
-              />
-              <SkillMasterButton
-                skillId={skill.key}
-                level={3}
-                survey={
-                  survey && ss
-                    ? {
-                        desc: '专精三级此技能的人数/专精了此技能的人数（一级及以上）',
-                        percent: ss.rank3 / ss.count,
-                        samples: surveyCount * survey.own * ss.count,
-                      }
-                    : undefined
-                }
-              />
+              <SkillMasterButton skillId={skill.key} level={1} survey={ss ? ss[1] : undefined} />
+              <SkillMasterButton skillId={skill.key} level={2} survey={ss ? ss[2] : undefined} />
+              <SkillMasterButton skillId={skill.key} level={3} survey={ss ? ss[3] : undefined} />
               <Tag
                 large={false}
                 style={{ width: 150, overflow: 'hidden', background: 'none' }}
@@ -354,50 +301,40 @@ export const CharacterStatusSkillMasterSection = memo(() => {
   )
 })
 
-export const ModButton = memo(
-  ({
-    modId,
-    level,
-    survey,
-  }: {
-    modId: string
-    level: number
-    survey?: typeof SurveyNumber extends React.FC<infer P> ? P : never
-  }) => {
-    const { character, status, setStatus, currentStatus } = useContext(EditorContext)
-    const master = status.modLevel[modId] || 0
-    const currentMaster = currentStatus ? currentStatus.modLevel[modId] || 0 : undefined
-    const needElite = level > 0 && (status.elite < 2 || status.level < character.modUnlockLevel)
-    const already = master >= level
-    const disabled = currentMaster != null ? currentMaster > level : false
-    return (
-      <>
-        {survey ? <SurveyNumber {...survey} /> : null}
-        <Button
-          onClick={() =>
-            setStatus((x) => {
-              if (level > 0) {
-                if (x.elite < 2) {
-                  x.elite = 2
-                  x.level = 1
-                }
-                if (x.level < character.modUnlockLevel) x.level = character.modUnlockLevel
+export const ModButton = memo(({ modId, level, survey }: { modId: string; level: number; survey?: SurveyProps }) => {
+  const { character, status, setStatus, currentStatus } = useContext(EditorContext)
+  const master = status.modLevel[modId] || 0
+  const currentMaster = currentStatus ? currentStatus.modLevel[modId] || 0 : undefined
+  const needElite = level > 0 && (status.elite < 2 || status.level < character.modUnlockLevel)
+  const already = master >= level
+  const disabled = currentMaster != null ? currentMaster > level : false
+  return (
+    <>
+      {survey ? <SurveyNumber {...survey} /> : null}
+      <Button
+        onClick={() =>
+          setStatus((x) => {
+            if (level > 0) {
+              if (x.elite < 2) {
+                x.elite = 2
+                x.level = 1
               }
-              x.modLevel[modId] = level
-            })
-          }
-          disabled={disabled}
-          intent={already ? Intent.PRIMARY : needElite ? Intent.WARNING : Intent.NONE}
-        >
-          {level}
-        </Button>
-      </>
-    )
-  },
-)
+              if (x.level < character.modUnlockLevel) x.level = character.modUnlockLevel
+            }
+            x.modLevel[modId] = level
+          })
+        }
+        disabled={disabled}
+        intent={already ? Intent.PRIMARY : needElite ? Intent.WARNING : Intent.NONE}
+      >
+        {level}
+      </Button>
+    </>
+  )
+})
 
 export const CharacterStatusModSection = memo(() => {
-  const { currentStatus, character, surveys, surveyCount } = useContext(EditorContext)
+  const { currentStatus, character, surveySource } = useContext(EditorContext)
   if (character.rarity < 3) return <></>
 
   const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
@@ -409,69 +346,18 @@ export const CharacterStatusModSection = memo(() => {
   return (
     <>
       {uniEquips.map((equip) => {
-        const survey = surveys[equip.raw.charId]
-        const modSurveys = survey
-          ? ({
-              X: survey.modX,
-              Y: survey.modY,
-              D: survey.modD,
-            } as Record<string, ArknightsDataManager['raw']['operatorSurvey']['result'][0]['modX']>)
-          : undefined
-
-        const ss = modSurveys?.[equip.raw.typeName2!]
+        const ss = surveySource?.mod(character, equip)
         return (
           <div key={equip.key}>
-            {survey && ss ? (
-              <SurveyNumber
-                desc={'解锁了此模组的人数（一级及以上）/精二人数'}
-                percent={ss.count / survey.elite.rank2}
-                samples={surveyCount * survey.own * survey.elite.rank2}
-              />
-            ) : null}
+            {surveySource ? <Survey survey={ss ? ss[0] : undefined} /> : null}
             <ButtonGroup className={Classes.DARK}>
               <Tag large={true} style={{ fontFamily: 'monospace' }} title={equip.key}>
                 {equip.raw.typeName1}-{equip.raw.typeName2}
               </Tag>
               <ModButton modId={equip.key} level={0} />
-              <ModButton
-                modId={equip.key}
-                level={1}
-                survey={
-                  survey && ss
-                    ? {
-                        desc: '解锁了此模组一级的人数/解锁了此模组的人数（一级及以上）',
-                        percent: ss.rank1 / ss.count,
-                        samples: surveyCount * survey.own * ss.count,
-                      }
-                    : undefined
-                }
-              />
-              <ModButton
-                modId={equip.key}
-                level={2}
-                survey={
-                  survey && ss
-                    ? {
-                        desc: '解锁了此模组二级的人数/解锁了此模组的人数（一级及以上）',
-                        percent: ss.rank2 / ss.count,
-                        samples: surveyCount * survey.own * ss.count,
-                      }
-                    : undefined
-                }
-              />
-              <ModButton
-                modId={equip.key}
-                level={3}
-                survey={
-                  survey && ss
-                    ? {
-                        desc: '解锁了此模组三级的人数/解锁了此模组的人数（一级及以上）',
-                        percent: ss.rank3 / ss.count,
-                        samples: surveyCount * survey.own * ss.count,
-                      }
-                    : undefined
-                }
-              />
+              <ModButton modId={equip.key} level={1} survey={ss ? ss[1] : undefined} />
+              <ModButton modId={equip.key} level={2} survey={ss ? ss[2] : undefined} />
+              <ModButton modId={equip.key} level={3} survey={ss ? ss[3] : undefined} />
               <Tag
                 large={false}
                 style={{ width: 150, overflow: 'hidden', background: 'none' }}
@@ -488,7 +374,7 @@ export const CharacterStatusModSection = memo(() => {
 })
 
 export function CharacterStatusSkillSection() {
-  const { currentStatus, character, survey } = useContext(EditorContext)
+  const { currentStatus, character, surveySource } = useContext(EditorContext)
   if (!character.skills.length) return <></>
   if ((currentStatus?.skillLevel || 0) >= 7) return <></>
 
@@ -496,7 +382,7 @@ export function CharacterStatusSkillSection() {
     <>
       <div>
         <ButtonGroup>
-          {survey ? <SurveyDummy /> : null}
+          {surveySource ? <SurveyDummy /> : null}
           <Tag large={true}>技能</Tag>
           <SkillButton level={1} />
           <SkillButton level={2} />
@@ -519,22 +405,20 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
   const [status, setStatus] = useAtom(statusAtom)
   let currentStatus: Arknights['characterStatus'] | undefined = useAtomValue(atoms.currentCharacter(charId))
   if (!isGoal) currentStatus = undefined
-  const survey = dm.raw.operatorSurvey.result.find((x) => x.charId === character.key)
+
+  const surveySourceProvider = YituliuSurveySource
+  const surveySource = new YituliuSurveySource(dm)
+
   const ctx = {
     status,
     setStatus,
     character,
     currentStatus,
     dm,
-    surveyCount: dm.raw.operatorSurvey.userCount,
-    survey: survey,
-    surveys: survey
-      ? Object.fromEntries(
-          character.charIds.map((z) => [z, dm.raw.operatorSurvey.result.find((x) => x.charId === z)] as const),
-        )
-      : {},
+    surveySource: surveySource,
   } satisfies IEditorContext
 
+  const own = surveySource?.own(character)
   return (
     <EditorContext.Provider value={ctx}>
       <div>
@@ -561,7 +445,7 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
         )}
         {character.raw.name} - {isGoal ? '培养目标' : '当前状态'}
       </div>
-      {ctx.survey ? (
+      {surveySource ? (
         <div
           style={{
             fontSize: '85.7142857143%',
@@ -570,13 +454,23 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
             opacity: 0.75,
           }}
         >
-          <a href={YituliuSurveyURL} {...externalLinkProps}>
-            一图流练度统计
+          <a href={surveySourceProvider.URL} {...externalLinkProps}>
+            {surveySourceProvider.ShortName}
           </a>
           持有率
-          <code style={{ marginLeft: 8 }}>
-            {(ctx.survey.own * 100).toFixed(2)}% ({Math.round(ctx.survey.own * ctx.surveyCount)} / {ctx.surveyCount})
-          </code>
+          {own ? (
+            <code style={{ marginLeft: 8 }}>
+              {(own.percent * 100).toFixed(2)}%
+              {Number.isFinite(own.samples) ? (
+                <>
+                  {' '}
+                  ({Math.round(own.percent * own.samples)} / {own.samples})
+                </>
+              ) : null}
+            </code>
+          ) : (
+            <code style={{ marginLeft: 8 }}>N/A</code>
+          )}
         </div>
       ) : null}
       {status.level > 0 ? (
