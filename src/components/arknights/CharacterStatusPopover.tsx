@@ -98,7 +98,13 @@ export const CharacterStatusEliteLevelSection = memo(() => {
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite0(character)} /> : null}
             <Tag large={true}>精零</Tag>
-            {<Survey survey={surveySource && character.rarity >= 3 ? null : undefined} />}
+            {
+              <Survey
+                survey={
+                  surveySource && surveySource instanceof HeyboxSurveySource && character.rarity >= 3 ? null : undefined
+                }
+              />
+            }
             <EliteLevelButton elite={0} level={1} />
             <EliteLevelButton elite={0} level={character.maxLevels[0]} />
             <EliteLevelInput elite={0} />
@@ -114,7 +120,13 @@ export const CharacterStatusEliteLevelSection = memo(() => {
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite1(character)} /> : null}
             <Tag large={true}>精一</Tag>
-            {<Survey survey={surveySource && character.rarity >= 3 ? null : undefined} />}
+            {
+              <Survey
+                survey={
+                  surveySource && surveySource instanceof HeyboxSurveySource && character.rarity >= 3 ? null : undefined
+                }
+              />
+            }
             <EliteLevelButton elite={1} level={1} />
             <EliteLevelButton elite={1} level={character.maxLevels[1]} />
             <EliteLevelInput elite={1} />
