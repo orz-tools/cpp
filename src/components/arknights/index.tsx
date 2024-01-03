@@ -4,6 +4,7 @@ import { CharacterContextMenuItems } from './CharacterContextMenuItems'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { ImporterMenuItems } from './ImporterMenuItems'
 import { renderCharacterStatus } from './renderCharacterStatus'
+import style from './style.css?inline'
 
 export const ArknightsComponents: IGameComponent = {
   AboutCopyright,
@@ -16,4 +17,5 @@ export const ArknightsComponents: IGameComponent = {
   itemSimulatedViewConfig: { limit: 3, horizontal: true, viewMaxSize: 500 },
   blobFlavours: ['normal'],
   ImporterMenuItems,
+  style,
 }

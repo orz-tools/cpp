@@ -1,0 +1,54 @@
+.cpp-char-avatar {
+  position: relative;
+}
+
+.cpp-char-avatar::before {
+  display: block;
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 44px;
+  height: 44px;
+  z-index: -1;
+  background-size: 44px 44px;
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  border-radius: 3px;
+  box-shadow: color-mix(in srgb, var(--rarity-color, rgba(0, 0, 0)), transparent 30%) 0px 0px 3px 0px;
+}
+
+.cpp-char-rarity-0 .cpp-char-avatar::before {
+  --rarity-color: #000000;
+  background-image: linear-gradient(90deg, #000000, #000000);
+}
+
+.cpp-char-rarity-1 .cpp-char-avatar::before {
+  --rarity-color: #cccccc;
+  background-image: linear-gradient(90deg, #cccccc, #cccccc);
+}
+
+.cpp-char-rarity-2 .cpp-char-avatar::before {
+  --rarity-color: #0085ff;
+  background-image: linear-gradient(90deg, #0085ff, #87b0ff);
+}
+
+.cpp-char-rarity-3 .cpp-char-avatar::before {
+  --rarity-color: #a44efb;
+  background-image: linear-gradient(90deg, #a44efb, #d48eff);
+}
+
+.cpp-char-rarity-4 .cpp-char-avatar::before {
+  --rarity-color: #ffd43b;
+  background-image: linear-gradient(90deg, #ffd43b, #ffd43b);
+}
+
+.cpp-char-rarity-5 .cpp-char-avatar::before {
+  --rarity-color: #ff5a26;
+  background-image: linear-gradient(90deg, #ff5a26, #ffb978);
+}
+
+.cpp-char-avatar > img {
+  background-color: #fff;
+  border-radius: 2px;
+}
