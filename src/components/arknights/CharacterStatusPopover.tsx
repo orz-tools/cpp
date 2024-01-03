@@ -21,6 +21,7 @@ type IEditorContext = {
   dm: ArknightsDataManager
   surveyCount: number
   survey?: ArknightsDataManager['raw']['operatorSurvey']['result'][0]
+  surveys: Record<string, ArknightsDataManager['raw']['operatorSurvey']['result'][0] | undefined>
 }
 
 const EditorContext = React.createContext<IEditorContext>(undefined as any)
@@ -274,24 +275,25 @@ export const SkillMasterButton = memo(
 )
 
 export const CharacterStatusSkillMasterSection = memo(() => {
-  const { currentStatus, character, survey, surveyCount } = useContext(EditorContext)
+  const { currentStatus, character, surveys, surveyCount } = useContext(EditorContext)
   if (!character.skills.length) return <></>
   if (character.rarity < 3) return <></>
-  const skillsSurveys = survey ? [survey.skill1, survey.skill2, survey.skill3] : undefined
   const all = currentStatus ? character.skills.every(([, skill]) => currentStatus.skillMaster[skill.key] === 3) : false
   if (all) return <></>
 
   return (
     <>
-      {character.skills.map(([, skill], index) => {
-        const ss = skillsSurveys?.[index]
+      {character.skills.map(([, skill, realCharId, charSkillIndex], index) => {
+        const survey = surveys[realCharId]
+        const skillsSurveys = survey ? [survey.skill1, survey.skill2, survey.skill3] : undefined
+        const ss = skillsSurveys?.[charSkillIndex]
         return (
           <div key={skill.key}>
             {survey && ss ? (
               <SurveyNumber
-                desc={'专精了此技能的人数（一级及以上）/持有人数'}
-                percent={ss.count}
-                samples={surveyCount * survey.own}
+                desc={'专精了此技能的人数（一级及以上）/精二人数'}
+                percent={ss.count / survey.elite.rank2}
+                samples={surveyCount * survey.own * survey.elite.rank2}
               />
             ) : null}
             <ButtonGroup className={Classes.DARK}>
@@ -394,7 +396,7 @@ export const ModButton = memo(
 )
 
 export const CharacterStatusModSection = memo(() => {
-  const { currentStatus, character, survey, surveyCount } = useContext(EditorContext)
+  const { currentStatus, character, surveys, surveyCount } = useContext(EditorContext)
   if (character.rarity < 3) return <></>
 
   const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
@@ -403,29 +405,30 @@ export const CharacterStatusModSection = memo(() => {
   const all = currentStatus ? uniEquips.every((equip) => currentStatus.modLevel[equip.key] === 3) : false
   if (all) return <></>
 
-  const modSurveys = survey
-    ? ({
-        X: survey.modX,
-        Y: survey.modY,
-        D: survey.modD,
-      } as Record<string, ArknightsDataManager['raw']['operatorSurvey']['result'][0]['modX']>)
-    : undefined
-
   return (
     <>
       {uniEquips.map((equip) => {
+        const survey = surveys[equip.raw.charId]
+        const modSurveys = survey
+          ? ({
+              X: survey.modX,
+              Y: survey.modY,
+              D: survey.modD,
+            } as Record<string, ArknightsDataManager['raw']['operatorSurvey']['result'][0]['modX']>)
+          : undefined
+
         const ss = modSurveys?.[equip.raw.typeName2!]
         return (
           <div key={equip.key}>
             {survey && ss ? (
               <SurveyNumber
-                desc={'解锁了此模组的人数（一级及以上）/持有人数'}
-                percent={ss.count}
-                samples={surveyCount * survey.own}
+                desc={'解锁了此模组的人数（一级及以上）/精二人数'}
+                percent={ss.count / survey.elite.rank2}
+                samples={surveyCount * survey.own * survey.elite.rank2}
               />
             ) : null}
             <ButtonGroup className={Classes.DARK}>
-              <Tag large={true} style={{ fontFamily: 'monospace' }}>
+              <Tag large={true} style={{ fontFamily: 'monospace' }} title={equip.key}>
                 {equip.raw.typeName1}-{equip.raw.typeName2}
               </Tag>
               <ModButton modId={equip.key} level={0} />
@@ -523,6 +526,9 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
     dm,
     surveyCount: dm.raw.operatorSurvey.userCount,
     survey: dm.raw.operatorSurvey.result.find((x) => x.charId === character.key),
+    surveys: Object.fromEntries(
+      character.charIds.map((z) => [z, dm.raw.operatorSurvey.result.find((x) => x.charId === z)] as const),
+    ),
   } satisfies IEditorContext
 
   return (

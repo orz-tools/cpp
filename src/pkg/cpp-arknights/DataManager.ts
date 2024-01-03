@@ -224,6 +224,10 @@ export class Character implements ICharacter {
     }
   }
 
+  public get charIds(): string[] {
+    return [this.key, ...this.patches.map((x) => x[0])]
+  }
+
   public get name(): string {
     return this.raw.name
   }
@@ -266,16 +270,30 @@ export class Character implements ICharacter {
   }
 
   public get rawSkills() {
-    return [...(this.raw.skills || []), ...this.patches.flatMap((x) => x[1].skills)]
+    const result: [string, ArknightsKengxxiao['exCharacters']['']['skills'][0], number][] = []
+    let index = 0
+    for (const i of this.raw.skills || []) {
+      result.push([this.key, i, index++])
+    }
+    for (const [key, info] of this.patches) {
+      index = 0
+      for (const i of info.skills || []) {
+        result.push([key, i, index++])
+      }
+    }
+    return result
   }
 
-  private _skills?: [ArknightsKengxxiao['exCharacters']['']['skills'][0], Skill][]
+  private _skills?: [ArknightsKengxxiao['exCharacters']['']['skills'][0], Skill, string, number][]
   public get skills() {
     return (
       this._skills ||
       (this._skills = this.rawSkills
-        .filter((x): x is ArknightsKengxxiao['exCharacters']['']['skills'][0] & { skillId: string } => !!x.skillId)
-        .map((x) => [x, this.dm.data.skills[x.skillId]]))
+        .filter(
+          (x): x is [string, ArknightsKengxxiao['exCharacters']['']['skills'][0] & { skillId: string }, number] =>
+            !!x[1].skillId,
+        )
+        .map((x) => [x[1], this.dm.data.skills[x[1].skillId], x[0], x[2]]))
     )
   }
 
