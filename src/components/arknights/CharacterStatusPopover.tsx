@@ -5,6 +5,7 @@ import { useAtoms, useCpp } from '../../Cpp'
 import { Arknights, ArknightsDataManager, Character } from '../../pkg/cpp-arknights'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import { externalLinkProps } from '../AboutList'
+import { YituliuSurveyURL } from './AboutList'
 import m0 from './assets/m0.png'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
@@ -518,6 +519,7 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
   const [status, setStatus] = useAtom(statusAtom)
   let currentStatus: Arknights['characterStatus'] | undefined = useAtomValue(atoms.currentCharacter(charId))
   if (!isGoal) currentStatus = undefined
+  const survey = dm.raw.operatorSurvey.result.find((x) => x.charId === character.key)
   const ctx = {
     status,
     setStatus,
@@ -525,10 +527,12 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
     currentStatus,
     dm,
     surveyCount: dm.raw.operatorSurvey.userCount,
-    survey: dm.raw.operatorSurvey.result.find((x) => x.charId === character.key),
-    surveys: Object.fromEntries(
-      character.charIds.map((z) => [z, dm.raw.operatorSurvey.result.find((x) => x.charId === z)] as const),
-    ),
+    survey: survey,
+    surveys: survey
+      ? Object.fromEntries(
+          character.charIds.map((z) => [z, dm.raw.operatorSurvey.result.find((x) => x.charId === z)] as const),
+        )
+      : {},
   } satisfies IEditorContext
 
   return (
@@ -566,8 +570,8 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
             opacity: 0.75,
           }}
         >
-          <a href="https://yituliu.site/survey/operators" {...externalLinkProps}>
-            练度统计
+          <a href={YituliuSurveyURL} {...externalLinkProps}>
+            一图流练度统计
           </a>
           持有率
           <code style={{ marginLeft: 8 }}>
