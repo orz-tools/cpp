@@ -8,6 +8,12 @@ import { useChamber } from './Chamber'
 
 const logs = [
   {
+    date: '2024-01-04',
+    game: [GameName.Arknights],
+    type: 'optimize',
+    desc: '接入小黑盒 app 的干员统计数据',
+  },
+  {
     date: '2023-12-31',
     game: [GameName.Arknights],
     type: 'optimize',
