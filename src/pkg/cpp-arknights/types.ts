@@ -2,9 +2,24 @@ import { IGame } from '../cpp-basic/types'
 import { CppData_ArknightsKengxxiaoEnUs } from '../cpp-data-schemas/arknights-kengxxiao-en_US'
 import { CppData_ArknightsKengxxiaoZhCn } from '../cpp-data-schemas/arknights-kengxxiao-zh_CN'
 
+export const enum PreferenceKeys {
+  SurveySource = 'surveySource',
+}
+
+export const enum SurveySourceKey {
+  None = 'none',
+  Yituliu = 'yituliu',
+  Heybox = 'heybox',
+}
+
+export const SurveySourceKeys = [SurveySourceKey.None, SurveySourceKey.Yituliu, SurveySourceKey.Heybox]
+
 export interface Arknights extends IGame {
   characterStatus: ArknightsCharacterStatus
   characterTaskType: ArknightsCharacterTaskType
+  preferences: {
+    [PreferenceKeys.SurveySource]: SurveySourceKey
+  }
 }
 
 export interface ArknightsCharacterStatus {

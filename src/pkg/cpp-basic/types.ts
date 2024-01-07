@@ -5,6 +5,7 @@ import { IGameAdapter } from './managers'
 export interface IGame {
   characterStatus: object
   characterTaskType: unknown
+  preferences: object
 }
 
 export interface Task<G extends IGame> {
@@ -75,7 +76,7 @@ export abstract class BasicStageInfo implements IStageInfo {
     return this.id
   }
 
-  public constructor(protected ga: IGameAdapter<any>) {}
+  public constructor(protected ga: IGameAdapter<IGame>) {}
 
   public dropInfo: Record<string, [drops: number, samples: number]> = {}
 

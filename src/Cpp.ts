@@ -1,4 +1,4 @@
-import { WritableAtom, atom, createStore } from 'jotai'
+import { WritableAtom, atom, createStore, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomFamily, atomWithStorage } from 'jotai/utils'
 import React, { SetStateAction, useContext } from 'react'
 import { IGameComponent } from './components/types'
@@ -159,7 +159,7 @@ export class Cpp<G extends IGame> {
       },
     )
 
-    const gameAtoms = atomFamily((key: string) =>
+    const gameAtoms = atomFamily((key: keyof G['preferences']) =>
       atom(
         (get) => this.gameAdapter.readPreference(key, get(gameAtom)),
         (get, set, value: any) => set(gameAtom, this.gameAdapter.writePreference(key, value, get(gameAtom))),
@@ -196,4 +196,32 @@ export function useStore<G extends IGame>() {
 
 export function useAtoms<G extends IGame>() {
   return useCpp<G>().atoms.atoms
+}
+
+function __internalGetGameAtom<G extends IGame, K extends keyof G['preferences']>(param: K) {
+  return useCpp<G>().preferenceAtoms.gameAtoms(param) as WritableAtom<
+    G['preferences'][K],
+    [value: G['preferences'][K]],
+    void
+  >
+}
+
+/* eslint-disable react-hooks/rules-of-hooks */
+class GameUser<G extends IGame> {
+  public useGameAtom<K extends keyof G['preferences']>(param: K) {
+    return useAtom(__internalGetGameAtom<G, K>(param))
+  }
+
+  public useSetGameAtom<K extends keyof G['preferences']>(param: K) {
+    return useSetAtom(__internalGetGameAtom<G, K>(param))
+  }
+
+  public useGameAtomValue<K extends keyof G['preferences']>(param: K) {
+    return useAtomValue(__internalGetGameAtom<G, K>(param))
+  }
+}
+
+const gameUserInstance = new GameUser()
+export function WithGame<G extends IGame>() {
+  return gameUserInstance as any as GameUser<G>
 }

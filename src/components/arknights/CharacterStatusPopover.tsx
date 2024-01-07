@@ -1,15 +1,9 @@
 import { Button, ButtonGroup, Checkbox, Classes, Intent, NumericInput, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { memo, useContext, useEffect, useMemo, useState } from 'react'
-import { useAtoms, useCpp } from '../../Cpp'
-import { Arknights, ArknightsDataManager, Character, PreferenceKeys } from '../../pkg/cpp-arknights'
-import {
-  HeyboxSurveySource,
-  SurveyProps,
-  SurveySource,
-  SurveySourceKey,
-  YituliuSurveySource,
-} from '../../pkg/cpp-arknights/survey'
+import { WithGame, useAtoms, useCpp } from '../../Cpp'
+import { Arknights, ArknightsDataManager, Character, PreferenceKeys, SurveySourceKey } from '../../pkg/cpp-arknights'
+import { HeyboxSurveySource, SurveyProps, SurveySource, YituliuSurveySource } from '../../pkg/cpp-arknights/survey'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import m0 from './assets/m0.png'
 import m1 from './assets/m1.png'
@@ -421,9 +415,7 @@ export function CharacterStatusSkillSection() {
 export const CharacterStatusPopover = memo(({ character, isGoal }: { character: Character; isGoal: boolean }) => {
   const atoms = useAtoms<Arknights>()
   const dm = useCpp().gameAdapter.getDataManager() as ArknightsDataManager
-  const [surveySourcePref, setSurveySourcePref] = useAtom(
-    useCpp().preferenceAtoms.gameAtoms(PreferenceKeys.SurveySource),
-  )
+  const [surveySourcePref, setSurveySourcePref] = WithGame<Arknights>().useGameAtom(PreferenceKeys.SurveySource)
   const charId = character.key
   const statusAtom = isGoal ? atoms.goalCharacter(charId) : atoms.currentCharacter(charId)
   const [status, setStatus] = useAtom(statusAtom)

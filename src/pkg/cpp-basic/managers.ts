@@ -17,8 +17,12 @@ export interface IGameAdapter<G extends IGame> {
   getStageInfos(): Record<string, IStageInfo>
   getZoneNames(): Record<string, string>
   getFormulaTagNames(): Record<string, string>
-  readPreference(key: string, storage: Record<string, any>): any
-  writePreference(key: string, value: any, storage: Record<string, any>): Record<string, any>
+  readPreference<K extends keyof G['preferences']>(key: K, storage: Record<string, any>): G['preferences'][K]
+  writePreference<K extends keyof G['preferences']>(
+    key: K,
+    value: G['preferences'][K],
+    storage: Record<string, any>,
+  ): Record<string, any>
 }
 
 export interface IUserDataAdapter<G extends IGame> {

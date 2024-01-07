@@ -3,30 +3,34 @@ import { GameName } from '../../games'
 import { BasicStageInfo, ExpItem, IGameAdapter } from '../cpp-basic'
 import { ArknightsDataManager } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
-import { SurveySourceKeys } from './survey'
 import {
   AK_ITEM_GOLD,
   AK_ITEM_UNKNOWN_SHIT,
   AK_ITEM_VIRTUAL_EXP,
   Arknights,
   ArknightsKengxxiao,
+  PreferenceKeys,
+  SurveySourceKeys,
   formulaTagNames,
 } from './types'
 
-export const enum PreferenceKeys {
-  SurveySource = 'surveySource',
-}
-
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
-  public readPreference(key: PreferenceKeys, storage: Record<string, any>) {
+  public readPreference<K extends keyof Arknights['preferences']>(
+    key: K,
+    storage: Record<string, any>,
+  ): Arknights['preferences'][K] {
     if (key === PreferenceKeys.SurveySource) {
       const value = storage[PreferenceKeys.SurveySource]
       return SurveySourceKeys.includes(value) ? value : SurveySourceKeys[0]
     }
-    return undefined
+    return undefined as never
   }
 
-  public writePreference(key: PreferenceKeys, value: any, storage: Record<string, any>): Record<string, any> {
+  public writePreference<K extends keyof Arknights['preferences']>(
+    key: K,
+    value: Arknights['preferences'][K],
+    storage: Record<string, any>,
+  ): Record<string, any> {
     if (key === PreferenceKeys.SurveySource) {
       return {
         ...storage,

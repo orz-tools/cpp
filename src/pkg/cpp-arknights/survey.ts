@@ -1,13 +1,5 @@
 import { ArknightsDataManager, Character, Skill, UniEquip } from './DataManager'
 
-export const enum SurveySourceKey {
-  None = 'none',
-  Yituliu = 'yituliu',
-  Heybox = 'heybox',
-}
-
-export const SurveySourceKeys = [SurveySourceKey.None, SurveySourceKey.Yituliu, SurveySourceKey.Heybox]
-
 export type SurveyProps = { percent: number; samples: number; desc: string }
 
 export interface SurveySource {
