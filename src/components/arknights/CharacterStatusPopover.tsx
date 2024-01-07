@@ -415,7 +415,9 @@ export function CharacterStatusSkillSection() {
 export const CharacterStatusPopover = memo(({ character, isGoal }: { character: Character; isGoal: boolean }) => {
   const atoms = useAtoms<Arknights>()
   const dm = useCpp().gameAdapter.getDataManager() as ArknightsDataManager
-  const [surveySourcePref, setSurveySourcePref] = WithGame<Arknights>().useGameAtom(PreferenceKeys.SurveySource)
+  const [surveySourcePref, setSurveySourcePref] = WithGame<Arknights>().useGamePreferenceAtom(
+    PreferenceKeys.SurveySource,
+  )
   const charId = character.key
   const statusAtom = isGoal ? atoms.goalCharacter(charId) : atoms.currentCharacter(charId)
   const [status, setStatus] = useAtom(statusAtom)

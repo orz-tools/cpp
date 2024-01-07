@@ -198,7 +198,7 @@ export function useAtoms<G extends IGame>() {
   return useCpp<G>().atoms.atoms
 }
 
-function __internalGetGameAtom<G extends IGame, K extends keyof G['preferences']>(param: K) {
+function __internalGetGamePreferenceAtom<G extends IGame, K extends keyof G['preferences']>(param: K) {
   return useCpp<G>().preferenceAtoms.gameAtoms(param) as WritableAtom<
     G['preferences'][K],
     [value: G['preferences'][K]],
@@ -208,16 +208,16 @@ function __internalGetGameAtom<G extends IGame, K extends keyof G['preferences']
 
 /* eslint-disable react-hooks/rules-of-hooks */
 class GameUser<G extends IGame> {
-  public useGameAtom<K extends keyof G['preferences']>(param: K) {
-    return useAtom(__internalGetGameAtom<G, K>(param))
+  public useGamePreferenceAtom<K extends keyof G['preferences']>(param: K) {
+    return useAtom(__internalGetGamePreferenceAtom<G, K>(param))
   }
 
-  public useSetGameAtom<K extends keyof G['preferences']>(param: K) {
-    return useSetAtom(__internalGetGameAtom<G, K>(param))
+  public useSetGamePreferenceAtom<K extends keyof G['preferences']>(param: K) {
+    return useSetAtom(__internalGetGamePreferenceAtom<G, K>(param))
   }
 
-  public useGameAtomValue<K extends keyof G['preferences']>(param: K) {
-    return useAtomValue(__internalGetGameAtom<G, K>(param))
+  public useGamePreferenceAtomValue<K extends keyof G['preferences']>(param: K) {
+    return useAtomValue(__internalGetGamePreferenceAtom<G, K>(param))
   }
 }
 
