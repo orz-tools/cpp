@@ -23,7 +23,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
   }
 
   public readPreference() {
-    return undefined
+    return undefined as never
   }
 
   public writePreference(key: string, value: any, storage: Record<string, any>): Record<string, any> {
