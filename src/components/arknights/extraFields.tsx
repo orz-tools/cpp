@@ -42,13 +42,13 @@ export const extraFields: IGameComponent['extraFields'] = {
   },
   'skill.mastery3rate.yituliu': createSimpleExtraField(
     'skill.mastery3rate.yituliu',
-    80,
+    65,
     percentageFormatter,
     percentageStyle,
   ),
   'skill.mastery3rate.heybox': createSimpleExtraField(
     'skill.mastery3rate.heybox',
-    80,
+    65,
     percentageFormatter,
     percentageStyle,
   ),

@@ -196,6 +196,24 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
           order: [['skill.mastery3rate.heybox', 'DESC']],
         },
       },
+      'skill.mastery3rate.all.yituliu': {
+        name: '一图流练度统计 技能专三率（全部）',
+        query: {
+          select: ['skill.mastery3rate.yituliu'],
+          join: 'skill',
+          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
+          order: [['skill.mastery3rate.yituliu', 'DESC']],
+        },
+      },
+      'skill.mastery3rate.all.heybox': {
+        name: '小黑盒干员统计 技能专三率（全部）',
+        query: {
+          select: ['skill.mastery3rate.heybox'],
+          join: 'skill',
+          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
+          order: [['skill.mastery3rate.heybox', 'DESC']],
+        },
+      },
     }
   }
 
