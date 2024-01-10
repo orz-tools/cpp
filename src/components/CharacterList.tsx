@@ -461,15 +461,41 @@ const queryParamAtom = atom(
 const QuerySearchBox = memo(() => {
   const [active, setActive] = useState(false)
   const [param, setParam] = useAtom(queryParamAtom)
+  const empty = (param.search || '').length === 0
+  const ref = useRef<HTMLInputElement>(null)
+
   return (
     <>
       <div className="bp5-input-group">
-        <span className="bp5-icon bp5-icon-search"></span>
+        {!empty ? (
+          <Button
+            minimal
+            small
+            icon={'cross'}
+            onClick={() => {
+              setParam((x) => ({ ...x, search: '' }))
+              ref?.current?.focus()
+            }}
+            style={{
+              zIndex: 1,
+              position: 'absolute',
+              top: 0,
+              margin: 4,
+              padding: 7,
+              left: 0,
+              width: 16,
+              height: 16,
+            }}
+          />
+        ) : (
+          <span className="bp5-icon bp5-icon-search"></span>
+        )}
         <input
-          style={{ width: active || (param.search || '').length > 0 ? '200px' : '60px' }}
+          style={{ width: active || !empty ? '200px' : '60px' }}
           className="bp5-input"
           onFocus={() => setActive(true)}
           onBlur={() => setActive(false)}
+          ref={ref}
           type="search"
           dir="auto"
           autoComplete="false"
