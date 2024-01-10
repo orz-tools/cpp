@@ -56,6 +56,12 @@ export const FarmLevelShortNames: Record<FarmLevel, string> = {
   [FarmLevel.Finished]: '毕业',
 }
 
+export interface ListCharactersQueryParam {
+  v: number
+  search: string
+  query: string
+}
+
 export class Cpp<G extends IGame> {
   public constructor(
     public readonly storagePrefix: string,
@@ -63,6 +69,8 @@ export class Cpp<G extends IGame> {
     public readonly gameAdapter: IGameAdapter<G>,
     public readonly gameComponent: IGameComponent,
   ) {
+    localStorage.removeItem('cpp_query_param')
+
     this.preferenceAtoms = this.createPreferenceAtoms()
 
     this.atoms = new UserDataAtomHolder(this.gameAdapter)
@@ -75,6 +83,51 @@ export class Cpp<G extends IGame> {
   public store = createStore()
   public atoms: UserDataAtomHolder<G>
   public preferenceAtoms: ReturnType<Cpp<G>['createPreferenceAtoms']>
+  public queryParamAtom = this.createQueryParamAtom()
+
+  public createQueryParamAtom() {
+    const key = `cpp[` + this.gameAdapter.getCodename() + `]query_param`
+    const baseAtom = atom(
+      (() => {
+        try {
+          return (JSON.parse(localStorage.getItem(key) || 'null') as ListCharactersQueryParam) || undefined
+        } catch {
+          return undefined
+        }
+      })(),
+    )
+
+    const storageAtom = atom(
+      (get) => get(baseAtom),
+      (get, set, value: ListCharactersQueryParam | undefined) => {
+        set(baseAtom, value)
+        if (value) {
+          localStorage.setItem(key, JSON.stringify(value))
+        } else {
+          localStorage.removeItem(key)
+        }
+      },
+    )
+
+    const queryParamAtom = atom(
+      (get) => {
+        const value = Object.assign({}, get(storageAtom) || {}) as ListCharactersQueryParam
+        if (value.v !== 1) {
+          value.v = 1
+          value.query = '#!all'
+          value.search = ''
+        }
+        if (value.query == null) value.query = '#!all'
+        if (value.search == null) value.search = ''
+        return value
+      },
+      (get, set, value: ListCharactersQueryParam | SetStateAction<ListCharactersQueryParam>) => {
+        if (typeof value === 'function') value = value(get(queryParamAtom))
+        set(storageAtom, value)
+      },
+    )
+    return queryParamAtom
+  }
 
   public createPreferenceAtoms() {
     const preferenceStorageAtom = atomWithStorage<Preference>(this.storagePrefix + 'preference', undefined as any)

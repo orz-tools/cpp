@@ -16,11 +16,10 @@ import {
 } from '@blueprintjs/core'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
-import { PrimitiveAtom, SetStateAction, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { Cpp, useAtoms, useCpp, useGameAdapter } from '../Cpp'
+import { Cpp, ListCharactersQueryParam, useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
 import { useComponents } from '../hooks/useComponents'
@@ -98,7 +97,7 @@ export const CharacterContextMenu = memo(
     const { CharacterContextMenuItems } = useComponents()
     const atoms = useAtoms<IGame>()
     const setData = useSetAtom(atoms.dataAtom)
-    const [param, setParam] = useAtom(queryParamAtom)
+    const [param, setParam] = useAtom(useCpp().queryParamAtom)
     const shouldRefresh = param.query === ListModeWithGoal
 
     return (
@@ -432,35 +431,9 @@ function getResponseExtraFields(input: Awaited<ReturnType<typeof listCharactersQ
   return Array.from(set)
 }
 
-interface ListCharactersQueryParam {
-  v: number
-  search: string
-  query: string
-}
-
-const queryParamStorageAtom = atomWithStorage<ListCharactersQueryParam>('cpp_query_param', undefined as any)
-const queryParamAtom = atom(
-  (get) => {
-    const value = Object.assign({}, get(queryParamStorageAtom) || {})
-    if (value.v !== 2) {
-      value.v = 2
-      value.query = ListModeAll
-      value.search = ''
-    }
-    if (value.query == null) value.query = ''
-    if (value.search == null) value.search = ''
-    delete (value as any).mode
-    return value
-  },
-  (get, set, value: ListCharactersQueryParam | SetStateAction<ListCharactersQueryParam>) => {
-    if (typeof value === 'function') value = value(get(queryParamAtom))
-    set(queryParamStorageAtom, value)
-  },
-)
-
 const QuerySearchBox = memo(() => {
   const [active, setActive] = useState(false)
-  const [param, setParam] = useAtom(queryParamAtom)
+  const [param, setParam] = useAtom(useCpp().queryParamAtom)
   const empty = (param.search || '').length === 0
   const ref = useRef<HTMLInputElement>(null)
 
@@ -512,7 +485,7 @@ const QuerySearchBox = memo(() => {
 })
 
 const QueryQueryBox = memo(() => {
-  const [param, setParam] = useAtom(queryParamAtom)
+  const [param, setParam] = useAtom(useCpp().queryParamAtom)
   return (
     <>
       <TextArea
@@ -537,7 +510,7 @@ const validPredefinedQueries = [ListModeFav, ListModeAll, ListModeWithGoal, List
 const PredefinedGameQueryPrefix = '#?'
 
 function useCustomQueryActive() {
-  const param = useAtomValue(queryParamAtom)
+  const param = useAtomValue(useCpp().queryParamAtom)
   return !validPredefinedQueries.includes(param.query) && !param.query.startsWith(PredefinedGameQueryPrefix)
 }
 
@@ -547,7 +520,7 @@ const QueryBuilder = memo(() => {
     const pgq = cpp.gameAdapter.getPredefinedQueries()
     return [pgq, Object.keys(pgq)]
   }, [cpp])
-  const [param, setParam] = useAtom(queryParamAtom)
+  const [param, setParam] = useAtom(useCpp().queryParamAtom)
   const atoms = useAtoms()
   const data = useAtomValue(atoms.dataAtom)
   const goalCount = Object.keys(data.goal).length
@@ -607,7 +580,7 @@ const QueryBuilder = memo(() => {
 const QueryBuilderRight = memo(() => {
   const cpp = useCpp()
   const pgq = useMemo(() => cpp.gameAdapter.getPredefinedQueries(), [cpp])
-  const [param, setParam] = useAtom(queryParamAtom)
+  const [param, setParam] = useAtom(useCpp().queryParamAtom)
   const custom = useCustomQueryActive()
   if (custom) dismissed = true
 
@@ -633,7 +606,6 @@ const QueryBuilderRight = memo(() => {
             })}
           </Menu>
         }
-        position="bottom-left"
       >
         <Button minimal={true} icon={'chevron-down'} />
       </Popover>
@@ -668,7 +640,7 @@ const QueryEditor = memo(() => {
 })
 
 export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom: PrimitiveAtom<number> }) => {
-  const param = useAtomValue(queryParamAtom)
+  const param = useAtomValue(useCpp().queryParamAtom)
 
   const cpp = useCpp()
   const { send, response, loading, error } = useRequest(listCharactersQuery)
