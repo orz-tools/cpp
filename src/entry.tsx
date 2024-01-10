@@ -5,12 +5,12 @@ import { Cpp, CppContext } from './Cpp'
 import { Err, ErrAtom } from './components/Err'
 import { IGameComponent } from './components/types'
 import './index.css'
-import { IGameAdapter } from './pkg/cpp-basic'
+import { IGame, IGameAdapter } from './pkg/cpp-basic'
 
 export function runCpp(
   storagePrefix: string,
   instanceName: string,
-  gameAdapter: IGameAdapter<any>,
+  gameAdapter: IGameAdapter<IGame>,
   gameComponent: IGameComponent,
 ) {
   const cpp = new Cpp(storagePrefix, instanceName, gameAdapter, gameComponent)

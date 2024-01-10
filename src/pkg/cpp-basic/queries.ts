@@ -6,20 +6,20 @@ export interface QueryInput<G extends IGame, C extends ICharacter> {
   goal: G['characterStatus'] | undefined
 }
 
-export interface FieldContext<G extends IGame, C extends ICharacter, Args extends any[]> {
+export interface FieldContext<G extends IGame, C extends ICharacter, Args extends readonly any[]> {
   character: C
   current: G['characterStatus']
   goal: G['characterStatus'] | undefined
   args: Args
 }
 
-export interface StatusFieldContext<G extends IGame, C extends ICharacter, Args extends any[]> {
+export interface StatusFieldContext<G extends IGame, C extends ICharacter, Args extends readonly any[]> {
   character: C
   status: G['characterStatus']
   args: Args
 }
 
-export interface FieldConfiguration<G extends IGame, C extends ICharacter, Args extends any[]> {
+export interface FieldConfiguration<G extends IGame, C extends ICharacter, Args extends readonly any[]> {
   id: string
   name: string
   type: any
@@ -27,7 +27,7 @@ export interface FieldConfiguration<G extends IGame, C extends ICharacter, Args 
   aliases: string[]
 }
 
-export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args extends any[]> {
+export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args extends readonly any[]> {
   public readonly fields = new Map<string, FieldConfiguration<G, C, Args>>()
 
   public addField(id: string, name: string, type: any, getter: (context: FieldContext<G, C, Args>) => any) {
@@ -85,7 +85,7 @@ export class RootCharacterQuery<G extends IGame, C extends ICharacter> extends F
     }
   >()
 
-  public addSubQuery<Args extends any[]>(id: string, name: string, query: SubCharacterQuery<G, C, Args>) {
+  public addSubQuery<Args extends readonly any[]>(id: string, name: string, query: SubCharacterQuery<G, C, Args>) {
     this.subQueries.set(id, {
       id,
       name,
@@ -93,7 +93,7 @@ export class RootCharacterQuery<G extends IGame, C extends ICharacter> extends F
     })
   }
 
-  public createSubQuery<Args extends any[]>(id: string, name: string, execute: (character: C) => Array<Args>) {
+  public createSubQuery<Args extends readonly any[]>(id: string, name: string, execute: (character: C) => Array<Args>) {
     const scq = new SubCharacterQuery<G, C, Args>(execute)
     this.subQueries.set(id, {
       id,
@@ -104,7 +104,7 @@ export class RootCharacterQuery<G extends IGame, C extends ICharacter> extends F
   }
 }
 
-export class SubCharacterQuery<G extends IGame, C extends ICharacter, Args extends any[]> extends FieldHolder<
+export class SubCharacterQuery<G extends IGame, C extends ICharacter, Args extends readonly any[]> extends FieldHolder<
   G,
   C,
   Args
