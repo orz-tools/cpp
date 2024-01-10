@@ -145,7 +145,7 @@ const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: typeof
 })
 
 function groupLog(codename: GameName) {
-  const sortedLogs = sortBy((x) => x.date, logs.reverse())
+  const sortedLogs = sortBy((x) => x.date, logs.slice(0).reverse())
     .reverse()
     .filter((x) => (x.game ? x.game.includes(codename) : true))
   return groupBy((x) => x.date, sortedLogs)
