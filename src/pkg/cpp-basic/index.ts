@@ -1,4 +1,5 @@
-export * from './types'
-export * from './managers'
 export * from './DataManager'
 export * from './FarmPlanner'
+export * from './managers'
+export * from './queries'
+export * from './types'

@@ -8,6 +8,11 @@ import { useChamber } from './Chamber'
 
 const logs = [
   {
+    date: '2024-01-10',
+    type: 'new',
+    desc: 'Something novel is coming...',
+  },
+  {
     date: '2024-01-04',
     game: [GameName.Arknights],
     type: 'optimize',

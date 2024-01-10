@@ -1,11 +1,13 @@
 import { Draft } from 'immer'
 import { BasicDataManager } from './DataManager'
+import { QueryParam, RootCharacterQuery } from './queries'
 import { ExpItem, Formula, ICharacter, IGame, IItem, IStageInfo, Task } from './types'
 
 export interface IGameAdapter<G extends IGame> {
   getCodename(): string
   getDataManager(): BasicDataManager<G>
   getUserDataAdapter(): IUserDataAdapter<G>
+  getRootCharacterQuery(): RootCharacterQuery<any, any>
   getCharacter(key: string): ICharacter
   getItem(key: string): IItem
   getInventoryCategories(): Record<string, string>
@@ -17,6 +19,8 @@ export interface IGameAdapter<G extends IGame> {
   getStageInfos(): Record<string, IStageInfo>
   getZoneNames(): Record<string, string>
   getFormulaTagNames(): Record<string, string>
+  getDefaultCharacterQueryOrder(): QueryParam['order']
+  getFavCharacterQueryWhere(): QueryParam['where']
   readPreference<K extends keyof G['preferences']>(key: K, storage: Record<string, any>): G['preferences'][K]
   writePreference<K extends keyof G['preferences']>(
     key: K,

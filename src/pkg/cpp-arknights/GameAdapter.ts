@@ -1,8 +1,9 @@
 import { sortBy } from 'ramda'
 import { GameName } from '../../games'
-import { BasicStageInfo, ExpItem, IGameAdapter } from '../cpp-basic'
-import { ArknightsDataManager } from './DataManager'
+import { BasicStageInfo, ExpItem, IGameAdapter, QueryParam, RootCharacterQuery } from '../cpp-basic'
+import { ArknightsDataManager, Character } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
+import { HeyboxSurveySource, YituliuSurveySource } from './survey'
 import {
   AK_ITEM_GOLD,
   AK_ITEM_UNKNOWN_SHIT,
@@ -64,6 +65,80 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
 
   public getUserDataAdapter() {
     return this.userDataAdapter
+  }
+
+  private rootCharacterQuery = new RootCharacterQuery<Arknights, Character>().tap((aa) => {
+    aa.addField('name', '代号', String, ({ character }) => character.name)
+    aa.addField('code', '西文代号', String, ({ character }) => character.appellation)
+      .addAlias('appellation')
+      .addAlias('en')
+    aa.addField('rarity', '稀有度', Number, ({ character }) => character.rarity + 1).addAlias('star')
+
+    aa.addStatusField('elite', '精英化', Number, ({ status }) => status.elite)
+    aa.addStatusField('level', '等级', Number, ({ status }) => status.level)
+    aa.addStatusField('elv', '精英化*100+等级', Number, ({ status }) => status.elite * 100 + status.level)
+    aa.addStatusField('skillLevel', '技能等级', Number, ({ status }) => status.skillLevel)
+
+    const hss = new HeyboxSurveySource(this.dataManager)
+    const yss = new YituliuSurveySource(this.dataManager)
+
+    aa.createSubQuery('skill', '技能', (character) => {
+      return character.skills.map((_, index) => [index] as const)
+    }).tap((sq) => {
+      sq.addField(
+        'name',
+        '技能名',
+        Number,
+        ({ character, args: [index] }) => character.skills[index][1].raw.levels[0].name,
+      )
+
+      sq.addStatusField('mastery', '专精等级', Number, ({ character, status, args: [index] }) => {
+        return status.skillMaster[character.skills[index][1].key] ?? 0
+      })
+
+      sq.addField('mastery3rate.yituliu', '一图流练度统计 技能专三率', Number, ({ character, args: [index] }) => {
+        const s = yss.skill(
+          character,
+          character.skills[index][1],
+          character.skills[index][2],
+          character.skills[index][3],
+        )
+        if (s?.[0]?.percent == null || s?.[3]?.percent == null) return undefined
+        return s?.[0]?.percent * s?.[3]?.percent
+      })
+
+      sq.addField('mastery3rate.heybox', '小黑盒干员统计 技能专三率', Number, ({ character, args: [index] }) => {
+        const s = hss.skill(
+          character,
+          character.skills[index][1],
+          character.skills[index][2],
+          character.skills[index][3],
+        )
+        if (s?.[0]?.percent == null || s?.[3]?.percent == null) return undefined
+        return s?.[0]?.percent * s?.[3]?.percent
+      })
+    })
+  })
+
+  public getRootCharacterQuery() {
+    return this.rootCharacterQuery
+  }
+
+  public getDefaultCharacterQueryOrder(): QueryParam['order'] {
+    return [
+      ['rarity', 'DESC'],
+      ['elite', 'DESC'],
+      ['level', 'DESC'],
+    ]
+  }
+
+  public getFavCharacterQueryWhere(): QueryParam['where'] {
+    return {
+      _: 'field',
+      op: '<',
+      field: 'elite',
+      operand: 2,
+    }
   }
 
   public getFormulaTagNames() {

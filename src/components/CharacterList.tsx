@@ -6,6 +6,7 @@ import {
   Menu,
   MenuDivider,
   Navbar,
+  NonIdealState,
   Popover,
   Spinner,
   Tag,
@@ -21,7 +22,7 @@ import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
-import { ICharacter, IGame } from '../pkg/cpp-basic'
+import { ExtraCharacterQuery, ICharacter, IGame, Querier, QueryParam } from '../pkg/cpp-basic'
 
 export const Hide = memo(
   ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
@@ -85,11 +86,11 @@ export const CharacterContextMenu = memo(
     const atoms = useAtoms<IGame>()
     const setData = useSetAtom(atoms.dataAtom)
     const [param, setParam] = useAtom(queryParamAtom)
-    const shouldRefresh = param.mode === ListMode.WithGoal
+    const shouldRefresh = param.query === ListModeWithGoal
 
     return (
       <Menu>
-        {alwaysSorting || (alwaysSorting !== false && param.mode === ListMode.WithGoal) ? (
+        {alwaysSorting || (alwaysSorting !== false && param.query === ListModeWithGoal) ? (
           <>
             <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
               <>
@@ -243,6 +244,15 @@ const CharacterMenu = memo(
             {render(goalCharacter, character, currentCharacter, goalSame)}
           </a>
         </Popover>
+
+        {/* <div
+          role="menuitem"
+          tabIndex={0}
+          className="bp5-menu-item"
+          style={{ display: 'block', width: 150, flexShrink: 0, minWidth: 150 }}
+        >
+          aasaaaaaaaa
+        </div> */}
       </li>
     )
   },
@@ -266,6 +276,74 @@ function buildMatcher(query: string): (x: string) => boolean {
   return (x: string) => x.toLowerCase().includes(trimmed)
 }
 
+class CppCharacterListQuery extends ExtraCharacterQuery<IGame, ICharacter> {
+  public constructor(private readonly cpp: Cpp<any>) {
+    super()
+
+    const uda = cpp.gameAdapter.getUserDataAdapter()
+    const store = cpp.store
+    const atoms = cpp.atoms.atoms
+    const realOrder = store.get(atoms.goalOrder)
+
+    this.addField('id', '内部代号', String, ({ character }) => character.key).addAlias('key')
+
+    this.addStatusField('own', '持有', Boolean, ({ character, status }) => !uda.isAbsentCharacter(character, status))
+
+    this.addField('goalOrder', '计划顺序', Number, ({ character }) => {
+      const o = realOrder.indexOf(character.key)
+      if (o < 0) return Number.MAX_SAFE_INTEGER
+      return o
+    })
+
+    this.addField('finished', '已全面养成', Boolean, ({ character }) => {
+      return store.get(atoms.isCharacterFinished(character.key))
+    })
+  }
+}
+
+function compileQuery(query: string, cpp: Cpp<any>): QueryParam {
+  const defaultQueryOrder = cpp.gameAdapter.getDefaultCharacterQueryOrder()
+  if (query.startsWith(PredefinedQueryPrefix)) {
+    if (query === ListModeFav) {
+      const fav = cpp.gameAdapter.getFavCharacterQueryWhere()
+
+      return {
+        where: {
+          _: '||',
+          operand: [
+            { _: 'field', field: 'goal', op: '==', operand: true },
+            {
+              _: '&&',
+              operand: [...(fav ? [fav] : []), { _: 'field', field: 'finished', op: '==', operand: false }],
+            },
+          ],
+        },
+        order: defaultQueryOrder,
+      }
+    } else if (query === ListModeAll) {
+      return {
+        order: defaultQueryOrder,
+      }
+    } else if (query === ListModeWithGoal) {
+      return {
+        where: {
+          _: '&&',
+          operand: [{ _: 'field', field: 'goal', op: '==', operand: true }],
+        },
+        order: [['goalOrder', 'ASC']],
+      }
+    } else if (query === ListModeAbsent) {
+      return {
+        where: { _: 'field', field: 'own', op: '==', operand: false },
+        order: defaultQueryOrder,
+      }
+    }
+    throw new Error('Invalid predefined query')
+  }
+
+  throw new Error('Invalid query')
+}
+
 async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListCharactersQueryParam) {
   await Promise.resolve()
 
@@ -275,50 +353,31 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
   const ud = store.get(atoms.rootAtom)
   const uda = ga.getUserDataAdapter()
 
-  const matcher = buildMatcher(param.query)
-  const realOrder = store.get(atoms.goalOrder)
   const emptyCharacterStatus = uda.getFrozenEmptyCharacterStatus()
 
-  return Object.values(uda.getAllCharacterIds())
-    .map((x) => ga.getCharacter(x))
-    .filter((x) => {
-      if (!(matcher(x.name) || matcher(x.appellation) || matcher(x.key))) return false
+  const rq = ga.getRootCharacterQuery()
+  const query = new Querier<G, ICharacter>(rq, compileQuery(param.query, cpp))
 
-      if (param.mode === ListMode.WithGoal) {
-        return !!ud.goal[x.key]
-      } else if (param.mode === ListMode.Absent) {
-        return uda.isAbsentCharacter(x, ud.current[x.key] || emptyCharacterStatus)
-      } else if (param.mode === ListMode.Fav) {
-        const current = ud.current[x.key] || emptyCharacterStatus
-        return !!ud.goal[x.key] || (uda.isFavCharacter(x, current) && !store.get(atoms.isCharacterFinished(x.key)))
+  const matcher = buildMatcher(param.search)
+
+  query.addQuery(new CppCharacterListQuery(cpp))
+
+  query.execute(
+    (function* () {
+      for (const x of uda.getAllCharacterIds()) {
+        const character = ga.getCharacter(x)
+        if (!(matcher(character.name) || matcher(character.appellation) || matcher(character.key))) continue
+        yield { character, current: ud.current[character.key] || emptyCharacterStatus, goal: ud.goal[character.key] }
       }
-      return true
-    })
-    .sort((a, b) => {
-      if (param.mode === ListMode.WithGoal) {
-        const aa = realOrder.indexOf(a.key)
-        const bb = realOrder.indexOf(b.key)
-        return aa - bb
-      }
+    })(),
+  )
 
-      const stA = ud.current[a.key] || emptyCharacterStatus
-      const stB = ud.current[b.key] || emptyCharacterStatus
-
-      return uda.compareCharacter(a, b, stA, stB)
-      return 0
-    })
-}
-
-enum ListMode {
-  Fav,
-  All,
-  WithGoal,
-  Absent,
+  return query.result.map((x) => x.character)
 }
 
 interface ListCharactersQueryParam {
+  search: string
   query: string
-  mode: ListMode
 }
 
 const queryParamStorageAtom = atomWithStorage<ListCharactersQueryParam>('cpp_query_param', undefined as any)
@@ -326,7 +385,8 @@ const queryParamAtom = atom(
   (get) => {
     const value = Object.assign({}, get(queryParamStorageAtom) || {})
     if (value.query == null) value.query = ''
-    if (value.mode == null) value.mode = ListMode.Fav
+    if (value.search == null) value.search = ''
+    delete (value as any).mode
     return value
   },
   (get, set, value: ListCharactersQueryParam | SetStateAction<ListCharactersQueryParam>) =>
@@ -348,13 +408,19 @@ const QuerySearchBox = memo(() => {
           autoCapitalize="false"
           autoCorrect="false"
           aria-autocomplete="none"
-          value={param.query}
-          onChange={(e) => setParam((x) => ({ ...x, query: e.currentTarget.value }))}
+          value={param.search}
+          onChange={(e) => setParam((x) => ({ ...x, search: e.currentTarget.value }))}
         />
       </div>
     </>
   )
 })
+
+const PredefinedQueryPrefix = '#!'
+const ListModeFav = PredefinedQueryPrefix + 'fav'
+const ListModeAll = PredefinedQueryPrefix + 'all'
+const ListModeWithGoal = PredefinedQueryPrefix + 'withGoal'
+const ListModeAbsent = PredefinedQueryPrefix + 'absent'
 
 const QueryBuilder = memo(() => {
   const [param, setParam] = useAtom(queryParamAtom)
@@ -366,28 +432,28 @@ const QueryBuilder = memo(() => {
       <QuerySearchBox />
       <Button
         minimal={true}
-        active={param.mode === ListMode.Fav}
+        active={param.query === ListModeFav}
         text="想看的"
-        onClick={() => setParam((x) => ({ ...x, mode: ListMode.Fav }))}
+        onClick={() => setParam((x) => ({ ...x, query: ListModeFav }))}
       />
       <Button
         minimal={true}
-        active={param.mode === ListMode.All}
+        active={param.query === ListModeAll}
         text="全部"
-        onClick={() => setParam((x) => ({ ...x, mode: ListMode.All }))}
+        onClick={() => setParam((x) => ({ ...x, query: ListModeAll }))}
       />
       <Button
         minimal={true}
-        active={param.mode === ListMode.WithGoal}
+        active={param.query === ListModeWithGoal}
         text="计划"
         rightIcon={goalCount > 0 ? <Tag round={true}>{goalCount}</Tag> : undefined}
-        onClick={() => setParam((x) => ({ ...x, mode: ListMode.WithGoal }))}
+        onClick={() => setParam((x) => ({ ...x, query: ListModeWithGoal }))}
       />
       <Button
         minimal={true}
-        active={param.mode === ListMode.Absent}
+        active={param.query === ListModeAbsent}
         text="缺席"
-        onClick={() => setParam((x) => ({ ...x, mode: ListMode.Absent }))}
+        onClick={() => setParam((x) => ({ ...x, query: ListModeAbsent }))}
       />
     </>
   )
@@ -397,13 +463,16 @@ export const CharacterList = memo(() => {
   const param = useAtomValue(queryParamAtom)
 
   const cpp = useCpp()
-  const { send, response, loading } = useRequest(listCharactersQuery)
+  const { send, response, loading, error } = useRequest(listCharactersQuery)
 
   const refresh = useEvent(() => {
     send(cpp, param)
   })
 
   useEffect(() => refresh(), [param, refresh])
+  useEffect(() => {
+    if (error) console.error('Failed to query', error)
+  }, [error])
 
   const list = response || []
 
@@ -440,33 +509,39 @@ export const CharacterList = memo(() => {
           <QueryBuilder />
         </Navbar.Group>
       </Navbar>
-      <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
-        <div
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            width: '100%',
-            position: 'relative',
-          }}
-        >
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            const index = virtualRow.index
-            return (
-              <CharacterMenu
-                key={virtualRow.key}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: `${virtualRow.size}px`,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-                character={list[index]}
-              />
-            )
-          })}
-        </div>
-      </Menu>
+      {error ? (
+        <NonIdealState title={'查询失败'} icon={'warning-sign'}>
+          <pre style={{ margin: 0 }}>{error.message}</pre>
+        </NonIdealState>
+      ) : (
+        <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
+          <div
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+              width: '100%',
+              position: 'relative',
+            }}
+          >
+            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const index = virtualRow.index
+              return (
+                <CharacterMenu
+                  key={index}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: `${virtualRow.size}px`,
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                  character={list[index]}
+                />
+              )
+            })}
+          </div>
+        </Menu>
+      )}
     </>
   )
 })

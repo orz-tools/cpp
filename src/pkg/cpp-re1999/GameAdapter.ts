@@ -1,7 +1,7 @@
 import { sortBy } from 'ramda'
 import { GameName } from '../../games'
-import { BasicStageInfo, ExpItem, IGameAdapter } from '../cpp-basic'
-import { CurrencyItem, Item, Re1999DataManager, parseConsume } from './DataManager'
+import { BasicStageInfo, ExpItem, IGameAdapter, QueryParam, RootCharacterQuery } from '../cpp-basic'
+import { Character, CurrencyItem, Item, Re1999DataManager, parseConsume } from './DataManager'
 import { Re1999UserDataAdapter } from './UserDataAdapter'
 import {
   ExChapterType,
@@ -36,6 +36,41 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
 
   public getUserDataAdapter() {
     return this.userDataAdapter
+  }
+
+  private rootCharacterQuery = new RootCharacterQuery<Re1999, Character>().tap((aa) => {
+    aa.addField('name', '代号', String, ({ character }) => character.name)
+    aa.addField('code', '西文代号', String, ({ character }) => character.appellation)
+      .addAlias('appellation')
+      .addAlias('en')
+    aa.addField('rarity', '稀有度', Number, ({ character }) => character.rarity + 1).addAlias('star')
+
+    aa.addStatusField('insight', '洞悉', Number, ({ status }) => status.insight)
+    aa.addStatusField('level', '等级', Number, ({ status }) => status.level)
+    aa.addStatusField('ilv', '东西*100+等级', Number, ({ status }) => status.insight * 100 + status.level)
+    aa.addStatusField('resonate', '共鸣', Number, ({ status }) => status.resonate)
+  })
+
+  public getRootCharacterQuery() {
+    return this.rootCharacterQuery
+  }
+
+  public getDefaultCharacterQueryOrder(): QueryParam['order'] {
+    return [
+      ['rarity', 'DESC'],
+      ['insight', 'DESC'],
+      ['level', 'DESC'],
+      ['resonate', 'DESC'],
+    ]
+  }
+
+  public getFavCharacterQueryWhere(): QueryParam['where'] {
+    return {
+      _: 'field',
+      op: '<',
+      field: 'insight',
+      operand: 3,
+    }
   }
 
   public getFormulaTagNames() {

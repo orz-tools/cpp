@@ -1,0 +1,287 @@
+import { ICharacter, IGame } from './types'
+
+export interface QueryInput<G extends IGame, C extends ICharacter> {
+  character: C
+  current: G['characterStatus']
+  goal: G['characterStatus'] | undefined
+}
+
+export interface FieldContext<G extends IGame, C extends ICharacter, Args extends any[]> {
+  character: C
+  current: G['characterStatus']
+  goal: G['characterStatus'] | undefined
+  args: Args
+}
+
+export interface StatusFieldContext<G extends IGame, C extends ICharacter, Args extends any[]> {
+  character: C
+  status: G['characterStatus']
+  args: Args
+}
+
+export interface FieldConfiguration<G extends IGame, C extends ICharacter, Args extends any[]> {
+  id: string
+  name: string
+  type: any
+  getter: (context: FieldContext<G, C, Args>) => any
+  aliases: string[]
+}
+
+export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args extends any[]> {
+  public readonly fields = new Map<string, FieldConfiguration<G, C, Args>>()
+
+  public addField(id: string, name: string, type: any, getter: (context: FieldContext<G, C, Args>) => any) {
+    const field: FieldConfiguration<G, C, Args> = {
+      id,
+      name,
+      type,
+      getter,
+      aliases: [],
+    }
+    this.fields.set(id, field)
+
+    const result = {
+      addAlias: (alias: string) => {
+        this.fields.set(alias, field)
+        field.aliases.push(alias)
+        return result
+      },
+    }
+
+    return result
+  }
+
+  public addStatusField(id: string, name: string, type: any, getter: (context: StatusFieldContext<G, C, Args>) => any) {
+    this.addField('current.' + id, name, type, ({ character, current, args }) => {
+      return getter({ character, status: current, args })
+    }).addAlias(id)
+
+    this.addField('goal.' + id, name, type, ({ character, goal, args }) => {
+      if (goal === undefined) return undefined
+      return getter({ character, status: goal, args })
+    })
+  }
+
+  public tap(callback: (self: this) => void) {
+    callback(this)
+    return this
+  }
+}
+
+export class RootCharacterQuery<G extends IGame, C extends ICharacter> extends FieldHolder<G, C, []> {
+  public constructor() {
+    super()
+    this.addField('goal', '有计划', Boolean, ({ goal }) => {
+      return !!goal
+    })
+  }
+
+  public readonly subQueries = new Map<
+    string,
+    {
+      id: string
+      name: string
+      query: SubCharacterQuery<G, C, any>
+    }
+  >()
+
+  public addSubQuery<Args extends any[]>(id: string, name: string, query: SubCharacterQuery<G, C, Args>) {
+    this.subQueries.set(id, {
+      id,
+      name,
+      query,
+    })
+  }
+
+  public createSubQuery<Args extends any[]>(id: string, name: string, execute: (character: C) => Array<Args>) {
+    const scq = new SubCharacterQuery<G, C, Args>(execute)
+    this.subQueries.set(id, {
+      id,
+      name,
+      query: scq,
+    })
+    return scq
+  }
+}
+
+export class SubCharacterQuery<G extends IGame, C extends ICharacter, Args extends any[]> extends FieldHolder<
+  G,
+  C,
+  Args
+> {
+  public constructor(public readonly execute: (character: C) => Array<Args>) {
+    super()
+  }
+}
+
+export class ExtraCharacterQuery<G extends IGame, C extends ICharacter> extends FieldHolder<G, C, []> {}
+
+export type Assertion = FieldAssertion | AndAssertion | OrAssertion | NotAssertion
+export type FieldAssertion = { _: 'field'; field: string; op: string; operand: any }
+export type AndAssertion = { _: '&&'; operand: Assertion[] }
+export type OrAssertion = { _: '||'; operand: Assertion[] }
+export type NotAssertion = { _: '!'; operand: Assertion }
+
+export interface QueryParam {
+  join?: string | undefined | null
+  where?: Assertion | undefined | null
+  order?: [string, 'ASC' | 'DESC'][] | undefined | null
+  group?: string[] | undefined | null
+}
+
+export class Querier<G extends IGame, C extends ICharacter> {
+  private executed = false
+  public readonly fields = new Map<string, FieldConfiguration<G, C, any>>()
+  public readonly result: FieldContext<G, C, any>[] = []
+
+  public readonly subQueryId?: string
+  public readonly subQuery?: SubCharacterQuery<G, C, any>
+  public constructor(
+    public readonly rootQuery: RootCharacterQuery<G, C>,
+    public readonly param: QueryParam,
+  ) {
+    for (const [id, field] of rootQuery.fields) {
+      this.fields.set(id, field)
+    }
+
+    if (param.join != null) {
+      const subQuery = rootQuery.subQueries.get(param.join)
+      if (subQuery === undefined) throw new Error(`Sub query ${param.join} not found`)
+      this.subQuery = subQuery.query
+      this.subQueryId = param.join
+    }
+
+    if (this.subQuery !== undefined) {
+      for (const [id, field] of this.subQuery.fields) {
+        this.fields.set(`${this.subQueryId}.${id}`, field)
+      }
+    }
+  }
+
+  public addQuery(query: ExtraCharacterQuery<IGame, ICharacter>) {
+    for (const [id, field] of query.fields) {
+      this.fields.set(id, field)
+    }
+  }
+
+  public execute(input: Generator<QueryInput<G, C>>) {
+    if (this.executed) throw new Error('Already executed')
+    this.executed = true
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this
+    const generator: Generator<FieldContext<G, C, any>> = this.subQuery
+      ? (function* () {
+          for (const ctx of input) {
+            for (const args of self.subQuery!.execute(ctx.character)) {
+              yield { ...ctx, args }
+            }
+          }
+        })()
+      : (function* () {
+          for (const ctx of input) {
+            yield { ...ctx, args: [] }
+          }
+        })()
+
+    const filter = this.compileAssertion(this.param.where)
+    for (const ctx of generator) {
+      if (!filter(ctx)) continue
+      this.result.push(ctx)
+    }
+
+    if (this.param.order != null) {
+      this.result.sort(this.compileComparatorList(this.param.order))
+    }
+  }
+
+  private compileFieldGetter(field: string): (item: FieldContext<G, C, any>) => any {
+    const f = this.fields.get(field)
+    if (f === undefined) throw new Error(`Field ${field} not found`)
+    return f.getter
+  }
+
+  private compileFieldAssertion(a: FieldAssertion): (item: FieldContext<G, C, any>) => boolean {
+    const getter = this.compileFieldGetter(a.field)
+    const operand = a.operand
+    switch (a.op) {
+      case '==':
+        return (item) => getter(item) === operand
+      case '!=':
+        return (item) => getter(item) !== operand
+      case '>':
+        return (item) => getter(item) > operand
+      case '>=':
+        return (item) => getter(item) >= operand
+      case '<':
+        return (item) => getter(item) < operand
+      case '<=':
+        return (item) => getter(item) <= operand
+      case 'in':
+        return (item) => operand.includes(getter(item))
+      case '!in':
+        return (item) => !operand.includes(getter(item))
+      default:
+        throw new Error(`Unknown operator ${a.op}`)
+    }
+  }
+
+  private compileAndAssertion(a: AndAssertion): (item: FieldContext<G, C, any>) => boolean {
+    const operands = a.operand.map((op) => this.compileAssertion(op))
+    return (item) => operands.every((op) => op(item))
+  }
+
+  private compileOrAssertion(a: OrAssertion): (item: FieldContext<G, C, any>) => boolean {
+    const operands = a.operand.map((op) => this.compileAssertion(op))
+    return (item) => operands.some((op) => op(item))
+  }
+
+  private compileNotAssertion(a: NotAssertion): (item: FieldContext<G, C, any>) => boolean {
+    const operand = this.compileAssertion(a.operand)
+    return (item) => !operand(item)
+  }
+
+  private compileAssertion(a: Assertion | null | undefined): (item: FieldContext<G, C, any>) => boolean {
+    if (a === undefined || a === null) {
+      return () => true
+    }
+    switch (a._) {
+      case 'field':
+        return this.compileFieldAssertion(a)
+      case '&&':
+        return this.compileAndAssertion(a)
+      case '||':
+        return this.compileOrAssertion(a)
+      case '!':
+        return this.compileNotAssertion(a)
+    }
+  }
+
+  private compileComparator(
+    comparator: [string, 'ASC' | 'DESC'],
+  ): (a: FieldContext<G, C, any>, b: FieldContext<G, C, any>) => number {
+    const getter = this.compileFieldGetter(comparator[0])
+    const order = comparator[1]
+
+    return (a, b) => {
+      const va = getter(a)
+      const vb = getter(b)
+      if (va === vb) return 0
+      if (order === 'ASC') return va < vb ? -1 : 1
+      else return va < vb ? 1 : -1
+    }
+  }
+
+  private compileComparatorList(
+    comparators: [string, 'ASC' | 'DESC'][],
+  ): (a: FieldContext<G, C, any>, b: FieldContext<G, C, any>) => number {
+    const compiledComparators = comparators.map((c) => this.compileComparator(c))
+    return (a, b) => {
+      for (const comparator of compiledComparators) {
+        const result = comparator(a, b)
+        if (result !== 0) return result
+      }
+      return 0
+    }
+  }
+}

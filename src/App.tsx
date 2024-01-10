@@ -161,6 +161,7 @@ const ClosureButtonHeading = memo(() => {
 const App = memo(() => {
   const cpp = useCpp()
   const defaultCharStatusWidth = 43 * 6
+  const charExtraWidth = 0
   const charStatusWidth = cpp.gameComponent.charStatusWidth || defaultCharStatusWidth
   const ga = useGameAdapter()
 
@@ -217,7 +218,7 @@ const App = memo(() => {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: Math.max(730 - defaultCharStatusWidth * 2 + charStatusWidth * 2, 560),
+            width: Math.max(730 - defaultCharStatusWidth * 2 + charStatusWidth * 2, 560) + charExtraWidth,
             display: 'flex',
             flexDirection: 'column',
           }}
