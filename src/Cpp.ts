@@ -72,6 +72,7 @@ export class Cpp<G extends IGame> {
     localStorage.removeItem('cpp_query_param')
 
     this.preferenceAtoms = this.createPreferenceAtoms()
+    this.queryParamAtom = this.createQueryParamAtom()
 
     this.atoms = new UserDataAtomHolder(this.gameAdapter)
     this.atoms.setAtom(
@@ -83,7 +84,7 @@ export class Cpp<G extends IGame> {
   public store = createStore()
   public atoms: UserDataAtomHolder<G>
   public preferenceAtoms: ReturnType<Cpp<G>['createPreferenceAtoms']>
-  public queryParamAtom = this.createQueryParamAtom()
+  public queryParamAtom: ReturnType<Cpp<G>['createQueryParamAtom']>
 
   public createQueryParamAtom() {
     const key = `cpp[` + this.gameAdapter.getCodename() + `]query_param`
