@@ -6,16 +6,16 @@
   display: block;
   content: '';
   position: absolute;
-  left: -2px;
-  top: -2px;
-  width: 44px;
-  height: 44px;
+  left: -1px;
+  top: -1px;
+  width: 42px;
+  height: 42px;
   z-index: -1;
-  background-size: 44px 44px;
+  background-size: 42px 42px;
   background-repeat: no-repeat;
   background-position: 0px 0px;
-  border-radius: 3px;
-  box-shadow: color-mix(in srgb, var(--rarity-color, rgba(0, 0, 0)), transparent 30%) 0px 0px 3px 0px;
+  border-radius: 2px;
+  box-shadow: color-mix(in srgb, var(--rarity-color, rgba(0, 0, 0)), transparent 15%) 0px 0px 3px 0px;
 }
 
 .cpp-char-rarity-0 .cpp-char-avatar::before {
@@ -50,5 +50,5 @@
 
 .cpp-char-avatar > img {
   background-color: #eef0f2;
-  border-radius: 2px;
+  border-radius: 1px;
 }
