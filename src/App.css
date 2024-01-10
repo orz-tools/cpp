@@ -360,3 +360,9 @@ body {
 .bp5-menu > .bp5-callout + .bp5-menu-header:first-of-type {
   margin-top: 0px;
 }
+
+.cpp-overflow-button > span.bp5-button-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

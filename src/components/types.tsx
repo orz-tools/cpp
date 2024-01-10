@@ -1,6 +1,6 @@
 import React from 'react'
 import { BlobFlavour } from '../pkg/blobcache'
-import { ICharacter } from '../pkg/cpp-basic'
+import { FieldContext, ICharacter, Querier } from '../pkg/cpp-basic'
 
 export interface ItemSimulatedViewConfig {
   limit: number
@@ -22,4 +22,8 @@ export interface IGameComponent {
   blobFlavours?: BlobFlavour[]
   ImporterMenuItems?: React.FC
   ExporterMenuItems?: React.FC
+  extraFields?: Record<
+    string,
+    { width: number; C: React.FC<{ query: Querier<any, any>; context: FieldContext<any, any, any> }> }
+  >
 }

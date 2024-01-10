@@ -1,6 +1,15 @@
 import { sortBy } from 'ramda'
 import { GameName } from '../../games'
-import { BasicStageInfo, ExpItem, IGameAdapter, QueryParam, RootCharacterQuery } from '../cpp-basic'
+import {
+  BasicStageInfo,
+  ExpItem,
+  IGameAdapter,
+  PredefinedQuery,
+  QNumber,
+  QString,
+  QueryParam,
+  RootCharacterQuery,
+} from '../cpp-basic'
 import { Character, CurrencyItem, Item, Re1999DataManager, parseConsume } from './DataManager'
 import { Re1999UserDataAdapter } from './UserDataAdapter'
 import {
@@ -39,16 +48,16 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
   }
 
   private rootCharacterQuery = new RootCharacterQuery<Re1999, Character>().tap((aa) => {
-    aa.addField('name', '代号', String, ({ character }) => character.name)
-    aa.addField('code', '西文代号', String, ({ character }) => character.appellation)
+    aa.addField('name', '代号', QString, ({ character }) => character.name)
+    aa.addField('code', '西文代号', QString, ({ character }) => character.appellation)
       .addAlias('appellation')
       .addAlias('en')
-    aa.addField('rarity', '稀有度', Number, ({ character }) => character.rarity + 1).addAlias('star')
+    aa.addField('rarity', '稀有度', QNumber, ({ character }) => character.rarity + 1).addAlias('star')
 
-    aa.addStatusField('insight', '洞悉', Number, ({ status }) => status.insight)
-    aa.addStatusField('level', '等级', Number, ({ status }) => status.level)
-    aa.addStatusField('ilv', '东西*100+等级', Number, ({ status }) => status.insight * 100 + status.level)
-    aa.addStatusField('resonate', '共鸣', Number, ({ status }) => status.resonate)
+    aa.addStatusField('insight', '洞悉', QNumber, ({ status }) => status.insight)
+    aa.addStatusField('level', '等级', QNumber, ({ status }) => status.level)
+    aa.addStatusField('ilv', '东西*100+等级', QNumber, ({ status }) => status.insight * 100 + status.level)
+    aa.addStatusField('resonate', '共鸣', QNumber, ({ status }) => status.resonate)
   })
 
   public getRootCharacterQuery() {
@@ -71,6 +80,10 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       field: 'insight',
       operand: 3,
     }
+  }
+
+  public getPredefinedQueries(): Record<string, PredefinedQuery> {
+    return {}
   }
 
   public getFormulaTagNames() {

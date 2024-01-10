@@ -1,28 +1,41 @@
 import {
-  Alignment,
   Button,
   ButtonGroup,
+  Card,
   ContextMenu,
+  Elevation,
   Menu,
   MenuDivider,
+  MenuItem,
   Navbar,
   NonIdealState,
   Popover,
   Spinner,
   Tag,
+  TextArea,
 } from '@blueprintjs/core'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
-import { SetStateAction, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { PrimitiveAtom, SetStateAction, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import React, { memo, useEffect, useMemo, useRef } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { Cpp, useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
-import { ExtraCharacterQuery, ICharacter, IGame, Querier, QueryParam } from '../pkg/cpp-basic'
+import {
+  ExtraCharacterQuery,
+  FieldContext,
+  ICharacter,
+  IGame,
+  QBoolean,
+  QNumber,
+  QString,
+  Querier,
+  QueryParam,
+} from '../pkg/cpp-basic'
 
 export const Hide = memo(
   ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
@@ -160,7 +173,17 @@ export const CharacterContextMenu = memo(
 )
 
 const CharacterMenu = memo(
-  <G extends IGame>({ character, style }: { character: ICharacter; style?: React.CSSProperties }) => {
+  <G extends IGame>({
+    character,
+    style,
+    item,
+    renderExtraFields,
+  }: {
+    character: ICharacter
+    style?: React.CSSProperties
+    item: FieldContext<G, ICharacter, any>
+    renderExtraFields?: (item: FieldContext<G, ICharacter, any>) => React.ReactNode
+  }) => {
     const atoms = useAtoms<G>()
     const ga = useGameAdapter<G>()
     const uda = ga.getUserDataAdapter()
@@ -214,6 +237,7 @@ const CharacterMenu = memo(
             </>
           </a>
         </ContextMenu>
+        {renderExtraFields ? renderExtraFields(item) : null}
         <Popover
           usePortal={true}
           popoverClassName={'cpp-popover'}
@@ -244,15 +268,6 @@ const CharacterMenu = memo(
             {render(goalCharacter, character, currentCharacter, goalSame)}
           </a>
         </Popover>
-
-        {/* <div
-          role="menuitem"
-          tabIndex={0}
-          className="bp5-menu-item"
-          style={{ display: 'block', width: 150, flexShrink: 0, minWidth: 150 }}
-        >
-          aasaaaaaaaa
-        </div> */}
       </li>
     )
   },
@@ -285,20 +300,24 @@ class CppCharacterListQuery extends ExtraCharacterQuery<IGame, ICharacter> {
     const atoms = cpp.atoms.atoms
     const realOrder = store.get(atoms.goalOrder)
 
-    this.addField('id', '内部代号', String, ({ character }) => character.key).addAlias('key')
+    this.addField('id', '内部代号', QString, ({ character }) => character.key).addAlias('key')
 
-    this.addStatusField('own', '持有', Boolean, ({ character, status }) => !uda.isAbsentCharacter(character, status))
+    this.addStatusField('own', '持有', QBoolean, ({ character, status }) => !uda.isAbsentCharacter(character, status))
 
-    this.addField('goalOrder', '计划顺序', Number, ({ character }) => {
+    this.addField('goalOrder', '计划顺序', QNumber, ({ character }) => {
       const o = realOrder.indexOf(character.key)
       if (o < 0) return Number.MAX_SAFE_INTEGER
       return o
     })
 
-    this.addField('finished', '已全面养成', Boolean, ({ character }) => {
+    this.addField('finished', '已全面养成', QBoolean, ({ character }) => {
       return store.get(atoms.isCharacterFinished(character.key))
     })
   }
+}
+
+function stringifyQuery(query: QueryParam): string {
+  return JSON.stringify(query, null)
 }
 
 function compileQuery(query: string, cpp: Cpp<any>): QueryParam {
@@ -341,7 +360,16 @@ function compileQuery(query: string, cpp: Cpp<any>): QueryParam {
     throw new Error('Invalid predefined query')
   }
 
-  throw new Error('Invalid query')
+  if (query.startsWith(PredefinedGameQueryPrefix)) {
+    const pgq = cpp.gameAdapter.getPredefinedQueries()
+    const k = query.slice(PredefinedGameQueryPrefix.length)
+    if (pgq[k]) return pgq[k].query
+    throw new Error('Invalid predefined game query')
+  }
+
+  const r = JSON.parse(query)
+  if (!r.order) r.order = defaultQueryOrder
+  return r
 }
 
 async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListCharactersQueryParam) {
@@ -372,7 +400,36 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
     })(),
   )
 
-  return query.result.map((x) => x.character)
+  return { query: query, result: query.result }
+}
+
+function getResponseExtraWidth(input: Awaited<ReturnType<typeof listCharactersQuery>> | undefined, cpp: Cpp<any>) {
+  if (!cpp.gameComponent.extraFields) return 0
+
+  const fields = getResponseExtraFields(input)
+  if (fields.length === 0) return 0
+
+  let width = 0
+  for (const x of fields) {
+    if (!Object.prototype.hasOwnProperty.call(cpp.gameComponent.extraFields, x)) continue
+    width += cpp.gameComponent.extraFields[x].width
+  }
+  return width
+}
+
+function getResponseExtraFields(input: Awaited<ReturnType<typeof listCharactersQuery>> | undefined) {
+  if (!input) return []
+  const set = new Set<string>()
+  if (input.query.param.join) {
+    set.add(input.query.param.join)
+  }
+
+  if (input.query.param.select) {
+    for (const x of input.query.param.select) {
+      set.add(x)
+    }
+  }
+  return Array.from(set)
 }
 
 interface ListCharactersQueryParam {
@@ -402,24 +459,44 @@ const queryParamAtom = atom(
 )
 
 const QuerySearchBox = memo(() => {
+  const [active, setActive] = useState(false)
   const [param, setParam] = useAtom(queryParamAtom)
   return (
     <>
-      <div className="bp5-input-group {{.modifier}}">
+      <div className="bp5-input-group">
         <span className="bp5-icon bp5-icon-search"></span>
         <input
-          style={{ width: '200px' }}
+          style={{ width: active || (param.search || '').length > 0 ? '200px' : '60px' }}
           className="bp5-input"
+          onFocus={() => setActive(true)}
+          onBlur={() => setActive(false)}
           type="search"
           dir="auto"
           autoComplete="false"
           autoCapitalize="false"
           autoCorrect="false"
           aria-autocomplete="none"
+          spellCheck="false"
           value={param.search}
           onChange={(e) => setParam((x) => ({ ...x, search: e.currentTarget.value }))}
         />
       </div>
+    </>
+  )
+})
+
+const QueryQueryBox = memo(() => {
+  const [param, setParam] = useAtom(queryParamAtom)
+  return (
+    <>
+      <TextArea
+        style={{ flex: 1, border: 0, boxShadow: 'none', maxHeight: '45vh' }}
+        value={param.query}
+        onChange={(e) => setParam((x) => ({ ...x, query: e.currentTarget.value }))}
+        autoCapitalize="false"
+        autoCorrect="false"
+        spellCheck="false"
+      />
     </>
   )
 })
@@ -429,12 +506,31 @@ const ListModeFav = PredefinedQueryPrefix + 'fav'
 const ListModeAll = PredefinedQueryPrefix + 'all'
 const ListModeWithGoal = PredefinedQueryPrefix + 'withGoal'
 const ListModeAbsent = PredefinedQueryPrefix + 'absent'
+const validPredefinedQueries = [ListModeFav, ListModeAll, ListModeWithGoal, ListModeAbsent]
+
+const PredefinedGameQueryPrefix = '#?'
+
+function useCustomQueryActive() {
+  const param = useAtomValue(queryParamAtom)
+  return !validPredefinedQueries.includes(param.query) && !param.query.startsWith(PredefinedGameQueryPrefix)
+}
 
 const QueryBuilder = memo(() => {
+  const cpp = useCpp()
+  const [pgq, pgqKeys] = useMemo(() => {
+    const pgq = cpp.gameAdapter.getPredefinedQueries()
+    return [pgq, Object.keys(pgq)]
+  }, [cpp])
   const [param, setParam] = useAtom(queryParamAtom)
   const atoms = useAtoms()
   const data = useAtomValue(atoms.dataAtom)
   const goalCount = Object.keys(data.goal).length
+  const activePredefined =
+    param.query.startsWith(PredefinedGameQueryPrefix) &&
+    pgqKeys.includes(param.query.slice(PredefinedGameQueryPrefix.length))
+      ? pgq[param.query.slice(PredefinedGameQueryPrefix.length)]
+      : undefined
+
   return (
     <>
       <QuerySearchBox />
@@ -443,12 +539,14 @@ const QueryBuilder = memo(() => {
         active={param.query === ListModeFav}
         text="想看的"
         onClick={() => setParam((x) => ({ ...x, query: ListModeFav }))}
+        style={{ flexShrink: 0 }}
       />
       <Button
         minimal={true}
         active={param.query === ListModeAll}
         text="全部"
         onClick={() => setParam((x) => ({ ...x, query: ListModeAll }))}
+        style={{ flexShrink: 0 }}
       />
       <Button
         minimal={true}
@@ -456,18 +554,94 @@ const QueryBuilder = memo(() => {
         text="计划"
         rightIcon={goalCount > 0 ? <Tag round={true}>{goalCount}</Tag> : undefined}
         onClick={() => setParam((x) => ({ ...x, query: ListModeWithGoal }))}
+        style={{ flexShrink: 0 }}
       />
       <Button
         minimal={true}
         active={param.query === ListModeAbsent}
         text="缺席"
         onClick={() => setParam((x) => ({ ...x, query: ListModeAbsent }))}
+        style={{ flexShrink: 0 }}
+      />
+      {activePredefined ? (
+        <Button
+          minimal={true}
+          active={true}
+          text={activePredefined.name}
+          title={activePredefined.name}
+          onClick={() => {}}
+          style={{ flexShrink: 42 }}
+          className="cpp-overflow-button"
+        />
+      ) : null}
+    </>
+  )
+})
+
+const QueryBuilderRight = memo(() => {
+  const cpp = useCpp()
+  const pgq = useMemo(() => cpp.gameAdapter.getPredefinedQueries(), [cpp])
+  const [param, setParam] = useAtom(queryParamAtom)
+  const custom = useCustomQueryActive()
+  if (custom) dismissed = true
+
+  return (
+    <>
+      <Popover
+        usePortal={true}
+        minimal={true}
+        placement="bottom-end"
+        content={
+          <Menu>
+            {Object.entries(pgq).map(([k, v]) => {
+              return (
+                <MenuItem
+                  key={k}
+                  active={param.query === PredefinedGameQueryPrefix + k}
+                  text={v.name}
+                  onClick={() => {
+                    setParam((x) => ({ ...x, query: PredefinedGameQueryPrefix + k }))
+                  }}
+                />
+              )
+            })}
+          </Menu>
+        }
+        position="bottom-left"
+      >
+        <Button minimal={true} icon={'chevron-down'} />
+      </Popover>
+      <Button
+        minimal={true}
+        icon={'edit'}
+        active={custom}
+        onClick={() => {
+          if (
+            dismissed ||
+            (!dismissed && confirm('继续操作将打开自定义查询面板。\n\n警告：仍在开发中，查询语法将随时发生变化。'))
+          ) {
+            setParam((x) => ({ ...x, query: stringifyQuery(compileQuery(x.query, cpp)) }))
+          }
+        }}
       />
     </>
   )
 })
 
-export const CharacterList = memo(() => {
+let dismissed = false
+
+const QueryEditor = memo(() => {
+  const custom = useCustomQueryActive()
+  return custom ? (
+    <>
+      <Card elevation={Elevation.ONE} style={{ marginBottom: 3, padding: 0, display: 'flex' }}>
+        <QueryQueryBox />
+      </Card>
+    </>
+  ) : null
+})
+
+export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom: PrimitiveAtom<number> }) => {
   const param = useAtomValue(queryParamAtom)
 
   const cpp = useCpp()
@@ -482,7 +656,35 @@ export const CharacterList = memo(() => {
     if (error) console.error('Failed to query', error)
   }, [error])
 
-  const list = response || []
+  const query = response?.query
+  const result = response?.result || []
+  const list = (response?.result || []).map((x) => x.character)
+  const extraFields = useMemo(() => (response ? getResponseExtraFields(response) || [] : []), [response])
+  const extraFieldRenderers = useMemo(
+    () =>
+      response
+        ? extraFields.map((x) => {
+            if (!Object.prototype.hasOwnProperty.call(cpp.gameComponent.extraFields, x)) return undefined
+            return [x, cpp.gameComponent.extraFields![x].C] as const
+          })
+        : [],
+    [cpp.gameComponent.extraFields, extraFields, response],
+  )
+
+  const renderExtraFields = useCallback(
+    (item: FieldContext<IGame, ICharacter, any>) => {
+      return extraFieldRenderers.map((x) => {
+        if (!x) return null
+        const C = x[1]
+        return (
+          <div key={x[0]}>
+            <C query={query!} context={item} />
+          </div>
+        )
+      })
+    },
+    [extraFieldRenderers, query],
+  )
 
   const parentRef = useRef<HTMLUListElement>(null)
 
@@ -502,10 +704,23 @@ export const CharacterList = memo(() => {
     remeasure()
   }, [param, remeasure])
 
+  const setCharExtraWidth = useSetAtom(charExtraWidthAtom)
+  useEffect(() => {
+    return () => setCharExtraWidth(0)
+  }, [setCharExtraWidth])
+
+  useEffect(() => {
+    setCharExtraWidth(getResponseExtraWidth(response, cpp))
+  }, [response, cpp, setCharExtraWidth])
+
   return (
     <>
-      <Navbar>
-        <Navbar.Group align={Alignment.RIGHT}>
+      <Navbar style={{ display: 'flex', justifyContent: 'space-between', gap: 15 }}>
+        <Navbar.Group style={{ flexShrink: 1 }}>
+          <QueryBuilder />
+        </Navbar.Group>
+        <Navbar.Group style={{ flexShrink: 0 }}>
+          <QueryBuilderRight />
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
             minimal={true}
@@ -513,10 +728,8 @@ export const CharacterList = memo(() => {
             onClick={refresh}
           />
         </Navbar.Group>
-        <Navbar.Group align={Alignment.LEFT}>
-          <QueryBuilder />
-        </Navbar.Group>
       </Navbar>
+      <QueryEditor />
       {error ? (
         <NonIdealState title={'查询失败'} icon={'warning-sign'}>
           <pre style={{ margin: 0 }}>{error.message}</pre>
@@ -544,6 +757,8 @@ export const CharacterList = memo(() => {
                     transform: `translateY(${virtualRow.start}px)`,
                   }}
                   character={list[index]}
+                  item={result[index]}
+                  renderExtraFields={renderExtraFields}
                 />
               )
             })}
@@ -553,3 +768,65 @@ export const CharacterList = memo(() => {
     </>
   )
 })
+
+export const CharacterListColumn = memo(
+  ({
+    children,
+    width,
+    className,
+  }: React.PropsWithChildren<{
+    width: number
+    className?: string
+  }>) => {
+    return (
+      <div
+        role="menuitem"
+        tabIndex={0}
+        className={`bp5-menu-item ${className || ''}`}
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          width: width,
+          flex: 0,
+          flexShrink: 0,
+          minWidth: width,
+          maxWidth: width,
+          height: '100%',
+          maxHeight: '100%',
+          overflow: 'hidden',
+        }}
+      >
+        {children}
+      </div>
+    )
+  },
+)
+
+export function createSimpleExtraField<
+  G extends IGame = IGame,
+  C extends ICharacter = ICharacter,
+  Args extends any[] = any,
+>(
+  field: string,
+  width: number,
+  formatter: (value: any, query: Querier<G, C>, context: FieldContext<G, C, Args>) => string,
+  style: React.CSSProperties = {},
+) {
+  return {
+    width: width,
+    C: memo(({ context, query }: { query: Querier<G, C>; context: FieldContext<G, C, Args> }) => {
+      const value = query.getFieldValue(field, context)
+      const text = formatter(value, query, context)
+
+      return (
+        <CharacterListColumn width={width}>
+          <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp5-text-overflow-ellipsis" title={text} style={style}>
+              {text}
+            </div>
+          </div>
+        </CharacterListColumn>
+      )
+    }),
+  }
+}

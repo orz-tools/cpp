@@ -3,6 +3,11 @@ import { BasicDataManager } from './DataManager'
 import { QueryParam, RootCharacterQuery } from './queries'
 import { ExpItem, Formula, ICharacter, IGame, IItem, IStageInfo, Task } from './types'
 
+export interface PredefinedQuery {
+  name: string
+  query: QueryParam
+}
+
 export interface IGameAdapter<G extends IGame> {
   getCodename(): string
   getDataManager(): BasicDataManager<G>
@@ -21,6 +26,7 @@ export interface IGameAdapter<G extends IGame> {
   getFormulaTagNames(): Record<string, string>
   getDefaultCharacterQueryOrder(): QueryParam['order']
   getFavCharacterQueryWhere(): QueryParam['where']
+  getPredefinedQueries(): Record<string, PredefinedQuery>
   readPreference<K extends keyof G['preferences']>(key: K, storage: Record<string, any>): G['preferences'][K]
   writePreference<K extends keyof G['preferences']>(
     key: K,

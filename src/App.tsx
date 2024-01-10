@@ -16,7 +16,7 @@ import {
   Spinner,
   Tag,
 } from '@blueprintjs/core'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, memo, useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
@@ -158,10 +158,12 @@ const ClosureButtonHeading = memo(() => {
   )
 })
 
+const charExtraWidthAtom = atom(0)
+
 const App = memo(() => {
   const cpp = useCpp()
   const defaultCharStatusWidth = 43 * 6
-  const charExtraWidth = 0
+  const charExtraWidth = useAtomValue(charExtraWidthAtom)
   const charStatusWidth = cpp.gameComponent.charStatusWidth || defaultCharStatusWidth
   const ga = useGameAdapter()
 
@@ -218,12 +220,12 @@ const App = memo(() => {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: Math.max(730 - defaultCharStatusWidth * 2 + charStatusWidth * 2, 560) + charExtraWidth,
+            width: Math.max(730 - defaultCharStatusWidth * 2 + charStatusWidth * 2 + charExtraWidth, 560),
             display: 'flex',
             flexDirection: 'column',
           }}
         >
-          <CharacterList />
+          <CharacterList charExtraWidthAtom={charExtraWidthAtom} />
         </section>
         <section
           className={Classes.ELEVATION_1}

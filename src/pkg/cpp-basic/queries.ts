@@ -1,3 +1,4 @@
+import { QBoolean, QueryValueType } from './queryTypes'
 import { ICharacter, IGame } from './types'
 
 export interface QueryInput<G extends IGame, C extends ICharacter> {
@@ -19,19 +20,24 @@ export interface StatusFieldContext<G extends IGame, C extends ICharacter, Args 
   args: Args
 }
 
-export interface FieldConfiguration<G extends IGame, C extends ICharacter, Args extends readonly any[]> {
+export interface FieldConfiguration<G extends IGame, C extends ICharacter, Args extends readonly any[], T> {
   id: string
   name: string
-  type: any
-  getter: (context: FieldContext<G, C, Args>) => any
+  type: QueryValueType<T>
+  getter: (context: FieldContext<G, C, Args>) => T
   aliases: string[]
 }
 
 export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args extends readonly any[]> {
-  public readonly fields = new Map<string, FieldConfiguration<G, C, Args>>()
+  public readonly fields = new Map<string, FieldConfiguration<G, C, Args, any>>()
 
-  public addField(id: string, name: string, type: any, getter: (context: FieldContext<G, C, Args>) => any) {
-    const field: FieldConfiguration<G, C, Args> = {
+  public addField<T>(
+    id: string,
+    name: string,
+    type: QueryValueType<T>,
+    getter: (context: FieldContext<G, C, Args>) => T,
+  ) {
+    const field: FieldConfiguration<G, C, Args, T> = {
       id,
       name,
       type,
@@ -51,13 +57,18 @@ export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args ex
     return result
   }
 
-  public addStatusField(id: string, name: string, type: any, getter: (context: StatusFieldContext<G, C, Args>) => any) {
+  public addStatusField<T>(
+    id: string,
+    name: string,
+    type: QueryValueType<T>,
+    getter: (context: StatusFieldContext<G, C, Args>) => T,
+  ) {
     this.addField('current.' + id, name, type, ({ character, current, args }) => {
       return getter({ character, status: current, args })
     }).addAlias(id)
 
     this.addField('goal.' + id, name, type, ({ character, goal, args }) => {
-      if (goal === undefined) return undefined
+      if (goal === undefined) return type.parse(undefined)
       return getter({ character, status: goal, args })
     })
   }
@@ -71,7 +82,8 @@ export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args ex
 export class RootCharacterQuery<G extends IGame, C extends ICharacter> extends FieldHolder<G, C, []> {
   public constructor() {
     super()
-    this.addField('goal', '有计划', Boolean, ({ goal }) => {
+
+    this.addField('goal', '有计划', QBoolean, ({ goal }) => {
       return !!goal
     })
   }
@@ -123,6 +135,7 @@ export type OrAssertion = { _: '||'; operand: Assertion[] }
 export type NotAssertion = { _: '!'; operand: Assertion }
 
 export interface QueryParam {
+  select?: string[] | undefined | null
   join?: string | undefined | null
   where?: Assertion | undefined | null
   order?: [string, 'ASC' | 'DESC'][] | undefined | null
@@ -131,7 +144,7 @@ export interface QueryParam {
 
 export class Querier<G extends IGame, C extends ICharacter> {
   private executed = false
-  public readonly fields = new Map<string, FieldConfiguration<G, C, any>>()
+  public readonly fields = new Map<string, FieldConfiguration<G, C, any, any>>()
   public readonly result: FieldContext<G, C, any>[] = []
 
   public readonly subQueryId?: string
@@ -195,35 +208,33 @@ export class Querier<G extends IGame, C extends ICharacter> {
     }
   }
 
+  private getField(id: string): FieldConfiguration<G, C, any, any> {
+    const field = this.fields.get(id)
+    if (field === undefined) throw new Error(`Field ${id} not found`)
+    return field
+  }
+
+  public getFieldValue(id: string, item: FieldContext<G, C, any>): any {
+    const field = this.getField(id)
+    return field.getter(item)
+  }
+
   private compileFieldGetter(field: string): (item: FieldContext<G, C, any>) => any {
-    const f = this.fields.get(field)
-    if (f === undefined) throw new Error(`Field ${field} not found`)
-    return f.getter
+    return this.getField(field).getter
   }
 
   private compileFieldAssertion(a: FieldAssertion): (item: FieldContext<G, C, any>) => boolean {
+    const field = this.getField(a.field)
+
     const getter = this.compileFieldGetter(a.field)
     const operand = a.operand
-    switch (a.op) {
-      case '==':
-        return (item) => getter(item) === operand
-      case '!=':
-        return (item) => getter(item) !== operand
-      case '>':
-        return (item) => getter(item) > operand
-      case '>=':
-        return (item) => getter(item) >= operand
-      case '<':
-        return (item) => getter(item) < operand
-      case '<=':
-        return (item) => getter(item) <= operand
-      case 'in':
-        return (item) => operand.includes(getter(item))
-      case '!in':
-        return (item) => !operand.includes(getter(item))
-      default:
-        throw new Error(`Unknown operator ${a.op}`)
+
+    const op = field.type.ops.get(a.op)
+    if (op !== undefined) {
+      return (item) => op.result.parse(op.body(field.type.parse(getter(item)), op.type.parse(operand)))
     }
+
+    throw new Error(`Unknown operator ${a.op} for type ${field.type.name}`)
   }
 
   private compileAndAssertion(a: AndAssertion): (item: FieldContext<G, C, any>) => boolean {
@@ -260,15 +271,18 @@ export class Querier<G extends IGame, C extends ICharacter> {
   private compileComparator(
     comparator: [string, 'ASC' | 'DESC'],
   ): (a: FieldContext<G, C, any>, b: FieldContext<G, C, any>) => number {
+    const field = this.getField(comparator[0])
+    const type = field.type
     const getter = this.compileFieldGetter(comparator[0])
+
     const order = comparator[1]
 
     return (a, b) => {
       const va = getter(a)
       const vb = getter(b)
       if (va === vb) return 0
-      if (order === 'ASC') return va < vb ? -1 : 1
-      else return va < vb ? 1 : -1
+      if (order === 'ASC') return type.compare(va, vb)
+      else return -type.compare(va, vb)
     }
   }
 

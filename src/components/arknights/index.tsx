@@ -3,6 +3,7 @@ import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from 
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { ImporterMenuItems } from './ImporterMenuItems'
+import { extraFields } from './extraFields'
 import { renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
 
@@ -18,4 +19,5 @@ export const ArknightsComponents: IGameComponent = {
   blobFlavours: ['normal'],
   ImporterMenuItems,
   style,
+  extraFields: extraFields,
 }
