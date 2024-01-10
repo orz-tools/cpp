@@ -8,20 +8,21 @@ import { useChamber } from './Chamber'
 
 const logs = [
   {
-    date: '2024-01-10',
+    date: '2024-01-11',
     type: 'new',
     desc: 'Something novel is coming...',
   },
+  { date: '2024-01-11', game: [GameName.Arknights], type: 'new', desc: '增加技能专三率排行榜' },
   {
     date: '2024-01-04',
     game: [GameName.Arknights],
-    type: 'optimize',
+    type: 'new',
     desc: '接入小黑盒 app 的干员统计数据',
   },
   {
     date: '2023-12-31',
     game: [GameName.Arknights],
-    type: 'optimize',
+    type: 'new',
     desc: '接入明日方舟一图流的干员练度统计数据',
   },
   {
@@ -165,9 +166,15 @@ export const SimpleLogList = memo(() => {
           </>
         }
         items={groupedLogs
-          .slice(0, 3)
           .map((x) => x[1]!)
-          .flat(1)}
+          .flat(1)
+          .slice(
+            0,
+            Math.max(
+              5,
+              groupedLogs.slice(0, 3).reduce((acc, cur) => acc + cur[1]!.length, 0),
+            ),
+          )}
       />
       <MenuItem
         icon="double-chevron-right"
