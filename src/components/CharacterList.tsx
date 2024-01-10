@@ -745,7 +745,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
               const index = virtualRow.index
               return (
                 <CharacterMenu
-                  key={index}
+                  key={result[index].key}
                   style={{
                     position: 'absolute',
                     top: 0,

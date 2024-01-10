@@ -8,6 +8,7 @@ export interface QueryInput<G extends IGame, C extends ICharacter> {
 }
 
 export interface FieldContext<G extends IGame, C extends ICharacter, Args extends readonly any[]> {
+  key: string
   character: C
   current: G['characterStatus']
   goal: G['characterStatus'] | undefined
@@ -105,8 +106,13 @@ export class RootCharacterQuery<G extends IGame, C extends ICharacter> extends F
     })
   }
 
-  public createSubQuery<Args extends readonly any[]>(id: string, name: string, execute: (character: C) => Array<Args>) {
-    const scq = new SubCharacterQuery<G, C, Args>(execute)
+  public createSubQuery<Args extends readonly any[]>(
+    id: string,
+    name: string,
+    execute: (character: C) => Array<Readonly<Args>>,
+    getKey: (...args: Args) => string,
+  ) {
+    const scq = new SubCharacterQuery<G, C, Args>(execute, getKey)
     this.subQueries.set(id, {
       id,
       name,
@@ -121,7 +127,10 @@ export class SubCharacterQuery<G extends IGame, C extends ICharacter, Args exten
   C,
   Args
 > {
-  public constructor(public readonly execute: (character: C) => Array<Args>) {
+  public constructor(
+    public readonly execute: (character: C) => Array<Readonly<Args>>,
+    public readonly getKey: (...args: Args) => string,
+  ) {
     super()
   }
 }
@@ -187,13 +196,13 @@ export class Querier<G extends IGame, C extends ICharacter> {
       ? (function* () {
           for (const ctx of input) {
             for (const args of self.subQuery!.execute(ctx.character)) {
-              yield { ...ctx, args }
+              yield { ...ctx, key: `${ctx.character.key}:${self.subQueryId}:${self.subQuery!.getKey(args)}`, args }
             }
           }
         })()
       : (function* () {
           for (const ctx of input) {
-            yield { ...ctx, args: [] }
+            yield { ...ctx, key: ctx.character.key, args: [] }
           }
         })()
 

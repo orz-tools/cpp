@@ -91,9 +91,14 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     const hss = new HeyboxSurveySource(this.dataManager)
     const yss = new YituliuSurveySource(this.dataManager)
 
-    aa.createSubQuery('skill', '技能', (character) => {
-      return character.skills.map((_, index) => [index] as const)
-    }).tap((sq) => {
+    aa.createSubQuery(
+      'skill',
+      '技能',
+      (character) => {
+        return character.skills.map((_, index) => [index] as const)
+      },
+      (index) => `${index}`,
+    ).tap((sq) => {
       sq.addField(
         'name',
         '技能名',
