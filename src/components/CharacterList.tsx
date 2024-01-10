@@ -395,8 +395,10 @@ const queryParamAtom = atom(
     delete (value as any).mode
     return value
   },
-  (get, set, value: ListCharactersQueryParam | SetStateAction<ListCharactersQueryParam>) =>
-    set(queryParamStorageAtom, value),
+  (get, set, value: ListCharactersQueryParam | SetStateAction<ListCharactersQueryParam>) => {
+    if (typeof value === 'function') value = value(get(queryParamAtom))
+    set(queryParamStorageAtom, value)
+  },
 )
 
 const QuerySearchBox = memo(() => {
