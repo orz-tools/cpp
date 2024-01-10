@@ -376,6 +376,7 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
 }
 
 interface ListCharactersQueryParam {
+  v: number
   search: string
   query: string
 }
@@ -384,6 +385,11 @@ const queryParamStorageAtom = atomWithStorage<ListCharactersQueryParam>('cpp_que
 const queryParamAtom = atom(
   (get) => {
     const value = Object.assign({}, get(queryParamStorageAtom) || {})
+    if (value.v !== 2) {
+      value.v = 2
+      value.query = ListModeAll
+      value.search = ''
+    }
     if (value.query == null) value.query = ''
     if (value.search == null) value.search = ''
     delete (value as any).mode
