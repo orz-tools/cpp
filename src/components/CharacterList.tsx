@@ -461,7 +461,12 @@ const QuerySearchBox = memo(() => {
             }}
           />
         ) : (
-          <span className="bp5-icon bp5-icon-search"></span>
+          <span
+            className="bp5-icon bp5-icon-search"
+            onClick={() => {
+              ref?.current?.focus()
+            }}
+          ></span>
         )}
         <input
           style={{ width: active || !empty ? '200px' : '60px' }}
