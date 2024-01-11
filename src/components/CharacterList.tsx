@@ -466,6 +466,9 @@ const QuerySearchBox = memo(() => {
             onClick={() => {
               ref?.current?.focus()
             }}
+            style={{
+              pointerEvents: 'none',
+            }}
           ></span>
         )}
         <input
