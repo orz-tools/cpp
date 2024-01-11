@@ -91,6 +91,18 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     const hss = new HeyboxSurveySource(this.dataManager)
     const yss = new YituliuSurveySource(this.dataManager)
 
+    aa.addField('elite2rate.yituliu', '一图流练度统计 精二率', QNumber, ({ character }) => {
+      return QNumber.parse(yss.elite2(character)?.percent)
+    })
+
+    aa.addField('elite2rate.heybox', '小黑盒干员统计 精二率', QNumber, ({ character }) => {
+      return QNumber.parse(hss.elite2(character)?.percent)
+    })
+
+    aa.addField('elite2level90rate.heybox', '小黑盒干员统计 精二 90 级率', QNumber, ({ character }) => {
+      return QNumber.parse(hss.e2level(character, 90)?.percent)
+    })
+
     aa.createSubQuery(
       'skill',
       '技能',
@@ -179,6 +191,15 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
           order: [['skill.mastery3rate.yituliu', 'DESC']],
         },
       },
+      'skill.mastery3rate.all.yituliu': {
+        name: '一图流练度统计 技能专三率（全部）',
+        query: {
+          select: ['skill.mastery3rate.yituliu'],
+          join: 'skill',
+          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
+          order: [['skill.mastery3rate.yituliu', 'DESC']],
+        },
+      },
       'skill.mastery3rate.heybox': {
         name: '小黑盒干员统计 技能专三率',
         query: {
@@ -201,15 +222,6 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
           order: [['skill.mastery3rate.heybox', 'DESC']],
         },
       },
-      'skill.mastery3rate.all.yituliu': {
-        name: '一图流练度统计 技能专三率（全部）',
-        query: {
-          select: ['skill.mastery3rate.yituliu'],
-          join: 'skill',
-          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
-          order: [['skill.mastery3rate.yituliu', 'DESC']],
-        },
-      },
       'skill.mastery3rate.all.heybox': {
         name: '小黑盒干员统计 技能专三率（全部）',
         query: {
@@ -217,6 +229,94 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
           join: 'skill',
           where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
           order: [['skill.mastery3rate.heybox', 'DESC']],
+        },
+      },
+      'elite2rate.yituliu': {
+        name: '一图流练度统计 精二率',
+        query: {
+          select: ['elite2rate.yituliu'],
+          where: {
+            _: '&&',
+            operand: [
+              {
+                _: '||',
+                operand: [
+                  { _: 'field', field: 'own', op: '==', operand: true },
+                  { _: 'field', field: 'goal', op: '==', operand: true },
+                ],
+              },
+              { _: 'field', field: 'elite', op: '<', operand: 2 },
+              { _: 'field', field: 'rarity', op: '==', operand: 6 },
+            ],
+          },
+          order: [['elite2rate.yituliu', 'DESC']],
+        },
+      },
+      'elite2rate.all.yituliu': {
+        name: '一图流练度统计 精二率（全部）',
+        query: {
+          select: ['elite2rate.yituliu'],
+          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
+          order: [['elite2rate.yituliu', 'DESC']],
+        },
+      },
+      'elite2rate.heybox': {
+        name: '小黑盒干员统计 精二率',
+        query: {
+          select: ['elite2rate.heybox'],
+          where: {
+            _: '&&',
+            operand: [
+              {
+                _: '||',
+                operand: [
+                  { _: 'field', field: 'own', op: '==', operand: true },
+                  { _: 'field', field: 'goal', op: '==', operand: true },
+                ],
+              },
+              { _: 'field', field: 'elite', op: '<', operand: 2 },
+              { _: 'field', field: 'rarity', op: '==', operand: 6 },
+            ],
+          },
+          order: [['elite2rate.heybox', 'DESC']],
+        },
+      },
+      'elite2rate.all.heybox': {
+        name: '小黑盒干员统计 精二率（全部）',
+        query: {
+          select: ['elite2rate.heybox'],
+          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
+          order: [['elite2rate.heybox', 'DESC']],
+        },
+      },
+      'elite2level90rate.heybox': {
+        name: '小黑盒干员统计 精二 90 级率',
+        query: {
+          select: ['elite2level90rate.heybox'],
+          where: {
+            _: '&&',
+            operand: [
+              {
+                _: '||',
+                operand: [
+                  { _: 'field', field: 'own', op: '==', operand: true },
+                  { _: 'field', field: 'goal', op: '==', operand: true },
+                ],
+              },
+              { _: 'field', field: 'elite', op: '==', operand: 2 },
+              { _: 'field', field: 'level', op: '<', operand: 90 },
+              { _: 'field', field: 'rarity', op: '==', operand: 6 },
+            ],
+          },
+          order: [['elite2level90rate.heybox', 'DESC']],
+        },
+      },
+      'elite2level90rate.all.heybox': {
+        name: '小黑盒干员统计 精二 90 级率（全部）',
+        query: {
+          select: ['elite2level90rate.heybox'],
+          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
+          order: [['elite2level90rate.heybox', 'DESC']],
         },
       },
     }

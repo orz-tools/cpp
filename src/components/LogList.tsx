@@ -12,7 +12,13 @@ const logs = [
     type: 'new',
     desc: 'Something novel is coming...',
   },
-  { date: '2024-01-11', game: [GameName.Arknights], type: 'new', desc: '增加技能专三率排行榜' },
+  {
+    date: '2024-01-11',
+    game: [GameName.Arknights],
+    type: 'new',
+    desc: '增加一些基于社区练度统计数据的排行榜视图',
+    children: <div style={{ padding: 10 }}>请从干员列表右上角的“更多视图”下拉菜单中访问。</div>,
+  },
   {
     date: '2024-01-04',
     game: [GameName.Arknights],

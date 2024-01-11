@@ -52,4 +52,12 @@ export const extraFields: IGameComponent['extraFields'] = {
     percentageFormatter,
     percentageStyle,
   ),
+  'elite2rate.yituliu': createSimpleExtraField('elite2rate.yituliu', 65, percentageFormatter, percentageStyle),
+  'elite2rate.heybox': createSimpleExtraField('elite2rate.heybox', 65, percentageFormatter, percentageStyle),
+  'elite2level90rate.heybox': createSimpleExtraField(
+    'elite2level90rate.heybox',
+    65,
+    percentageFormatter,
+    percentageStyle,
+  ),
 }
