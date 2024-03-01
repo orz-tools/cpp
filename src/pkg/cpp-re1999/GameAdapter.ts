@@ -246,8 +246,13 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
         if (itemName === '秘银原石') {
           itemName = '银矿原石'
         }
-        const itemId = this.getInventoryItems().find((x) => x.name === itemName)?.key
-        if (!itemId) throw new Error('invalid drop ' + key + ' ' + itemName)
+        let itemId = this.getInventoryItems().find((x) => x.name === itemName)?.key
+        if (!itemId) {
+          itemId = this.getInventoryItems().find((x) => x.raw.id.toFixed(0) === itemName)?.key
+          if (!itemId) {
+            throw new Error('invalid drop ' + key + ' ' + itemName)
+          }
+        }
 
         stage.addDrop(itemId, drop, value.count)
       }
