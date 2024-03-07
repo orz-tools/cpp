@@ -17,6 +17,11 @@ export function renderCharacterStatus(
     console.warn('character extra uniEquips', character, uniEquips)
   }
 
+  const classes = [`cpp-uniequip-count-${uniEquips.length}`]
+  if (uniX) classes.push(`cpp-uniequip-has-x`)
+  if (uniY) classes.push(`cpp-uniequip-has-y`)
+  if (uniD) classes.push(`cpp-uniequip-has-d`)
+
   return (
     <>
       <Hide
@@ -30,42 +35,27 @@ export function renderCharacterStatus(
           hide={current ? (status.modLevel[uniX.key] || 0) === (current.modLevel[uniX.key] || 0) : false}
           alreadyHide={alreadyHide}
         >
-          <UniEquipIcon
-            count={uniEquips.length}
-            uniEquip={uniX}
-            key={uniX.key}
-            level={status.modLevel[uniX.key] || 0}
-          />
+          <UniEquipIcon classes={classes} uniEquip={uniX} key={uniX.key} level={status.modLevel[uniX.key] || 0} />
         </Hide>
       ) : (
-        <EmptyIcon />
+        <EmptyIcon classes={classes} />
       )}
       {uniY ? (
         <Hide
           hide={current ? (status.modLevel[uniY.key] || 0) === (current.modLevel[uniY.key] || 0) : false}
           alreadyHide={alreadyHide}
         >
-          <UniEquipIcon
-            count={uniEquips.length}
-            uniEquip={uniY}
-            key={uniY.key}
-            level={status.modLevel[uniY.key] || 0}
-          />
+          <UniEquipIcon classes={classes} uniEquip={uniY} key={uniY.key} level={status.modLevel[uniY.key] || 0} />
         </Hide>
       ) : (
-        <EmptyIcon />
+        <EmptyIcon classes={classes} />
       )}
       {uniD ? (
         <Hide
           hide={current ? (status.modLevel[uniD.key] || 0) === (current.modLevel[uniD.key] || 0) : false}
           alreadyHide={alreadyHide}
         >
-          <UniEquipIcon
-            count={uniEquips.length}
-            uniEquip={uniD}
-            key={uniD.key}
-            level={status.modLevel[uniD.key] || 0}
-          />
+          <UniEquipIcon classes={classes} uniEquip={uniD} key={uniD.key} level={status.modLevel[uniD.key] || 0} />
         </Hide>
       ) : null}
       {character.skills.slice(0, 3).map(([, skill]) => (

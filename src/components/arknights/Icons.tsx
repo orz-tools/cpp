@@ -22,10 +22,10 @@ export const SkillIcon = memo(({ skill, level, master }: { skill: Skill; level?:
 })
 
 export const UniEquipIcon = memo(
-  ({ count, uniEquip, level }: { uniEquip: UniEquip; level?: number; count: number }) => {
+  ({ classes, uniEquip, level }: { uniEquip: UniEquip; level?: number; classes?: string[] }) => {
     const name = `${uniEquip.raw.uniEquipName} (${uniEquip.raw.typeName1}-${uniEquip.raw.typeName2})`
     return (
-      <span className={['bp5-menu-item-icon', `cpp-uniequip-count-${count}`].join(' ')}>
+      <span className={['bp5-menu-item-icon', ...(classes || [])].join(' ')}>
         <div
           className={[
             'cpp-simple-target',
