@@ -254,7 +254,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
           }
         }
 
-        if (value.count <= 0) continue
+        if (drop <= 0) continue
         stage.addDrop(itemId, drop, value.count)
       }
     }
