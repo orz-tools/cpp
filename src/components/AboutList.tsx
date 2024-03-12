@@ -16,7 +16,9 @@ export const externalLinkProps = {
 } satisfies React.AnchorHTMLAttributes<HTMLAnchorElement>
 
 export const AboutList = memo(() => {
-  const { AboutCopyright, AboutCredits, AboutThirdParty, AboutDataSources } = useComponents()
+  const { AboutCopyright, AboutCredits, AboutThirdParty, AboutDataSources, email } = useComponents()
+  const realEmail = email || 'cpp@ouomail.com'
+
   return (
     <>
       <Navbar>
@@ -48,12 +50,12 @@ export const AboutList = memo(() => {
         <MenuItem
           icon={'envelope'}
           multiline={true}
-          href={'mailto:cpp@ouomail.com'}
+          href={'mailto:' + realEmail}
           {...externalLinkProps}
           text={
             <>
               邮箱
-              <span style={{ userSelect: 'text', marginLeft: '0.5em', fontWeight: 300 }}>cpp@ouomail.com</span>
+              <span style={{ userSelect: 'text', marginLeft: '0.5em', fontWeight: 300 }}>{realEmail}</span>
             </>
           }
         />

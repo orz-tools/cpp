@@ -9,6 +9,7 @@ export interface ItemSimulatedViewConfig {
 }
 
 export interface IGameComponent {
+  email?: string
   AboutCopyright?: React.FC
   AboutThirdParty?: React.FC
   AboutCredits?: React.FC

@@ -6,6 +6,7 @@ import { renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
 
 export const Re1999Components: IGameComponent = {
+  email: 'cpp9@ouomail.com',
   AboutCopyright,
   AboutDataSources,
   AboutThirdParty,

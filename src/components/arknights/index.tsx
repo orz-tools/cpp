@@ -8,6 +8,7 @@ import { renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
 
 export const ArknightsComponents: IGameComponent = {
+  email: 'cppa@ouomail.com',
   AboutCopyright,
   AboutDataSources,
   AboutThirdParty,
