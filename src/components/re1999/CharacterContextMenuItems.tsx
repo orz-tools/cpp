@@ -1,5 +1,6 @@
 import { MenuItem } from '@blueprintjs/core'
 import { memo } from 'react'
+import { ICharacter } from '../../pkg/cpp-basic'
 import { Character } from '../../pkg/cpp-re1999'
 import { externalLinkProps } from '../AboutList'
 import links from './links.json'
@@ -9,7 +10,8 @@ const sanitizeName = (s: string) =>
     .toLowerCase()
     .replace(/[_.·・]|\s/g, '')
 
-export const CharacterContextMenuItems = memo(({ character }: { character: Character }) => {
+export const CharacterContextMenuItems = memo(({ character: char }: { character: ICharacter }) => {
+  const character = char as Character
   const gamekee = links.gamekee.find((x) => sanitizeName(x.name) === sanitizeName(character.raw.name))
 
   return (
