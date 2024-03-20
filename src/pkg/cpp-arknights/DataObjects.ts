@@ -1,5 +1,7 @@
 import { CppData_ArknightsHeyboxOperatorsurvey } from '../cpp-data-schemas/arknights-heybox-operatorsurvey'
 import { CppData_ArknightsKengxxiaoEnUs } from '../cpp-data-schemas/arknights-kengxxiao-en_US'
+import { CppData_ArknightsKengxxiaoJaJp } from '../cpp-data-schemas/arknights-kengxxiao-ja_JP'
+import { CppData_ArknightsKengxxiaoKoKr } from '../cpp-data-schemas/arknights-kengxxiao-ko_KR'
 import { CppData_ArknightsKengxxiaoZhCn } from '../cpp-data-schemas/arknights-kengxxiao-zh_CN'
 import { CppData_ArknightsYituliuOperatorsurvey } from '../cpp-data-schemas/arknights-yituliu-operatorsurvey'
 import { CppData_ArknightsYituliuValues } from '../cpp-data-schemas/arknights-yituliu-values'
@@ -7,11 +9,14 @@ import { CONTAINER_TYPE, CONTAINER_VERSION, CppRepoObject, DataContainerObject, 
 import { PenguinMatrix } from './sources/penguinTypes'
 
 export class ArknightsKengxxiaoObject extends CppRepoObject<
-  CppData_ArknightsKengxxiaoZhCn | CppData_ArknightsKengxxiaoEnUs
+  | CppData_ArknightsKengxxiaoZhCn
+  | CppData_ArknightsKengxxiaoEnUs
+  | CppData_ArknightsKengxxiaoJaJp
+  | CppData_ArknightsKengxxiaoKoKr
 > {
   public requiredSchema = 2
 
-  public constructor(public readonly lang: 'en_US' | 'zh_CN') {
+  public constructor(public readonly lang: 'en_US' | 'zh_CN' | 'ja_JP' | 'ko_KR') {
     super(`arknights-kengxxiao-${lang}`)
   }
 }
@@ -49,7 +54,7 @@ export class ArknightsHeyboxOperatorSurveyObject extends CppRepoObject<CppData_A
 export class ArknightsPenguinObject extends DataContainerObject<PenguinMatrix> {
   public autoUpdateNotificationThreshold = 86400_000 * 3
 
-  public constructor(public readonly server: 'CN') {
+  public constructor(public readonly server: 'CN' | 'US' | 'JP' | 'KR') {
     super()
     this.name = 'arknights-penguin-' + server
   }

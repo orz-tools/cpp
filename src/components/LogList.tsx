@@ -9,7 +9,7 @@ import { useChamber } from './Chamber'
 const logs = [
   {
     date: '2024-03-21',
-    game: [GameName.Re1999],
+    game: [GameName.Re1999, GameName.Arknights],
     type: 'new',
     desc: '加入海外服务器的游戏数据',
   },

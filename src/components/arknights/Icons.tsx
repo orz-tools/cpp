@@ -9,7 +9,7 @@ import m2 from './assets/m2.png'
 import m3 from './assets/m3.png'
 
 export const SkillIcon = memo(({ skill, level, master }: { skill: Skill; level?: number; master?: number }) => {
-  const name = skill.raw.levels[0].name
+  const name = skill.name
 
   return (
     <span className="bp5-menu-item-icon">
@@ -23,7 +23,7 @@ export const SkillIcon = memo(({ skill, level, master }: { skill: Skill; level?:
 
 export const UniEquipIcon = memo(
   ({ classes, uniEquip, level }: { uniEquip: UniEquip; level?: number; classes?: string[] }) => {
-    const name = `${uniEquip.raw.uniEquipName} (${uniEquip.raw.typeName1}-${uniEquip.raw.typeName2})`
+    const name = `${uniEquip.name} (${uniEquip.raw.typeName1}-${uniEquip.raw.typeName2})`
     return (
       <span className={['bp5-menu-item-icon', ...(classes || [])].join(' ')}>
         <div

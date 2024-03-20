@@ -16,22 +16,55 @@ import {
   Arknights,
   ArknightsFormulaTag,
   ArknightsKengxxiao,
+  ArknightsRegion,
 } from './types'
 
 export class ArknightsDataManager extends BasicDataManager<Arknights> {
+  public readonly region!: ArknightsRegion
   public setRegion(region: string) {
-    // TODO:
-    JSON.stringify(region)
+    const validRegions = {
+      [ArknightsRegion.zh_CN]: () => {
+        this.$kengxxiaoLocal = null
+        this.$penguin = new ArknightsPenguinObject('CN')
+      },
+      [ArknightsRegion.en_US]: () => {
+        this.$kengxxiaoLocal = new ArknightsKengxxiaoObject('en_US')
+        this.$penguin = new ArknightsPenguinObject('US')
+      },
+      [ArknightsRegion.ja_JP]: () => {
+        this.$kengxxiaoLocal = new ArknightsKengxxiaoObject('ja_JP')
+        this.$penguin = new ArknightsPenguinObject('JP')
+      },
+      [ArknightsRegion.ko_KR]: () => {
+        this.$kengxxiaoLocal = new ArknightsKengxxiaoObject('ko_KR')
+        this.$penguin = new ArknightsPenguinObject('KR')
+      },
+    } satisfies Record<ArknightsRegion, () => void>
+
+    if (!Object.prototype.hasOwnProperty.call(validRegions, region)) {
+      throw new Error('Invalid game region: ' + region)
+    }
+
+    ;(this as any).region = region as ArknightsRegion
+    validRegions[this.region]()
   }
 
   public $kengxxiao = new ArknightsKengxxiaoObject('zh_CN')
+  public $kengxxiaoLocal!: ArknightsKengxxiaoObject | null
   public $yituliu = new ArknightsYituliuValuesObject()
-  public $penguin = new ArknightsPenguinObject('CN')
+  public $penguin!: ArknightsPenguinObject
   public $surveyYituliu = new ArknightsYituliuOperatorSurveyObject()
   public $surveyHeybox = new ArknightsHeyboxOperatorSurveyObject()
 
   public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
-    return Promise.resolve([this.$kengxxiao, this.$yituliu, this.$penguin, this.$surveyYituliu, this.$surveyHeybox])
+    return Promise.resolve([
+      this.$kengxxiao,
+      this.$yituliu,
+      this.$penguin,
+      this.$surveyYituliu,
+      this.$surveyHeybox,
+      ...(this.$kengxxiaoLocal ? [this.$kengxxiaoLocal] : []),
+    ])
   }
 
   public loadRaw() {
@@ -40,6 +73,7 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
     const penguin = this.get(this.$penguin)
     const yituliuSurvey = this.get(this.$surveyYituliu)
     const heyboxSurvey = this.get(this.$surveyHeybox)
+    const kLocal = this.$kengxxiaoLocal ? this.get(this.$kengxxiaoLocal) : null
 
     return Promise.resolve({
       exCharacters: k.data.exCharacters,
@@ -59,6 +93,7 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
       penguinMatrix: penguin.data,
       yituliuSurvey: yituliuSurvey.data,
       heyboxSurvey: heyboxSurvey.data,
+      local: kLocal ? kLocal.data : null,
     })
   }
 
@@ -86,23 +121,65 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
 
   private generateCharacters() {
     return Object.fromEntries(
-      Object.entries(this.raw.exCharacters).map(([key, raw]) => [key, new Character(key, raw, this)]),
+      Object.entries(this.raw.exCharacters).map(([key, raw]) => [
+        key,
+        new Character(
+          key,
+          raw,
+          this.raw.local && Object.prototype.hasOwnProperty.call(this.raw.local.exCharacters, key)
+            ? this.raw.local.exCharacters[key]
+            : null,
+          this,
+        ),
+      ]),
     )
   }
 
   private generateSkills() {
-    return Object.fromEntries(Object.entries(this.raw.exSkills).map(([key, raw]) => [key, new Skill(key, raw, this)]))
+    return Object.fromEntries(
+      Object.entries(this.raw.exSkills).map(([key, raw]) => [
+        key,
+        new Skill(
+          key,
+          raw,
+          this.raw.local && Object.prototype.hasOwnProperty.call(this.raw.local.exSkills, key)
+            ? this.raw.local.exSkills[key]
+            : null,
+          this,
+        ),
+      ]),
+    )
   }
 
   private generateUniEquips() {
     return Object.fromEntries(
-      Object.entries(this.raw.exUniEquips.equipDict).map(([key, raw]) => [key, new UniEquip(key, raw, this)]),
+      Object.entries(this.raw.exUniEquips.equipDict).map(([key, raw]) => [
+        key,
+        new UniEquip(
+          key,
+          raw,
+          this.raw.local && Object.prototype.hasOwnProperty.call(this.raw.local.exUniEquips.equipDict, key)
+            ? this.raw.local.exUniEquips.equipDict[key]
+            : null,
+          this,
+        ),
+      ]),
     )
   }
 
   private generateItems() {
     const items = Object.fromEntries(
-      Object.entries(this.raw.exItems.items).map(([key, raw]) => [key, new Item(key, raw, this)]),
+      Object.entries(this.raw.exItems.items).map(([key, raw]) => [
+        key,
+        new Item(
+          key,
+          raw,
+          this.raw.local && Object.prototype.hasOwnProperty.call(this.raw.local.exItems.items, key)
+            ? this.raw.local.exItems.items[key]
+            : null,
+          this,
+        ),
+      ]),
     )
     items[AK_ITEM_VIRTUAL_EXP] = new ExpItem(AK_ITEM_VIRTUAL_EXP, this)
     items[AK_ITEM_UNKNOWN_SHIT] = new UnknownShitItem(AK_ITEM_UNKNOWN_SHIT, this)
@@ -234,6 +311,7 @@ export class Character implements ICharacter {
   public constructor(
     public readonly key: string,
     public readonly raw: ArknightsKengxxiao['exCharacters'][''],
+    public readonly rawLocal: ArknightsKengxxiao['exCharacters'][''] | null,
     private readonly dm: ArknightsDataManager,
   ) {
     if (dm.raw.exPatchCharacters.infos[key]) {
@@ -248,11 +326,14 @@ export class Character implements ICharacter {
   }
 
   public get name(): string {
-    return this.raw.name
+    return this.rawLocal?.name || this.raw.name
   }
 
   public get appellation(): string {
-    return this.raw.appellation
+    const value = this.rawLocal?.appellation.trim() || this.raw.appellation
+    const name = this.name
+    if (value === name) return this.raw.name
+    return value
   }
 
   private readonly patches: (readonly [string, ArknightsKengxxiao['exCharacters']['']])[] = []
@@ -384,8 +465,13 @@ export class Skill {
   public constructor(
     public readonly key: string,
     public readonly raw: ArknightsKengxxiao['exSkills'][''],
+    public readonly rawLocal: ArknightsKengxxiao['exSkills'][''] | null,
     private readonly dm: ArknightsDataManager,
   ) {}
+
+  public get name() {
+    return this.rawLocal?.levels[0].name || this.raw.levels[0].name
+  }
 
   private _icon?: [BlobImages]
   public get icon() {
@@ -409,8 +495,13 @@ export class UniEquip {
   public constructor(
     public readonly key: string,
     public readonly raw: ArknightsKengxxiao['exUniEquips']['equipDict'][''],
+    public readonly rawLocal: ArknightsKengxxiao['exUniEquips']['equipDict'][''] | null,
     private readonly dm: ArknightsDataManager,
   ) {}
+
+  public get name() {
+    return this.rawLocal?.uniEquipName || this.raw.uniEquipName
+  }
 
   private _icon?: [BlobImages]
   public get icon() {
@@ -444,6 +535,7 @@ export class Item implements IItem {
   public constructor(
     public readonly key: string,
     public readonly raw: ArknightsKengxxiao['exItems']['items'][''],
+    public readonly rawLocal: ArknightsKengxxiao['exItems']['items'][''] | null,
     protected readonly dm: ArknightsDataManager,
   ) {}
 
@@ -452,7 +544,7 @@ export class Item implements IItem {
   }
 
   public get name(): string {
-    return this.raw.name
+    return this.rawLocal?.name || this.raw.name
   }
 
   public get icon(): BlobImages {
@@ -553,6 +645,17 @@ export class ExpItem extends Item {
         // stageDropList: [],
         // buildingProductList: [],
       },
+      dm.raw.local
+        ? {
+            itemId: key,
+            name: 'EXP',
+            rarity: 'TIER_5',
+            iconId: 'EXP_PLAYER',
+            sortId: 10005,
+            classifyType: 'NONE',
+            itemType: '##EXP_VIRTUAL',
+          }
+        : null,
       dm,
     )
   }
@@ -582,6 +685,17 @@ export class UnknownShitItem extends Item {
         // stageDropList: [],
         // buildingProductList: [],
       },
+      dm.raw.local
+        ? {
+            itemId: key,
+            name: 'Unknown Material~(￣▽￣)~*',
+            rarity: 'TIER_5',
+            iconId: 'AP_GAMEPLAY',
+            sortId: 10005,
+            classifyType: 'NONE',
+            itemType: UnknownShitItem.itemType,
+          }
+        : null,
       dm,
     )
   }

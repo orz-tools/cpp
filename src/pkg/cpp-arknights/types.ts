@@ -50,4 +50,11 @@ export const formulaTagNames = {
   [ArknightsFormulaTag.WorkshopRarity2]: '不从绿材料合成蓝材料',
 } satisfies Record<ArknightsFormulaTag, string>
 
+export const enum ArknightsRegion {
+  zh_CN = 'zh_CN',
+  en_US = 'en_US',
+  ja_JP = 'ja_JP',
+  ko_KR = 'ko_KR',
+}
+
 export type ArknightsKengxxiao = CppData_ArknightsKengxxiaoZhCn | CppData_ArknightsKengxxiaoEnUs

@@ -244,11 +244,11 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       case 'skillMaster': {
         const skillIndex = character.skills.findIndex((x) => x[0].skillId === type.skillId)
         const skill = character.skills[skillIndex]
-        return `${skillIndex + 1} 技能专${'一二三'[type.to - 1]}: ${skill[1].raw.levels[0].name}`
+        return `${skillIndex + 1} 技能专${'一二三'[type.to - 1]}: ${skill[1].name}`
       }
       case 'mod': {
         const uniEquip = character.uniEquips.find((x) => x.key === type.modId)!
-        return `${uniEquip.raw.typeName2!.toUpperCase()} 模组 ${type.to} 级: ${uniEquip.raw.uniEquipName}`
+        return `${uniEquip.raw.typeName2!.toUpperCase()} 模组 ${type.to} 级: ${uniEquip.name}`
       }
       default:
         throwBad(type)

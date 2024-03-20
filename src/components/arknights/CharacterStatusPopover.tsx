@@ -304,7 +304,7 @@ export const CharacterStatusSkillMasterSection = memo(() => {
                 style={{ width: 150, overflow: 'hidden', background: 'none' }}
                 className={Classes.TEXT_OVERFLOW_ELLIPSIS}
               >
-                {skill.raw.levels[0].name}
+                {skill.name}
               </Tag>
             </ButtonGroup>
           </div>
@@ -378,7 +378,7 @@ export const CharacterStatusModSection = memo(() => {
                 style={{ width: 150, overflow: 'hidden', background: 'none' }}
                 className={Classes.TEXT_OVERFLOW_ELLIPSIS}
               >
-                {equip.raw.uniEquipName}
+                {equip.name}
               </Tag>
             </ButtonGroup>
           </div>

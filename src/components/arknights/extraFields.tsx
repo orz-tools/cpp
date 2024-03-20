@@ -20,7 +20,7 @@ export const extraFields: IGameComponent['extraFields'] = {
     C: memo(({ context }: { context: FieldContext<Arknights, Character, [number]> }) => {
       const skillId = context.args[0]
       const skill = context.character.skills[skillId]
-      const skillName = skill[1].raw.levels[0].name
+      const skillName = skill[1].name
       const skillIndex = ['一技能', '二技能', '三技能'][skill[3]]
 
       return (

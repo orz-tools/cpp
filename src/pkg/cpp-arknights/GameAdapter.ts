@@ -20,6 +20,7 @@ import {
   AK_ITEM_VIRTUAL_EXP,
   Arknights,
   ArknightsKengxxiao,
+  ArknightsRegion,
   PreferenceKeys,
   SurveySourceKeys,
   formulaTagNames,
@@ -70,7 +71,13 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   }
 
   public static getRegions() {
-    return null
+    return [
+      { id: ArknightsRegion.zh_CN, name: 'CN (Simplified Chinese)', short: 'CN' },
+      { id: ArknightsRegion.en_US, name: 'YoStarEN (English)', short: 'EN' },
+      { id: ArknightsRegion.ja_JP, name: 'YoStarJP (Japanese)', short: 'JP' },
+      { id: ArknightsRegion.ko_KR, name: 'YoStarKR (Korean)', short: 'KR' },
+      // { id: ArknightsRegion.zh_TW, name: 'txwy (Traditional Chinese)', short: 'KR' },
+    ]
   }
 
   public getDataManager() {
@@ -116,12 +123,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       (index) => `${index}`,
     ).tap((sq) => {
-      sq.addField(
-        'name',
-        '技能名',
-        QString,
-        ({ character, args: [index] }) => character.skills[index][1].raw.levels[0].name,
-      )
+      sq.addField('name', '技能名', QString, ({ character, args: [index] }) => character.skills[index][1].name)
 
       sq.addStatusField('mastery', '专精等级', QNumber, ({ character, status, args: [index] }) => {
         return status.skillMaster[character.skills[index][1].key] ?? 0
