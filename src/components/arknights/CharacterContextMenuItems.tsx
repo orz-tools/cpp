@@ -1,23 +1,17 @@
 import { MenuItem } from '@blueprintjs/core'
 import { memo } from 'react'
-import { ICharacter } from '../../pkg/cpp-basic'
+import { Character } from '../../pkg/cpp-arknights'
 import { externalLinkProps } from '../AboutList'
 
-export const CharacterContextMenuItems = memo(({ character }: { character: ICharacter }) => {
+export const CharacterContextMenuItems = memo(({ character }: { character: Character }) => {
   return (
     <>
       <MenuItem
         {...externalLinkProps}
         icon={'id-number'}
         text={'在「PRTS.wiki」查看此干员'}
-        href={`https://prts.wiki/w/${encodeURIComponent(`${character.name}`)}`}
+        href={`https://prts.wiki/w/${encodeURIComponent(`${character.raw.name}`)}`}
       />
-      {/* <MenuItem
-        {...externalLinkProps}
-        icon={'help'}
-        text={'在「明日方舟 DPS 计算器」查看此干员信息'}
-        href={`https://viktorlab.cn/akdata/character/#!/${encodeURIComponent(`${character.key}`)}`}
-      /> */}
       <MenuItem
         {...externalLinkProps}
         icon={'calculator'}

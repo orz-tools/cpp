@@ -1,6 +1,6 @@
 import { MenuItem } from '@blueprintjs/core'
 import { memo } from 'react'
-import { ICharacter } from '../../pkg/cpp-basic'
+import { Character } from '../../pkg/cpp-re1999'
 import { externalLinkProps } from '../AboutList'
 import links from './links.json'
 
@@ -9,8 +9,8 @@ const sanitizeName = (s: string) =>
     .toLowerCase()
     .replace(/[_.·・]|\s/g, '')
 
-export const CharacterContextMenuItems = memo(({ character }: { character: ICharacter }) => {
-  const gamekee = links.gamekee.find((x) => sanitizeName(x.name) === sanitizeName(character.name))
+export const CharacterContextMenuItems = memo(({ character }: { character: Character }) => {
+  const gamekee = links.gamekee.find((x) => sanitizeName(x.name) === sanitizeName(character.raw.name))
 
   return (
     <>
@@ -18,7 +18,7 @@ export const CharacterContextMenuItems = memo(({ character }: { character: IChar
         {...externalLinkProps}
         icon={'id-number'}
         text={'在「灰机wiki」查看此角色'}
-        href={`https://res1999.huijiwiki.com/wiki/${encodeURIComponent(`${character.name}`)}`}
+        href={`https://res1999.huijiwiki.com/wiki/${encodeURIComponent(`${character.raw.name}`)}`}
       />
       {gamekee ? (
         <MenuItem
@@ -32,7 +32,7 @@ export const CharacterContextMenuItems = memo(({ character }: { character: IChar
         {...externalLinkProps}
         icon={'search'}
         text={'在「逆流的Rainstorm WIKI攻略组」搜索此角色名'}
-        href={`https://reverse1999.gamekee.com/list?kw=${encodeURIComponent(`${character.name}`)}&tab=1`}
+        href={`https://reverse1999.gamekee.com/list?kw=${encodeURIComponent(`${character.raw.name}`)}&tab=1`}
       />
     </>
   )
