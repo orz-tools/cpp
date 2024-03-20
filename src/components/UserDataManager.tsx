@@ -24,6 +24,7 @@ export const UserDataManager = memo(
           exportedAt: now,
           userdata: JSON.parse(d || ''),
           preference: p ? JSON.parse(p) : undefined,
+          region: localStorage.getItem(storagePrefix + 'region') || '',
         })
         setData({ data: userdata, now: now })
       } catch (e) {
@@ -87,6 +88,11 @@ const UserDataManagerContent = memo(
         } else {
           localStorage.setItem(getStoragePrefix(game, instanceName) + 'preference', JSON.stringify(v['preference']))
         }
+        if (v['region'] == null || typeof v['region'] !== 'string') {
+          //
+        } else {
+          localStorage.setItem(getStoragePrefix(game, instanceName) + 'region', v['region'])
+        }
         alert('数据已导入，将重新载入页面。')
         location.reload()
       } catch (e) {
@@ -99,6 +105,7 @@ const UserDataManagerContent = memo(
 
       localStorage.removeItem(getStoragePrefix(game, instanceName) + 'userdata')
       localStorage.removeItem(getStoragePrefix(game, instanceName) + 'preference')
+      localStorage.removeItem(getStoragePrefix(game, instanceName) + 'region')
       location.reload()
     })
 

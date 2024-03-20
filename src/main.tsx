@@ -44,11 +44,12 @@ function runHome() {
 
 runApp().catch((e) => {
   const he = document.getElementById('root') as HTMLElement
-  he.innerText = `ERROR: ${e.message}`
+  he.style.cssText = 'color: darkred; margin: 20px; white-space: pre-wrap; font-family: monospace'
+  he.innerText = `## PANIC: ${e.message}\n\n${e.stack}`
   he.appendChild(document.createElement('br'))
   const a = document.createElement('a')
   he.appendChild(a)
   a.href = '/'
-  a.text = 'go back to home'
+  a.text = '[go back to home]'
   console.error(e)
 })

@@ -2,14 +2,34 @@ import { BlobImages, blobImage } from '../blobcache'
 import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
 import { DataContainerObject } from '../dccache'
 import {
+  Reverse1999EnigmaticNebulaObject,
   Reverse1999HisBoundenDutyDropsObject,
   Reverse1999HisBoundenDutyValuesObject,
   Reverse1999Yuanyan3060Object,
 } from './DataObjects'
 import { Category } from './GameAdapter'
-import { Re1999, Reverse1999Yuanyan3060 } from './types'
+import { Re1999, Re1999Region, Reverse1999EnigmaticNebula, Reverse1999Yuanyan3060 } from './types'
 
 export class Re1999DataManager extends BasicDataManager<Re1999> {
+  public readonly region!: Re1999Region
+  public setRegion(region: string) {
+    const validRegions = {
+      [Re1999Region.China]: () => null,
+      [Re1999Region.GlobalEN]: () => new Reverse1999EnigmaticNebulaObject('en'),
+      [Re1999Region.GlobalJP]: () => new Reverse1999EnigmaticNebulaObject('jp'),
+      [Re1999Region.GlobalKR]: () => new Reverse1999EnigmaticNebulaObject('kr'),
+      [Re1999Region.GlobalTW]: () => new Reverse1999EnigmaticNebulaObject('tw'),
+      [Re1999Region.GlobalZH]: () => new Reverse1999EnigmaticNebulaObject('zh'),
+    } satisfies Record<Re1999Region, () => Reverse1999EnigmaticNebulaObject | null>
+
+    if (!Object.prototype.hasOwnProperty.call(validRegions, region)) {
+      throw new Error('Invalid game region: ' + region)
+    }
+
+    ;(this as any).region = region as Re1999Region
+    this.$local = validRegions[this.region]()
+  }
+
   public async transform() {
     await Promise.resolve()
     return {
@@ -21,22 +41,25 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
   }
 
   public $yy = new Reverse1999Yuanyan3060Object('zh_CN')
+  public $local!: Reverse1999EnigmaticNebulaObject | null
   public $drops = new Reverse1999HisBoundenDutyDropsObject('china')
   public $values = new Reverse1999HisBoundenDutyValuesObject('china')
 
   public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
-    return Promise.resolve([this.$yy, this.$drops, this.$values])
+    return Promise.resolve([this.$yy, this.$drops, this.$values, ...(this.$local ? [this.$local] : [])])
   }
 
   public loadRaw() {
     const yy = this.get(this.$yy)
     const drops = this.get(this.$drops)
     const values = this.get(this.$values)
+    const local = this.$local ? this.get(this.$local) : null
 
     return Promise.resolve(
       Object.assign({}, yy.data, {
         drops: drops.data,
         values: values.data,
+        local: local?.data,
       }),
     )
   }
@@ -45,18 +68,24 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
     return Object.fromEntries(
       Object.entries(this.raw.exCharacters)
         .filter((x) => x[1].isOnline === '1')
-        .map(([, raw]) => [String(raw.id), new Character(String(raw.id), raw, this)]),
+        .map(([, raw]) => [
+          String(raw.id),
+          new Character(String(raw.id), raw, this.raw.local?.exCharacters.find((x) => x.id === raw.id) || null, this),
+        ]),
     )
   }
 
   private generateItems() {
     const items = Object.fromEntries(
-      Object.entries(this.raw.exItems).map(([, raw]) => [`${raw.id}`, new Item(`${raw.id}`, raw, this)]),
+      Object.entries(this.raw.exItems).map(([, raw]) => [
+        `${raw.id}`,
+        new Item(`${raw.id}`, raw, this.raw.local?.exItems.find((x) => x.id === raw.id) || null, this),
+      ]),
     )
     const currencies = Object.fromEntries(
       Object.entries(this.raw.exCurrencies).map(([, raw]) => [
         `2#${raw.id}`,
-        new CurrencyItem(`2#${raw.id}`, raw, this),
+        new CurrencyItem(`2#${raw.id}`, raw, this.raw.local?.exCurrencies.find((x) => x.id === raw.id) || null, this),
       ]),
     )
 
@@ -128,15 +157,19 @@ export class Character implements ICharacter {
   public constructor(
     public readonly key: string,
     public readonly raw: Reverse1999Yuanyan3060['exCharacters'][0],
+    public readonly rawLocal: Reverse1999EnigmaticNebula['exCharacters'][0] | null,
     private readonly dm: Re1999DataManager,
   ) {}
 
   public get name(): string {
-    return this.raw.name
+    return this.rawLocal?.name || this.raw.name
   }
 
   public get appellation(): string {
-    return this.raw.nameEng
+    const value = this.rawLocal?.nameEng || this.raw.nameEng
+    const name = this.name
+    if (value === name) return this.raw.name
+    return value
   }
 
   private _avatar?: [BlobImages]
@@ -220,6 +253,7 @@ export class Item implements IItem {
   public constructor(
     public readonly key: string,
     public readonly raw: Reverse1999Yuanyan3060['exItems'][0],
+    public readonly rawLocal: Reverse1999EnigmaticNebula['exItems'][0] | null,
     protected readonly dm: Re1999DataManager,
   ) {}
 
@@ -228,7 +262,7 @@ export class Item implements IItem {
   }
 
   public get name(): string {
-    return this.raw.name
+    return this.rawLocal?.name || this.raw.name
   }
 
   private _icon?: [BlobImages]
@@ -320,6 +354,7 @@ export class CurrencyItem implements IItem {
   public constructor(
     public readonly key: string,
     public readonly raw: Reverse1999Yuanyan3060['exCurrencies'][0],
+    public readonly rawLocal: Reverse1999EnigmaticNebula['exCurrencies'][0] | null,
     protected readonly dm: Re1999DataManager,
   ) {}
 
@@ -329,7 +364,7 @@ export class CurrencyItem implements IItem {
   }
 
   public get name(): string {
-    return this.raw.name
+    return this.rawLocal?.name || this.raw.name
   }
 
   private _icon?: [BlobImages]

@@ -19,6 +19,11 @@ import {
 } from './types'
 
 export class ArknightsDataManager extends BasicDataManager<Arknights> {
+  public setRegion(region: string) {
+    // TODO:
+    JSON.stringify(region)
+  }
+
   public $kengxxiao = new ArknightsKengxxiaoObject('zh_CN')
   public $yituliu = new ArknightsYituliuValuesObject()
   public $penguin = new ArknightsPenguinObject('CN')

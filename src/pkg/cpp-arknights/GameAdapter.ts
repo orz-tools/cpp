@@ -4,6 +4,7 @@ import {
   BasicStageInfo,
   ExpItem,
   IGameAdapter,
+  IGameAdapterStatic,
   PredefinedQuery,
   QNumber,
   QString,
@@ -66,6 +67,10 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   public static codename: string = GameName.Arknights
   public getCodename(): string {
     return ArknightsAdapter.codename
+  }
+
+  public static getRegions() {
+    return null
   }
 
   public getDataManager() {
@@ -578,6 +583,10 @@ class ArknightsStageInfo extends BasicStageInfo {
     }, di)
   }
 }
+
+;(function (t: IGameAdapterStatic) {
+  return t
+})(ArknightsAdapter)
 
 const zoneReplacement: Record<string, string> = {
   weekly_1: 'weekly_chips',

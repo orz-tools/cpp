@@ -23,6 +23,7 @@ export const AboutDataSources = memo(() => {
   return (
     <>
       <DataObjectStatus title="游戏数据" href={null} dataObj={dm.$yy} />
+      {dm.$local ? <DataObjectStatus title="海外服游戏数据" href={null} dataObj={dm.$local} /> : null}
       <DataObjectStatus
         title="伴春风而归的材料掉率共建表"
         href={'https://nga.178.com/read.php?tid=36522605'}

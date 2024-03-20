@@ -4,6 +4,7 @@ import {
   BasicStageInfo,
   ExpItem,
   IGameAdapter,
+  IGameAdapterStatic,
   PredefinedQuery,
   QNumber,
   QString,
@@ -18,17 +19,29 @@ import {
   RE_ITEM_EXP,
   RE_ITEM_GOLD,
   Re1999,
+  Re1999Region,
   Reverse1999Yuanyan3060,
   formulaTagNames,
 } from './types'
 
 export class Re1999Adapter implements IGameAdapter<Re1999> {
-  public dataManager = new Re1999DataManager()
-  public userDataAdapter = new Re1999UserDataAdapter(this.dataManager)
+  public readonly dataManager: Re1999DataManager = new Re1999DataManager()
+  public readonly userDataAdapter: Re1999UserDataAdapter = new Re1999UserDataAdapter(this.dataManager)
 
   public static codename: string = GameName.Re1999
   public getCodename(): string {
     return Re1999Adapter.codename
+  }
+
+  public static getRegions() {
+    return [
+      { id: Re1999Region.China, name: 'China (Simplified Chinese)', short: 'CN' },
+      { id: Re1999Region.GlobalEN, name: 'Global (English)', short: 'HW-EN' },
+      { id: Re1999Region.GlobalJP, name: 'Global (Japanese)', short: 'HW-JP' },
+      { id: Re1999Region.GlobalKR, name: 'Global (Korean)', short: 'HW-KR' },
+      { id: Re1999Region.GlobalTW, name: 'Global (Traditional Chinese)', short: 'HW-TW' },
+      { id: Re1999Region.GlobalZH, name: 'Global (Simplified Chinese)', short: 'HW-ZH' },
+    ]
   }
 
   public readPreference() {
@@ -56,7 +69,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
 
     aa.addStatusField('insight', '洞悉', QNumber, ({ status }) => status.insight)
     aa.addStatusField('level', '等级', QNumber, ({ status }) => status.level)
-    aa.addStatusField('ilv', '东西*100+等级', QNumber, ({ status }) => status.insight * 100 + status.level)
+    aa.addStatusField('ilv', '洞悉*100+等级', QNumber, ({ status }) => status.insight * 100 + status.level)
     aa.addStatusField('resonate', '共鸣', QNumber, ({ status }) => status.resonate)
   })
 
@@ -176,13 +189,15 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     this.zoneNames = {}
     this.cacheExpiresAt = Infinity
 
-    const episodes = this.dataManager.raw.exEpisodes.slice(0)
+    const allEpisodes = this.dataManager.raw.local?.exEpisodes || this.dataManager.raw.exEpisodes
+    const allChapters = this.dataManager.raw.local?.exChapters || this.dataManager.raw.exChapters
+    const episodes = allEpisodes.slice(0)
     const badEpisodes: Reverse1999Yuanyan3060['exEpisodes'][0][] = []
     for (;;) {
       let flag = false
       while (episodes.length > 0) {
         const episode = episodes.shift()!
-        const chapter = this.dataManager.raw.exChapters.find((x) => x.id === episode.chapterId)
+        const chapter = allChapters.find((x) => x.id === episode.chapterId)
         if (!chapter) continue
 
         const previous = episode.preEpisode ? this.stageInfo[String(episode.preEpisode)] : null
@@ -236,7 +251,11 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     for (const [key, value] of this.rewriteLevels()) {
       const stage = Object.values(this.stageInfo).find((x) => x.dropCode === key)
       if (!stage) {
-        throw new Error('cannot find stage from drop ' + key)
+        if (this.dataManager.region === Re1999Region.China) {
+          throw new Error('cannot find stage from drop ' + key)
+        } else {
+          continue
+        }
       }
       if (stage.ap !== value.cost) throw new Error('ap mismatch from drop ' + key)
       if (value.count < 10) continue
@@ -404,6 +423,10 @@ class Re1999StageInfo extends BasicStageInfo {
     }, di)
   }
 }
+
+;(function (t: IGameAdapterStatic) {
+  return t
+})(Re1999Adapter)
 
 export enum Category {
   Gold = '0',

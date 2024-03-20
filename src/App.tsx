@@ -23,7 +23,7 @@ import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList, HelpButton } from './components/AboutList'
 import { Chamber, ChamberPortal } from './components/Chamber'
 import { CharacterList } from './components/CharacterList'
-import { ConfigButton, MaybeSoulButton, StageButton } from './components/ConfigUi'
+import { ConfigButton, MaybeSoulButton, RegionButton, StageButton } from './components/ConfigUi'
 import { Err, ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { ItemList } from './components/ItemList'
@@ -54,7 +54,7 @@ const UndoButtons = memo(() => {
       <Button
         icon="redo"
         disabled={redoCounter === 0}
-        text="Redo"
+        text=""
         minimal={true}
         onClick={() => setData('redo')}
         rightIcon={redoCounter > 0 ? <Tag round={true}>{redoCounter}</Tag> : undefined}
@@ -201,6 +201,7 @@ const App = memo(() => {
           <MaybeSoulButton />
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
+          <RegionButton />
           <DataDropdown />
           <ReloadDataButton />
           <HelpButton />

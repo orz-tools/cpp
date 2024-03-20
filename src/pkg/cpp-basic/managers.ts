@@ -8,6 +8,12 @@ export interface PredefinedQuery {
   query: QueryParam
 }
 
+export interface IGameAdapterStatic<G extends IGame = IGame> {
+  new (region: any): IGameAdapter<G>
+  codename: string
+  getRegions(): { id: string; name: string; short?: string }[] | null | undefined
+}
+
 export interface IGameAdapter<G extends IGame> {
   getCodename(): string
   getDataManager(): BasicDataManager<G>

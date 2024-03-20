@@ -1,8 +1,9 @@
-import { Button, Card, Checkbox, Menu, MenuItem, Popover } from '@blueprintjs/core'
+import { Button, Card, Checkbox, Icon, Menu, MenuDivider, MenuItem, Popover, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
 import { groupBy, sortBy, without } from 'ramda'
 import React, { memo } from 'react'
 import { useAtoms, useCpp, useGameAdapter } from '../Cpp'
+import { DescriptionMenuItem } from './AboutList'
 import { SampleTag } from './Value'
 
 export const ForbiddenFormulaTag = memo(({ tag, text }: { tag: string; text: React.ReactNode }) => {
@@ -167,4 +168,71 @@ export const MaybeSoulButton = memo(() => {
   const flavours = cpp.gameComponent.blobFlavours
   const shouldShow = flavours?.length === 1 ? false : true
   return shouldShow ? <SoulButton /> : null
+})
+
+export const RegionButton = memo(() => {
+  const cpp = useCpp()
+  const { region, gameAdapterStatic } = cpp
+  const regions = gameAdapterStatic.getRegions() || []
+  if (regions.length <= 1) return null
+  const currentRegion = regions.find((x) => x.id === region)
+
+  return (
+    <Popover
+      usePortal={true}
+      minimal={true}
+      content={
+        <Menu style={{ maxWidth: '300px' }}>
+          <MenuDivider title="游戏服务器" />
+          {regions.map((x) => {
+            return (
+              <MenuItem
+                key={x.id}
+                text={x.name}
+                labelElement={
+                  x.short ? (
+                    <Tag minimal style={{ fontFamily: 'monospace' }}>
+                      {x.short}
+                    </Tag>
+                  ) : null
+                }
+                active={x.id === region}
+                onClick={() => {
+                  cpp.setRegion(x.id)
+                }}
+              />
+            )
+          })}
+          <MenuDivider />
+          <DescriptionMenuItem
+            icon={'info-sign'}
+            text="Disclaimer"
+            description={
+              'The names, abbreviations, and codes of countries, regions, and languages are presented in their original form as accurately as possible, and do not reflect any political biases held by the developer.'
+            }
+          />
+        </Menu>
+      }
+      position="bottom-right"
+    >
+      <Button
+        icon={
+          <>
+            <Icon icon={'translate'} />
+            <Icon icon={'globe'} />
+          </>
+        }
+        minimal={true}
+        rightIcon={'chevron-down'}
+      >
+        {currentRegion?.short ? (
+          <Tag minimal style={{ fontFamily: 'monospace' }}>
+            {currentRegion.short}
+          </Tag>
+        ) : (
+          currentRegion?.name || region
+        )}
+      </Button>
+    </Popover>
+  )
 })

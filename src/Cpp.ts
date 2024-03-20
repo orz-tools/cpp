@@ -3,7 +3,7 @@ import { atomFamily, atomWithStorage } from 'jotai/utils'
 import React, { SetStateAction, useContext } from 'react'
 import { IGameComponent } from './components/types'
 import { BlobFlavour } from './pkg/blobcache'
-import { IGame, IGameAdapter } from './pkg/cpp-basic'
+import { IGame, IGameAdapter, IGameAdapterStatic } from './pkg/cpp-basic'
 import { UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
 
 export interface Preference {
@@ -79,12 +79,32 @@ export class Cpp<G extends IGame> {
       atomWithStorage<UserData<any> | undefined>(this.storagePrefix + 'userdata', undefined),
       this.preferenceAtoms.forbiddenFormulaTagsAtom,
     )
+
+    this.region = localStorage.getItem(this.storagePrefix + 'region') || ''
+
+    const regions = this.gameAdapterStatic.getRegions() || []
+    if (regions.length > 0 && !this.region) {
+      this.region = regions[0].id
+    }
   }
 
+  public readonly region: string
   public store = createStore()
   public atoms: UserDataAtomHolder<G>
   public preferenceAtoms: ReturnType<Cpp<G>['createPreferenceAtoms']>
   public queryParamAtom: ReturnType<Cpp<G>['createQueryParamAtom']>
+
+  public get gameAdapterStatic() {
+    return this.gameAdapter.constructor as IGameAdapterStatic<G>
+  }
+
+  public setRegion(region: string): boolean {
+    if (this.region === region) return false
+    localStorage.setItem(this.storagePrefix + 'region', region)
+    alert('区域已切换，将重新载入页面。')
+    location.reload()
+    return true
+  }
 
   public createQueryParamAtom() {
     const key = `cpp[` + this.gameAdapter.getCodename() + `]query_param`
@@ -242,6 +262,10 @@ export function useCpp<G extends IGame>() {
 
 export function useGameAdapter<G extends IGame>() {
   return useCpp<G>().gameAdapter
+}
+
+export function useGameAdapterStatic<G extends IGame>() {
+  return useCpp<G>().gameAdapterStatic
 }
 
 export function useStore<G extends IGame>() {

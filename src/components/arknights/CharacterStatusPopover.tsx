@@ -464,7 +464,7 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
             持有
           </Checkbox>
         )}
-        {character.raw.name} - {isGoal ? '培养目标' : '当前状态'}
+        {character.name} - {isGoal ? '培养目标' : '当前状态'}
       </div>
       <div
         style={{

@@ -18,7 +18,7 @@ export function runCpp(
     const result = await environmentCheck()
     if (result) return cpp.store.set(ErrAtom, Object.assign({ context: '环境检测失败' }, result))
 
-    await cpp.gameAdapter.getDataManager().init()
+    await cpp.gameAdapter.getDataManager().init(cpp.region)
   })().catch((e) => {
     cpp.store.set(ErrAtom, { error: e, context: '初始化失败' })
   })

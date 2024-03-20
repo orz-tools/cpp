@@ -232,7 +232,7 @@ export function CharacterStatusPopover({ character, isGoal }: { character: Chara
             持有
           </Checkbox>
         )}
-        {character.raw.name} - {isGoal ? '培养目标' : '当前状态'}
+        {character.name} - {isGoal ? '培养目标' : '当前状态'}
       </div>
       {status.level > 0 ? (
         <>

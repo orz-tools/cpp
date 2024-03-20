@@ -1,4 +1,9 @@
 import { IGame } from '../cpp-basic/types'
+import { CppData_Reverse1999EnigmaticnebulaEn } from '../cpp-data-schemas/reverse1999-enigmaticnebula-en'
+import { CppData_Reverse1999EnigmaticnebulaJp } from '../cpp-data-schemas/reverse1999-enigmaticnebula-jp'
+import { CppData_Reverse1999EnigmaticnebulaKr } from '../cpp-data-schemas/reverse1999-enigmaticnebula-kr'
+import { CppData_Reverse1999EnigmaticnebulaTw } from '../cpp-data-schemas/reverse1999-enigmaticnebula-tw'
+import { CppData_Reverse1999EnigmaticnebulaZh } from '../cpp-data-schemas/reverse1999-enigmaticnebula-zh'
 import { CppData_Reverse1999Yuanyan3060ZhCn } from '../cpp-data-schemas/reverse1999-yuanyan3060-zh_CN'
 
 export interface Re1999 extends IGame {
@@ -62,4 +67,19 @@ export enum Re1999FormulaTag {}
 
 export const formulaTagNames = {} satisfies Record<Re1999FormulaTag, string>
 
+export const enum Re1999Region {
+  China = 'china',
+  GlobalEN = 'global-en',
+  GlobalJP = 'global-jp',
+  GlobalKR = 'global-kr',
+  GlobalTW = 'global-tw',
+  GlobalZH = 'global-zh',
+}
+
+export type Reverse1999EnigmaticNebula =
+  | CppData_Reverse1999EnigmaticnebulaEn
+  | CppData_Reverse1999EnigmaticnebulaJp
+  | CppData_Reverse1999EnigmaticnebulaKr
+  | CppData_Reverse1999EnigmaticnebulaTw
+  | CppData_Reverse1999EnigmaticnebulaZh
 export type Reverse1999Yuanyan3060 = CppData_Reverse1999Yuanyan3060ZhCn

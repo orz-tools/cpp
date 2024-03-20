@@ -13,9 +13,10 @@ void destroy('arknights-yituliu')
 export abstract class BasicDataManager<G extends IGame> {
   public readonly dataObjectMap = new Map<DataContainerObject<any>, IDataContainer>()
 
-  public async init() {
+  public async init(region: string) {
     this.initialized = false
     try {
+      await this.setRegion(region)
       await this.loadDataObjects()
       this.raw = await this.loadRaw()
       this.data = await this.transform()
@@ -38,6 +39,7 @@ export abstract class BasicDataManager<G extends IGame> {
     return refreshed
   }
 
+  public abstract setRegion(region: string): any
   public abstract loadRaw(refresh?: boolean): Promise<any>
   public raw!: Awaited<ReturnType<this['loadRaw']>>
 
