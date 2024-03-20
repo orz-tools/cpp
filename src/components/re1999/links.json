@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2024-03-20T17:19:23.257Z",
+  "updatedAt": "2024-03-20T18:15:01.853Z",
   "gamekee": [
     {
       "name": "伊索尔德",
@@ -533,5 +533,12 @@
       ],
       "url": "https://reverse1999.gamekee.com/159163.html"
     }
-  ]
+  ],
+  "englishNames": {
+    "Matilda Bouanich": "Matilda",
+    "Changeling": "Jessica",
+    "Black Dwarf": "Kaalaa Baunaa",
+    "Thirty-seven": "37",
+    "Six": "6"
+  }
 }
