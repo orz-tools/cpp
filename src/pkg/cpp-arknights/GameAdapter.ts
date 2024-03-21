@@ -441,6 +441,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   public getStageInfos() {
     if (this.stageInfo && Date.now() < this.cacheExpiresAt) return this.stageInfo
 
+    const base = this.dataManager.raw.local || this.dataManager.raw
     const now = Date.now()
     const map = new Map<string, ArknightsStageInfo>()
     this.stageInfo = {}
@@ -449,12 +450,12 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     const loadZoneName = (stageInfo: ArknightsKengxxiao['exStage']['stages'][''], isRetro: boolean) => {
       if (this.zoneNames[stageInfo.zoneId]) return
       if (isRetro) {
-        const retroId = this.dataManager.raw.exRetro.zoneToRetro[stageInfo.zoneId]
+        const retroId = base.exRetro.zoneToRetro[stageInfo.zoneId]
         if (retroId) {
-          this.zoneNames[stageInfo.zoneId] = this.dataManager.raw.exRetro.retroActList[retroId]?.name
+          this.zoneNames[stageInfo.zoneId] = base.exRetro.retroActList[retroId]?.name
         }
       } else {
-        const zone = this.dataManager.raw.exZone.zones[stageInfo.zoneId]
+        const zone = base.exZone.zones[stageInfo.zoneId]
         this.zoneNames[stageInfo.zoneId] = [zone?.zoneNameFirst || '', zone?.zoneNameSecond || ''].join(' ')
       }
     }
@@ -478,14 +479,14 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       let stageId = i.stageId
       if (stageId.startsWith('wk_armor_')) continue // SK-...
 
-      let stageInfo = this.dataManager.raw.exStage.stages[stageId]
+      let stageInfo = base.exStage.stages[stageId]
       let isRetro = false
       if (stageId.endsWith('_rep')) {
         stageId = stageId.slice(0, stageId.length - 4)
-        stageInfo = this.dataManager.raw.exStage.stages[stageId]
+        stageInfo = base.exStage.stages[stageId]
       } else if (stageId.endsWith('_perm')) {
         stageId = stageId.slice(0, stageId.length - 5)
-        stageInfo = this.dataManager.raw.exRetro.stageList[stageId]
+        stageInfo = base.exRetro.stageList[stageId]
         isRetro = true
       }
       if (!stageInfo) {
