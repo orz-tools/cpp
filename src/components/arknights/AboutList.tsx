@@ -25,12 +25,19 @@ export const AboutDataSources = memo(() => {
   return (
     <>
       <DataObjectStatus
-        title="Kengxxiao 解析的游戏数据"
+        title="Kengxxiao 解析的游戏数据 (zh_CN)"
         href={'https://github.com/Kengxxiao/ArknightsGameData'}
         dataObj={dm.$kengxxiao}
       />
+      {dm.$kengxxiaoLocal ? (
+        <DataObjectStatus
+          title={`Kengxxiao 解析的游戏数据 (${dm.$kengxxiaoLocal.lang})`}
+          href={'https://github.com/Kengxxiao/ArknightsGameData'}
+          dataObj={dm.$kengxxiaoLocal}
+        />
+      ) : null}
       <DataObjectStatus
-        title="企鹅物流数据统计 素材掉落统计数据"
+        title={`企鹅物流数据统计 素材掉落统计数据 (${dm.$penguin.server})`}
         href={'https://penguin-stats.io/'}
         dataObj={dm.$penguin}
         copyright={
@@ -45,7 +52,7 @@ export const AboutDataSources = memo(() => {
         copyright={
           '来自明日方舟一图流的数据，除非另有声明，采用 知识共享 署名-非商业性使用 4.0 国际 许可协议 进行许可。转载、公开或以任何形式复制、发行、再传播明日方舟一图流的任何内容时，必须注明从明日方舟一图流转载，并提供版权标识、许可协议标识、免责标识和作品链接；且未经许可，不得将本站内容或由其衍生作品用于商业目的。'
         }
-      />{' '}
+      />
       <DataObjectStatus
         title={HeyboxSurveySource.Name}
         href={HeyboxSurveySource.URL}
