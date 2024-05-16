@@ -182,15 +182,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     return this.zoneNames
   }
 
-  private warned = false
   public getStageInfos() {
-    if (this.dataManager.region === Re1999Region.China) {
-      if (!this.warned) {
-        alert('由于童话难度的加入，关卡列表和刷图规划坏了，暂时没时间修，特此告知')
-        this.warned = true
-      }
-    }
-
     if (this.stageInfo && Date.now() < this.cacheExpiresAt) return this.stageInfo
 
     this.stageInfo = {}
@@ -208,10 +200,13 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
         const chapter = allChapters.find((x) => x.id === episode.chapterId)
         if (!chapter) continue
 
-        const previous = episode.preEpisode ? this.stageInfo[String(episode.preEpisode)] : null
+        let previous = episode.preEpisode ? this.stageInfo[String(episode.preEpisode)] : null
         if (episode.preEpisode && !previous) {
           badEpisodes.push(episode)
           continue
+        }
+        if (previous && previous.chapter.type === (ExChapterType.Simple as number)) {
+          previous = this.stageInfo[String(episode.id - 1)]
         }
 
         let number = previous ? previous.number + 1 : 1
@@ -246,11 +241,13 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     }
 
     for (const stage of Object.values(this.stageInfo)) {
-      if ([ExEpisodeType.Story, ExEpisodeType.Normal, ExEpisodeType.Boss].includes(stage.episode.type)) {
-        continue
-      }
-      if (stage.chapter.chapterIndex && stage.chapter.type !== (ExChapterType.Simulate as number)) {
-        continue
+      if (![ExChapterType.Simple].includes(stage.chapter.type)) {
+        if ([ExEpisodeType.Story, ExEpisodeType.Normal, ExEpisodeType.Boss].includes(stage.episode.type)) {
+          continue
+        }
+        if (stage.chapter.chapterIndex && stage.chapter.type !== (ExChapterType.Simulate as number)) {
+          continue
+        }
       }
       delete this.stageInfo[stage.id]
       continue
