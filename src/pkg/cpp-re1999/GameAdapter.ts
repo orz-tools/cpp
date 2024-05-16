@@ -182,7 +182,15 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     return this.zoneNames
   }
 
+  private warned = false
   public getStageInfos() {
+    if (this.dataManager.region === Re1999Region.China) {
+      if (!this.warned) {
+        alert('由于童话难度的加入，关卡列表和刷图规划坏了，暂时没时间修，特此告知')
+        this.warned = true
+      }
+    }
+
     if (this.stageInfo && Date.now() < this.cacheExpiresAt) return this.stageInfo
 
     this.stageInfo = {}
