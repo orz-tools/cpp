@@ -24,67 +24,131 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
       }
       const data = SklandData.parse(raw)
       return (draft: Draft<UserData<Arknights>>, ctx: ImportContext) => {
-        let shitEquip = false
-        const keys = new Set(Object.keys(draft.current))
-        for (const char of data.chars) {
-          const key = ga.getRealCharacterKey(char.charId)
-          const c = ga.getCharacter(key)
-          if (!c) {
-            throw new Error(`找不到角色 ${key}`)
-          }
-          keys.delete(key)
-          if (!draft.current[key]) draft.current[key] = JSON.parse(JSON.stringify(empty))
-          const o = draft.current[key]
-          o.elite = char.evolvePhase
-          o.level = char.level
-          o.skillLevel = char.mainSkillLvl
-          if (char.skills) {
-            for (const skill of c.skills) {
-              const key = skill[0].skillId!
-              const lv = char.skills.find((x) => x.id === key)?.specializeLevel || 0
-              if (lv > 0) {
-                o.skillMaster[key] = lv
-              } else {
-                delete o.skillMaster[key]
+        if (data.cultivate?.characters) {
+          const keys = new Set(Object.keys(draft.current))
+          for (const char of data.cultivate.characters) {
+            const key = ga.getRealCharacterKey(char.id)
+            const c = ga.getCharacter(key)
+            if (!c) {
+              throw new Error(`找不到角色 ${key}`)
+            }
+            keys.delete(key)
+            if (!draft.current[key]) draft.current[key] = JSON.parse(JSON.stringify(empty))
+            const o = draft.current[key]
+            o.elite = char.evolvePhase
+            o.level = char.level
+            o.skillLevel = char.mainSkillLevel
+            if (char.skills) {
+              for (const skill of c.skills) {
+                const key = skill[0].skillId!
+                const lv = char.skills.find((x) => x.id === key)?.level || 0
+                if (lv > 0) {
+                  o.skillMaster[key] = lv
+                } else {
+                  delete o.skillMaster[key]
+                }
               }
             }
-          }
-          if (o.elite === 2 && o.level >= dm.data.constants.modUnlockLevel[c.rarity] && char.equip) {
-            const uniEquips = c.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
-            for (const ue of uniEquips) {
-              const level = ((): number | undefined => {
-                const d = char.equip.find((x) => x.id === ue.key)
-                if (!d) {
-                  return 0
-                }
-                if (d.level > 1 || d.level === 0) {
-                  return d.level
-                }
-                if (d.level === 1) {
-                  if (char.defaultEquipId === ue.key) {
-                    return 1
+            if (o.elite === 2 && o.level >= dm.data.constants.modUnlockLevel[c.rarity] && char.equips) {
+              const uniEquips = c.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
+              for (const ue of uniEquips) {
+                const level = ((): number | undefined => {
+                  const d = char.equips.find((x) => x.id === ue.key)
+                  if (!d) {
+                    return 0
                   }
-                  shitEquip = true
-                  // TODO: 开没开咱也不知道啊...
+                  return d.level
+                })()
+                if (level === undefined) continue
+                if (level === 0) {
+                  delete o.modLevel[ue.key]
+                } else {
+                  o.modLevel[ue.key] = level
                 }
-                return undefined
-              })()
-              if (level === undefined) continue
-              if (level === 0) {
-                delete o.modLevel[ue.key]
-              } else {
-                o.modLevel[ue.key] = level
               }
             }
           }
+          for (const key of keys) {
+            delete draft.current[key]
+          }
+        } else {
+          let shitEquip = false
+          const keys = new Set(Object.keys(draft.current))
+          for (const char of data.chars) {
+            const key = ga.getRealCharacterKey(char.charId)
+            const c = ga.getCharacter(key)
+            if (!c) {
+              throw new Error(`找不到角色 ${key}`)
+            }
+            keys.delete(key)
+            if (!draft.current[key]) draft.current[key] = JSON.parse(JSON.stringify(empty))
+            const o = draft.current[key]
+            o.elite = char.evolvePhase
+            o.level = char.level
+            o.skillLevel = char.mainSkillLvl
+            if (char.skills) {
+              for (const skill of c.skills) {
+                const key = skill[0].skillId!
+                const lv = char.skills.find((x) => x.id === key)?.specializeLevel || 0
+                if (lv > 0) {
+                  o.skillMaster[key] = lv
+                } else {
+                  delete o.skillMaster[key]
+                }
+              }
+            }
+            if (o.elite === 2 && o.level >= dm.data.constants.modUnlockLevel[c.rarity] && char.equip) {
+              const uniEquips = c.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
+              for (const ue of uniEquips) {
+                const level = ((): number | undefined => {
+                  const d = char.equip.find((x) => x.id === ue.key)
+                  if (!d) {
+                    return 0
+                  }
+                  if (d.level > 1 || d.level === 0) {
+                    return d.level
+                  }
+                  if (d.level === 1) {
+                    if (char.defaultEquipId === ue.key) {
+                      return 1
+                    }
+                    shitEquip = true
+                    // TODO: 开没开咱也不知道啊...
+                  }
+                  return undefined
+                })()
+                if (level === undefined) continue
+                if (level === 0) {
+                  delete o.modLevel[ue.key]
+                } else {
+                  o.modLevel[ue.key] = level
+                }
+              }
+            }
+          }
+          for (const key of keys) {
+            delete draft.current[key]
+          }
+          if (shitEquip) {
+            ctx.addWarning(
+              '森空岛目前提供的数据无法准确区分您的模组到底是没开还是仅 1 级。对于这种情况，此导入程序将会跳过这些模组。如果您有 1 级模组，请自行核对。',
+            )
+          }
         }
-        for (const key of keys) {
-          delete draft.current[key]
-        }
-        if (shitEquip) {
-          ctx.addWarning(
-            '森空岛目前提供的数据无法准确区分您的模组到底是没开还是仅 1 级。对于这种情况，此导入程序将会跳过这些模组。如果您有 1 级模组，请自行核对。',
+
+        if (data.cultivate?.items) {
+          const quans = Object.fromEntries(
+            data.cultivate.items
+              .map((x) => [x.id, parseInt(x.count, 10)] as const)
+              .filter(([key, value]) => {
+                return !!ga.getItem(key) && key[0] !== '#' && typeof value === 'number' && Number.isFinite(value)
+              }),
           )
+          console.log(quans)
+
+          draft.items = {
+            ...quans,
+          }
         }
       }
     })
@@ -160,7 +224,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
         `https://skland.xkcdn.win/?${new URLSearchParams({
           appName: 'Closure++ 二游计算器',
           origin: window.origin,
-          scopes: ['chars'].join(','),
+          scopes: ['chars', 'cultivate.characters', 'cultivate.items'].join(','),
         })}`,
         '_blank',
         `width=${windowWidth},height=${windowHeight},left=${left},top=${top},popup=yes`,
@@ -271,6 +335,37 @@ const SklandData = z.object({
       defaultEquipId: z.string(),
     }),
   ),
+  cultivate: z
+    .object({
+      characters: z.array(
+        z.object({
+          id: z.string(),
+          level: z.number().int().positive(),
+          evolvePhase: z.number().int().min(0).max(2),
+          mainSkillLevel: z.number().int().min(1).max(7),
+          skills: z.array(
+            z.object({
+              id: z.string(),
+              level: z.number().int().min(0).max(3),
+            }),
+          ),
+          equips: z.array(
+            z.object({
+              id: z.string(),
+              level: z.number().int().min(0).max(3),
+            }),
+          ),
+          potentialRank: z.number().int().min(0).max(5),
+        }),
+      ),
+      items: z.array(
+        z.object({
+          id: z.string(),
+          count: z.string().regex(/^\d+$/),
+        }),
+      ),
+    })
+    .optional(),
 })
 
 const SklandingData = z.object({

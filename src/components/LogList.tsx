@@ -8,6 +8,18 @@ import { useChamber } from './Chamber'
 
 const logs = [
   {
+    date: '2024-06-14',
+    game: [GameName.Arknights],
+    type: 'new',
+    desc: '支持森空岛仓库导入',
+  },
+  {
+    date: '2024-06-14',
+    game: [GameName.Arknights],
+    type: 'optimize',
+    desc: '优化干员列表样式',
+  },
+  {
     date: '2024-03-21',
     game: [GameName.Re1999, GameName.Arknights],
     type: 'new',
