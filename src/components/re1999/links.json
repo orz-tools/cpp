@@ -1,12 +1,52 @@
 {
-  "updatedAt": "2024-03-20T18:15:01.853Z",
+  "updatedAt": "2024-06-14T19:07:13.800Z",
   "gamekee": [
+    {
+      "name": "北方哨歌",
+      "alias": [
+        "哨歌",
+        "哨哥",
+        "北方"
+      ],
+      "url": "https://reverse1999.gamekee.com/620974.html"
+    },
+    {
+      "name": "维拉",
+      "alias": [
+        "人鱼",
+        "鱼人",
+        "大红帽"
+      ],
+      "url": "https://reverse1999.gamekee.com/619742.html"
+    },
+    {
+      "name": "露西",
+      "alias": [],
+      "url": "https://reverse1999.gamekee.com/623344.html"
+    },
+    {
+      "name": "罗蕾莱",
+      "alias": [],
+      "url": "https://reverse1999.gamekee.com/623499.html"
+    },
+    {
+      "name": "塞梅尔维斯",
+      "alias": [],
+      "url": "https://reverse1999.gamekee.com/623402.html"
+    },
+    {
+      "name": "马库斯",
+      "alias": [
+        "书虫"
+      ],
+      "url": "https://reverse1999.gamekee.com/617460.html"
+    },
     {
       "name": "伊索尔德",
       "alias": [
-        "13",
         "132d",
-        "伊索"
+        "伊索",
+        "142d"
       ],
       "url": "https://reverse1999.gamekee.com/615124.html"
     },
@@ -67,7 +107,8 @@
       "alias": [
         "加拉波那",
         "伽菈波娜",
-        "加拉波娜"
+        "加拉波娜",
+        "大波"
       ],
       "url": "https://reverse1999.gamekee.com/601464.html"
     },
@@ -199,6 +240,11 @@
         "胡寄生"
       ],
       "url": "https://reverse1999.gamekee.com/159129.html"
+    },
+    {
+      "name": "阿夫西维",
+      "alias": [],
+      "url": "https://reverse1999.gamekee.com/619924.html"
     },
     {
       "name": "小叶尼塞",
@@ -539,6 +585,8 @@
     "Changeling": "Jessica",
     "Black Dwarf": "Kaalaa Baunaa",
     "Thirty-seven": "37",
-    "Six": "6"
+    "Six": "6",
+    "Ezra Theodore": "Ezra",
+    "Енисей": "Yenisei"
   }
 }

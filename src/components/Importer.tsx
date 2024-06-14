@@ -402,24 +402,6 @@ const InventoryDiffViewRow = memo(
             }
           />
         </td>
-
-        {/* 
-        <a
-          role="menuitem"
-          tabIndex={0}
-          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-current cpp-menu-not-interactive"
-          style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
-        >
-          {render(currentCharacter, character, goalCharacter, false)}
-        </a>
-        <a
-          role="menuitem"
-          tabIndex={0}
-          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-goal cpp-menu-not-interactive"
-          style={{ opacity: uda.isAbsentCharacter(character, goalCharacter) ? 0.25 : 1 }}
-        >
-          {render(goalCharacter, character, currentCharacter, false)}
-        </a> */}
       </tr>
     )
   },
