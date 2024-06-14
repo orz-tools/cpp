@@ -54,7 +54,10 @@ function format(value: number | null | undefined, type: ValueType, single = fals
   }
 }
 
-function formatTime(seconds: number) {
+function formatTime(seconds: number): string {
+  if (seconds < 0) {
+    return `-${formatTime(-seconds)}`
+  }
   if (seconds > 86400) {
     return `${(seconds / 86400).toFixed(2)}d`
   }
