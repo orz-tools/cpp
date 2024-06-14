@@ -86,12 +86,14 @@ export const ValueTag = memo(
     minimal,
     single,
     style,
+    textStyle,
     intent,
   }: {
     value: number | null | undefined
     minimal?: boolean
     single?: boolean
     style?: React.CSSProperties
+    textStyle?: React.CSSProperties
     intent?: Intent
   }) => {
     const cpp = useCpp()
@@ -106,13 +108,14 @@ export const ValueTag = memo(
           paddingLeft: 4,
           paddingRight: 4,
           opacity: hasValue(value) ? 1 : 0.25,
+          whiteSpace: 'nowrap',
           ...style,
         }}
         title={formatAll(value)}
         intent={intent}
       >
         {/* {intent ? undefined : '约 '} */}
-        {format(value, type, single)}
+        <span style={textStyle}>{format(value, type, single)}</span>
       </Tag>
     )
   },

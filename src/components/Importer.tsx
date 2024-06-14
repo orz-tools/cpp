@@ -1,4 +1,4 @@
-import { Button, Callout, Dialog, DialogFooter, Menu, Tab, Tabs } from '@blueprintjs/core'
+import { Button, Callout, Dialog, DialogFooter, Intent, Menu, Tab, Tabs } from '@blueprintjs/core'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { Draft } from 'immer'
@@ -13,6 +13,7 @@ import { useChamber } from './Chamber'
 import { renderCharacterStatus } from './CharacterList'
 import { ErrAtom } from './Err'
 import { CachedImg } from './Icons'
+import { ValueTag } from './Value'
 
 export interface ImportContext {
   addWarning(text: string): void
@@ -85,18 +86,43 @@ const ImportResultDialog = memo(({ diff, onClose }: { diff: State; onClose: () =
 })
 
 const DiffView = memo(({ diff }: { diff: State }) => {
-  const [tab, setTab] = useState<string | number>('char')
+  const ga = useGameAdapter()
+
   const detail = useMemo(() => {
-    const charDiffs = [] as { key: string; before: object; after: object }[]
     const { before, after } = diff
-    const allChars = new Set([...Object.keys(before.current), ...Object.keys(after.current)])
-    for (const char of allChars) {
-      if (deepEqual(before.current[char], after.current[char])) continue
-      charDiffs.push({ key: char, before: before.current[char], after: after.current[char] })
+
+    const charDiffs = [] as { key: string; before: object; after: object }[]
+    {
+      const allChars = new Set([...Object.keys(before.current), ...Object.keys(after.current)])
+      for (const char of allChars) {
+        if (deepEqual(before.current[char], after.current[char])) continue
+        charDiffs.push({ key: char, before: before.current[char], after: after.current[char] })
+      }
     }
 
-    return { charDiffs }
-  }, [diff])
+    const inventoryDiffs = [] as { key: string; before: number; after: number }[]
+    let inventoryValueDelta = 0
+    {
+      const allKeys = new Set([...Object.keys(before.items), ...Object.keys(after.items)])
+      for (const i of allKeys) {
+        const b = before.items[i] || 0
+        const a = after.items[i] || 0
+        if (a - b === 0) continue
+        inventoryDiffs.push({ key: i, before: b, after: a })
+        const valueDelta = (a - b) * (ga.getItem(i)?.valueAsAp || 0)
+        if (Number.isFinite(valueDelta)) {
+          inventoryValueDelta += valueDelta
+        }
+      }
+    }
+
+    return { charDiffs, inventoryDiffs, inventoryValueDelta }
+  }, [diff, ga])
+
+  const [tab, setTab] = useState<string | number>(() => {
+    if (detail.inventoryDiffs.length <= 0) return 'char'
+    return detail.charDiffs.length > 0 ? 'char' : 'inv'
+  })
 
   return (
     <>
@@ -117,6 +143,17 @@ const DiffView = memo(({ diff }: { diff: State }) => {
               title={'角色'}
               tagContent={detail.charDiffs.length}
               panel={<CharDiffView charDiffs={detail.charDiffs} />}
+            />
+            <Tab
+              id={'inv'}
+              title={'道具'}
+              tagContent={detail.inventoryDiffs.length}
+              panel={
+                <InventoryDiffView
+                  inventoryDiffs={detail.inventoryDiffs}
+                  inventoryValueDelta={detail.inventoryValueDelta}
+                />
+              }
             />
           </Tabs>
         </div>
@@ -247,6 +284,143 @@ const CharDiffViewRow = memo(
           {render(goalCharacter, character, currentCharacter, false)}
         </a>
       </li>
+    )
+  },
+)
+
+const InventoryDiffView = memo(
+  ({
+    inventoryDiffs,
+    inventoryValueDelta,
+  }: {
+    inventoryDiffs: { key: string; before: number; after: number }[]
+    inventoryValueDelta: number
+  }) => {
+    return (
+      <div
+        style={{
+          overflowY: 'auto',
+        }}
+      >
+        <table style={{ width: '100%' }}>
+          <thead>
+            <tr>
+              <td>Σ</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td
+                style={{
+                  textAlign: 'right',
+                  paddingLeft: '2em',
+                }}
+              >
+                <ValueTag
+                  single
+                  minimal
+                  value={inventoryValueDelta}
+                  style={{
+                    width: '100%',
+                    verticalAlign: 'bottom',
+                  }}
+                  intent={
+                    Number.isFinite(inventoryValueDelta)
+                      ? inventoryValueDelta > 0
+                        ? Intent.DANGER
+                        : inventoryValueDelta < 0
+                        ? Intent.SUCCESS
+                        : undefined
+                      : undefined
+                  }
+                />
+              </td>
+            </tr>
+            <tr>
+              <th style={{ width: '10em', textAlign: 'left' }}>道具</th>
+              <th style={{ width: '5em', textAlign: 'right' }}>以往</th>
+              <th></th>
+              <th style={{ width: '5em', textAlign: 'right' }}>如今</th>
+              <th style={{ width: '10em', textAlign: 'right' }}>价值变化</th>
+            </tr>
+          </thead>
+          <tbody>
+            {inventoryDiffs.map((row) => (
+              <InventoryDiffViewRow key={row.key} row={row} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  },
+)
+
+const InventoryDiffViewRow = memo(
+  ({ row, style }: { row: { key: string; before: number; after: number }; style?: React.CSSProperties }) => {
+    const ga = useGameAdapter()
+    const item = ga.getItem(row.key)
+    const valueDelta = item.valueAsAp! * (row.after - row.before)
+    return (
+      <tr role="none" style={style}>
+        <td>
+          <div style={{ display: 'flex' }}>
+            <CachedImg
+              className={'cpp-item-icon'}
+              src={item.icon}
+              width={'20'}
+              height={'20'}
+              alt={item.key}
+              title={item.key}
+            />
+            <span style={{ flex: 1, flexShrink: 1 }}>{item.name}</span>
+          </div>
+        </td>
+        <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>{row.before}</td>
+        <td>➔</td>
+        <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>{row.after}</td>
+        <td
+          style={{
+            textAlign: 'right',
+            paddingLeft: '2em',
+          }}
+        >
+          <ValueTag
+            single
+            minimal
+            value={valueDelta}
+            style={{
+              width: '100%',
+              verticalAlign: 'bottom',
+            }}
+            intent={
+              Number.isFinite(valueDelta)
+                ? valueDelta > 0
+                  ? Intent.DANGER
+                  : valueDelta < 0
+                  ? Intent.SUCCESS
+                  : undefined
+                : undefined
+            }
+          />
+        </td>
+
+        {/* 
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-current cpp-menu-not-interactive"
+          style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
+        >
+          {render(currentCharacter, character, goalCharacter, false)}
+        </a>
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-goal cpp-menu-not-interactive"
+          style={{ opacity: uda.isAbsentCharacter(character, goalCharacter) ? 0.25 : 1 }}
+        >
+          {render(goalCharacter, character, currentCharacter, false)}
+        </a> */}
+      </tr>
     )
   },
 )

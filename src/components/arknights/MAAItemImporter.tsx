@@ -1,10 +1,12 @@
-import { Alert } from '@blueprintjs/core'
-import { useSetAtom, useStore } from 'jotai'
+import { Card, CardList, Dialog, DialogBody, InputGroup } from '@blueprintjs/core'
+import { Draft } from 'immer'
 import { pick } from 'ramda'
-import { memo, useEffect, useState } from 'react'
+import { memo } from 'react'
 import useEvent from 'react-use-event-hook'
-import { useAtoms, useGameAdapter } from '../../Cpp'
+import { useGameAdapter } from '../../Cpp'
 import { Arknights } from '../../pkg/cpp-arknights'
+import { UserData } from '../../pkg/cpp-core/UserData'
+import { ImportContext, useStartImportSession } from '../Importer'
 
 const pickRetainableItems = pick([
   '4001', // 龙门币
@@ -13,67 +15,74 @@ const pickRetainableItems = pick([
 
 export const MAAItemImporterDialog = memo(<G extends Arknights>({ onClose }: { onClose: () => void }) => {
   const ga = useGameAdapter<G>()
-  const atoms = useAtoms<G>()
-  const store = useStore()
-  const setData = useSetAtom(atoms.dataAtom)
-  const [msg, setMsg] = useState('')
-
-  const run = useEvent(() => {
-    try {
-      const input =
-        prompt('导入「MAA 仓库识别」数据: \nMAA 小工具 -> 仓库识别 -> 导出至明日方舟工具箱 -> 下面粘贴') || ''
-      if (!input) {
-        onClose()
-        return
-      }
+  const startImportSession = useStartImportSession()
+  const handleData = useEvent((input: string) => {
+    onClose()
+    startImportSession(() => {
       const data = JSON.parse(input)
-      if (!data) {
-        onClose()
-        return
-      }
-      const quans = Object.fromEntries(
-        Object.entries(data).filter(([key, value]) => {
-          return !!ga.getItem(key) && key[0] !== '#' && typeof value === 'number'
-        }),
-      )
-      const before = store.get(atoms.itemQuantities)
-      setData('modify', (x) => {
-        x.items = {
+      return (draft: Draft<UserData<Arknights>>, ctx: ImportContext) => {
+        void ctx
+
+        const quans = Object.fromEntries(
+          Object.entries(data).filter(([key, value]) => {
+            return !!ga.getItem(key) && key[0] !== '#' && typeof value === 'number'
+          }),
+        )
+
+        draft.items = {
           ...quans,
-          ...pickRetainableItems(x.items),
+          ...pickRetainableItems(draft.items),
         }
-      })
-      const after = store.get(atoms.itemQuantities)
-      {
-        // FIXME: 挪走
-        const msg = [] as string[]
-        const allKeys = new Set([...Object.keys(before), ...Object.keys(after)])
-        let count = 0
-        for (const i of allKeys) {
-          const item = ga.getItem(i)
-          const b = before[i] || 0
-          const a = after[i] || 0
-          if (a - b === 0) continue
-          const v = item.valueAsAp == null ? undefined : (a - b) * item.valueAsAp
-          msg.push(`${item.name}\t${b} -> ${a}\t${a - b > 0 ? '+' : '-'}${Math.abs(a - b)}\tAP ${v?.toFixed(3)}`)
-          if (v != null) {
-            count += v
-          }
-        }
-        msg.push(`Σ\t\t\tAP ${count.toFixed(3)}`)
-        setMsg(msg.join('\n'))
       }
-    } catch (e) {
-      alert(e)
-      onClose()
+    })
+  })
+
+  const handleInput = useEvent<React.ClipboardEventHandler<HTMLInputElement>>((e) => {
+    e.preventDefault()
+    const data = e.clipboardData.getData('Text')
+    if (data) {
+      handleData(data)
+    } else {
+      alert('你粘贴的东西好像不太对哦~')
     }
   })
 
-  useEffect(run, [run])
+  // const focusRef = useRef<HTMLInputElement>(null)
+  // const focus = useEvent(() => focusRef.current?.focus())
 
   return (
-    <Alert confirmButtonText="Okay" isOpen={true} onClose={onClose}>
-      <pre style={{ tabSize: 16 }}>{msg}</pre>
-    </Alert>
+    <Dialog isOpen={true} onClose={onClose} title={'导入「MAA 仓库识别」数据'} icon="log-in">
+      <DialogBody>
+        <CardList compact>
+          <MyCard step={1}>打开 MAA「小工具」</MyCard>
+          <MyCard step={2}>选择「仓库识别」功能</MyCard>
+          <MyCard step={3}>点击「开始识别」按钮</MyCard>
+          <MyCard step={4}>等待识别完成</MyCard>
+          <MyCard step={5}>点击「导出至明日方舟工具箱」按钮</MyCard>
+          <MyCard step={6}>
+            <InputGroup
+              onPaste={handleInput}
+              value={''}
+              placeholder="请在此粘贴..."
+              autoFocus
+              // inputRef={focusRef}
+              style={{ width: '100%' }}
+              onChange={noop}
+            />
+          </MyCard>
+        </CardList>
+      </DialogBody>
+    </Dialog>
   )
 })
+
+const MyCard = memo((props: { children: React.ReactNode; step: number }) => {
+  return (
+    <Card>
+      <span style={{ fontSize: '1.5em', marginRight: '1em' }}>{props.step}</span>
+      {props.children}
+    </Card>
+  )
+})
+
+const noop = () => void 0
