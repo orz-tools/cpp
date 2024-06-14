@@ -6,49 +6,50 @@
   display: block;
   content: '';
   position: absolute;
-  left: -1px;
-  top: -1px;
-  width: 42px;
-  height: 42px;
+  left: 0px;
+  top: 0px;
+  width: 40px;
+  height: 40px;
   z-index: -1;
-  background-size: 42px 42px;
+  background-size: 40px 40px;
   background-repeat: no-repeat;
   background-position: 0px 0px;
-  border-radius: 2px;
-  box-shadow: color-mix(in srgb, var(--rarity-color, rgba(0, 0, 0)), transparent 15%) 0px 0px 3px 0px;
+  background-color: black;
+  border-radius: 0px;
+  box-shadow: color-mix(in srgb, var(--rarity-color, rgba(0, 0, 0)), transparent 15%) 0px 0px 2px 0px;
+  opacity: 0.5;
 }
 
 .cpp-char-rarity-0 .cpp-char-avatar::before {
   --rarity-color: #000000;
-  background-image: linear-gradient(90deg, #000000, #000000);
+  background-image: url(./assets/charbg1.png);
 }
 
 .cpp-char-rarity-1 .cpp-char-avatar::before {
-  --rarity-color: #cccccc;
-  background-image: linear-gradient(90deg, #cccccc, #cccccc);
+  --rarity-color: #82d42a;
+  background-image: url(./assets/charbg2.png);
 }
 
 .cpp-char-rarity-2 .cpp-char-avatar::before {
   --rarity-color: #0085ff;
-  background-image: linear-gradient(90deg, #0085ff, #87b0ff);
+  background-image: url(./assets/charbg3.png);
 }
 
 .cpp-char-rarity-3 .cpp-char-avatar::before {
   --rarity-color: #a44efb;
-  background-image: linear-gradient(90deg, #a44efb, #d48eff);
+  background-image: url(./assets/charbg4.png);
 }
 
 .cpp-char-rarity-4 .cpp-char-avatar::before {
   --rarity-color: #ffd43b;
-  background-image: linear-gradient(90deg, #ffd43b, #ffd43b);
+  background-image: url(./assets/charbg5.png);
 }
 
 .cpp-char-rarity-5 .cpp-char-avatar::before {
   --rarity-color: #ff5a26;
-  background-image: linear-gradient(90deg, #ff5a26, #ffb978);
+  background-image: url(./assets/charbg6.png);
 }
 
 .cpp-char-avatar > img {
-  background-color: #eef0f2;
-  border-radius: 1px;
+  border-radius: 0px;
 }
