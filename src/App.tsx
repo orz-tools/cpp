@@ -48,7 +48,7 @@ const UndoButtons = memo(() => {
       <Button
         icon="undo"
         disabled={undoCounter === 0}
-        text="Undo"
+        text={gt.gettext('撤销')}
         minimal={true}
         onClick={() => setData('undo')}
         rightIcon={undoCounter > 0 ? <Tag round={true}>{undoCounter}</Tag> : undefined}
