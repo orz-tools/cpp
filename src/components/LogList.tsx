@@ -3,46 +3,57 @@ import { groupBy, sortBy } from 'ramda'
 import React, { memo, useMemo } from 'react'
 import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
+import { PSTR, gt, lpstr } from '../pkg/gt'
 import { externalLinkProps } from './AboutList'
 import { useChamber } from './Chamber'
+import { PSTRs } from './LineBreaks'
 
 const logs = [
+  {
+    date: '2024-06-15',
+    type: 'new',
+    desc: [
+      'Add option for UI Languages',
+      '支持界面语言切换',
+      lpstr(() => gt.pgettext('changelog', '支持界面语言切换')),
+    ],
+  },
   {
     date: '2024-06-14',
     game: [GameName.Arknights],
     type: 'new',
-    desc: '支持森空岛仓库导入',
+    desc: lpstr(() => gt.pgettext('changelog', '支持森空岛仓库导入')),
   },
   {
     date: '2024-06-14',
     game: [GameName.Arknights],
     type: 'optimize',
-    desc: '优化干员列表样式',
+    desc: lpstr(() => gt.pgettext('changelog', '优化干员列表样式')),
   },
   {
     date: '2024-03-21',
     game: [GameName.Re1999, GameName.Arknights],
     type: 'new',
-    desc: '加入海外服务器的游戏数据',
+    desc: lpstr(() => gt.pgettext('changelog', '加入海外服务器的游戏数据')),
   },
   {
     date: '2024-01-11',
     game: [GameName.Arknights],
     type: 'new',
-    desc: '增加一些基于社区练度统计数据的排行榜视图',
+    desc: lpstr(() => gt.pgettext('changelog', '增加一些基于社区练度统计数据的排行榜视图')),
     children: <div style={{ padding: 10 }}>请从干员列表右上角的“更多视图”下拉菜单中访问。</div>,
   },
   {
     date: '2024-01-04',
     game: [GameName.Arknights],
     type: 'new',
-    desc: '接入小黑盒 app 的干员统计数据',
+    desc: lpstr(() => gt.pgettext('changelog', '接入小黑盒 app 的干员统计数据')),
   },
   {
     date: '2023-12-31',
     game: [GameName.Arknights],
     type: 'new',
-    desc: '接入明日方舟一图流的干员练度统计数据',
+    desc: lpstr(() => gt.pgettext('changelog', '接入明日方舟一图流的干员练度统计数据')),
   },
   {
     date: '2023-10-09',
@@ -108,7 +119,7 @@ const logs = [
   date: string
   game?: GameName[]
   type: 'new' | 'fix' | 'optimize'
-  desc: string
+  desc: PSTR | PSTR[]
   children?: React.ReactNode
   href?: string
 }[]
@@ -128,7 +139,7 @@ export const LogPanel = memo(({ onClose }: { onClose: () => any }) => {
       onClose={onClose}
       position="left"
       size={'300px'}
-      title={'更新笔记'}
+      title={gt.gettext('更新笔记')}
       icon={'automatic-updates'}
     >
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
@@ -151,7 +162,11 @@ const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: typeof
             href={vv.href}
             className={vv.children || vv.href ? undefined : 'cpp-menu-not-interactive'}
             icon={vv.type in iconMap ? (iconMap as any)[vv.type] : ''}
-            text={<div className="cpp-menu-semi-secondary">{vv.desc}</div>}
+            text={
+              <div className="cpp-menu-semi-secondary">
+                <PSTRs strings={vv.desc} />
+              </div>
+            }
             multiline={true}
             children={vv.children}
             popoverProps={{ usePortal: true }}
@@ -180,8 +195,10 @@ export const SimpleLogList = memo(() => {
       <LogGroup
         title={
           <>
-            <span style={{ float: 'right', fontWeight: 'normal' }}>截止 {groupedLogs[0][0]}</span>
-            近期更新
+            <span style={{ float: 'right', fontWeight: 'normal' }}>
+              {gt.gettext('截止 %s').replaceAll('%s', groupedLogs[0][0])}
+            </span>
+            {gt.gettext('近期更新')}
           </>
         }
         items={groupedLogs
@@ -197,7 +214,7 @@ export const SimpleLogList = memo(() => {
       />
       <MenuItem
         icon="double-chevron-right"
-        text="查看更多..."
+        text={gt.gettext('查看更多…')}
         onClick={() => {
           add(LogPanel)
         }}

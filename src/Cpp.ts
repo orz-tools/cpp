@@ -5,6 +5,7 @@ import { IGameComponent } from './components/types'
 import { BlobFlavour } from './pkg/blobcache'
 import { IGame, IGameAdapter, IGameAdapterStatic } from './pkg/cpp-basic'
 import { UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
+import { PSTR, gt, lpstr } from './pkg/gt'
 
 export interface Preference {
   v: number
@@ -38,22 +39,22 @@ export enum FarmLevel {
   Finished = 'finished', // 毕业
 }
 
-export const FarmLevelNames: Record<FarmLevel, string> = {
-  [FarmLevel.StarOnly]: '仅星标',
-  [FarmLevel.StarForGoal]: '星标 (以计划为目标)',
-  [FarmLevel.StarForFinished]: '星标 (以毕业为目标)',
-  [FarmLevel.Goal]: '仅计划',
-  [FarmLevel.GoalForFinished]: '计划 (以毕业为目标)',
-  [FarmLevel.Finished]: '毕业',
+export const FarmLevelNames: Record<FarmLevel, PSTR> = {
+  [FarmLevel.StarOnly]: lpstr(() => gt.pgettext('full name', '仅星标')),
+  [FarmLevel.StarForGoal]: lpstr(() => gt.pgettext('full name', '星标 (以计划为目标)')),
+  [FarmLevel.StarForFinished]: lpstr(() => gt.pgettext('full name', '星标 (以毕业为目标)')),
+  [FarmLevel.Goal]: lpstr(() => gt.pgettext('full name', '仅计划')),
+  [FarmLevel.GoalForFinished]: lpstr(() => gt.pgettext('full name', '计划 (以毕业为目标)')),
+  [FarmLevel.Finished]: lpstr(() => gt.pgettext('full name', '毕业')),
 }
 
-export const FarmLevelShortNames: Record<FarmLevel, string> = {
-  [FarmLevel.StarOnly]: '仅星标',
-  [FarmLevel.StarForGoal]: '星标(计划)',
-  [FarmLevel.StarForFinished]: '星标(毕业)',
-  [FarmLevel.Goal]: '仅计划',
-  [FarmLevel.GoalForFinished]: '计划(毕业)',
-  [FarmLevel.Finished]: '毕业',
+export const FarmLevelShortNames: Record<FarmLevel, PSTR> = {
+  [FarmLevel.StarOnly]: lpstr(() => gt.pgettext('short name', '仅星标')),
+  [FarmLevel.StarForGoal]: lpstr(() => gt.pgettext('short name', '星标(计划)')),
+  [FarmLevel.StarForFinished]: lpstr(() => gt.pgettext('short name', '星标(毕业)')),
+  [FarmLevel.Goal]: lpstr(() => gt.pgettext('short name', '仅计划')),
+  [FarmLevel.GoalForFinished]: lpstr(() => gt.pgettext('short name', '计划(毕业)')),
+  [FarmLevel.Finished]: lpstr(() => gt.pgettext('short name', '毕业')),
 }
 
 export interface ListCharactersQueryParam {
@@ -101,7 +102,7 @@ export class Cpp<G extends IGame> {
   public setRegion(region: string): boolean {
     if (this.region === region) return false
     localStorage.setItem(this.storagePrefix + 'region', region)
-    alert('区域已切换，将重新载入页面。')
+    alert(gt.gettext('区域已切换，将重新载入页面。'))
     location.reload()
     return true
   }

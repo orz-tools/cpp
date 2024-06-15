@@ -2,6 +2,7 @@ import { AnchorButton, Button, Dialog, DialogBody, DialogFooter, MenuItem, TextA
 import { memo, useEffect, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useCpp, useStore } from '../Cpp'
+import { gt } from '../pkg/gt'
 import { formatProfileName, getStoragePrefix } from '../profiles'
 import { useChamber } from './Chamber'
 import { ErrAtom } from './Err'
@@ -37,7 +38,7 @@ export const UserDataManager = memo(
       <Dialog
         isOpen={true}
         onClose={onClose}
-        title={`Closure${formatProfileName(game, instanceName)}++ 用户数据管理`}
+        title={`Closure${formatProfileName(game, instanceName)}++ ${gt.gettext('用户数据管理')}`}
         icon="database"
       >
         <UserDataManagerContent data={data} game={game} instanceName={instanceName} />
@@ -68,11 +69,13 @@ const UserDataManagerContent = memo(
     const importData = useEvent(() => {
       if (
         !confirm(
-          '警告：你确定要导入数据吗？\n' +
-            '你现在的数据将会被永久覆盖！（真的很久！）\n' +
-            '\n' +
-            '若导入错误、无效的数据将可能导致页面无法正常运行，\n' +
-            '届时您可在数据管理中清空数据。',
+          gt.gettext(
+            '警告：你确定要导入数据吗？\n' +
+              '你现在的数据将会被永久覆盖！（真的很久！）\n' +
+              '\n' +
+              '若导入错误、无效的数据将可能导致页面无法正常运行，\n' +
+              '届时您可在数据管理中清空数据。',
+          ),
         )
       )
         return
@@ -93,15 +96,15 @@ const UserDataManagerContent = memo(
         } else {
           localStorage.setItem(getStoragePrefix(game, instanceName) + 'region', v['region'])
         }
-        alert('数据已导入，将重新载入页面。')
+        alert(gt.gettext('数据已导入，将重新载入页面。'))
         location.reload()
       } catch (e) {
-        store.set(ErrAtom, { error: e, context: '导入数据时遇到问题' })
+        store.set(ErrAtom, { error: e, context: gt.gettext('导入数据时遇到问题') })
       }
     })
 
     const resetData = useEvent(() => {
-      if (!confirm('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）')) return
+      if (!confirm(gt.gettext('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）'))) return
 
       localStorage.removeItem(getStoragePrefix(game, instanceName) + 'userdata')
       localStorage.removeItem(getStoragePrefix(game, instanceName) + 'preference')
@@ -130,8 +133,14 @@ const UserDataManagerContent = memo(
         <DialogFooter
           actions={
             <>
-              <Button minimal intent={'danger'} icon="trash" text="清空" onClick={resetData} />
-              <Button minimal intent={'primary'} icon="log-in" text="从文本框中导入" onClick={importData} />
+              <Button minimal intent={'danger'} icon="trash" text={gt.gettext('清空')} onClick={resetData} />
+              <Button
+                minimal
+                intent={'primary'}
+                icon="log-in"
+                text={gt.gettext('从文本框中导入')}
+                onClick={importData}
+              />
             </>
           }
         >
@@ -141,7 +150,7 @@ const UserDataManagerContent = memo(
             href={data ? 'data:text/json,' + encodeURIComponent(data.data) : ''}
             icon={'log-out'}
             target={'cpp-export-download-target'}
-            text="导出为文件"
+            text={gt.gettext('导出为文件')}
             download={data ? `cpp-dump-${game}-${instanceName}-${data.now}.json` : undefined}
             disabled={!data}
           />
@@ -160,7 +169,7 @@ export const UserDataManagerButton = memo(() => {
     <Button
       minimal
       icon={'database'}
-      text="用户数据管理"
+      text={gt.gettext('用户数据管理')}
       onClick={() => {
         add(UserDataManager, {
           game: game,
@@ -179,7 +188,7 @@ export const UserDataManagerMenuItem = memo(() => {
   return (
     <MenuItem
       icon={'database'}
-      text="用户数据管理"
+      text={gt.gettext('用户数据管理')}
       onClick={() => {
         add(UserDataManager, {
           game: game,

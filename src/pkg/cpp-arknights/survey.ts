@@ -1,3 +1,4 @@
+import { gt, lpstr } from '../gt'
 import { ArknightsDataManager, Character, Skill, UniEquip } from './DataManager'
 
 export type SurveyProps = { percent: number; samples: number; desc: string }
@@ -18,9 +19,9 @@ export interface SurveySource {
 }
 
 export class YituliuSurveySource implements SurveySource {
-  public static URL = 'https://yituliu.site/survey/operators'
-  public static Name = '明日方舟一图流 干员练度统计数据'
-  public static ShortName = '一图流练度统计'
+  public static URL = 'https://ark.yituliu.cn/survey/operators'
+  public static Name = lpstr(() => gt.gettext('明日方舟一图流 干员练度统计数据'))
+  public static ShortName = lpstr(() => gt.pgettext('short name', '一图流练度统计'))
 
   public constructor(public readonly dm: ArknightsDataManager) {}
 
@@ -182,8 +183,8 @@ export class YituliuSurveySource implements SurveySource {
 
 export class HeyboxSurveySource implements SurveySource {
   public static URL = 'https://xiaoheihe.cn'
-  public static Name = '小黑盒 app 干员统计数据'
-  public static ShortName = '小黑盒干员统计'
+  public static Name = lpstr(() => gt.gettext('小黑盒 app 干员统计数据'))
+  public static ShortName = lpstr(() => gt.pgettext('short name', '小黑盒干员统计'))
 
   public constructor(public readonly dm: ArknightsDataManager) {}
 

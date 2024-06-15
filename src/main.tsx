@@ -4,11 +4,14 @@ import { Home } from './components/Home'
 import { runCpp } from './entry'
 import { GameName, gameAdapterLoaders, gameComponentLoaders } from './games'
 import './icons'
+import { setupLocale } from './locales'
 import { formatProfileName, getStoragePrefix } from './profiles'
 
 FocusStyleManager.onlyShowFocusOnTabs()
 
 async function runApp() {
+  await setupLocale()
+
   const pathName = location.pathname
   if (pathName[0] !== '/') throw new Error('location pathname not started with /')
 

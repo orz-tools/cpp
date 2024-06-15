@@ -147,7 +147,7 @@ const FarmLevelButton = memo(({ level, refresh }: { level: FarmLevel; refresh?: 
   const [farmLevel, setFarmLevel] = useAtom(farmLevelAtom)
   return (
     <MenuItem
-      text={FarmLevelNames[level]}
+      text={FarmLevelNames[level].toString()}
       active={farmLevel === level}
       onClick={() => {
         setFarmLevel(level)
@@ -230,7 +230,7 @@ export const FarmList = memo(() => {
             position="bottom-right"
           >
             <Button minimal={true} rightIcon={<Icon size={10} icon="chevron-down" />} small style={{ marginRight: -5 }}>
-              {FarmLevelShortNames[farmLevel]}
+              {FarmLevelShortNames[farmLevel].toString()}
             </Button>
           </Popover>
           <Button

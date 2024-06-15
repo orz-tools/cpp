@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import { useGameAdapter } from '../../Cpp'
 import { Re1999DataManager } from '../../pkg/cpp-re1999'
+import { gt } from '../../pkg/gt'
 import { DataObjectStatus, DescriptionMenuItem } from '../AboutList'
 
 export const AboutCopyright = memo(() => {
@@ -9,8 +10,10 @@ export const AboutCopyright = memo(() => {
       <DescriptionMenuItem
         className="cpp-menu-not-interactive"
         icon={'info-sign'}
-        text="游戏资源"
-        description="本项目所使用的游戏资源（包括但不限于：游戏图片、动画、音频、文本原文或其转译版本等）仅用于更好地表现游戏资料、增强用户体验，其版权属于广州深蓝互动网络科技有限公司和其关联公司。"
+        text={gt.gettext('游戏资源')}
+        description={gt.gettext(
+          '本项目所使用的游戏资源（包括但不限于：游戏图片、动画、音频、文本原文或其转译版本等）仅用于更好地表现游戏资料、增强用户体验，其版权属于广州深蓝互动网络科技有限公司和其关联公司。',
+        )}
       />
     </>
   )

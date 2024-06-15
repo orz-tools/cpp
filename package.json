@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "node scripts/build-messages.js && vite",
+    "build": "node scripts/build-messages.js && tsc && vite build",
+    "preview": "vite preview",
+    "gt": "node scripts/extract-messages.js && scripts/update-messages.sh && node scripts/build-messages.js"
   },
   "dependencies": {
     "@blueprintjs/core": "^5.2.1",
@@ -20,6 +21,7 @@
     "jotai": "2.2.0",
     "json-stringify-deterministic": "^1.0.11",
     "localforage": "^1.10.0",
+    "node-gettext": "^3.0.0",
     "p-limit": "^4.0.0",
     "p-props": "^5.0.0",
     "ramda": "^0.29.0",
@@ -33,6 +35,7 @@
     "@ainou/code-style": "^0.0.25",
     "@types/deep-equal": "^1.0.1",
     "@types/node": "20",
+    "@types/node-gettext": "^3",
     "@types/prettier": "^3.0.0",
     "@types/ramda": "^0.29.3",
     "@types/react": "^18.2.21",
@@ -42,6 +45,8 @@
     "@vitejs/plugin-react-swc": "^3.3.2",
     "@vitest/ui": "^0.34.3",
     "eslint": "^8.48.0",
+    "gettext-extractor": "^3.8.0",
+    "gettext-parser": "^8.0.0",
     "node-fetch": "^3.3.2",
     "prettier": "^3.0.2",
     "rollup-plugin-visualizer": "^5.9.2",

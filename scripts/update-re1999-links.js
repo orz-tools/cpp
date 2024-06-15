@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { writeFile } from 'fs/promises'
 import fetch from 'node-fetch'
 import { dirname, join } from 'path'

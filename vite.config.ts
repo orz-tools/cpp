@@ -1,6 +1,6 @@
-import { defineConfig, type PluginOption } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { defineConfig, type PluginOption } from 'vite'
 
 const chunks = {
   'game-arknights': [/\/src\/components\/arknights\//, /\/src\/pkg\/cpp-arknights\//],
@@ -25,6 +25,10 @@ export default defineConfig({
             if (chunks[chunk].some((regex) => regex.test(id))) {
               return chunk || null
             }
+          }
+
+          if (id.includes('/po/') && id.endsWith('.json')) {
+            return 'po-' + id.split('/po/')[1].replace(/\.json$/, '')
           }
 
           if (id[0] !== '/') return null

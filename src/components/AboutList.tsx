@@ -4,6 +4,7 @@ import { memo } from 'react'
 import { useCpp } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { DataContainerObject } from '../pkg/dccache'
+import { PSTR, gt } from '../pkg/gt'
 import { SimpleLogList } from './LogList'
 
 export const externalLinkProps = {
@@ -23,15 +24,15 @@ export const AboutList = memo(() => {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT} />
-        <Navbar.Group align={Alignment.LEFT}>关于</Navbar.Group>
+        <Navbar.Group align={Alignment.LEFT}>{gt.gettext('关于')}</Navbar.Group>
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
         <SimpleLogList />
-        <MenuDivider title="联系" />
+        <MenuDivider title={gt.gettext('帮助与社区')} />
         <MenuItem
           href="https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp"
           icon="help"
-          text={'帮助文档'}
+          text={gt.gettext('帮助文档')}
           {...externalLinkProps}
         />
         <MenuItem
@@ -43,7 +44,8 @@ export const AboutList = memo(() => {
           {...externalLinkProps}
           text={
             <>
-              QQ 交流群<span style={{ marginLeft: '0.5em', fontWeight: 300 }}>897997981</span>
+              {gt.gettext('QQ 交流群')}
+              <span style={{ marginLeft: '0.5em', fontWeight: 300 }}>897997981</span>
             </>
           }
         />
@@ -54,7 +56,7 @@ export const AboutList = memo(() => {
           {...externalLinkProps}
           text={
             <>
-              邮箱
+              {gt.gettext('邮箱')}
               <span style={{ userSelect: 'text', marginLeft: '0.5em', fontWeight: 300 }}>{realEmail}</span>
             </>
           }
@@ -71,9 +73,9 @@ export const AboutList = memo(() => {
             </>
           }
         />
-        <MenuDivider title="数据源" />
+        <MenuDivider title={gt.gettext('数据源')} />
         {AboutDataSources && <AboutDataSources />}
-        <MenuDivider title="其他" />
+        <MenuDivider title={gt.gettext('其他资源')} />
         {AboutThirdParty && <AboutThirdParty />}
         <MenuItem
           icon={'font'}
@@ -83,17 +85,22 @@ export const AboutList = memo(() => {
           }
           {...externalLinkProps}
         />
-        <MenuDivider title="声明" />
+        <MenuDivider title={gt.gettext('声明')} />
         {AboutCopyright && <AboutCopyright />}
-        <MenuDivider title="鸣谢" />
+        <MenuDivider title={gt.gettext('鸣谢')} />
         {AboutCredits && <AboutCredits />}
-        <DescriptionMenuItem icon={'person'} text="若淇未央" {...externalLinkProps} description={'帮助文档撰写'} />
+        <DescriptionMenuItem
+          icon={'person'}
+          text="若淇未央"
+          {...externalLinkProps}
+          description={gt.pgettext('credit role', '帮助文档撰写')}
+        />
         <DescriptionMenuItem
           icon={'person'}
           text="西園寺玲咲 (SaionjiReisaki)"
           href={'https://github.com/SaionjiReisaki/'}
           {...externalLinkProps}
-          description={'数据源自动化'}
+          description={gt.pgettext('credit role', '数据源自动化')}
         />
       </Menu>
     </>
@@ -132,7 +139,7 @@ export const DataObjectStatus = memo(
     copyright,
     hideCommit,
   }: {
-    title?: string
+    title?: PSTR
     href?: string | null
     dataObj: DataContainerObject<any>
     copyright?: React.ReactNode
@@ -151,8 +158,8 @@ export const DataObjectStatus = memo(
       <>
         <MenuItem
           icon={'database'}
-          text={title}
-          title={title}
+          text={title?.toString()}
+          title={title?.toString()}
           href={finalHref}
           className={finalHref ? '' : 'cpp-menu-not-interactive'}
           {...externalLinkProps}
@@ -165,14 +172,9 @@ export const DataObjectStatus = memo(
                 className="cpp-menu-secondary"
                 style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
               >
-                <span style={{ flex: 1 }}>更新于 {format(data.version.timestamp, 'yyyy-MM-dd HH:mm:ss')}</span>
-                {/* <Button
-                minimal
-                icon={<Icon icon="refresh" size={10} />}
-                style={{ minWidth: 0, minHeight: 0, padding: '0px 2px', fontSize: 10.5 }}
-              >
-                更新
-              </Button> */}
+                <span style={{ flex: 1 }}>
+                  {gt.gettext('更新于 %s').replaceAll('%s', format(data.version.timestamp, 'yyyy-MM-dd HH:mm:ss'))}
+                </span>
               </div>
             }
           />
@@ -208,7 +210,7 @@ export const HelpButton = memo(() => {
       href="https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp"
       icon="help"
       minimal={true}
-      text={'帮助'}
+      text={gt.gettext('帮助')}
       {...externalLinkProps}
     />
   )

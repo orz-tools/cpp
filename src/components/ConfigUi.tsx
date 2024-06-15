@@ -3,6 +3,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { groupBy, sortBy, without } from 'ramda'
 import React, { memo } from 'react'
 import { useAtoms, useCpp, useGameAdapter } from '../Cpp'
+import { gt } from '../pkg/gt'
 import { DescriptionMenuItem } from './AboutList'
 import { SampleTag } from './Value'
 
@@ -40,7 +41,7 @@ export const ConfigButton = memo(() => {
       position="bottom-left"
     >
       <Button icon={'properties'} minimal={true} rightIcon={'chevron-down'}>
-        选项
+        {gt.gettext('选项')}
       </Button>
     </Popover>
   )
@@ -138,7 +139,7 @@ export const StageButton = memo(() => {
   return (
     <Popover usePortal={true} minimal={true} content={<StagePopover />} position="bottom-left">
       <Button icon={'layers'} minimal={true} rightIcon={'chevron-down'}>
-        关卡 {now}/{all}
+        {gt.gettext('关卡')} {now}/{all}
       </Button>
     </Popover>
   )
@@ -157,7 +158,7 @@ export const SoulButton = memo(() => {
 
   return (
     <Button icon={'image-rotate-right'} minimal={true} active={blobFlavour === 'normal'} onClick={handleClick}>
-      加载版权素材
+      ?
     </Button>
   )
 })
@@ -183,7 +184,7 @@ export const RegionButton = memo(() => {
       minimal={true}
       content={
         <Menu style={{ maxWidth: '300px' }}>
-          <MenuDivider title="游戏服务器" />
+          <MenuDivider title={gt.gettext('游戏服务器')} />
           {regions.map((x) => {
             return (
               <MenuItem
@@ -206,7 +207,7 @@ export const RegionButton = memo(() => {
           <MenuDivider />
           <DescriptionMenuItem
             icon={'info-sign'}
-            text="Disclaimer"
+            text={gt.gettext('免责声明')}
             description={
               'The names, abbreviations, and codes of countries, regions, and languages are presented in their original form as accurately as possible, and do not reflect any political biases held by the developer.'
             }
@@ -218,7 +219,6 @@ export const RegionButton = memo(() => {
       <Button
         icon={
           <>
-            <Icon icon={'translate'} />
             <Icon icon={'globe'} />
           </>
         }

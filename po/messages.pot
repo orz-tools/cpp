@@ -1,0 +1,337 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: src/components/arknights/AboutList.tsx:31
+#: src/components/arknights/AboutList.tsx:37
+msgid "Kengxxiao 解析的游戏数据"
+msgstr ""
+
+#: src/components/AboutList.tsx:47
+msgid "QQ 交流群"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:141
+msgid "从文本框中导入"
+msgstr ""
+
+#: src/components/arknights/AboutList.tsx:43
+msgid "企鹅物流数据统计 素材掉落统计数据"
+msgstr ""
+
+#: src/components/ConfigUi.tsx:210
+msgid "免责声明"
+msgstr ""
+
+#: src/components/AboutList.tsx:27
+msgid "关于"
+msgstr ""
+
+#: src/components/ConfigUi.tsx:142
+msgid "关卡"
+msgstr ""
+
+#: src/components/AboutList.tsx:78
+msgid "其他资源"
+msgstr ""
+
+#: src/Cpp.ts:105
+msgid "区域已切换，将重新载入页面。"
+msgstr ""
+
+#: src/components/AboutList.tsx:88
+msgid "声明"
+msgstr ""
+
+#: src/App.tsx:292
+msgid "导入/导出"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:102
+msgid "导入数据时遇到问题"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:153
+msgid "导出为文件"
+msgstr ""
+
+#: src/pkg/cpp-arknights/survey.ts:186
+msgid "小黑盒 app 干员统计数据"
+msgstr ""
+
+#: src/components/AboutList.tsx:213
+msgid "帮助"
+msgstr ""
+
+#: src/components/AboutList.tsx:31
+msgid "帮助与社区"
+msgstr ""
+
+#: src/components/AboutList.tsx:35
+msgid "帮助文档"
+msgstr ""
+
+#: src/App.tsx:442
+msgid "您不妨试试"
+msgstr ""
+
+#: src/components/LogList.tsx:199
+msgid "截止 %s"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:99
+msgid "数据已导入，将重新载入页面。"
+msgstr ""
+
+#: src/App.tsx:81
+msgid "数据已更新，正在重新载入…"
+msgstr ""
+
+#: src/App.tsx:184
+msgid "数据已更新，请重新载入页面"
+msgstr ""
+
+#: src/components/arknights/AboutList.tsx:67
+msgid "数据整理自小黑盒 app 明日方舟干员统计功能。"
+msgstr ""
+
+#: src/components/AboutList.tsx:76
+msgid "数据源"
+msgstr ""
+
+#: src/pkg/cpp-arknights/survey.ts:23
+msgid "明日方舟一图流 干员练度统计数据"
+msgstr ""
+
+#: src/components/arknights/AboutList.tsx:51
+msgid "明日方舟一图流 材料价值数据"
+msgstr ""
+
+#: src/components/AboutList.tsx:176
+msgid "更新于 %s"
+msgstr ""
+
+#: src/App.tsx:74
+msgid "更新数据中…"
+msgstr ""
+
+#: src/components/LogList.tsx:142
+msgid "更新笔记"
+msgstr ""
+
+#: src/App.tsx:84
+msgid "未找到新数据"
+msgstr ""
+
+#: src/components/arknights/AboutList.tsx:46
+msgid "本工具中部分素材掉落统计数据由企鹅物流统计，采用知识共享 署名-非商业性使用 4.0 国际许可协议进行许可。"
+msgstr ""
+
+#: src/components/arknights/AboutList.tsx:16
+msgid "本项目所使用的游戏资源（包括但不限于：游戏图片、动画、音频、文本原文或其转译版本等）仅用于更好地表现游戏资料、增强用户体验，其版权属于上海鹰角网络科技有限公司和其关联公司。"
+msgstr ""
+
+#: src/components/re1999/AboutList.tsx:14
+msgid "本项目所使用的游戏资源（包括但不限于：游戏图片、动画、音频、文本原文或其转译版本等）仅用于更好地表现游戏资料、增强用户体验，其版权属于广州深蓝互动网络科技有限公司和其关联公司。"
+msgstr ""
+
+#: src/components/arknights/AboutList.tsx:59
+msgid "来自明日方舟一图流的数据，除非另有声明，采用 知识共享 署名-非商业性使用 4.0 国际 许可协议 进行许可。转载、公开或以任何形式复制、发行、再传播明日方舟一图流的任何内容时，必须注明从明日方舟一图流转载，并提供版权标识、许可协议标识、免责标识和作品链接；且未经许可，不得将本站内容或由其衍生作品用于商业目的。"
+msgstr ""
+
+#: src/components/LogList.tsx:217
+msgid "查看更多…"
+msgstr ""
+
+#: src/App.tsx:112
+msgid "检查数据更新"
+msgstr ""
+
+#: src/App.tsx:89
+msgid "检查数据更新失败"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:136
+msgid "清空"
+msgstr ""
+
+#: src/components/ConfigUi.tsx:187
+msgid "游戏服务器"
+msgstr ""
+
+#: src/components/arknights/AboutList.tsx:15
+#: src/components/re1999/AboutList.tsx:13
+msgid "游戏资源"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:172
+#: src/components/UserDataManager.tsx:191
+#: src/components/UserDataManager.tsx:41
+msgid "用户数据管理"
+msgstr ""
+
+#: src/locales.tsx:53
+msgid "界面语言"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:72
+msgid ""
+"警告：你确定要导入数据吗？\n"
+"你现在的数据将会被永久覆盖！（真的很久！）\n"
+"\n"
+"若导入错误、无效的数据将可能导致页面无法正常运行，\n"
+"届时您可在数据管理中清空数据。"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:107
+msgid ""
+"警告：你确定要清空数据吗？\n"
+"你现在的数据将会永久失去！（真的很久！）"
+msgstr ""
+
+#: src/locales.tsx:40
+msgid "语言已切换，将重新载入页面。"
+msgstr ""
+
+#: src/components/LogList.tsx:201
+msgid "近期更新"
+msgstr ""
+
+#: src/App.tsx:435
+msgid "返回主页"
+msgstr ""
+
+#: src/components/ConfigUi.tsx:44
+msgid "选项"
+msgstr ""
+
+#: src/components/AboutList.tsx:59
+msgid "邮箱"
+msgstr ""
+
+#: src/App.tsx:187
+msgid "重新载入"
+msgstr ""
+
+#: src/App.tsx:99
+msgid "重载数据"
+msgstr ""
+
+#: src/components/AboutList.tsx:90
+msgid "鸣谢"
+msgstr ""
+
+#: src/components/LogList.tsx:31
+msgctxt "changelog"
+msgid "优化干员列表样式"
+msgstr ""
+
+#: src/components/LogList.tsx:37
+msgctxt "changelog"
+msgid "加入海外服务器的游戏数据"
+msgstr ""
+
+#: src/components/LogList.tsx:43
+msgctxt "changelog"
+msgid "增加一些基于社区练度统计数据的排行榜视图"
+msgstr ""
+
+#: src/components/LogList.tsx:50
+msgctxt "changelog"
+msgid "接入小黑盒 app 的干员统计数据"
+msgstr ""
+
+#: src/components/LogList.tsx:56
+msgctxt "changelog"
+msgid "接入明日方舟一图流的干员练度统计数据"
+msgstr ""
+
+#: src/components/LogList.tsx:25
+msgctxt "changelog"
+msgid "支持森空岛仓库导入"
+msgstr ""
+
+#: src/components/LogList.tsx:18
+msgctxt "changelog"
+msgid "支持界面语言切换"
+msgstr ""
+
+#: src/components/AboutList.tsx:96
+msgctxt "credit role"
+msgid "帮助文档撰写"
+msgstr ""
+
+#: src/components/AboutList.tsx:103
+msgctxt "credit role"
+msgid "数据源自动化"
+msgstr ""
+
+#: src/Cpp.ts:43
+msgctxt "full name"
+msgid "仅星标"
+msgstr ""
+
+#: src/Cpp.ts:46
+msgctxt "full name"
+msgid "仅计划"
+msgstr ""
+
+#: src/Cpp.ts:45
+msgctxt "full name"
+msgid "星标 (以毕业为目标)"
+msgstr ""
+
+#: src/Cpp.ts:44
+msgctxt "full name"
+msgid "星标 (以计划为目标)"
+msgstr ""
+
+#: src/Cpp.ts:48
+msgctxt "full name"
+msgid "毕业"
+msgstr ""
+
+#: src/Cpp.ts:47
+msgctxt "full name"
+msgid "计划 (以毕业为目标)"
+msgstr ""
+
+#: src/pkg/cpp-arknights/survey.ts:24
+msgctxt "short name"
+msgid "一图流练度统计"
+msgstr ""
+
+#: src/Cpp.ts:52
+msgctxt "short name"
+msgid "仅星标"
+msgstr ""
+
+#: src/Cpp.ts:55
+msgctxt "short name"
+msgid "仅计划"
+msgstr ""
+
+#: src/pkg/cpp-arknights/survey.ts:187
+msgctxt "short name"
+msgid "小黑盒干员统计"
+msgstr ""
+
+#: src/Cpp.ts:54
+msgctxt "short name"
+msgid "星标(毕业)"
+msgstr ""
+
+#: src/Cpp.ts:53
+msgctxt "short name"
+msgid "星标(计划)"
+msgstr ""
+
+#: src/Cpp.ts:57
+msgctxt "short name"
+msgid "毕业"
+msgstr ""
+
+#: src/Cpp.ts:56
+msgctxt "short name"
+msgid "计划(毕业)"
+msgstr ""

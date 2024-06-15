@@ -33,6 +33,8 @@ import { UserDataManagerButton, UserDataManagerMenuItem } from './components/Use
 import { ValueOptionButton } from './components/Value'
 import { useComponents } from './hooks/useComponents'
 import { useRequest } from './hooks/useRequest'
+import { LocaleButton } from './locales'
+import { gt } from './pkg/gt'
 import { formatProfileName, getProfiles } from './profiles'
 
 const UndoButtons = memo(() => {
@@ -69,22 +71,22 @@ const ReloadDataButton = memo(() => {
   const setError = useSetAtom(ErrAtom)
   const { loading, send } = useRequest(async () => {
     const reload = AppToaster.show(
-      { message: '更新数据中…', isCloseButtonShown: false, timeout: 0, intent: 'primary' },
+      { message: gt.gettext('更新数据中…'), isCloseButtonShown: false, timeout: 0, intent: 'primary' },
       'reload',
     )
     try {
       const r = await dm.refresh()
       AppToaster.dismiss(reload)
       if (r) {
-        AppToaster.show({ message: '数据已更新，正在重新载入…', intent: 'success' }, reload)
+        AppToaster.show({ message: gt.gettext('数据已更新，正在重新载入…'), intent: 'success' }, reload)
         location.reload()
       } else {
-        AppToaster.show({ message: '未找到新数据' }, reload)
+        AppToaster.show({ message: gt.gettext('未找到新数据') }, reload)
       }
     } catch (e) {
       console.log(e)
       AppToaster.dismiss(reload)
-      setError({ error: e, context: '检查数据更新失败' })
+      setError({ error: e, context: gt.gettext('检查数据更新失败') })
     }
   })
 
@@ -94,7 +96,7 @@ const ReloadDataButton = memo(() => {
         content={
           <Menu>
             <MenuItem
-              text="重载数据"
+              text={gt.gettext('重载数据')}
               icon={'reset'}
               onClick={async () => {
                 await dm.reset()
@@ -104,7 +106,13 @@ const ReloadDataButton = memo(() => {
           </Menu>
         }
       >
-        <Button icon="refresh" disabled={loading} text="检查数据更新" minimal={true} onClick={() => send()} />
+        <Button
+          icon="refresh"
+          disabled={loading}
+          text={gt.gettext('检查数据更新')}
+          minimal={true}
+          onClick={() => send()}
+        />
       </ContextMenu>
     </>
   )
@@ -173,10 +181,10 @@ const App = memo(() => {
       if (result)
         AppToaster.show(
           {
-            message: '数据已更新，请重新载入页面',
+            message: gt.gettext('数据已更新，请重新载入页面'),
             intent: 'success',
             action: {
-              text: '重新载入',
+              text: gt.gettext('重新载入'),
               icon: 'refresh',
               onClick: () => location.reload(),
             },
@@ -205,6 +213,7 @@ const App = memo(() => {
           <DataDropdown />
           <ReloadDataButton />
           <HelpButton />
+          <LocaleButton />
         </Navbar.Group>
       </Navbar>
       <div className="App">
@@ -280,7 +289,7 @@ const DataDropdown = memo(() => {
   return (
     <Popover usePortal={true} minimal={true} content={<DataMenu />} position="bottom-right">
       <Button icon={'th-derived'} minimal={true} rightIcon={'chevron-down'}>
-        导入/导出
+        {gt.gettext('导入/导出')}
       </Button>
     </Popover>
   )
@@ -338,6 +347,10 @@ export const Loading = memo(() => {
       <Navbar fixedToTop={true}>
         <Navbar.Group align={Alignment.LEFT}>
           <ClosureButtonHeading />
+        </Navbar.Group>
+        <Navbar.Group align={Alignment.RIGHT}>
+          <HelpButton />
+          <LocaleButton />
         </Navbar.Group>
       </Navbar>
       <div
@@ -419,14 +432,14 @@ class ErrorBoundary extends React.Component<
             actions={
               <>
                 <AnchorButton href={'/'} minimal icon={'home'}>
-                  返回主页
+                  {gt.gettext('返回主页')}
                 </AnchorButton>
               </>
             }
           >
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <Button minimal disabled>
-                您不妨试试
+                {gt.gettext('您不妨试试')}
               </Button>
               <ReloadDataButton />
               <UserDataManagerButton />
