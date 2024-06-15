@@ -81,7 +81,7 @@ export function CharacterStatusInsightLevelSection() {
       ) ? (
         <div>
           <ButtonGroup>
-            <Tag large={true}>洞零</Tag>
+            <Tag large={true}>{gt.pgettext('re1999 status group', '洞零')}</Tag>
             <InsightLevelButton insight={0} level={1} />
             {new Array(character.maxLevels[0] / 10 + 1)
               .fill(0)
@@ -101,7 +101,7 @@ export function CharacterStatusInsightLevelSection() {
       ) ? (
         <div>
           <ButtonGroup>
-            <Tag large={true}>洞一</Tag>
+            <Tag large={true}>{gt.pgettext('re1999 status group', '洞一')}</Tag>
             <InsightLevelButton insight={1} level={1} />
             {new Array(character.maxLevels[1] / 10 + 1)
               .fill(0)
@@ -121,7 +121,7 @@ export function CharacterStatusInsightLevelSection() {
       ) ? (
         <div>
           <ButtonGroup>
-            <Tag large={true}>洞二</Tag>
+            <Tag large={true}>{gt.pgettext('re1999 status group', '洞二')}</Tag>
             <InsightLevelButton insight={2} level={1} />
             {new Array(character.maxLevels[2] / 10 + 1)
               .fill(0)
@@ -141,7 +141,7 @@ export function CharacterStatusInsightLevelSection() {
       ) ? (
         <div>
           <ButtonGroup>
-            <Tag large={true}>洞三</Tag>
+            <Tag large={true}>{gt.pgettext('re1999 status group', '洞三')}</Tag>
             <InsightLevelButton insight={3} level={1} />
             {new Array(character.maxLevels[3] / 10 + 1)
               .fill(0)
@@ -190,7 +190,7 @@ export function CharacterStatusResonateSection() {
     <>
       <div>
         <ButtonGroup>
-          <Tag large={true}>共鸣</Tag>
+          <Tag large={true}>{gt.pgettext('re1999 status group', '共鸣')}</Tag>
           {new Array(character.maxResonate).fill(0).map((_, i) => (
             <ResonateButton key={i + 1} level={i + 1} />
           ))}

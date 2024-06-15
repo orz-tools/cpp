@@ -3,6 +3,7 @@ import { Draft } from 'immer'
 import stringify from 'json-stringify-deterministic'
 import { sum } from 'ramda'
 import { IUserDataAdapter, Task } from '../cpp-basic'
+import { gt } from '../gt'
 import { Character, Re1999DataManager } from './DataManager'
 import { RE_ITEM_EXP, RE_ITEM_GOLD, Re1999, Re1999CharacterStatus, Re1999CharacterTaskType } from './types'
 
@@ -149,13 +150,27 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
   public formatTaskAsString(type: Re1999CharacterTaskType, charId: string) {
     switch (type._) {
       case 'join':
-        return `征集`
+        return gt.pgettext('re1999 task', `征集`)
       case 'insight':
-        return `洞${'零一二三'[type.insight]}`
+        return [
+          gt.pgettext('re1999 task', '洞零'),
+          gt.pgettext('re1999 task', '洞一'),
+          gt.pgettext('re1999 task', '洞二'),
+          gt.pgettext('re1999 task', '洞三'),
+        ][type.insight]
       case 'level':
-        return `洞${'零一二三'[type.insight]}等级 ${type.from} -> ${type.to}`
+        return [
+          gt.pgettext('re1999 task', `洞零等级 %d$from -> %d$to`) /* I10N: %d$from: from, %d$to: to */,
+          gt.pgettext('re1999 task', `洞一等级 %d$from -> %d$to`) /* I10N: %d$from: from, %d$to: to */,
+          gt.pgettext('re1999 task', `洞二等级 %d$from -> %d$to`) /* I10N: %d$from: from, %d$to: to */,
+          gt.pgettext('re1999 task', `洞三等级 %d$from -> %d$to`) /* I10N: %d$from: from, %d$to: to */,
+        ][type.insight]
+          .replaceAll('%d$from', `${type.from}`)
+          .replaceAll('%d$to', `${type.to}`)
       case 'resonate': {
-        return `共鸣 ${type.to}`
+        return gt
+          .pgettext('re1999 task', `共鸣 %d`) /* I10N: %d: number */
+          .replaceAll('%d', `${type.to}`)
       }
       default:
         throwBad(type)

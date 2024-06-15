@@ -504,6 +504,7 @@ const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level;
       onClick={() => {
         setParam((p) => ({ ...p, level: p.level === level ? undefined : level }))
       }}
+      style={{ marginLeft: '-1em' }}
     />
   )
 })
@@ -520,6 +521,7 @@ const HideCompletedButton = memo(() => {
           return { ...p, hideCompleted: !p.hideCompleted }
         })
       }}
+      style={{ marginRight: '1em' }}
     />
   )
 })

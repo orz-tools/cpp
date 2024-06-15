@@ -151,7 +151,7 @@ msgstr ""
 msgid "心情"
 msgstr ""
 
-#: src/components/ItemList.tsx:592
+#: src/components/ItemList.tsx:594
 msgid "总价值"
 msgstr ""
 
@@ -169,10 +169,11 @@ msgstr ""
 msgid "持有"
 msgstr ""
 
-#: src/components/ItemList.tsx:566
+#: src/components/ItemList.tsx:568
 msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
+#: src/App.tsx:51
 #: src/components/Importer.tsx:80
 msgid "撤销"
 msgstr ""
@@ -681,6 +682,11 @@ msgctxt "credit role"
 msgid "数据源自动化"
 msgstr ""
 
+#: src/components/re1999/AboutList.tsx:58
+msgctxt "credit role"
+msgid "测试和建议"
+msgstr ""
+
 #: src/components/arknights/SklandImporter.tsx:191
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
@@ -856,6 +862,191 @@ msgstr ""
 #: src/components/CharacterList.tsx:562
 msgctxt "predefined view name"
 msgid "计划"
+msgstr ""
+
+#: src/components/re1999/AboutList.tsx:45
+msgctxt "re1999"
+msgid "也来源于伴春风而归的材料掉率共建表，效率与价值算法主要由 pu4ers 贡献。"
+msgstr ""
+
+#: src/components/re1999/AboutList.tsx:33
+msgctxt "re1999"
+msgid "伴春风而归的材料掉率共建表"
+msgstr ""
+
+#: src/components/re1999/AboutList.tsx:36
+msgctxt "re1999"
+msgid "本表格采用知识共享 署名-非商业性使用 4.0 国际 许可协议进行许可。转载、公开或以任何形式复制、发行、再传播本表格任何内容时，必须注明从伴春风而归的材料掉率共建表转载，并提供版权标识、许可协议标识、免责标识和作品链接；且未经许可，不得将本表格内容或由其衍生作品用于商业目的。"
+msgstr ""
+
+#: src/components/re1999/AboutList.tsx:42
+msgctxt "re1999"
+msgid "材料价值数据"
+msgstr ""
+
+#: src/components/re1999/AboutList.tsx:30
+msgctxt "re1999"
+msgid "海外服游戏数据"
+msgstr ""
+
+#: src/components/re1999/AboutList.tsx:28
+msgctxt "re1999"
+msgid "游戏数据"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:117
+msgctxt "re1999 inventory page"
+msgid "素材"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:466
+msgctxt "re1999 item category"
+msgid "共鸣"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:469
+msgctxt "re1999 item category"
+msgid "其他"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:458
+msgctxt "re1999 item category"
+msgid "彩材料"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:467
+msgctxt "re1999 item category"
+msgid "心相"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:465
+msgctxt "re1999 item category"
+msgid "洞悉一"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:463
+msgctxt "re1999 item category"
+msgid "洞悉三"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:464
+msgctxt "re1999 item category"
+msgid "洞悉二"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:460
+msgctxt "re1999 item category"
+msgid "紫材料"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:462
+msgctxt "re1999 item category"
+msgid "绿材料"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:468
+msgctxt "re1999 item category"
+msgid "荒原"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:461
+msgctxt "re1999 item category"
+msgid "蓝材料"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:459
+msgctxt "re1999 item category"
+msgid "金材料"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:457
+msgctxt "re1999 item category"
+msgid "钱和经验"
+msgstr ""
+
+#: src/pkg/cpp-re1999/GameAdapter.ts:376
+msgctxt "re1999 level code"
+msgid "厄险%s"
+msgstr ""
+
+#: src/components/re1999/CharacterStatusPopover.tsx:193
+msgctxt "re1999 status group"
+msgid "共鸣"
+msgstr ""
+
+#: src/components/re1999/CharacterStatusPopover.tsx:104
+msgctxt "re1999 status group"
+msgid "洞一"
+msgstr ""
+
+#: src/components/re1999/CharacterStatusPopover.tsx:144
+msgctxt "re1999 status group"
+msgid "洞三"
+msgstr ""
+
+#: src/components/re1999/CharacterStatusPopover.tsx:124
+msgctxt "re1999 status group"
+msgid "洞二"
+msgstr ""
+
+#: src/components/re1999/CharacterStatusPopover.tsx:84
+msgctxt "re1999 status group"
+msgid "洞零"
+msgstr ""
+
+#. %d: number
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:171
+msgctxt "re1999 task"
+msgid "共鸣 %d"
+msgstr ""
+
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:153
+msgctxt "re1999 task"
+msgid "征集"
+msgstr ""
+
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:157
+msgctxt "re1999 task"
+msgid "洞一"
+msgstr ""
+
+#. %d$from: from, %d$to: to
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:164
+msgctxt "re1999 task"
+msgid "洞一等级 %d$from -> %d$to"
+msgstr ""
+
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:159
+msgctxt "re1999 task"
+msgid "洞三"
+msgstr ""
+
+#. %d$from: from, %d$to: to
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:166
+msgctxt "re1999 task"
+msgid "洞三等级 %d$from -> %d$to"
+msgstr ""
+
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:158
+msgctxt "re1999 task"
+msgid "洞二"
+msgstr ""
+
+#. %d$from: from, %d$to: to
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:165
+msgctxt "re1999 task"
+msgid "洞二等级 %d$from -> %d$to"
+msgstr ""
+
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:156
+msgctxt "re1999 task"
+msgid "洞零"
+msgstr ""
+
+#. %d$from: from, %d$to: to
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:163
+msgctxt "re1999 task"
+msgid "洞零等级 %d$from -> %d$to"
 msgstr ""
 
 #: src/pkg/cpp-arknights/survey.ts:24

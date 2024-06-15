@@ -11,6 +11,7 @@ import {
   QueryParam,
   RootCharacterQuery,
 } from '../cpp-basic'
+import { gt, lpstr } from '../gt'
 import { Character, CurrencyItem, Item, Re1999DataManager, parseConsume } from './DataManager'
 import { Re1999UserDataAdapter } from './UserDataAdapter'
 import {
@@ -113,7 +114,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
 
   public getInventoryPages() {
     return {
-      material: '素材',
+      material: gt.pgettext('re1999 inventory page', '素材'),
     }
   }
 
@@ -372,6 +373,9 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
   }
 }
 
+const hardCode = lpstr(() => gt.pgettext('re1999 level code', '厄险%s'))
+const normalCode = '%s'
+
 class Re1999StageInfo extends BasicStageInfo {
   public constructor(
     ga: Re1999Adapter,
@@ -381,9 +385,9 @@ class Re1999StageInfo extends BasicStageInfo {
     public zoneId: string,
   ) {
     super(ga)
-    this.code = `${this.chapter.type === (ExChapterType.Hard as number) ? '厄险' : ''}${this.chapter.chapterIndex}-${
-      this.number
-    }`
+    this.code = (this.chapter.type === (ExChapterType.Hard as number) ? hardCode : normalCode)
+      .toString()
+      .replaceAll('%s', `${this.chapter.chapterIndex}-${this.number}`)
     this.dropCode = ''
     if (this.chapter.chapterIndex.match(/^\d+[A-Z]+$/)) {
       this.dropCode = `${this.chapter.chapterIndex.replace(/[A-Z]/g, '')}-${this.number}${
@@ -450,19 +454,19 @@ export enum Category {
 }
 
 export const CategoryNames = {
-  [Category.Gold]: '钱和经验',
-  [Category.Rarity5]: '彩材料',
-  [Category.Rarity4]: '金材料',
-  [Category.Rarity3]: '紫材料',
-  [Category.Rarity2]: '蓝材料',
-  [Category.Rarity1]: '绿材料',
-  [Category.Insight3]: '洞悉三',
-  [Category.Insight2]: '洞悉二',
-  [Category.Insight1]: '洞悉一',
-  [Category.Resonate]: '共鸣',
-  [Category.Equip]: '心相',
-  [Category.Room]: '荒原',
-  [Category.Unknown]: '其他',
+  [Category.Gold]: gt.pgettext('re1999 item category', '钱和经验'),
+  [Category.Rarity5]: gt.pgettext('re1999 item category', '彩材料'),
+  [Category.Rarity4]: gt.pgettext('re1999 item category', '金材料'),
+  [Category.Rarity3]: gt.pgettext('re1999 item category', '紫材料'),
+  [Category.Rarity2]: gt.pgettext('re1999 item category', '蓝材料'),
+  [Category.Rarity1]: gt.pgettext('re1999 item category', '绿材料'),
+  [Category.Insight3]: gt.pgettext('re1999 item category', '洞悉三'),
+  [Category.Insight2]: gt.pgettext('re1999 item category', '洞悉二'),
+  [Category.Insight1]: gt.pgettext('re1999 item category', '洞悉一'),
+  [Category.Resonate]: gt.pgettext('re1999 item category', '共鸣'),
+  [Category.Equip]: gt.pgettext('re1999 item category', '心相'),
+  [Category.Room]: gt.pgettext('re1999 item category', '荒原'),
+  [Category.Unknown]: gt.pgettext('re1999 item category', '其他'),
 } satisfies Record<Category, string>
 
 export const myCategories = {
