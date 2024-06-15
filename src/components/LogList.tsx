@@ -99,7 +99,7 @@ const logs = [
   { date: '2023-07-09', type: 'new', desc: '刷本规划中增加单次理智和样本数显示' },
   { date: '2023-07-09', game: [GameName.Arknights], type: 'fix', desc: '修复 Firefox 下仓库展示' },
   { date: '2023-07-09', game: [GameName.Re1999], type: 'optimize', desc: '优化货币图标' },
-  { date: '2023-07-07', game: [GameName.Arknights], type: 'fix', desc: '适配新解包物品稀有度格式' },
+  { date: '2023-07-07', game: [GameName.Arknights], type: 'fix', desc: '适配新解包道具稀有度格式' },
   { date: '2023-07-02', type: 'new', desc: '增加“按游戏内仓库排布形式展示”按钮' },
   { date: '2023-07-01', type: 'optimize', desc: '计算结果中展示暂无可计算来源的材料' },
   { date: '2023-07-01', game: [GameName.Re1999], type: 'optimize', desc: '优化道具排序顺序' },

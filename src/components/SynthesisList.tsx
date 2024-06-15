@@ -67,7 +67,7 @@ export const SynthesisList = memo(
       <>
         {hasAnySynthesis ? (
           <>
-            <Callout title="现在可以合成的物品" />
+            <Callout title="现在可以合成的道具" />
             {itemGroups.map(([key, allItems]) => {
               const items = allItems!.filter((x) => {
                 return synthesisTargets.has(x.key)
@@ -96,8 +96,8 @@ export const SynthesisList = memo(
 
         {hasAnyUnsatisfied ? (
           <>
-            <Callout intent={'warning'} title={'最好还是别合成的物品'} icon={null}>
-              虽然现在确实可以合成下列材料来完成任务，但今后将消耗更多体力。还是去刷吧！
+            <Callout intent={'warning'} title={'最好还是别合成的道具'} icon={null}>
+              虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！
             </Callout>
             {itemGroups.map(([key, allItems]) => {
               const items = allItems!.filter((x) => {

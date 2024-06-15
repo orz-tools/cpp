@@ -6,6 +6,7 @@ import useResizeObserver from 'use-resize-observer'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, IItem } from '../pkg/cpp-basic'
+import { gt } from '../pkg/gt'
 import { CachedImg } from './Icons'
 
 const formatter = (q: number) => q.toFixed(0)
@@ -317,7 +318,13 @@ export const InventorySyncer = memo(() => {
       <Navbar>
         <Navbar.Group align={Alignment.LEFT}>{title}</Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
-          <Button minimal active={!showAll} icon="eye-off" onClick={() => setShowAll(!showAll)} title={'显示全部'} />
+          <Button
+            minimal
+            active={!showAll}
+            icon="eye-off"
+            onClick={() => setShowAll(!showAll)}
+            title={gt.gettext('显示全部')}
+          />
         </Navbar.Group>
       </Navbar>
       <ItemSimulatedView

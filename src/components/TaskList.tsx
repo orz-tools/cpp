@@ -9,6 +9,7 @@ import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { IGame, Task } from '../pkg/cpp-basic'
 import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
 import { StarStatus } from '../pkg/cpp-core/UserData'
+import { gt } from '../pkg/gt'
 import { CharacterContextMenu } from './CharacterList'
 import { CachedImg } from './Icons'
 import { ValueTagProgressBar } from './Value'
@@ -17,7 +18,6 @@ interface TaskListQueryParam {
   hideCosts: boolean
 }
 
-// const queryParamAtom = atom<TaskListQueryParam>({ query: '', mode: ListMode.Fav })
 const queryParamStorageAtom = atomWithStorage<TaskListQueryParam>('cpp_task_param', undefined as any)
 const queryParamAtom: WritableAtom<
   TaskListQueryParam,
@@ -110,7 +110,7 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
   return (
     <Menu>
       <MenuItem
-        text={'完成'}
+        text={gt.gettext('完成')}
         icon={'tick-circle'}
         disabled={extra.status !== TaskStatus.Completable || !!task.depends.length}
         onClick={() => {
@@ -121,13 +121,18 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
         }}
       />
       <MenuItem
-        text={'强制完成（不消耗材料）'}
+        text={gt.gettext('强制完成（不消耗材料）')}
         disabled={!!task.depends.length}
         icon={'cross-circle'}
         onClick={completeTask}
       />
       <MenuDivider />
-      <MenuItem text={'优先培养（星标）'} icon={'star'} active={stars.includes(task.id)} onClick={starTask} />
+      <MenuItem
+        text={gt.gettext('优先培养（星标）')}
+        icon={'star'}
+        active={stars.includes(task.id)}
+        onClick={starTask}
+      />
     </Menu>
   )
 })

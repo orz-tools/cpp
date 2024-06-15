@@ -24,6 +24,13 @@ extractor
       },
       comments: comments,
     }),
+    JsExtractors.callExpression('gt.ngettext', {
+      arguments: {
+        text: 0,
+        textPlural: 1,
+      },
+      comments: comments,
+    }),
   ])
   .parseFilesGlob('./src/**/*.@(ts|js|tsx|jsx)')
 

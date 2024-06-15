@@ -264,7 +264,7 @@ export const FarmList = memo(() => {
             </Menu>
             {!response.synthesisList ? (
               <div className="bp5-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
-                <NonIdealState title={'暂不支持计算毕业合成'} icon="warning-sign" />
+                <NonIdealState title={gt.gettext('暂不支持计算毕业合成')} icon="warning-sign" />
               </div>
             ) : (
               <Menu className="bp5-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
@@ -273,9 +273,9 @@ export const FarmList = memo(() => {
             )}
           </>
         ) : response === null ? (
-          <NonIdealState title={'线性规划失败'} icon="error" />
+          <NonIdealState title={gt.gettext('线性规划失败')} icon="error" />
         ) : response === undefined ? (
-          <NonIdealState title={'请稍后'} icon={<Spinner />} />
+          <NonIdealState title={gt.gettext('请稍候')} icon={<Spinner />} />
         ) : null}
       </div>
     </>
@@ -355,7 +355,7 @@ export const UnfeasibleLine = memo(({ items }: { items: Record<string, number> }
 
   return (
     <>
-      <MenuItem text={'暂无可计算来源'} />
+      <MenuItem text={gt.gettext('暂无可计算来源')} />
       {Object.entries(items).map(([k, v]) => {
         const item = ga.getItem(k)
         const value = v

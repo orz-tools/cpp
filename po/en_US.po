@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-06-15 16:27+0800\n"
+"PO-Revision-Date: 2024-06-15 18:41+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -26,9 +26,21 @@ msgstr "QQ Group"
 msgid "从文本框中导入"
 msgstr "Import from Text Box"
 
+#: src/components/Importer.tsx:341
+msgid "以往"
+msgstr "Previous"
+
+#: src/components/Importer.tsx:344
+msgid "价值变化"
+msgstr "Value Delta"
+
 #: src/components/arknights/AboutList.tsx:43
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr "Drop Rate Data from Penguin Statistics"
+
+#: src/components/TaskList.tsx:131
+msgid "优先培养（星标）"
+msgstr "Prioritize (mark as starred)"
 
 #: src/components/ConfigUi.tsx:210
 msgid "免责声明"
@@ -42,13 +54,20 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:495
+#: src/App.tsx:495 src/components/Importer.tsx:75
 msgid "关闭"
 msgstr "Close"
 
 #: src/components/AboutList.tsx:78
 msgid "其他资源"
 msgstr "Other Resources"
+
+#. %d: number
+#: src/components/ItemList.tsx:152
+msgid "制作 %d 次所需"
+msgid_plural "制作 %d 次所需"
+msgstr[0] "Ingredients for Synthesizing Once"
+msgstr[1] "Ingredients for Synthesizing %d Times"
 
 #: src/Cpp.ts:105
 msgid "区域已切换，将重新载入页面。"
@@ -62,9 +81,25 @@ msgstr "Target"
 msgid "声明"
 msgstr "Statements"
 
+#: src/components/Importer.tsx:343
+msgid "如今"
+msgstr "Current"
+
+#: src/components/TaskList.tsx:113
+msgid "完成"
+msgstr "Complete"
+
 #: src/App.tsx:292
 msgid "导入/导出"
 msgstr "Import/Export"
+
+#: src/components/Importer.tsx:132
+msgid "导入时产生的警告"
+msgstr "Warnings During Import"
+
+#: src/components/Importer.tsx:68
+msgid "导入结果"
+msgstr "Import Result"
 
 #: src/components/UserDataManager.tsx:153
 msgid "导出为文件"
@@ -86,9 +121,21 @@ msgstr "Help & Community"
 msgid "帮助文档"
 msgstr "Documentation"
 
+#: src/components/TaskList.tsx:124
+msgid "强制完成（不消耗材料）"
+msgstr "Mark as Completed (without consuming items)"
+
 #: src/components/CharacterStatusPopover.tsx:48
 msgid "当前状态"
 msgstr "Current"
+
+#: src/components/ItemList.tsx:97
+msgid "心情"
+msgstr "Morale"
+
+#: src/components/ItemList.tsx:592
+msgid "总价值"
+msgstr "Total Value"
 
 #: src/App.tsx:457
 msgid "您不妨试试"
@@ -98,6 +145,14 @@ msgstr "You may try"
 #: src/components/LogList.tsx:199
 msgid "截止 %s"
 msgstr "As of %s"
+
+#: src/components/ItemList.tsx:566
+msgid "按游戏内仓库排布形式展示"
+msgstr "Display as In-game Layout"
+
+#: src/components/Importer.tsx:80
+msgid "撤销"
+msgstr "Undo"
 
 #: src/components/UserDataManager.tsx:99
 msgid "数据已导入，将重新载入页面。"
@@ -128,6 +183,18 @@ msgstr "Operator Statistics from Arknights-yituliu"
 #: src/components/arknights/AboutList.tsx:51
 msgid "明日方舟一图流 材料价值数据"
 msgstr "Sanity Value of Items from Arknights-yituliu"
+
+#: src/components/InventorySyncer.tsx:326
+msgid "显示全部"
+msgstr "Show All"
+
+#: src/components/FarmList.tsx:267
+msgid "暂不支持计算毕业合成"
+msgstr "Synthesizing Cannot be Planned for Maxed"
+
+#: src/components/FarmList.tsx:358
+msgid "暂无可计算来源"
+msgstr "No Feasible Sources"
 
 #. %s: datetime
 #: src/components/AboutList.tsx:176
@@ -229,6 +296,14 @@ msgstr "Save Manager"
 msgid "界面语言"
 msgstr "UI Language"
 
+#: src/components/FarmList.tsx:276
+msgid "线性规划失败"
+msgstr "Failed to Plan"
+
+#: src/components/Importer.tsx:144
+msgid "角色"
+msgstr "Characters"
+
 #: src/components/CharacterList.tsx:110
 msgid "角色计划排序"
 msgstr "Plan Sorting"
@@ -266,6 +341,10 @@ msgstr "UI Language changed. A reload is required."
 msgid "请更新您的浏览器。"
 msgstr "Please upgrade your browser."
 
+#: src/components/FarmList.tsx:278
+msgid "请稍候"
+msgstr "Loading"
+
 #: src/components/LogList.tsx:203
 msgid "近期更新"
 msgstr "Recent Patches"
@@ -277,6 +356,10 @@ msgstr "Back to Home"
 #: src/components/ConfigUi.tsx:44
 msgid "选项"
 msgstr "Options"
+
+#: src/components/Importer.tsx:150 src/components/Importer.tsx:340
+msgid "道具"
+msgstr "Items"
 
 #: src/components/AboutList.tsx:59
 msgid "邮箱"
@@ -413,6 +496,46 @@ msgstr "Maxed"
 msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
+
+#: src/components/ItemList.tsx:258
+msgctxt "item list counter label"
+msgid "可合成"
+msgstr "Syn.-able"
+
+#: src/components/ItemList.tsx:211
+msgctxt "item list counter label"
+msgid "合成后"
+msgstr "Post Syn."
+
+#: src/components/ItemList.tsx:324
+msgctxt "item list counter label"
+msgid "直接需求"
+msgstr "Direct"
+
+#: src/components/ItemList.tsx:292
+msgctxt "item list counter label"
+msgid "还需"
+msgstr "Gap"
+
+#: src/components/ItemList.tsx:356
+msgctxt "item list counter label"
+msgid "间接需求"
+msgstr "Indirect"
+
+#: src/components/ItemList.tsx:499
+msgctxt "item list view label"
+msgid "星标"
+msgstr "Starred"
+
+#: src/components/ItemList.tsx:497
+msgctxt "item list view label"
+msgid "毕业"
+msgstr "Maxed"
+
+#: src/components/ItemList.tsx:498
+msgctxt "item list view label"
+msgid "计划"
+msgstr "Planned"
 
 #. loading data objects, %s: names of pending data objects
 #: src/App.tsx:331

@@ -15,8 +15,20 @@ msgstr ""
 msgid "从文本框中导入"
 msgstr ""
 
+#: src/components/Importer.tsx:341
+msgid "以往"
+msgstr ""
+
+#: src/components/Importer.tsx:344
+msgid "价值变化"
+msgstr ""
+
 #: src/components/arknights/AboutList.tsx:43
 msgid "企鹅物流数据统计 素材掉落统计数据"
+msgstr ""
+
+#: src/components/TaskList.tsx:131
+msgid "优先培养（星标）"
 msgstr ""
 
 #: src/components/ConfigUi.tsx:210
@@ -32,12 +44,20 @@ msgid "关卡"
 msgstr ""
 
 #: src/App.tsx:495
+#: src/components/Importer.tsx:75
 msgid "关闭"
 msgstr ""
 
 #: src/components/AboutList.tsx:78
 msgid "其他资源"
 msgstr ""
+
+#. %d: number
+#: src/components/ItemList.tsx:152
+msgid "制作 %d 次所需"
+msgid_plural "制作 %d 次所需"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/Cpp.ts:105
 msgid "区域已切换，将重新载入页面。"
@@ -51,8 +71,24 @@ msgstr ""
 msgid "声明"
 msgstr ""
 
+#: src/components/Importer.tsx:343
+msgid "如今"
+msgstr ""
+
+#: src/components/TaskList.tsx:113
+msgid "完成"
+msgstr ""
+
 #: src/App.tsx:292
 msgid "导入/导出"
+msgstr ""
+
+#: src/components/Importer.tsx:132
+msgid "导入时产生的警告"
+msgstr ""
+
+#: src/components/Importer.tsx:68
+msgid "导入结果"
 msgstr ""
 
 #: src/components/UserDataManager.tsx:153
@@ -75,8 +111,20 @@ msgstr ""
 msgid "帮助文档"
 msgstr ""
 
+#: src/components/TaskList.tsx:124
+msgid "强制完成（不消耗材料）"
+msgstr ""
+
 #: src/components/CharacterStatusPopover.tsx:48
 msgid "当前状态"
+msgstr ""
+
+#: src/components/ItemList.tsx:97
+msgid "心情"
+msgstr ""
+
+#: src/components/ItemList.tsx:592
+msgid "总价值"
 msgstr ""
 
 #: src/App.tsx:457
@@ -86,6 +134,14 @@ msgstr ""
 #. %s: datetime
 #: src/components/LogList.tsx:199
 msgid "截止 %s"
+msgstr ""
+
+#: src/components/ItemList.tsx:566
+msgid "按游戏内仓库排布形式展示"
+msgstr ""
+
+#: src/components/Importer.tsx:80
+msgid "撤销"
 msgstr ""
 
 #: src/components/UserDataManager.tsx:99
@@ -114,6 +170,18 @@ msgstr ""
 
 #: src/components/arknights/AboutList.tsx:51
 msgid "明日方舟一图流 材料价值数据"
+msgstr ""
+
+#: src/components/InventorySyncer.tsx:326
+msgid "显示全部"
+msgstr ""
+
+#: src/components/FarmList.tsx:267
+msgid "暂不支持计算毕业合成"
+msgstr ""
+
+#: src/components/FarmList.tsx:358
+msgid "暂无可计算来源"
 msgstr ""
 
 #. %s: datetime
@@ -184,6 +252,14 @@ msgstr ""
 msgid "界面语言"
 msgstr ""
 
+#: src/components/FarmList.tsx:276
+msgid "线性规划失败"
+msgstr ""
+
+#: src/components/Importer.tsx:144
+msgid "角色"
+msgstr ""
+
 #: src/components/CharacterList.tsx:110
 msgid "角色计划排序"
 msgstr ""
@@ -211,6 +287,10 @@ msgstr ""
 msgid "请更新您的浏览器。"
 msgstr ""
 
+#: src/components/FarmList.tsx:278
+msgid "请稍候"
+msgstr ""
+
 #: src/components/LogList.tsx:203
 msgid "近期更新"
 msgstr ""
@@ -221,6 +301,11 @@ msgstr ""
 
 #: src/components/ConfigUi.tsx:44
 msgid "选项"
+msgstr ""
+
+#: src/components/Importer.tsx:150
+#: src/components/Importer.tsx:340
+msgid "道具"
 msgstr ""
 
 #: src/components/AboutList.tsx:59
@@ -357,6 +442,46 @@ msgstr ""
 #: src/Cpp.ts:47
 msgctxt "full name"
 msgid "计划 (以毕业为目标)"
+msgstr ""
+
+#: src/components/ItemList.tsx:258
+msgctxt "item list counter label"
+msgid "可合成"
+msgstr ""
+
+#: src/components/ItemList.tsx:211
+msgctxt "item list counter label"
+msgid "合成后"
+msgstr ""
+
+#: src/components/ItemList.tsx:324
+msgctxt "item list counter label"
+msgid "直接需求"
+msgstr ""
+
+#: src/components/ItemList.tsx:292
+msgctxt "item list counter label"
+msgid "还需"
+msgstr ""
+
+#: src/components/ItemList.tsx:356
+msgctxt "item list counter label"
+msgid "间接需求"
+msgstr ""
+
+#: src/components/ItemList.tsx:499
+msgctxt "item list view label"
+msgid "星标"
+msgstr ""
+
+#: src/components/ItemList.tsx:497
+msgctxt "item list view label"
+msgid "毕业"
+msgstr ""
+
+#: src/components/ItemList.tsx:498
+msgctxt "item list view label"
+msgid "计划"
 msgstr ""
 
 #. loading data objects, %s: names of pending data objects

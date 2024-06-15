@@ -17,6 +17,7 @@ import { groupBy, intersection, map, sum, uniq } from 'ramda'
 import React, { SetStateAction, memo, useEffect, useMemo, useState } from 'react'
 import { Level, useAtoms, useGameAdapter } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
+import { gt } from '../pkg/gt'
 import { useChamber } from './Chamber'
 import { CachedImg } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
@@ -93,8 +94,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { 
         {formula.apCost ? (
           <>
             <span style={{ marginLeft: 10 }}>
-              {'心情 '}
-              {formula.apCost}
+              {gt.gettext('心情')} {formula.apCost}
             </span>
             <div style={{ flex: 1 }} />
           </>
@@ -148,7 +148,11 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { 
           </>
         }
       />
-      <MenuDivider title={`制作 ${times} 次所需`} />
+      <MenuDivider
+        title={gt
+          .ngettext(`制作 %d 次所需`, `制作 %d 次所需`, times) /* I10N: %d: number */
+          .replaceAll('%d', times.toString())}
+      />
       {formula.costs.map((cost) => {
         const citem = ga.getItem(cost.itemId)
         return (
@@ -204,7 +208,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
       <div
         className="cpp-goal-counter"
         style={{ width: '6em', visibility: !formula || synable === 0 ? 'hidden' : undefined }}
-        data-label="合成后"
+        data-label={gt.pgettext('item list counter label', '合成后')}
       >
         <div
           style={{
@@ -248,7 +252,11 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           usePortal={true}
           placement={'bottom-end'}
         >
-          <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="可合成">
+          <div
+            className="cpp-goal-counter"
+            style={{ width: '6em' }}
+            data-label={gt.pgettext('item list counter label', '可合成')}
+          >
             <div
               style={{
                 textAlign: 'right',
@@ -278,7 +286,11 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           </div>
         </Popover>
       </a>
-      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="还需">
+      <div
+        className="cpp-goal-counter"
+        style={{ width: '6em' }}
+        data-label={gt.pgettext('item list counter label', '还需')}
+      >
         <div
           style={{
             textAlign: 'right',
@@ -306,7 +318,11 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           <span>{finished + finishedIndirects - quantity}</span>
         </div>
       </div>
-      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="直接需求">
+      <div
+        className="cpp-goal-counter"
+        style={{ width: '6em' }}
+        data-label={gt.pgettext('item list counter label', '直接需求')}
+      >
         <div
           style={{
             textAlign: 'right',
@@ -334,7 +350,11 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
           <span>{finished}</span>
         </div>
       </div>
-      <div className="cpp-goal-counter" style={{ width: '6em' }} data-label="间接需求">
+      <div
+        className="cpp-goal-counter"
+        style={{ width: '6em' }}
+        data-label={gt.pgettext('item list counter label', '间接需求')}
+      >
         <div
           style={{
             textAlign: 'right',
@@ -474,9 +494,9 @@ const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level;
       disabled={disabled}
       text={
         {
-          [Level.Finished]: '毕业',
-          [Level.Goal]: '计划',
-          [Level.Star]: '星标',
+          [Level.Finished]: gt.pgettext('item list view label', '毕业'),
+          [Level.Goal]: gt.pgettext('item list view label', '计划'),
+          [Level.Star]: gt.pgettext('item list view label', '星标'),
         }[level]
       }
       rightIcon={<ValueTagProgressBar value={remaining} maxValue={total} />}
@@ -543,7 +563,7 @@ export const SyncButton = memo(() => {
     <Button
       minimal={true}
       icon={'fullscreen'}
-      title={'按游戏内仓库排布形式展示'}
+      title={gt.gettext('按游戏内仓库排布形式展示')}
       onClick={() => {
         add(Dialog, { isOpen: true, children: <InventorySyncer /> })
       }}
@@ -569,7 +589,7 @@ export const ItemList = memo(<G extends IGame>() => {
     <>
       <Navbar>
         <Navbar.Group align={Alignment.RIGHT}>
-          总价值
+          {gt.gettext('总价值')}
           <AllValue />
           <SyncButton />
         </Navbar.Group>

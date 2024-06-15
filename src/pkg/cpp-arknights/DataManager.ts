@@ -634,7 +634,7 @@ export class ExpItem extends Item {
       {
         itemId: key,
         name: '经验',
-        // description: '竟有一种办法可以聚合四种作战记录。这么虚拟的物品，真的可以收下吗？真的吗？！',
+        // description: '竟有一种办法可以聚合四种作战记录。这么虚拟的道具，真的可以收下吗？真的吗？！',
         rarity: 'TIER_5',
         iconId: 'EXP_PLAYER',
         sortId: 10005,

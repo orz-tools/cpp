@@ -65,19 +65,19 @@ const ImportResultDialog = memo(({ diff, onClose }: { diff: State; onClose: () =
   })
 
   return (
-    <Dialog icon={'log-in'} isOpen={true} onClose={onClose} title="导入结果">
+    <Dialog icon={'log-in'} isOpen={true} onClose={onClose} title={gt.gettext('导入结果')}>
       {diff ? (
         <>
           <DiffView diff={diff} />
           <DialogFooter
             actions={
               <Button onClick={onClose} minimal>
-                中
+                {gt.gettext('关闭')}
               </Button>
             }
           >
             <Button icon="undo" onClick={undoAndClose} minimal>
-              撤销
+              {gt.gettext('撤销')}
             </Button>
           </DialogFooter>
         </>
@@ -129,7 +129,7 @@ const DiffView = memo(({ diff }: { diff: State }) => {
     <>
       <div style={{ height: '70vh', display: 'flex', flexDirection: 'column', padding: '15px', rowGap: '15px' }}>
         {diff.warnings.length > 0 ? (
-          <Callout intent="warning" title="导入时产生的警告">
+          <Callout intent="warning" title={gt.gettext('导入时产生的警告')}>
             <ul style={{ margin: 0, padding: 0 }}>
               {diff.warnings.map((w, i) => (
                 <li key={i}>{w}</li>
@@ -141,13 +141,13 @@ const DiffView = memo(({ diff }: { diff: State }) => {
           <Tabs selectedTabId={tab} vertical onChange={(x) => setTab(x)} fill>
             <Tab
               id={'char'}
-              title={'角色'}
+              title={gt.gettext('角色')}
               tagContent={detail.charDiffs.length}
               panel={<CharDiffView charDiffs={detail.charDiffs} />}
             />
             <Tab
               id={'inv'}
-              title={'道具'}
+              title={gt.gettext('道具')}
               tagContent={detail.inventoryDiffs.length}
               panel={
                 <InventoryDiffView
@@ -337,11 +337,11 @@ const InventoryDiffView = memo(
               </td>
             </tr>
             <tr>
-              <th style={{ width: '10em', textAlign: 'left' }}>道具</th>
-              <th style={{ width: '5em', textAlign: 'right' }}>以往</th>
+              <th style={{ width: '10em', textAlign: 'left' }}>{gt.gettext('道具')}</th>
+              <th style={{ width: '5em', textAlign: 'right' }}>{gt.gettext('以往')}</th>
               <th></th>
-              <th style={{ width: '5em', textAlign: 'right' }}>如今</th>
-              <th style={{ width: '10em', textAlign: 'right' }}>价值变化</th>
+              <th style={{ width: '5em', textAlign: 'right' }}>{gt.gettext('如今')}</th>
+              <th style={{ width: '10em', textAlign: 'right' }}>{gt.gettext('价值变化')}</th>
             </tr>
           </thead>
           <tbody>
