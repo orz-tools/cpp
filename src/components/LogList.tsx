@@ -196,7 +196,9 @@ export const SimpleLogList = memo(() => {
         title={
           <>
             <span style={{ float: 'right', fontWeight: 'normal' }}>
-              {gt.gettext('截止 %s').replaceAll('%s', groupedLogs[0][0])}
+              {gt
+                .gettext('截止 %s') /* I10N: %s: datetime */
+                .replaceAll('%s', groupedLogs[0][0])}
             </span>
             {gt.gettext('近期更新')}
           </>

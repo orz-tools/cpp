@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
 import { UserData } from '../../pkg/cpp-core/UserData'
+import { gt } from '../../pkg/gt'
 import { ErrAtom } from '../Err'
 import { ImportContext, useStartImportSession } from '../Importer'
 
@@ -185,7 +186,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     try {
       data = JSON.stringify(SklandingData.parse(e.data).data)
     } catch (e) {
-      setErr({ error: e, context: '与「提取装置」互操作时遇到问题' })
+      setErr({ error: e, context: gt.pgettext('error context', '与「提取装置」互操作时遇到问题') })
       return
     }
     handleData(data)

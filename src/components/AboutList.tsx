@@ -173,7 +173,9 @@ export const DataObjectStatus = memo(
                 style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
               >
                 <span style={{ flex: 1 }}>
-                  {gt.gettext('更新于 %s').replaceAll('%s', format(data.version.timestamp, 'yyyy-MM-dd HH:mm:ss'))}
+                  {gt
+                    .gettext('更新于 %s') /* I10N: %s: datetime */
+                    .replaceAll('%s', format(data.version.timestamp, 'yyyy-MM-dd HH:mm:ss'))}
                 </span>
               </div>
             }

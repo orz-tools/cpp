@@ -86,7 +86,7 @@ const ReloadDataButton = memo(() => {
     } catch (e) {
       console.log(e)
       AppToaster.dismiss(reload)
-      setError({ error: e, context: gt.gettext('检查数据更新失败') })
+      setError({ error: e, context: gt.pgettext('error context', '检查数据更新失败') })
     }
   })
 
@@ -323,17 +323,24 @@ export const Loading = memo(() => {
   const ga = useGameAdapter()
   const dm = ga.getDataManager()
   const [, setTicker] = useState(0)
-  const [status, setStatus] = useState('别急...')
+  const [status, setStatus] = useState(gt.pgettext('loading status', '别急…') /* I10N: initial */)
   useEffect(() => {
     let timer: null | ReturnType<typeof setInterval> = setInterval(() => {
       if (dm.loading.size > 0) {
-        setStatus(`仍在加载 ${[...dm.loading].join(', ')} 中...`)
+        setStatus(
+          gt
+            .pgettext(
+              'loading status',
+              `仍在加载 %s 中…`,
+            ) /* I10N: loading data objects, %s: names of pending data objects */
+            .replaceAll('%s', [...dm.loading].join(', ')),
+        )
       } else {
-        setStatus('收拾中...')
+        setStatus(gt.pgettext('loading status', '收拾中…') /* I10N: loaded data objects */)
       }
 
       if (dm.error || dm.initialized) {
-        setStatus('马上就好...')
+        setStatus(gt.pgettext('loading status', '马上就好…') /* I10N: done */)
         clearTimeout(timer!)
         timer = null
         setTicker((x) => x + 1)
@@ -365,11 +372,16 @@ export const Loading = memo(() => {
       >
         <Spinner size={100} />
         <h2 style={{ textAlign: 'center' }}>
-          <del>海记忆体知己，天涯霍位元人</del>
+          <del>{gt.pgettext('loading status', '海记忆体知己，天涯霍位元人') /* I10N: joke text */}</del>
           <br />
-          我们正在准备您的 Closure++
+          {gt
+            .pgettext(
+              'loading status',
+              '我们正在准备您的 %s',
+            ) /* I10N: loading hero line 1, %s: Product Name (Closure++) */
+            .replaceAll('%s', 'Closure++')}
           <br />
-          请稍候
+          {gt.pgettext('loading status', '请稍候') /* I10N: loading hero line 2 */}
         </h2>
         {status ? (
           <div style={{ opacity: 0.5, position: 'absolute', textAlign: 'center', bottom: '5%', left: 0, right: 0 }}>
@@ -423,7 +435,10 @@ class ErrorBoundary extends React.Component<
       return (
         <Dialog
           isOpen
-          title={`Closure${formatProfileName(this.props.codename, this.props.instanceName)}++ 遇到错误`}
+          title={`Closure${formatProfileName(this.props.codename, this.props.instanceName)}++ ${gt.pgettext(
+            'error context',
+            `遇到错误`,
+          )}`}
           icon="warning-sign"
           isCloseButtonShown={false}
         >
@@ -443,6 +458,7 @@ class ErrorBoundary extends React.Component<
               </Button>
               <ReloadDataButton />
               <UserDataManagerButton />
+              <LocaleButton />
             </div>
           </DialogFooter>
         </Dialog>
@@ -475,7 +491,8 @@ export const ErrDialog = memo(({ instanceName, codename }: { instanceName: strin
         actions={
           <>
             <Button onClick={() => setErr(undefined)} minimal>
-              晓得了
+              {/* 晓得了 */}
+              {gt.gettext('关闭')}
             </Button>
           </>
         }

@@ -19,6 +19,7 @@ import { Cpp, FarmLevel, FarmLevelNames, FarmLevelShortNames, Level, useCpp, use
 import { useRequest } from '../hooks/useRequest'
 import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
+import { gt } from '../pkg/gt'
 import { ErrAtom } from './Err'
 import { CachedImg } from './Icons'
 import { SynthesisList, planSynthesisList } from './SynthesisList'
@@ -182,7 +183,7 @@ export const FarmList = memo(() => {
       }
       throw new Error('Invalid farm level')
     } catch (e) {
-      setErr({ error: e, context: '刷本规划时遇到问题' })
+      setErr({ error: e, context: gt.pgettext('error context', '刷本规划时遇到问题') })
     }
   })
 

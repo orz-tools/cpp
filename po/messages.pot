@@ -31,12 +31,20 @@ msgstr ""
 msgid "关卡"
 msgstr ""
 
+#: src/App.tsx:495
+msgid "关闭"
+msgstr ""
+
 #: src/components/AboutList.tsx:78
 msgid "其他资源"
 msgstr ""
 
 #: src/Cpp.ts:105
 msgid "区域已切换，将重新载入页面。"
+msgstr ""
+
+#: src/components/CharacterStatusPopover.tsx:48
+msgid "培养目标"
 msgstr ""
 
 #: src/components/AboutList.tsx:88
@@ -47,10 +55,6 @@ msgstr ""
 msgid "导入/导出"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:102
-msgid "导入数据时遇到问题"
-msgstr ""
-
 #: src/components/UserDataManager.tsx:153
 msgid "导出为文件"
 msgstr ""
@@ -59,7 +63,7 @@ msgstr ""
 msgid "小黑盒 app 干员统计数据"
 msgstr ""
 
-#: src/components/AboutList.tsx:213
+#: src/components/AboutList.tsx:215
 msgid "帮助"
 msgstr ""
 
@@ -71,10 +75,15 @@ msgstr ""
 msgid "帮助文档"
 msgstr ""
 
-#: src/App.tsx:442
+#: src/components/CharacterStatusPopover.tsx:48
+msgid "当前状态"
+msgstr ""
+
+#: src/App.tsx:457
 msgid "您不妨试试"
 msgstr ""
 
+#. %s: datetime
 #: src/components/LogList.tsx:199
 msgid "截止 %s"
 msgstr ""
@@ -107,6 +116,7 @@ msgstr ""
 msgid "明日方舟一图流 材料价值数据"
 msgstr ""
 
+#. %s: datetime
 #: src/components/AboutList.tsx:176
 msgid "更新于 %s"
 msgstr ""
@@ -139,16 +149,16 @@ msgstr ""
 msgid "来自明日方舟一图流的数据，除非另有声明，采用 知识共享 署名-非商业性使用 4.0 国际 许可协议 进行许可。转载、公开或以任何形式复制、发行、再传播明日方舟一图流的任何内容时，必须注明从明日方舟一图流转载，并提供版权标识、许可协议标识、免责标识和作品链接；且未经许可，不得将本站内容或由其衍生作品用于商业目的。"
 msgstr ""
 
-#: src/components/LogList.tsx:217
+#: src/components/LogList.tsx:219
 msgid "查看更多…"
+msgstr ""
+
+#: src/components/CharacterList.tsx:741
+msgid "查询失败"
 msgstr ""
 
 #: src/App.tsx:112
 msgid "检查数据更新"
-msgstr ""
-
-#: src/App.tsx:89
-msgid "检查数据更新失败"
 msgstr ""
 
 #: src/components/UserDataManager.tsx:136
@@ -174,6 +184,10 @@ msgstr ""
 msgid "界面语言"
 msgstr ""
 
+#: src/components/CharacterList.tsx:110
+msgid "角色计划排序"
+msgstr ""
+
 #: src/components/UserDataManager.tsx:72
 msgid ""
 "警告：你确定要导入数据吗？\n"
@@ -193,11 +207,15 @@ msgstr ""
 msgid "语言已切换，将重新载入页面。"
 msgstr ""
 
-#: src/components/LogList.tsx:201
+#: src/entry.tsx:53
+msgid "请更新您的浏览器。"
+msgstr ""
+
+#: src/components/LogList.tsx:203
 msgid "近期更新"
 msgstr ""
 
-#: src/App.tsx:435
+#: src/App.tsx:450
 msgid "返回主页"
 msgstr ""
 
@@ -266,6 +284,51 @@ msgctxt "credit role"
 msgid "数据源自动化"
 msgstr ""
 
+#: src/components/arknights/SklandImporter.tsx:189
+msgctxt "error context"
+msgid "与「提取装置」互操作时遇到问题"
+msgstr ""
+
+#: src/entry.tsx:25
+msgctxt "error context"
+msgid "初始化失败"
+msgstr ""
+
+#: src/components/FarmList.tsx:186
+msgctxt "error context"
+msgid "刷本规划时遇到问题"
+msgstr ""
+
+#: src/components/Importer.tsx:42
+msgctxt "error context"
+msgid "合并导入数据时遇到问题"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:102
+msgctxt "error context"
+msgid "导入数据时遇到问题"
+msgstr ""
+
+#: src/App.tsx:89
+msgctxt "error context"
+msgid "检查数据更新失败"
+msgstr ""
+
+#: src/entry.tsx:21
+msgctxt "error context"
+msgid "环境检测失败"
+msgstr ""
+
+#: src/components/Importer.tsx:48
+msgctxt "error context"
+msgid "解析导入数据时遇到问题"
+msgstr ""
+
+#: src/App.tsx:438
+msgctxt "error context"
+msgid "遇到错误"
+msgstr ""
+
 #: src/Cpp.ts:43
 msgctxt "full name"
 msgid "仅星标"
@@ -294,6 +357,68 @@ msgstr ""
 #: src/Cpp.ts:47
 msgctxt "full name"
 msgid "计划 (以毕业为目标)"
+msgstr ""
+
+#. loading data objects, %s: names of pending data objects
+#: src/App.tsx:331
+msgctxt "loading status"
+msgid "仍在加载 %s 中…"
+msgstr ""
+
+#. initial
+#: src/App.tsx:326
+msgctxt "loading status"
+msgid "别急…"
+msgstr ""
+
+#. loading hero line 1, %s: Product Name (Closure++)
+#: src/App.tsx:377
+msgctxt "loading status"
+msgid "我们正在准备您的 %s"
+msgstr ""
+
+#. loaded data objects
+#: src/App.tsx:339
+msgctxt "loading status"
+msgid "收拾中…"
+msgstr ""
+
+#. joke text
+#: src/App.tsx:375
+msgctxt "loading status"
+msgid "海记忆体知己，天涯霍位元人"
+msgstr ""
+
+#. loading hero line 2
+#: src/App.tsx:384
+msgctxt "loading status"
+msgid "请稍候"
+msgstr ""
+
+#. done
+#: src/App.tsx:343
+msgctxt "loading status"
+msgid "马上就好…"
+msgstr ""
+
+#: src/components/CharacterList.tsx:555
+msgctxt "predefined view name"
+msgid "全部"
+msgstr ""
+
+#: src/components/CharacterList.tsx:548
+msgctxt "predefined view name"
+msgid "想看的"
+msgstr ""
+
+#: src/components/CharacterList.tsx:570
+msgctxt "predefined view name"
+msgid "缺席"
+msgstr ""
+
+#: src/components/CharacterList.tsx:562
+msgctxt "predefined view name"
+msgid "计划"
 msgstr ""
 
 #: src/pkg/cpp-arknights/survey.ts:24

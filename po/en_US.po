@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-06-15 15:15+0800\n"
+"PO-Revision-Date: 2024-06-15 16:27+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -42,6 +42,10 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
+#: src/App.tsx:495
+msgid "关闭"
+msgstr "Close"
+
 #: src/components/AboutList.tsx:78
 msgid "其他资源"
 msgstr "Other Resources"
@@ -49,6 +53,10 @@ msgstr "Other Resources"
 #: src/Cpp.ts:105
 msgid "区域已切换，将重新载入页面。"
 msgstr "Region switched. Page will be reloaded."
+
+#: src/components/CharacterStatusPopover.tsx:48
+msgid "培养目标"
+msgstr "Target"
 
 #: src/components/AboutList.tsx:88
 msgid "声明"
@@ -58,10 +66,6 @@ msgstr "Statements"
 msgid "导入/导出"
 msgstr "Import/Export"
 
-#: src/components/UserDataManager.tsx:102
-msgid "导入数据时遇到问题"
-msgstr "Issues Encountered During Import"
-
 #: src/components/UserDataManager.tsx:153
 msgid "导出为文件"
 msgstr "Export as File"
@@ -70,7 +74,7 @@ msgstr "Export as File"
 msgid "小黑盒 app 干员统计数据"
 msgstr "Operator Statistics from Heybox"
 
-#: src/components/AboutList.tsx:213
+#: src/components/AboutList.tsx:215
 msgid "帮助"
 msgstr "Help"
 
@@ -82,10 +86,15 @@ msgstr "Help & Community"
 msgid "帮助文档"
 msgstr "Documentation"
 
-#: src/App.tsx:442
+#: src/components/CharacterStatusPopover.tsx:48
+msgid "当前状态"
+msgstr "Current"
+
+#: src/App.tsx:457
 msgid "您不妨试试"
 msgstr "You may try"
 
+#. %s: datetime
 #: src/components/LogList.tsx:199
 msgid "截止 %s"
 msgstr "As of %s"
@@ -120,6 +129,7 @@ msgstr "Operator Statistics from Arknights-yituliu"
 msgid "明日方舟一图流 材料价值数据"
 msgstr "Sanity Value of Items from Arknights-yituliu"
 
+#. %s: datetime
 #: src/components/AboutList.tsx:176
 msgid "更新于 %s"
 msgstr "Last updated at %s"
@@ -185,17 +195,17 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/LogList.tsx:217
+#: src/components/LogList.tsx:219
 msgid "查看更多…"
 msgstr "Read More…"
+
+#: src/components/CharacterList.tsx:741
+msgid "查询失败"
+msgstr "Query Failed"
 
 #: src/App.tsx:112
 msgid "检查数据更新"
 msgstr "Check For Data Updates"
-
-#: src/App.tsx:89
-msgid "检查数据更新失败"
-msgstr "Failed to check for data updates"
 
 #: src/components/UserDataManager.tsx:136
 msgid "清空"
@@ -218,6 +228,10 @@ msgstr "Save Manager"
 #: src/locales.tsx:53
 msgid "界面语言"
 msgstr "UI Language"
+
+#: src/components/CharacterList.tsx:110
+msgid "角色计划排序"
+msgstr "Plan Sorting"
 
 #: src/components/UserDataManager.tsx:72
 msgid ""
@@ -248,11 +262,15 @@ msgstr ""
 msgid "语言已切换，将重新载入页面。"
 msgstr "UI Language changed. A reload is required."
 
-#: src/components/LogList.tsx:201
+#: src/entry.tsx:53
+msgid "请更新您的浏览器。"
+msgstr "Please upgrade your browser."
+
+#: src/components/LogList.tsx:203
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/App.tsx:435
+#: src/App.tsx:450
 msgid "返回主页"
 msgstr "Back to Home"
 
@@ -321,6 +339,51 @@ msgctxt "credit role"
 msgid "数据源自动化"
 msgstr "data source automation"
 
+#: src/components/arknights/SklandImporter.tsx:189
+msgctxt "error context"
+msgid "与「提取装置」互操作时遇到问题"
+msgstr "Error During Interacting with «Sklanding»"
+
+#: src/entry.tsx:25
+msgctxt "error context"
+msgid "初始化失败"
+msgstr "Error During Initializing"
+
+#: src/components/FarmList.tsx:186
+msgctxt "error context"
+msgid "刷本规划时遇到问题"
+msgstr "Error During Planning"
+
+#: src/components/Importer.tsx:42
+msgctxt "error context"
+msgid "合并导入数据时遇到问题"
+msgstr "Error During Merging Data"
+
+#: src/components/UserDataManager.tsx:102
+msgctxt "error context"
+msgid "导入数据时遇到问题"
+msgstr "Error During Importing"
+
+#: src/App.tsx:89
+msgctxt "error context"
+msgid "检查数据更新失败"
+msgstr "Error During Checking for Data Updates"
+
+#: src/entry.tsx:21
+msgctxt "error context"
+msgid "环境检测失败"
+msgstr "Error During Starting"
+
+#: src/components/Importer.tsx:48
+msgctxt "error context"
+msgid "解析导入数据时遇到问题"
+msgstr "Error During Processing Imported Data"
+
+#: src/App.tsx:438
+msgctxt "error context"
+msgid "遇到错误"
+msgstr "Error"
+
 #: src/Cpp.ts:43
 msgctxt "full name"
 msgid "仅星标"
@@ -350,6 +413,68 @@ msgstr "Maxed"
 msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
+
+#. loading data objects, %s: names of pending data objects
+#: src/App.tsx:331
+msgctxt "loading status"
+msgid "仍在加载 %s 中…"
+msgstr "Setting up %s…"
+
+#. initial
+#: src/App.tsx:326
+msgctxt "loading status"
+msgid "别急…"
+msgstr "Don't hurry…"
+
+#. loading hero line 1, %s: Product Name (Closure++)
+#: src/App.tsx:377
+msgctxt "loading status"
+msgid "我们正在准备您的 %s"
+msgstr "We're setting things up for you"
+
+#. loaded data objects
+#: src/App.tsx:339
+msgctxt "loading status"
+msgid "收拾中…"
+msgstr "Almost there…"
+
+#. joke text
+#: src/App.tsx:375
+msgctxt "loading status"
+msgid "海记忆体知己，天涯霍位元人"
+msgstr "Installing Macindows X"
+
+#. loading hero line 2
+#: src/App.tsx:384
+msgctxt "loading status"
+msgid "请稍候"
+msgstr "This won't take long"
+
+#. done
+#: src/App.tsx:343
+msgctxt "loading status"
+msgid "马上就好…"
+msgstr "Let's start…"
+
+#: src/components/CharacterList.tsx:555
+msgctxt "predefined view name"
+msgid "全部"
+msgstr "All"
+
+#: src/components/CharacterList.tsx:548
+msgctxt "predefined view name"
+msgid "想看的"
+msgstr "Interested"
+
+#: src/components/CharacterList.tsx:570
+msgctxt "predefined view name"
+msgid "缺席"
+msgstr "Absent"
+
+#: src/components/CharacterList.tsx:562
+msgctxt "predefined view name"
+msgid "计划"
+msgstr "Planned"
 
 #: src/pkg/cpp-arknights/survey.ts:24
 msgctxt "short name"

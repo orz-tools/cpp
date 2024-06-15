@@ -6,6 +6,7 @@ import { Err, ErrAtom } from './components/Err'
 import { IGameComponent } from './components/types'
 import './index.css'
 import { IGame, IGameAdapter } from './pkg/cpp-basic'
+import { gt } from './pkg/gt'
 
 export function runCpp(
   storagePrefix: string,
@@ -16,11 +17,12 @@ export function runCpp(
   const cpp = new Cpp(storagePrefix, instanceName, gameAdapter, gameComponent)
   void (async () => {
     const result = await environmentCheck()
-    if (result) return cpp.store.set(ErrAtom, Object.assign({ context: '环境检测失败' }, result))
+    if (result)
+      return cpp.store.set(ErrAtom, Object.assign({ context: gt.pgettext('error context', '环境检测失败') }, result))
 
     await cpp.gameAdapter.getDataManager().init(cpp.region)
   })().catch((e) => {
-    cpp.store.set(ErrAtom, { error: e, context: '初始化失败' })
+    cpp.store.set(ErrAtom, { error: e, context: gt.pgettext('error context', '初始化失败') })
   })
 
   Object.assign(globalThis, {
@@ -48,7 +50,7 @@ async function environmentCheck(): Promise<Err | null> {
     if (!Object.fromEntries) throw new Error('Object.fromEntries is not defined')
     if (!Object.hasOwn) throw new Error('Object.hasOwn is not defined')
   } catch (e) {
-    return { error: e, friendly: '请更新您的浏览器。' }
+    return { error: e, friendly: gt.gettext('请更新您的浏览器。') }
   }
   await Promise.resolve()
   return null

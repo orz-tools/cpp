@@ -99,7 +99,7 @@ const UserDataManagerContent = memo(
         alert(gt.gettext('数据已导入，将重新载入页面。'))
         location.reload()
       } catch (e) {
-        store.set(ErrAtom, { error: e, context: gt.gettext('导入数据时遇到问题') })
+        store.set(ErrAtom, { error: e, context: gt.pgettext('error context', '导入数据时遇到问题') })
       }
     })
 

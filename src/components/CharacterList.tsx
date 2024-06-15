@@ -35,6 +35,7 @@ import {
   Querier,
   QueryParam,
 } from '../pkg/cpp-basic'
+import { gt } from '../pkg/gt'
 
 export const Hide = memo(
   ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
@@ -106,7 +107,7 @@ export const CharacterContextMenu = memo(
           <>
             <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
               <>
-                <span style={{ marginLeft: 10 }}>{'角色计划排序'}</span>
+                <span style={{ marginLeft: 10 }}>{gt.gettext('角色计划排序')}</span>
                 <div style={{ flex: 1 }} />
               </>
               <Button
@@ -544,21 +545,21 @@ const QueryBuilder = memo(() => {
       <Button
         minimal={true}
         active={param.query === ListModeFav}
-        text="想看的"
+        text={gt.pgettext('predefined view name', '想看的')}
         onClick={() => setParam((x) => ({ ...x, query: ListModeFav }))}
         style={{ flexShrink: 0 }}
       />
       <Button
         minimal={true}
         active={param.query === ListModeAll}
-        text="全部"
+        text={gt.pgettext('predefined view name', '全部')}
         onClick={() => setParam((x) => ({ ...x, query: ListModeAll }))}
         style={{ flexShrink: 0 }}
       />
       <Button
         minimal={true}
         active={param.query === ListModeWithGoal}
-        text="计划"
+        text={gt.pgettext('predefined view name', '计划')}
         rightIcon={goalCount > 0 ? <Tag round={true}>{goalCount}</Tag> : undefined}
         onClick={() => setParam((x) => ({ ...x, query: ListModeWithGoal }))}
         style={{ flexShrink: 0 }}
@@ -566,7 +567,7 @@ const QueryBuilder = memo(() => {
       <Button
         minimal={true}
         active={param.query === ListModeAbsent}
-        text="缺席"
+        text={gt.pgettext('predefined view name', '缺席')}
         onClick={() => setParam((x) => ({ ...x, query: ListModeAbsent }))}
         style={{ flexShrink: 0 }}
       />
@@ -737,7 +738,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
       </Navbar>
       <QueryEditor />
       {error ? (
-        <NonIdealState title={'查询失败'} icon={'warning-sign'}>
+        <NonIdealState title={gt.gettext('查询失败')} icon={'warning-sign'}>
           <pre style={{ margin: 0 }}>{error.message}</pre>
         </NonIdealState>
       ) : (

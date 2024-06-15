@@ -9,6 +9,7 @@ import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame } from '../pkg/cpp-basic'
 import { UserData } from '../pkg/cpp-core/UserData'
+import { gt } from '../pkg/gt'
 import { useChamber } from './Chamber'
 import { renderCharacterStatus } from './CharacterList'
 import { ErrAtom } from './Err'
@@ -38,13 +39,13 @@ export function useStartImportSession() {
       try {
         store.set(atoms.allDataAtom, (draft) => generator(draft, ctx))
       } catch (e) {
-        setErr({ error: e, context: '合并导入数据时遇到问题' })
+        setErr({ error: e, context: gt.pgettext('error context', '合并导入数据时遇到问题') })
         return
       }
       const after = JSON.parse(JSON.stringify(store.get(atoms.allDataAtom)))
       add(ImportResultDialog, { diff: { before, after, warnings } })
     } catch (e) {
-      setErr({ error: e, context: '解析导入数据时遇到问题' })
+      setErr({ error: e, context: gt.pgettext('error context', '解析导入数据时遇到问题') })
     }
   }
 }

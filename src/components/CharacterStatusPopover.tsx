@@ -5,6 +5,7 @@ import useEvent from 'react-use-event-hook'
 import { useAtoms } from '../Cpp'
 import { ICharacter, IGame } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
+import { gt } from '../pkg/gt'
 
 const useTypeHolderForSetStatusAtom = () =>
   useSetAtom(null as any as ReturnType<UserDataAtomHolder<IGame>['atoms']['goalCharacter']>)
@@ -44,7 +45,7 @@ export const CharacterStatusPopover = memo(
     return (
       <EditorContext.Provider value={ctx}>
         <div>
-          {character.name} - {isGoal ? '培养目标' : '当前状态'}
+          {character.name} - {isGoal ? gt.gettext('培养目标') : gt.gettext('当前状态')}
         </div>
         <pre style={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap' }}>{JSON.stringify(status)}</pre>
         <Button text={'update'} onClick={handleEdit} />

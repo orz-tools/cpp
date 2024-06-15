@@ -2,6 +2,12 @@
 import { GettextExtractor, JsExtractors } from 'gettext-extractor'
 
 const extractor = new GettextExtractor()
+const comments = {
+  sameLineLeading: true,
+  otherLineLeading: true,
+  sameLineTrailing: true,
+  regex: /I10N:\s*(.*)\s*/m,
+}
 
 extractor
   .createJsParser([
@@ -9,12 +15,14 @@ extractor
       arguments: {
         text: 0,
       },
+      comments: comments,
     }),
     JsExtractors.callExpression('gt.pgettext', {
       arguments: {
         context: 0,
         text: 1,
       },
+      comments: comments,
     }),
   ])
   .parseFilesGlob('./src/**/*.@(ts|js|tsx|jsx)')
