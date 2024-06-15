@@ -21,7 +21,7 @@ import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { ErrAtom } from './Err'
-import { CachedImg } from './Icons'
+import { ItemIcon } from './Icons'
 import { SynthesisList, planSynthesisList } from './SynthesisList'
 import { SampleTag, ValueTag } from './Value'
 
@@ -326,16 +326,7 @@ export const StageLine = memo(({ run }: { run: StageRun }) => {
             key={k}
             style={{ fontWeight: 'normal' }}
             className="cpp-menu-not-interactive"
-            icon={
-              <CachedImg
-                src={item.icon}
-                width={'20'}
-                height={'20'}
-                alt={item.key}
-                title={item.key}
-                className="cpp-item-icon"
-              />
-            }
+            icon={<ItemIcon item={item} size={20} />}
             text={
               <>
                 <span>{item.name}</span>
@@ -364,16 +355,7 @@ export const UnfeasibleLine = memo(({ items }: { items: Record<string, number> }
             className="cpp-menu-not-interactive"
             key={k}
             style={{ fontWeight: 'normal' }}
-            icon={
-              <CachedImg
-                src={item.icon}
-                width={'20'}
-                height={'20'}
-                alt={item.key}
-                title={item.key}
-                className="cpp-item-icon"
-              />
-            }
+            icon={<ItemIcon item={item} size={20} />}
             text={
               <>
                 <span>{item.name}</span>

@@ -19,7 +19,7 @@ import { Level, useAtoms, useGameAdapter } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
 import { gt } from '../pkg/gt'
 import { useChamber } from './Chamber'
-import { CachedImg } from './Icons'
+import { ItemIcon } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
@@ -128,16 +128,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { 
       </ButtonGroup>
       <MenuDivider />
       <MenuItem
-        icon={
-          <CachedImg
-            className="cpp-item-icon"
-            src={item.icon}
-            width={'20'}
-            height={'20'}
-            alt={item.key}
-            title={item.key}
-          />
-        }
+        icon={<ItemIcon item={item} size={20} />}
         text={
           <>
             <span>{item.name}</span>
@@ -158,16 +149,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { 
         return (
           <MenuItem
             key={cost.itemId}
-            icon={
-              <CachedImg
-                className="cpp-item-icon"
-                src={citem.icon}
-                width={'20'}
-                height={'20'}
-                alt={citem.key}
-                title={citem.key}
-              />
-            }
+            icon={<ItemIcon item={citem} size={20} />}
             text={
               <>
                 <span>{citem.name}</span>
@@ -397,14 +379,7 @@ export const ItemMenu = memo(({ item }: { item: IItem }) => {
       >
         <>
           <span className="bp5-menu-item-icon">
-            <CachedImg
-              src={item.icon}
-              width={'40'}
-              height={'40'}
-              alt={item.key}
-              title={item.key}
-              className="cpp-item-icon"
-            />
+            <ItemIcon item={item} size={40} />
           </span>
           <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <div className="bp5-text-overflow-ellipsis" title={item.name}>

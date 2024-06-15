@@ -7,7 +7,7 @@ import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, IItem } from '../pkg/cpp-basic'
 import { gt } from '../pkg/gt'
-import { CachedImg } from './Icons'
+import { ItemIcon } from './Icons'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
@@ -239,16 +239,7 @@ const Gap = memo(
               {items.map((x) => (
                 <MenuItem
                   key={x.key}
-                  icon={
-                    <CachedImg
-                      src={x.icon}
-                      width={'20'}
-                      height={'20'}
-                      alt={x.key}
-                      title={x.key}
-                      className={'cpp-item-icon'}
-                    />
-                  }
+                  icon={<ItemIcon item={x} size={20} />}
                   text={x.name}
                   onClick={() => createNewItem(x.key)}
                 />
@@ -280,14 +271,7 @@ const ItemView = memo(
     })
     return (
       <div className="cpp-isviv">
-        <CachedImg
-          src={item.icon}
-          width={'100%'}
-          height={'100%'}
-          alt={item.key}
-          title={item.name}
-          className="cpp-item-icon"
-        />
+        <ItemIcon item={item} size={'100%'} />
         <div className="cpp-isviv-label-wrapper">
           <ItemQuantityEditor
             item={item}

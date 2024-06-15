@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { memo, useEffect, useState } from 'react'
 import { useCpp } from '../Cpp'
 import { BlobFlavour, BlobImages, badUrl, load } from '../pkg/blobcache'
+import { IItem } from '../pkg/cpp-basic'
 
 export const CachedImg = memo(
   ({
@@ -59,6 +60,7 @@ export const CachedImg = memo(
                 opacity: 0.25,
                 color: 'red',
                 border: '1px solid red',
+                lineHeight: '1em',
               }
             : {}),
         }}
@@ -70,4 +72,17 @@ export const CachedImg = memo(
 
 export const EmptyIcon = memo(({ classes }: { classes?: string[] }) => {
   return <span className={['bp5-menu-item-icon', ...(classes || [])].join(' ')}></span>
+})
+
+export const ItemIcon = memo(({ item, size }: { item: IItem; size: number | string }) => {
+  return (
+    <CachedImg
+      src={item.icon}
+      width={size}
+      height={size}
+      alt={item.name}
+      title={`${item.name} (#${item.key})`}
+      className="cpp-item-icon"
+    />
+  )
 })

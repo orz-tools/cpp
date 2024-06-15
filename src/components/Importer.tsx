@@ -13,7 +13,7 @@ import { gt } from '../pkg/gt'
 import { useChamber } from './Chamber'
 import { renderCharacterStatus } from './CharacterList'
 import { ErrAtom } from './Err'
-import { CachedImg } from './Icons'
+import { CachedImg, ItemIcon } from './Icons'
 import { ValueTag } from './Value'
 
 export interface ImportContext {
@@ -364,14 +364,7 @@ const InventoryDiffViewRow = memo(
       <tr role="none" style={style}>
         <td>
           <div style={{ display: 'flex' }}>
-            <CachedImg
-              className={'cpp-item-icon'}
-              src={item.icon}
-              width={'20'}
-              height={'20'}
-              alt={item.key}
-              title={item.key}
-            />
+            <ItemIcon item={item} size={20} />
             <span style={{ flex: 1, flexShrink: 1 }}>{item.name}</span>
           </div>
         </td>

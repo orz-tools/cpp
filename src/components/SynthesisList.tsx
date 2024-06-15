@@ -6,7 +6,7 @@ import { TaskStatus } from '../pkg/cpp-core/Task'
 import { generateIndirects } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import type { FormulaUse } from './FarmList'
-import { CachedImg } from './Icons'
+import { ItemIcon } from './Icons'
 import { ItemSynthesisPopover, buildItemList } from './ItemList'
 
 export function planSynthesisList(cpp: Cpp<IGame>, target: Level, formulaUses: FormulaUse[]) {
@@ -149,16 +149,7 @@ const SynthesisMenu = memo(
         className="cpp-menu-nosubmenu"
         style={{ fontWeight: 'normal' }}
         popoverProps={{ interactionKind: 'click', usePortal: true }}
-        icon={
-          <CachedImg
-            className="cpp-item-icon"
-            src={item.icon}
-            width={'20'}
-            height={'20'}
-            alt={item.key}
-            title={item.key}
-          />
-        }
+        icon={<ItemIcon item={item} size={20} />}
         text={
           <>
             <span>{item.name}</span>

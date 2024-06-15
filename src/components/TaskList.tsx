@@ -11,7 +11,7 @@ import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
 import { StarStatus } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { CharacterContextMenu } from './CharacterList'
-import { CachedImg } from './Icons'
+import { CachedImg, ItemIcon } from './Icons'
 import { ValueTagProgressBar } from './Value'
 
 interface TaskListQueryParam {
@@ -318,14 +318,7 @@ const ItemStack = memo(
         icon={
           <div style={{ display: 'flex' }}>
             <Icon icon={CostStatusIcon[status]} size={16} style={{ padding: 2 }} />
-            <CachedImg
-              className={'cpp-item-icon'}
-              src={item.icon}
-              width={'20'}
-              height={'20'}
-              alt={item.key}
-              title={item.key}
-            />
+            <ItemIcon item={item} size={20} />
           </div>
         }
         onContextMenu={preventDefault}
