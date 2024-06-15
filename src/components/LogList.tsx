@@ -11,6 +11,11 @@ import { PSTRs } from './LineBreaks'
 const logs = [
   {
     date: '2024-06-15',
+    type: 'fix',
+    desc: lpstr(() => gt.pgettext('changelog', '道具图标不存在时显示名称')),
+  },
+  {
+    date: '2024-06-15',
     type: 'new',
     desc: [
       'Add option for UI Languages',

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-06-15 20:58+0800\n"
+"PO-Revision-Date: 2024-06-15 21:21+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -77,7 +77,7 @@ msgid "切换至%s"
 msgstr "Switch to %s"
 
 #. %d: number
-#: src/components/ItemList.tsx:152
+#: src/components/ItemList.tsx:143
 msgid "制作 %d 次所需"
 msgid_plural "制作 %d 次所需"
 msgstr[0] "Ingredients for Synthesizing Once"
@@ -161,7 +161,7 @@ msgstr "Current"
 msgid "心情"
 msgstr "Morale"
 
-#: src/components/ItemList.tsx:594
+#: src/components/ItemList.tsx:569
 msgid "总价值"
 msgstr "Total Value"
 
@@ -170,7 +170,7 @@ msgid "您不妨试试"
 msgstr "You may try"
 
 #. %s: datetime
-#: src/components/LogList.tsx:199
+#: src/components/LogList.tsx:204
 msgid "截止 %s"
 msgstr "As of %s"
 
@@ -179,7 +179,7 @@ msgstr "As of %s"
 msgid "持有"
 msgstr "Own"
 
-#: src/components/ItemList.tsx:568
+#: src/components/ItemList.tsx:543
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
@@ -222,7 +222,7 @@ msgstr "Sanity Value of Items from Arknights-yituliu"
 msgid "显示%s"
 msgstr "Show %s"
 
-#: src/components/InventorySyncer.tsx:326
+#: src/components/InventorySyncer.tsx:310
 msgid "显示全部"
 msgstr "Show All"
 
@@ -230,7 +230,7 @@ msgstr "Show All"
 msgid "暂不支持计算毕业合成"
 msgstr "Synthesizing Cannot be Planned for Maxed"
 
-#: src/components/FarmList.tsx:358
+#: src/components/FarmList.tsx:349
 msgid "暂无可计算来源"
 msgstr "No Feasible Sources"
 
@@ -243,7 +243,7 @@ msgstr "Last updated at %s"
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/LogList.tsx:142
+#: src/components/LogList.tsx:147
 msgid "更新笔记"
 msgstr "Patch Notes"
 
@@ -300,7 +300,7 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/LogList.tsx:219
+#: src/components/LogList.tsx:224
 msgid "查看更多…"
 msgstr "Read More…"
 
@@ -430,7 +430,7 @@ msgstr "Please upgrade your browser."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/LogList.tsx:203
+#: src/components/LogList.tsx:208
 msgid "近期更新"
 msgstr "Recent Patches"
 
@@ -697,40 +697,45 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
 
-#: src/components/LogList.tsx:31
+#: src/components/LogList.tsx:36
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr "Refine the style of character list"
 
-#: src/components/LogList.tsx:37
+#: src/components/LogList.tsx:42
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr "Support data from more game regions"
 
-#: src/components/LogList.tsx:43
+#: src/components/LogList.tsx:48
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr "Add views of community-based statistics"
 
-#: src/components/LogList.tsx:50
+#: src/components/LogList.tsx:55
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr "Add operator statistics from Heybox"
 
-#: src/components/LogList.tsx:56
+#: src/components/LogList.tsx:61
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr "Add operator statistics from Arknights-yituliu"
 
-#: src/components/LogList.tsx:25
+#: src/components/LogList.tsx:30
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr "Support inventory importing from Skland"
 
-#: src/components/LogList.tsx:18
+#: src/components/LogList.tsx:23
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr "Add option for UI Languages"
+
+#: src/components/LogList.tsx:15
+msgctxt "changelog"
+msgid "道具图标不存在时显示名称"
+msgstr "Show item name when icon is not available"
 
 #: src/components/AboutList.tsx:96
 msgctxt "credit role"
@@ -822,42 +827,42 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/ItemList.tsx:258
+#: src/components/ItemList.tsx:240
 msgctxt "item list counter label"
 msgid "可合成"
 msgstr "Syn.-able"
 
-#: src/components/ItemList.tsx:211
+#: src/components/ItemList.tsx:193
 msgctxt "item list counter label"
 msgid "合成后"
 msgstr "Post Syn."
 
-#: src/components/ItemList.tsx:324
+#: src/components/ItemList.tsx:306
 msgctxt "item list counter label"
 msgid "直接需求"
 msgstr "Direct"
 
-#: src/components/ItemList.tsx:292
+#: src/components/ItemList.tsx:274
 msgctxt "item list counter label"
 msgid "还需"
 msgstr "Gap"
 
-#: src/components/ItemList.tsx:356
+#: src/components/ItemList.tsx:338
 msgctxt "item list counter label"
 msgid "间接需求"
 msgstr "Indirect"
 
-#: src/components/ItemList.tsx:499
+#: src/components/ItemList.tsx:474
 msgctxt "item list view label"
 msgid "星标"
 msgstr "Starred"
 
-#: src/components/ItemList.tsx:497
+#: src/components/ItemList.tsx:472
 msgctxt "item list view label"
 msgid "毕业"
 msgstr "Maxed"
 
-#: src/components/ItemList.tsx:498
+#: src/components/ItemList.tsx:473
 msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
