@@ -8,6 +8,7 @@ import {
   Reverse1999Yuanyan3060Object,
 } from './DataObjects'
 import { Category } from './GameAdapter'
+import taptap from './taptap.json'
 import { Re1999, Re1999Region, Reverse1999EnigmaticNebula, Reverse1999Yuanyan3060 } from './types'
 
 export class Re1999DataManager extends BasicDataManager<Re1999> {
@@ -177,11 +178,21 @@ export class Character implements ICharacter {
     return (this._avatar || (this._avatar = [this.avatarGenerator]))[0]
   }
   private get avatarGenerator() {
+    const tap = Object.prototype.hasOwnProperty.call(taptap.chars, this.raw.name)
+      ? blobImage(
+          [taptap.chars[this.raw.name as keyof (typeof taptap)['chars']]],
+          `re1999.taptap.chars.${this.raw.name}.jpg`,
+        )
+      : undefined
+
     return {
-      normal: blobImage(
-        [],
-        `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/HeadIconSmall/${this.raw.skinId}.png`,
-      ),
+      normal: [
+        blobImage(
+          [],
+          `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/HeadIconSmall/${this.raw.skinId}.png`,
+        ),
+        tap,
+      ],
     }
   }
 
@@ -270,14 +281,26 @@ export class Item implements IItem {
     return (this._icon || (this._icon = [this.iconGenerator]))[0]
   }
   private get iconGenerator() {
+    const tap = Object.prototype.hasOwnProperty.call(taptap.items, this.raw.name)
+      ? blobImage(
+          [taptap.items[this.raw.name as keyof (typeof taptap)['items']]],
+          `re1999.taptap.items.${this.raw.name}.jpg`,
+        )
+      : undefined
+    const soul = blobImage([
+      `https://raw.githubusercontent.com/orz-tools/cpp-soul/master/reverse1999/items/${this.raw.icon}.png`,
+    ])
+
     return {
-      normal: blobImage(
-        [],
-        `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Item/${this.raw.icon}.png`,
-      ),
-      soul: blobImage([
-        `https://raw.githubusercontent.com/orz-tools/cpp-soul/master/reverse1999/items/${this.raw.icon}.png`,
-      ]),
+      normal: [
+        blobImage(
+          [],
+          `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/Item/${this.raw.icon}.png`,
+        ),
+        tap,
+        soul,
+      ],
+      soul: [soul, tap],
     }
   }
 
@@ -372,14 +395,18 @@ export class CurrencyItem implements IItem {
     return (this._icon || (this._icon = [this.iconGenerator]))[0]
   }
   private get iconGenerator() {
+    const soul = blobImage([
+      `https://raw.githubusercontent.com/orz-tools/cpp-soul/master/reverse1999/items/3-${this.raw.icon}.png`,
+    ])
     return {
-      normal: blobImage(
-        [],
-        `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/CurrencyItem/${this.raw.icon}.png`,
-      ),
-      soul: blobImage([
-        `https://raw.githubusercontent.com/orz-tools/cpp-soul/master/reverse1999/items/3-${this.raw.icon}.png`,
-      ]),
+      normal: [
+        blobImage(
+          [],
+          `https://raw.githubusercontent.com/yuanyan3060/Reverse1999Resource/main/CurrencyItem/${this.raw.icon}.png`,
+        ),
+        soul,
+      ],
+      soul: [soul],
     }
   }
 

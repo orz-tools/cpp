@@ -4,6 +4,7 @@ import { ICharacter } from '../../pkg/cpp-basic'
 import { Character } from '../../pkg/cpp-re1999'
 import { externalLinkProps } from '../AboutList'
 import links from './links.json'
+import taptap from './taptap.json'
 
 const sanitizeName = (s: string) =>
   String(s || '')
@@ -30,6 +31,14 @@ export const CharacterContextMenuItems = memo(({ character: char }: { character:
     .replace(/_+/g, '_')
     .replace(/^_|_$/g, '')
 
+  let tap = Object.prototype.hasOwnProperty.call(taptap.chars, character.raw.name)
+    ? taptap.chars[character.raw.name as keyof (typeof taptap)['chars']]
+    : undefined
+
+  if (tap && !tap.startsWith('https://') && tap.startsWith('/')) {
+    tap = 'https://www.taptap.cn' + tap
+  }
+
   return (
     <>
       <MenuItem
@@ -52,6 +61,9 @@ export const CharacterContextMenuItems = memo(({ character: char }: { character:
         text={'在「逆流的Rainstorm WIKI攻略组」搜索此角色名'}
         href={`https://reverse1999.gamekee.com/list?kw=${encodeURIComponent(`${character.raw.name}`)}&tab=1`}
       />
+      {tap ? (
+        <MenuItem {...externalLinkProps} icon={'id-number'} text={'在「TapTap」查看此角色信息'} href={tap} />
+      ) : null}
       {prydwen ? (
         <MenuItem
           {...externalLinkProps}

@@ -9,10 +9,10 @@ export type BlobImage = {
   urls: string[]
 }
 
-export type AnyBlobImage = string | BlobImage
+export type AnyBlobImage = string | BlobImage | Array<string | BlobImage | undefined> | undefined
 
 export type BlobFlavour = 'soul' | 'normal'
-export type BlobImages = string | Partial<Record<BlobFlavour, AnyBlobImage>>
+export type BlobImages = AnyBlobImage | Partial<Record<BlobFlavour, AnyBlobImage>>
 
 export function blobImage(urls: string[], id?: string): BlobImage | undefined {
   if (!urls.length && id) return { id: id, urls: urls }
@@ -47,16 +47,33 @@ function commit(url: string, blobUrl: string) {
 const limit = pLimit(8)
 const packLimit = pLimit(1)
 
-export function pure(url: BlobImages, prefer: BlobFlavour = 'soul'): BlobImage | undefined {
+function pureString(url: string): BlobImage[] {
+  return [{ id: url, urls: [url] }]
+}
+
+function pureAnyNonArray(url: Exclude<AnyBlobImage, Array<any>> | undefined): BlobImage[] {
+  if (url == null) return []
   if (typeof url === 'string') {
-    return { id: url, urls: [url] }
+    return pureString(url)
   }
-  const u = url[prefer] || url['normal'] || url['soul']
-  if (!u) return undefined
-  if (typeof u === 'string') {
-    return { id: u, urls: [u] }
+  return [url]
+}
+
+function pureAnyBlobImage(url: AnyBlobImage | undefined): BlobImage[] {
+  if (url == null) return []
+  if (Array.isArray(url)) {
+    return url.map(pureAnyNonArray).flat(1)
   }
-  return u
+  return pureAnyNonArray(url)
+}
+
+export function pure(url: BlobImages | undefined, prefer: BlobFlavour = 'soul'): BlobImage[] {
+  if (url == null) return []
+  if (typeof url === 'object' && !Array.isArray(url) && !('id' in url)) {
+    const u = url[prefer] || url['normal'] || url['soul']
+    return pureAnyBlobImage(u)
+  }
+  return pureAnyBlobImage(url)
 }
 
 const loadedPack = new Set<string>()
@@ -89,9 +106,24 @@ async function loadPack(packName: string) {
 }
 
 export function load(inputUrl: BlobImages, prefer?: BlobFlavour): string | Promise<string> {
-  const url = pure(inputUrl, prefer)
-  if (!url) return badUrl
+  const urls = pure(inputUrl, prefer)
+  if (urls.length === 0) return badUrl
+  if (urls.length === 1) {
+    return loadOne(urls[0])
+  }
 
+  for (const url of urls) {
+    const blobUrl = loadOne(url)
+    if (typeof blobUrl === 'string') {
+      if (blobUrl === badUrl) continue
+      return blobUrl
+    }
+    return blobUrl
+  }
+  return badUrl
+}
+
+function loadOne(url: BlobImage): string | Promise<string> {
   if (blobMap.has(url.id)) {
     return blobMap.get(url.id)!
   }

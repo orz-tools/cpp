@@ -157,7 +157,7 @@ export const SoulButton = memo(() => {
   }
 
   return (
-    <Button icon={'image-rotate-right'} minimal={true} active={blobFlavour === 'normal'} onClick={handleClick}>
+    <Button icon={'image-rotate-right'} minimal={true} active={blobFlavour !== 'normal'} onClick={handleClick}>
       ?
     </Button>
   )
