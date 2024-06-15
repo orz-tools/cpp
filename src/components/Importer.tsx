@@ -337,7 +337,7 @@ const InventoryDiffView = memo(
               </td>
             </tr>
             <tr>
-              <th style={{ width: '10em', textAlign: 'left' }}>{gt.gettext('道具')}</th>
+              <th style={{ width: '18em', textAlign: 'left' }}>{gt.gettext('道具')}</th>
               <th style={{ width: '5em', textAlign: 'right' }}>{gt.gettext('以往')}</th>
               <th></th>
               <th style={{ width: '5em', textAlign: 'right' }}>{gt.gettext('如今')}</th>

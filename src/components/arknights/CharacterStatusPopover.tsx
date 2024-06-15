@@ -5,6 +5,7 @@ import { WithGame, useAtoms, useCpp } from '../../Cpp'
 import { Arknights, ArknightsDataManager, Character, PreferenceKeys, SurveySourceKey } from '../../pkg/cpp-arknights'
 import { HeyboxSurveySource, SurveyProps, SurveySource, YituliuSurveySource } from '../../pkg/cpp-arknights/survey'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
+import { gt } from '../../pkg/gt'
 import m0 from './assets/m0.png'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
@@ -91,7 +92,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
         <div>
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite0(character)} /> : null}
-            <Tag large={true}>精零</Tag>
+            <Tag large={true}>{gt.pgettext('arknights status group', '精零')}</Tag>
             {
               <Survey
                 survey={
@@ -113,7 +114,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
         <div>
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite1(character)} /> : null}
-            <Tag large={true}>精一</Tag>
+            <Tag large={true}>{gt.pgettext('arknights status group', '精一')}</Tag>
             {
               <Survey
                 survey={
@@ -135,7 +136,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
         <div>
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite2(character)} /> : null}
-            <Tag large={true}>精二</Tag>
+            <Tag large={true}>{gt.pgettext('arknights status group', '精二')}</Tag>
             {<Survey survey={surveySource?.e2level(character, 1)} />}
             <EliteLevelButton elite={2} level={1} />
             {new Array(character.maxLevels[2] / 10 + 1)
@@ -294,7 +295,11 @@ export const CharacterStatusSkillMasterSection = memo(() => {
           <div key={skill.key}>
             <Survey survey={ss ? ss[0] : ss} />
             <ButtonGroup className={Classes.DARK}>
-              <Tag large={true}>技能 {charSkillIndex + 1}</Tag>
+              <Tag large={true}>
+                {gt
+                  .pgettext('arknights status group', '技能 %d') /* I10N: %d: skill number */
+                  .replaceAll('%d', `${charSkillIndex + 1}`)}
+              </Tag>
               <SkillMasterButton skillId={skill.key} level={0} />
               <SkillMasterButton skillId={skill.key} level={1} survey={ss ? ss[1] : ss} />
               <SkillMasterButton skillId={skill.key} level={2} survey={ss ? ss[2] : ss} />
@@ -398,7 +403,7 @@ export function CharacterStatusSkillSection() {
       <div>
         <ButtonGroup>
           {surveySource ? <SurveyDummy /> : null}
-          <Tag large={true}>技能</Tag>
+          <Tag large={true}>{gt.pgettext('arknights status group', '技能')}</Tag>
           <SkillButton level={1} />
           <SkillButton level={2} />
           <SkillButton level={3} />
@@ -439,6 +444,9 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
     surveySource: surveySource,
   } satisfies IEditorContext
 
+  const showAction = gt.gettext('显示%s') /* I10N: %s: stat source name */
+  const switchToAction = gt.gettext('切换至%s') /* I10N: %s: stat source name */
+
   const own = surveySource?.own(character)
   return (
     <EditorContext.Provider value={ctx}>
@@ -461,10 +469,10 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
               }
             }}
           >
-            持有
+            {gt.gettext('持有')}
           </Checkbox>
         )}
-        {character.name} - {isGoal ? '培养目标' : '当前状态'}
+        {character.name} - {isGoal ? gt.gettext('培养目标') : gt.gettext('当前状态')}
       </div>
       <div
         style={{
@@ -476,10 +484,9 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
       >
         {surveySource && surveySourceProvider ? (
           <>
-            {/* <a href={surveySourceProvider.URL} {...externalLinkProps}> */}
-            {surveySourceProvider.ShortName}
-            {/* </a> */}
-            持有率
+            {gt
+              .gettext('%s持有率') /* I10N: %s: stat source name */
+              .replaceAll('%s', surveySourceProvider.ShortName.toString())}
             {own ? (
               <code style={{ marginLeft: 8 }}>
                 {(own.percent * 100).toFixed(2)}%
@@ -495,13 +502,16 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
             )}
           </>
         ) : (
-          <>社区练度统计数据</>
+          <>{gt.gettext('社区练度统计数据')}</>
         )}
         {surveySourcePref !== SurveySourceKey.Yituliu ? (
           <>
             {' | '}
             <a href={'javascript:;'} onClick={() => setSurveySourcePref(SurveySourceKey.Yituliu)}>
-              {surveySourcePref === SurveySourceKey.None ? '显示' : '切换至'}一图流
+              {(surveySourcePref === SurveySourceKey.None ? showAction : switchToAction).replaceAll(
+                '%s',
+                YituliuSurveySource.VeryShortName.toString(),
+              )}
             </a>
           </>
         ) : null}
@@ -509,7 +519,10 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
           <>
             {' | '}
             <a href={'javascript:;'} onClick={() => setSurveySourcePref(SurveySourceKey.Heybox)}>
-              {surveySourcePref === SurveySourceKey.None ? '显示' : '切换至'}小黑盒
+              {(surveySourcePref === SurveySourceKey.None ? showAction : switchToAction).replaceAll(
+                '%s',
+                HeyboxSurveySource.VeryShortName.toString(),
+              )}
             </a>
           </>
         ) : null}
@@ -517,7 +530,7 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
           <>
             {' | '}
             <a href={'javascript:;'} onClick={() => setSurveySourcePref(SurveySourceKey.None)}>
-              隐藏
+              {gt.gettext('隐藏')}
             </a>
           </>
         ) : null}

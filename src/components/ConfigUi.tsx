@@ -34,7 +34,7 @@ export const ConfigButton = memo(() => {
       content={
         <Menu>
           {tags.map(([k, v]) => {
-            return <ForbiddenFormulaTag key={k} tag={k} text={v} />
+            return <ForbiddenFormulaTag key={k} tag={k} text={v.toString()} />
           })}
         </Menu>
       }

@@ -1,6 +1,7 @@
 import { IGame } from '../cpp-basic/types'
 import { CppData_ArknightsKengxxiaoEnUs } from '../cpp-data-schemas/arknights-kengxxiao-en_US'
 import { CppData_ArknightsKengxxiaoZhCn } from '../cpp-data-schemas/arknights-kengxxiao-zh_CN'
+import { PSTR, gt, lpstr } from '../gt'
 
 export const enum PreferenceKeys {
   SurveySource = 'surveySource',
@@ -47,8 +48,8 @@ export enum ArknightsFormulaTag {
 }
 
 export const formulaTagNames = {
-  [ArknightsFormulaTag.WorkshopRarity2]: '不从绿材料合成蓝材料',
-} satisfies Record<ArknightsFormulaTag, string>
+  [ArknightsFormulaTag.WorkshopRarity2]: lpstr(() => gt.pgettext('arknights option', '不从绿材料合成蓝材料')),
+} satisfies Record<ArknightsFormulaTag, PSTR>
 
 export const enum ArknightsRegion {
   zh_CN = 'zh_CN',

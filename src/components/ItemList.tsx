@@ -617,7 +617,7 @@ export const ItemList = memo(<G extends IGame>() => {
 
           return (
             <React.Fragment key={key}>
-              <MenuDivider title={categoryNames[key] || key} />
+              <MenuDivider title={categoryNames[key]?.toString() ?? key} />
               {items.map((x) => (
                 <ItemMenu key={x.key} item={x} />
               ))}

@@ -2,6 +2,11 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
+#. %s: stat source name
+#: src/components/arknights/CharacterStatusPopover.tsx:487
+msgid "%s持有率"
+msgstr ""
+
 #: src/components/arknights/AboutList.tsx:31
 #: src/components/arknights/AboutList.tsx:37
 msgid "Kengxxiao 解析的游戏数据"
@@ -52,6 +57,15 @@ msgstr ""
 msgid "其他资源"
 msgstr ""
 
+#: src/components/SynthesisList.tsx:100
+msgid "最好还是别合成的道具"
+msgstr ""
+
+#. %s: stat source name
+#: src/components/arknights/CharacterStatusPopover.tsx:448
+msgid "切换至%s"
+msgstr ""
+
 #. %d: number
 #: src/components/ItemList.tsx:152
 msgid "制作 %d 次所需"
@@ -63,7 +77,9 @@ msgstr[1] ""
 msgid "区域已切换，将重新载入页面。"
 msgstr ""
 
+#: src/components/arknights/CharacterStatusPopover.tsx:475
 #: src/components/CharacterStatusPopover.tsx:48
+#: src/components/re1999/CharacterStatusPopover.tsx:236
 msgid "培养目标"
 msgstr ""
 
@@ -77,6 +93,16 @@ msgstr ""
 
 #: src/components/TaskList.tsx:113
 msgid "完成"
+msgstr ""
+
+#: src/components/arknights/ImporterMenuItems.tsx:15
+#: src/components/arknights/MAAItemImporter.tsx:55
+msgid "导入「MAA 仓库识别」数据"
+msgstr ""
+
+#: src/components/arknights/ImporterMenuItems.tsx:12
+#: src/components/arknights/SklandImporter.tsx:267
+msgid "导入「森空岛」数据"
 msgstr ""
 
 #: src/App.tsx:292
@@ -95,7 +121,7 @@ msgstr ""
 msgid "导出为文件"
 msgstr ""
 
-#: src/pkg/cpp-arknights/survey.ts:186
+#: src/pkg/cpp-arknights/survey.ts:187
 msgid "小黑盒 app 干员统计数据"
 msgstr ""
 
@@ -115,7 +141,9 @@ msgstr ""
 msgid "强制完成（不消耗材料）"
 msgstr ""
 
+#: src/components/arknights/CharacterStatusPopover.tsx:475
 #: src/components/CharacterStatusPopover.tsx:48
+#: src/components/re1999/CharacterStatusPopover.tsx:236
 msgid "当前状态"
 msgstr ""
 
@@ -134,6 +162,11 @@ msgstr ""
 #. %s: datetime
 #: src/components/LogList.tsx:199
 msgid "截止 %s"
+msgstr ""
+
+#: src/components/arknights/CharacterStatusPopover.tsx:472
+#: src/components/re1999/CharacterStatusPopover.tsx:233
+msgid "持有"
 msgstr ""
 
 #: src/components/ItemList.tsx:566
@@ -170,6 +203,11 @@ msgstr ""
 
 #: src/components/arknights/AboutList.tsx:51
 msgid "明日方舟一图流 材料价值数据"
+msgstr ""
+
+#. %s: stat source name
+#: src/components/arknights/CharacterStatusPopover.tsx:447
+msgid "显示%s"
 msgstr ""
 
 #: src/components/InventorySyncer.tsx:326
@@ -229,6 +267,10 @@ msgstr ""
 msgid "检查数据更新"
 msgstr ""
 
+#: src/components/arknights/SklandImporter.tsx:135
+msgid "森空岛目前提供的数据无法准确区分您的模组到底是没开还是仅 1 级。对于这种情况，此导入程序将会跳过这些模组。如果您有 1 级模组，请自行核对。"
+msgstr ""
+
 #: src/components/UserDataManager.tsx:136
 msgid "清空"
 msgstr ""
@@ -242,6 +284,10 @@ msgstr ""
 msgid "游戏资源"
 msgstr ""
 
+#: src/components/SynthesisList.tsx:71
+msgid "现在可以合成的道具"
+msgstr ""
+
 #: src/components/UserDataManager.tsx:172
 #: src/components/UserDataManager.tsx:191
 #: src/components/UserDataManager.tsx:41
@@ -252,8 +298,25 @@ msgstr ""
 msgid "界面语言"
 msgstr ""
 
+#: src/components/arknights/CharacterStatusPopover.tsx:505
+msgid "社区练度统计数据"
+msgstr ""
+
+#: src/components/arknights/SklandImporter.tsx:308
+msgid "粘贴 JSON"
+msgstr ""
+
+#: src/components/arknights/MAAItemImporter.tsx:47
+#: src/components/arknights/SklandImporter.tsx:166
+msgid "粘贴的东西好像不太对，请重试。"
+msgstr ""
+
 #: src/components/FarmList.tsx:276
 msgid "线性规划失败"
+msgstr ""
+
+#: src/components/SynthesisList.tsx:101
+msgid "虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！"
 msgstr ""
 
 #: src/components/Importer.tsx:144
@@ -281,6 +344,20 @@ msgstr ""
 
 #: src/locales.tsx:40
 msgid "语言已切换，将重新载入页面。"
+msgstr ""
+
+#: src/components/arknights/SklandImporter.tsx:218
+#: src/components/arknights/SklandImporter.tsx:256
+msgid "请在弹出的「提取装置」中继续操作"
+msgstr ""
+
+#: src/components/arknights/SklandImporter.tsx:274
+msgid "请在弹出窗口中继续操作"
+msgstr ""
+
+#: src/components/arknights/MAAItemImporter.tsx:67
+#: src/components/arknights/SklandImporter.tsx:299
+msgid "请在此粘贴..."
 msgstr ""
 
 #: src/entry.tsx:53
@@ -320,8 +397,243 @@ msgstr ""
 msgid "重载数据"
 msgstr ""
 
+#: src/components/arknights/CharacterStatusPopover.tsx:533
+msgid "隐藏"
+msgstr ""
+
 #: src/components/AboutList.tsx:90
 msgid "鸣谢"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:347
+msgctxt "arknights inventory page"
+msgid "养成材料"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:627
+msgctxt "arknights item category"
+msgid "其他"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:624
+msgctxt "arknights item category"
+msgid "双芯片"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:623
+msgctxt "arknights item category"
+msgid "技能、模组和胶水"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:622
+msgctxt "arknights item category"
+msgid "灰材料"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:619
+msgctxt "arknights item category"
+msgid "紫材料"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:621
+msgctxt "arknights item category"
+msgid "绿材料"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:626
+msgctxt "arknights item category"
+msgid "芯片"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:625
+msgctxt "arknights item category"
+msgid "芯片组"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:620
+msgctxt "arknights item category"
+msgid "蓝材料"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:618
+msgctxt "arknights item category"
+msgid "金材料"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:617
+msgctxt "arknights item category"
+msgid "钱和经验"
+msgstr ""
+
+#: src/components/arknights/MAAItemImporter.tsx:58
+msgctxt "arknights maa step"
+msgid "打开 MAA「小工具」"
+msgstr ""
+
+#: src/components/arknights/MAAItemImporter.tsx:62
+msgctxt "arknights maa step"
+msgid "点击「导出至明日方舟工具箱」按钮"
+msgstr ""
+
+#: src/components/arknights/MAAItemImporter.tsx:60
+msgctxt "arknights maa step"
+msgid "点击「开始识别」按钮"
+msgstr ""
+
+#: src/components/arknights/MAAItemImporter.tsx:61
+msgctxt "arknights maa step"
+msgid "等待识别完成"
+msgstr ""
+
+#: src/components/arknights/MAAItemImporter.tsx:59
+msgctxt "arknights maa step"
+msgid "选择「仓库识别」功能"
+msgstr ""
+
+#: src/pkg/cpp-arknights/types.ts:51
+msgctxt "arknights option"
+msgid "不从绿材料合成蓝材料"
+msgstr ""
+
+#: src/components/arknights/extraFields.tsx:26
+msgctxt "arknights skill ref"
+msgid "一技能"
+msgstr ""
+
+#: src/components/arknights/extraFields.tsx:28
+msgctxt "arknights skill ref"
+msgid "三技能"
+msgstr ""
+
+#: src/components/arknights/extraFields.tsx:27
+msgctxt "arknights skill ref"
+msgid "二技能"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:548
+msgctxt "arknights stage difficulty"
+msgid "剧情"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:546
+msgctxt "arknights stage difficulty"
+msgid "标准"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:547
+msgctxt "arknights stage difficulty"
+msgid "磨难"
+msgstr ""
+
+#: src/components/arknights/CharacterStatusPopover.tsx:406
+msgctxt "arknights status group"
+msgid "技能"
+msgstr ""
+
+#. %d: skill number
+#: src/components/arknights/CharacterStatusPopover.tsx:299
+msgctxt "arknights status group"
+msgid "技能 %d"
+msgstr ""
+
+#: src/components/arknights/CharacterStatusPopover.tsx:117
+msgctxt "arknights status group"
+msgid "精一"
+msgstr ""
+
+#: src/components/arknights/CharacterStatusPopover.tsx:139
+msgctxt "arknights status group"
+msgid "精二"
+msgstr ""
+
+#: src/components/arknights/CharacterStatusPopover.tsx:95
+msgctxt "arknights status group"
+msgid "精零"
+msgstr ""
+
+#. %d$number: skill number, %s$name: skill name
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:261
+msgctxt "arknights task"
+msgid "%d$number 技能专一: %s$name"
+msgstr ""
+
+#. %d$number: skill number, %s$name: skill name
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:269
+msgctxt "arknights task"
+msgid "%d$number 技能专三: %s$name"
+msgstr ""
+
+#. %d$number: skill number, %s$name: skill name
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:265
+msgctxt "arknights task"
+msgid "%d$number 技能专二: %s$name"
+msgstr ""
+
+#. %s$code: module code, %s$name: module name
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:280
+msgctxt "arknights task"
+msgid "%s$code 模组 1 级: %s$name"
+msgstr ""
+
+#. %s$code: module code, %s$name: module name
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:284
+msgctxt "arknights task"
+msgid "%s$code 模组 2 级: %s$name"
+msgstr ""
+
+#. %s$code: module code, %s$name: module name
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:288
+msgctxt "arknights task"
+msgid "%s$code 模组 3 级: %s$name"
+msgstr ""
+
+#. %d: number
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:240
+msgctxt "arknights task"
+msgid "技能 %d 级"
+msgstr ""
+
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:238
+msgctxt "arknights task"
+msgid "招募"
+msgstr ""
+
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:246
+msgctxt "arknights task"
+msgid "精一"
+msgstr ""
+
+#. %d$from: from, %d$to: to
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:252
+msgctxt "arknights task"
+msgid "精一等级 %d$from -> %d$to"
+msgstr ""
+
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:247
+msgctxt "arknights task"
+msgid "精二"
+msgstr ""
+
+#. %d$from: from, %d$to: to
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:253
+msgctxt "arknights task"
+msgid "精二等级 %d$from -> %d$to"
+msgstr ""
+
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:245
+msgctxt "arknights task"
+msgid "精零"
+msgstr ""
+
+#. %d$from: from, %d$to: to
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:251
+msgctxt "arknights task"
+msgid "精零等级 %d$from -> %d$to"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:540
+msgctxt "arknights zone"
+msgid "芯片搜索"
 msgstr ""
 
 #: src/components/LogList.tsx:31
@@ -369,7 +681,7 @@ msgctxt "credit role"
 msgid "数据源自动化"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:189
+#: src/components/arknights/SklandImporter.tsx:191
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr ""
@@ -561,7 +873,7 @@ msgctxt "short name"
 msgid "仅计划"
 msgstr ""
 
-#: src/pkg/cpp-arknights/survey.ts:187
+#: src/pkg/cpp-arknights/survey.ts:188
 msgctxt "short name"
 msgid "小黑盒干员统计"
 msgstr ""
@@ -584,4 +896,14 @@ msgstr ""
 #: src/Cpp.ts:56
 msgctxt "short name"
 msgid "计划(毕业)"
+msgstr ""
+
+#: src/pkg/cpp-arknights/survey.ts:25
+msgctxt "very short name"
+msgid "一图流"
+msgstr ""
+
+#: src/pkg/cpp-arknights/survey.ts:189
+msgctxt "very short name"
+msgid "小黑盒"
 msgstr ""

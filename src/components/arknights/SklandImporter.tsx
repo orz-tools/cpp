@@ -31,7 +31,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             const key = ga.getRealCharacterKey(char.id)
             const c = ga.getCharacter(key)
             if (!c) {
-              throw new Error(`找不到角色 ${key}`)
+              throw new Error(`Character Not Found: ${key}`)
             }
             keys.delete(key)
             if (!draft.current[key]) draft.current[key] = JSON.parse(JSON.stringify(empty))
@@ -79,7 +79,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             const key = ga.getRealCharacterKey(char.charId)
             const c = ga.getCharacter(key)
             if (!c) {
-              throw new Error(`找不到角色 ${key}`)
+              throw new Error(`Character Not Found: ${key}`)
             }
             keys.delete(key)
             if (!draft.current[key]) draft.current[key] = JSON.parse(JSON.stringify(empty))
@@ -132,7 +132,9 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
           }
           if (shitEquip) {
             ctx.addWarning(
-              '森空岛目前提供的数据无法准确区分您的模组到底是没开还是仅 1 级。对于这种情况，此导入程序将会跳过这些模组。如果您有 1 级模组，请自行核对。',
+              gt.gettext(
+                '森空岛目前提供的数据无法准确区分您的模组到底是没开还是仅 1 级。对于这种情况，此导入程序将会跳过这些模组。如果您有 1 级模组，请自行核对。',
+              ),
             )
           }
         }
@@ -161,7 +163,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     if (data) {
       handleData(data)
     } else {
-      alert('你粘贴的东西好像不太对哦~')
+      alert(gt.gettext('粘贴的东西好像不太对，请重试。'))
     }
   })
 
@@ -213,7 +215,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
       try {
         windowRef.focus()
       } catch (e) {
-        alert('请在弹出的「提取装置」中继续操作')
+        alert(gt.gettext('请在弹出的「提取装置」中继续操作'))
       }
     } else {
       const windowWidth = 500
@@ -251,7 +253,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
       try {
         windowRef.focus()
       } catch (e) {
-        alert('请在弹出的「提取装置」中继续操作')
+        alert(gt.gettext('请在弹出的「提取装置」中继续操作'))
       }
     } else {
       handleClose()
@@ -262,14 +264,14 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     <Dialog
       isOpen={true}
       onClose={handleClose}
-      title={'导入「森空岛」数据'}
+      title={gt.gettext('导入「森空岛」数据')}
       icon="log-in"
       canOutsideClickClose={false}
       backdropProps={{ onClick: handleBackdrop }}
     >
       <DialogBody>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
-          {windowRef ? <Callout intent="warning" title={'请在弹出窗口中继续操作'} /> : null}
+          {windowRef ? <Callout intent="warning" title={gt.gettext('请在弹出窗口中继续操作')} /> : null}
           <Button
             style={{ fontSize: '200%', padding: '0.75em' }}
             intent={windowRef ? Intent.PRIMARY : Intent.PRIMARY}
@@ -294,7 +296,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
                   <InputGroup
                     onPaste={handleInput}
                     value={''}
-                    placeholder="请在此粘贴..."
+                    placeholder={gt.gettext('请在此粘贴...')}
                     inputRef={focusRef}
                     style={{ width: '100%' }}
                     onChange={noop}
@@ -303,7 +305,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
               </>
             }
           >
-            <Button minimal text={'粘贴 JSON'} style={{ color: 'rgba(0, 0, 0, 0.25)' }} />
+            <Button minimal text={gt.gettext('粘贴 JSON')} style={{ color: 'rgba(0, 0, 0, 0.25)' }} />
           </Popover>
         </div>
       </DialogBody>

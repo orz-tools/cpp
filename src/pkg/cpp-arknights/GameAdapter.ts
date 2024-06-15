@@ -11,6 +11,7 @@ import {
   QueryParam,
   RootCharacterQuery,
 } from '../cpp-basic'
+import { PSTR, gt, lpstr } from '../gt'
 import { ArknightsDataManager, Character } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
 import { HeyboxSurveySource, YituliuSurveySource } from './survey'
@@ -337,13 +338,13 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     return this.dataManager.data.items[key]
   }
 
-  public getInventoryCategories(): Record<string, string> {
+  public getInventoryCategories(): Record<string, PSTR> {
     return CategoryNames
   }
 
   public getInventoryPages(): Record<string, string> {
     return {
-      material: '养成材料',
+      material: gt.pgettext('arknights inventory page', '养成材料'),
     }
   }
 
@@ -536,16 +537,16 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     }
     makeAP('wk_toxic_5', 21)
 
-    this.zoneNames['weekly_chips'] = '芯片搜索'
+    this.zoneNames['weekly_chips'] = gt.pgettext('arknights zone', '芯片搜索')
     return this.stageInfo
   }
 }
 
 const diffGroupName = {
-  NORMAL: '标准',
-  TOUGH: '磨难',
-  EASY: '剧情',
-} as Record<string, string>
+  NORMAL: lpstr(() => gt.pgettext('arknights stage difficulty', '标准')),
+  TOUGH: lpstr(() => gt.pgettext('arknights stage difficulty', '磨难')),
+  EASY: lpstr(() => gt.pgettext('arknights stage difficulty', '剧情')),
+} as Record<string, PSTR>
 
 class ArknightsStageInfo extends BasicStageInfo {
   public constructor(
@@ -560,7 +561,7 @@ class ArknightsStageInfo extends BasicStageInfo {
   }
 
   public get code(): string {
-    return `${diffGroupName[this.excel.diffGroup] || ''}${this.excel.code}`
+    return `${(diffGroupName[this.excel.diffGroup] || '').toString()}${this.excel.code}`
   }
 
   public get name(): string {
@@ -613,18 +614,18 @@ export enum Category {
 }
 
 export const CategoryNames = {
-  [Category.Gold]: '钱和经验',
-  [Category.Rarity4]: '金材料',
-  [Category.Rarity3]: '紫材料',
-  [Category.Rarity2]: '蓝材料',
-  [Category.Rarity1]: '绿材料',
-  [Category.Rarity0]: '灰材料',
-  [Category.ModSkill]: '技能、模组和胶水',
-  [Category.ChipsDual]: '双芯片',
-  [Category.ChipsHard]: '芯片组',
-  [Category.ChipsEasy]: '芯片',
-  [Category.Unknown]: '其他',
-} satisfies Record<Category, string>
+  [Category.Gold]: lpstr(() => gt.pgettext('arknights item category', '钱和经验')),
+  [Category.Rarity4]: lpstr(() => gt.pgettext('arknights item category', '金材料')),
+  [Category.Rarity3]: lpstr(() => gt.pgettext('arknights item category', '紫材料')),
+  [Category.Rarity2]: lpstr(() => gt.pgettext('arknights item category', '蓝材料')),
+  [Category.Rarity1]: lpstr(() => gt.pgettext('arknights item category', '绿材料')),
+  [Category.Rarity0]: lpstr(() => gt.pgettext('arknights item category', '灰材料')),
+  [Category.ModSkill]: lpstr(() => gt.pgettext('arknights item category', '技能、模组和胶水')),
+  [Category.ChipsDual]: lpstr(() => gt.pgettext('arknights item category', '双芯片')),
+  [Category.ChipsHard]: lpstr(() => gt.pgettext('arknights item category', '芯片组')),
+  [Category.ChipsEasy]: lpstr(() => gt.pgettext('arknights item category', '芯片')),
+  [Category.Unknown]: lpstr(() => gt.pgettext('arknights item category', '其他')),
+} satisfies Record<Category, PSTR>
 
 export const myCategories = {
   '4001': Category.Gold, // 龙门币

@@ -4,6 +4,7 @@ import { Cpp, Level, useGameAdapter } from '../Cpp'
 import { IGame, IItem } from '../pkg/cpp-basic'
 import { TaskStatus } from '../pkg/cpp-core/Task'
 import { generateIndirects } from '../pkg/cpp-core/UserData'
+import { gt } from '../pkg/gt'
 import type { FormulaUse } from './FarmList'
 import { CachedImg } from './Icons'
 import { ItemSynthesisPopover, buildItemList } from './ItemList'
@@ -67,7 +68,7 @@ export const SynthesisList = memo(
       <>
         {hasAnySynthesis ? (
           <>
-            <Callout title="现在可以合成的道具" />
+            <Callout title={gt.gettext('现在可以合成的道具')} />
             {itemGroups.map(([key, allItems]) => {
               const items = allItems!.filter((x) => {
                 return synthesisTargets.has(x.key)
@@ -76,7 +77,7 @@ export const SynthesisList = memo(
 
               return (
                 <React.Fragment key={key}>
-                  <MenuDivider title={categoryNames[key]} />
+                  <MenuDivider title={categoryNames[key].toString()} />
                   {items.map((x) => (
                     <SynthesisMenu
                       key={x.key}
@@ -96,8 +97,8 @@ export const SynthesisList = memo(
 
         {hasAnyUnsatisfied ? (
           <>
-            <Callout intent={'warning'} title={'最好还是别合成的道具'} icon={null}>
-              虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！
+            <Callout intent={'warning'} title={gt.gettext('最好还是别合成的道具')} icon={null}>
+              {gt.gettext('虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！')}
             </Callout>
             {itemGroups.map(([key, allItems]) => {
               const items = allItems!.filter((x) => {
@@ -107,7 +108,7 @@ export const SynthesisList = memo(
 
               return (
                 <React.Fragment key={key}>
-                  <MenuDivider title={categoryNames[key]} />
+                  <MenuDivider title={categoryNames[key].toString()} />
                   {items.map((x) => (
                     <SynthesisMenu
                       key={x.key}

@@ -6,6 +6,7 @@ import useEvent from 'react-use-event-hook'
 import { useGameAdapter } from '../../Cpp'
 import { Arknights } from '../../pkg/cpp-arknights'
 import { UserData } from '../../pkg/cpp-core/UserData'
+import { gt } from '../../pkg/gt'
 import { ImportContext, useStartImportSession } from '../Importer'
 
 const pickRetainableItems = pick([
@@ -43,7 +44,7 @@ export const MAAItemImporterDialog = memo(<G extends Arknights>({ onClose }: { o
     if (data) {
       handleData(data)
     } else {
-      alert('你粘贴的东西好像不太对哦~')
+      alert(gt.gettext('粘贴的东西好像不太对，请重试。'))
     }
   })
 
@@ -51,19 +52,19 @@ export const MAAItemImporterDialog = memo(<G extends Arknights>({ onClose }: { o
   // const focus = useEvent(() => focusRef.current?.focus())
 
   return (
-    <Dialog isOpen={true} onClose={onClose} title={'导入「MAA 仓库识别」数据'} icon="log-in">
+    <Dialog isOpen={true} onClose={onClose} title={gt.gettext('导入「MAA 仓库识别」数据')} icon="log-in">
       <DialogBody>
         <CardList compact>
-          <MyCard step={1}>打开 MAA「小工具」</MyCard>
-          <MyCard step={2}>选择「仓库识别」功能</MyCard>
-          <MyCard step={3}>点击「开始识别」按钮</MyCard>
-          <MyCard step={4}>等待识别完成</MyCard>
-          <MyCard step={5}>点击「导出至明日方舟工具箱」按钮</MyCard>
+          <MyCard step={1}>{gt.pgettext('arknights maa step', '打开 MAA「小工具」')}</MyCard>
+          <MyCard step={2}>{gt.pgettext('arknights maa step', '选择「仓库识别」功能')}</MyCard>
+          <MyCard step={3}>{gt.pgettext('arknights maa step', '点击「开始识别」按钮')}</MyCard>
+          <MyCard step={4}>{gt.pgettext('arknights maa step', '等待识别完成')}</MyCard>
+          <MyCard step={5}>{gt.pgettext('arknights maa step', '点击「导出至明日方舟工具箱」按钮')}</MyCard>
           <MyCard step={6}>
             <InputGroup
               onPaste={handleInput}
               value={''}
-              placeholder="请在此粘贴..."
+              placeholder={gt.gettext('请在此粘贴...')}
               autoFocus
               // inputRef={focusRef}
               style={{ width: '100%' }}

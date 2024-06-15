@@ -22,6 +22,7 @@ export class YituliuSurveySource implements SurveySource {
   public static URL = 'https://ark.yituliu.cn/survey/operators'
   public static Name = lpstr(() => gt.gettext('明日方舟一图流 干员练度统计数据'))
   public static ShortName = lpstr(() => gt.pgettext('short name', '一图流练度统计'))
+  public static VeryShortName = lpstr(() => gt.pgettext('very short name', '一图流'))
 
   public constructor(public readonly dm: ArknightsDataManager) {}
 
@@ -185,6 +186,7 @@ export class HeyboxSurveySource implements SurveySource {
   public static URL = 'https://xiaoheihe.cn'
   public static Name = lpstr(() => gt.gettext('小黑盒 app 干员统计数据'))
   public static ShortName = lpstr(() => gt.pgettext('short name', '小黑盒干员统计'))
+  public static VeryShortName = lpstr(() => gt.pgettext('very short name', '小黑盒'))
 
   public constructor(public readonly dm: ArknightsDataManager) {}
 

@@ -1,4 +1,5 @@
 import { Draft } from 'immer'
+import { PSTR } from '../gt'
 import { BasicDataManager } from './DataManager'
 import { QueryParam, RootCharacterQuery } from './queries'
 import { ExpItem, Formula, ICharacter, IGame, IItem, IStageInfo, Task } from './types'
@@ -21,7 +22,7 @@ export interface IGameAdapter<G extends IGame> {
   getRootCharacterQuery(): RootCharacterQuery<any, any>
   getCharacter(key: string): ICharacter
   getItem(key: string): IItem
-  getInventoryCategories(): Record<string, string>
+  getInventoryCategories(): Record<string, PSTR>
   getInventoryPages(): Record<string, string>
   getInventoryItems(page?: string): IItem[]
   getFormulas(): Formula[]
@@ -29,7 +30,7 @@ export interface IGameAdapter<G extends IGame> {
   getExpItemValue(key: string): [number, string] | null | undefined
   getStageInfos(): Record<string, IStageInfo>
   getZoneNames(): Record<string, string>
-  getFormulaTagNames(): Record<string, string>
+  getFormulaTagNames(): Record<string, PSTR>
   getDefaultCharacterQueryOrder(): QueryParam['order']
   getFavCharacterQueryWhere(): QueryParam['where']
   getPredefinedQueries(): Record<string, PredefinedQuery>

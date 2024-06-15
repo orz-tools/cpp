@@ -3,6 +3,7 @@ import { Draft } from 'immer'
 import stringify from 'json-stringify-deterministic'
 import { sum } from 'ramda'
 import { IUserDataAdapter, Task } from '../cpp-basic'
+import { gt } from '../gt'
 import { ArknightsDataManager, Character } from './DataManager'
 import {
   AK_ITEM_GOLD,
@@ -234,21 +235,63 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     const character = this.dataManager.data.characters[charId]
     switch (type._) {
       case 'join':
-        return `招募`
+        return gt.pgettext('arknights task', `招募`)
       case 'skill':
-        return `技能 ${type.to} 级`
+        return gt
+          .pgettext('arknights task', `技能 %d 级`) /* I10N: %d: number */
+          .replaceAll('%d', `${type.to}`)
       case 'elite':
-        return `精${'零一二'[type.elite]}`
+        return [
+          gt.pgettext('arknights task', '精零'),
+          gt.pgettext('arknights task', '精一'),
+          gt.pgettext('arknights task', '精二'),
+        ][type.elite]
       case 'level':
-        return `精${'零一二'[type.elite]}等级 ${type.from} -> ${type.to}`
+        return [
+          gt.pgettext('arknights task', `精零等级 %d$from -> %d$to`) /* I10N: %d$from: from, %d$to: to */,
+          gt.pgettext('arknights task', `精一等级 %d$from -> %d$to`) /* I10N: %d$from: from, %d$to: to */,
+          gt.pgettext('arknights task', `精二等级 %d$from -> %d$to`) /* I10N: %d$from: from, %d$to: to */,
+        ][type.elite]
+          .replaceAll('%d$from', `${type.from}`)
+          .replaceAll('%d$to', `${type.to}`)
       case 'skillMaster': {
         const skillIndex = character.skills.findIndex((x) => x[0].skillId === type.skillId)
         const skill = character.skills[skillIndex]
-        return `${skillIndex + 1} 技能专${'一二三'[type.to - 1]}: ${skill[1].name}`
+        return [
+          gt.pgettext(
+            'arknights task',
+            `%d$number 技能专一: %s$name`,
+          ) /* I10N: %d$number: skill number, %s$name: skill name */,
+          gt.pgettext(
+            'arknights task',
+            `%d$number 技能专二: %s$name`,
+          ) /* I10N: %d$number: skill number, %s$name: skill name */,
+          gt.pgettext(
+            'arknights task',
+            `%d$number 技能专三: %s$name`,
+          ) /* I10N: %d$number: skill number, %s$name: skill name */,
+        ][type.to - 1]
+          .replaceAll('%d$number', `${skillIndex + 1}`)
+          .replaceAll('%s$name', `${skill[1].name}`)
       }
       case 'mod': {
         const uniEquip = character.uniEquips.find((x) => x.key === type.modId)!
-        return `${uniEquip.raw.typeName2!.toUpperCase()} 模组 ${type.to} 级: ${uniEquip.name}`
+        return [
+          gt.pgettext(
+            'arknights task',
+            `%s$code 模组 1 级: %s$name`,
+          ) /* I10N: %s$code: module code, %s$name: module name */,
+          gt.pgettext(
+            'arknights task',
+            `%s$code 模组 2 级: %s$name`,
+          ) /* I10N: %s$code: module code, %s$name: module name */,
+          gt.pgettext(
+            'arknights task',
+            `%s$code 模组 3 级: %s$name`,
+          ) /* I10N: %s$code: module code, %s$name: module name */,
+        ][type.to - 1]
+          .replaceAll('%s$code', `${uniEquip.raw.typeName2!.toUpperCase()}`)
+          .replaceAll('%s$name', `${uniEquip.name}`)
       }
       default:
         throwBad(type)

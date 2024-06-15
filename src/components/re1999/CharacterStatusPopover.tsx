@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useAtoms } from '../../Cpp'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import { Character, Re1999 } from '../../pkg/cpp-re1999'
+import { gt } from '../../pkg/gt'
 
 const useTypeHolderForSetStatusAtom = () =>
   useSetAtom(null as any as ReturnType<UserDataAtomHolder<Re1999>['atoms']['goalCharacter']>)
@@ -229,10 +230,10 @@ export function CharacterStatusPopover({ character, isGoal }: { character: Chara
               }
             }}
           >
-            持有
+            {gt.gettext('持有')}
           </Checkbox>
         )}
-        {character.name} - {isGoal ? '培养目标' : '当前状态'}
+        {character.name} - {isGoal ? gt.gettext('培养目标') : gt.gettext('当前状态')}
       </div>
       {status.level > 0 ? (
         <>

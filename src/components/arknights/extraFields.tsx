@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import { Arknights, Character } from '../../pkg/cpp-arknights'
 import { FieldContext } from '../../pkg/cpp-basic'
+import { gt } from '../../pkg/gt'
 import { CharacterListColumn, createSimpleExtraField } from '../CharacterList'
 import { CachedImg } from '../Icons'
 import { IGameComponent } from '../types'
@@ -21,7 +22,11 @@ export const extraFields: IGameComponent['extraFields'] = {
       const skillId = context.args[0]
       const skill = context.character.skills[skillId]
       const skillName = skill[1].name
-      const skillIndex = ['一技能', '二技能', '三技能'][skill[3]]
+      const skillIndex = [
+        gt.pgettext('arknights skill ref', '一技能'),
+        gt.pgettext('arknights skill ref', '二技能'),
+        gt.pgettext('arknights skill ref', '三技能'),
+      ][skill[3]]
 
       return (
         <CharacterListColumn width={150}>
