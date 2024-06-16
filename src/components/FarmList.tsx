@@ -211,7 +211,7 @@ export const FarmList = memo(() => {
 
   return (
     <>
-      <Navbar>
+      <Navbar style={{ paddingLeft: '0.5em', paddingRight: '0.5em' }}>
         <Navbar.Group align={Alignment.RIGHT}>
           <Popover
             usePortal={true}

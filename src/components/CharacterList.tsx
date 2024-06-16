@@ -722,7 +722,15 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
 
   return (
     <>
-      <Navbar style={{ display: 'flex', justifyContent: 'space-between', gap: 15 }}>
+      <Navbar
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          gap: 15,
+          paddingLeft: '0.5em',
+          paddingRight: '0.5em',
+        }}
+      >
         <Navbar.Group style={{ flexShrink: 1 }}>
           <QueryBuilder />
         </Navbar.Group>

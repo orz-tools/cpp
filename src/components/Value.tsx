@@ -58,6 +58,9 @@ function formatTime(seconds: number): string {
   if (seconds < 0) {
     return `-${formatTime(-seconds)}`
   }
+  if (seconds === 0) {
+    return '0'
+  }
   if (seconds > 86400) {
     return `${(seconds / 86400).toFixed(2)}d`
   }

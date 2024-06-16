@@ -22,7 +22,7 @@ export const AboutList = memo(() => {
 
   return (
     <>
-      <Navbar>
+      <Navbar style={{ paddingLeft: '0.5em', paddingRight: '0.5em' }}>
         <Navbar.Group align={Alignment.RIGHT} />
         <Navbar.Group align={Alignment.LEFT}>{gt.gettext('关于')}</Navbar.Group>
       </Navbar>
@@ -34,6 +34,13 @@ export const AboutList = memo(() => {
           icon="help"
           text={gt.gettext('帮助文档')}
           {...externalLinkProps}
+        />
+        <MenuItem
+          icon={'chat'}
+          multiline={true}
+          href={'https://discord.gg/vsgEuT6VBJ'}
+          {...externalLinkProps}
+          text={<>{gt.gettext('Discord')}</>}
         />
         <MenuItem
           icon={'people'}

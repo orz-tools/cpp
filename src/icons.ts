@@ -17,6 +17,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.CARET_RIGHT, Paths16.CaretRight],
       [IconNames.CARET_UP, Paths16.CaretUp],
       [IconNames.CHART, Paths16.Chart],
+      [IconNames.CHAT, Paths16.Chat],
       [IconNames.CHEVRON_DOWN, Paths16.ChevronDown],
       [IconNames.CHEVRON_LEFT, Paths16.ChevronLeft],
       [IconNames.CHEVRON_RIGHT, Paths16.ChevronRight],
