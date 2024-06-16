@@ -81,7 +81,7 @@ export const LocaleButton = memo(() => {
         minimal={true}
         rightIcon={'chevron-down'}
       >
-        <Tag minimal style={{ fontFamily: 'monospace' }}>
+        <Tag minimal style={{ fontFamily: 'monospace' }} className="cpp-very-compact">
           {currentLocale}
         </Tag>
       </Button>

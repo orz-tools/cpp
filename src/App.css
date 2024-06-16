@@ -6,7 +6,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  top: 50px;
+  top: 40px;
   bottom: 0;
   overflow-x: auto;
   overflow-y: auto;
@@ -371,4 +371,51 @@ body {
 [type='search']::-webkit-search-decoration {
   -webkit-appearance: none;
   appearance: none;
+}
+
+body .bp5-navbar,
+body .bp5-navbar-group {
+  height: 40px;
+}
+
+@media screen and (max-width: 1500px) {
+  body .cpp-navbar-main {
+    padding: 0 5px;
+  }
+
+  body .cpp-navbar-main .bp5-navbar-heading {
+    margin-right: 0;
+  }
+
+  body .cpp-navbar-main .bp5-navbar-divider {
+    margin: 0 5px;
+  }
+
+  body .cpp-navbar-main .bp5-button {
+    padding: 5px;
+  }
+
+  body .cpp-navbar-main .bp5-icon-chevron-down {
+    display: none;
+  }
+
+  body .cpp-navbar-main .bp5-button::before,
+  body .cpp-navbar-main .bp5-button > * {
+    margin: 0;
+  }
+
+  body .cpp-navbar-main .bp5-button {
+    display: flex;
+    gap: 7px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  body .cpp-navbar-main .bp5-button-text:has(.cpp-very-compact) {
+    display: none;
+  }
+
+  body .cpp-navbar-main .cpp-very-compact {
+    display: none;
+  }
 }

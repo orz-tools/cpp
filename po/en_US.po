@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-06-15 21:21+0800\n"
+"PO-Revision-Date: 2024-06-16 11:57+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -18,12 +18,16 @@ msgstr ""
 msgid "%s持有率"
 msgstr "Own Rate (%s)"
 
+#: src/components/AboutList.tsx:43
+msgid "Discord"
+msgstr "Discord"
+
 #: src/components/arknights/AboutList.tsx:31
 #: src/components/arknights/AboutList.tsx:37
 msgid "Kengxxiao 解析的游戏数据"
 msgstr "Data Mining by Kengxxiao"
 
-#: src/components/AboutList.tsx:47
+#: src/components/AboutList.tsx:54
 msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
@@ -47,7 +51,7 @@ msgstr "Drop Rate Data from Penguin Statistics"
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
-#: src/components/ConfigUi.tsx:210
+#: src/components/ConfigUi.tsx:221
 msgid "免责声明"
 msgstr "Disclaimer"
 
@@ -55,15 +59,15 @@ msgstr "Disclaimer"
 msgid "关于"
 msgstr "About"
 
-#: src/components/ConfigUi.tsx:142
+#: src/components/ConfigUi.tsx:153
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:495 src/components/Importer.tsx:75
+#: src/App.tsx:475 src/components/Importer.tsx:75
 msgid "关闭"
 msgstr "Close"
 
-#: src/components/AboutList.tsx:78
+#: src/components/AboutList.tsx:85
 msgid "其他资源"
 msgstr "Other Resources"
 
@@ -93,7 +97,7 @@ msgstr "Region switched. Page will be reloaded."
 msgid "培养目标"
 msgstr "Target"
 
-#: src/components/AboutList.tsx:88
+#: src/components/AboutList.tsx:95
 msgid "声明"
 msgstr "Statements"
 
@@ -115,7 +119,7 @@ msgstr "Import Data from «MAA Depot Recognizer»"
 msgid "导入「森空岛」数据"
 msgstr "Import Data from «Skland»"
 
-#: src/App.tsx:292
+#: src/App.tsx:272
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -135,7 +139,7 @@ msgstr "Export as File"
 msgid "小黑盒 app 干员统计数据"
 msgstr "Operator Statistics from Heybox"
 
-#: src/components/AboutList.tsx:215
+#: src/components/AboutList.tsx:222
 msgid "帮助"
 msgstr "Help"
 
@@ -161,16 +165,16 @@ msgstr "Current"
 msgid "心情"
 msgstr "Morale"
 
-#: src/components/ItemList.tsx:569
+#: src/components/ItemList.tsx:572
 msgid "总价值"
 msgstr "Total Value"
 
-#: src/App.tsx:457
+#: src/App.tsx:437
 msgid "您不妨试试"
 msgstr "You may try"
 
 #. %s: datetime
-#: src/components/LogList.tsx:204
+#: src/components/LogList.tsx:209
 msgid "截止 %s"
 msgstr "As of %s"
 
@@ -179,11 +183,11 @@ msgstr "As of %s"
 msgid "持有"
 msgstr "Own"
 
-#: src/components/ItemList.tsx:543
+#: src/components/ItemList.tsx:541
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
-#: src/App.tsx:51 src/components/Importer.tsx:80
+#: src/App.tsx:52 src/components/Importer.tsx:80
 msgid "撤销"
 msgstr "Undo"
 
@@ -191,11 +195,11 @@ msgstr "Undo"
 msgid "数据已导入，将重新载入页面。"
 msgstr "Data imported. A reload is required."
 
-#: src/App.tsx:81
+#: src/App.tsx:82
 msgid "数据已更新，正在重新载入…"
 msgstr "Data updated. Reloading…"
 
-#: src/App.tsx:184
+#: src/App.tsx:164
 msgid "数据已更新，请重新载入页面"
 msgstr "Data updated. A reload is required."
 
@@ -205,7 +209,7 @@ msgstr ""
 "Data gathered from the Heybox app's Operator Statistics for Arknights "
 "feature."
 
-#: src/components/AboutList.tsx:76
+#: src/components/AboutList.tsx:83
 msgid "数据源"
 msgstr "Data Sources"
 
@@ -235,19 +239,19 @@ msgid "暂无可计算来源"
 msgstr "No Feasible Sources"
 
 #. %s: datetime
-#: src/components/AboutList.tsx:176
+#: src/components/AboutList.tsx:183
 msgid "更新于 %s"
 msgstr "Last updated at %s"
 
-#: src/App.tsx:74
+#: src/App.tsx:75
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/LogList.tsx:147
+#: src/components/LogList.tsx:152
 msgid "更新笔记"
 msgstr "Patch Notes"
 
-#: src/App.tsx:84
+#: src/App.tsx:85
 msgid "未找到新数据"
 msgstr "No updates found for data"
 
@@ -300,15 +304,15 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/LogList.tsx:224
+#: src/components/LogList.tsx:229
 msgid "查看更多…"
 msgstr "Read More…"
 
-#: src/components/CharacterList.tsx:741
+#: src/components/CharacterList.tsx:749
 msgid "查询失败"
 msgstr "Query Failed"
 
-#: src/App.tsx:112
+#: src/App.tsx:113
 msgid "检查数据更新"
 msgstr "Check For Data Updates"
 
@@ -325,7 +329,7 @@ msgstr ""
 msgid "清空"
 msgstr "Clear"
 
-#: src/components/ConfigUi.tsx:187
+#: src/components/ConfigUi.tsx:198
 msgid "游戏服务器"
 msgstr "Game Region"
 
@@ -430,11 +434,11 @@ msgstr "Please upgrade your browser."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/LogList.tsx:208
+#: src/components/LogList.tsx:213
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/App.tsx:450
+#: src/App.tsx:430
 msgid "返回主页"
 msgstr "Back to Home"
 
@@ -446,15 +450,15 @@ msgstr "Options"
 msgid "道具"
 msgstr "Items"
 
-#: src/components/AboutList.tsx:59
+#: src/components/AboutList.tsx:66
 msgid "邮箱"
 msgstr "E-mail"
 
-#: src/App.tsx:187
+#: src/App.tsx:167
 msgid "重新载入"
 msgstr "Reload"
 
-#: src/App.tsx:99
+#: src/App.tsx:100
 msgid "重载数据"
 msgstr "Reset Data"
 
@@ -462,7 +466,7 @@ msgstr "Reset Data"
 msgid "隐藏"
 msgstr "Hide"
 
-#: src/components/AboutList.tsx:90
+#: src/components/AboutList.tsx:97
 msgid "鸣谢"
 msgstr "Credits"
 
@@ -697,52 +701,57 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
 
-#: src/components/LogList.tsx:36
+#: src/components/LogList.tsx:15
+msgctxt "changelog"
+msgid "优化小屏幕上的导航栏体验"
+msgstr "Enhance the navigation bar experience on small screens"
+
+#: src/components/LogList.tsx:41
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr "Refine the style of character list"
 
-#: src/components/LogList.tsx:42
+#: src/components/LogList.tsx:47
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr "Support data from more game regions"
 
-#: src/components/LogList.tsx:48
+#: src/components/LogList.tsx:53
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr "Add views of community-based statistics"
 
-#: src/components/LogList.tsx:55
+#: src/components/LogList.tsx:60
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr "Add operator statistics from Heybox"
 
-#: src/components/LogList.tsx:61
+#: src/components/LogList.tsx:66
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr "Add operator statistics from Arknights-yituliu"
 
-#: src/components/LogList.tsx:30
+#: src/components/LogList.tsx:35
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr "Support inventory importing from Skland"
 
-#: src/components/LogList.tsx:23
+#: src/components/LogList.tsx:28
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr "Add option for UI Languages"
 
-#: src/components/LogList.tsx:15
+#: src/components/LogList.tsx:20
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
 
-#: src/components/AboutList.tsx:96
+#: src/components/AboutList.tsx:103
 msgctxt "credit role"
 msgid "帮助文档撰写"
 msgstr "documentation authoring"
 
-#: src/components/AboutList.tsx:103
+#: src/components/AboutList.tsx:110
 msgctxt "credit role"
 msgid "数据源自动化"
 msgstr "data source automation"
@@ -777,7 +786,7 @@ msgctxt "error context"
 msgid "导入数据时遇到问题"
 msgstr "Error During Importing"
 
-#: src/App.tsx:89
+#: src/App.tsx:90
 msgctxt "error context"
 msgid "检查数据更新失败"
 msgstr "Error During Checking for Data Updates"
@@ -792,7 +801,7 @@ msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr "Error During Processing Imported Data"
 
-#: src/App.tsx:438
+#: src/App.tsx:418
 msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
@@ -868,43 +877,43 @@ msgid "计划"
 msgstr "Planned"
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:331
+#: src/App.tsx:311
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr "Setting up %s…"
 
 #. initial
-#: src/App.tsx:326
+#: src/App.tsx:306
 msgctxt "loading status"
 msgid "别急…"
 msgstr "Don't hurry…"
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:377
+#: src/App.tsx:357
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr "We're setting things up for you"
 
 #. loaded data objects
-#: src/App.tsx:339
+#: src/App.tsx:319
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr "Almost there…"
 
 #. joke text
-#: src/App.tsx:375
+#: src/App.tsx:355
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr "Installing Macindows X"
 
 #. loading hero line 2
-#: src/App.tsx:384
+#: src/App.tsx:364
 msgctxt "loading status"
 msgid "请稍候"
 msgstr "This won't take long"
 
 #. done
-#: src/App.tsx:343
+#: src/App.tsx:323
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"

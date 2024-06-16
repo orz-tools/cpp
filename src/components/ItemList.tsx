@@ -479,7 +479,6 @@ const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level;
       onClick={() => {
         setParam((p) => ({ ...p, level: p.level === level ? undefined : level }))
       }}
-      style={{ marginLeft: '-1em' }}
     />
   )
 })
@@ -496,7 +495,6 @@ const HideCompletedButton = memo(() => {
           return { ...p, hideCompleted: !p.hideCompleted }
         })
       }}
-      style={{ marginRight: '1em' }}
     />
   )
 })
@@ -577,10 +575,12 @@ export const ItemList = memo(<G extends IGame>() => {
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
           <HideCompletedButton />
-          <AllGoalValue level={Level.Star} disabled />
-          <AllGoalValue level={Level.Goal} />
-          <AllGoalValue level={Level.Finished} />
         </Navbar.Group>
+      </Navbar>
+      <Navbar style={{ height: 'auto', marginTop: '1px', padding: 0 }}>
+        <AllGoalValue level={Level.Star} disabled />
+        <AllGoalValue level={Level.Goal} />
+        <AllGoalValue level={Level.Finished} />
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} className="cpp-item-menu-master">
         {itemGroups.map(([key, allItems]) => {

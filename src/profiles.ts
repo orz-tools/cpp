@@ -36,7 +36,7 @@ export function getProfiles() {
 }
 
 export function formatProfileName(game: string, instanceName: string) {
-  return `[${game.toUpperCase()}][${JSON.stringify(instanceName)}]`
+  return `[${game.toUpperCase()}][${JSON.stringify(decodeURIComponent(instanceName))}]`
 }
 
 export function getStoragePrefix(game: string, instanceName: string) {

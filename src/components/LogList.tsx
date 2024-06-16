@@ -11,6 +11,11 @@ import { PSTRs } from './LineBreaks'
 const logs = [
   {
     date: '2024-06-15',
+    type: 'optimize',
+    desc: lpstr(() => gt.pgettext('changelog', '优化小屏幕上的导航栏体验')),
+  },
+  {
+    date: '2024-06-15',
     type: 'fix',
     desc: lpstr(() => gt.pgettext('changelog', '道具图标不存在时显示名称')),
   },

@@ -31,7 +31,7 @@ export const Home = memo(() => {
               <ul>
                 {aa.map((profile) => (
                   <li key={profile[0] + '/' + profile[1]}>
-                    <a href={`/${encodeURIComponent(profile[0])}/${encodeURIComponent(profile[1])}`}>
+                    <a href={`/${profile[0]}/${profile[1]}`}>
                       <code>{formatProfileName(profile[0], profile[1])}</code>
                     </a>
                   </li>

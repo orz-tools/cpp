@@ -255,7 +255,7 @@ export const ValueOptionButton = memo(() => {
       position="bottom-left"
     >
       <Button icon={ValueIcon[type]} minimal={true} rightIcon={'chevron-down'}>
-        {ValueName[type]}
+        {<span className={'cpp-very-compact'}>{ValueName[type]}</span>}
       </Button>
     </Popover>
   )

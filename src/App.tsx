@@ -17,7 +17,7 @@ import {
   Tag,
 } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { ErrorInfo, memo, useEffect, useMemo, useState } from 'react'
+import React, { ErrorInfo, memo, useEffect, useState } from 'react'
 import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList, HelpButton } from './components/AboutList'
@@ -27,6 +27,7 @@ import { ConfigButton, MaybeSoulButton, RegionButton, StageButton } from './comp
 import { Err, ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { ItemList } from './components/ItemList'
+import { ProfileMenu, ProfileTitle } from './components/Profile'
 import { TaskList } from './components/TaskList'
 import { AppToaster } from './components/Toaster'
 import { UserDataManagerButton, UserDataManagerMenuItem } from './components/UserDataManager'
@@ -35,7 +36,7 @@ import { useComponents } from './hooks/useComponents'
 import { useRequest } from './hooks/useRequest'
 import { LocaleButton } from './locales'
 import { gt } from './pkg/gt'
-import { formatProfileName, getProfiles } from './profiles'
+import { formatProfileName } from './profiles'
 
 const UndoButtons = memo(() => {
   const atoms = useAtoms()
@@ -48,7 +49,7 @@ const UndoButtons = memo(() => {
       <Button
         icon="undo"
         disabled={undoCounter === 0}
-        text={gt.gettext('撤销')}
+        text={<span className={'cpp-very-compact'}>{gt.gettext('撤销')}</span>}
         minimal={true}
         onClick={() => setData('undo')}
         rightIcon={undoCounter > 0 ? <Tag round={true}>{undoCounter}</Tag> : undefined}
@@ -109,30 +110,11 @@ const ReloadDataButton = memo(() => {
         <Button
           icon="refresh"
           disabled={loading}
-          text={gt.gettext('检查数据更新')}
+          text={<span className={'cpp-very-compact'}>{gt.gettext('检查数据更新')}</span>}
           minimal={true}
           onClick={() => send()}
         />
       </ContextMenu>
-    </>
-  )
-})
-
-const ProfileMenu = memo(() => {
-  const profiles = useMemo(() => getProfiles().filter((x) => !x[2]), [])
-  const cpp = useCpp()
-  return (
-    <>
-      {profiles.map((profile) => (
-        <MenuItem
-          key={profile[0] + '/' + profile[1]}
-          href={`/${encodeURIComponent(profile[0])}/${encodeURIComponent(profile[1])}`}
-          text={<code>{formatProfileName(profile[0], profile[1])}</code>}
-          active={profile[0].toString() === cpp.gameAdapter.getCodename() && profile[1] === cpp.instanceName}
-        />
-      ))}
-      <MenuDivider />
-      <MenuItem text="Home" icon="home" href="/" />
     </>
   )
 })
@@ -155,9 +137,7 @@ const ClosureButtonHeading = memo(() => {
         position="bottom-left"
       >
         <Button minimal style={{ paddingLeft: 0, paddingRight: 0 }}>
-          <code>
-            [{ga.getCodename().toUpperCase()}][{JSON.stringify(cpp.instanceName)}]
-          </code>
+          <ProfileTitle codename={ga.getCodename()} profile={cpp.instanceName} />
         </Button>
       </Popover>
       <code>{`++`}</code>
@@ -197,7 +177,7 @@ const App = memo(() => {
   return (
     <>
       {cpp.gameComponent.style ? <style dangerouslySetInnerHTML={{ __html: cpp.gameComponent.style }} /> : null}
-      <Navbar fixedToTop={true}>
+      <Navbar fixedToTop={true} className="cpp-navbar-main">
         <Navbar.Group align={Alignment.LEFT}>
           <ClosureButtonHeading />
           <Navbar.Divider />
@@ -289,7 +269,7 @@ const DataDropdown = memo(() => {
   return (
     <Popover usePortal={true} minimal={true} content={<DataMenu />} position="bottom-right">
       <Button icon={'th-derived'} minimal={true} rightIcon={'chevron-down'}>
-        {gt.gettext('导入/导出')}
+        <span className="cpp-very-compact">{gt.gettext('导入/导出')}</span>
       </Button>
     </Popover>
   )
