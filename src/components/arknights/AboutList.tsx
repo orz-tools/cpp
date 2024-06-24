@@ -90,5 +90,15 @@ export const AboutThirdParty = memo(() => {
 })
 
 export const AboutCredits = memo(() => {
-  return <></>
+  return (
+    <>
+      <DescriptionMenuItem
+        icon={'person'}
+        text="GhostShe11"
+        href={'https://www.bilibili.com/read/cv25970558/'}
+        {...externalLinkProps}
+        description={gt.pgettext('credit role', '矢量图标绘制')}
+      />
+    </>
+  )
 })

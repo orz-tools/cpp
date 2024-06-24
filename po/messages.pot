@@ -87,7 +87,7 @@ msgstr ""
 msgid "培养目标"
 msgstr ""
 
-#: src/components/AboutList.tsx:95
+#: src/components/AboutList.tsx:110
 msgid "声明"
 msgstr ""
 
@@ -406,7 +406,7 @@ msgstr ""
 msgid "隐藏"
 msgstr ""
 
-#: src/components/AboutList.tsx:97
+#: src/components/AboutList.tsx:95
 msgid "鸣谢"
 msgstr ""
 
@@ -691,12 +691,12 @@ msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr ""
 
-#: src/components/AboutList.tsx:103
+#: src/components/AboutList.tsx:101
 msgctxt "credit role"
 msgid "帮助文档撰写"
 msgstr ""
 
-#: src/components/AboutList.tsx:110
+#: src/components/AboutList.tsx:108
 msgctxt "credit role"
 msgid "数据源自动化"
 msgstr ""
@@ -704,6 +704,11 @@ msgstr ""
 #: src/components/re1999/AboutList.tsx:58
 msgctxt "credit role"
 msgid "测试和建议"
+msgstr ""
+
+#: src/components/arknights/AboutList.tsx:100
+msgctxt "credit role"
+msgid "矢量图标绘制"
 msgstr ""
 
 #: src/components/arknights/SklandImporter.tsx:207

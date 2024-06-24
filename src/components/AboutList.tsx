@@ -92,8 +92,6 @@ export const AboutList = memo(() => {
           }
           {...externalLinkProps}
         />
-        <MenuDivider title={gt.gettext('声明')} />
-        {AboutCopyright && <AboutCopyright />}
         <MenuDivider title={gt.gettext('鸣谢')} />
         {AboutCredits && <AboutCredits />}
         <DescriptionMenuItem
@@ -109,6 +107,8 @@ export const AboutList = memo(() => {
           {...externalLinkProps}
           description={gt.pgettext('credit role', '数据源自动化')}
         />
+        <MenuDivider title={gt.gettext('声明')} />
+        {AboutCopyright && <AboutCopyright />}
       </Menu>
     </>
   )
