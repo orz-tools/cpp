@@ -184,7 +184,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       const sg = goal.skillMaster[skillId] || sc
       let sDep: typeof dep = undefined
       if (sg > 0) meetEliteLevel(2, 1)
-      const sdata = character.skills.find((x) => x[0].skillId === skillId)?.[0]
+      const sdata = character.skills.find((x) => x.skillId === skillId)?.charSkill
       const data = sdata?.levelUpCostCond
       if (!data) continue
       while (sc < sg) {
@@ -214,7 +214,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
         mDep = add(
           { _: 'mod', modId: modId, to: mc + 1 },
           [
-            ...(character.uniEquips.find((x) => x.key === modId)?.raw.itemCost?.[mc + 1] || []).map((x) => ({
+            ...(character.uniEquips.find((x) => x.equipId === modId)?.equip.raw.itemCost?.[mc + 1] || []).map((x) => ({
               itemId: x.id,
               quantity: x.count,
             })),
@@ -255,7 +255,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
           .replaceAll('%d$from', `${type.from}`)
           .replaceAll('%d$to', `${type.to}`)
       case 'skillMaster': {
-        const skillIndex = character.skills.findIndex((x) => x[0].skillId === type.skillId)
+        const skillIndex = character.skills.findIndex((x) => x.skillId === type.skillId)
         const skill = character.skills[skillIndex]
         return [
           gt.pgettext(
@@ -272,10 +272,10 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
           ) /* I10N: %d$number: skill number, %s$name: skill name */,
         ][type.to - 1]
           .replaceAll('%d$number', `${skillIndex + 1}`)
-          .replaceAll('%s$name', `${skill[1].name}`)
+          .replaceAll('%s$name', `${skill.skill.name}`)
       }
       case 'mod': {
-        const uniEquip = character.uniEquips.find((x) => x.key === type.modId)!
+        const uniEquip = character.uniEquips.find((x) => x.equipId === type.modId)!
         return [
           gt.pgettext(
             'arknights task',
@@ -290,8 +290,8 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
             `%s$code 模组 3 级: %s$name`,
           ) /* I10N: %s$code: module code, %s$name: module name */,
         ][type.to - 1]
-          .replaceAll('%s$code', `${uniEquip.raw.typeName2!.toUpperCase()}`)
-          .replaceAll('%s$name', `${uniEquip.name}`)
+          .replaceAll('%s$code', `${uniEquip.equip.raw.typeName2!.toUpperCase()}`)
+          .replaceAll('%s$name', `${uniEquip.equip.name}`)
       }
       default:
         throwBad(type)
@@ -331,11 +331,11 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       elite: char.maxElite,
       level: char.maxLevels[char.maxElite],
       skillLevel: char.skills.length > 0 ? 7 : 1,
-      skillMaster: char.maxElite >= 2 ? Object.fromEntries(char.skills.map(([, skill]) => [skill.key, 3])) : {},
+      skillMaster: char.maxElite >= 2 ? Object.fromEntries(char.skills.map((x) => [x.skillId, 3])) : {},
       modLevel:
         char.maxElite >= 2
           ? Object.fromEntries(
-              char.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0').map((mod) => [mod.key, 3]),
+              char.uniEquips.filter((x) => x.equip.raw.unlockEvolvePhase > 'PHASE_0').map((mod) => [mod.equipId, 3]),
             )
           : {},
     }
@@ -382,7 +382,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       status.modLevel = {}
     } else {
       for (const mod of char.uniEquips) {
-        const key = mod.key
+        const key = mod.equipId
         if (!(key in status.modLevel)) continue
         status.modLevel[key] = parseInt(String(status.modLevel[key]))
         if (status.modLevel[key] <= 0 || !isFinite(status.modLevel[key])) {
@@ -396,8 +396,8 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     if (char.rarity < 3 || status.skillLevel < 7 || status.elite < 2) {
       status.skillMaster = {}
     } else {
-      for (const [, skill] of char.skills) {
-        const key = skill.key
+      for (const skill of char.skills) {
+        const key = skill.skillId
         if (!(key in status.skillMaster)) continue
         status.skillMaster[key] = parseInt(String(status.skillMaster[key]))
         if (status.skillMaster[key] <= 0 || !isFinite(status.skillMaster[key])) {
@@ -426,14 +426,14 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     }
 
     for (const mod of char.uniEquips) {
-      const key = mod.key
+      const key = mod.equipId
       if ((goal.modLevel[key] || 0) < (current.modLevel[key] || 0)) {
         goal.modLevel[key] = current.modLevel[key]
       }
     }
 
-    for (const [, skill] of char.skills) {
-      const key = skill.key
+    for (const skill of char.skills) {
+      const key = skill.skillId
       if ((goal.skillMaster[key] || 0) < (current.skillMaster[key] || 0)) {
         goal.skillMaster[key] = current.skillMaster[key]
       }

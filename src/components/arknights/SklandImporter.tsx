@@ -42,9 +42,9 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
 
             if (char.skills) {
               for (const skill of c.skills) {
-                if (skill[2] !== char.id) continue
+                if (skill.rawCharId !== char.id) continue
 
-                const key = skill[0].skillId!
+                const key = skill.skillId
                 const lv = char.skills.find((x) => x.id === key)?.level || 0
                 if (lv > 0) {
                   o.skillMaster[key] = lv
@@ -55,10 +55,12 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             }
 
             if (o.elite === 2 && o.level >= dm.data.constants.modUnlockLevel[c.rarity] && char.equips) {
-              const uniEquips = c.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
+              const uniEquips = c.uniEquips.filter(
+                (x) => x.equip.raw.unlockEvolvePhase > 'PHASE_0' && x.rawCharId === char.id,
+              )
               for (const ue of uniEquips) {
                 const level = ((): number | undefined => {
-                  const d = char.equips.find((x) => x.id === ue.key)
+                  const d = char.equips.find((x) => x.id === ue.equipId)
                   if (!d) {
                     return 0
                   }
@@ -66,9 +68,9 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
                 })()
                 if (level === undefined) continue
                 if (level === 0) {
-                  delete o.modLevel[ue.key]
+                  delete o.modLevel[ue.equipId]
                 } else {
-                  o.modLevel[ue.key] = level
+                  o.modLevel[ue.equipId] = level
                 }
               }
             }
@@ -94,9 +96,9 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
 
             if (char.skills) {
               for (const skill of c.skills) {
-                if (skill[2] !== char.charId) continue
+                if (skill.rawCharId !== char.charId) continue
 
-                const key = skill[0].skillId!
+                const key = skill.skillId
                 const lv = char.skills.find((x) => x.id === key)?.specializeLevel || 0
                 if (lv > 0) {
                   o.skillMaster[key] = lv
@@ -107,10 +109,12 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             }
 
             if (o.elite === 2 && o.level >= dm.data.constants.modUnlockLevel[c.rarity] && char.equip) {
-              const uniEquips = c.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
+              const uniEquips = c.uniEquips.filter(
+                (x) => x.equip.raw.unlockEvolvePhase > 'PHASE_0' && x.rawCharId === char.charId,
+              )
               for (const ue of uniEquips) {
                 const level = ((): number | undefined => {
-                  const d = char.equip.find((x) => x.id === ue.key)
+                  const d = char.equip.find((x) => x.id === ue.equipId)
                   if (!d) {
                     return 0
                   }
@@ -118,12 +122,12 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
                     return d.level
                   }
                   if (d.level === 1) {
-                    if (char.defaultEquipId === ue.key) {
-                      return 1
-                    }
                     if ('locked' in d) {
                       if (d.locked === false) return 0
                       if (d.locked === true) return 1
+                    }
+                    if (char.defaultEquipId === ue.equipId) {
+                      return 1
                     }
                     shitEquip = true
                     // TODO: 开没开咱也不知道啊...
@@ -132,9 +136,9 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
                 })()
                 if (level === undefined) continue
                 if (level === 0) {
-                  delete o.modLevel[ue.key]
+                  delete o.modLevel[ue.equipId]
                 } else {
-                  o.modLevel[ue.key] = level
+                  o.modLevel[ue.equipId] = level
                 }
               }
             }

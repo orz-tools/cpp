@@ -284,32 +284,34 @@ export const CharacterStatusSkillMasterSection = memo(() => {
   const { currentStatus, character, surveySource } = useContext(EditorContext)
   if (!character.skills.length) return <></>
   if (character.rarity < 3) return <></>
-  const all = currentStatus ? character.skills.every(([, skill]) => currentStatus.skillMaster[skill.key] === 3) : false
+  const all = currentStatus
+    ? character.skills.every((charSkill) => currentStatus.skillMaster[charSkill.skillId] === 3)
+    : false
   if (all) return <></>
 
   return (
     <>
-      {character.skills.map(([, skill, realCharId, charSkillIndex]) => {
-        const ss = surveySource?.skill(character, skill, realCharId, charSkillIndex)
+      {character.skills.map((charSkill) => {
+        const ss = surveySource?.skill(character, charSkill.skill, charSkill.rawCharId, charSkill.charSkillIndex)
         return (
-          <div key={skill.key}>
+          <div key={charSkill.skillId}>
             <Survey survey={ss ? ss[0] : ss} />
             <ButtonGroup className={Classes.DARK}>
               <Tag large={true}>
                 {gt
                   .pgettext('arknights status group', '技能 %d') /* I10N: %d: skill number */
-                  .replaceAll('%d', `${charSkillIndex + 1}`)}
+                  .replaceAll('%d', `${charSkill.charSkillIndex + 1}`)}
               </Tag>
-              <SkillMasterButton skillId={skill.key} level={0} />
-              <SkillMasterButton skillId={skill.key} level={1} survey={ss ? ss[1] : ss} />
-              <SkillMasterButton skillId={skill.key} level={2} survey={ss ? ss[2] : ss} />
-              <SkillMasterButton skillId={skill.key} level={3} survey={ss ? ss[3] : ss} />
+              <SkillMasterButton skillId={charSkill.skillId} level={0} />
+              <SkillMasterButton skillId={charSkill.skillId} level={1} survey={ss ? ss[1] : ss} />
+              <SkillMasterButton skillId={charSkill.skillId} level={2} survey={ss ? ss[2] : ss} />
+              <SkillMasterButton skillId={charSkill.skillId} level={3} survey={ss ? ss[3] : ss} />
               <Tag
                 large={false}
                 style={{ width: 150, overflow: 'hidden', background: 'none' }}
                 className={Classes.TEXT_OVERFLOW_ELLIPSIS}
               >
-                {skill.name}
+                {charSkill.skill.name}
               </Tag>
             </ButtonGroup>
           </div>
@@ -357,33 +359,33 @@ export const CharacterStatusModSection = memo(() => {
   const { currentStatus, character, surveySource } = useContext(EditorContext)
   if (character.rarity < 3) return <></>
 
-  const uniEquips = character.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
+  const uniEquips = character.uniEquips.filter((x) => x.equip.raw.unlockEvolvePhase > 'PHASE_0')
   if (!uniEquips.length) return <></>
 
-  const all = currentStatus ? uniEquips.every((equip) => currentStatus.modLevel[equip.key] === 3) : false
+  const all = currentStatus ? uniEquips.every((equip) => currentStatus.modLevel[equip.equipId] === 3) : false
   if (all) return <></>
 
   return (
     <>
-      {uniEquips.map((equip) => {
-        const ss = surveySource?.mod(character, equip)
+      {uniEquips.map((charMod) => {
+        const ss = surveySource?.mod(character, charMod.equip, charMod.rawCharId)
         return (
-          <div key={equip.key}>
+          <div key={charMod.equipId}>
             <Survey survey={ss ? ss[0] : ss} />
             <ButtonGroup className={Classes.DARK}>
-              <Tag large={true} style={{ fontFamily: 'monospace' }} title={equip.key}>
-                {equip.raw.typeName1}-{equip.raw.typeName2}
+              <Tag large={true} style={{ fontFamily: 'monospace' }} title={charMod.equipId}>
+                {charMod.equip.raw.typeName1}-{charMod.equip.raw.typeName2}
               </Tag>
-              <ModButton modId={equip.key} level={0} />
-              <ModButton modId={equip.key} level={1} survey={ss ? ss[1] : ss} />
-              <ModButton modId={equip.key} level={2} survey={ss ? ss[2] : ss} />
-              <ModButton modId={equip.key} level={3} survey={ss ? ss[3] : ss} />
+              <ModButton modId={charMod.equipId} level={0} />
+              <ModButton modId={charMod.equipId} level={1} survey={ss ? ss[1] : ss} />
+              <ModButton modId={charMod.equipId} level={2} survey={ss ? ss[2] : ss} />
+              <ModButton modId={charMod.equipId} level={3} survey={ss ? ss[3] : ss} />
               <Tag
                 large={false}
                 style={{ width: 150, overflow: 'hidden', background: 'none' }}
                 className={Classes.TEXT_OVERFLOW_ELLIPSIS}
               >
-                {equip.name}
+                {charMod.equip.name}
               </Tag>
             </ButtonGroup>
           </div>

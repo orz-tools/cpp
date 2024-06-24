@@ -14,7 +14,7 @@ export interface SurveySource {
     realCharId: string,
     charSkillIndex: number,
   ): (SurveyProps | null | undefined)[] | null | undefined
-  mod(character: Character, equip: UniEquip): (SurveyProps | null | undefined)[] | null | undefined
+  mod(character: Character, equip: UniEquip, realCharId: string): (SurveyProps | null | undefined)[] | null | undefined
   e2level(character: Character, range: 1 | 70 | 90): SurveyProps | null | undefined
 }
 
@@ -131,8 +131,8 @@ export class YituliuSurveySource implements SurveySource {
     ]
   }
 
-  public mod(character: Character, equip: UniEquip): SurveyProps[] | null | undefined {
-    const survey = this.smap[equip.raw.charId]
+  public mod(character: Character, equip: UniEquip, rawCharId: string): SurveyProps[] | null | undefined {
+    const survey = this.smap[rawCharId]
     if (!survey) {
       return null
     }
@@ -299,8 +299,12 @@ export class HeyboxSurveySource implements SurveySource {
     ]
   }
 
-  public mod(character: Character, equip: UniEquip): (SurveyProps | null | undefined)[] | null | undefined {
-    const survey = this.smap[equip.raw.charId]
+  public mod(
+    character: Character,
+    equip: UniEquip,
+    rawCharId: string,
+  ): (SurveyProps | null | undefined)[] | null | undefined {
+    const survey = this.smap[rawCharId]
     if (!survey) {
       return null
     }

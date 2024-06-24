@@ -20,18 +20,18 @@ export const extraFields: IGameComponent['extraFields'] = {
     width: 150,
     C: memo(({ context }: { context: FieldContext<Arknights, Character, [number]> }) => {
       const skillId = context.args[0]
-      const skill = context.character.skills[skillId]
-      const skillName = skill[1].name
+      const charSkill = context.character.skills[skillId]
+      const skillName = charSkill.skill.name
       const skillIndex = [
         gt.pgettext('arknights skill ref', '一技能'),
         gt.pgettext('arknights skill ref', '二技能'),
         gt.pgettext('arknights skill ref', '三技能'),
-      ][skill[3]]
+      ][charSkill.charSkillIndex]
 
       return (
         <CharacterListColumn width={150}>
           <span className="bp5-menu-item-icon">
-            <CachedImg src={skill[1].icon} width={'100%'} height={'100%'} alt={skillName} title={skillName} />
+            <CachedImg src={charSkill.skill.icon} width={'100%'} height={'100%'} alt={skillName} title={skillName} />
           </span>
           <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <div className="bp5-text-overflow-ellipsis" title={skillName}>

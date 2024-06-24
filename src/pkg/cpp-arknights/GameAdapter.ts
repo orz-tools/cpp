@@ -124,18 +124,18 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       (index) => `${index}`,
     ).tap((sq) => {
-      sq.addField('name', '技能名', QString, ({ character, args: [index] }) => character.skills[index][1].name)
+      sq.addField('name', '技能名', QString, ({ character, args: [index] }) => character.skills[index].skill.name)
 
       sq.addStatusField('mastery', '专精等级', QNumber, ({ character, status, args: [index] }) => {
-        return status.skillMaster[character.skills[index][1].key] ?? 0
+        return status.skillMaster[character.skills[index].skillId] ?? 0
       })
 
       sq.addField('mastery3rate.yituliu', '一图流练度统计 技能专三率', QNumber, ({ character, args: [index] }) => {
         const s = yss.skill(
           character,
-          character.skills[index][1],
-          character.skills[index][2],
-          character.skills[index][3],
+          character.skills[index].skill,
+          character.skills[index].rawCharId,
+          character.skills[index].charSkillIndex,
         )
         if (s?.[0]?.percent == null || s?.[3]?.percent == null) return NaN
         return s?.[0]?.percent * s?.[3]?.percent
@@ -144,9 +144,9 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       sq.addField('mastery3rate.heybox', '小黑盒干员统计 技能专三率', QNumber, ({ character, args: [index] }) => {
         const s = hss.skill(
           character,
-          character.skills[index][1],
-          character.skills[index][2],
-          character.skills[index][3],
+          character.skills[index].skill,
+          character.skills[index].rawCharId,
+          character.skills[index].charSkillIndex,
         )
         if (s?.[0]?.percent == null || s?.[3]?.percent == null) return NaN
         return s?.[0]?.percent * s?.[3]?.percent

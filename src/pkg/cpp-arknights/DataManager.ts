@@ -369,49 +369,81 @@ export class Character implements ICharacter {
     }
   }
 
-  public get rawSkills() {
-    const result: [string, ArknightsKengxxiao['exCharacters']['']['skills'][0], number][] = []
+  public generateSkills() {
+    const result: CharacterSkill[] = []
     let index = 0
+
     for (const i of this.raw.skills || []) {
-      result.push([this.key, i, index++])
+      index++
+      if (!i.skillId) continue
+
+      result.push({
+        skillId: i.skillId,
+        rawCharId: this.key,
+        charSkill: i,
+        charSkillIndex: index - 1,
+        skill: this.dm.data.skills[i.skillId],
+      })
     }
+
     for (const [key, info] of this.patches) {
       index = 0
       for (const i of info.skills || []) {
-        result.push([key, i, index++])
+        index++
+        if (!i.skillId) continue
+
+        result.push({
+          skillId: i.skillId,
+          rawCharId: key,
+          charSkill: i,
+          charSkillIndex: index - 1,
+          skill: this.dm.data.skills[i.skillId],
+        })
       }
     }
+
     return result
   }
 
-  private _skills?: [ArknightsKengxxiao['exCharacters']['']['skills'][0], Skill, string, number][]
+  private _skills?: CharacterSkill[]
   public get skills() {
-    return (
-      this._skills ||
-      (this._skills = this.rawSkills
-        .filter(
-          (x): x is [string, ArknightsKengxxiao['exCharacters']['']['skills'][0] & { skillId: string }, number] =>
-            !!x[1].skillId,
-        )
-        .map((x) => [x[1], this.dm.data.skills[x[1].skillId], x[0], x[2]]))
-    )
+    return this._skills || (this._skills = this.generateSkills())
   }
 
-  public get rawUniEquips() {
-    return [
-      ...(this.dm.raw.exUniEquips.charEquip[this.key] || []),
-      ...this.patches.flatMap((x) => this.dm.raw.exUniEquips.charEquip[x[0]] || []),
-    ]
+  public generateUniEquips() {
+    const result: CharacterUniEquip[] = []
+
+    for (const e of this.dm.raw.exUniEquips.charEquip[this.key] || []) {
+      result.push({
+        equipId: e,
+        rawCharId: this.key,
+        equip: this.dm.data.uniEquips[e],
+      })
+    }
+
+    for (const [key] of this.patches) {
+      for (const e of this.dm.raw.exUniEquips.charEquip[key] || []) {
+        result.push({
+          equipId: e,
+          rawCharId: key,
+          equip: this.dm.data.uniEquips[e],
+        })
+      }
+    }
+
+    return result
   }
 
-  private _uniEquips?: UniEquip[]
+  private _uniEquips?: CharacterUniEquip[]
   public get uniEquips() {
     return (this._uniEquips ||
-      (this._uniEquips = (this.dm.raw.exUniEquips.charEquip[this.key] || [])
-        .map((x) => this.dm.data.uniEquips[x])
-        .sort((a, b) =>
-          a.raw.charEquipOrder > b.raw.charEquipOrder ? 1 : a.raw.charEquipOrder < b.raw.charEquipOrder ? -1 : 0,
-        )))!
+      (this._uniEquips = this.generateUniEquips().sort((a, b) =>
+        a.equip.raw.charEquipOrder > b.equip.raw.charEquipOrder
+          ? 1
+          : a.equip.raw.charEquipOrder < b.equip.raw.charEquipOrder
+          ? -1
+          : 0,
+      )))!
   }
 
   public get rarity() {
@@ -703,4 +735,18 @@ export class UnknownShitItem extends Item {
   protected override _generateValueAsAp() {
     return undefined
   }
+}
+
+type CharacterSkill = {
+  rawCharId: string
+  skillId: string
+  charSkill: ArknightsKengxxiao['exCharacters']['']['skills'][0]
+  charSkillIndex: number
+  skill: Skill
+}
+
+type CharacterUniEquip = {
+  rawCharId: string
+  equipId: string
+  equip: UniEquip
 }
