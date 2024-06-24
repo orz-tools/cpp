@@ -39,8 +39,11 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             o.elite = char.evolvePhase
             o.level = char.level
             o.skillLevel = char.mainSkillLevel
+
             if (char.skills) {
               for (const skill of c.skills) {
+                if (skill[2] !== char.id) continue
+
                 const key = skill[0].skillId!
                 const lv = char.skills.find((x) => x.id === key)?.level || 0
                 if (lv > 0) {
@@ -50,6 +53,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
                 }
               }
             }
+
             if (o.elite === 2 && o.level >= dm.data.constants.modUnlockLevel[c.rarity] && char.equips) {
               const uniEquips = c.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
               for (const ue of uniEquips) {
@@ -87,8 +91,11 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             o.elite = char.evolvePhase
             o.level = char.level
             o.skillLevel = char.mainSkillLvl
+
             if (char.skills) {
               for (const skill of c.skills) {
+                if (skill[2] !== char.charId) continue
+
                 const key = skill[0].skillId!
                 const lv = char.skills.find((x) => x.id === key)?.specializeLevel || 0
                 if (lv > 0) {
@@ -98,6 +105,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
                 }
               }
             }
+
             if (o.elite === 2 && o.level >= dm.data.constants.modUnlockLevel[c.rarity] && char.equip) {
               const uniEquips = c.uniEquips.filter((x) => x.raw.unlockEvolvePhase > 'PHASE_0')
               for (const ue of uniEquips) {
@@ -112,6 +120,10 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
                   if (d.level === 1) {
                     if (char.defaultEquipId === ue.key) {
                       return 1
+                    }
+                    if ('locked' in d) {
+                      if (d.locked === false) return 0
+                      if (d.locked === true) return 1
                     }
                     shitEquip = true
                     // TODO: 开没开咱也不知道啊...
@@ -333,6 +345,7 @@ const SklandData = z.object({
         z.object({
           id: z.string(),
           level: z.number().int().min(1).max(3),
+          locked: z.boolean().optional(),
         }),
       ),
       defaultEquipId: z.string(),
