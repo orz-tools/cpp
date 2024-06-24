@@ -169,6 +169,36 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             ...quans,
           }
         }
+
+        if (
+          data.building?.training &&
+          data.building?.training.trainee &&
+          data.building?.training.trainee.targetSkill >= 0
+        ) {
+          try {
+            const charId = data.building.training.trainee.charId
+            const skillIndex = data.building.training.trainee.targetSkill
+            const targetCharacter = ga.getCharacter(ga.getRealCharacterKey(charId))
+            if (!targetCharacter) throw new Error(`Character Not Found: ${charId}`)
+
+            const targetCharSkill = targetCharacter.skills.find(
+              (x) => x.charSkillIndex === skillIndex && x.rawCharId === charId,
+            )
+            if (!targetCharSkill) throw new Error(`Skill Not Found: ${charId} ${skillIndex}`)
+
+            const now = draft.current[targetCharacter.key].skillMaster[targetCharSkill.skillId] || 0
+            if (now === 3) throw new Error('Skill already mastered to level 3')
+
+            draft.current[targetCharacter.key].skillMaster[targetCharSkill.skillId] = now + 1
+          } catch (e) {
+            console.error(e)
+            ctx.addWarning(
+              `解析训练室数据失败，请尽可能将下列信息分享给开发者：\n${JSON.stringify(
+                data.building.training,
+              )}\n${e?.toString()}`,
+            )
+          }
+        }
       }
     })
   })
@@ -238,12 +268,11 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
       const windowHeight = 700
       const left = Math.floor((window.screenLeft || 0) + window.innerWidth / 2 - windowWidth / 2)
       const top = Math.floor((window.screenTop || 0) + window.innerHeight / 2 - windowHeight / 2)
-      console.log(windowWidth, windowHeight, left, top)
       const popup = window.open(
         `https://skland.xkcdn.win/?${new URLSearchParams({
           appName: 'Closure++ 二游计算器',
           origin: window.origin,
-          scopes: ['chars', 'cultivate.characters', 'cultivate.items'].join(','),
+          scopes: ['chars', 'building.training', 'cultivate.characters', 'cultivate.items'].join(','),
         })}`,
         '_blank',
         `width=${windowWidth},height=${windowHeight},left=${left},top=${top},popup=yes`,
@@ -384,6 +413,22 @@ const SklandData = z.object({
           count: z.string().regex(/^\d+$/),
         }),
       ),
+    })
+    .optional(),
+  building: z
+    .object({
+      training: z
+        .object({
+          trainee: z
+            .object({
+              charId: z.string(),
+              targetSkill: z.number().min(-1).max(2),
+            })
+            .nullable(),
+          remainPoint: z.number(),
+        })
+        .nullable()
+        .optional(),
     })
     .optional(),
 })
