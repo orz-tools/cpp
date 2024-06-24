@@ -79,7 +79,7 @@ export function CharacterStatusInsightLevelSection() {
         currentStatus &&
         (currentStatus.insight > 0 || (currentStatus.insight === 0 && currentStatus.level > character.maxLevels[0]))
       ) ? (
-        <div>
+        <div className="cpp-charstat-group">
           <ButtonGroup>
             <Tag large={true}>{gt.pgettext('re1999 status group', '洞零')}</Tag>
             <InsightLevelButton insight={0} level={1} />
@@ -99,7 +99,7 @@ export function CharacterStatusInsightLevelSection() {
         currentStatus &&
         (currentStatus.insight > 1 || (currentStatus.insight === 1 && currentStatus.level > character.maxLevels[1]))
       ) ? (
-        <div>
+        <div className="cpp-charstat-group">
           <ButtonGroup>
             <Tag large={true}>{gt.pgettext('re1999 status group', '洞一')}</Tag>
             <InsightLevelButton insight={1} level={1} />
@@ -119,7 +119,7 @@ export function CharacterStatusInsightLevelSection() {
         currentStatus &&
         (currentStatus.insight > 2 || (currentStatus.insight === 2 && currentStatus.level > character.maxLevels[2]))
       ) ? (
-        <div>
+        <div className="cpp-charstat-group">
           <ButtonGroup>
             <Tag large={true}>{gt.pgettext('re1999 status group', '洞二')}</Tag>
             <InsightLevelButton insight={2} level={1} />
@@ -139,7 +139,7 @@ export function CharacterStatusInsightLevelSection() {
         currentStatus &&
         (currentStatus.insight > 3 || (currentStatus.insight === 3 && currentStatus.level > character.maxLevels[3]))
       ) ? (
-        <div>
+        <div className="cpp-charstat-group">
           <ButtonGroup>
             <Tag large={true}>{gt.pgettext('re1999 status group', '洞三')}</Tag>
             <InsightLevelButton insight={3} level={1} />
@@ -188,7 +188,7 @@ export function CharacterStatusResonateSection() {
 
   return (
     <>
-      <div>
+      <div className="cpp-charstat-group">
         <ButtonGroup>
           <Tag large={true}>{gt.pgettext('re1999 status group', '共鸣')}</Tag>
           {new Array(character.maxResonate).fill(0).map((_, i) => (

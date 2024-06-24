@@ -89,7 +89,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
         currentStatus &&
         (currentStatus.elite > 0 || (currentStatus.elite === 0 && currentStatus.level > character.maxLevels[0]))
       ) ? (
-        <div>
+        <div className="cpp-charstat-group">
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite0(character)} /> : null}
             <Tag large={true}>{gt.pgettext('arknights status group', '精零')}</Tag>
@@ -111,7 +111,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
         currentStatus &&
         (currentStatus.elite > 1 || (currentStatus.elite === 1 && currentStatus.level > character.maxLevels[1]))
       ) ? (
-        <div>
+        <div className="cpp-charstat-group">
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite1(character)} /> : null}
             <Tag large={true}>{gt.pgettext('arknights status group', '精一')}</Tag>
@@ -133,7 +133,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
         currentStatus &&
         (currentStatus.elite > 2 || (currentStatus.elite === 2 && currentStatus.level > character.maxLevels[2]))
       ) ? (
-        <div>
+        <div className="cpp-charstat-group">
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite2(character)} /> : null}
             <Tag large={true}>{gt.pgettext('arknights status group', '精二')}</Tag>
@@ -144,16 +144,15 @@ export const CharacterStatusEliteLevelSection = memo(() => {
               .map((_, i) => i * 10)
               .slice(3)
               .map((lv) => (
-                <>
+                <React.Fragment key={lv}>
                   {lv === 70 ? <Survey survey={surveySource?.e2level(character, 70)} /> : undefined}
                   {lv === 90 ? <Survey survey={surveySource?.e2level(character, 90)} /> : undefined}
                   <EliteLevelButton
-                    key={lv}
                     elite={2}
                     level={lv}
                     color={lv === character.modUnlockLevel ? 'rgba(0,0,255,0.25)' : undefined}
                   />
-                </>
+                </React.Fragment>
               ))}
             <EliteLevelInput elite={2} />
           </ButtonGroup>
@@ -294,7 +293,7 @@ export const CharacterStatusSkillMasterSection = memo(() => {
       {character.skills.map((charSkill) => {
         const ss = surveySource?.skill(character, charSkill.skill, charSkill.rawCharId, charSkill.charSkillIndex)
         return (
-          <div key={charSkill.skillId}>
+          <div key={charSkill.skillId} className="cpp-charstat-group">
             <Survey survey={ss ? ss[0] : ss} />
             <ButtonGroup className={Classes.DARK}>
               <Tag large={true}>
@@ -370,7 +369,7 @@ export const CharacterStatusModSection = memo(() => {
       {uniEquips.map((charMod) => {
         const ss = surveySource?.mod(character, charMod.equip, charMod.rawCharId)
         return (
-          <div key={charMod.equipId}>
+          <div key={charMod.equipId} className="cpp-charstat-group">
             <Survey survey={ss ? ss[0] : ss} />
             <ButtonGroup className={Classes.DARK}>
               <Tag large={true} style={{ fontFamily: 'monospace' }} title={charMod.equipId}>
@@ -402,7 +401,7 @@ export function CharacterStatusSkillSection() {
 
   return (
     <>
-      <div>
+      <div className="cpp-charstat-group">
         <ButtonGroup>
           {surveySource ? <SurveyDummy /> : null}
           <Tag large={true}>{gt.pgettext('arknights status group', '技能')}</Tag>
@@ -509,7 +508,13 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
         {surveySourcePref !== SurveySourceKey.Yituliu ? (
           <>
             {' | '}
-            <a href={'javascript:;'} onClick={() => setSurveySourcePref(SurveySourceKey.Yituliu)}>
+            <a
+              href={'#'}
+              onClick={(e) => {
+                setSurveySourcePref(SurveySourceKey.Yituliu)
+                e.preventDefault()
+              }}
+            >
               {(surveySourcePref === SurveySourceKey.None ? showAction : switchToAction).replaceAll(
                 '%s',
                 YituliuSurveySource.VeryShortName.toString(),
@@ -520,7 +525,13 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
         {surveySourcePref !== SurveySourceKey.Heybox ? (
           <>
             {' | '}
-            <a href={'javascript:;'} onClick={() => setSurveySourcePref(SurveySourceKey.Heybox)}>
+            <a
+              href={'#'}
+              onClick={(e) => {
+                setSurveySourcePref(SurveySourceKey.Heybox)
+                e.preventDefault()
+              }}
+            >
               {(surveySourcePref === SurveySourceKey.None ? showAction : switchToAction).replaceAll(
                 '%s',
                 HeyboxSurveySource.VeryShortName.toString(),
@@ -531,7 +542,13 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
         {surveySourcePref !== SurveySourceKey.None ? (
           <>
             {' | '}
-            <a href={'javascript:;'} onClick={() => setSurveySourcePref(SurveySourceKey.None)}>
+            <a
+              href={'#'}
+              onClick={(e) => {
+                setSurveySourcePref(SurveySourceKey.None)
+                e.preventDefault()
+              }}
+            >
               {gt.gettext('隐藏')}
             </a>
           </>
