@@ -61,6 +61,7 @@ export interface ListCharactersQueryParam {
   v: number
   search: string
   query: string
+  quick?: Record<string, any>
 }
 
 export class Cpp<G extends IGame> {
@@ -138,9 +139,11 @@ export class Cpp<G extends IGame> {
           value.v = 1
           value.query = '#!all'
           value.search = ''
+          value.quick = {}
         }
         if (value.query == null) value.query = '#!all'
         if (value.search == null) value.search = ''
+        if (value.quick == null) value.quick = {}
         return value
       },
       (get, set, value: ListCharactersQueryParam | SetStateAction<ListCharactersQueryParam>) => {

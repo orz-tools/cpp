@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-06-24 20:12+0800\n"
+"PO-Revision-Date: 2024-06-25 01:52+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -87,7 +87,7 @@ msgid_plural "制作 %d 次所需"
 msgstr[0] "Ingredients for Synthesizing Once"
 msgstr[1] "Ingredients for Synthesizing %d Times"
 
-#: src/Cpp.ts:105
+#: src/Cpp.ts:106
 msgid "区域已切换，将重新载入页面。"
 msgstr "Region switched. Page will be reloaded."
 
@@ -115,7 +115,7 @@ msgid "导入「MAA 仓库识别」数据"
 msgstr "Import Data from «MAA Depot Recognizer»"
 
 #: src/components/arknights/ImporterMenuItems.tsx:12
-#: src/components/arknights/SklandImporter.tsx:283
+#: src/components/arknights/SklandImporter.tsx:319
 msgid "导入「森空岛」数据"
 msgstr "Import Data from «Skland»"
 
@@ -174,7 +174,7 @@ msgid "您不妨试试"
 msgstr "You may try"
 
 #. %s: datetime
-#: src/components/LogList.tsx:215
+#: src/components/LogList.tsx:220
 msgid "截止 %s"
 msgstr "As of %s"
 
@@ -213,6 +213,11 @@ msgstr ""
 msgid "数据源"
 msgstr "Data Sources"
 
+#: src/pkg/cpp-basic/DataManager.ts:69
+msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
+msgstr ""
+"Unable to load required game data. Please check your network connection."
+
 #: src/pkg/cpp-arknights/survey.ts:23
 msgid "明日方舟一图流 干员练度统计数据"
 msgstr "Operator Statistics from Arknights-yituliu"
@@ -247,7 +252,7 @@ msgstr "Last updated at %s"
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/LogList.tsx:158
+#: src/components/LogList.tsx:163
 msgid "更新笔记"
 msgstr "Patch Notes"
 
@@ -304,11 +309,11 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/LogList.tsx:235
+#: src/components/LogList.tsx:240
 msgid "查看更多…"
 msgstr "Read More…"
 
-#: src/components/CharacterList.tsx:749
+#: src/components/CharacterList.tsx:816
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -355,12 +360,12 @@ msgstr "UI Language"
 msgid "社区练度统计数据"
 msgstr "Stats from Community"
 
-#: src/components/arknights/SklandImporter.tsx:324
+#: src/components/arknights/SklandImporter.tsx:360
 msgid "粘贴 JSON"
 msgstr "Paste JSON"
 
 #: src/components/arknights/MAAItemImporter.tsx:47
-#: src/components/arknights/SklandImporter.tsx:182
+#: src/components/arknights/SklandImporter.tsx:219
 msgid "粘贴的东西好像不太对，请重试。"
 msgstr "The content you pasted was bad. Please try again."
 
@@ -412,17 +417,17 @@ msgstr ""
 msgid "语言已切换，将重新载入页面。"
 msgstr "UI Language changed. A reload is required."
 
-#: src/components/arknights/SklandImporter.tsx:234
-#: src/components/arknights/SklandImporter.tsx:272
+#: src/components/arknights/SklandImporter.tsx:271
+#: src/components/arknights/SklandImporter.tsx:308
 msgid "请在弹出的「提取装置」中继续操作"
 msgstr "Please continue in the popup window «Sklanding»"
 
-#: src/components/arknights/SklandImporter.tsx:290
+#: src/components/arknights/SklandImporter.tsx:326
 msgid "请在弹出窗口中继续操作"
 msgstr "Please continue in the popup window"
 
 #: src/components/arknights/MAAItemImporter.tsx:67
-#: src/components/arknights/SklandImporter.tsx:315
+#: src/components/arknights/SklandImporter.tsx:351
 msgid "请在此粘贴..."
 msgstr "Paste here..."
 
@@ -434,7 +439,7 @@ msgstr "Please upgrade your browser."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/LogList.tsx:219
+#: src/components/LogList.tsx:224
 msgid "近期更新"
 msgstr "Recent Patches"
 
@@ -470,62 +475,62 @@ msgstr "Hide"
 msgid "鸣谢"
 msgstr "Credits"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:347
+#: src/pkg/cpp-arknights/GameAdapter.ts:352
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr "Growth Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:627
+#: src/pkg/cpp-arknights/GameAdapter.ts:632
 msgctxt "arknights item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:624
+#: src/pkg/cpp-arknights/GameAdapter.ts:629
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr "Dualchips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:623
+#: src/pkg/cpp-arknights/GameAdapter.ts:628
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr "Skill, Module & Catalysts"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:622
+#: src/pkg/cpp-arknights/GameAdapter.ts:627
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr "T1 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:619
+#: src/pkg/cpp-arknights/GameAdapter.ts:624
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:621
+#: src/pkg/cpp-arknights/GameAdapter.ts:626
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:626
+#: src/pkg/cpp-arknights/GameAdapter.ts:631
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:625
+#: src/pkg/cpp-arknights/GameAdapter.ts:630
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr "Chip Packs"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:620
+#: src/pkg/cpp-arknights/GameAdapter.ts:625
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:618
+#: src/pkg/cpp-arknights/GameAdapter.ts:623
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:617
+#: src/pkg/cpp-arknights/GameAdapter.ts:622
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
@@ -560,6 +565,21 @@ msgctxt "arknights option"
 msgid "不从绿材料合成蓝材料"
 msgstr "Do Not Use T2 Materials for Synthesizing T3 Materials"
 
+#: src/components/arknights/QuickFilterBuilder.tsx:30
+msgctxt "arknights quick filter"
+msgid "稀有度"
+msgstr "Rarity"
+
+#: src/components/arknights/QuickFilterBuilder.tsx:42
+msgctxt "arknights quick filter"
+msgid "精英化"
+msgstr "Elite"
+
+#: src/components/arknights/QuickFilterBuilder.tsx:16
+msgctxt "arknights quick filter"
+msgid "职业"
+msgstr "Class"
+
 #: src/components/arknights/extraFields.tsx:26
 msgctxt "arknights skill ref"
 msgid "一技能"
@@ -575,17 +595,17 @@ msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr "S2"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:548
+#: src/pkg/cpp-arknights/GameAdapter.ts:553
 msgctxt "arknights stage difficulty"
 msgid "剧情"
 msgstr "Easy "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:546
+#: src/pkg/cpp-arknights/GameAdapter.ts:551
 msgctxt "arknights stage difficulty"
 msgid "标准"
 msgstr "Standard "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:547
+#: src/pkg/cpp-arknights/GameAdapter.ts:552
 msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr "Tough "
@@ -696,59 +716,64 @@ msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:540
+#: src/pkg/cpp-arknights/GameAdapter.ts:545
 msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
 
-#: src/components/LogList.tsx:21
+#: src/components/LogList.tsx:26
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr "Enhance the navigation bar experience on small screens"
 
-#: src/components/LogList.tsx:47
+#: src/components/LogList.tsx:52
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr "Refine the style of character list"
 
-#: src/components/LogList.tsx:16
+#: src/components/LogList.tsx:21
 msgctxt "changelog"
 msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
 msgstr ""
 "Fixed an issue where the operator \"Amiya\" had abnormal data under certain "
 "circumstances"
 
-#: src/components/LogList.tsx:53
+#: src/components/LogList.tsx:58
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr "Support data from more game regions"
 
-#: src/components/LogList.tsx:59
+#: src/components/LogList.tsx:64
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr "Add views of community-based statistics"
 
-#: src/components/LogList.tsx:66
+#: src/components/LogList.tsx:15
+msgctxt "changelog"
+msgid "增加角色的快速过滤器"
+msgstr "Add quick filters for characters"
+
+#: src/components/LogList.tsx:71
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr "Add operator statistics from Heybox"
 
-#: src/components/LogList.tsx:72
+#: src/components/LogList.tsx:77
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr "Add operator statistics from Arknights-yituliu"
 
-#: src/components/LogList.tsx:41
+#: src/components/LogList.tsx:46
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr "Support inventory importing from Skland"
 
-#: src/components/LogList.tsx:34
+#: src/components/LogList.tsx:39
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr "Add option for UI Languages"
 
-#: src/components/LogList.tsx:26
+#: src/components/LogList.tsx:31
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
@@ -773,7 +798,7 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr "assets vectorizing"
 
-#: src/components/arknights/SklandImporter.tsx:207
+#: src/components/arknights/SklandImporter.tsx:244
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr "Error During Interacting with «Sklanding»"
@@ -930,22 +955,22 @@ msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
 
-#: src/components/CharacterList.tsx:555
+#: src/components/CharacterList.tsx:596
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:548
+#: src/components/CharacterList.tsx:589
 msgctxt "predefined view name"
 msgid "想看的"
 msgstr "Interested"
 
-#: src/components/CharacterList.tsx:570
+#: src/components/CharacterList.tsx:611
 msgctxt "predefined view name"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:562
+#: src/components/CharacterList.tsx:603
 msgctxt "predefined view name"
 msgid "计划"
 msgstr "Planned"
@@ -990,80 +1015,95 @@ msgctxt "re1999"
 msgid "游戏数据"
 msgstr "Data Mining (CN)"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:117
+#: src/pkg/cpp-re1999/GameAdapter.ts:119
 msgctxt "re1999 inventory page"
 msgid "素材"
 msgstr "Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:466
+#: src/pkg/cpp-re1999/GameAdapter.ts:468
 msgctxt "re1999 item category"
 msgid "共鸣"
 msgstr "Resonate"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:469
+#: src/pkg/cpp-re1999/GameAdapter.ts:471
 msgctxt "re1999 item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:458
+#: src/pkg/cpp-re1999/GameAdapter.ts:460
 msgctxt "re1999 item category"
 msgid "彩材料"
 msgstr "T6 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:467
+#: src/pkg/cpp-re1999/GameAdapter.ts:469
 msgctxt "re1999 item category"
 msgid "心相"
 msgstr "Psychube"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:465
+#: src/pkg/cpp-re1999/GameAdapter.ts:467
 msgctxt "re1999 item category"
 msgid "洞悉一"
 msgstr "Pages"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:463
+#: src/pkg/cpp-re1999/GameAdapter.ts:465
 msgctxt "re1999 item category"
 msgid "洞悉三"
 msgstr "Tomes"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:464
+#: src/pkg/cpp-re1999/GameAdapter.ts:466
 msgctxt "re1999 item category"
 msgid "洞悉二"
 msgstr "Scrolls"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:460
+#: src/pkg/cpp-re1999/GameAdapter.ts:462
 msgctxt "re1999 item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:462
+#: src/pkg/cpp-re1999/GameAdapter.ts:464
 msgctxt "re1999 item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:468
+#: src/pkg/cpp-re1999/GameAdapter.ts:470
 msgctxt "re1999 item category"
 msgid "荒原"
 msgstr "Wilderness"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:461
+#: src/pkg/cpp-re1999/GameAdapter.ts:463
 msgctxt "re1999 item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:459
+#: src/pkg/cpp-re1999/GameAdapter.ts:461
 msgctxt "re1999 item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:457
+#: src/pkg/cpp-re1999/GameAdapter.ts:459
 msgctxt "re1999 item category"
 msgid "钱和经验"
 msgstr "Dust & Sharpodonty"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:376
+#: src/pkg/cpp-re1999/GameAdapter.ts:378
 msgctxt "re1999 level code"
 msgid "厄险%s"
 msgstr "%s Hard"
+
+#: src/components/re1999/QuickFilterBuilder.tsx:53
+msgctxt "re1999 quick filter"
+msgid "洞悉"
+msgstr "Insight"
+
+#: src/components/re1999/QuickFilterBuilder.tsx:25
+msgctxt "re1999 quick filter"
+msgid "灵感"
+msgstr "Afflatus"
+
+#: src/components/re1999/QuickFilterBuilder.tsx:42
+msgctxt "re1999 quick filter"
+msgid "稀有度"
+msgstr "Rarity"
 
 #: src/components/re1999/CharacterStatusPopover.tsx:193
 msgctxt "re1999 status group"

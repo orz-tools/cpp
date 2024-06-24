@@ -3,6 +3,7 @@ import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from 
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { ImporterMenuItems } from './ImporterMenuItems'
+import { QuickFilterBuilder } from './QuickFilterBuilder'
 import { TaskDisplay } from './TaskDisplay'
 import { extraFields } from './extraFields'
 import { renderCharacterStatus } from './renderCharacterStatus'
@@ -23,4 +24,10 @@ export const ArknightsComponents: IGameComponent = {
   style,
   extraFields: extraFields,
   TaskDisplay,
+  QuickFilterBuilder,
+  quickFilters: {
+    professions: 'contains',
+    rarity: '==',
+    elite: '==',
+  },
 }

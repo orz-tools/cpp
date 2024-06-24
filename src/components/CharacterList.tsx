@@ -320,6 +320,22 @@ function stringifyQuery(query: QueryParam): string {
   return JSON.stringify(query, null)
 }
 
+function wrapQueryWithQuickFilter(query: QueryParam, field?: Record<string, any>, valids?: Record<string, string>) {
+  if (!field) return query
+  const keys = Object.keys(field)
+  if (keys.length === 0) return query
+
+  if (!valids) valids = {}
+  if (!query.where) query.where = { _: '&&', operand: [] }
+  if (query.where._ !== '&&') query.where = { _: '&&', operand: [query.where] }
+  for (const [k, v] of Object.entries(field)) {
+    const op = Object.prototype.hasOwnProperty.call(valids, k) ? valids[k] : null
+    if (op == null) continue
+    query.where.operand.push({ _: 'field', field: k, op: op, operand: v })
+  }
+  return query
+}
+
 function compileQuery(query: string, cpp: Cpp<any>): QueryParam {
   const defaultQueryOrder = cpp.gameAdapter.getDefaultCharacterQueryOrder()
   if (query.startsWith(PredefinedQueryPrefix)) {
@@ -372,6 +388,28 @@ function compileQuery(query: string, cpp: Cpp<any>): QueryParam {
   return r
 }
 
+export const useQuickFilter = (field: string, value: any) => {
+  const [param, setParam] = useAtom(useCpp().queryParamAtom)
+  const quick = param.quick || {}
+  const current = Object.prototype.hasOwnProperty.call(quick, field) ? quick[field] : undefined
+  return {
+    active: current === value,
+    current: current,
+    toggle: useEvent(() => {
+      setParam((x) => {
+        const quick = x.quick || {}
+        const current = quick[field]
+        if (current === value) {
+          const nq = { ...quick }
+          delete nq[field]
+          return { ...x, quick: nq }
+        }
+        return { ...x, quick: { ...quick, [field]: value } }
+      })
+    }),
+  }
+}
+
 async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListCharactersQueryParam) {
   await Promise.resolve()
 
@@ -384,7 +422,10 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
   const emptyCharacterStatus = uda.getFrozenEmptyCharacterStatus()
 
   const rq = ga.getRootCharacterQuery()
-  const query = new Querier<G, ICharacter>(rq, compileQuery(param.query, cpp))
+  const query = new Querier<G, ICharacter>(
+    rq,
+    wrapQueryWithQuickFilter(compileQuery(param.query, cpp), param.quick, cpp.gameComponent.quickFilters),
+  )
 
   const matcher = buildMatcher(param.search)
 
@@ -641,11 +682,36 @@ const QueryEditor = memo(() => {
   const custom = useCustomQueryActive()
   return custom ? (
     <>
-      <Card elevation={Elevation.ONE} style={{ marginBottom: 3, padding: 0, display: 'flex' }}>
+      <Card elevation={Elevation.ONE} style={{ marginBottom: 1, padding: 0, display: 'flex' }}>
         <QueryQueryBox />
       </Card>
     </>
   ) : null
+})
+
+export const QuickFilterBuilder = memo(() => {
+  const { QuickFilterBuilder } = useComponents()
+
+  return (
+    <>
+      {QuickFilterBuilder ? (
+        <Navbar
+          className="cpp-quick-filter"
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            height: 'auto',
+            padding: 0,
+            marginTop: 1,
+            marginBottom: 2,
+          }}
+        >
+          <QuickFilterBuilder />
+        </Navbar>
+      ) : null}
+    </>
+  )
 })
 
 export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom: PrimitiveAtom<number> }) => {
@@ -745,6 +811,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
         </Navbar.Group>
       </Navbar>
       <QueryEditor />
+      <QuickFilterBuilder />
       {error ? (
         <NonIdealState title={gt.gettext('查询失败')} icon={'warning-sign'}>
           <pre style={{ margin: 0 }}>{error.message}</pre>

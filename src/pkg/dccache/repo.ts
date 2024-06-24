@@ -13,7 +13,7 @@ export class CppRepoObject<T extends object> extends DataContainerObject<T> {
       `${REPO_ROOT}/files/${encodeURIComponent(this.name)}.json?${new URLSearchParams({
         v: String(header.version.id),
         t: String(header.version.timestamp),
-        s: String(header.version.schema),
+        ss: String(header.version.schema),
       })}`,
     )
     if (!res.ok) {

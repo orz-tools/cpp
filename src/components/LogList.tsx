@@ -10,6 +10,11 @@ import { PSTRs } from './LineBreaks'
 
 const logs = [
   {
+    date: '2024-06-25',
+    type: 'new',
+    desc: lpstr(() => gt.pgettext('changelog', '增加角色的快速过滤器')),
+  },
+  {
     date: '2024-06-24',
     game: [GameName.Arknights],
     type: 'fix',

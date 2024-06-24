@@ -67,6 +67,8 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
       .addAlias('appellation')
       .addAlias('en')
     aa.addField('rarity', '稀有度', QNumber, ({ character }) => character.rarity + 1).addAlias('star')
+    aa.addField('career', '属性', QNumber, ({ character }) => character.raw.career)
+    aa.addField('dmgtype', '伤害类型', QNumber, ({ character }) => character.raw.dmgType)
 
     aa.addStatusField('insight', '洞悉', QNumber, ({ status }) => status.insight)
     aa.addStatusField('level', '等级', QNumber, ({ status }) => status.level)

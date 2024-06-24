@@ -64,6 +64,10 @@ export function load<T extends object>(
     const metaVerify = meta ? obj.safeVerify(meta.header) : null
     const dataVerify = data ? obj.safeVerify(data) : null
 
+    if (metaVerify) {
+      return await fetch(obj, true, onRefreshed)
+    }
+
     if (meta) {
       if (data) {
         if (!deepEqual(meta.header.version, data.version, { strict: true })) {

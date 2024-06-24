@@ -14,7 +14,7 @@ export class ArknightsKengxxiaoObject extends CppRepoObject<
   | CppData_ArknightsKengxxiaoJaJp
   | CppData_ArknightsKengxxiaoKoKr
 > {
-  public requiredSchema = 2
+  public requiredSchema = 3
 
   public constructor(public readonly lang: 'en_US' | 'zh_CN' | 'ja_JP' | 'ko_KR') {
     super(`arknights-kengxxiao-${lang}`)

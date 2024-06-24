@@ -8,6 +8,7 @@ import {
   PredefinedQuery,
   QNumber,
   QString,
+  QStrings,
   QueryParam,
   RootCharacterQuery,
 } from '../cpp-basic'
@@ -95,6 +96,10 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       .addAlias('appellation')
       .addAlias('en')
     aa.addField('rarity', '稀有度', QNumber, ({ character }) => character.rarity + 1).addAlias('star')
+    aa.addField('profession', '职业', QString, ({ character }) => character.raw.profession)
+    aa.addField('professions', '职业', QStrings, ({ character }) => [
+      ...new Set([character.raw.profession, ...character.patches.map((x) => x[1].profession)]),
+    ])
 
     aa.addStatusField('elite', '精英化', QNumber, ({ status }) => status.elite)
     aa.addStatusField('level', '等级', QNumber, ({ status }) => status.level)

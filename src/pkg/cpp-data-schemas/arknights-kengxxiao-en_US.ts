@@ -6,6 +6,7 @@ export type CppData_ArknightsKengxxiaoEnUs = {
             description: string | null;
             displayNumber: string | null;
             appellation: string;
+            profession: "CASTER" | "MEDIC" | "PIONEER" | "SNIPER" | "SPECIAL" | "SUPPORT" | "TANK" | "WARRIOR" | "TRAP" | "TOKEN";
             rarity: "TIER_1" | "TIER_2" | "TIER_3" | "TIER_4" | "TIER_5" | "TIER_6";
             skills: {
                 skillId: string | null;
@@ -56,6 +57,7 @@ export type CppData_ArknightsKengxxiaoEnUs = {
                 description: string | null;
                 displayNumber: string | null;
                 appellation: string;
+                profession: "CASTER" | "MEDIC" | "PIONEER" | "SNIPER" | "SPECIAL" | "SUPPORT" | "TANK" | "WARRIOR" | "TRAP" | "TOKEN";
                 rarity: "TIER_1" | "TIER_2" | "TIER_3" | "TIER_4" | "TIER_5" | "TIER_6";
                 skills: {
                     skillId: string | null;

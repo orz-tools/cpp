@@ -1,6 +1,7 @@
 import localForage from 'localforage'
 import { FriendlyError } from '../../components/Err'
 import { DataContainerObject, IDataContainer, destroy, getLastCheckedAt, load, reset } from '../dccache'
+import { gt } from '../gt'
 import { IGame } from './types'
 
 // HACK
@@ -65,7 +66,7 @@ export abstract class BasicDataManager<G extends IGame> {
           const realE = e instanceof Error ? e : new Error(e as any)
           const err = new FriendlyError(`Failed to load DataObject ${x.name}: ${realE.message}`, { cause: e })
           if (realE.stack) err.stack = realE.stack
-          ;(err as any).friendly = `无法加载数据，请检查网络连接/更换网络/使用“加速器”/切换线路。`
+          ;(err as any).friendly = gt.gettext(`无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。`)
           throw err
         } finally {
           this.loading.delete(x.name)

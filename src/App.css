@@ -386,6 +386,22 @@ body .bp5-navbar-group {
   height: 26px;
 }
 
+.cpp-quick-filter > .bp5-navbar-divider {
+  margin: 0 5px;
+}
+
+.cpp-quick-filter > .bp5-navbar-divider + .bp5-button-group:has(.bp5-tag:first-child) {
+  margin-left: -5px;
+}
+
+.cpp-quick-filter .bp5-button {
+  min-width: auto;
+}
+
+.cpp-quick-filter > .bp5-button-group > .bp5-tag:first-child {
+  padding-right: 2px;
+}
+
 @media screen and (max-width: 1500px) {
   body .cpp-navbar-main {
     padding: 0 5px;

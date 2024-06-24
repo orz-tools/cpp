@@ -28,4 +28,6 @@ export interface IGameComponent {
     { width: number; C: React.FC<{ query: Querier<any, any>; context: FieldContext<any, any, any> }> }
   >
   TaskDisplay?: React.FC<{ type: any; charId: string; formattedString: string }>
+  QuickFilterBuilder?: React.FC
+  quickFilters?: Record<string, string>
 }

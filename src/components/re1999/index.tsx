@@ -2,6 +2,7 @@ import type { IGameComponent } from '../types'
 import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from './AboutList'
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
+import { QuickFilterBuilder } from './QuickFilterBuilder'
 import { renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
 
@@ -18,4 +19,11 @@ export const Re1999Components: IGameComponent = {
   style,
   itemSimulatedViewConfig: { limit: 6, horizontal: false, viewMaxSize: 1000 },
   blobFlavours: ['soul', 'normal'],
+  QuickFilterBuilder,
+  quickFilters: {
+    career: '==',
+    dmgtype: '==',
+    rarity: '==',
+    insight: '==',
+  },
 }

@@ -337,23 +337,17 @@ export class Character implements ICharacter {
     return value
   }
 
-  private readonly patches: (readonly [string, ArknightsKengxxiao['exCharacters']['']])[] = []
+  public readonly patches: (readonly [string, ArknightsKengxxiao['exCharacters']['']])[] = []
 
   public get hasPatches() {
     return this.patches.length > 0
   }
 
   public getPatchProfession(charId: string): Profession {
-    switch (charId) {
-      case 'char_002_amiya':
-        return Profession.CASTER
-      case 'char_1001_amiya2':
-        return Profession.WARRIOR
-      case 'char_1037_amiya3':
-        return Profession.MEDIC
-    }
-
-    return Profession.WARRIOR
+    if (charId === this.key) return this.raw.profession as Profession
+    const patch = this.patches.find((x) => x[0] === charId)
+    if (!patch) return Profession.TOKEN
+    return patch[1].profession as Profession
   }
 
   public get defaultSkinId(): string {

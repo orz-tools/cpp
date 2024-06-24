@@ -120,3 +120,5 @@ QString.addOp('startsWith', QString, QBoolean, (self, arg) => self.startsWith(ar
 QString.addOp('endsWith', QString, QBoolean, (self, arg) => self.endsWith(arg)).addAlias('$=')
 QString.addOp('contains', QString, QBoolean, (self, arg) => self.includes(arg)).addAlias('*=')
 QString.addOp('matches', QRegExp, QBoolean, (self, arg) => !!self.match(arg)).addAlias('~=')
+
+QStrings.addOp('contains', QString, QBoolean, (self, arg) => self.includes(arg)).addAlias('has')

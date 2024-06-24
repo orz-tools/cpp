@@ -26,6 +26,8 @@ const proMap = {
   [Profession.SUPPORT]: ProfessionSupport,
   [Profession.TANK]: ProfessionTank,
   [Profession.WARRIOR]: ProfessionWarrior,
+  [Profession.TOKEN]: undefined,
+  [Profession.TRAP]: undefined,
 }
 
 export const ProfessionIcon = memo(({ profession, style }: { profession: Profession; style?: React.CSSProperties }) => {
