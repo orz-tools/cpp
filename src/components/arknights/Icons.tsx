@@ -1,5 +1,6 @@
+import { Icon } from '@blueprintjs/core'
 import { memo } from 'react'
-import { CharacterLevel, Skill, UniEquip } from '../../pkg/cpp-arknights'
+import { CharacterLevel, Profession, Skill, UniEquip } from '../../pkg/cpp-arknights'
 import { CachedImg } from '../Icons'
 import elite0 from './assets/elite0-small.png'
 import elite1 from './assets/elite1-small.png'
@@ -7,6 +8,34 @@ import elite2 from './assets/elite2-small.png'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
 import m3 from './assets/m3.png'
+import ProfessionCaster from './assets/profession-CASTER.svg?react'
+import ProfessionMedic from './assets/profession-MEDIC.svg?react'
+import ProfessionPioneer from './assets/profession-PIONEER.svg?react'
+import ProfessionSniper from './assets/profession-SNIPER.svg?react'
+import ProfessionSpecial from './assets/profession-SPECIAL.svg?react'
+import ProfessionSupport from './assets/profession-SUPPORT.svg?react'
+import ProfessionTank from './assets/profession-TANK.svg?react'
+import ProfessionWarrior from './assets/profession-WARRIOR.svg?react'
+
+const proMap = {
+  [Profession.CASTER]: ProfessionCaster,
+  [Profession.MEDIC]: ProfessionMedic,
+  [Profession.PIONEER]: ProfessionPioneer,
+  [Profession.SNIPER]: ProfessionSniper,
+  [Profession.SPECIAL]: ProfessionSpecial,
+  [Profession.SUPPORT]: ProfessionSupport,
+  [Profession.TANK]: ProfessionTank,
+  [Profession.WARRIOR]: ProfessionWarrior,
+}
+
+export const ProfessionIcon = memo(({ profession, style }: { profession: Profession; style?: React.CSSProperties }) => {
+  const C = proMap[profession]
+  return (
+    <span className="bp5-icon" style={style}>
+      {C ? <C width={16} height={16} /> : <Icon icon="blank" size={16} />}
+    </span>
+  )
+})
 
 export const SkillIcon = memo(({ skill, level, master }: { skill: Skill; level?: number; master?: number }) => {
   const name = skill.name

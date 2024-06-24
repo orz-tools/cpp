@@ -6,6 +6,7 @@ import { sortBy, sum } from 'ramda'
 import React, { SetStateAction, memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
+import { useComponents } from '../hooks/useComponents'
 import { IGame, Task } from '../pkg/cpp-basic'
 import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
 import { StarStatus } from '../pkg/cpp-core/UserData'
@@ -35,6 +36,11 @@ const queryParamAtom: WritableAtom<
 
 const TaskDisplay = memo(<G extends IGame>({ type, charId }: { type: G['characterTaskType']; charId: string }) => {
   const ga = useGameAdapter()
+  const formattedString = ga.getUserDataAdapter().formatTaskAsString(type, charId)
+  const C = useComponents().TaskDisplay
+  if (C) {
+    return <C type={type} charId={charId} formattedString={formattedString} />
+  }
   return <>{ga.getUserDataAdapter().formatTaskAsString(type, charId)}</>
 })
 

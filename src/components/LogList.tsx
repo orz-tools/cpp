@@ -10,6 +10,12 @@ import { PSTRs } from './LineBreaks'
 
 const logs = [
   {
+    date: '2024-06-24',
+    game: [GameName.Arknights],
+    type: 'fix',
+    desc: lpstr(() => gt.pgettext('changelog', '修复干员「阿米娅」在特定情况下数据异常的问题')),
+  },
+  {
     date: '2024-06-15',
     type: 'optimize',
     desc: lpstr(() => gt.pgettext('changelog', '优化小屏幕上的导航栏体验')),

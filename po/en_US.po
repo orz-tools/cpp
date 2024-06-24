@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-06-16 11:57+0800\n"
+"PO-Revision-Date: 2024-06-24 19:57+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Source-Language: zh_CN\n"
 
 #. %s: stat source name
-#: src/components/arknights/CharacterStatusPopover.tsx:487
+#: src/components/arknights/CharacterStatusPopover.tsx:507
 msgid "%s持有率"
 msgstr "Own Rate (%s)"
 
@@ -47,7 +47,7 @@ msgstr "Value Delta"
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr "Drop Rate Data from Penguin Statistics"
 
-#: src/components/TaskList.tsx:131
+#: src/components/TaskList.tsx:137
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
@@ -76,7 +76,7 @@ msgid "最好还是别合成的道具"
 msgstr "Better Not Synthesizing"
 
 #. %s: stat source name
-#: src/components/arknights/CharacterStatusPopover.tsx:448
+#: src/components/arknights/CharacterStatusPopover.tsx:468
 msgid "切换至%s"
 msgstr "Switch to %s"
 
@@ -91,7 +91,7 @@ msgstr[1] "Ingredients for Synthesizing %d Times"
 msgid "区域已切换，将重新载入页面。"
 msgstr "Region switched. Page will be reloaded."
 
-#: src/components/arknights/CharacterStatusPopover.tsx:475
+#: src/components/arknights/CharacterStatusPopover.tsx:495
 #: src/components/CharacterStatusPopover.tsx:48
 #: src/components/re1999/CharacterStatusPopover.tsx:236
 msgid "培养目标"
@@ -105,7 +105,7 @@ msgstr "Statements"
 msgid "如今"
 msgstr "Current"
 
-#: src/components/TaskList.tsx:113
+#: src/components/TaskList.tsx:119
 msgid "完成"
 msgstr "Complete"
 
@@ -115,7 +115,7 @@ msgid "导入「MAA 仓库识别」数据"
 msgstr "Import Data from «MAA Depot Recognizer»"
 
 #: src/components/arknights/ImporterMenuItems.tsx:12
-#: src/components/arknights/SklandImporter.tsx:267
+#: src/components/arknights/SklandImporter.tsx:283
 msgid "导入「森空岛」数据"
 msgstr "Import Data from «Skland»"
 
@@ -151,11 +151,11 @@ msgstr "Help & Community"
 msgid "帮助文档"
 msgstr "Documentation"
 
-#: src/components/TaskList.tsx:124
+#: src/components/TaskList.tsx:130
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:475
+#: src/components/arknights/CharacterStatusPopover.tsx:495
 #: src/components/CharacterStatusPopover.tsx:48
 #: src/components/re1999/CharacterStatusPopover.tsx:236
 msgid "当前状态"
@@ -174,11 +174,11 @@ msgid "您不妨试试"
 msgstr "You may try"
 
 #. %s: datetime
-#: src/components/LogList.tsx:209
+#: src/components/LogList.tsx:215
 msgid "截止 %s"
 msgstr "As of %s"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:472
+#: src/components/arknights/CharacterStatusPopover.tsx:492
 #: src/components/re1999/CharacterStatusPopover.tsx:233
 msgid "持有"
 msgstr "Own"
@@ -222,7 +222,7 @@ msgid "明日方舟一图流 材料价值数据"
 msgstr "Sanity Value of Items from Arknights-yituliu"
 
 #. %s: stat source name
-#: src/components/arknights/CharacterStatusPopover.tsx:447
+#: src/components/arknights/CharacterStatusPopover.tsx:467
 msgid "显示%s"
 msgstr "Show %s"
 
@@ -247,7 +247,7 @@ msgstr "Last updated at %s"
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/LogList.tsx:152
+#: src/components/LogList.tsx:158
 msgid "更新笔记"
 msgstr "Patch Notes"
 
@@ -304,7 +304,7 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/LogList.tsx:229
+#: src/components/LogList.tsx:235
 msgid "查看更多…"
 msgstr "Read More…"
 
@@ -316,7 +316,7 @@ msgstr "Query Failed"
 msgid "检查数据更新"
 msgstr "Check For Data Updates"
 
-#: src/components/arknights/SklandImporter.tsx:135
+#: src/components/arknights/SklandImporter.tsx:151
 msgid ""
 "森空岛目前提供的数据无法准确区分您的模组到底是没开还是仅 1 级。对于这种情况，"
 "此导入程序将会跳过这些模组。如果您有 1 级模组，请自行核对。"
@@ -351,16 +351,16 @@ msgstr "Save Manager"
 msgid "界面语言"
 msgstr "UI Language"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:505
+#: src/components/arknights/CharacterStatusPopover.tsx:525
 msgid "社区练度统计数据"
 msgstr "Stats from Community"
 
-#: src/components/arknights/SklandImporter.tsx:308
+#: src/components/arknights/SklandImporter.tsx:324
 msgid "粘贴 JSON"
 msgstr "Paste JSON"
 
 #: src/components/arknights/MAAItemImporter.tsx:47
-#: src/components/arknights/SklandImporter.tsx:166
+#: src/components/arknights/SklandImporter.tsx:182
 msgid "粘贴的东西好像不太对，请重试。"
 msgstr "The content you pasted was bad. Please try again."
 
@@ -412,17 +412,17 @@ msgstr ""
 msgid "语言已切换，将重新载入页面。"
 msgstr "UI Language changed. A reload is required."
 
-#: src/components/arknights/SklandImporter.tsx:218
-#: src/components/arknights/SklandImporter.tsx:256
+#: src/components/arknights/SklandImporter.tsx:234
+#: src/components/arknights/SklandImporter.tsx:272
 msgid "请在弹出的「提取装置」中继续操作"
 msgstr "Please continue in the popup window «Sklanding»"
 
-#: src/components/arknights/SklandImporter.tsx:274
+#: src/components/arknights/SklandImporter.tsx:290
 msgid "请在弹出窗口中继续操作"
 msgstr "Please continue in the popup window"
 
 #: src/components/arknights/MAAItemImporter.tsx:67
-#: src/components/arknights/SklandImporter.tsx:299
+#: src/components/arknights/SklandImporter.tsx:315
 msgid "请在此粘贴..."
 msgstr "Paste here..."
 
@@ -434,7 +434,7 @@ msgstr "Please upgrade your browser."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/LogList.tsx:213
+#: src/components/LogList.tsx:219
 msgid "近期更新"
 msgstr "Recent Patches"
 
@@ -462,7 +462,7 @@ msgstr "Reload"
 msgid "重载数据"
 msgstr "Reset Data"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:533
+#: src/components/arknights/CharacterStatusPopover.tsx:571
 msgid "隐藏"
 msgstr "Hide"
 
@@ -590,64 +590,64 @@ msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr "Tough "
 
-#: src/components/arknights/CharacterStatusPopover.tsx:406
+#: src/components/arknights/CharacterStatusPopover.tsx:426
 msgctxt "arknights status group"
 msgid "技能"
 msgstr "Skill"
 
 #. %d: skill number
-#: src/components/arknights/CharacterStatusPopover.tsx:299
+#: src/components/arknights/CharacterStatusPopover.tsx:310
 msgctxt "arknights status group"
 msgid "技能 %d"
 msgstr "S%d"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:117
+#: src/components/arknights/CharacterStatusPopover.tsx:118
 msgctxt "arknights status group"
 msgid "精一"
 msgstr "E1"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:139
+#: src/components/arknights/CharacterStatusPopover.tsx:140
 msgctxt "arknights status group"
 msgid "精二"
 msgstr "E2"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:95
+#: src/components/arknights/CharacterStatusPopover.tsx:96
 msgctxt "arknights status group"
 msgid "精零"
 msgstr "E0"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:261
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:260
 msgctxt "arknights task"
 msgid "%d$number 技能专一: %s$name"
 msgstr "Skill %d$number M1: %s$name"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:269
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:268
 msgctxt "arknights task"
 msgid "%d$number 技能专三: %s$name"
 msgstr "Skill %d$number M3: %s$name"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:265
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:264
 msgctxt "arknights task"
 msgid "%d$number 技能专二: %s$name"
 msgstr "Skill %d$number M2: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:280
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:279
 msgctxt "arknights task"
 msgid "%s$code 模组 1 级: %s$name"
 msgstr "Module-%s$code L1: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:284
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:283
 msgctxt "arknights task"
 msgid "%s$code 模组 2 级: %s$name"
 msgstr "Module-%s$code L2: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:288
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:287
 msgctxt "arknights task"
 msgid "%s$code 模组 3 级: %s$name"
 msgstr "Module-%s$code L3: %s$name"
@@ -701,47 +701,54 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
 
-#: src/components/LogList.tsx:15
+#: src/components/LogList.tsx:21
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr "Enhance the navigation bar experience on small screens"
 
-#: src/components/LogList.tsx:41
+#: src/components/LogList.tsx:47
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr "Refine the style of character list"
 
-#: src/components/LogList.tsx:47
+#: src/components/LogList.tsx:16
+msgctxt "changelog"
+msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
+msgstr ""
+"Fixed an issue where the operator \"Amiya\" had abnormal data under certain "
+"circumstances"
+
+#: src/components/LogList.tsx:53
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr "Support data from more game regions"
 
-#: src/components/LogList.tsx:53
+#: src/components/LogList.tsx:59
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr "Add views of community-based statistics"
 
-#: src/components/LogList.tsx:60
+#: src/components/LogList.tsx:66
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr "Add operator statistics from Heybox"
 
-#: src/components/LogList.tsx:66
+#: src/components/LogList.tsx:72
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr "Add operator statistics from Arknights-yituliu"
 
-#: src/components/LogList.tsx:35
+#: src/components/LogList.tsx:41
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr "Support inventory importing from Skland"
 
-#: src/components/LogList.tsx:28
+#: src/components/LogList.tsx:34
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr "Add option for UI Languages"
 
-#: src/components/LogList.tsx:20
+#: src/components/LogList.tsx:26
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
@@ -761,7 +768,7 @@ msgctxt "credit role"
 msgid "测试和建议"
 msgstr "testing & feedback"
 
-#: src/components/arknights/SklandImporter.tsx:191
+#: src/components/arknights/SklandImporter.tsx:207
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr "Error During Interacting with «Sklanding»"

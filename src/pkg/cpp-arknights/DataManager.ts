@@ -17,6 +17,7 @@ import {
   ArknightsFormulaTag,
   ArknightsKengxxiao,
   ArknightsRegion,
+  Profession,
 } from './types'
 
 export class ArknightsDataManager extends BasicDataManager<Arknights> {
@@ -337,6 +338,23 @@ export class Character implements ICharacter {
   }
 
   private readonly patches: (readonly [string, ArknightsKengxxiao['exCharacters']['']])[] = []
+
+  public get hasPatches() {
+    return this.patches.length > 0
+  }
+
+  public getPatchProfession(charId: string): Profession {
+    switch (charId) {
+      case 'char_002_amiya':
+        return Profession.CASTER
+      case 'char_1001_amiya2':
+        return Profession.WARRIOR
+      case 'char_1037_amiya3':
+        return Profession.MEDIC
+    }
+
+    return Profession.WARRIOR
+  }
 
   public get defaultSkinId(): string {
     return this.dm.raw.exSkin.buildinEvolveMap[this.key]?.['0'] || ''

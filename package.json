@@ -53,6 +53,7 @@
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vite-node": "^0.34.3",
+    "vite-plugin-svgr": "^4.2.0",
     "vitest": "^0.34.3"
   },
   "packageManager": "yarn@3.4.1",

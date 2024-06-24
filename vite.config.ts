@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react-swc'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, type PluginOption } from 'vite'
+import svgr from 'vite-plugin-svgr'
 
 const chunks = {
   'game-arknights': [/\/src\/components\/arknights\//, /\/src\/pkg\/cpp-arknights\//],
@@ -10,7 +11,7 @@ const chunks = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), visualizer() as PluginOption],
+  plugins: [react(), visualizer() as PluginOption, svgr()],
   build: {
     rollupOptions: {
       output: {

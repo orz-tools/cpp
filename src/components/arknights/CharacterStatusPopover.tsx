@@ -6,6 +6,7 @@ import { Arknights, ArknightsDataManager, Character, PreferenceKeys, SurveySourc
 import { HeyboxSurveySource, SurveyProps, SurveySource, YituliuSurveySource } from '../../pkg/cpp-arknights/survey'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import { gt } from '../../pkg/gt'
+import { ProfessionIcon } from './Icons'
 import m0 from './assets/m0.png'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
@@ -188,6 +189,7 @@ export const SurveyDummy = memo(() => {
         background: 'none',
         textAlign: 'right',
         opacity: 0.0,
+        verticalAlign: 'bottom',
       }}
       className={Classes.TEXT_OVERFLOW_ELLIPSIS}
     >
@@ -213,6 +215,7 @@ export const SurveyNumber = memo(({ percent, samples, desc }: SurveyProps) => {
         color: 'rgb(28, 33, 39)',
         textAlign: 'right',
         opacity: sampleScaleOpacity(s),
+        verticalAlign: 'bottom',
       }}
       className={Classes.TEXT_OVERFLOW_ELLIPSIS}
       title={title}
@@ -296,7 +299,14 @@ export const CharacterStatusSkillMasterSection = memo(() => {
           <div key={charSkill.skillId} className="cpp-charstat-group">
             <Survey survey={ss ? ss[0] : ss} />
             <ButtonGroup className={Classes.DARK}>
-              <Tag large={true}>
+              <Tag
+                large={true}
+                icon={
+                  character.hasPatches ? (
+                    <ProfessionIcon profession={character.getPatchProfession(charSkill.rawCharId)} />
+                  ) : undefined
+                }
+              >
                 {gt
                   .pgettext('arknights status group', '技能 %d') /* I10N: %d: skill number */
                   .replaceAll('%d', `${charSkill.charSkillIndex + 1}`)}
@@ -372,7 +382,16 @@ export const CharacterStatusModSection = memo(() => {
           <div key={charMod.equipId} className="cpp-charstat-group">
             <Survey survey={ss ? ss[0] : ss} />
             <ButtonGroup className={Classes.DARK}>
-              <Tag large={true} style={{ fontFamily: 'monospace' }} title={charMod.equipId}>
+              <Tag
+                large={true}
+                style={{ fontFamily: 'monospace' }}
+                title={charMod.equipId}
+                icon={
+                  character.hasPatches ? (
+                    <ProfessionIcon profession={character.getPatchProfession(charMod.rawCharId)} />
+                  ) : undefined
+                }
+              >
                 {charMod.equip.raw.typeName1}-{charMod.equip.raw.typeName2}
               </Tag>
               <ModButton modId={charMod.equipId} level={0} />

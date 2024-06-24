@@ -59,3 +59,14 @@ export const enum ArknightsRegion {
 }
 
 export type ArknightsKengxxiao = CppData_ArknightsKengxxiaoZhCn | CppData_ArknightsKengxxiaoEnUs
+
+export const enum Profession {
+  CASTER = 'CASTER',
+  MEDIC = 'MEDIC',
+  PIONEER = 'PIONEER',
+  SNIPER = 'SNIPER',
+  SPECIAL = 'SPECIAL',
+  SUPPORT = 'SUPPORT',
+  TANK = 'TANK',
+  WARRIOR = 'WARRIOR',
+}

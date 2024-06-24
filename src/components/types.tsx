@@ -27,4 +27,5 @@ export interface IGameComponent {
     string,
     { width: number; C: React.FC<{ query: Querier<any, any>; context: FieldContext<any, any, any> }> }
   >
+  TaskDisplay?: React.FC<{ type: any; charId: string; formattedString: string }>
 }

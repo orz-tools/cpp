@@ -382,6 +382,10 @@ body .bp5-navbar-group {
   white-space: nowrap;
 }
 
+.cpp-charstat-group > .bp5-tag {
+  height: 26px;
+}
+
 @media screen and (max-width: 1500px) {
   body .cpp-navbar-main {
     padding: 0 5px;
