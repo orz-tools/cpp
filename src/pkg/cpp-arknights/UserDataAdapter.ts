@@ -255,8 +255,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
           .replaceAll('%d$from', `${type.from}`)
           .replaceAll('%d$to', `${type.to}`)
       case 'skillMaster': {
-        const skillIndex = character.skills.findIndex((x) => x.skillId === type.skillId)
-        const skill = character.skills[skillIndex]
+        const charSkill = character.skills.find((x) => x.skillId === type.skillId)!
         return [
           gt.pgettext(
             'arknights task',
@@ -271,8 +270,8 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
             `%d$number 技能专三: %s$name`,
           ) /* I10N: %d$number: skill number, %s$name: skill name */,
         ][type.to - 1]
-          .replaceAll('%d$number', `${skillIndex + 1}`)
-          .replaceAll('%s$name', `${skill.skill.name}`)
+          .replaceAll('%d$number', `${charSkill.charSkillIndex + 1}`)
+          .replaceAll('%s$name', `${charSkill.skill.name}`)
       }
       case 'mod': {
         const uniEquip = character.uniEquips.find((x) => x.equipId === type.modId)!
