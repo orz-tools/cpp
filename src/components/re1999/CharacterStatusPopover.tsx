@@ -239,6 +239,15 @@ export function CharacterStatusPopover({ character, isGoal }: { character: Chara
         <>
           <CharacterStatusInsightLevelSection />
           <CharacterStatusResonateSection />
+
+          {character.maxResonate >= 10 ? (
+            <div className="cpp-charstat-group">
+              <ButtonGroup>
+                <Tag large={true}>{gt.pgettext('re1999 status group', '调频')}</Tag>
+                <Button disabled>WIP</Button>
+              </ButtonGroup>
+            </div>
+          ) : null}
         </>
       ) : undefined}
     </EditorContext.Provider>
