@@ -182,9 +182,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             if (!targetCharacter) throw new Error(`Character Not Found: ${charId}`)
             if (targetCharacter.hasPatches) {
               ctx.addWarning(
-                `森空岛目前提供的数据无法分辨训练室里的阿米娅的升变状态，因此无法判定技能专精状态，请自行核对。请将此信息分享给开发者：${JSON.stringify(
-                  data.building.training,
-                )}`,
+                `森空岛目前提供的数据无法分辨训练室里的阿米娅的升变状态，因此无法判定技能专精状态，请自行核对。`,
               )
             } else {
               const targetCharSkill = targetCharacter.skills.find(
