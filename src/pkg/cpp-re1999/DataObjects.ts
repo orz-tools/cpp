@@ -9,7 +9,7 @@ import { CppData_Reverse1999Yuanyan3060ZhCn } from '../cpp-data-schemas/reverse1
 import { CppRepoObject } from '../dccache'
 
 export class Reverse1999Yuanyan3060Object extends CppRepoObject<CppData_Reverse1999Yuanyan3060ZhCn> {
-  public requiredSchema = 1
+  public requiredSchema = 2
 
   public constructor(public readonly lang: 'zh_CN') {
     super(`reverse1999-yuanyan3060-${lang}`)
@@ -23,7 +23,7 @@ export class Reverse1999EnigmaticNebulaObject extends CppRepoObject<
   | CppData_Reverse1999EnigmaticnebulaTw
   | CppData_Reverse1999EnigmaticnebulaZh
 > {
-  public requiredSchema = 1
+  public requiredSchema = 2
 
   public constructor(public readonly lang: 'en' | 'jp' | 'kr' | 'tw' | 'zh') {
     super(`reverse1999-enigmaticnebula-${lang}`)

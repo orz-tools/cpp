@@ -11,6 +11,7 @@ const emptyCharacterStatus = Object.freeze<Re1999CharacterStatus>({
   insight: 0,
   level: 0,
   resonate: 1,
+  styles: [],
 })
 
 export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
@@ -133,14 +134,22 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
 
     let resonate = current.resonate
     let resonateDep: typeof dep = undefined
-    {
-      while (resonate < goal.resonate) {
+
+    const meetResonate = (goalResonate: number) => {
+      while (resonate < goalResonate) {
         meetInsightLevel(character.resonateInsightRequires(resonate + 1), 1)
         resonateDep = add({ _: 'resonate', to: resonate + 1 }, character.resonateCost(resonate + 1), dep, resonateDep)
         resonate++
       }
     }
 
+    for (const styleId of goal.styles || []) {
+      if (current.styles && current.styles.includes(styleId)) continue
+      meetResonate(character.styleResonateRequires(styleId))
+      add({ _: 'style', styleId }, character.styleCost(styleId), dep, resonateDep)
+    }
+
+    meetResonate(goal.resonate)
     meetInsightLevel(goal.insight, goal.level)
 
     return tasks
@@ -168,9 +177,26 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
           .replaceAll('%d$from', `${type.from}`)
           .replaceAll('%d$to', `${type.to}`)
       case 'resonate': {
+        if (this.dataManager.data.characters[charId].isHuman) {
+          return gt
+            .pgettext('re1999 task', `觉察 %d`) /* I10N: %d: number */
+            .replaceAll('%d', `${type.to}`)
+        }
         return gt
           .pgettext('re1999 task', `共鸣 %d`) /* I10N: %d: number */
           .replaceAll('%d', `${type.to}`)
+      }
+      case 'style': {
+        const char = this.dataManager.data.characters[charId]
+        const style = char.styleName(type.styleId)
+        if (char.isHuman) {
+          return gt
+            .pgettext('re1999 task', `觉察调适: %s`) /* I10N: %s: style name */
+            .replaceAll('%s', `${style}`)
+        }
+        return gt
+          .pgettext('re1999 task', `共鸣调频: %s`) /* I10N: %s: style name */
+          .replaceAll('%s', `${style}`)
       }
       default:
         throwBad(type)
@@ -193,6 +219,11 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
       case 'resonate':
         d.resonate = type.to
         break
+      case 'style':
+        if (!d.styles) d.styles = []
+        d.styles.push(type.styleId)
+        d.styles.sort()
+        break
       default:
         throwBad(type)
     }
@@ -204,6 +235,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
       insight: char.maxInsight,
       level: char.maxLevels[char.maxInsight],
       resonate: char.maxResonate,
+      styles: char.availableStyles().sort(),
     }
   }
 
@@ -235,6 +267,15 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
     if (status.resonate > char.maxResonate) status.resonate = char.maxResonate
     if (status.resonate > char.maxResonateAtInsight(status.insight))
       status.resonate = char.maxResonateAtInsight(status.insight)
+
+    const availableStyles = char.availableStyles()
+    status.styles = [
+      ...new Set(
+        (status.styles || []).filter(
+          (x) => availableStyles.includes(x) && char.styleResonateRequires(x) <= status.resonate,
+        ),
+      ),
+    ].sort()
   }
 
   public rewriteGoal(charId: string, current: Draft<Re1999CharacterStatus>, goal: Draft<Re1999CharacterStatus>) {
@@ -249,6 +290,14 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
 
     if (goal.resonate < current.resonate) {
       goal.resonate = current.resonate
+    }
+
+    for (const style of current.styles || []) {
+      if (!goal.styles) goal.styles = []
+      if (!goal.styles.includes(style)) {
+        goal.styles.push(style)
+        goal.styles.sort()
+      }
     }
   }
 

@@ -10,6 +10,12 @@ import { PSTRs } from './LineBreaks'
 
 const logs = [
   {
+    date: '2024-07-13',
+    game: [GameName.Re1999],
+    type: 'new',
+    desc: lpstr(() => gt.pgettext('changelog', '增加共鸣调频支持')),
+  },
+  {
     date: '2024-06-25',
     type: 'new',
     desc: lpstr(() => gt.pgettext('changelog', '增加角色的快速过滤器')),

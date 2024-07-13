@@ -190,9 +190,72 @@ export function CharacterStatusResonateSection() {
     <>
       <div className="cpp-charstat-group">
         <ButtonGroup>
-          <Tag large={true}>{gt.pgettext('re1999 status group', '共鸣')}</Tag>
+          <Tag large={true}>
+            {character.isHuman
+              ? gt.pgettext('re1999 status group', '觉察')
+              : gt.pgettext('re1999 status group', '共鸣')}
+          </Tag>
           {new Array(character.maxResonate).fill(0).map((_, i) => (
             <ResonateButton key={i + 1} level={i + 1} />
+          ))}
+        </ButtonGroup>
+      </div>
+    </>
+  )
+}
+
+export function ResonateStyleButton({ styleId }: { styleId: number }) {
+  const { status, setStatus, currentStatus, character } = useContext(EditorContext)
+  const already = status.styles && status.styles.includes(styleId)
+  const needResonate = character.styleResonateRequires(styleId) > status.resonate
+  const disabled = currentStatus ? currentStatus.styles && currentStatus.styles.includes(styleId) : false
+  return (
+    <Button
+      onClick={() =>
+        setStatus((x) => {
+          if (!x.styles) x.styles = []
+          if (x.styles.includes(styleId)) {
+            x.styles = x.styles.filter((x) => x !== styleId)
+          } else {
+            if (needResonate) {
+              const targetResonate = character.styleResonateRequires(styleId)
+              const needInsight = targetResonate > character.maxResonateAtInsight(status.insight)
+              if (needInsight && x.insight < character.resonateInsightRequires(targetResonate)) {
+                x.insight = character.resonateInsightRequires(targetResonate)
+                x.level = 1
+              }
+              x.resonate = targetResonate
+            }
+            x.styles.push(styleId)
+            x.styles.sort()
+          }
+        })
+      }
+      disabled={disabled}
+      intent={already ? Intent.PRIMARY : needResonate ? Intent.WARNING : Intent.NONE}
+    >
+      {character.styleName(styleId)}
+    </Button>
+  )
+}
+
+export function CharacterStatusResonateStyleSection() {
+  const { currentStatus, character } = useContext(EditorContext)
+  const styles = character.availableStyles()
+  const allDone = currentStatus?.styles && styles.every((x) => (currentStatus.styles || []).includes(x))
+  if (styles.length === 0 || allDone) return <></>
+
+  return (
+    <>
+      <div className="cpp-charstat-group">
+        <ButtonGroup>
+          <Tag large={true}>
+            {character.isHuman
+              ? gt.pgettext('re1999 status group', '调适')
+              : gt.pgettext('re1999 status group', '调频')}
+          </Tag>
+          {character.availableStyles().map((styleId) => (
+            <ResonateStyleButton key={styleId} styleId={styleId} />
           ))}
         </ButtonGroup>
       </div>
@@ -239,15 +302,7 @@ export function CharacterStatusPopover({ character, isGoal }: { character: Chara
         <>
           <CharacterStatusInsightLevelSection />
           <CharacterStatusResonateSection />
-
-          {character.maxResonate >= 10 ? (
-            <div className="cpp-charstat-group">
-              <ButtonGroup>
-                <Tag large={true}>{gt.pgettext('re1999 status group', '调频')}</Tag>
-                <Button disabled>WIP</Button>
-              </ButtonGroup>
-            </div>
-          ) : null}
+          <CharacterStatusResonateStyleSection />
         </>
       ) : undefined}
     </EditorContext.Provider>

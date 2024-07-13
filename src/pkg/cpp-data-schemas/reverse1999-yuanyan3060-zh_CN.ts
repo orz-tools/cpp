@@ -24,6 +24,7 @@ export type CppData_Reverse1999Yuanyan3060ZhCn = {
         career: number;
         dmgType: number;
         skinId: number;
+        heroType: number;
     }[];
     exItems: {
         id: number;
@@ -57,8 +58,22 @@ export type CppData_Reverse1999Yuanyan3060ZhCn = {
     }[];
     exCharacterTalent: {
         talentId: number;
+        talentMould: number;
         heroId: number;
         consume: string;
         requirement: number;
+    }[];
+    exTalentStyleCost: {
+        heroId: number;
+        styleId: number;
+        consume: string;
+    }[];
+    exTalentStyle: {
+        talentMould: number;
+        styleId: number;
+        level: 0 | 10;
+        name: string;
+        tagicon: string;
+        color: "" | string;
     }[];
 }

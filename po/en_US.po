@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-06-25 01:52+0800\n"
+"PO-Revision-Date: 2024-07-13 14:29+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -93,7 +93,7 @@ msgstr "Region switched. Page will be reloaded."
 
 #: src/components/arknights/CharacterStatusPopover.tsx:495
 #: src/components/CharacterStatusPopover.tsx:48
-#: src/components/re1999/CharacterStatusPopover.tsx:236
+#: src/components/re1999/CharacterStatusPopover.tsx:299
 msgid "培养目标"
 msgstr "Target"
 
@@ -115,7 +115,7 @@ msgid "导入「MAA 仓库识别」数据"
 msgstr "Import Data from «MAA Depot Recognizer»"
 
 #: src/components/arknights/ImporterMenuItems.tsx:12
-#: src/components/arknights/SklandImporter.tsx:319
+#: src/components/arknights/SklandImporter.tsx:317
 msgid "导入「森空岛」数据"
 msgstr "Import Data from «Skland»"
 
@@ -157,7 +157,7 @@ msgstr "Mark as Completed (without consuming items)"
 
 #: src/components/arknights/CharacterStatusPopover.tsx:495
 #: src/components/CharacterStatusPopover.tsx:48
-#: src/components/re1999/CharacterStatusPopover.tsx:236
+#: src/components/re1999/CharacterStatusPopover.tsx:299
 msgid "当前状态"
 msgstr "Current"
 
@@ -174,12 +174,12 @@ msgid "您不妨试试"
 msgstr "You may try"
 
 #. %s: datetime
-#: src/components/LogList.tsx:220
+#: src/components/LogList.tsx:226
 msgid "截止 %s"
 msgstr "As of %s"
 
 #: src/components/arknights/CharacterStatusPopover.tsx:492
-#: src/components/re1999/CharacterStatusPopover.tsx:233
+#: src/components/re1999/CharacterStatusPopover.tsx:296
 msgid "持有"
 msgstr "Own"
 
@@ -252,7 +252,7 @@ msgstr "Last updated at %s"
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/LogList.tsx:163
+#: src/components/LogList.tsx:169
 msgid "更新笔记"
 msgstr "Patch Notes"
 
@@ -309,7 +309,7 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/LogList.tsx:240
+#: src/components/LogList.tsx:246
 msgid "查看更多…"
 msgstr "Read More…"
 
@@ -360,12 +360,12 @@ msgstr "UI Language"
 msgid "社区练度统计数据"
 msgstr "Stats from Community"
 
-#: src/components/arknights/SklandImporter.tsx:360
+#: src/components/arknights/SklandImporter.tsx:358
 msgid "粘贴 JSON"
 msgstr "Paste JSON"
 
 #: src/components/arknights/MAAItemImporter.tsx:47
-#: src/components/arknights/SklandImporter.tsx:219
+#: src/components/arknights/SklandImporter.tsx:217
 msgid "粘贴的东西好像不太对，请重试。"
 msgstr "The content you pasted was bad. Please try again."
 
@@ -417,17 +417,17 @@ msgstr ""
 msgid "语言已切换，将重新载入页面。"
 msgstr "UI Language changed. A reload is required."
 
-#: src/components/arknights/SklandImporter.tsx:271
-#: src/components/arknights/SklandImporter.tsx:308
+#: src/components/arknights/SklandImporter.tsx:269
+#: src/components/arknights/SklandImporter.tsx:306
 msgid "请在弹出的「提取装置」中继续操作"
 msgstr "Please continue in the popup window «Sklanding»"
 
-#: src/components/arknights/SklandImporter.tsx:326
+#: src/components/arknights/SklandImporter.tsx:324
 msgid "请在弹出窗口中继续操作"
 msgstr "Please continue in the popup window"
 
 #: src/components/arknights/MAAItemImporter.tsx:67
-#: src/components/arknights/SklandImporter.tsx:351
+#: src/components/arknights/SklandImporter.tsx:349
 msgid "请在此粘贴..."
 msgstr "Paste here..."
 
@@ -439,7 +439,7 @@ msgstr "Please upgrade your browser."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/LogList.tsx:224
+#: src/components/LogList.tsx:230
 msgid "近期更新"
 msgstr "Recent Patches"
 
@@ -721,59 +721,64 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
 
-#: src/components/LogList.tsx:26
+#: src/components/LogList.tsx:32
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr "Enhance the navigation bar experience on small screens"
 
-#: src/components/LogList.tsx:52
+#: src/components/LogList.tsx:58
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr "Refine the style of character list"
 
-#: src/components/LogList.tsx:21
+#: src/components/LogList.tsx:27
 msgctxt "changelog"
 msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
 msgstr ""
 "Fixed an issue where the operator \"Amiya\" had abnormal data under certain "
 "circumstances"
 
-#: src/components/LogList.tsx:58
+#: src/components/LogList.tsx:64
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr "Support data from more game regions"
 
-#: src/components/LogList.tsx:64
+#: src/components/LogList.tsx:70
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr "Add views of community-based statistics"
 
-#: src/components/LogList.tsx:15
+#: src/components/LogList.tsx:16
+msgctxt "changelog"
+msgid "增加共鸣调频支持"
+msgstr ""
+
+#: src/components/LogList.tsx:21
 msgctxt "changelog"
 msgid "增加角色的快速过滤器"
 msgstr "Add quick filters for characters"
 
-#: src/components/LogList.tsx:71
+#: src/components/LogList.tsx:77
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr "Add operator statistics from Heybox"
 
-#: src/components/LogList.tsx:77
+#: src/components/LogList.tsx:83
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr "Add operator statistics from Arknights-yituliu"
 
-#: src/components/LogList.tsx:46
+#: src/components/LogList.tsx:52
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr "Support inventory importing from Skland"
 
-#: src/components/LogList.tsx:39
+#: src/components/LogList.tsx:45
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr "Add option for UI Languages"
 
-#: src/components/LogList.tsx:31
+#: src/components/LogList.tsx:37
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
@@ -798,7 +803,7 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr "assets vectorizing"
 
-#: src/components/arknights/SklandImporter.tsx:244
+#: src/components/arknights/SklandImporter.tsx:242
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr "Error During Interacting with «Sklanding»"
@@ -1015,77 +1020,77 @@ msgctxt "re1999"
 msgid "游戏数据"
 msgstr "Data Mining (CN)"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:119
+#: src/pkg/cpp-re1999/GameAdapter.ts:120
 msgctxt "re1999 inventory page"
 msgid "素材"
 msgstr "Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:468
+#: src/pkg/cpp-re1999/GameAdapter.ts:469
 msgctxt "re1999 item category"
-msgid "共鸣"
-msgstr "Resonate"
+msgid "共鸣&觉察"
+msgstr "Resonate & Reasoning"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:471
+#: src/pkg/cpp-re1999/GameAdapter.ts:472
 msgctxt "re1999 item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:460
+#: src/pkg/cpp-re1999/GameAdapter.ts:461
 msgctxt "re1999 item category"
 msgid "彩材料"
 msgstr "T6 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:469
+#: src/pkg/cpp-re1999/GameAdapter.ts:470
 msgctxt "re1999 item category"
 msgid "心相"
 msgstr "Psychube"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:467
+#: src/pkg/cpp-re1999/GameAdapter.ts:468
 msgctxt "re1999 item category"
 msgid "洞悉一"
 msgstr "Pages"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:465
+#: src/pkg/cpp-re1999/GameAdapter.ts:466
 msgctxt "re1999 item category"
 msgid "洞悉三"
 msgstr "Tomes"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:466
+#: src/pkg/cpp-re1999/GameAdapter.ts:467
 msgctxt "re1999 item category"
 msgid "洞悉二"
 msgstr "Scrolls"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:462
+#: src/pkg/cpp-re1999/GameAdapter.ts:463
 msgctxt "re1999 item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:464
+#: src/pkg/cpp-re1999/GameAdapter.ts:465
 msgctxt "re1999 item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:470
+#: src/pkg/cpp-re1999/GameAdapter.ts:471
 msgctxt "re1999 item category"
 msgid "荒原"
 msgstr "Wilderness"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:463
+#: src/pkg/cpp-re1999/GameAdapter.ts:464
 msgctxt "re1999 item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:461
+#: src/pkg/cpp-re1999/GameAdapter.ts:462
 msgctxt "re1999 item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:459
+#: src/pkg/cpp-re1999/GameAdapter.ts:460
 msgctxt "re1999 item category"
 msgid "钱和经验"
 msgstr "Dust & Sharpodonty"
 
-#: src/pkg/cpp-re1999/GameAdapter.ts:378
+#: src/pkg/cpp-re1999/GameAdapter.ts:379
 msgctxt "re1999 level code"
 msgid "厄险%s"
 msgstr "%s Hard"
@@ -1105,7 +1110,7 @@ msgctxt "re1999 quick filter"
 msgid "稀有度"
 msgstr "Rarity"
 
-#: src/components/re1999/CharacterStatusPopover.tsx:193
+#: src/components/re1999/CharacterStatusPopover.tsx:196
 msgctxt "re1999 status group"
 msgid "共鸣"
 msgstr "Resonate"
@@ -1130,60 +1135,93 @@ msgctxt "re1999 status group"
 msgid "洞零"
 msgstr "Base"
 
+#: src/components/re1999/CharacterStatusPopover.tsx:195
+msgctxt "re1999 status group"
+msgid "觉察"
+msgstr "Reasoning"
+
+#: src/components/re1999/CharacterStatusPopover.tsx:254
+msgctxt "re1999 status group"
+msgid "调适"
+msgstr ""
+
+#: src/components/re1999/CharacterStatusPopover.tsx:255
+msgctxt "re1999 status group"
+msgid "调频"
+msgstr ""
+
 #. %d: number
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:171
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:185
 msgctxt "re1999 task"
 msgid "共鸣 %d"
 msgstr "Resonate %d"
 
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:153
+#. %s: style name
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:197
+msgctxt "re1999 task"
+msgid "共鸣调频: %s"
+msgstr ""
+
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:162
 msgctxt "re1999 task"
 msgid "征集"
 msgstr "Summon"
 
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:157
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:166
 msgctxt "re1999 task"
 msgid "洞一"
 msgstr "Insight 1"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:164
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:173
 msgctxt "re1999 task"
 msgid "洞一等级 %d$from -> %d$to"
 msgstr "I1 Level %d$from -> %d$to"
 
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:159
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:168
 msgctxt "re1999 task"
 msgid "洞三"
 msgstr "Insight 3"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:166
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:175
 msgctxt "re1999 task"
 msgid "洞三等级 %d$from -> %d$to"
 msgstr "I3 Level %d$from -> %d$to"
 
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:158
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:167
 msgctxt "re1999 task"
 msgid "洞二"
 msgstr "Insight 2"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:165
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:174
 msgctxt "re1999 task"
 msgid "洞二等级 %d$from -> %d$to"
 msgstr "I2 Level %d$from -> %d$to"
 
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:156
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:165
 msgctxt "re1999 task"
 msgid "洞零"
 msgstr "Base"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-re1999/UserDataAdapter.ts:163
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:172
 msgctxt "re1999 task"
 msgid "洞零等级 %d$from -> %d$to"
 msgstr "Base Level %d$from -> %d$to"
+
+#. %d: number
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:181
+msgctxt "re1999 task"
+msgid "觉察 %d"
+msgstr "Reasoning %d"
+
+#. %s: style name
+#: src/pkg/cpp-re1999/UserDataAdapter.ts:193
+msgctxt "re1999 task"
+msgid "觉察调适: %s"
+msgstr ""
 
 #: src/pkg/cpp-arknights/survey.ts:24
 msgctxt "short name"

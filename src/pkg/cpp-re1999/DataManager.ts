@@ -160,11 +160,19 @@ export class Character implements ICharacter {
     public readonly raw: Reverse1999Yuanyan3060['exCharacters'][0],
     public readonly rawLocal: Reverse1999EnigmaticNebula['exCharacters'][0] | null,
     private readonly dm: Re1999DataManager,
-  ) {}
+  ) {
+    this.talentMould = this.dm.raw.exCharacterTalent.find((x) => x.heroId === this.raw.id)!.talentMould
+  }
 
   public get name(): string {
     return this.rawLocal?.name || this.raw.name
   }
+
+  public get isHuman(): boolean {
+    return this.raw.heroType === 6
+  }
+
+  public readonly talentMould: number
 
   public get appellation(): string {
     const value = this.rawLocal?.nameEng || this.raw.nameEng
@@ -242,6 +250,28 @@ export class Character implements ICharacter {
 
   public maxResonateAtInsight(insight: number) {
     return Math.max(...this.resonates.filter((x) => x.requirement - 1 === insight).map((x) => x.talentId), 1)
+  }
+
+  public styleCost(styleId: number) {
+    return parseConsume(
+      this.dm.raw.exTalentStyleCost.find((x) => x.heroId === this.raw.id && x.styleId === styleId)!.consume,
+    )
+  }
+
+  public styleInfo(styleId: number) {
+    return this.dm.raw.exTalentStyle.find((x) => x.styleId === styleId && x.talentMould === this.talentMould)!
+  }
+
+  public styleResonateRequires(styleId: number) {
+    return this.styleInfo(styleId).level
+  }
+
+  public styleName(styleId: number) {
+    return this.styleInfo(styleId).name
+  }
+
+  public availableStyles(): number[] {
+    return this.dm.raw.exTalentStyleCost.filter((x) => x.heroId === this.raw.id).map((x) => x.styleId)
   }
 }
 

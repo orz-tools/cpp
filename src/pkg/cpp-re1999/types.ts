@@ -15,6 +15,7 @@ export interface Re1999CharacterStatus {
   insight: number
   level: number
   resonate: number
+  styles?: number[]
 }
 
 export type Re1999CharacterTaskType =
@@ -22,6 +23,7 @@ export type Re1999CharacterTaskType =
   | { _: 'insight'; insight: number }
   | { _: 'level'; insight: number; from: number; to: number }
   | { _: 'resonate'; to: number }
+  | { _: 'style'; styleId: number }
 
 export const enum ExEpisodeType {
   Story = 4,

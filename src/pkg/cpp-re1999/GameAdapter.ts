@@ -74,6 +74,7 @@ export class Re1999Adapter implements IGameAdapter<Re1999> {
     aa.addStatusField('level', '等级', QNumber, ({ status }) => status.level)
     aa.addStatusField('ilv', '洞悉*100+等级', QNumber, ({ status }) => status.insight * 100 + status.level)
     aa.addStatusField('resonate', '共鸣', QNumber, ({ status }) => status.resonate)
+    aa.addStatusField('reasoning', '觉察', QNumber, ({ status }) => status.resonate)
   })
 
   public getRootCharacterQuery() {
@@ -465,7 +466,7 @@ export const CategoryNames = {
   [Category.Insight3]: gt.pgettext('re1999 item category', '洞悉三'),
   [Category.Insight2]: gt.pgettext('re1999 item category', '洞悉二'),
   [Category.Insight1]: gt.pgettext('re1999 item category', '洞悉一'),
-  [Category.Resonate]: gt.pgettext('re1999 item category', '共鸣'),
+  [Category.Resonate]: gt.pgettext('re1999 item category', '共鸣&觉察'),
   [Category.Equip]: gt.pgettext('re1999 item category', '心相'),
   [Category.Room]: gt.pgettext('re1999 item category', '荒原'),
   [Category.Unknown]: gt.pgettext('re1999 item category', '其他'),
