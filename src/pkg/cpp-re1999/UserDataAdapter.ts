@@ -248,6 +248,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
       status.insight = 0
       status.level = 0
       status.resonate = 1
+      status.styles = []
       return
     }
 
