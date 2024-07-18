@@ -10,6 +10,12 @@ import { PSTRs } from './LineBreaks'
 
 const logs = [
   {
+    date: '2024-07-19',
+    game: [GameName.Arknights],
+    type: 'fix',
+    desc: lpstr(() => gt.pgettext('changelog', '从 MAA 导入仓库时保留不支持识别的道具')),
+  },
+  {
     date: '2024-07-13',
     game: [GameName.Re1999],
     type: 'new',

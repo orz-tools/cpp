@@ -1,6 +1,6 @@
 import { Card, CardList, Dialog, DialogBody, InputGroup } from '@blueprintjs/core'
 import { Draft } from 'immer'
-import { pick } from 'ramda'
+import { pick, pickBy } from 'ramda'
 import { memo } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useGameAdapter } from '../../Cpp'
@@ -30,9 +30,18 @@ export const MAAItemImporterDialog = memo(<G extends Arknights>({ onClose }: { o
           }),
         )
 
+        const list = new Set(
+          Object.keys(ga.getInventoryPages())
+            .map((x) => ga.getInventoryItems(x))
+            .flat()
+            .map((x) => x.key),
+        )
+        const pickByNotInTheList = pickBy<Record<string, number>>((_, k) => !list.has(k))
+
         draft.items = {
           ...quans,
           ...pickRetainableItems(draft.items),
+          ...pickByNotInTheList(draft.items),
         }
       }
     })

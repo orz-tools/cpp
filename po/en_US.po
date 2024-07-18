@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-13 14:29+0800\n"
+"PO-Revision-Date: 2024-07-19 01:16+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -110,7 +110,7 @@ msgid "完成"
 msgstr "Complete"
 
 #: src/components/arknights/ImporterMenuItems.tsx:15
-#: src/components/arknights/MAAItemImporter.tsx:55
+#: src/components/arknights/MAAItemImporter.tsx:64
 msgid "导入「MAA 仓库识别」数据"
 msgstr "Import Data from «MAA Depot Recognizer»"
 
@@ -174,7 +174,7 @@ msgid "您不妨试试"
 msgstr "You may try"
 
 #. %s: datetime
-#: src/components/LogList.tsx:226
+#: src/components/LogList.tsx:232
 msgid "截止 %s"
 msgstr "As of %s"
 
@@ -252,7 +252,7 @@ msgstr "Last updated at %s"
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/LogList.tsx:169
+#: src/components/LogList.tsx:175
 msgid "更新笔记"
 msgstr "Patch Notes"
 
@@ -309,7 +309,7 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/LogList.tsx:246
+#: src/components/LogList.tsx:252
 msgid "查看更多…"
 msgstr "Read More…"
 
@@ -364,7 +364,7 @@ msgstr "Stats from Community"
 msgid "粘贴 JSON"
 msgstr "Paste JSON"
 
-#: src/components/arknights/MAAItemImporter.tsx:47
+#: src/components/arknights/MAAItemImporter.tsx:56
 #: src/components/arknights/SklandImporter.tsx:217
 msgid "粘贴的东西好像不太对，请重试。"
 msgstr "The content you pasted was bad. Please try again."
@@ -426,7 +426,7 @@ msgstr "Please continue in the popup window «Sklanding»"
 msgid "请在弹出窗口中继续操作"
 msgstr "Please continue in the popup window"
 
-#: src/components/arknights/MAAItemImporter.tsx:67
+#: src/components/arknights/MAAItemImporter.tsx:76
 #: src/components/arknights/SklandImporter.tsx:349
 msgid "请在此粘贴..."
 msgstr "Paste here..."
@@ -439,7 +439,7 @@ msgstr "Please upgrade your browser."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/LogList.tsx:230
+#: src/components/LogList.tsx:236
 msgid "近期更新"
 msgstr "Recent Patches"
 
@@ -535,27 +535,27 @@ msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
 
-#: src/components/arknights/MAAItemImporter.tsx:58
+#: src/components/arknights/MAAItemImporter.tsx:67
 msgctxt "arknights maa step"
 msgid "打开 MAA「小工具」"
 msgstr "Open MAA «Toolbox»"
 
-#: src/components/arknights/MAAItemImporter.tsx:62
+#: src/components/arknights/MAAItemImporter.tsx:71
 msgctxt "arknights maa step"
 msgid "点击「导出至明日方舟工具箱」按钮"
 msgstr "Click «Export to Lolicon»"
 
-#: src/components/arknights/MAAItemImporter.tsx:60
+#: src/components/arknights/MAAItemImporter.tsx:69
 msgctxt "arknights maa step"
 msgid "点击「开始识别」按钮"
 msgstr "Click «Start to identify»"
 
-#: src/components/arknights/MAAItemImporter.tsx:61
+#: src/components/arknights/MAAItemImporter.tsx:70
 msgctxt "arknights maa step"
 msgid "等待识别完成"
 msgstr "Wait for completion"
 
-#: src/components/arknights/MAAItemImporter.tsx:59
+#: src/components/arknights/MAAItemImporter.tsx:68
 msgctxt "arknights maa step"
 msgid "选择「仓库识别」功能"
 msgstr "Switch to «Depot Recognition»"
@@ -721,64 +721,69 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
 
-#: src/components/LogList.tsx:32
+#: src/components/LogList.tsx:16
+msgctxt "changelog"
+msgid "从 MAA 导入仓库时保留不支持识别的道具"
+msgstr "Keep unrecognizable items when importing from MAA"
+
+#: src/components/LogList.tsx:38
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr "Enhance the navigation bar experience on small screens"
 
-#: src/components/LogList.tsx:58
+#: src/components/LogList.tsx:64
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr "Refine the style of character list"
 
-#: src/components/LogList.tsx:27
+#: src/components/LogList.tsx:33
 msgctxt "changelog"
 msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
 msgstr ""
 "Fixed an issue where the operator \"Amiya\" had abnormal data under certain "
 "circumstances"
 
-#: src/components/LogList.tsx:64
+#: src/components/LogList.tsx:70
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr "Support data from more game regions"
 
-#: src/components/LogList.tsx:70
+#: src/components/LogList.tsx:76
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr "Add views of community-based statistics"
 
-#: src/components/LogList.tsx:16
+#: src/components/LogList.tsx:22
 msgctxt "changelog"
 msgid "增加共鸣调频支持"
 msgstr ""
 
-#: src/components/LogList.tsx:21
+#: src/components/LogList.tsx:27
 msgctxt "changelog"
 msgid "增加角色的快速过滤器"
 msgstr "Add quick filters for characters"
 
-#: src/components/LogList.tsx:77
+#: src/components/LogList.tsx:83
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr "Add operator statistics from Heybox"
 
-#: src/components/LogList.tsx:83
+#: src/components/LogList.tsx:89
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr "Add operator statistics from Arknights-yituliu"
 
-#: src/components/LogList.tsx:52
+#: src/components/LogList.tsx:58
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr "Support inventory importing from Skland"
 
-#: src/components/LogList.tsx:45
+#: src/components/LogList.tsx:51
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr "Add option for UI Languages"
 
-#: src/components/LogList.tsx:37
+#: src/components/LogList.tsx:43
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
