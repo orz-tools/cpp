@@ -10,6 +10,12 @@ import { PSTRs } from './LineBreaks'
 
 const logs = [
   {
+    date: '2024-07-23',
+    game: [GameName.Re1999],
+    type: 'optimize',
+    desc: lpstr(() => gt.pgettext('changelog', '增加海外服掉落数据 (使用国服同期快照)')),
+  },
+  {
     date: '2024-07-19',
     game: [GameName.Arknights],
     type: 'fix',

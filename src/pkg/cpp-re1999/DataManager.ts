@@ -29,6 +29,9 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
 
     ;(this as any).region = region as Re1999Region
     this.$local = validRegions[this.region]()
+
+    if ((region as Re1999Region) === Re1999Region.China) return
+    this.$drops = new Reverse1999HisBoundenDutyDropsObject('haiwai')
   }
 
   public async transform() {

@@ -4,6 +4,7 @@ import { CppData_Reverse1999EnigmaticnebulaKr } from '../cpp-data-schemas/revers
 import { CppData_Reverse1999EnigmaticnebulaTw } from '../cpp-data-schemas/reverse1999-enigmaticnebula-tw'
 import { CppData_Reverse1999EnigmaticnebulaZh } from '../cpp-data-schemas/reverse1999-enigmaticnebula-zh'
 import { CppData_Reverse1999HisboundendutyDropsChina } from '../cpp-data-schemas/reverse1999-hisboundenduty-drops-china'
+import { CppData_Reverse1999HisboundendutyDropsHaiwai } from '../cpp-data-schemas/reverse1999-hisboundenduty-drops-haiwai'
 import { CppData_Reverse1999HisboundendutyValuesChina } from '../cpp-data-schemas/reverse1999-hisboundenduty-values-china'
 import { CppData_Reverse1999Yuanyan3060ZhCn } from '../cpp-data-schemas/reverse1999-yuanyan3060-zh_CN'
 import { CppRepoObject } from '../dccache'
@@ -30,12 +31,14 @@ export class Reverse1999EnigmaticNebulaObject extends CppRepoObject<
   }
 }
 
-export class Reverse1999HisBoundenDutyDropsObject extends CppRepoObject<CppData_Reverse1999HisboundendutyDropsChina> {
+export class Reverse1999HisBoundenDutyDropsObject extends CppRepoObject<
+  CppData_Reverse1999HisboundendutyDropsChina | CppData_Reverse1999HisboundendutyDropsHaiwai
+> {
   public requiredSchema = 1
   public autoUpdateNotificationThreshold = 86400_000 * 3
   public autoUpdateThreshold = 0
 
-  public constructor(public readonly region: 'china') {
+  public constructor(public readonly region: 'china' | 'haiwai') {
     super(`reverse1999-hisboundenduty-drops-${region}`)
   }
 }

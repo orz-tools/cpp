@@ -144,12 +144,14 @@ export const DataObjectStatus = memo(
     href,
     dataObj,
     copyright,
+    notes,
     hideCommit,
   }: {
     title?: PSTR
     href?: string | null
     dataObj: DataContainerObject<any>
     copyright?: React.ReactNode
+    notes?: React.ReactNode
     hideCommit?: boolean
   }) => {
     const cpp = useCpp()
@@ -198,6 +200,13 @@ export const DataObjectStatus = memo(
                   {data.version.text}
                 </pre>
               }
+            />
+          ) : null}
+          {notes ? (
+            <MenuItem
+              multiline={true}
+              className="cpp-menu-not-interactive"
+              text={<div className="cpp-menu-secondary">{notes}</div>}
             />
           ) : null}
           {copyright ? (

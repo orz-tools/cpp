@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-19 01:16+0800\n"
+"PO-Revision-Date: 2024-07-23 18:13+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -139,7 +139,7 @@ msgstr "Export as File"
 msgid "小黑盒 app 干员统计数据"
 msgstr "Operator Statistics from Heybox"
 
-#: src/components/AboutList.tsx:222
+#: src/components/AboutList.tsx:231
 msgid "帮助"
 msgstr "Help"
 
@@ -174,7 +174,7 @@ msgid "您不妨试试"
 msgstr "You may try"
 
 #. %s: datetime
-#: src/components/LogList.tsx:232
+#: src/components/LogList.tsx:238
 msgid "截止 %s"
 msgstr "As of %s"
 
@@ -244,7 +244,7 @@ msgid "暂无可计算来源"
 msgstr "No Feasible Sources"
 
 #. %s: datetime
-#: src/components/AboutList.tsx:183
+#: src/components/AboutList.tsx:185
 msgid "更新于 %s"
 msgstr "Last updated at %s"
 
@@ -252,7 +252,7 @@ msgstr "Last updated at %s"
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/LogList.tsx:175
+#: src/components/LogList.tsx:181
 msgid "更新笔记"
 msgstr "Patch Notes"
 
@@ -309,7 +309,7 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/LogList.tsx:252
+#: src/components/LogList.tsx:258
 msgid "查看更多…"
 msgstr "Read More…"
 
@@ -439,7 +439,7 @@ msgstr "Please upgrade your browser."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/LogList.tsx:236
+#: src/components/LogList.tsx:242
 msgid "近期更新"
 msgstr "Recent Patches"
 
@@ -721,69 +721,74 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
 
-#: src/components/LogList.tsx:16
+#: src/components/LogList.tsx:22
 msgctxt "changelog"
 msgid "从 MAA 导入仓库时保留不支持识别的道具"
 msgstr "Keep unrecognizable items when importing from MAA"
 
-#: src/components/LogList.tsx:38
+#: src/components/LogList.tsx:44
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr "Enhance the navigation bar experience on small screens"
 
-#: src/components/LogList.tsx:64
+#: src/components/LogList.tsx:70
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr "Refine the style of character list"
 
-#: src/components/LogList.tsx:33
+#: src/components/LogList.tsx:39
 msgctxt "changelog"
 msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
 msgstr ""
 "Fixed an issue where the operator \"Amiya\" had abnormal data under certain "
 "circumstances"
 
-#: src/components/LogList.tsx:70
+#: src/components/LogList.tsx:76
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr "Support data from more game regions"
 
-#: src/components/LogList.tsx:76
+#: src/components/LogList.tsx:82
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr "Add views of community-based statistics"
 
-#: src/components/LogList.tsx:22
+#: src/components/LogList.tsx:28
 msgctxt "changelog"
 msgid "增加共鸣调频支持"
 msgstr ""
 
-#: src/components/LogList.tsx:27
+#: src/components/LogList.tsx:16
+msgctxt "changelog"
+msgid "增加海外服掉落数据 (使用国服同期快照)"
+msgstr "Add drop rates for GLB servers using snapshots from CN servers"
+
+#: src/components/LogList.tsx:33
 msgctxt "changelog"
 msgid "增加角色的快速过滤器"
 msgstr "Add quick filters for characters"
 
-#: src/components/LogList.tsx:83
+#: src/components/LogList.tsx:89
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr "Add operator statistics from Heybox"
 
-#: src/components/LogList.tsx:89
+#: src/components/LogList.tsx:95
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr "Add operator statistics from Arknights-yituliu"
 
-#: src/components/LogList.tsx:58
+#: src/components/LogList.tsx:64
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr "Support inventory importing from Skland"
 
-#: src/components/LogList.tsx:51
+#: src/components/LogList.tsx:57
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr "Add option for UI Languages"
 
-#: src/components/LogList.tsx:43
+#: src/components/LogList.tsx:49
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
@@ -798,10 +803,15 @@ msgctxt "credit role"
 msgid "数据源自动化"
 msgstr "data source automation"
 
-#: src/components/re1999/AboutList.tsx:58
+#: src/components/re1999/AboutList.tsx:65
 msgctxt "credit role"
 msgid "测试和建议"
 msgstr "testing & feedback"
+
+#: src/components/re1999/AboutList.tsx:59
+msgctxt "credit role"
+msgid "海外服数据维护"
+msgstr "data contributor for GLB servers"
 
 #: src/components/arknights/AboutList.tsx:100
 msgctxt "credit role"
@@ -985,7 +995,7 @@ msgctxt "predefined view name"
 msgid "计划"
 msgstr "Planned"
 
-#: src/components/re1999/AboutList.tsx:45
+#: src/components/re1999/AboutList.tsx:46
 msgctxt "re1999"
 msgid "也来源于伴春风而归的材料掉率共建表，效率与价值算法主要由 pu4ers 贡献。"
 msgstr "Contributed by pu4ers in 伴春风而归's Drop Rate Table."
@@ -996,6 +1006,12 @@ msgid "伴春风而归的材料掉率共建表"
 msgstr "伴春风而归's Drop Rate Table"
 
 #: src/components/re1999/AboutList.tsx:36
+msgctxt "re1999"
+msgid "已被暴雨回溯至当前海外服版本。"
+msgstr ""
+"Rewound by the Storm to an earlier version matching the current GLB version."
+
+#: src/components/re1999/AboutList.tsx:37
 msgctxt "re1999"
 msgid ""
 "本表格采用知识共享 署名-非商业性使用 4.0 国际 许可协议进行许可。转载、公开或"
@@ -1010,7 +1026,7 @@ msgstr ""
 "disclaimer statement, and link to source. Without permission, the content of "
 "this table or its derivative works may not be used for commercial purposes."
 
-#: src/components/re1999/AboutList.tsx:42
+#: src/components/re1999/AboutList.tsx:43
 msgctxt "re1999"
 msgid "材料价值数据"
 msgstr "Materials' Value Table"
