@@ -67,7 +67,7 @@ export class ArknightsPenguinObject extends DataContainerObject<PenguinMatrix> {
 
   public async getHeader(): Promise<IDataContainer<PenguinMatrix>> {
     const res = await fetch(
-      `https://penguin-stats.cn/PenguinStats/api/v2/result/matrix?${new URLSearchParams({
+      `https://penguin-stats.io/PenguinStats/api/v2/result/matrix?${new URLSearchParams({
         server: this.server,
       })}`,
     )
