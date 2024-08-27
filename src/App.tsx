@@ -78,7 +78,7 @@ const ReloadDataButton = memo(() => {
     try {
       const r = await dm.refresh()
       AppToaster.dismiss(reload)
-      if (r) {
+      if (r || dm.dataUpdatedAfterInit) {
         AppToaster.show({ message: gt.gettext('数据已更新，正在重新载入…'), intent: 'success' }, reload)
         location.reload()
       } else {

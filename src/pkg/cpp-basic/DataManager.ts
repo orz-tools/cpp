@@ -30,6 +30,7 @@ export abstract class BasicDataManager<G extends IGame> {
   public loading = new Set<string>()
   public initialized = false
   public error?: Error
+  public dataUpdatedAfterInit = false
 
   public abstract transform(): Promise<any>
   public data!: Awaited<ReturnType<this['transform']>>
@@ -61,7 +62,15 @@ export abstract class BasicDataManager<G extends IGame> {
       dos.map(async (x) => {
         this.loading.add(x.name)
         try {
-          this.dataObjectMap.set(x, await load(x, refresh, onRefreshed))
+          this.dataObjectMap.set(
+            x,
+            await load(x, refresh, () => {
+              if (this.initialized) {
+                this.dataUpdatedAfterInit = true
+              }
+              onRefreshed?.()
+            }),
+          )
         } catch (e) {
           const realE = e instanceof Error ? e : new Error(e as any)
           const err = new FriendlyError(`Failed to load DataObject ${x.name}: ${realE.message}`, { cause: e })
@@ -94,6 +103,10 @@ export abstract class BasicDataManager<G extends IGame> {
       const previous = this.dataObjectMap.get(x)
       const result = await load(x, false, () => (refreshed = true))
       if (refreshed) {
+        if (this.initialized) {
+          this.dataUpdatedAfterInit = true
+        }
+
         if (previous) {
           if (result.version.timestamp - previous?.version.timestamp > x.autoUpdateNotificationThreshold) {
             showNotification = true
