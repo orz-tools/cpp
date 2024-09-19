@@ -53,6 +53,13 @@ export type CppData_ArknightsYituliuOperatorsurvey = {
             rank3: number;
             count: number;
         };
+        modA?: {
+            rank0: number;
+            rank1: number;
+            rank2: number;
+            rank3: number;
+            count: number;
+        } | undefined;
     }[];
     userCount: number;
     updateTime: string;
