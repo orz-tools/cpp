@@ -19,6 +19,7 @@ import deepEqual from 'deep-equal'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
+import { search } from 'text-search-engine'
 import { Cpp, ListCharactersQueryParam, useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
@@ -273,22 +274,36 @@ const CharacterMenu = memo(
   },
 )
 
-function buildMatcher(query: string): (x: string) => boolean {
+function buildMatcher(query: string, strict: boolean = false): (x: string) => boolean {
   const trimmed = query.toLowerCase().trim()
   if (!trimmed) return () => true
 
-  const match = query.match(/^\/(.+)\/(i)?$/)
-  if (match) {
-    try {
-      const regex = new RegExp(match[1], match[2])
-      return (x: string) => !!x.match(regex)
-    } catch (e) {
-      console.warn('Failed to compile regexp ', e)
-      return () => false
+  {
+    const match = query.match(/^\/(.+)\/(i)?$/)
+    if (match) {
+      try {
+        const regex = new RegExp(match[1], match[2])
+        return (x: string) => !!x.match(regex)
+      } catch (e) {
+        console.warn('Failed to compile regexp ', e)
+        return () => false
+      }
     }
   }
 
-  return (x: string) => x.toLowerCase().includes(trimmed)
+  {
+    const match = query.match(/^"(.+)"$/)
+    if (match) {
+      const q = match[1].toLowerCase().trim()
+      return (x: string) => x.toLowerCase().includes(q)
+    }
+  }
+
+  if (strict) {
+    return (x: string) => x.toLowerCase().includes(trimmed)
+  }
+
+  return (x: string) => !!search(x, query)
 }
 
 class CppCharacterListQuery extends ExtraCharacterQuery<IGame, ICharacter> {
@@ -428,6 +443,7 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
   )
 
   const matcher = buildMatcher(param.search)
+  const strictMatcher = buildMatcher(param.search, true)
 
   query.addQuery(new CppCharacterListQuery(cpp))
 
@@ -435,7 +451,7 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
     (function* () {
       for (const x of uda.getAllCharacterIds()) {
         const character = ga.getCharacter(x)
-        if (!(matcher(character.name) || matcher(character.appellation) || matcher(character.key))) continue
+        if (!(matcher(character.name) || matcher(character.appellation) || strictMatcher(character.key))) continue
         yield { character, current: ud.current[character.key] || emptyCharacterStatus, goal: ud.goal[character.key] }
       }
     })(),
@@ -528,6 +544,7 @@ const QuerySearchBox = memo(() => {
           spellCheck="false"
           value={param.search}
           onChange={(e) => setParam((x) => ({ ...x, search: e.currentTarget.value }))}
+          // title={['/.../ 正则表达式，大小写敏感', '/.../i 正则表达式，大小写不敏感', '"..." 精确匹配'].join('\n')}
         />
       </div>
     </>

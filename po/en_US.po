@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-23 18:13+0800\n"
+"PO-Revision-Date: 2024-10-15 16:19+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -174,7 +174,7 @@ msgid "您不妨试试"
 msgstr "You may try"
 
 #. %s: datetime
-#: src/components/LogList.tsx:238
+#: src/components/LogList.tsx:243
 msgid "截止 %s"
 msgstr "As of %s"
 
@@ -213,7 +213,7 @@ msgstr ""
 msgid "数据源"
 msgstr "Data Sources"
 
-#: src/pkg/cpp-basic/DataManager.ts:69
+#: src/pkg/cpp-basic/DataManager.ts:78
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 "Unable to load required game data. Please check your network connection."
@@ -252,7 +252,7 @@ msgstr "Last updated at %s"
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/LogList.tsx:181
+#: src/components/LogList.tsx:186
 msgid "更新笔记"
 msgstr "Patch Notes"
 
@@ -309,11 +309,11 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/LogList.tsx:258
+#: src/components/LogList.tsx:263
 msgid "查看更多…"
 msgstr "Read More…"
 
-#: src/components/CharacterList.tsx:816
+#: src/components/CharacterList.tsx:833
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -384,7 +384,7 @@ msgstr ""
 msgid "角色"
 msgstr "Characters"
 
-#: src/components/CharacterList.tsx:110
+#: src/components/CharacterList.tsx:111
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -439,7 +439,7 @@ msgstr "Please upgrade your browser."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/LogList.tsx:242
+#: src/components/LogList.tsx:247
 msgid "近期更新"
 msgstr "Recent Patches"
 
@@ -721,74 +721,79 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
 
-#: src/components/LogList.tsx:22
+#: src/components/LogList.tsx:27
 msgctxt "changelog"
 msgid "从 MAA 导入仓库时保留不支持识别的道具"
 msgstr "Keep unrecognizable items when importing from MAA"
 
-#: src/components/LogList.tsx:44
+#: src/components/LogList.tsx:49
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr "Enhance the navigation bar experience on small screens"
 
-#: src/components/LogList.tsx:70
+#: src/components/LogList.tsx:75
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr "Refine the style of character list"
 
-#: src/components/LogList.tsx:39
+#: src/components/LogList.tsx:44
 msgctxt "changelog"
 msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
 msgstr ""
 "Fixed an issue where the operator \"Amiya\" had abnormal data under certain "
 "circumstances"
 
-#: src/components/LogList.tsx:76
+#: src/components/LogList.tsx:81
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr "Support data from more game regions"
 
-#: src/components/LogList.tsx:82
+#: src/components/LogList.tsx:87
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr "Add views of community-based statistics"
 
-#: src/components/LogList.tsx:28
+#: src/components/LogList.tsx:33
 msgctxt "changelog"
 msgid "增加共鸣调频支持"
 msgstr ""
 
-#: src/components/LogList.tsx:16
+#: src/components/LogList.tsx:21
 msgctxt "changelog"
 msgid "增加海外服掉落数据 (使用国服同期快照)"
 msgstr "Add drop rates for GLB servers using snapshots from CN servers"
 
-#: src/components/LogList.tsx:33
+#: src/components/LogList.tsx:38
 msgctxt "changelog"
 msgid "增加角色的快速过滤器"
 msgstr "Add quick filters for characters"
 
-#: src/components/LogList.tsx:89
+#: src/components/LogList.tsx:94
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr "Add operator statistics from Heybox"
 
-#: src/components/LogList.tsx:95
+#: src/components/LogList.tsx:100
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr "Add operator statistics from Arknights-yituliu"
 
-#: src/components/LogList.tsx:64
+#: src/components/LogList.tsx:15
+msgctxt "changelog"
+msgid "支持拼音、模糊匹配"
+msgstr "Add fuzzy matching in filter"
+
+#: src/components/LogList.tsx:69
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr "Support inventory importing from Skland"
 
-#: src/components/LogList.tsx:57
+#: src/components/LogList.tsx:62
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr "Add option for UI Languages"
 
-#: src/components/LogList.tsx:49
+#: src/components/LogList.tsx:54
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
@@ -975,22 +980,22 @@ msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
 
-#: src/components/CharacterList.tsx:596
+#: src/components/CharacterList.tsx:613
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:589
+#: src/components/CharacterList.tsx:606
 msgctxt "predefined view name"
 msgid "想看的"
 msgstr "Interested"
 
-#: src/components/CharacterList.tsx:611
+#: src/components/CharacterList.tsx:628
 msgctxt "predefined view name"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:603
+#: src/components/CharacterList.tsx:620
 msgctxt "predefined view name"
 msgid "计划"
 msgstr "Planned"
