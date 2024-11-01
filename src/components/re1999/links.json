@@ -1,6 +1,11 @@
 {
-  "updatedAt": "2024-10-15T04:46:02.081Z",
+  "updatedAt": "2024-11-01T15:40:09.088Z",
   "gamekee": [
+    {
+      "name": "笃笃骨",
+      "alias": [],
+      "url": "https://reverse1999.gamekee.com/639605.html"
+    },
     {
       "name": "洛佩拉",
       "alias": [],
@@ -646,6 +651,7 @@
     "Ezra Theodore": "Ezra",
     "Енисей": "Yenisei",
     "Авксивий": "Avgust",
-    "Вила": "Vila"
+    "Вила": "Vila",
+    "Joe": "J"
   }
 }
