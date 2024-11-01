@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-15 16:19+0800\n"
+"PO-Revision-Date: 2024-11-01 23:32+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -756,7 +756,7 @@ msgstr "Add views of community-based statistics"
 #: src/components/LogList.tsx:33
 msgctxt "changelog"
 msgid "增加共鸣调频支持"
-msgstr ""
+msgstr "Add support for Resonance Pattern"
 
 #: src/components/LogList.tsx:21
 msgctxt "changelog"
@@ -1169,12 +1169,12 @@ msgstr "Reasoning"
 #: src/components/re1999/CharacterStatusPopover.tsx:254
 msgctxt "re1999 status group"
 msgid "调适"
-msgstr ""
+msgstr "Pattern"
 
 #: src/components/re1999/CharacterStatusPopover.tsx:255
 msgctxt "re1999 status group"
 msgid "调频"
-msgstr ""
+msgstr "Pattern"
 
 #. %d: number
 #: src/pkg/cpp-re1999/UserDataAdapter.ts:185
@@ -1186,7 +1186,7 @@ msgstr "Resonate %d"
 #: src/pkg/cpp-re1999/UserDataAdapter.ts:197
 msgctxt "re1999 task"
 msgid "共鸣调频: %s"
-msgstr ""
+msgstr "Reasoning Pattern: %s"
 
 #: src/pkg/cpp-re1999/UserDataAdapter.ts:162
 msgctxt "re1999 task"
@@ -1247,7 +1247,7 @@ msgstr "Reasoning %d"
 #: src/pkg/cpp-re1999/UserDataAdapter.ts:193
 msgctxt "re1999 task"
 msgid "觉察调适: %s"
-msgstr ""
+msgstr "Resonance Pattern: %s"
 
 #: src/pkg/cpp-arknights/survey.ts:24
 msgctxt "short name"
