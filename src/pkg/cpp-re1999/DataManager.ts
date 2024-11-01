@@ -261,7 +261,14 @@ export class Character implements ICharacter {
     )
   }
 
-  public styleInfo(styleId: number) {
+  public styleInfo(styleId: number, considerLocal = false) {
+    if (considerLocal) {
+      const localInfo = this.dm.raw.local?.exTalentStyle.find(
+        (x) => x.styleId === styleId && x.talentMould === this.talentMould,
+      )
+      if (localInfo) return localInfo
+    }
+
     return this.dm.raw.exTalentStyle.find((x) => x.styleId === styleId && x.talentMould === this.talentMould)!
   }
 
@@ -270,7 +277,7 @@ export class Character implements ICharacter {
   }
 
   public styleName(styleId: number) {
-    return this.styleInfo(styleId).name
+    return this.styleInfo(styleId, true).name
   }
 
   public availableStyles(): number[] {

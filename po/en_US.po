@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-11-01 23:32+0800\n"
+"PO-Revision-Date: 2024-11-01 23:46+0800\n"
 "Last-Translator: cpp@ouomail.com\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -1186,7 +1186,7 @@ msgstr "Resonate %d"
 #: src/pkg/cpp-re1999/UserDataAdapter.ts:197
 msgctxt "re1999 task"
 msgid "共鸣调频: %s"
-msgstr "Reasoning Pattern: %s"
+msgstr "Pattern: %s"
 
 #: src/pkg/cpp-re1999/UserDataAdapter.ts:162
 msgctxt "re1999 task"
@@ -1247,7 +1247,7 @@ msgstr "Reasoning %d"
 #: src/pkg/cpp-re1999/UserDataAdapter.ts:193
 msgctxt "re1999 task"
 msgid "觉察调适: %s"
-msgstr "Resonance Pattern: %s"
+msgstr "Pattern: %s"
 
 #: src/pkg/cpp-arknights/survey.ts:24
 msgctxt "short name"
