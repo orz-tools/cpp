@@ -18,6 +18,14 @@ msgstr ""
 msgid "%s持有率"
 msgstr "Own Rate (%s)"
 
+#: src/App.tsx:511
+msgid "Closure++ 不再支持 REVERSE1999。"
+msgstr "Closure++ no longer supports REVERSE1999."
+
+#: src/App.tsx:504
+msgid "Closure++ 对 REVERSE1999 的支持现已结束"
+msgstr "Closure++ support for REVERSE1999 has ended"
+
 #: src/components/AboutList.tsx:43
 msgid "Discord"
 msgstr "Discord"
@@ -63,9 +71,13 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:475 src/components/Importer.tsx:75
+#: src/App.tsx:476 src/components/Importer.tsx:75
 msgid "关闭"
 msgstr "Close"
+
+#: src/App.tsx:532
+msgid "关闭提示"
+msgstr "Dismiss"
 
 #: src/components/AboutList.tsx:85
 msgid "其他资源"
@@ -119,7 +131,7 @@ msgstr "Import Data from «MAA Depot Recognizer»"
 msgid "导入「森空岛」数据"
 msgstr "Import Data from «Skland»"
 
-#: src/App.tsx:272
+#: src/App.tsx:273
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -179,7 +191,7 @@ msgstr "Morale"
 msgid "总价值"
 msgstr "Total Value"
 
-#: src/App.tsx:437
+#: src/App.tsx:438
 msgid "您不妨试试"
 msgstr "You may try"
 
@@ -227,6 +239,10 @@ msgstr "Data Sources"
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 "Unable to load required game data. Please check your network connection."
+
+#: src/App.tsx:524
+msgid "时间重叠、飞跃，令人恍惚，所幸我们共度的时光鲜明而真切……"
+msgstr "Times overlap and leap, leaving one dazed. Fortunately, the time we spent together remains vivid and true..."
 
 #: src/pkg/cpp-arknights/survey.ts:23
 msgid "明日方舟一图流 干员练度统计数据"
@@ -453,9 +469,17 @@ msgstr "Loading"
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/App.tsx:430
+#: src/App.tsx:431
 msgid "返回主页"
 msgstr "Back to Home"
+
+#: src/App.tsx:519
+msgid ""
+"这一决定是因为我们缺乏足够的精力和热情。如果您有兴趣持续维护，欢迎在 GitHub "
+"上提交 Pull Request。"
+msgstr ""
+"This is due to a lack of maintenance effort and enthusiasm. If you're "
+"interested in keeping it going, feel free to submit a Pull Request on GitHub."
 
 #: src/components/ConfigUi.tsx:44
 msgid "选项"
@@ -480,6 +504,15 @@ msgstr "Reset Data"
 #: src/components/arknights/CharacterStatusPopover.tsx:571
 msgid "隐藏"
 msgstr "Hide"
+
+#: src/App.tsx:514
+msgid ""
+"页面目前也许还能使用。但随着重构或调整，届时 REVERSE1999 相关的功能或将不再保"
+"留。如果您有需要保存的数据，建议尽早导出备份。感谢您的理解与支持。"
+msgstr ""
+"The page may still work for now, but REVERSE1999 features may be removed "
+"during future site updates. If you have data to keep, we recommend exporting "
+"it soon. Thank you for your understanding."
 
 #: src/components/AboutList.tsx:95
 msgid "鸣谢"
@@ -878,7 +911,7 @@ msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr "Error During Processing Imported Data"
 
-#: src/App.tsx:418
+#: src/App.tsx:419
 msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
@@ -954,43 +987,43 @@ msgid "计划"
 msgstr "Planned"
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:311
+#: src/App.tsx:312
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr "Setting up %s…"
 
 #. initial
-#: src/App.tsx:306
+#: src/App.tsx:307
 msgctxt "loading status"
 msgid "别急…"
 msgstr "Don't hurry…"
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:357
+#: src/App.tsx:358
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr "We're setting things up for you"
 
 #. loaded data objects
-#: src/App.tsx:319
+#: src/App.tsx:320
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr "Almost there…"
 
 #. joke text
-#: src/App.tsx:355
+#: src/App.tsx:356
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr "Installing Macindows X"
 
 #. loading hero line 2
-#: src/App.tsx:364
+#: src/App.tsx:365
 msgctxt "loading status"
 msgid "请稍候"
 msgstr "This won't take long"
 
 #. done
-#: src/App.tsx:323
+#: src/App.tsx:324
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"

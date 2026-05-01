@@ -176,6 +176,7 @@ const App = memo(() => {
 
   return (
     <>
+      <DeprecationWarning />
       {cpp.gameComponent.style ? <style dangerouslySetInnerHTML={{ __html: cpp.gameComponent.style }} /> : null}
       <Navbar fixedToTop={true} className="cpp-navbar-main">
         <Navbar.Group align={Alignment.LEFT}>
@@ -492,3 +493,49 @@ function renderError(err: Err) {
     </>
   )
 }
+
+const DeprecationWarning = memo(() => {
+  const ga = useGameAdapter()
+  const [show, setShow] = useState(true)
+  if (ga.getCodename() !== 'reverse1999') return null
+  return (
+    <Dialog
+      isOpen={show}
+      title={gt.gettext(`Closure++ 对 REVERSE1999 的支持现已结束`)}
+      icon="warning-sign"
+      isCloseButtonShown={false}
+    >
+      <DialogBody>
+        <div style={{ maxWidth: '500px' }}>
+          <Callout intent="warning" style={{ marginBottom: '1em' }}>
+            {gt.gettext('Closure++ 不再支持 REVERSE1999。')}
+          </Callout>
+          <p>
+            {gt.gettext(
+              '页面目前也许还能使用。但随着重构或调整，届时 REVERSE1999 相关的功能或将不再保留。如果您有需要保存的数据，建议尽早导出备份。感谢您的理解与支持。',
+            )}
+          </p>
+          <p>
+            {gt.gettext(
+              '这一决定是因为我们缺乏足够的精力和热情。如果您有兴趣持续维护，欢迎在 GitHub 上提交 Pull Request。',
+            )}
+          </p>
+          <blockquote className={Classes.BLOCKQUOTE} style={{ opacity: 0.6 }}>
+            <span style={{ display: 'inline-block', transform: 'skewX(-10deg)' }}>
+              {gt.gettext('时间重叠、飞跃，令人恍惚，所幸我们共度的时光鲜明而真切……')}
+            </span>
+          </blockquote>
+        </div>
+      </DialogBody>
+      <DialogFooter
+        actions={
+          <>
+            <Button onClick={() => setShow(false)} minimal>
+              {gt.gettext('关闭提示')}
+            </Button>
+          </>
+        }
+      />
+    </Dialog>
+  )
+})
