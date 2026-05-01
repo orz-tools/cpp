@@ -356,7 +356,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   public getInventoryItems(page?: string) {
     return Object.values(this.dataManager.data.items)
       .filter((x) => {
-        if (!['MATERIAL', 'CARD_EXP', 'GOLD', '##EXP_VIRTUAL'].includes(x.raw.itemType)) return false
+        if (!['MATERIAL', 'CARD_EXP', 'GOLD', '##EXP_VIRTUAL'].includes(String(x.raw.itemType))) return false
         if (
           [
             '3105', // 龙骨

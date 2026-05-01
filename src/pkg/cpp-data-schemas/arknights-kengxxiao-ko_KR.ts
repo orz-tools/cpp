@@ -150,7 +150,7 @@ export type CppData_ArknightsKengxxiaoKoKr = {
                 name: string;
                 rarity: "TIER_1" | "TIER_2" | "TIER_3" | "TIER_4" | "TIER_5" | "TIER_6";
                 sortId: number;
-                itemType: string;
+                itemType: string | number;
                 classifyType: string;
             };
         };

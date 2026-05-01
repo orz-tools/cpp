@@ -11,6 +11,19 @@ import { gt } from '../../pkg/gt'
 import { ErrAtom } from '../Err'
 import { ImportContext, useStartImportSession } from '../Importer'
 
+class CharacterNotFoundError extends Error {
+  public friendly: string
+  public constructor(key: string) {
+    super(`Character Not Found: ${key}`)
+    this.name = 'CharacterNotFoundError'
+    this.friendly = gt
+      .gettext(
+        '尚不支持角色「%s」。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。',
+      ) /* I10N: %s: character key */
+      .replaceAll('%s', key)
+  }
+}
+
 export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
   const startImportSession = useStartImportSession()
@@ -31,7 +44,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             const key = ga.getRealCharacterKey(char.id)
             const c = ga.getCharacter(key)
             if (!c) {
-              throw new Error(`Character Not Found: ${key}`)
+              throw new CharacterNotFoundError(key)
             }
             keys.delete(key)
             if (!draft.current[key]) draft.current[key] = JSON.parse(JSON.stringify(empty))
@@ -85,7 +98,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             const key = ga.getRealCharacterKey(char.charId)
             const c = ga.getCharacter(key)
             if (!c) {
-              throw new Error(`Character Not Found: ${key}`)
+              throw new CharacterNotFoundError(key)
             }
             keys.delete(key)
             if (!draft.current[key]) draft.current[key] = JSON.parse(JSON.stringify(empty))
@@ -179,7 +192,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             const charId = data.building.training.trainee.charId
             const skillIndex = data.building.training.trainee.targetSkill
             const targetCharacter = ga.getCharacter(ga.getRealCharacterKey(charId))
-            if (!targetCharacter) throw new Error(`Character Not Found: ${charId}`)
+            if (!targetCharacter) throw new CharacterNotFoundError(charId)
             if (targetCharacter.hasPatches) {
               ctx.addWarning(
                 `森空岛目前提供的数据无法分辨训练室里的阿米娅的升变状态，因此无法判定技能专精状态，请自行核对。`,

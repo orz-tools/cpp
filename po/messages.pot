@@ -105,7 +105,7 @@ msgid "导入「MAA 仓库识别」数据"
 msgstr ""
 
 #: src/components/arknights/ImporterMenuItems.tsx:12
-#: src/components/arknights/SklandImporter.tsx:317
+#: src/components/arknights/SklandImporter.tsx:330
 msgid "导入「森空岛」数据"
 msgstr ""
 
@@ -127,6 +127,11 @@ msgstr ""
 
 #: src/pkg/cpp-arknights/survey.ts:187
 msgid "小黑盒 app 干员统计数据"
+msgstr ""
+
+#. %s: character key
+#: src/components/arknights/SklandImporter.tsx:19
+msgid "尚不支持角色「%s」。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。"
 msgstr ""
 
 #: src/components/AboutList.tsx:231
@@ -276,7 +281,7 @@ msgstr ""
 msgid "检查数据更新"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:151
+#: src/components/arknights/SklandImporter.tsx:164
 msgid "森空岛目前提供的数据无法准确区分您的模组到底是没开还是仅 1 级。对于这种情况，此导入程序将会跳过这些模组。如果您有 1 级模组，请自行核对。"
 msgstr ""
 
@@ -311,12 +316,12 @@ msgstr ""
 msgid "社区练度统计数据"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:358
+#: src/components/arknights/SklandImporter.tsx:371
 msgid "粘贴 JSON"
 msgstr ""
 
 #: src/components/arknights/MAAItemImporter.tsx:56
-#: src/components/arknights/SklandImporter.tsx:217
+#: src/components/arknights/SklandImporter.tsx:230
 msgid "粘贴的东西好像不太对，请重试。"
 msgstr ""
 
@@ -355,17 +360,17 @@ msgstr ""
 msgid "语言已切换，将重新载入页面。"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:269
-#: src/components/arknights/SklandImporter.tsx:306
+#: src/components/arknights/SklandImporter.tsx:282
+#: src/components/arknights/SklandImporter.tsx:319
 msgid "请在弹出的「提取装置」中继续操作"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:324
+#: src/components/arknights/SklandImporter.tsx:337
 msgid "请在弹出窗口中继续操作"
 msgstr ""
 
 #: src/components/arknights/MAAItemImporter.tsx:76
-#: src/components/arknights/SklandImporter.tsx:349
+#: src/components/arknights/SklandImporter.tsx:362
 msgid "请在此粘贴..."
 msgstr ""
 
@@ -760,7 +765,7 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:242
+#: src/components/arknights/SklandImporter.tsx:255
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr ""
