@@ -487,7 +487,11 @@ function renderError(err: Err) {
   return (
     <>
       {friendly ? <Callout intent="danger">{friendly}</Callout> : null}
-      {err.error ? <h4 style={{ marginTop: friendly ? undefined : 0 }}>{err.error.message}</h4> : null}
+      {err.error ? (
+        <h4 style={{ marginTop: friendly ? undefined : 0 }} translate="no">
+          {err.error.message}
+        </h4>
+      ) : null}
       <pre style={{ whiteSpace: 'pre-wrap' }}>{navigator.userAgent}</pre>
       {err.error ? <pre style={{ whiteSpace: 'pre-wrap' }}>{err.error.stack}</pre> : null}
     </>
