@@ -1,10 +1,21 @@
-import { Button, Callout, Dialog, DialogBody, InputGroup, Intent, Popover } from '@blueprintjs/core'
+import {
+  Button,
+  Callout,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  InputGroup,
+  Intent,
+  Popover,
+  Spinner,
+} from '@blueprintjs/core'
 import { Draft } from 'immer'
 import { useSetAtom } from 'jotai'
-import { memo, useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { z } from 'zod'
 import { useGameAdapter } from '../../Cpp'
+import { useRequest } from '../../hooks/useRequest'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
 import { UserData } from '../../pkg/cpp-core/UserData'
 import { gt } from '../../pkg/gt'
@@ -235,6 +246,21 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
   const focus = useEvent(() => focusRef.current?.focus())
   const setErr = useSetAtom(ErrAtom)
 
+  const dm = ga.getDataManager()
+  const refreshData = useEvent(async () => {
+    try {
+      const r = await dm.checkUpdates(true)
+      if (r || dm.dataUpdatedAfterInit) {
+        return true
+      }
+    } catch (e) {
+      console.error(e)
+      return false
+    }
+    return false
+  })
+  const { loading, send, response } = useRequest(refreshData)
+
   const [windowRef, setWindowRef] = useState<WindowProxy | null>(null)
 
   useEffect(() => {
@@ -244,6 +270,10 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     }, 100)
     return () => clearInterval(timer)
   }, [windowRef])
+
+  useEffect(() => {
+    send()
+  }, [send])
 
   const processMessage = useEvent((e: MessageEvent) => {
     if (typeof e.data !== 'object') return
@@ -332,47 +362,81 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
       canOutsideClickClose={false}
       backdropProps={{ onClick: handleBackdrop }}
     >
-      <DialogBody>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
-          {windowRef ? <Callout intent="warning" title={gt.gettext('请在弹出窗口中继续操作')} /> : null}
-          <Button
-            style={{ fontSize: '200%', padding: '0.75em' }}
-            intent={windowRef ? Intent.PRIMARY : Intent.PRIMARY}
-            onClick={handleDevice}
-          >
-            {windowRef ? `回到「提取装置」` : `使用「提取装置」`}
-          </Button>
-          <Popover
-            position="bottom"
-            onOpened={focus}
-            content={
-              <>
-                <Callout intent="danger" title={'你走错了？！'}>
-                  请您点击上方<strong>{windowRef ? '回到' : '使用'}「提取装置」</strong>继续。
-                  <br />
-                  <br />
-                  这是给无法使用「提取装置」的人提供的备用入口。
-                  <br />
-                  请勿在此粘贴任何凭据。
-                </Callout>
-                <div style={{ padding: '1em' }}>
-                  <InputGroup
-                    onPaste={handleInput}
-                    value={''}
-                    placeholder={gt.gettext('请在此粘贴...')}
-                    inputRef={focusRef}
-                    style={{ width: '100%' }}
-                    onChange={noop}
-                  />
-                </div>
-              </>
-            }
-          >
-            <Button minimal text={gt.gettext('粘贴 JSON')} style={{ color: 'rgba(0, 0, 0, 0.25)' }} />
-          </Popover>
-        </div>
-      </DialogBody>
+      {loading ? (
+        <Loading />
+      ) : response ? (
+        <ForceRefresh />
+      ) : (
+        <DialogBody>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
+            {windowRef ? <Callout intent="warning" title={gt.gettext('请在弹出窗口中继续操作')} /> : null}
+            <Button
+              style={{ fontSize: '200%', padding: '0.75em' }}
+              intent={windowRef ? Intent.PRIMARY : Intent.PRIMARY}
+              onClick={handleDevice}
+            >
+              {windowRef ? `回到「提取装置」` : `使用「提取装置」`}
+            </Button>
+            <Popover
+              position="bottom"
+              onOpened={focus}
+              content={
+                <>
+                  <Callout intent="danger" title={'你走错了？！'}>
+                    请您点击上方<strong>{windowRef ? '回到' : '使用'}「提取装置」</strong>继续。
+                    <br />
+                    <br />
+                    这是给无法使用「提取装置」的人提供的备用入口。
+                    <br />
+                    请勿在此粘贴任何凭据。
+                  </Callout>
+                  <div style={{ padding: '1em' }}>
+                    <InputGroup
+                      onPaste={handleInput}
+                      value={''}
+                      placeholder={gt.gettext('请在此粘贴...')}
+                      inputRef={focusRef}
+                      style={{ width: '100%' }}
+                      onChange={noop}
+                    />
+                  </div>
+                </>
+              }
+            >
+              <Button minimal text={gt.gettext('粘贴 JSON')} style={{ color: 'rgba(0, 0, 0, 0.25)' }} />
+            </Popover>
+          </div>
+        </DialogBody>
+      )}
     </Dialog>
+  )
+})
+
+const Loading = React.memo(() => {
+  return (
+    <DialogBody>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
+        <Spinner size={50} />
+        <p>{gt.gettext('更新数据中…')}</p>
+      </div>
+    </DialogBody>
+  )
+})
+
+const ForceRefresh = React.memo(() => {
+  return (
+    <>
+      <DialogBody>
+        <Callout intent="warning">游戏数据已更新，请重新载入后再尝试导入。</Callout>
+      </DialogBody>
+      <DialogFooter
+        actions={
+          <Button onClick={() => location.reload()} minimal intent={Intent.PRIMARY}>
+            {gt.gettext('重新载入')}
+          </Button>
+        }
+      />
+    </>
   )
 })
 

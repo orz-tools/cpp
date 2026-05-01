@@ -35,9 +35,9 @@ export abstract class BasicDataManager<G extends IGame> {
   public abstract transform(): Promise<any>
   public data!: Awaited<ReturnType<this['transform']>>
 
-  public async refresh() {
+  public async refresh(absolutelyRequiredOnly = false) {
     let refreshed = false
-    await this.loadDataObjects(true, () => (refreshed = true))
+    await this.loadDataObjects(true, () => (refreshed = true), absolutelyRequiredOnly)
     return refreshed
   }
 
@@ -56,8 +56,18 @@ export abstract class BasicDataManager<G extends IGame> {
     return Promise.resolve([])
   }
 
-  protected async loadDataObjects(refresh?: boolean | undefined, onRefreshed?: () => any) {
-    const dos = await this.getRequiredDataObjects()
+  public getAbsolutelyRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
+    return Promise.resolve([])
+  }
+
+  protected async loadDataObjects(
+    refresh?: boolean | undefined,
+    onRefreshed?: () => any,
+    absolutelyRequiredOnly = false,
+  ) {
+    const dos = absolutelyRequiredOnly
+      ? await this.getAbsolutelyRequiredDataObjects()
+      : await this.getRequiredDataObjects()
     await Promise.all(
       dos.map(async (x) => {
         this.loading.add(x.name)
@@ -90,8 +100,10 @@ export abstract class BasicDataManager<G extends IGame> {
     }
   }
 
-  public async checkUpdates() {
-    const dos = await this.getRequiredDataObjects()
+  public async checkUpdates(absolutelyRequiredOnly = false) {
+    const dos = absolutelyRequiredOnly
+      ? await this.getAbsolutelyRequiredDataObjects()
+      : await this.getRequiredDataObjects()
     let showNotification = false
     for (const x of dos) {
       const l = await getLastCheckedAt(x)

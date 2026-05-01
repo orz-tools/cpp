@@ -10,6 +10,12 @@ import { PSTRs } from './LineBreaks'
 
 const logs = [
   {
+    date: '2026-05-01',
+    type: 'optimize',
+    game: [GameName.Arknights],
+    desc: lpstr(() => gt.pgettext('changelog', '导入前检查数据更新')),
+  },
+  {
     date: '2024-10-15',
     type: 'optimize',
     desc: lpstr(() => gt.pgettext('changelog', '支持拼音、模糊匹配')),

@@ -68,6 +68,10 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
     ])
   }
 
+  public getAbsolutelyRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
+    return Promise.resolve([this.$kengxxiao, ...(this.$kengxxiaoLocal ? [this.$kengxxiaoLocal] : [])])
+  }
+
   public loadRaw() {
     const k = this.get(this.$kengxxiao)
     const yituliu = this.get(this.$yituliu)

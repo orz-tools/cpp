@@ -105,7 +105,7 @@ msgid "导入「MAA 仓库识别」数据"
 msgstr ""
 
 #: src/components/arknights/ImporterMenuItems.tsx:12
-#: src/components/arknights/SklandImporter.tsx:330
+#: src/components/arknights/SklandImporter.tsx:360
 msgid "导入「森空岛」数据"
 msgstr ""
 
@@ -130,7 +130,7 @@ msgid "小黑盒 app 干员统计数据"
 msgstr ""
 
 #. %s: character key
-#: src/components/arknights/SklandImporter.tsx:19
+#: src/components/arknights/SklandImporter.tsx:30
 msgid "尚不支持角色「%s」。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。"
 msgstr ""
 
@@ -169,7 +169,7 @@ msgid "您不妨试试"
 msgstr ""
 
 #. %s: datetime
-#: src/components/LogList.tsx:243
+#: src/components/LogList.tsx:249
 msgid "截止 %s"
 msgstr ""
 
@@ -207,7 +207,7 @@ msgstr ""
 msgid "数据源"
 msgstr ""
 
-#: src/pkg/cpp-basic/DataManager.ts:78
+#: src/pkg/cpp-basic/DataManager.ts:88
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 
@@ -242,10 +242,11 @@ msgid "更新于 %s"
 msgstr ""
 
 #: src/App.tsx:75
+#: src/components/arknights/SklandImporter.tsx:420
 msgid "更新数据中…"
 msgstr ""
 
-#: src/components/LogList.tsx:186
+#: src/components/LogList.tsx:192
 msgid "更新笔记"
 msgstr ""
 
@@ -269,7 +270,7 @@ msgstr ""
 msgid "来自明日方舟一图流的数据，除非另有声明，采用 知识共享 署名-非商业性使用 4.0 国际 许可协议 进行许可。转载、公开或以任何形式复制、发行、再传播明日方舟一图流的任何内容时，必须注明从明日方舟一图流转载，并提供版权标识、许可协议标识、免责标识和作品链接；且未经许可，不得将本站内容或由其衍生作品用于商业目的。"
 msgstr ""
 
-#: src/components/LogList.tsx:263
+#: src/components/LogList.tsx:269
 msgid "查看更多…"
 msgstr ""
 
@@ -281,7 +282,7 @@ msgstr ""
 msgid "检查数据更新"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:164
+#: src/components/arknights/SklandImporter.tsx:175
 msgid "森空岛目前提供的数据无法准确区分您的模组到底是没开还是仅 1 级。对于这种情况，此导入程序将会跳过这些模组。如果您有 1 级模组，请自行核对。"
 msgstr ""
 
@@ -316,12 +317,12 @@ msgstr ""
 msgid "社区练度统计数据"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:371
+#: src/components/arknights/SklandImporter.tsx:406
 msgid "粘贴 JSON"
 msgstr ""
 
 #: src/components/arknights/MAAItemImporter.tsx:56
-#: src/components/arknights/SklandImporter.tsx:230
+#: src/components/arknights/SklandImporter.tsx:241
 msgid "粘贴的东西好像不太对，请重试。"
 msgstr ""
 
@@ -360,17 +361,17 @@ msgstr ""
 msgid "语言已切换，将重新载入页面。"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:282
-#: src/components/arknights/SklandImporter.tsx:319
+#: src/components/arknights/SklandImporter.tsx:312
+#: src/components/arknights/SklandImporter.tsx:349
 msgid "请在弹出的「提取装置」中继续操作"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:337
+#: src/components/arknights/SklandImporter.tsx:372
 msgid "请在弹出窗口中继续操作"
 msgstr ""
 
 #: src/components/arknights/MAAItemImporter.tsx:76
-#: src/components/arknights/SklandImporter.tsx:362
+#: src/components/arknights/SklandImporter.tsx:397
 msgid "请在此粘贴..."
 msgstr ""
 
@@ -382,7 +383,7 @@ msgstr ""
 msgid "请稍候"
 msgstr ""
 
-#: src/components/LogList.tsx:247
+#: src/components/LogList.tsx:253
 msgid "近期更新"
 msgstr ""
 
@@ -404,6 +405,7 @@ msgid "邮箱"
 msgstr ""
 
 #: src/App.tsx:167
+#: src/components/arknights/SklandImporter.tsx:435
 msgid "重新载入"
 msgstr ""
 
@@ -665,77 +667,82 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr ""
 
-#: src/components/LogList.tsx:27
+#: src/components/LogList.tsx:33
 msgctxt "changelog"
 msgid "从 MAA 导入仓库时保留不支持识别的道具"
 msgstr ""
 
-#: src/components/LogList.tsx:49
+#: src/components/LogList.tsx:55
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr ""
 
-#: src/components/LogList.tsx:75
+#: src/components/LogList.tsx:81
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr ""
 
-#: src/components/LogList.tsx:44
+#: src/components/LogList.tsx:50
 msgctxt "changelog"
 msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
 msgstr ""
 
-#: src/components/LogList.tsx:81
+#: src/components/LogList.tsx:87
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr ""
 
-#: src/components/LogList.tsx:87
+#: src/components/LogList.tsx:93
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr ""
 
-#: src/components/LogList.tsx:33
+#: src/components/LogList.tsx:39
 msgctxt "changelog"
 msgid "增加共鸣调频支持"
 msgstr ""
 
-#: src/components/LogList.tsx:21
+#: src/components/LogList.tsx:27
 msgctxt "changelog"
 msgid "增加海外服掉落数据 (使用国服同期快照)"
 msgstr ""
 
-#: src/components/LogList.tsx:38
+#: src/components/LogList.tsx:44
 msgctxt "changelog"
 msgid "增加角色的快速过滤器"
 msgstr ""
 
-#: src/components/LogList.tsx:94
+#: src/components/LogList.tsx:16
 msgctxt "changelog"
-msgid "接入小黑盒 app 的干员统计数据"
+msgid "导入前检查数据更新"
 msgstr ""
 
 #: src/components/LogList.tsx:100
 msgctxt "changelog"
+msgid "接入小黑盒 app 的干员统计数据"
+msgstr ""
+
+#: src/components/LogList.tsx:106
+msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr ""
 
-#: src/components/LogList.tsx:15
+#: src/components/LogList.tsx:21
 msgctxt "changelog"
 msgid "支持拼音、模糊匹配"
 msgstr ""
 
-#: src/components/LogList.tsx:69
+#: src/components/LogList.tsx:75
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr ""
 
-#: src/components/LogList.tsx:62
+#: src/components/LogList.tsx:68
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr ""
 
-#: src/components/LogList.tsx:54
+#: src/components/LogList.tsx:60
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr ""
@@ -765,7 +772,7 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:255
+#: src/components/arknights/SklandImporter.tsx:285
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr ""
