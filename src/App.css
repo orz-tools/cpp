@@ -481,6 +481,7 @@ body {
 
 .cpp-goal-counter {
   position: relative;
+  overflow: hidden;
 }
 
 .cpp-goal-counter::before {
