@@ -1,4 +1,5 @@
-import Lpsolver, { IModel } from 'javascript-lp-solver'
+import Lpsolver from 'javascript-lp-solver'
+import type { Model, Solution } from 'javascript-lp-solver'
 import { intersection } from 'ramda'
 import { IGameAdapter } from './managers'
 import { IGame } from './types'
@@ -27,7 +28,7 @@ export class FarmPlanner<G extends IGame> {
   ): Promise<FarmPlanner<G>> {
     await Promise.resolve()
 
-    const model: IModel<FarmModelSolutionVar, FarmModelInternalVar> = {
+    const model: Model = {
       optimize: 'ap',
       opType: 'min',
       constraints: {},
@@ -85,7 +86,7 @@ export class FarmPlanner<G extends IGame> {
   }
 
   public constructor(
-    private model: IModel<FarmModelSolutionVar, FarmModelInternalVar>,
+    private model: Model,
     private ga: IGameAdapter<G>,
   ) {
     for (const [, v] of Object.entries(this.model.variables)) {
@@ -125,15 +126,16 @@ export class FarmPlanner<G extends IGame> {
     }
     const contribute = (kk: string, q: number) => {
       const k = `item:${kk}` as const
-      if (!this.model.constraints[k]) {
-        this.model.constraints[k] = { min: 0 }
-      }
       if (!this.feasible.has(k) && !this.unfeasible.has(k)) {
         this.unfeasible.add(k)
       }
-      const c = this.model.constraints[k]!
-      if (c.min == null) c.min = 0
-      c.min -= q
+      const c = this.model.constraints[k]
+      if (typeof c === 'object' && c !== null) {
+        if (c.min == null) c.min = 0
+        c.min -= q
+      } else {
+        this.model.constraints[k] = { min: -q }
+      }
     }
     for (const [k, v] of Object.entries(quantities)) {
       if (expMap.has(k)) {
@@ -157,7 +159,7 @@ export class FarmPlanner<G extends IGame> {
     } catch (e) {
       console.warn('failed to convert as minizinc input', e)
     }
-    const result = Lpsolver.Solve(this.model, 1e-4)
+    const result = Lpsolver.Solve(this.model, 1e-4) as Solution<FarmModelSolutionVar>
     console.log('lpsolver result', this.model, result)
     return result
   }
@@ -205,7 +207,7 @@ export class FarmPlanner<G extends IGame> {
     }
 
     for (const [key, xx] of Object.entries(this.model.constraints || {})) {
-      const x = xx || {}
+      const x = (typeof xx === 'object' && xx !== null ? xx : {}) as { min?: number; max?: number }
       if (constraints.has(key)) {
         const cc = constraints.get(key)!
         cc.min = x.min

@@ -1,4 +1,5 @@
-import Lpsolver, { IModel } from 'javascript-lp-solver'
+import Lpsolver from 'javascript-lp-solver'
+import type { Model, SolveResult } from 'javascript-lp-solver'
 
 export interface ItemValueStage {
   id: string
@@ -109,7 +110,7 @@ function solve(input: ItemValueInput): ItemValueSolution {
     for (const [itemId, q] of row.coefs) scale.set(itemId, Math.max(scale.get(itemId) || 0, Math.abs(q)))
   }
 
-  const model: IModel = {
+  const model: Model = {
     optimize: 'demand',
     opType: 'max',
     constraints: {},
@@ -133,7 +134,7 @@ function solve(input: ItemValueInput): ItemValueSolution {
     }
   }
 
-  const result = Lpsolver.Solve(model, 1e-9)
+  const result = Lpsolver.Solve(model, 1e-9) as SolveResult
   if (result.feasible === false) return { status: 'error', reason: 'infeasible' }
   if (result.bounded === false) return { status: 'error', reason: 'unbounded' }
 

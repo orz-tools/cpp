@@ -1,4 +1,5 @@
-import Lpsolver, { IModel } from 'javascript-lp-solver'
+import Lpsolver from 'javascript-lp-solver'
+import type { Model, SolveResult } from 'javascript-lp-solver'
 import { describe, expect, it } from 'vitest'
 import { ItemValueInput, solveItemValues } from './ItemValueSolver'
 
@@ -84,13 +85,13 @@ describe('solveItemValues', () => {
     expectClose(r.values.get('B'), 2)
     expectClose(3 * r.values.get('A')! + 1 * r.values.get('B')!, 14)
 
-    const model: IModel = {
+    const model: Model = {
       optimize: 'ap',
       opType: 'min',
       constraints: { A: { min: 3 }, B: { min: 1 } },
       variables: { S1: { ap: 6, A: 1, B: 1 }, S2: { ap: 4, A: 1 } },
     }
-    const primal = Lpsolver.Solve(model)
+    const primal = Lpsolver.Solve(model) as SolveResult
     expectClose(primal.result, 14)
   })
 

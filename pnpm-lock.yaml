@@ -195,8 +195,8 @@ importers:
         specifier: ^10.0.2
         version: 10.0.2
       javascript-lp-solver:
-        specifier: ^0.4.24
-        version: 0.4.24
+        specifier: ^1.0.3
+        version: 1.0.3
       jotai:
         specifier: ^3.0.2
         version: 3.0.2(@types/react@18.2.21)(react@18.2.0)
@@ -1650,8 +1650,8 @@ packages:
   isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
 
-  javascript-lp-solver@0.4.24:
-    resolution: {integrity: sha512-5edoDKnMrt/u3M6GnZKDDIPxOyFOg+WrwDv8mjNiMC2DePhy2H9/FFQgf4ggywaXT1utvkxusJcjQUER72cZmA==}
+  javascript-lp-solver@1.0.3:
+    resolution: {integrity: sha512-+qUYrubmn227YTz25uf9wOTlgB3wFKGtutECxL1shjOkgi/Tcn3SpnC7+T9rxhv/JNOxLIfZ3O6wEx0FwLlXbw==}
 
   jotai-family@1.1.0:
     resolution: {integrity: sha512-T1ACRsLnN5Mu0B8/DIWUW1hW7x1RmpBprm/+CWmUTf4ZZUmIFEQpBJ9PNQtXPjdUD2uu8RvwBxr7nJPdCw5BXg==}
@@ -3428,7 +3428,7 @@ snapshots:
 
   isarray@2.0.5: {}
 
-  javascript-lp-solver@0.4.24: {}
+  javascript-lp-solver@1.0.3: {}
 
   jotai-family@1.1.0(jotai@3.0.2(@types/react@18.2.21)(react@18.2.0)):
     dependencies:
