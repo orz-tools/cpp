@@ -7,6 +7,7 @@
     "dev": "node scripts/build-messages.js && vite",
     "build": "node scripts/build-messages.js && tsc && vite build",
     "preview": "vite preview",
+    "test:coverage": "vitest run --coverage",
     "gt": "node scripts/extract-messages.js && scripts/update-messages.sh && node scripts/build-messages.js",
     "lint": "oxlint --type-aware",
     "fmt": "oxfmt"
@@ -44,6 +45,7 @@
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react-swc": "^4.3.3",
+    "@vitest/coverage-v8": "5.1.0",
     "@vitest/ui": "^5.1.0",
     "gettext-extractor": "^4.0.6",
     "gettext-parser": "^10.0.0",

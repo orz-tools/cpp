@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Querier, QueryParam } from '../cpp-basic'
 import type { DataContainerObject } from '../dccache'
 import { ArknightsAdapter } from './GameAdapter'
-import { Arknights, PreferenceKeys } from './types'
+import { Arknights, ArknightsRegion, PreferenceKeys, SurveySourceKey } from './types'
 
 vi.mock('localforage', () => ({
   default: {
@@ -363,5 +363,50 @@ describe('ArknightsAdapter', () => {
       const where = { _: 'field' as const, field: 'cost.elite2', op: '!=', operand: 0 }
       expect(presets['cost.elite2'].query.where).toMatchObject({ operand: expect.arrayContaining([where]) })
     })
+  })
+})
+
+describe('ArknightsAdapter', () => {
+  const adapter = new ArknightsAdapter()
+
+  it('exposes the codename and regions', () => {
+    expect(adapter.getCodename()).toBe('arknights')
+    expect(ArknightsAdapter.getRegions().map((r) => r.id)).toEqual([
+      ArknightsRegion.zh_CN,
+      ArknightsRegion.en_US,
+      ArknightsRegion.ja_JP,
+      ArknightsRegion.ko_KR,
+    ])
+  })
+
+  it('reads and writes the survey source preference with validation', () => {
+    expect(adapter.readPreference(PreferenceKeys.SurveySource, {})).toBe(SurveySourceKey.None)
+    expect(adapter.readPreference(PreferenceKeys.SurveySource, { surveySource: 'yituliu' })).toBe(
+      SurveySourceKey.Yituliu,
+    )
+    expect(adapter.readPreference(PreferenceKeys.SurveySource, { surveySource: 'bogus' })).toBe(SurveySourceKey.None)
+    expect(adapter.writePreference(PreferenceKeys.SurveySource, SurveySourceKey.Heybox, { a: 1 })).toEqual({
+      a: 1,
+      surveySource: 'heybox',
+    })
+  })
+
+  it('exposes static game configuration', async () => {
+    setRemote()
+    await adapter.getDataManager().init('zh_CN')
+    expect(adapter.getFormulaTagNames()).toEqual(expect.any(Object))
+    expect(adapter.getInventoryPages()).toEqual({ material: expect.any(String) })
+    expect(adapter.getInventoryCategories()).toEqual(expect.any(Object))
+    expect(adapter.getDefaultCharacterQueryOrder()).toEqual([
+      ['rarity', 'DESC'],
+      ['elite', 'DESC'],
+      ['level', 'DESC'],
+    ])
+    expect(adapter.getFavCharacterQueryWhere()).toMatchObject({ _: 'field', field: 'elite', op: '<', operand: 2 })
+    const groups = adapter.getPredefinedQueryGroups().map((x) => x.id)
+    const presets = Object.values(adapter.getPredefinedQueries())
+    expect(presets.length).toBeGreaterThan(0)
+    for (const preset of presets) expect(groups).toContain(preset.group)
+    expect(() => adapter.getRootCharacterQuery()).not.toThrow()
   })
 })
