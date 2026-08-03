@@ -556,7 +556,7 @@ export class UniEquip {
     return (this._icon || (this._icon = [this.iconGenerator]))[0]
   }
   private get iconGenerator() {
-    const yysrc = `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/equip/type/${encodeURIComponent(
+    const yysrc = `https://raw.githubusercontent.com/PuppiizSunniiz/Arknight-Images/main/equip/type/${encodeURIComponent(
       this.raw.typeIcon.toLowerCase(),
     )}.png`
 
