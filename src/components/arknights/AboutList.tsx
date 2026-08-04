@@ -81,8 +81,8 @@ export const AboutThirdParty = memo(() => {
       />
       <MenuItem
         icon={'media'}
-        text="Aceship/Arknight-Images"
-        href={'https://github.com/Aceship/Arknight-Images'}
+        text="PuppiizSunniiz/Arknight-Images"
+        href={'https://github.com/PuppiizSunniiz/Arknight-Images'}
         {...externalLinkProps}
       />
     </>
