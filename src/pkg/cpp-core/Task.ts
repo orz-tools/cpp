@@ -135,7 +135,7 @@ export function generateTaskExtra<G extends IGame>(
           if (exp === 0) {
             //
           } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
-            exp = 0
+            // exp = 0 —— 之后不再读 exp，留着与上面 exp === 0 的分支对照
             valueFulfilled[cost.source] += (ga.getItem(smallestExpItemWithQuantity[0]).valueAsAp || 0) * 1
             newQuantities[smallestExpItemWithQuantity[0]] -= 1
           } else {

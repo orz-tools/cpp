@@ -204,7 +204,7 @@ async function superfetch(url: string) {
   const github = parseGitHubRawUrl(url)
   if (!github) return fetch(url, { referrerPolicy: 'no-referrer' })
 
-  let originalError: any = null
+  let originalError: any
   try {
     const res = await fetch(url, { referrerPolicy: 'no-referrer' })
     if (res.status === 404) return res
