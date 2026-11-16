@@ -30,8 +30,9 @@ export class YituliuSurveySource implements SurveySource {
     return this.dm.data.yituliuSurvey
   }
 
-  private get scount() {
-    return this.dm.raw.yituliuSurvey.userCount
+  // Data built before the worker emitted per-operator sizes only has the largest one, which overstates new operators.
+  private scount(survey: { sampleSize?: number | undefined }) {
+    return survey.sampleSize ?? this.dm.raw.yituliuSurvey.userCount
   }
 
   public own(character: Character): SurveyProps | null | undefined {
@@ -42,7 +43,7 @@ export class YituliuSurveySource implements SurveySource {
 
     return {
       percent: survey.own,
-      samples: this.scount,
+      samples: this.scount(survey),
       desc: '干员持有数/总样本数',
     }
   }
@@ -55,7 +56,7 @@ export class YituliuSurveySource implements SurveySource {
 
     return {
       percent: survey.elite.rank0,
-      samples: this.scount * survey.own,
+      samples: this.scount(survey) * survey.own,
       desc: '精零人数/持有人数',
     }
   }
@@ -68,7 +69,7 @@ export class YituliuSurveySource implements SurveySource {
 
     return {
       percent: survey.elite.rank1,
-      samples: this.scount * survey.own,
+      samples: this.scount(survey) * survey.own,
       desc: '精一人数/持有人数',
     }
   }
@@ -81,7 +82,7 @@ export class YituliuSurveySource implements SurveySource {
 
     return {
       percent: survey.elite.rank2,
-      samples: this.scount * survey.own,
+      samples: this.scount(survey) * survey.own,
       desc: '精二人数/持有人数',
     }
   }
@@ -111,22 +112,22 @@ export class YituliuSurveySource implements SurveySource {
       {
         desc: '专精了此技能的人数（一级及以上）/精二人数',
         percent: ss.count / survey.elite.rank2,
-        samples: this.scount * survey.own * survey.elite.rank2,
+        samples: this.scount(survey) * survey.own * survey.elite.rank2,
       },
       {
         desc: '专精一级此技能的人数/专精了此技能的人数（一级及以上）',
         percent: ss.rank1 / ss.count,
-        samples: this.scount * survey.own * ss.count,
+        samples: this.scount(survey) * survey.own * ss.count,
       },
       {
         desc: '专精二级此技能的人数/专精了此技能的人数（一级及以上）',
         percent: ss.rank2 / ss.count,
-        samples: this.scount * survey.own * ss.count,
+        samples: this.scount(survey) * survey.own * ss.count,
       },
       {
         desc: '专精三级此技能的人数/专精了此技能的人数（一级及以上）',
         percent: ss.rank3 / ss.count,
-        samples: this.scount * survey.own * ss.count,
+        samples: this.scount(survey) * survey.own * ss.count,
       },
     ]
   }
@@ -157,22 +158,22 @@ export class YituliuSurveySource implements SurveySource {
       {
         desc: '解锁了此模组的人数（一级及以上）/精二人数',
         percent: ss.count / survey.elite.rank2,
-        samples: this.scount * survey.own * survey.elite.rank2,
+        samples: this.scount(survey) * survey.own * survey.elite.rank2,
       },
       {
         desc: '解锁了此模组一级的人数/解锁了此模组的人数（一级及以上）',
         percent: ss.rank1 / ss.count,
-        samples: this.scount * survey.own * ss.count,
+        samples: this.scount(survey) * survey.own * ss.count,
       },
       {
         desc: '解锁了此模组二级的人数/解锁了此模组的人数（一级及以上）',
         percent: ss.rank2 / ss.count,
-        samples: this.scount * survey.own * ss.count,
+        samples: this.scount(survey) * survey.own * ss.count,
       },
       {
         desc: '解锁了此模组三级的人数/解锁了此模组的人数（一级及以上）',
         percent: ss.rank3 / ss.count,
-        samples: this.scount * survey.own * ss.count,
+        samples: this.scount(survey) * survey.own * ss.count,
       },
     ]
   }
