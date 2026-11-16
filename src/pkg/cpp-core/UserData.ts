@@ -543,7 +543,7 @@ export interface UserData<G extends IGame> {
   goalOrder: string[]
   starredTasks: string[]
   savedQueries: SavedQuery[]
-  /** 「想看的」的自定义版本，缺省时用游戏给出的默认 */
+  /** 「常看」的自定义版本，缺省时用游戏给出的默认 */
   favQuery?: QueryParam
 }
 

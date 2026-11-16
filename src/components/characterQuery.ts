@@ -1,6 +1,7 @@
 import type { Cpp } from '../Cpp'
 import { SavedQueryPrefix } from '../Cpp'
 import {
+  Assertion,
   ExtraCharacterQuery,
   ICharacter,
   IGame,
@@ -18,10 +19,33 @@ export const PredefinedQueryPrefix = '#!'
 export const ListModeFav = PredefinedQueryPrefix + 'fav'
 export const ListModeAll = PredefinedQueryPrefix + 'all'
 export const ListModeWithGoal = PredefinedQueryPrefix + 'withGoal'
-export const ListModeAbsent = PredefinedQueryPrefix + 'absent'
-export const validPredefinedQueries = [ListModeFav, ListModeAll, ListModeWithGoal, ListModeAbsent]
+export const validPredefinedQueries = [ListModeFav, ListModeAll, ListModeWithGoal]
 
 export const PredefinedGameQueryPrefix = '#?'
+
+/** 快捷过滤「可练」「缺席」记在 quick.holding 里，可以同时选上 */
+export const HoldingTrainable = 'trainable'
+export const HoldingAbsent = 'absent'
+
+const holdingAssertions: Record<string, Assertion> = {
+  [HoldingTrainable]: {
+    _: '&&',
+    operand: [
+      { _: 'field', field: 'own', op: '==', operand: true },
+      { _: 'field', field: 'finished', op: '==', operand: false },
+    ],
+  },
+  [HoldingAbsent]: { _: 'field', field: 'own', op: '==', operand: false },
+}
+
+/** 组内取并集：两个都选等于除了已练完以外的全部；都不选（或值无法识别）时不加条件 */
+export function holdingAssertion(values: unknown): Assertion | undefined {
+  const operand = (Array.isArray(values) ? values : []).flatMap((x) =>
+    Object.prototype.hasOwnProperty.call(holdingAssertions, x) ? [holdingAssertions[x]] : [],
+  )
+  if (operand.length === 0) return undefined
+  return operand.length === 1 ? operand[0] : { _: '||', operand }
+}
 
 /** query 不是任何引用，而是正在编辑的 JSON */
 export function isCustomQuery(query: string) {
@@ -126,11 +150,6 @@ export function compileQuery(query: string, cpp: Cpp<any>): QueryParam {
           operand: [{ _: 'field', field: 'goal', op: '==', operand: true }],
         },
         order: [['goalOrder', 'ASC']],
-      }
-    } else if (query === ListModeAbsent) {
-      return {
-        where: { _: 'field', field: 'own', op: '==', operand: false },
-        order: defaultQueryOrder,
       }
     }
     throw new Error('Invalid predefined query')

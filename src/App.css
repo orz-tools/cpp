@@ -442,6 +442,44 @@ body {
   white-space: nowrap;
 }
 
+/* 菜单里分成两段的一行：两段之间一条短竖线，任一段高亮时竖线让开 */
+.cpp-split-menu-item {
+  display: flex;
+  gap: 1px;
+}
+
+.cpp-split-menu-item > .bp6-menu-item:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.cpp-split-menu-item > .cpp-split-menu-item-all {
+  position: relative;
+  flex: none;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-split-menu-item > .cpp-split-menu-item-all::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 6px;
+  bottom: 6px;
+  border-left: 1px solid var(--bp-palette-light-gray-1, #d3d8de);
+}
+
+.cpp-split-menu-item > .cpp-split-menu-item-all:hover,
+.cpp-split-menu-item > .cpp-split-menu-item-all.bp6-active {
+  color: inherit;
+}
+
+.cpp-split-menu-item > .cpp-split-menu-item-all:hover::before,
+.cpp-split-menu-item > .cpp-split-menu-item-all.bp6-active::before,
+.cpp-split-menu-item > .bp6-menu-item:first-child:hover + .cpp-split-menu-item-all::before,
+.cpp-split-menu-item > .bp6-menu-item.bp6-active:first-child + .cpp-split-menu-item-all::before {
+  border-left-color: transparent;
+}
+
 [type='search']::-webkit-search-cancel-button,
 [type='search']::-webkit-search-decoration {
   -webkit-appearance: none;

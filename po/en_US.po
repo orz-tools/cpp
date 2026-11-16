@@ -290,7 +290,7 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制数据"
 msgstr "Copy Data"
 
-#: src/components/CharacterList.tsx:192
+#: src/components/CharacterList.tsx:194
 msgid "复制角色名"
 msgstr "Copy Name"
 
@@ -381,7 +381,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
-#: src/components/CharacterList.tsx:199
+#: src/components/CharacterList.tsx:201
 msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
@@ -502,7 +502,7 @@ msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:38
 #: src/components/arknights/ExporterMenuItems.tsx:98
-#: src/components/CharacterList.tsx:205
+#: src/components/CharacterList.tsx:207
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
@@ -625,7 +625,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:859
+#: src/components/CharacterList.tsx:971
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -733,7 +733,7 @@ msgstr ""
 msgid "角色"
 msgstr "Characters"
 
-#: src/components/CharacterList.tsx:131
+#: src/components/CharacterList.tsx:133
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -936,62 +936,62 @@ msgctxt "arknights arkntools step"
 msgid "点击「导出」→「导出培养方案至 MAA」"
 msgstr "Click «Export» → «Export training plan to MAA»"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:500
+#: src/pkg/cpp-arknights/GameAdapter.ts:505
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr "Growth Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:802
+#: src/pkg/cpp-arknights/GameAdapter.ts:807
 msgctxt "arknights item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:799
+#: src/pkg/cpp-arknights/GameAdapter.ts:804
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr "Dualchips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:798
+#: src/pkg/cpp-arknights/GameAdapter.ts:803
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr "Skill, Module & Catalysts"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:797
+#: src/pkg/cpp-arknights/GameAdapter.ts:802
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr "T1 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:794
+#: src/pkg/cpp-arknights/GameAdapter.ts:799
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:796
+#: src/pkg/cpp-arknights/GameAdapter.ts:801
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:801
+#: src/pkg/cpp-arknights/GameAdapter.ts:806
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:800
+#: src/pkg/cpp-arknights/GameAdapter.ts:805
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr "Chip Packs"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:795
+#: src/pkg/cpp-arknights/GameAdapter.ts:800
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:793
+#: src/pkg/cpp-arknights/GameAdapter.ts:798
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:792
+#: src/pkg/cpp-arknights/GameAdapter.ts:797
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
@@ -1081,20 +1081,20 @@ msgctxt "arknights profession"
 msgid "重装"
 msgstr "Defender"
 
+#: src/components/arknights/QuickFilterBuilder.tsx:70
+msgctxt "arknights quick filter"
+msgid "%d 星"
+msgstr "%d-star"
+
 #: src/components/arknights/QuickFilterBuilder.tsx:30
 msgctxt "arknights quick filter"
 msgid "稀有度"
 msgstr "Rarity"
 
-#: src/components/arknights/QuickFilterBuilder.tsx:42
+#: src/components/arknights/QuickFilterBuilder.tsx:81
 msgctxt "arknights quick filter"
-msgid "精英化"
-msgstr "Elite"
-
-#: src/components/arknights/QuickFilterBuilder.tsx:16
-msgctxt "arknights quick filter"
-msgid "职业"
-msgstr "Class"
+msgid "精英 %d"
+msgstr "Elite %d"
 
 #: src/components/arknights/extraFields.tsx:26
 msgctxt "arknights skill ref"
@@ -1111,47 +1111,47 @@ msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr "S2"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:616
+#: src/pkg/cpp-arknights/GameAdapter.ts:621
 msgctxt "arknights stage category"
 msgid "主线"
 msgstr "Main Story"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:621
+#: src/pkg/cpp-arknights/GameAdapter.ts:626
 msgctxt "arknights stage category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:618
+#: src/pkg/cpp-arknights/GameAdapter.ts:623
 msgctxt "arknights stage category"
 msgid "别传"
 msgstr "Side Stories"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:619
+#: src/pkg/cpp-arknights/GameAdapter.ts:624
 msgctxt "arknights stage category"
 msgid "插曲"
 msgstr "Intermezzi"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:617
+#: src/pkg/cpp-arknights/GameAdapter.ts:622
 msgctxt "arknights stage category"
 msgid "活动"
 msgstr "Events"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:620
+#: src/pkg/cpp-arknights/GameAdapter.ts:625
 msgctxt "arknights stage category"
 msgid "资源收集"
 msgstr "Supplies"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:718
+#: src/pkg/cpp-arknights/GameAdapter.ts:723
 msgctxt "arknights stage difficulty"
 msgid "剧情"
 msgstr "Easy "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:716
+#: src/pkg/cpp-arknights/GameAdapter.ts:721
 msgctxt "arknights stage difficulty"
 msgid "标准"
 msgstr "Standard "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:717
+#: src/pkg/cpp-arknights/GameAdapter.ts:722
 msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr "Tough "
@@ -1267,7 +1267,7 @@ msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:709
+#: src/pkg/cpp-arknights/GameAdapter.ts:714
 msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
@@ -1464,6 +1464,26 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
+#: src/components/CharacterList.tsx:424
+msgctxt "holding filter"
+msgid "可练"
+msgstr "Trainable"
+
+#: src/components/CharacterList.tsx:425
+msgctxt "holding filter"
+msgid "已持有、还没练完的干员"
+msgstr "Owned, not yet maxed"
+
+#: src/components/CharacterList.tsx:433
+msgctxt "holding filter"
+msgid "缺席"
+msgstr "Absent"
+
+#: src/components/CharacterList.tsx:434
+msgctxt "holding filter"
+msgid "还没有持有的干员"
+msgstr "Not owned yet"
+
 #: src/components/CppDumpImport.ts:14
 msgctxt "import format"
 msgid "Closure++ 用户数据"
@@ -1544,7 +1564,7 @@ msgstr "Planned"
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
-#: src/components/CharacterList.tsx:459
+#: src/components/CharacterList.tsx:508
 #: src/components/queryEditor/VisualEditor.tsx:348
 msgctxt "list separator"
 msgid "、"
@@ -1594,74 +1614,68 @@ msgstr "Let's start…"
 
 #: src/pkg/cpp-arknights/GameAdapter.ts:334
 msgctxt "predefined query"
-msgid "一图流练度统计 技能专三率"
-msgstr "yituliu survey: skill M3 rate"
+msgid "一图流 技能专三率"
+msgstr "yituliu: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:356
+#: src/pkg/cpp-arknights/GameAdapter.ts:357
 msgctxt "predefined query"
-msgid "一图流练度统计 技能专三率（全部）"
-msgstr "yituliu survey: skill M3 rate (all)"
+msgid "一图流 技能专三率（全部）"
+msgstr "yituliu: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:396
+#: src/pkg/cpp-arknights/GameAdapter.ts:398
 msgctxt "predefined query"
-msgid "一图流练度统计 精二率"
-msgstr "yituliu survey: E2 rate"
+msgid "一图流 精二率"
+msgstr "yituliu: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:417
+#: src/pkg/cpp-arknights/GameAdapter.ts:420
 msgctxt "predefined query"
-msgid "一图流练度统计 精二率（全部）"
-msgstr "yituliu survey: E2 rate (all)"
+msgid "一图流 精二率（全部）"
+msgstr "yituliu: E2 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:365
+#: src/pkg/cpp-arknights/GameAdapter.ts:366
 msgctxt "predefined query"
-msgid "小黑盒干员统计 技能专三率"
-msgstr "Heybox survey: skill M3 rate"
+msgid "小黑盒 技能专三率"
+msgstr "Heybox: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:387
+#: src/pkg/cpp-arknights/GameAdapter.ts:389
 msgctxt "predefined query"
-msgid "小黑盒干员统计 技能专三率（全部）"
-msgstr "Heybox survey: skill M3 rate (all)"
+msgid "小黑盒 技能专三率（全部）"
+msgstr "Heybox: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:454
+#: src/pkg/cpp-arknights/GameAdapter.ts:458
 msgctxt "predefined query"
-msgid "小黑盒干员统计 精二 90 级率"
-msgstr "Heybox survey: E2 Lv 90 rate"
+msgid "小黑盒 精二 90 级率"
+msgstr "Heybox: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:476
+#: src/pkg/cpp-arknights/GameAdapter.ts:481
 msgctxt "predefined query"
-msgid "小黑盒干员统计 精二 90 级率（全部）"
-msgstr "Heybox survey: E2 Lv 90 rate (all)"
+msgid "小黑盒 精二 90 级率（全部）"
+msgstr "Heybox: E2 Lv 90 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:425
+#: src/pkg/cpp-arknights/GameAdapter.ts:428
 msgctxt "predefined query"
-msgid "小黑盒干员统计 精二率"
-msgstr "Heybox survey: E2 rate"
+msgid "小黑盒 精二率"
+msgstr "Heybox: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:446
+#: src/pkg/cpp-arknights/GameAdapter.ts:450
 msgctxt "predefined query"
-msgid "小黑盒干员统计 精二率（全部）"
-msgstr "Heybox survey: E2 rate (all)"
+msgid "小黑盒 精二率（全部）"
+msgstr "Heybox: E2 rate (all)"
 
-#: src/components/CharacterList.tsx:602
-#: src/components/queryEditor/QueryEditor.tsx:84
+#: src/components/CharacterList.tsx:651
+#: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:595
-#: src/components/queryEditor/QueryEditor.tsx:82
+#: src/components/CharacterList.tsx:644
+#: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
-msgid "想看的"
-msgstr "Interested"
+msgid "常看"
+msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:617
-#: src/components/queryEditor/QueryEditor.tsx:88
-msgctxt "predefined view name"
-msgid "缺席"
-msgstr "Absent"
-
-#: src/components/CharacterList.tsx:609
-#: src/components/queryEditor/QueryEditor.tsx:86
+#: src/components/CharacterList.tsx:658
+#: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
 msgstr "Planned"
@@ -1706,18 +1720,18 @@ msgid "以下条件"
 msgstr "of the following"
 
 #: src/components/queryEditor/NameDialog.tsx:42
-#: src/components/queryEditor/QueryEditor.tsx:358
+#: src/components/queryEditor/QueryEditor.tsx:355
 msgctxt "query editor"
 msgid "保存"
 msgstr "Save"
 
-#: src/components/queryEditor/QueryEditor.tsx:342
+#: src/components/queryEditor/QueryEditor.tsx:339
 msgctxt "query editor"
 msgid "先修好 JSON 再切换"
 msgstr "Fix the JSON before switching"
 
-#: src/components/queryEditor/QueryEditor.tsx:409
-#: src/components/queryEditor/QueryEditor.tsx:410
+#: src/components/queryEditor/QueryEditor.tsx:406
+#: src/components/queryEditor/QueryEditor.tsx:407
 msgctxt "query editor"
 msgid "关闭"
 msgstr "Close"
@@ -1727,24 +1741,24 @@ msgctxt "query editor"
 msgid "分组方式"
 msgstr "Group mode"
 
-#: src/components/queryEditor/QueryEditor.tsx:437
+#: src/components/queryEditor/QueryEditor.tsx:434
 msgctxt "query editor"
 msgid "列表仍显示上一次的有效结果。切回「可视化」前需要先修好。"
 msgstr ""
 "The list still shows the last valid result. Fix this before switching back "
 "to Visual."
 
-#: src/components/queryEditor/QueryEditor.tsx:260
+#: src/components/queryEditor/QueryEditor.tsx:257
 msgctxt "query editor"
 msgid "删除"
 msgstr "Delete"
 
-#: src/components/queryEditor/QueryEditor.tsx:256
+#: src/components/queryEditor/QueryEditor.tsx:253
 msgctxt "query editor"
 msgid "删除…"
 msgstr "Delete…"
 
-#: src/components/queryEditor/QueryEditor.tsx:259
+#: src/components/queryEditor/QueryEditor.tsx:256
 msgctxt "query editor"
 msgid "删除过滤器「%s」？"
 msgstr "Delete the filter “%s”?"
@@ -1769,17 +1783,17 @@ msgid "升序"
 msgstr "Ascending"
 
 #: src/components/queryEditor/NameDialog.tsx:41
-#: src/components/queryEditor/QueryEditor.tsx:446
+#: src/components/queryEditor/QueryEditor.tsx:443
 msgctxt "query editor"
 msgid "取消"
 msgstr "Cancel"
 
-#: src/components/queryEditor/QueryEditor.tsx:374
+#: src/components/queryEditor/QueryEditor.tsx:371
 msgctxt "query editor"
 msgid "另存为…"
 msgstr "Save as…"
 
-#: src/components/queryEditor/QueryEditor.tsx:351
+#: src/components/queryEditor/QueryEditor.tsx:348
 msgctxt "query editor"
 msgid "可视化"
 msgstr "Visual"
@@ -1789,7 +1803,7 @@ msgctxt "query editor"
 msgid "名称"
 msgstr "Name"
 
-#: src/components/queryEditor/QueryEditor.tsx:327
+#: src/components/queryEditor/QueryEditor.tsx:324
 msgctxt "query editor"
 msgid "基于「%s」· 未保存"
 msgstr "Based on “%s” · not saved"
@@ -1799,12 +1813,12 @@ msgctxt "query editor"
 msgid "字段"
 msgstr "Field"
 
-#: src/components/queryEditor/QueryEditor.tsx:314
+#: src/components/queryEditor/QueryEditor.tsx:311
 msgctxt "query editor"
 msgid "已修改"
 msgstr "Modified"
 
-#: src/components/queryEditor/QueryEditor.tsx:318
+#: src/components/queryEditor/QueryEditor.tsx:315
 msgctxt "query editor"
 msgid "已自定义"
 msgstr "Customized"
@@ -1819,22 +1833,20 @@ msgctxt "query editor"
 msgid "忽略大小写"
 msgstr "Ignore case"
 
-#: src/components/queryEditor/QueryEditor.tsx:279
+#: src/components/queryEditor/QueryEditor.tsx:276
 msgctxt "query editor"
 msgid "恢复默认"
 msgstr "Restore default"
 
-#: src/components/queryEditor/QueryEditor.tsx:275
+#: src/components/queryEditor/QueryEditor.tsx:272
 msgctxt "query editor"
 msgid "恢复默认…"
 msgstr "Restore default…"
 
-#: src/components/queryEditor/QueryEditor.tsx:278
+#: src/components/queryEditor/QueryEditor.tsx:275
 msgctxt "query editor"
-msgid "把「想看的」恢复为默认条件？自定义的版本会被删除。"
-msgstr ""
-"Restore “Interested” to its default conditions? Your customized version will "
-"be deleted."
+msgid "把「常看」恢复为默认条件？自定义的版本会被删除。"
+msgstr "Restore “Watchlist” to its default conditions? Your customized version will be deleted."
 
 #: src/components/queryEditor/VisualEditor.tsx:78
 msgctxt "query editor"
@@ -1846,46 +1858,46 @@ msgctxt "query editor"
 msgid "排序方向"
 msgstr "Sort direction"
 
-#: src/components/queryEditor/QueryEditor.tsx:206
+#: src/components/queryEditor/QueryEditor.tsx:203
 msgctxt "query editor"
 msgid "放弃"
 msgstr "Discard"
 
-#: src/components/queryEditor/QueryEditor.tsx:212
-#: src/components/queryEditor/QueryEditor.tsx:298
+#: src/components/queryEditor/QueryEditor.tsx:209
+#: src/components/queryEditor/QueryEditor.tsx:295
 msgctxt "query editor"
 msgid "放弃修改"
 msgstr "Discard changes"
 
-#: src/components/queryEditor/QueryEditor.tsx:211
-#: src/components/queryEditor/QueryEditor.tsx:297
+#: src/components/queryEditor/QueryEditor.tsx:208
+#: src/components/queryEditor/QueryEditor.tsx:294
 msgctxt "query editor"
 msgid "放弃对「%s」的修改？"
 msgstr "Discard your changes to “%s”?"
 
-#: src/components/queryEditor/QueryEditor.tsx:294
+#: src/components/queryEditor/QueryEditor.tsx:291
 msgctxt "query editor"
 msgid "放弃更改…"
 msgstr "Discard changes…"
 
-#: src/components/queryEditor/QueryEditor.tsx:205
+#: src/components/queryEditor/QueryEditor.tsx:202
 msgctxt "query editor"
 msgid "放弃这个自定义查询，回到「全部」？"
 msgstr "Discard this custom query and go back to “All”?"
 
-#: src/components/queryEditor/QueryEditor.tsx:401
-#: src/components/queryEditor/QueryEditor.tsx:402
+#: src/components/queryEditor/QueryEditor.tsx:398
+#: src/components/queryEditor/QueryEditor.tsx:399
 msgctxt "query editor"
 msgid "更多操作"
 msgstr "More actions"
 
-#: src/components/queryEditor/QueryEditor.tsx:438
+#: src/components/queryEditor/QueryEditor.tsx:435
 msgctxt "query editor"
 msgid "有无效条件，列表仍显示上一次的有效结果。"
 msgstr ""
 "Some conditions are invalid. The list still shows the last valid result."
 
-#: src/components/queryEditor/QueryEditor.tsx:328
+#: src/components/queryEditor/QueryEditor.tsx:325
 msgctxt "query editor"
 msgid "未保存"
 msgstr "Not saved"
@@ -1941,12 +1953,12 @@ msgctxt "query editor"
 msgid "第 %1 行第 %2 列：%3"
 msgstr "Line %1, column %2: %3"
 
-#: src/components/queryEditor/QueryEditor.tsx:344
+#: src/components/queryEditor/QueryEditor.tsx:341
 msgctxt "query editor"
 msgid "编辑方式"
 msgstr "Editing mode"
 
-#: src/components/queryEditor/QueryEditor.tsx:323
+#: src/components/queryEditor/QueryEditor.tsx:320
 msgctxt "query editor"
 msgid "自定义查询"
 msgstr "Custom query"
@@ -1971,7 +1983,7 @@ msgctxt "query editor"
 msgid "选择…"
 msgstr "Choose…"
 
-#: src/components/queryEditor/QueryEditor.tsx:248
+#: src/components/queryEditor/QueryEditor.tsx:245
 msgctxt "query editor"
 msgid "重命名…"
 msgstr "Rename…"
@@ -1987,7 +1999,7 @@ msgctxt "query editor"
 msgid "降序"
 msgstr "Descending"
 
-#: src/components/queryEditor/QueryEditor.tsx:318
+#: src/components/queryEditor/QueryEditor.tsx:315
 msgctxt "query editor"
 msgid "默认"
 msgstr "Default"
@@ -2047,7 +2059,7 @@ msgctxt "query field"
 msgid "代号"
 msgstr "Name"
 
-#: src/components/characterQuery.ts:46
+#: src/components/characterQuery.ts:70
 msgctxt "query field"
 msgid "内部代号"
 msgstr "Internal ID"
@@ -2067,7 +2079,7 @@ msgctxt "query field"
 msgid "小黑盒干员统计 精二率"
 msgstr "Heybox survey: E2 rate"
 
-#: src/components/characterQuery.ts:71
+#: src/components/characterQuery.ts:95
 msgctxt "query field"
 msgid "已全面养成"
 msgstr "Fully trained"
@@ -2082,7 +2094,7 @@ msgctxt "query field"
 msgid "技能等级"
 msgstr "Skill level"
 
-#: src/components/characterQuery.ts:53
+#: src/components/characterQuery.ts:77
 msgctxt "query field"
 msgid "持有"
 msgstr "Owned"
@@ -2127,7 +2139,7 @@ msgctxt "query field"
 msgid "西文代号"
 msgstr "Western name"
 
-#: src/components/characterQuery.ts:60
+#: src/components/characterQuery.ts:84
 msgctxt "query field"
 msgid "计划顺序"
 msgstr "Plan order"
@@ -2167,27 +2179,42 @@ msgctxt "query group mode"
 msgid "都不满足"
 msgstr "none"
 
-#: src/components/CharacterList.tsx:690 src/components/CharacterList.tsx:691
+#: src/components/CharacterList.tsx:717
+msgctxt "query menu"
+msgid "不论持有和练度，列出全部"
+msgstr "Everyone, owned or not, maxed or not"
+
+#: src/components/CharacterList.tsx:721
+msgctxt "query menu"
+msgid "全部"
+msgstr "All"
+
+#: src/components/CharacterList.tsx:799 src/components/CharacterList.tsx:800
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
 
-#: src/components/CharacterList.tsx:654
+#: src/components/CharacterList.tsx:707
+msgctxt "query menu"
+msgid "只列出还没练到的"
+msgstr "Only those not trained this far yet"
+
+#: src/components/CharacterList.tsx:751
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
 
-#: src/components/CharacterList.tsx:682 src/components/CharacterList.tsx:683
+#: src/components/CharacterList.tsx:791 src/components/CharacterList.tsx:792
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
 
-#: src/components/CharacterList.tsx:665
+#: src/components/CharacterList.tsx:763
 msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:690 src/components/CharacterList.tsx:691
+#: src/components/CharacterList.tsx:799 src/components/CharacterList.tsx:800
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -2243,13 +2270,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:456
+#: src/components/CharacterList.tsx:505
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:456
+#: src/components/CharacterList.tsx:505
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -2562,6 +2589,68 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgctxt "arknights quick filter"
+#~ msgid "精英化"
+#~ msgstr "Elite"
+
+#~ msgctxt "arknights quick filter"
+#~ msgid "职业"
+#~ msgstr "Class"
+
+#~ msgctxt "predefined query"
+#~ msgid "一图流练度统计 技能专三率"
+#~ msgstr "yituliu survey: skill M3 rate"
+
+#~ msgctxt "predefined query"
+#~ msgid "一图流练度统计 技能专三率（全部）"
+#~ msgstr "yituliu survey: skill M3 rate (all)"
+
+#~ msgctxt "predefined query"
+#~ msgid "一图流练度统计 精二率"
+#~ msgstr "yituliu survey: E2 rate"
+
+#~ msgctxt "predefined query"
+#~ msgid "一图流练度统计 精二率（全部）"
+#~ msgstr "yituliu survey: E2 rate (all)"
+
+#~ msgctxt "predefined query"
+#~ msgid "小黑盒干员统计 技能专三率"
+#~ msgstr "Heybox survey: skill M3 rate"
+
+#~ msgctxt "predefined query"
+#~ msgid "小黑盒干员统计 技能专三率（全部）"
+#~ msgstr "Heybox survey: skill M3 rate (all)"
+
+#~ msgctxt "predefined query"
+#~ msgid "小黑盒干员统计 精二 90 级率"
+#~ msgstr "Heybox survey: E2 Lv 90 rate"
+
+#~ msgctxt "predefined query"
+#~ msgid "小黑盒干员统计 精二 90 级率（全部）"
+#~ msgstr "Heybox survey: E2 Lv 90 rate (all)"
+
+#~ msgctxt "predefined query"
+#~ msgid "小黑盒干员统计 精二率"
+#~ msgstr "Heybox survey: E2 rate"
+
+#~ msgctxt "predefined query"
+#~ msgid "小黑盒干员统计 精二率（全部）"
+#~ msgstr "Heybox survey: E2 rate (all)"
+
+#~ msgctxt "predefined view name"
+#~ msgid "想看的"
+#~ msgstr "Interested"
+
+#~ msgctxt "predefined view name"
+#~ msgid "缺席"
+#~ msgstr "Absent"
+
+#~ msgctxt "query editor"
+#~ msgid "把「想看的」恢复为默认条件？自定义的版本会被删除。"
+#~ msgstr ""
+#~ "Restore “Interested” to its default conditions? Your customized version "
+#~ "will be deleted."
 
 #~ msgid "档案 %1 的数据会存成一个文件，它也是您的备份。"
 #~ msgstr ""

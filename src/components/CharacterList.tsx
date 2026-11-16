@@ -42,7 +42,8 @@ import {
 import { fieldLabel } from '../pkg/cpp-basic/queryEditorModel'
 import { gt } from '../pkg/gt'
 import {
-  ListModeAbsent,
+  HoldingAbsent,
+  HoldingTrainable,
   ListModeAll,
   ListModeFav,
   ListModeWithGoal,
@@ -50,6 +51,7 @@ import {
   SavedQueryPrefix,
   compileQuery,
   createListQuerier,
+  holdingAssertion,
   isCustomQuery,
 } from './characterQuery'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
@@ -356,6 +358,8 @@ function wrapQueryWithQuickFilter(query: QueryParam, field?: Record<string, any>
 
   if (!valids) valids = {}
   const extra: Assertion[] = []
+  const holding = holdingAssertion(field.holding)
+  if (holding) extra.push(holding)
   for (const [k, v] of Object.entries(field)) {
     const op = Object.prototype.hasOwnProperty.call(valids, k) ? valids[k] : null
     if (op == null) continue
@@ -389,6 +393,53 @@ export const useQuickFilter = (field: string, value: any) => {
     }),
   }
 }
+
+const holdingValues = (quick: Record<string, any> | undefined): string[] =>
+  Array.isArray(quick?.holding) ? quick.holding : []
+
+const useHoldingFilter = (value: string) => {
+  const [param, setParam] = useAtom(useCpp().queryParamAtom)
+  const current = holdingValues(param.quick)
+  return {
+    active: current.includes(value),
+    toggle: useEvent(() => {
+      setParam((x) => {
+        const quick = x.quick || {}
+        const current = holdingValues(quick)
+        const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value]
+        const { holding: _, ...rest } = quick
+        return { ...x, quick: next.length === 0 ? rest : { ...rest, holding: next } }
+      })
+    }),
+  }
+}
+
+const HoldingFilter = memo(() => {
+  const trainable = useHoldingFilter(HoldingTrainable)
+  const absent = useHoldingFilter(HoldingAbsent)
+  return (
+    <ButtonGroup>
+      <Button
+        variant="minimal"
+        active={trainable.active}
+        aria-pressed={trainable.active}
+        text={gt.pgettext('holding filter', '可练')}
+        title={gt.pgettext('holding filter', '已持有、还没练完的干员')}
+        onClick={trainable.toggle}
+      />
+      {/* 两个都选上时留一道缝，看得出是两个按钮 */}
+      <Button
+        variant="minimal"
+        active={absent.active}
+        aria-pressed={absent.active}
+        text={gt.pgettext('holding filter', '缺席')}
+        title={gt.pgettext('holding filter', '还没有持有的干员')}
+        onClick={absent.toggle}
+        style={{ marginLeft: 2 }}
+      />
+    </ButtonGroup>
+  )
+})
 
 async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListCharactersQueryParam) {
   await Promise.resolve()
@@ -592,7 +643,7 @@ const QueryBuilder = memo(() => {
       <Button
         variant="minimal"
         active={param.query === ListModeFav}
-        text={gt.pgettext('predefined view name', '想看的')}
+        text={gt.pgettext('predefined view name', '常看')}
         onClick={() => goTo(ListModeFav)}
         style={{ flexShrink: 0 }}
       />
@@ -611,13 +662,6 @@ const QueryBuilder = memo(() => {
         onClick={() => goTo(ListModeWithGoal)}
         style={{ flexShrink: 0 }}
       />
-      <Button
-        variant="minimal"
-        active={param.query === ListModeAbsent}
-        text={gt.pgettext('predefined view name', '缺席')}
-        onClick={() => goTo(ListModeAbsent)}
-        style={{ flexShrink: 0 }}
-      />
       {activeName ? (
         <Button
           variant="minimal"
@@ -633,9 +677,69 @@ const QueryBuilder = memo(() => {
   )
 })
 
+const menuItemKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return
+  e.preventDefault()
+  e.currentTarget.click()
+}
+
+/** 一个指标的两版合成一行：左边进这一版，右边进「全部」版，两段各自可点、各自高亮 */
+const PresetSplitMenuItem = memo(
+  ({
+    text,
+    active,
+    allActive,
+    onClick,
+    onAllClick,
+  }: {
+    text: string
+    active: boolean
+    allActive: boolean
+    onClick: () => void
+    onAllClick: () => void
+  }) => {
+    const className = (on: boolean, extra?: string) =>
+      [
+        'bp6-menu-item',
+        'bp6-popover-dismiss',
+        ...(on ? ['bp6-active', 'bp6-intent-primary'] : []),
+        ...(extra ? [extra] : []),
+      ].join(' ')
+    return (
+      <li role="none" className="cpp-split-menu-item">
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className={className(active)}
+          title={gt.pgettext('query menu', '只列出还没练到的')}
+          onClick={onClick}
+          onKeyDown={menuItemKeyDown}
+        >
+          <div className="bp6-text-overflow-ellipsis bp6-fill">{text}</div>
+        </a>
+        <a
+          role="menuitem"
+          tabIndex={0}
+          className={className(allActive, 'cpp-split-menu-item-all')}
+          title={gt.pgettext('query menu', '不论持有和练度，列出全部')}
+          onClick={onAllClick}
+          onKeyDown={menuItemKeyDown}
+        >
+          {gt.pgettext('query menu', '全部')}
+        </a>
+      </li>
+    )
+  },
+)
+
 const QueryBuilderRight = memo(() => {
   const cpp = useCpp()
   const pgq = useMemo(() => cpp.gameAdapter.getPredefinedQueries(), [cpp])
+  // 作为别的预设的「全部」版出现的，不再单独占一行
+  const presetRows = useMemo(() => {
+    const allKeys = new Set(Object.values(pgq).flatMap((x) => (x.all ? [x.all] : [])))
+    return Object.entries(pgq).filter(([k]) => !allKeys.has(k))
+  }, [pgq])
   const [param, setParam] = useAtom(useCpp().queryParamAtom)
   const savedQueries = useAtomValue(useAtoms().dataAtom).savedQueries
   const editor = useQueryEditorToggle()
@@ -656,6 +760,7 @@ const QueryBuilderRight = memo(() => {
                   <MenuItem
                     key={x.id}
                     active={param.query === SavedQueryPrefix + x.id}
+                    intent={param.query === SavedQueryPrefix + x.id ? 'primary' : undefined}
                     text={x.name}
                     onClick={() => goTo(SavedQueryPrefix + x.id)}
                   />
@@ -663,11 +768,22 @@ const QueryBuilderRight = memo(() => {
               </>
             ) : null}
             <MenuDivider title={gt.pgettext('query menu', '练度统计')} />
-            {Object.entries(pgq).map(([k, v]) => {
-              return (
+            {presetRows.map(([k, v]) => {
+              const all = v.all && pgq[v.all] ? v.all : undefined
+              return all ? (
+                <PresetSplitMenuItem
+                  key={k}
+                  text={v.name}
+                  active={param.query === PredefinedGameQueryPrefix + k}
+                  allActive={param.query === PredefinedGameQueryPrefix + all}
+                  onClick={() => goTo(PredefinedGameQueryPrefix + k)}
+                  onAllClick={() => goTo(PredefinedGameQueryPrefix + all)}
+                />
+              ) : (
                 <MenuItem
                   key={k}
                   active={param.query === PredefinedGameQueryPrefix + k}
+                  intent={param.query === PredefinedGameQueryPrefix + k ? 'primary' : undefined}
                   text={v.name}
                   onClick={() => goTo(PredefinedGameQueryPrefix + k)}
                 />
@@ -699,25 +815,28 @@ const QueryBuilderRight = memo(() => {
 export const QuickFilterBuilder = memo(() => {
   const { QuickFilterBuilder } = useComponents()
 
+  // 「可练」「缺席」只看持有和练度，每个游戏、每种展开都适用，所以由这里放在最前面，不归游戏的快捷过滤管
   return (
-    <>
+    <Navbar
+      className="cpp-quick-filter"
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 'auto',
+        padding: 0,
+        marginTop: 1,
+        marginBottom: 2,
+      }}
+    >
+      <HoldingFilter />
       {QuickFilterBuilder ? (
-        <Navbar
-          className="cpp-quick-filter"
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            height: 'auto',
-            padding: 0,
-            marginTop: 1,
-            marginBottom: 2,
-          }}
-        >
+        <>
+          <Navbar.Divider />
           <QuickFilterBuilder />
-        </Navbar>
+        </>
       ) : null}
-    </>
+    </Navbar>
   )
 })
 

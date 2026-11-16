@@ -148,6 +148,12 @@ export class Cpp<G extends IGame> {
       if (value.query == null) value.query = '#!all'
       if (value.search == null) value.search = ''
       if (value.quick == null) value.quick = {}
+      // 「缺席」曾是一个视图，现在是「全部」加上快捷过滤「缺席」
+      if (value.query === '#!absent') {
+        value.query = '#!all'
+        value.quick = { ...value.quick, holding: ['absent'] }
+      }
+      if (value.source === '#!absent') value.source = undefined
       return value
     })
 

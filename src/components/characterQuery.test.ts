@@ -1,7 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Cpp } from '../Cpp'
 import { QueryParam, RootCharacterQuery } from '../pkg/cpp-basic'
-import { ListModeAll, ListModeFav, compileQuery, defaultFavQuery } from './characterQuery'
+import {
+  HoldingAbsent,
+  HoldingTrainable,
+  ListModeAll,
+  ListModeFav,
+  compileQuery,
+  defaultFavQuery,
+  holdingAssertion,
+} from './characterQuery'
 import { remove, saveAs, setFavQuery } from './queryEditor/savedQueries'
 
 // cpp-basic 导入时会初始化 localforage，测试环境里没有存储后端
@@ -48,7 +56,7 @@ beforeEach(() => {
 })
 
 describe('compileQuery', () => {
-  it('keeps the built-in 想看的 query when there is no custom version', () => {
+  it('keeps the built-in 常看 query when there is no custom version', () => {
     const cpp = createCpp()
     expect(cpp.store.get(cpp.atoms.atoms.dataAtom).savedQueries).toEqual([])
     expect(compileQuery(ListModeFav, cpp)).toEqual({
@@ -69,7 +77,7 @@ describe('compileQuery', () => {
     })
   })
 
-  it('uses the custom 想看的 query, and the default again after restoring it', () => {
+  it('uses the custom 常看 query, and the default again after restoring it', () => {
     const cpp = createCpp()
     const custom: QueryParam = { where: { _: 'field', field: 'rarity', op: '==', operand: 6 } }
     setFavQuery(cpp, custom)
@@ -96,5 +104,44 @@ describe('queryParamAtom', () => {
     expect(cpp.store.get(cpp.queryParamAtom).query).toBe('#*' + id)
     remove(cpp, id)
     expect(cpp.store.get(cpp.queryParamAtom).query).toBe(ListModeAll)
+  })
+
+  it('turns the retired 缺席 view into 全部 with the 缺席 quick filter, keeping the other quick filters', () => {
+    localStorage.setItem(
+      'cpp[stub]query_param',
+      JSON.stringify({ v: 1, query: '#!absent', search: '', quick: { rarity: 6 }, source: '#!absent' }),
+    )
+    const cpp = createCpp()
+    const param = cpp.store.get(cpp.queryParamAtom)
+    expect(param.query).toBe(ListModeAll)
+    expect(param.quick).toEqual({ rarity: 6, holding: [HoldingAbsent] })
+    expect(param.source).toBeUndefined()
+  })
+})
+
+describe('holdingAssertion', () => {
+  const trainable = {
+    _: '&&',
+    operand: [
+      { _: 'field', field: 'own', op: '==', operand: true },
+      { _: 'field', field: 'finished', op: '==', operand: false },
+    ],
+  }
+  const absent = { _: 'field', field: 'own', op: '==', operand: false }
+
+  it('adds no condition when neither is chosen', () => {
+    expect(holdingAssertion(undefined)).toBeUndefined()
+    expect(holdingAssertion([])).toBeUndefined()
+    expect(holdingAssertion(['unknown'])).toBeUndefined()
+    expect(holdingAssertion('absent')).toBeUndefined()
+  })
+
+  it('uses the one chosen condition as it is', () => {
+    expect(holdingAssertion([HoldingTrainable])).toEqual(trainable)
+    expect(holdingAssertion([HoldingAbsent])).toEqual(absent)
+  })
+
+  it('takes the union when both are chosen, which leaves out only the finished operators', () => {
+    expect(holdingAssertion([HoldingTrainable, HoldingAbsent])).toEqual({ _: '||', operand: [trainable, absent] })
   })
 })

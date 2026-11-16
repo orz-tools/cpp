@@ -9,7 +9,6 @@ import { normalizeQuery } from '../../pkg/cpp-basic/queryEditorModel'
 import { SavedQuery, UserData } from '../../pkg/cpp-core/UserData'
 import { gt } from '../../pkg/gt'
 import {
-  ListModeAbsent,
   ListModeAll,
   ListModeFav,
   ListModeWithGoal,
@@ -79,13 +78,11 @@ type SourceInfo =
 export function predefinedViewName(ref: string): string | undefined {
   switch (ref) {
     case ListModeFav:
-      return gt.pgettext('predefined view name', '想看的')
+      return gt.pgettext('predefined view name', '常看')
     case ListModeAll:
       return gt.pgettext('predefined view name', '全部')
     case ListModeWithGoal:
       return gt.pgettext('predefined view name', '计划')
-    case ListModeAbsent:
-      return gt.pgettext('predefined view name', '缺席')
   }
   return undefined
 }
@@ -275,7 +272,7 @@ const QueryEditorPanel = memo(() => {
         text={gt.pgettext('query editor', '恢复默认…')}
         onClick={() =>
           ask({
-            message: gt.pgettext('query editor', '把「想看的」恢复为默认条件？自定义的版本会被删除。'),
+            message: gt.pgettext('query editor', '把「常看」恢复为默认条件？自定义的版本会被删除。'),
             confirmText: gt.pgettext('query editor', '恢复默认'),
             action: () => {
               saved.setFavQuery(cpp, undefined)

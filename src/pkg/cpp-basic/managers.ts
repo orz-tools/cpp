@@ -7,6 +7,8 @@ import { ExpItem, Formula, ICharacter, IGame, IItem, IStageInfo, Task } from './
 export interface PredefinedQuery {
   name: string
   query: QueryParam
+  /** 同一指标「全部」版本的 key。菜单里两者合成一行，右边一段进这一版；那一版自己不再单独占一行 */
+  all?: string
 }
 
 export interface IZoneInfo {
