@@ -4,7 +4,7 @@ import { Atom, PrimitiveAtom, WritableAtom, atom } from 'jotai'
 import { AtomFamily, atomFamily } from 'jotai-family'
 import { clone, intersection, sum, uniq } from 'ramda'
 import { SetStateAction } from 'react'
-import { IGame, IGameAdapter, Task } from '../cpp-basic'
+import { IGame, IGameAdapter, QueryParam, Task } from '../cpp-basic'
 import { txatom } from '../txatom'
 import { generateTaskExtra } from './Task'
 
@@ -48,6 +48,7 @@ function buildAtoms<G extends IGame>(
         if (!value.items) value.items = {}
         if (!value.goalOrder) value.goalOrder = Object.keys(value.goal)
         if (!value.starredTasks) value.starredTasks = []
+        if (!value.savedQueries) value.savedQueries = []
         return value
       },
       (get, set, value) =>
@@ -541,6 +542,15 @@ export interface UserData<G extends IGame> {
   items: Record<string, number>
   goalOrder: string[]
   starredTasks: string[]
+  savedQueries: SavedQuery[]
+  /** 「想看的」的自定义版本，缺省时用游戏给出的默认 */
+  favQuery?: QueryParam
+}
+
+export interface SavedQuery {
+  id: string
+  name: string
+  query: QueryParam
 }
 
 export function newUserData<G extends IGame>(): UserData<G> {
@@ -550,6 +560,7 @@ export function newUserData<G extends IGame>(): UserData<G> {
     items: {},
     goalOrder: [],
     starredTasks: [],
+    savedQueries: [],
   }
 }
 

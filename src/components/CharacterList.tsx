@@ -26,18 +26,31 @@ import { CachedImg } from '../components/Icons'
 import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
+import { IGameComponent } from './types'
 import {
-  ExtraCharacterQuery,
+  Assertion,
+  FieldConfiguration,
   FieldContext,
   ICharacter,
   IGame,
   QBoolean,
   QNumber,
-  QString,
+  QStrings,
   Querier,
   QueryParam,
 } from '../pkg/cpp-basic'
-import { gt, lpstr } from '../pkg/gt'
+import { gt } from '../pkg/gt'
+import {
+  ListModeAbsent,
+  ListModeAll,
+  ListModeFav,
+  ListModeWithGoal,
+  PredefinedGameQueryPrefix,
+  compileQuery,
+  createListQuerier,
+  isCustomQuery,
+  stringifyQuery,
+} from './characterQuery'
 
 export const Hide = memo(
   ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
@@ -333,108 +346,23 @@ function buildMatcher(query: string, strict: boolean = false): (x: string) => bo
   return (x: string) => !!search(x, query)
 }
 
-class CppCharacterListQuery extends ExtraCharacterQuery<IGame, ICharacter> {
-  public constructor(private readonly cpp: Cpp<any>) {
-    super()
-
-    const uda = cpp.gameAdapter.getUserDataAdapter()
-    const store = cpp.store
-    const atoms = cpp.atoms.atoms
-    const realOrder = store.get(atoms.goalOrder)
-
-    this.addField('id', lpstr(() => gt.pgettext('query field', '内部代号')), QString, ({ character }) => character.key).addAlias(
-      'key',
-    )
-
-    this.addStatusField(
-      'own',
-      lpstr(() => gt.pgettext('query field', '持有')),
-      QBoolean,
-      ({ character, status }) => !uda.isAbsentCharacter(character, status),
-    )
-
-    this.addField('goalOrder', lpstr(() => gt.pgettext('query field', '计划顺序')), QNumber, ({ character }) => {
-      const o = realOrder.indexOf(character.key)
-      if (o < 0) return Number.MAX_SAFE_INTEGER
-      return o
-    })
-
-    this.addField('finished', lpstr(() => gt.pgettext('query field', '已全面养成')), QBoolean, ({ character }) => {
-      return store.get(atoms.isCharacterFinished(character.key))
-    })
-  }
-}
-
-function stringifyQuery(query: QueryParam): string {
-  return JSON.stringify(query, null)
-}
-
 function wrapQueryWithQuickFilter(query: QueryParam, field?: Record<string, any>, valids?: Record<string, string>) {
   if (!field) return query
   const keys = Object.keys(field)
   if (keys.length === 0) return query
 
   if (!valids) valids = {}
-  if (!query.where) query.where = { _: '&&', operand: [] }
-  if (query.where._ !== '&&') query.where = { _: '&&', operand: [query.where] }
+  const extra: Assertion[] = []
   for (const [k, v] of Object.entries(field)) {
     const op = Object.prototype.hasOwnProperty.call(valids, k) ? valids[k] : null
     if (op == null) continue
-    query.where.operand.push({ _: 'field', field: k, op: op, operand: v })
+    extra.push({ _: 'field', field: k, op: op, operand: v })
   }
-  return query
-}
+  if (extra.length === 0) return query
 
-function compileQuery(query: string, cpp: Cpp<any>): QueryParam {
-  const defaultQueryOrder = cpp.gameAdapter.getDefaultCharacterQueryOrder()
-  if (query.startsWith(PredefinedQueryPrefix)) {
-    if (query === ListModeFav) {
-      const fav = cpp.gameAdapter.getFavCharacterQueryWhere()
-
-      return {
-        where: {
-          _: '||',
-          operand: [
-            { _: 'field', field: 'goal', op: '==', operand: true },
-            {
-              _: '&&',
-              operand: [...(fav ? [fav] : []), { _: 'field', field: 'finished', op: '==', operand: false }],
-            },
-          ],
-        },
-        order: defaultQueryOrder,
-      }
-    } else if (query === ListModeAll) {
-      return {
-        order: defaultQueryOrder,
-      }
-    } else if (query === ListModeWithGoal) {
-      return {
-        where: {
-          _: '&&',
-          operand: [{ _: 'field', field: 'goal', op: '==', operand: true }],
-        },
-        order: [['goalOrder', 'ASC']],
-      }
-    } else if (query === ListModeAbsent) {
-      return {
-        where: { _: 'field', field: 'own', op: '==', operand: false },
-        order: defaultQueryOrder,
-      }
-    }
-    throw new Error('Invalid predefined query')
-  }
-
-  if (query.startsWith(PredefinedGameQueryPrefix)) {
-    const pgq = cpp.gameAdapter.getPredefinedQueries()
-    const k = query.slice(PredefinedGameQueryPrefix.length)
-    if (pgq[k]) return pgq[k].query
-    throw new Error('Invalid predefined game query')
-  }
-
-  const r = JSON.parse(query)
-  if (!r.order) r.order = defaultQueryOrder
-  return r
+  // 已保存的过滤器来自 immer 冻结的用户数据，不能就地改
+  const base = !query.where ? [] : query.where._ === '&&' ? query.where.operand : [query.where]
+  return { ...query, where: { _: '&&', operand: [...base, ...extra] } } satisfies QueryParam
 }
 
 export const useQuickFilter = (field: string, value: any) => {
@@ -470,16 +398,13 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
 
   const emptyCharacterStatus = uda.getFrozenEmptyCharacterStatus()
 
-  const rq = ga.getRootCharacterQuery()
-  const query = new Querier<G, ICharacter>(
-    rq,
+  const query = createListQuerier(
+    cpp,
     wrapQueryWithQuickFilter(compileQuery(param.query, cpp), param.quick, cpp.gameComponent.quickFilters),
   )
 
   const matcher = buildMatcher(param.search)
   const strictMatcher = buildMatcher(param.search, true)
-
-  query.addQuery(new CppCharacterListQuery(cpp))
 
   query.execute(
     (function* () {
@@ -494,16 +419,65 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
   return { query: query, result: query.result }
 }
 
+type ExtraField = NonNullable<IGameComponent['extraFields']>[string]
+
+const fallbackExtraFields = new Map<FieldConfiguration<any, any, any, any>, ExtraField>()
+
+const fallbackNumberStyle: React.CSSProperties = {
+  fontFamily: 'monospace',
+  textAlign: 'right',
+}
+
+function createFallbackExtraField(id: string, config: FieldConfiguration<any, any, any, any>): ExtraField {
+  const labelOf = (v: any) => {
+    const option = config.options?.().find((x) => x.value === v)
+    return option ? String(option.label) : String(v)
+  }
+  switch (config.type) {
+    case QNumber:
+      return createSimpleExtraField(
+        id,
+        65,
+        (v: number) => {
+          if (Number.isNaN(v)) return '—'
+          if (config.format === 'percent') return `${(v * 100).toFixed(2)}%`
+          return labelOf(v)
+        },
+        fallbackNumberStyle,
+      )
+    case QBoolean:
+      return createSimpleExtraField(id, 65, (v: boolean) =>
+        v ? gt.pgettext('query value', '是') : gt.pgettext('query value', '否'),
+      )
+    case QStrings:
+      return createSimpleExtraField(id, 65, (v: string[]) =>
+        v.map(labelOf).join(gt.pgettext('list separator', '、')),
+      )
+    default:
+      return createSimpleExtraField(id, 65, labelOf)
+  }
+}
+
+/** 游戏注册了渲染器的字段用它，其余可查询的字段用通用回退 */
+function getExtraField(id: string, query: Querier<any, any>, cpp: Cpp<any>): ExtraField | undefined {
+  const registered = cpp.gameComponent.extraFields
+  if (registered && Object.prototype.hasOwnProperty.call(registered, id)) return registered[id]
+  if (id === query.param.join) return undefined
+  const config = query.fields.get(id)
+  if (!config) return undefined
+  let field = fallbackExtraFields.get(config)
+  if (!field) {
+    field = createFallbackExtraField(id, config)
+    fallbackExtraFields.set(config, field)
+  }
+  return field
+}
+
 function getResponseExtraWidth(input: Awaited<ReturnType<typeof listCharactersQuery>> | undefined, cpp: Cpp<any>) {
-  if (!cpp.gameComponent.extraFields) return 0
-
-  const fields = getResponseExtraFields(input)
-  if (fields.length === 0) return 0
-
+  if (!input) return 0
   let width = 0
-  for (const x of fields) {
-    if (!Object.prototype.hasOwnProperty.call(cpp.gameComponent.extraFields, x)) continue
-    width += cpp.gameComponent.extraFields[x].width
+  for (const x of getResponseExtraFields(input)) {
+    width += getExtraField(x, input.query, cpp)?.width ?? 0
   }
   return width
 }
@@ -601,18 +575,9 @@ const QueryQueryBox = memo(() => {
   )
 })
 
-const PredefinedQueryPrefix = '#!'
-const ListModeFav = PredefinedQueryPrefix + 'fav'
-const ListModeAll = PredefinedQueryPrefix + 'all'
-const ListModeWithGoal = PredefinedQueryPrefix + 'withGoal'
-const ListModeAbsent = PredefinedQueryPrefix + 'absent'
-const validPredefinedQueries = [ListModeFav, ListModeAll, ListModeWithGoal, ListModeAbsent]
-
-const PredefinedGameQueryPrefix = '#?'
-
-function useCustomQueryActive() {
+export function useCustomQueryActive() {
   const param = useAtomValue(useCpp().queryParamAtom)
-  return !validPredefinedQueries.includes(param.query) && !param.query.startsWith(PredefinedGameQueryPrefix)
+  return isCustomQuery(param.query)
 }
 
 const QueryBuilder = memo(() => {
@@ -790,11 +755,11 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     () =>
       response
         ? extraFields.map((x) => {
-            if (!Object.prototype.hasOwnProperty.call(cpp.gameComponent.extraFields, x)) return undefined
-            return [x, cpp.gameComponent.extraFields![x].C] as const
+            const field = getExtraField(x, response.query, cpp)
+            return field ? ([x, field.C] as const) : undefined
           })
         : [],
-    [cpp.gameComponent.extraFields, extraFields, response],
+    [cpp, extraFields, response],
   )
 
   const renderExtraFields = useCallback(

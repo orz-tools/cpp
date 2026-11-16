@@ -63,7 +63,11 @@ export interface ListCharactersQueryParam {
   search: string
   query: string
   quick?: Record<string, any>
+  /** query 是编辑中的 JSON 时，记录它是从哪个引用复制来的 */
+  source?: string
 }
+
+export const SavedQueryPrefix = '#*'
 
 export class Cpp<G extends IGame> {
   public constructor(
@@ -133,18 +137,30 @@ export class Cpp<G extends IGame> {
       },
     )
 
+    const normalizedAtom = atom((get) => {
+      const value = Object.assign({}, get(storageAtom) || {}) as ListCharactersQueryParam
+      if (value.v !== 1) {
+        value.v = 1
+        value.query = '#!all'
+        value.search = ''
+        value.quick = {}
+      }
+      if (value.query == null) value.query = '#!all'
+      if (value.search == null) value.search = ''
+      if (value.quick == null) value.quick = {}
+      return value
+    })
+
     const queryParamAtom = atom(
       (get) => {
-        const value = Object.assign({}, get(storageAtom) || {}) as ListCharactersQueryParam
-        if (value.v !== 1) {
-          value.v = 1
-          value.query = '#!all'
-          value.search = ''
-          value.quick = {}
+        const value = get(normalizedAtom)
+        // 只在引用已保存过滤器时才依赖用户数据，免得每次改数据都让列表重新查询
+        if (value.query.startsWith(SavedQueryPrefix)) {
+          const id = value.query.slice(SavedQueryPrefix.length)
+          if (!get(this.atoms.atoms.dataAtom).savedQueries.some((x) => x.id === id)) {
+            return { ...value, query: '#!all', source: undefined }
+          }
         }
-        if (value.query == null) value.query = '#!all'
-        if (value.search == null) value.search = ''
-        if (value.quick == null) value.quick = {}
         return value
       },
       (get, set, value: ListCharactersQueryParam | SetStateAction<ListCharactersQueryParam>) => {
