@@ -9,7 +9,6 @@ import {
   Popover,
   Spinner,
 } from '@blueprintjs/core'
-import { Draft } from 'immer'
 import { useSetAtom } from 'jotai'
 import React, { memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
@@ -17,226 +16,24 @@ import { z } from 'zod'
 import { useGameAdapter } from '../../Cpp'
 import { useRequest } from '../../hooks/useRequest'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
-import { UserData } from '../../pkg/cpp-core/UserData'
+import { SklandData } from '../../pkg/cpp-arknights/skland'
 import { gt } from '../../pkg/gt'
 import { ErrAtom } from '../Err'
-import { ImportContext, useStartImportSession } from '../Importer'
-
-class CharacterNotFoundError extends Error {
-  public friendly: string
-  public constructor(key: string) {
-    super(`Character Not Found: ${key}`)
-    this.name = 'CharacterNotFoundError'
-    this.friendly = gt
-      .gettext(
-        '尚不支持这名干员：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。',
-      ) /* I10N: %s: character key */
-      .replaceAll('%s', key)
-  }
-}
+import { useImportByContent } from '../Importer'
+import { useSklandImport } from './importHooks'
 
 export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
-  const startImportSession = useStartImportSession()
-  const handleData = useEvent((input: string) => {
-    onClose()
-    startImportSession(() => {
-      const dm = ga.getDataManager()
-      const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
-      let raw = JSON.parse(input)
-      if (typeof raw === 'object' && typeof raw.data === 'object') {
-        raw = raw.data
-      }
-      const data = SklandData.parse(raw)
-      return (draft: Draft<UserData<Arknights>>, ctx: ImportContext) => {
-        if (data.cultivate?.characters) {
-          const keys = new Set(Object.keys(draft.current))
-          for (const char of data.cultivate.characters) {
-            const key = ga.getRealCharacterKey(char.id)
-            const c = ga.getCharacter(key)
-            if (!c) {
-              throw new CharacterNotFoundError(key)
-            }
-            keys.delete(key)
-            if (!draft.current[key]) draft.current[key] = JSON.parse(JSON.stringify(empty))
-            const o = draft.current[key]
-            o.elite = char.evolvePhase
-            o.level = char.level
-            o.skillLevel = char.mainSkillLevel
-            o.potentialRank = char.potentialRank
-
-            if (char.skills) {
-              for (const skill of c.skills) {
-                if (skill.rawCharId !== char.id) continue
-
-                const key = skill.skillId
-                const lv = char.skills.find((x) => x.id === key)?.level || 0
-                if (lv > 0) {
-                  o.skillMaster[key] = lv
-                } else {
-                  delete o.skillMaster[key]
-                }
-              }
-            }
-
-            if (o.elite === 2 && o.level >= dm.data.constants.modUnlockLevel[c.rarity] && char.equips) {
-              const uniEquips = c.uniEquips.filter(
-                (x) => x.equip.raw.unlockEvolvePhase > 'PHASE_0' && x.rawCharId === char.id,
-              )
-              for (const ue of uniEquips) {
-                const level = ((): number | undefined => {
-                  const d = char.equips.find((x) => x.id === ue.equipId)
-                  if (!d) {
-                    return 0
-                  }
-                  return d.level
-                })()
-                if (level === undefined) continue
-                if (level === 0) {
-                  delete o.modLevel[ue.equipId]
-                } else {
-                  o.modLevel[ue.equipId] = level
-                }
-              }
-            }
-          }
-          for (const key of keys) {
-            delete draft.current[key]
-          }
-        } else {
-          let shitEquip = false
-          const keys = new Set(Object.keys(draft.current))
-          for (const char of data.chars) {
-            const key = ga.getRealCharacterKey(char.charId)
-            const c = ga.getCharacter(key)
-            if (!c) {
-              throw new CharacterNotFoundError(key)
-            }
-            keys.delete(key)
-            if (!draft.current[key]) draft.current[key] = JSON.parse(JSON.stringify(empty))
-            const o = draft.current[key]
-            o.elite = char.evolvePhase
-            o.level = char.level
-            o.skillLevel = char.mainSkillLvl
-            o.potentialRank = char.potentialRank
-
-            if (char.skills) {
-              for (const skill of c.skills) {
-                if (skill.rawCharId !== char.charId) continue
-
-                const key = skill.skillId
-                const lv = char.skills.find((x) => x.id === key)?.specializeLevel || 0
-                if (lv > 0) {
-                  o.skillMaster[key] = lv
-                } else {
-                  delete o.skillMaster[key]
-                }
-              }
-            }
-
-            if (o.elite === 2 && o.level >= dm.data.constants.modUnlockLevel[c.rarity] && char.equip) {
-              const uniEquips = c.uniEquips.filter(
-                (x) => x.equip.raw.unlockEvolvePhase > 'PHASE_0' && x.rawCharId === char.charId,
-              )
-              for (const ue of uniEquips) {
-                const level = ((): number | undefined => {
-                  const d = char.equip.find((x) => x.id === ue.equipId)
-                  if (!d) {
-                    return 0
-                  }
-                  if (d.level > 1 || d.level === 0) {
-                    return d.level
-                  }
-                  if (d.level === 1) {
-                    if ('locked' in d) {
-                      if (d.locked === false) return 0
-                      if (d.locked === true) return 1
-                    }
-                    if (char.defaultEquipId === ue.equipId) {
-                      return 1
-                    }
-                    shitEquip = true
-                    // TODO: 开没开咱也不知道啊...
-                  }
-                  return undefined
-                })()
-                if (level === undefined) continue
-                if (level === 0) {
-                  delete o.modLevel[ue.equipId]
-                } else {
-                  o.modLevel[ue.equipId] = level
-                }
-              }
-            }
-          }
-          for (const key of keys) {
-            delete draft.current[key]
-          }
-          if (shitEquip) {
-            ctx.addWarning(gt.gettext('森空岛的数据分不清模组是未解锁还是 1 级，这些模组保持导入前的值，请自行核对。'))
-          }
-        }
-
-        if (data.cultivate?.items) {
-          const quans = Object.fromEntries(
-            data.cultivate.items
-              .map((x) => [x.id, parseInt(x.count, 10)] as const)
-              .filter(([key, value]) => {
-                return !!ga.getItem(key) && key[0] !== '#' && typeof value === 'number' && Number.isFinite(value)
-              }),
-          )
-          console.log(quans)
-
-          draft.items = {
-            ...quans,
-          }
-        }
-
-        if (
-          data.building?.training &&
-          data.building?.training.trainee &&
-          data.building?.training.trainee.targetSkill >= 0
-        ) {
-          try {
-            const charId = data.building.training.trainee.charId
-            const skillIndex = data.building.training.trainee.targetSkill
-            const targetCharacter = ga.getCharacter(ga.getRealCharacterKey(charId))
-            if (!targetCharacter) throw new CharacterNotFoundError(charId)
-            if (targetCharacter.hasPatches) {
-              ctx.addWarning(
-                gt.gettext('森空岛的数据分不清训练室里的阿米娅是哪个升变形态，正在训练的专精没有计入，请自行核对。'),
-              )
-            } else {
-              const targetCharSkill = targetCharacter.skills.find(
-                (x) => x.charSkillIndex === skillIndex && x.rawCharId === charId,
-              )
-              if (!targetCharSkill) throw new Error(`Skill Not Found: ${charId} ${skillIndex}`)
-
-              const now = draft.current[targetCharacter.key].skillMaster[targetCharSkill.skillId] || 0
-              if (now === 3) throw new Error('Skill already mastered to level 3')
-
-              draft.current[targetCharacter.key].skillMaster[targetCharSkill.skillId] = now + 1
-            }
-          } catch (e) {
-            console.error(e)
-            ctx.addWarning(
-              `${gt.gettext('解析训练室数据失败，正在训练的专精没有计入。请尽量把下面的信息发给开发者：')}\n${JSON.stringify(
-                data.building.training,
-              )}\n${e?.toString()}`,
-            )
-          }
-        }
-      }
-    })
-  })
+  const importSkland = useSklandImport()
+  const importByContent = useImportByContent()
 
   const handleInput = useEvent<React.ClipboardEventHandler<HTMLInputElement>>((e) => {
     e.preventDefault()
-    const data = e.clipboardData.getData('Text')
-    if (data) {
-      handleData(data)
+    const error = importByContent(e.clipboardData.getData('Text'))
+    if (error) {
+      alert(error)
     } else {
-      alert(gt.gettext('粘贴的东西好像不太对，请重试。'))
+      handleClose()
     }
   })
 
@@ -276,14 +73,15 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
   const processMessage = useEvent((e: MessageEvent) => {
     if (typeof e.data !== 'object') return
     if (e.data?.from !== 'sklanding') return
-    let data = ''
+    let data: SklandData
     try {
-      data = JSON.stringify(SklandingData.parse(e.data).data)
+      data = SklandingData.parse(e.data).data
     } catch (e) {
       setErr({ error: e, context: gt.pgettext('error context', '与「提取装置」互操作时遇到问题') })
       return
     }
-    handleData(data)
+    onClose()
+    importSkland(data)
     if (windowRef) {
       try {
         windowRef.close()
@@ -444,79 +242,6 @@ const ForceRefresh = React.memo(() => {
 })
 
 const noop = () => void 0
-
-const SklandData = z.object({
-  chars: z.array(
-    z.object({
-      charId: z.string(),
-      level: z.number().int().positive(),
-      evolvePhase: z.number().int().min(0).max(2),
-      potentialRank: z.number().int().min(0).max(5),
-      mainSkillLvl: z.number().int().min(1).max(7),
-      skills: z.array(
-        z.object({
-          id: z.string(),
-          specializeLevel: z.number().int().min(0).max(3),
-        }),
-      ),
-      equip: z.array(
-        z.object({
-          id: z.string(),
-          level: z.number().int().min(1).max(3),
-          locked: z.boolean().optional(),
-        }),
-      ),
-      defaultEquipId: z.string(),
-    }),
-  ),
-  cultivate: z
-    .object({
-      characters: z.array(
-        z.object({
-          id: z.string(),
-          level: z.number().int().positive(),
-          evolvePhase: z.number().int().min(0).max(2),
-          mainSkillLevel: z.number().int().min(1).max(7),
-          skills: z.array(
-            z.object({
-              id: z.string(),
-              level: z.number().int().min(0).max(3),
-            }),
-          ),
-          equips: z.array(
-            z.object({
-              id: z.string(),
-              level: z.number().int().min(0).max(3),
-            }),
-          ),
-          potentialRank: z.number().int().min(0).max(5),
-        }),
-      ),
-      items: z.array(
-        z.object({
-          id: z.string(),
-          count: z.string().regex(/^\d+$/),
-        }),
-      ),
-    })
-    .optional(),
-  building: z
-    .object({
-      training: z
-        .object({
-          trainee: z
-            .object({
-              charId: z.string(),
-              targetSkill: z.number().min(-1).max(2),
-            })
-            .nullable(),
-          remainPoint: z.number(),
-        })
-        .nullable()
-        .optional(),
-    })
-    .optional(),
-})
 
 const SklandingData = z.object({
   version: z.literal(1),

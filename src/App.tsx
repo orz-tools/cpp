@@ -17,7 +17,8 @@ import {
   Tag,
 } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { ErrorInfo, memo, useEffect, useState } from 'react'
+import React, { ErrorInfo, memo, useEffect, useRef, useState } from 'react'
+import useEvent from 'react-use-event-hook'
 import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { AboutList, HelpButton } from './components/AboutList'
@@ -26,6 +27,7 @@ import { CharacterList } from './components/CharacterList'
 import { ConfigButton, MaybeSoulButton, RegionButton, StageButton } from './components/ConfigUi'
 import { Err, ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
+import { ImportPasteBox } from './components/ImportPasteBox'
 import { ItemList } from './components/ItemList'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
 import { TaskList } from './components/TaskList'
@@ -255,10 +257,16 @@ const App = memo(() => {
   )
 })
 
-const DataMenu = memo(() => {
+interface DataMenuProps {
+  pasteBoxRef: React.Ref<HTMLInputElement>
+  onImported: () => void
+}
+
+const DataMenu = memo(({ pasteBoxRef, onImported }: DataMenuProps) => {
   const { ImporterMenuItems, ExporterMenuItems } = useComponents()
   return (
     <Menu>
+      <ImportPasteBox inputRef={pasteBoxRef} onImported={onImported} />
       <UserDataManagerMenuItem />
       {ImporterMenuItems ? <MenuDivider /> : null}
       {ImporterMenuItems ? <ImporterMenuItems /> : null}
@@ -269,9 +277,25 @@ const DataMenu = memo(() => {
 })
 
 const DataDropdown = memo(() => {
+  const [isOpen, setIsOpen] = useState(false)
+  const pasteBoxRef = useRef<HTMLInputElement>(null)
+  // A touch device would raise its keyboard on every open; there the box still takes a long-press paste.
+  const focusPasteBox = useEvent(() => {
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) pasteBoxRef.current?.focus()
+  })
+  const close = useEvent(() => setIsOpen(false))
   return (
-    <Popover usePortal={true} minimal={true} content={<DataMenu />} position="bottom-right">
-      <Button icon={'th-derived'} variant="minimal" endIcon={'chevron-down'}>
+    <Popover
+      usePortal={true}
+      minimal={true}
+      isOpen={isOpen}
+      onInteraction={(next) => setIsOpen(next)}
+      onOpened={focusPasteBox}
+      content={<DataMenu pasteBoxRef={pasteBoxRef} onImported={close} />}
+      position="bottom-right"
+    >
+      {/* Blueprint marks the target active only for uncontrolled popovers */}
+      <Button icon={'th-derived'} variant="minimal" endIcon={'chevron-down'} active={isOpen}>
         <span className="cpp-very-compact">{gt.gettext('导入/导出')}</span>
       </Button>
     </Popover>

@@ -51,7 +51,7 @@ msgstr ""
 msgid "Kengxxiao 解析的游戏数据"
 msgstr ""
 
-#: src/components/arknights/MAAOperBoxImporter.tsx:25
+#: src/components/arknights/importHooks.ts:73
 msgid "MAA「干员识别」的截图识别结果只有精英化、等级和潜能，不含技能等级、专精和模组；这些保持导入前的值，请自行核对。"
 msgstr ""
 
@@ -67,12 +67,16 @@ msgstr ""
 msgid "从文本框中导入"
 msgstr ""
 
-#: src/components/Importer.tsx:348
+#: src/components/Importer.tsx:409
 msgid "以往"
 msgstr ""
 
-#: src/components/Importer.tsx:351
+#: src/components/Importer.tsx:412
 msgid "价值变化"
+msgstr ""
+
+#: src/components/CppDumpImport.ts:49
+msgid "价值计算等设置需重新载入页面后生效。"
 msgstr ""
 
 #: src/components/arknights/AboutList.tsx:43
@@ -83,12 +87,16 @@ msgstr ""
 msgid "优先培养（星标）"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:385
+#: src/components/arknights/SklandImporter.tsx:183
 msgid "你走错了？！"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:354
+#: src/components/arknights/SklandImporter.tsx:152
 msgid "使用「提取装置」"
+msgstr ""
+
+#: src/components/CppDumpImport.ts:45
+msgid "偏好设置（排除关卡、价值类型等）已一并覆盖，「撤销」不会恢复这一项。"
 msgstr ""
 
 #: src/components/ConfigUi.tsx:339
@@ -111,8 +119,8 @@ msgstr ""
 msgid "关卡"
 msgstr ""
 
-#: src/App.tsx:478
-#: src/components/Importer.tsx:75
+#: src/App.tsx:502
+#: src/components/Importer.tsx:126
 msgid "关闭"
 msgstr ""
 
@@ -140,6 +148,10 @@ msgstr[1] ""
 msgid "前往存档站"
 msgstr ""
 
+#: src/components/Importer.tsx:47
+msgid "剪贴板里没有文本或文件。"
+msgstr ""
+
 #: src/Cpp.ts:111
 msgid "区域已切换，将重新载入页面。"
 msgstr ""
@@ -148,16 +160,20 @@ msgstr ""
 msgid "可将导出的文件拖入此处，或直接粘贴文件导入。"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:354
+#: src/components/arknights/SklandImporter.tsx:152
 msgid "回到「提取装置」"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:89
-#: src/components/arknights/MAAItemImporter.tsx:82
-#: src/components/arknights/MAAOperBoxImporter.tsx:66
-#: src/components/arknights/MAAOperProgressImporter.tsx:77
-#: src/components/arknights/SklandImporter.tsx:400
+#: src/components/arknights/ArkntoolsImporter.tsx:31
+#: src/components/arknights/MAAItemImporter.tsx:40
+#: src/components/arknights/MAAOperBoxImporter.tsx:33
+#: src/components/arknights/MAAOperProgressImporter.tsx:30
+#: src/components/arknights/SklandImporter.tsx:198
 msgid "在此粘贴…"
+msgstr ""
+
+#: src/components/ImportPasteBox.tsx:53
+msgid "在此粘贴数据或文件，自动识别格式"
 msgstr ""
 
 #: src/components/arknights/CharacterStatusPopover.tsx:527
@@ -170,7 +186,7 @@ msgid "声明"
 msgstr ""
 
 #. %d: number
-#: src/components/arknights/ArkntoolsImporter.tsx:54
+#: src/components/arknights/importHooks.ts:170
 msgid "备份中排除了 %d 个关卡，与 cpp 当前的设置不同；排除关卡没有导入，如需一致请在「关卡」菜单中自行设置。"
 msgid_plural "备份中排除了 %d 个关卡，与 cpp 当前的设置不同；排除关卡没有导入，如需一致请在「关卡」菜单中自行设置。"
 msgstr[0] ""
@@ -188,7 +204,7 @@ msgstr ""
 msgid "复制角色名"
 msgstr ""
 
-#: src/components/Importer.tsx:350
+#: src/components/Importer.tsx:411
 msgid "如今"
 msgstr ""
 
@@ -197,40 +213,36 @@ msgid "完成"
 msgstr ""
 
 #: src/components/arknights/ImporterMenuItems.tsx:18
-#: src/components/arknights/MAAItemImporter.tsx:65
+#: src/components/arknights/MAAItemImporter.tsx:23
 msgid "导入 MAA「仓库识别」数据"
 msgstr ""
 
 #: src/components/arknights/ImporterMenuItems.tsx:28
-#: src/components/arknights/MAAOperProgressImporter.tsx:68
+#: src/components/arknights/MAAOperProgressImporter.tsx:21
 msgid "导入 MAA「干员培养」计划"
 msgstr ""
 
 #: src/components/arknights/ImporterMenuItems.tsx:23
-#: src/components/arknights/MAAOperBoxImporter.tsx:54
+#: src/components/arknights/MAAOperBoxImporter.tsx:21
 msgid "导入 MAA「干员识别」数据"
 msgstr ""
 
-#: src/App.tsx:275
+#: src/App.tsx:299
 msgid "导入/导出"
 msgstr ""
 
-#: src/components/Importer.tsx:136
+#: src/components/Importer.tsx:191
 msgid "导入时产生的警告"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:79
+#: src/components/arknights/ArkntoolsImporter.tsx:21
 #: src/components/arknights/ImporterMenuItems.tsx:33
 msgid "导入明日方舟工具箱「精英材料计算」备份"
 msgstr ""
 
 #: src/components/arknights/ImporterMenuItems.tsx:15
-#: src/components/arknights/SklandImporter.tsx:360
+#: src/components/arknights/SklandImporter.tsx:158
 msgid "导入森空岛数据"
-msgstr ""
-
-#: src/components/Importer.tsx:68
-msgid "导入结果"
 msgstr ""
 
 #: src/components/UserDataManager.tsx:280
@@ -242,13 +254,13 @@ msgid "小黑盒 app 干员统计数据"
 msgstr ""
 
 #. %s: character names
-#: src/components/arknights/ArkntoolsImporter.tsx:39
-#: src/components/arknights/MAAOperBoxImporter.tsx:32
+#: src/components/arknights/importHooks.ts:155
+#: src/components/arknights/importHooks.ts:80
 msgid "尚不支持这些干员，已跳过：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。"
 msgstr ""
 
 #. %s: character key
-#: src/components/arknights/SklandImporter.tsx:30
+#: src/components/arknights/importHooks.ts:190
 msgid "尚不支持这名干员：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。"
 msgstr ""
 
@@ -313,7 +325,7 @@ msgstr ""
 msgid "总价值"
 msgstr ""
 
-#: src/App.tsx:440
+#: src/App.tsx:464
 msgid "您不妨试试"
 msgstr ""
 
@@ -334,8 +346,8 @@ msgstr ""
 msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
-#: src/App.tsx:52
-#: src/components/Importer.tsx:80
+#: src/App.tsx:54
+#: src/components/Importer.tsx:131
 msgid "撤销"
 msgstr ""
 
@@ -343,11 +355,11 @@ msgstr ""
 msgid "数据已导入，将重新载入页面。"
 msgstr ""
 
-#: src/App.tsx:83
+#: src/App.tsx:85
 msgid "数据已更新，正在重新载入…"
 msgstr ""
 
-#: src/App.tsx:167
+#: src/App.tsx:169
 msgid "数据已更新，请重新载入页面"
 msgstr ""
 
@@ -371,6 +383,11 @@ msgstr ""
 
 #: src/pkg/cpp-basic/DataManager.ts:97
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
+msgstr ""
+
+#. %s: format names
+#: src/components/Importer.tsx:55
+msgid "无法识别粘贴的内容。支持：%s。"
 msgstr ""
 
 #: src/components/arknights/ValueConfigMenu.tsx:459
@@ -403,8 +420,8 @@ msgstr ""
 msgid "更新于 %s"
 msgstr ""
 
-#: src/App.tsx:76
-#: src/components/arknights/SklandImporter.tsx:423
+#: src/App.tsx:78
+#: src/components/arknights/SklandImporter.tsx:221
 msgid "更新数据中…"
 msgstr ""
 
@@ -412,7 +429,7 @@ msgstr ""
 msgid "更新笔记"
 msgstr ""
 
-#: src/App.tsx:86
+#: src/App.tsx:88
 msgid "未找到新数据"
 msgstr ""
 
@@ -444,15 +461,15 @@ msgstr ""
 msgid "查询失败"
 msgstr ""
 
-#: src/App.tsx:116
+#: src/App.tsx:118
 msgid "检查数据更新"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:176
+#: src/components/arknights/importHooks.ts:213
 msgid "森空岛的数据分不清模组是未解锁还是 1 级，这些模组保持导入前的值，请自行核对。"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:207
+#: src/components/arknights/importHooks.ts:217
 msgid "森空岛的数据分不清训练室里的阿米娅是哪个升变形态，正在训练的专精没有计入，请自行核对。"
 msgstr ""
 
@@ -464,7 +481,7 @@ msgstr ""
 msgid "清空"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:433
+#: src/components/arknights/SklandImporter.tsx:231
 msgid "游戏数据已更新，请重新载入后再尝试导入。"
 msgstr ""
 
@@ -496,20 +513,16 @@ msgstr ""
 msgid "界面语言"
 msgstr ""
 
+#: src/components/Importer.tsx:209
+msgid "目标"
+msgstr ""
+
 #: src/components/arknights/CharacterStatusPopover.tsx:557
 msgid "社区练度统计数据"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:409
+#: src/components/arknights/SklandImporter.tsx:207
 msgid "粘贴 JSON"
-msgstr ""
-
-#: src/components/arknights/ArkntoolsImporter.tsx:74
-#: src/components/arknights/MAAItemImporter.tsx:57
-#: src/components/arknights/MAAOperBoxImporter.tsx:49
-#: src/components/arknights/MAAOperProgressImporter.tsx:63
-#: src/components/arknights/SklandImporter.tsx:239
-msgid "粘贴的东西好像不太对，请重试。"
 msgstr ""
 
 #: src/components/FarmList.tsx:281
@@ -520,7 +533,7 @@ msgstr ""
 msgid "虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！"
 msgstr ""
 
-#: src/components/Importer.tsx:148
+#: src/components/Importer.tsx:203
 msgid "角色"
 msgstr ""
 
@@ -528,7 +541,7 @@ msgstr ""
 msgid "角色计划排序"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:223
+#: src/components/arknights/importHooks.ts:222
 msgid "解析训练室数据失败，正在训练的专精没有计入。请尽量把下面的信息发给开发者："
 msgstr ""
 
@@ -537,7 +550,7 @@ msgid "计划中没有 MAA「干员培养」能执行的目标"
 msgstr ""
 
 #. %s: character names
-#: src/components/arknights/MAAOperProgressImporter.tsx:46
+#: src/components/arknights/importHooks.ts:123
 msgid "认不出这些干员，已跳过：%s。cpp 只认识简体中文名、西文代号和当前区服语言的名字；如果是新干员，可能游戏数据尚未更新。"
 msgstr ""
 
@@ -545,16 +558,16 @@ msgstr ""
 msgid "语言已切换，将重新载入页面。"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:394
+#: src/components/arknights/SklandImporter.tsx:192
 msgid "请勿在此粘贴任何凭据。"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:310
-#: src/components/arknights/SklandImporter.tsx:347
+#: src/components/arknights/SklandImporter.tsx:108
+#: src/components/arknights/SklandImporter.tsx:145
 msgid "请在弹出的「提取装置」中继续操作"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:372
+#: src/components/arknights/SklandImporter.tsx:170
 msgid "请在弹出窗口中继续操作"
 msgstr ""
 
@@ -563,7 +576,7 @@ msgid "请更新您的浏览器。"
 msgstr ""
 
 #. %s: the button label above, in bold
-#: src/components/arknights/SklandImporter.tsx:386
+#: src/components/arknights/SklandImporter.tsx:184
 msgid "请点击上方的%s继续。"
 msgstr ""
 
@@ -590,7 +603,7 @@ msgstr ""
 msgid "近期更新"
 msgstr ""
 
-#: src/App.tsx:433
+#: src/App.tsx:457
 msgid "返回主页"
 msgstr ""
 
@@ -599,17 +612,17 @@ msgid "这不是 Closure++ 用户数据。"
 msgstr ""
 
 #. %s: character names
-#: src/components/arknights/ArkntoolsImporter.tsx:30
+#: src/components/arknights/importHooks.ts:146
 msgid "这些干员在 cpp 中尚未持有，已按明日方舟工具箱计划的起点设为持有，等级按计划所需的最低值填写，请自行核对：%s。"
 msgstr ""
 
 #. %s: character names
-#: src/components/arknights/MAAOperProgressImporter.tsx:28
+#: src/components/arknights/importHooks.ts:105
 msgid "这些干员在 cpp 中尚未持有，已按计划所需的最低状态设为持有，请自行核对：%s。"
 msgstr ""
 
 #. %s: character names
-#: src/components/arknights/MAAOperProgressImporter.tsx:37
+#: src/components/arknights/importHooks.ts:114
 msgid "这些干员的目标超出了可培养的上限（精英化次数或技能），已跳过：%s。"
 msgstr ""
 
@@ -617,16 +630,37 @@ msgstr ""
 msgid "这份 Closure++ 用户数据已损坏。"
 msgstr ""
 
+#: src/components/CppDumpImport.ts:85
 #: src/components/UserDataManager.tsx:103
 msgid "这份 Closure++ 用户数据的版本无法识别。"
 msgstr ""
 
+#. %s$from: region of the data, %s$to: current region
+#: src/components/CppDumpImport.ts:57
+msgid "这份用户数据的区域是 %s$from，当前是 %s$to；区域没有改动，如需切换请使用工具栏上的区域按钮。"
+msgstr ""
+
+#. %s: profile name
+#: src/components/CppDumpImport.ts:38
+msgid "这是 Closure++ 从档案 %s 导出的用户数据。"
+msgstr ""
+
+#. %s$profile: profile name, %s$time: date and time
+#: src/components/CppDumpImport.ts:29
+msgid "这是 Closure++ 从档案 %s$profile 导出的用户数据，导出于 %s$time。"
+msgstr ""
+
+#: src/components/CppDumpImport.ts:26
+msgid "这是 Closure++ 用户数据。"
+msgstr ""
+
 #. %s: game codename
+#: src/components/CppDumpImport.ts:80
 #: src/components/UserDataManager.tsx:106
 msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:392
+#: src/components/arknights/SklandImporter.tsx:190
 msgid "这是给无法使用「提取装置」的人提供的备用入口。"
 msgstr ""
 
@@ -634,8 +668,8 @@ msgstr ""
 msgid "选项"
 msgstr ""
 
-#: src/components/Importer.tsx:154
-#: src/components/Importer.tsx:347
+#: src/components/Importer.tsx:215
+#: src/components/Importer.tsx:408
 msgid "道具"
 msgstr ""
 
@@ -643,12 +677,12 @@ msgstr ""
 msgid "邮箱"
 msgstr ""
 
-#: src/App.tsx:170
-#: src/components/arknights/SklandImporter.tsx:438
+#: src/App.tsx:172
+#: src/components/arknights/SklandImporter.tsx:236
 msgid "重新载入"
 msgstr ""
 
-#: src/App.tsx:101
+#: src/App.tsx:103
 msgid "重载数据"
 msgstr ""
 
@@ -660,23 +694,23 @@ msgstr ""
 msgid "鸣谢"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:82
-#: src/components/arknights/MAAOperProgressImporter.tsx:71
+#: src/components/arknights/ArkntoolsImporter.tsx:24
+#: src/components/arknights/MAAOperProgressImporter.tsx:24
 msgctxt "arknights arkntools step"
 msgid "打开明日方舟工具箱「精英材料计算」"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:84
+#: src/components/arknights/ArkntoolsImporter.tsx:26
 msgctxt "arknights arkntools step"
 msgid "点击「复制到剪贴板」"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:83
+#: src/components/arknights/ArkntoolsImporter.tsx:25
 msgctxt "arknights arkntools step"
 msgid "点击「导出」→「备份」"
 msgstr ""
 
-#: src/components/arknights/MAAOperProgressImporter.tsx:72
+#: src/components/arknights/MAAOperProgressImporter.tsx:25
 msgctxt "arknights arkntools step"
 msgid "点击「导出」→「导出培养方案至 MAA」"
 msgstr ""
@@ -741,40 +775,40 @@ msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:69
+#: src/components/arknights/MAAItemImporter.tsx:27
 msgctxt "arknights maa step"
 msgid "切换到「仓库识别」"
 msgstr ""
 
-#: src/components/arknights/MAAOperBoxImporter.tsx:58
+#: src/components/arknights/MAAOperBoxImporter.tsx:25
 msgctxt "arknights maa step"
 msgid "切换到「干员识别」"
 msgstr ""
 
-#: src/components/arknights/MAAOperBoxImporter.tsx:61
+#: src/components/arknights/MAAOperBoxImporter.tsx:28
 msgctxt "arknights maa step"
 msgid "在「导出到」中选择「剪切板」，再点击「导出」"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:73
+#: src/components/arknights/MAAItemImporter.tsx:31
 msgctxt "arknights maa step"
 msgid "在「导出到」中选择「明日方舟工具箱」或「企鹅物流刷图规划」，再点击「导出」"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:68
-#: src/components/arknights/MAAOperBoxImporter.tsx:57
+#: src/components/arknights/MAAItemImporter.tsx:26
+#: src/components/arknights/MAAOperBoxImporter.tsx:24
 msgctxt "arknights maa step"
 msgid "打开 MAA「小工具」"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:70
-#: src/components/arknights/MAAOperBoxImporter.tsx:59
+#: src/components/arknights/MAAItemImporter.tsx:28
+#: src/components/arknights/MAAOperBoxImporter.tsx:26
 msgctxt "arknights maa step"
 msgid "点击「开始识别」"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:71
-#: src/components/arknights/MAAOperBoxImporter.tsx:60
+#: src/components/arknights/MAAItemImporter.tsx:29
+#: src/components/arknights/MAAOperBoxImporter.tsx:27
 msgctxt "arknights maa step"
 msgid "等待识别完成"
 msgstr ""
@@ -1100,7 +1134,7 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr ""
 
-#: src/components/arknights/SklandImporter.tsx:283
+#: src/components/arknights/SklandImporter.tsx:80
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr ""
@@ -1115,7 +1149,7 @@ msgctxt "error context"
 msgid "刷本规划时遇到问题"
 msgstr ""
 
-#: src/components/Importer.tsx:42
+#: src/components/Importer.tsx:84
 msgctxt "error context"
 msgid "合并导入数据时遇到问题"
 msgstr ""
@@ -1125,7 +1159,7 @@ msgctxt "error context"
 msgid "导入数据时遇到问题"
 msgstr ""
 
-#: src/App.tsx:91
+#: src/App.tsx:93
 msgctxt "error context"
 msgid "检查数据更新失败"
 msgstr ""
@@ -1135,17 +1169,18 @@ msgctxt "error context"
 msgid "环境检测失败"
 msgstr ""
 
-#: src/components/Importer.tsx:48
+#: src/components/Importer.tsx:91
 msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr ""
 
+#: src/components/ImportPasteBox.tsx:31
 #: src/components/UserDataManager.tsx:136
 msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr ""
 
-#: src/App.tsx:421
+#: src/App.tsx:445
 msgctxt "error context"
 msgid "遇到错误"
 msgstr ""
@@ -1178,6 +1213,42 @@ msgstr ""
 #: src/Cpp.ts:48
 msgctxt "full name"
 msgid "计划 (以毕业为目标)"
+msgstr ""
+
+#: src/components/CppDumpImport.ts:13
+msgctxt "import format"
+msgid "Closure++ 用户数据"
+msgstr ""
+
+#: src/components/arknights/importHooks.ts:23
+msgctxt "import format"
+msgid "MAA「仓库识别」数据"
+msgstr ""
+
+#: src/components/arknights/importHooks.ts:22
+msgctxt "import format"
+msgid "MAA「干员培养」计划"
+msgstr ""
+
+#: src/components/arknights/importHooks.ts:21
+msgctxt "import format"
+msgid "MAA「干员识别」数据"
+msgstr ""
+
+#: src/components/arknights/importHooks.ts:19
+msgctxt "import format"
+msgid "明日方舟工具箱「精英材料计算」备份"
+msgstr ""
+
+#: src/components/arknights/importHooks.ts:20
+msgctxt "import format"
+msgid "森空岛数据"
+msgstr ""
+
+#. %s: format name
+#: src/components/Importer.tsx:116
+msgctxt "import result title"
+msgid "导入结果 · %s"
 msgstr ""
 
 #: src/components/ItemList.tsx:240
@@ -1220,54 +1291,55 @@ msgctxt "item list view label"
 msgid "计划"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:34
-#: src/components/arknights/ArkntoolsImporter.tsx:43
-#: src/components/arknights/MAAOperBoxImporter.tsx:36
-#: src/components/arknights/MAAOperProgressImporter.tsx:25
+#: src/components/arknights/importHooks.ts:102
+#: src/components/arknights/importHooks.ts:150
+#: src/components/arknights/importHooks.ts:159
+#: src/components/arknights/importHooks.ts:84
 #: src/components/CharacterList.tsx:454
+#: src/components/Importer.tsx:57
 #: src/components/queryEditor/VisualEditor.tsx:345
 msgctxt "list separator"
 msgid "、"
 msgstr ""
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:314
+#: src/App.tsx:338
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr ""
 
 #. initial
-#: src/App.tsx:309
+#: src/App.tsx:333
 msgctxt "loading status"
 msgid "别急…"
 msgstr ""
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:360
+#: src/App.tsx:384
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr ""
 
 #. loaded data objects
-#: src/App.tsx:322
+#: src/App.tsx:346
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr ""
 
 #. joke text
-#: src/App.tsx:358
+#: src/App.tsx:382
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr ""
 
 #. loading hero line 2
-#: src/App.tsx:367
+#: src/App.tsx:391
 msgctxt "loading status"
 msgid "请稍候"
 msgstr ""
 
 #. done
-#: src/App.tsx:326
+#: src/App.tsx:350
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr ""

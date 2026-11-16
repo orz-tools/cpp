@@ -1,6 +1,7 @@
 import React from 'react'
 import { BlobFlavour } from '../pkg/blobcache'
 import { FieldContext, ICharacter, Querier } from '../pkg/cpp-basic'
+import type { ImportFormat } from './Importer'
 
 export interface ItemSimulatedViewConfig {
   limit: number
@@ -24,6 +25,8 @@ export interface IGameComponent {
   blobFlavours?: BlobFlavour[]
   ImporterMenuItems?: React.FC
   ExporterMenuItems?: React.FC
+  /** A hook: the formats the import paste box tries after Closure++'s own, in order */
+  useImportFormats?: () => ImportFormat[]
   extraFields?: Record<
     string,
     { width: number; C: React.FC<{ query: Querier<any, any>; context: FieldContext<any, any, any> }> }

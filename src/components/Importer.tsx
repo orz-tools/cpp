@@ -12,6 +12,7 @@ import { UserData } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { useChamber } from './Chamber'
 import { renderCharacterStatus } from './CharacterList'
+import { useCppDumpImportFormat } from './CppDumpImport'
 import { ErrAtom } from './Err'
 import { CachedImg, ItemIcon } from './Icons'
 import { ValueTag } from './Value'
@@ -20,13 +21,54 @@ export interface ImportContext {
   addWarning(text: string): void
 }
 
+// start() imports what match() already parsed, so nothing is parsed twice. rejected: the format is recognised but
+// cannot be imported here, and no later format gets a try.
+export type ImportMatch = { start(): void } | { rejected: string }
+
+export interface ImportFormat {
+  label: string
+  match(text: string): ImportMatch | undefined
+}
+
+const noImportFormats = (): ImportFormat[] => []
+
+export function useImportFormats(): ImportFormat[] {
+  const cppDump = useCppDumpImportFormat()
+  // The game component is fixed per page load, so every render calls the same hooks.
+  const { useImportFormats: useGameImportFormats = noImportFormats } = useComponents()
+  const game = useGameImportFormats()
+  return [cppDump, ...game]
+}
+
+/** Imports text in whichever format it turns out to be. Returns why it could not, for the user; undefined once started. */
+export function useImportByContent() {
+  const formats = useImportFormats()
+  return useEvent((text: string): string | undefined => {
+    if (!text.trim()) return gt.gettext('剪贴板里没有文本或文件。')
+    for (const format of formats) {
+      const match = format.match(text)
+      if (!match) continue
+      if ('rejected' in match) return match.rejected
+      match.start()
+      return undefined
+    }
+    return gt
+      .gettext('无法识别粘贴的内容。支持：%s。') /* I10N: %s: format names */
+      .replaceAll('%s', formats.map((x) => x.label).join(gt.pgettext('list separator', '、')))
+  })
+}
+
 export function useStartImportSession() {
   const setErr = useSetAtom(ErrAtom)
   const atoms = useAtoms()
   const store = useStore()
   const { add } = useChamber()
 
-  return <G extends IGame>(generatorGenerator: () => (draft: Draft<UserData<G>>, ctx: ImportContext) => void) => {
+  /** source names the format in the result dialog's title. Returns whether the data was written. */
+  return <G extends IGame>(
+    source: string,
+    generatorGenerator: () => (draft: Draft<UserData<G>>, ctx: ImportContext) => void,
+  ): boolean => {
     try {
       const generator = generatorGenerator()
       const warnings = [] as string[]
@@ -40,12 +82,14 @@ export function useStartImportSession() {
         store.set(atoms.allDataAtom, (draft) => generator(draft, ctx))
       } catch (e) {
         setErr({ error: e, context: gt.pgettext('error context', '合并导入数据时遇到问题') })
-        return
+        return false
       }
       const after = JSON.parse(JSON.stringify(store.get(atoms.allDataAtom)))
-      add(ImportResultDialog, { diff: { before, after, warnings } })
+      add(ImportResultDialog, { source, diff: { before, after, warnings } })
+      return true
     } catch (e) {
       setErr({ error: e, context: gt.pgettext('error context', '解析导入数据时遇到问题') })
+      return false
     }
   }
 }
@@ -56,7 +100,7 @@ interface State {
   warnings: string[]
 }
 
-const ImportResultDialog = memo(({ diff, onClose }: { diff: State; onClose: () => void }) => {
+const ImportResultDialog = memo(({ source, diff, onClose }: { source: string; diff: State; onClose: () => void }) => {
   const atoms = useAtoms()
   const store = useStore()
   const undoAndClose = useEvent(() => {
@@ -65,7 +109,14 @@ const ImportResultDialog = memo(({ diff, onClose }: { diff: State; onClose: () =
   })
 
   return (
-    <Dialog icon={'log-in'} isOpen={true} onClose={onClose} title={gt.gettext('导入结果')}>
+    <Dialog
+      icon={'log-in'}
+      isOpen={true}
+      onClose={onClose}
+      title={gt
+        .pgettext('import result title', '导入结果 · %s') /* I10N: %s: format name */
+        .replaceAll('%s', source)}
+    >
       {diff ? (
         <>
           <DiffView diff={diff} />
@@ -92,18 +143,21 @@ const DiffView = memo(({ diff }: { diff: State }) => {
   const detail = useMemo(() => {
     const { before, after } = diff
 
-    const charDiffs = [] as { key: string; before: object; after: object }[]
-    {
-      const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
-      const allChars = new Set([...Object.keys(before.current), ...Object.keys(after.current)])
+    const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
+    const statusDiffs = (before: Record<string, object>, after: Record<string, object>) => {
+      const diffs = [] as { key: string; before: object; after: object }[]
+      const allChars = new Set([...Object.keys(before), ...Object.keys(after)])
       for (const char of allChars) {
         // Data saved before a status field existed lacks its key; importing fills it in, which is not a change.
-        const b = before.current[char] && { ...empty, ...before.current[char] }
-        const a = after.current[char] && { ...empty, ...after.current[char] }
+        const b = before[char] && { ...empty, ...before[char] }
+        const a = after[char] && { ...empty, ...after[char] }
         if (deepEqual(b, a)) continue
-        charDiffs.push({ key: char, before: before.current[char], after: after.current[char] })
+        diffs.push({ key: char, before: before[char], after: after[char] })
       }
+      return diffs
     }
+    const charDiffs = statusDiffs(before.current, after.current)
+    const goalDiffs = statusDiffs(before.goal, after.goal)
 
     const inventoryDiffs = [] as { key: string; before: number; after: number }[]
     let inventoryValueDelta = 0
@@ -121,12 +175,13 @@ const DiffView = memo(({ diff }: { diff: State }) => {
       }
     }
 
-    return { charDiffs, inventoryDiffs, inventoryValueDelta }
+    return { charDiffs, goalDiffs, inventoryDiffs, inventoryValueDelta }
   }, [diff, ga])
 
   const [tab, setTab] = useState<string | number>(() => {
-    if (detail.inventoryDiffs.length <= 0) return 'char'
-    return detail.charDiffs.length > 0 ? 'char' : 'inv'
+    if (detail.charDiffs.length > 0) return 'char'
+    if (detail.goalDiffs.length > 0) return 'goal'
+    return detail.inventoryDiffs.length > 0 ? 'inv' : 'char'
   })
 
   return (
@@ -148,6 +203,12 @@ const DiffView = memo(({ diff }: { diff: State }) => {
               title={gt.gettext('角色')}
               tagContent={detail.charDiffs.length}
               panel={<CharDiffView charDiffs={detail.charDiffs} />}
+            />
+            <Tab
+              id={'goal'}
+              title={gt.gettext('目标')}
+              tagContent={detail.goalDiffs.length}
+              panel={<CharDiffView charDiffs={detail.goalDiffs} />}
             />
             <Tab
               id={'inv'}

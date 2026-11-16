@@ -1,60 +1,18 @@
 import { Card, CardList, Dialog, DialogBody, InputGroup } from '@blueprintjs/core'
-import { Draft } from 'immer'
-import { pick, pickBy } from 'ramda'
 import { memo } from 'react'
 import useEvent from 'react-use-event-hook'
-import { useGameAdapter } from '../../Cpp'
-import { Arknights } from '../../pkg/cpp-arknights'
-import { parseMAADepot } from '../../pkg/cpp-arknights/maa'
-import { UserData } from '../../pkg/cpp-core/UserData'
 import { gt } from '../../pkg/gt'
-import { ImportContext, useStartImportSession } from '../Importer'
+import { useImportByContent } from '../Importer'
 
-const pickRetainableItems = pick([
-  '4001', // 龙门币
-  '4006', // 采购凭证
-])
-
-export const MAAItemImporterDialog = memo(<G extends Arknights>({ onClose }: { onClose: () => void }) => {
-  const ga = useGameAdapter<G>()
-  const startImportSession = useStartImportSession()
-  const handleData = useEvent((input: string) => {
-    onClose()
-    startImportSession(() => {
-      const data = parseMAADepot(input)
-      return (draft: Draft<UserData<Arknights>>, ctx: ImportContext) => {
-        void ctx
-
-        const quans = Object.fromEntries(
-          Object.entries(data).filter(([key, value]) => {
-            return !!ga.getItem(key) && key[0] !== '#' && typeof value === 'number'
-          }),
-        )
-
-        const list = new Set(
-          Object.keys(ga.getInventoryPages())
-            .map((x) => ga.getInventoryItems(x))
-            .flat()
-            .map((x) => x.key),
-        )
-        const pickByNotInTheList = pickBy<Record<string, number>>((_, k) => !list.has(k))
-
-        draft.items = {
-          ...quans,
-          ...pickRetainableItems(draft.items),
-          ...pickByNotInTheList(draft.items),
-        }
-      }
-    })
-  })
-
+export const MAAItemImporterDialog = memo(({ onClose }: { onClose: () => void }) => {
+  const importByContent = useImportByContent()
   const handleInput = useEvent<React.ClipboardEventHandler<HTMLInputElement>>((e) => {
     e.preventDefault()
-    const data = e.clipboardData.getData('Text')
-    if (data) {
-      handleData(data)
+    const error = importByContent(e.clipboardData.getData('Text'))
+    if (error) {
+      alert(error)
     } else {
-      alert(gt.gettext('粘贴的东西好像不太对，请重试。'))
+      onClose()
     }
   })
 

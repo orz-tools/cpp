@@ -8,6 +8,7 @@ import { QuickFilterBuilder } from './QuickFilterBuilder'
 import { TaskDisplay } from './TaskDisplay'
 import { ValueConfigMenu } from './ValueConfigMenu'
 import { extraFields } from './extraFields'
+import { useArknightsImportFormats } from './importFormats'
 import { renderCharacterAvatarBadge, renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
 
@@ -25,6 +26,7 @@ export const ArknightsComponents: IGameComponent = {
   blobFlavours: ['normal'],
   ImporterMenuItems,
   ExporterMenuItems,
+  useImportFormats: useArknightsImportFormats,
   style,
   extraFields: extraFields,
   TaskDisplay,
