@@ -152,7 +152,7 @@ const FarmLevelButton = memo(({ level, refresh }: { level: FarmLevel; refresh?: 
       active={farmLevel === level}
       onClick={() => {
         setFarmLevel(level)
-        refresh && refresh(level)
+        refresh?.(level)
       }}
     />
   )

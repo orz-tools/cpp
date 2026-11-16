@@ -218,10 +218,11 @@ const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: typeof
               </div>
             }
             multiline={true}
-            children={vv.children}
             popoverProps={{ usePortal: true }}
             {...(vv.href ? externalLinkProps : {})}
-          />
+          >
+            {vv.children}
+          </MenuItem>
         )
       })}
     </>

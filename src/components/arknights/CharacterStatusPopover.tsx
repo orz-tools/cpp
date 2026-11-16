@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Checkbox, Classes, Intent, NumericInput, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { memo, useContext, useEffect, useMemo, useState } from 'react'
+import React, { memo, useContext, useMemo, useState } from 'react'
 import { WithGame, useAtoms, useCpp } from '../../Cpp'
 import { Arknights, ArknightsDataManager, Character, PreferenceKeys, SurveySourceKey } from '../../pkg/cpp-arknights'
 import { HeyboxSurveySource, SurveyProps, SurveySource, YituliuSurveySource } from '../../pkg/cpp-arknights/survey'
@@ -29,7 +29,11 @@ const EditorContext = React.createContext<IEditorContext>(undefined as any)
 export const EliteLevelInput = memo(({ elite }: { elite: number }) => {
   const { character, status, setStatus, currentStatus } = useContext(EditorContext)
   const [input, setInput] = useState(String(status.level))
-  useEffect(() => setInput(String(status.level)), [status.level])
+  const [inputLevel, setInputLevel] = useState(status.level)
+  if (inputLevel !== status.level) {
+    setInputLevel(status.level)
+    setInput(String(status.level))
+  }
 
   if (status.elite !== elite) return <></>
   return (
@@ -140,8 +144,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
             <Tag large={true}>{gt.pgettext('arknights status group', '精二')}</Tag>
             {<Survey survey={surveySource?.e2level(character, 1)} />}
             <EliteLevelButton elite={2} level={1} />
-            {new Array(character.maxLevels[2] / 10 + 1)
-              .fill(0)
+            {Array.from({ length: character.maxLevels[2] / 10 + 1 }, () => 0)
               .map((_, i) => i * 10)
               .slice(3)
               .map((lv) => (

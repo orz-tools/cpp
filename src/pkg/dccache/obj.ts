@@ -30,5 +30,5 @@ export abstract class DataContainerObject<T extends object> {
   }
 
   public abstract getData(header: IDataContainerHeader): Promise<IDataContainer<T>>
-  public abstract getHeader(force?: boolean | undefined): Promise<IDataContainerHeader | IDataContainer<T>>
+  public abstract getHeader(force?: boolean): Promise<IDataContainerHeader | IDataContainer<T>>
 }

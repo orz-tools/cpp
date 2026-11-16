@@ -57,7 +57,7 @@ export const ItemQuantityEditor = memo(
           inputRef={ref}
           readOnly={!setQuantity}
           value={input}
-          style={{ ...(style || {}), width: Math.max(width, 30) }}
+          style={{ ...style, width: Math.max(width, 30) }}
           min={0}
           onValueChange={(_, valueAsString) => setInput(valueAsString)}
           onBlur={() => {
@@ -98,7 +98,6 @@ export const ItemSimulatedView = memo(
     const ga = useGameAdapter()
     const items = useMemo(() => ga.getInventoryItems(page), [ga, page])
     const itemRef = useRef<HTMLDivElement | null>(null)
-    useResizeObserver
     const config = itemSimulatedViewConfig || { limit: 3, horizontal: true, viewMaxSize: 500 }
     const [focus, setFocus] = useState(undefined as string | undefined)
     const createNewItem = useEvent((itemId: string) => {

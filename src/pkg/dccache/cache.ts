@@ -51,7 +51,7 @@ export async function destroy(name: string) {
 
 export function load<T extends object>(
   obj: DataContainerObject<T>,
-  refresh?: boolean | undefined,
+  refresh?: boolean,
   onRefreshed?: () => any,
 ): Promise<IDataContainer<T>> {
   return pool.run(obj.name, async () => {
@@ -92,7 +92,7 @@ export function load<T extends object>(
 
 async function fetch<T extends object>(
   obj: DataContainerObject<T>,
-  force?: boolean | undefined,
+  force?: boolean,
   onRefreshed?: () => any,
 ): Promise<IDataContainer<T>> {
   const header = await obj.getHeader(force)
@@ -128,7 +128,7 @@ async function fetch<T extends object>(
   ) {
     // treat as not refreshed
   } else {
-    onRefreshed && onRefreshed()
+    onRefreshed?.()
   }
 
   return data

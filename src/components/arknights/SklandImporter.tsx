@@ -310,7 +310,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     if (windowRef) {
       try {
         windowRef.focus()
-      } catch (e) {
+      } catch {
         alert(gt.gettext('请在弹出的「提取装置」中继续操作'))
       }
     } else {
@@ -347,7 +347,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     if (windowRef) {
       try {
         windowRef.focus()
-      } catch (e) {
+      } catch {
         alert(gt.gettext('请在弹出的「提取装置」中继续操作'))
       }
     } else {

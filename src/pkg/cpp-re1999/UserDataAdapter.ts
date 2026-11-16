@@ -222,7 +222,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
       case 'style':
         if (!d.styles) d.styles = []
         d.styles.push(type.styleId)
-        d.styles.sort()
+        d.styles.sort((a, b) => a - b)
         break
       default:
         throwBad(type)
@@ -235,7 +235,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
       insight: char.maxInsight,
       level: char.maxLevels[char.maxInsight],
       resonate: char.maxResonate,
-      styles: char.availableStyles().sort(),
+      styles: char.availableStyles().sort((a, b) => a - b),
     }
   }
 
@@ -276,7 +276,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
           (x) => availableStyles.includes(x) && char.styleResonateRequires(x) <= status.resonate,
         ),
       ),
-    ].sort()
+    ].sort((a, b) => a - b)
   }
 
   public rewriteGoal(charId: string, current: Draft<Re1999CharacterStatus>, goal: Draft<Re1999CharacterStatus>) {
@@ -297,7 +297,7 @@ export class Re1999UserDataAdapter implements IUserDataAdapter<Re1999> {
       if (!goal.styles) goal.styles = []
       if (!goal.styles.includes(style)) {
         goal.styles.push(style)
-        goal.styles.sort()
+        goal.styles.sort((a, b) => a - b)
       }
     }
   }

@@ -53,11 +53,11 @@ export function generateTaskExtra<G extends IGame>(
     valueTotal: number[]
     valueFulfilled: number[]
   } => {
-    const costStatus: TaskCostStatus[] = new Array(inputCosts.length).fill(TaskCostStatus.Completable)
-    const quantityCanConsume: number[] = new Array(inputCosts.length).fill(0)
-    const costSynthesised: number[] = new Array(inputCosts.length).fill(0)
-    const valueTotal: number[] = new Array(inputCosts.length).fill(0)
-    const valueFulfilled: number[] = new Array(inputCosts.length).fill(0)
+    const costStatus: TaskCostStatus[] = Array.from({ length: inputCosts.length }, () => TaskCostStatus.Completable)
+    const quantityCanConsume: number[] = Array.from({ length: inputCosts.length }, () => 0)
+    const costSynthesised: number[] = Array.from({ length: inputCosts.length }, () => 0)
+    const valueTotal: number[] = Array.from({ length: inputCosts.length }, () => 0)
+    const valueFulfilled: number[] = Array.from({ length: inputCosts.length }, () => 0)
     let needSynthesis: boolean | undefined = false
     const newQuantities = clone(quantities)
     const queue: { itemId: string; quantity: number; source: number; root: boolean }[] = inputCosts.map((x, i) => ({

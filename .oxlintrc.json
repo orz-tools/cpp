@@ -20,7 +20,9 @@
     "typescript/no-unsafe-assignment": "off",
     "typescript/no-unsafe-call": "off",
     "typescript/no-unsafe-member-access": "off",
-    "typescript/no-unsafe-return": "off"
+    "typescript/no-unsafe-return": "off",
+    // 只对 React Compiler 有意义，构建里没有启用 React Compiler
+    "react/incompatible-library": "off"
   },
   "overrides": [
     {
@@ -28,5 +30,10 @@
       "env": { "node": true, "browser": false, "serviceworker": false }
     }
   ],
-  "ignorePatterns": ["dist/**", "src/pkg/cpp-data-schemas/**"]
+  "ignorePatterns": [
+    "dist/**",
+    "src/pkg/cpp-data-schemas/**",
+    // 主 checkout 下的 agent worktree
+    ".claude/**"
+  ]
 }

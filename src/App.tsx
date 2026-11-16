@@ -99,9 +99,11 @@ const ReloadDataButton = memo(() => {
             <MenuItem
               text={gt.gettext('重载数据')}
               icon={'reset'}
-              onClick={async () => {
-                await dm.reset()
-                location.reload()
+              onClick={() => {
+                void (async () => {
+                  await dm.reset()
+                  location.reload()
+                })()
               }}
             />
           </Menu>

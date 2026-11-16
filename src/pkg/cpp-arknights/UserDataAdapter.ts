@@ -166,12 +166,10 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
         }
         skillDep = add(
           { _: 'skill', to: skillLevel + 1 },
-          [
-            ...(character.allSkillLvlup[skillLevel - 1].lvlUpCost || []).map((x) => ({
-              itemId: x.id,
-              quantity: x.count,
-            })),
-          ],
+          (character.allSkillLvlup[skillLevel - 1].lvlUpCost || []).map((x) => ({
+            itemId: x.id,
+            quantity: x.count,
+          })),
           dep,
           skillDep,
         )
@@ -191,12 +189,10 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       while (sc < sg) {
         sDep = add(
           { _: 'skillMaster', skillId: skillId, to: sc + 1 },
-          [
-            ...(data[sc].levelUpCost || []).map((x) => ({
-              itemId: x.id,
-              quantity: x.count,
-            })),
-          ],
+          (data[sc].levelUpCost || []).map((x) => ({
+            itemId: x.id,
+            quantity: x.count,
+          })),
           dep,
           skillDep,
           sDep,
@@ -214,12 +210,10 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       while (mc < mg) {
         mDep = add(
           { _: 'mod', modId: modId, to: mc + 1 },
-          [
-            ...(character.uniEquips.find((x) => x.equipId === modId)?.equip.raw.itemCost?.[mc + 1] || []).map((x) => ({
-              itemId: x.id,
-              quantity: x.count,
-            })),
-          ],
+          (character.uniEquips.find((x) => x.equipId === modId)?.equip.raw.itemCost?.[mc + 1] || []).map((x) => ({
+            itemId: x.id,
+            quantity: x.count,
+          })),
           dep,
           mDep,
         )

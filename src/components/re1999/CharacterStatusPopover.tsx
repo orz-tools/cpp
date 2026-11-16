@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Checkbox, Intent, NumericInput, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useAtoms } from '../../Cpp'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import { Character, Re1999 } from '../../pkg/cpp-re1999'
@@ -19,7 +19,11 @@ const EditorContext = React.createContext<{
 export function InsightLevelInput({ insight }: { insight: number }) {
   const { character, status, setStatus, currentStatus } = useContext(EditorContext)
   const [input, setInput] = useState(String(status.level))
-  useEffect(() => setInput(String(status.level)), [status.level])
+  const [inputLevel, setInputLevel] = useState(status.level)
+  if (inputLevel !== status.level) {
+    setInputLevel(status.level)
+    setInput(String(status.level))
+  }
 
   if (status.insight !== insight) return <></>
   return (
@@ -83,8 +87,7 @@ export function CharacterStatusInsightLevelSection() {
           <ButtonGroup>
             <Tag large={true}>{gt.pgettext('re1999 status group', '洞零')}</Tag>
             <InsightLevelButton insight={0} level={1} />
-            {new Array(character.maxLevels[0] / 10 + 1)
-              .fill(0)
+            {Array.from({ length: character.maxLevels[0] / 10 + 1 }, () => 0)
               .map((_, i) => i * 10)
               .slice(1)
               .map((lv) => (
@@ -103,8 +106,7 @@ export function CharacterStatusInsightLevelSection() {
           <ButtonGroup>
             <Tag large={true}>{gt.pgettext('re1999 status group', '洞一')}</Tag>
             <InsightLevelButton insight={1} level={1} />
-            {new Array(character.maxLevels[1] / 10 + 1)
-              .fill(0)
+            {Array.from({ length: character.maxLevels[1] / 10 + 1 }, () => 0)
               .map((_, i) => i * 10)
               .slice(1)
               .map((lv) => (
@@ -123,8 +125,7 @@ export function CharacterStatusInsightLevelSection() {
           <ButtonGroup>
             <Tag large={true}>{gt.pgettext('re1999 status group', '洞二')}</Tag>
             <InsightLevelButton insight={2} level={1} />
-            {new Array(character.maxLevels[2] / 10 + 1)
-              .fill(0)
+            {Array.from({ length: character.maxLevels[2] / 10 + 1 }, () => 0)
               .map((_, i) => i * 10)
               .slice(1)
               .map((lv) => (
@@ -143,8 +144,7 @@ export function CharacterStatusInsightLevelSection() {
           <ButtonGroup>
             <Tag large={true}>{gt.pgettext('re1999 status group', '洞三')}</Tag>
             <InsightLevelButton insight={3} level={1} />
-            {new Array(character.maxLevels[3] / 10 + 1)
-              .fill(0)
+            {Array.from({ length: character.maxLevels[3] / 10 + 1 }, () => 0)
               .map((_, i) => i * 10)
               .slice(1)
               .map((lv) => (
@@ -195,7 +195,7 @@ export function CharacterStatusResonateSection() {
               ? gt.pgettext('re1999 status group', '觉察')
               : gt.pgettext('re1999 status group', '共鸣')}
           </Tag>
-          {new Array(character.maxResonate).fill(0).map((_, i) => (
+          {Array.from({ length: character.maxResonate }, () => 0).map((_, i) => (
             <ResonateButton key={i + 1} level={i + 1} />
           ))}
         </ButtonGroup>
@@ -227,7 +227,7 @@ export function ResonateStyleButton({ styleId }: { styleId: number }) {
               x.resonate = targetResonate
             }
             x.styles.push(styleId)
-            x.styles.sort()
+            x.styles.sort((a, b) => a - b)
           }
         })
       }

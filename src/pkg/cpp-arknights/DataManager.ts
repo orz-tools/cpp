@@ -280,7 +280,7 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
         id: `manufact-${i.formulaId}`,
         itemId: i.itemId,
         quantity: i.count,
-        costs: [...i.costs.map((x) => ({ itemId: x.id, quantity: x.count }))],
+        costs: i.costs.map((x) => ({ itemId: x.id, quantity: x.count })),
         tags: [],
       }
       formulas.push(formula)

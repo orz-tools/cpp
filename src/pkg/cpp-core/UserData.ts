@@ -317,7 +317,6 @@ function buildAtoms<G extends IGame>(
         tasks.filter((x) => {
           untouched.delete(x.id)
           return stars.includes(x.id)
-          return x.charId.endsWith('tuye') && x.id.includes('6')
         }),
       )
       const indirectStars = new Set<Task<G>>()

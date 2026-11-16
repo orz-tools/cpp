@@ -147,7 +147,7 @@ function loadOne(url: BlobImage): string | Promise<string> {
             await loadPack(packName)
           })
         })
-      } catch (e) {
+      } catch {
         // ignore
       }
 
@@ -219,7 +219,7 @@ async function superfetch(url: string) {
       const res = await fetch(v(github), { referrerPolicy: 'no-referrer' })
       if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`, { cause: res })
       return res
-    } catch (e) {
+    } catch {
       continue
     }
   }

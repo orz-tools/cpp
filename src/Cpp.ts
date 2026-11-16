@@ -281,6 +281,7 @@ export function useAtoms<G extends IGame>() {
 }
 
 function __internalGetGamePreferenceAtom<G extends IGame, K extends keyof G['preferences']>(param: K) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useCpp<G>().preferenceAtoms.gameAtoms(param) as WritableAtom<
     G['preferences'][K],
     [value: G['preferences'][K]],

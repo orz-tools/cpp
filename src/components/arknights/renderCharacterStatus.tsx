@@ -91,7 +91,7 @@ export function renderCharacterStatus(
           <SkillIcon skill={skill.skill} level={status.skillLevel} master={status.skillMaster[skill.skillId] || 0} />
         </Hide>
       ))}
-      {new Array(3 - (character.raw.skills?.length || 0)).fill(0).map((_, i) => (
+      {Array.from({ length: 3 - (character.raw.skills?.length || 0) }, () => 0).map((_, i) => (
         <EmptyIcon key={i} />
       ))}
     </>

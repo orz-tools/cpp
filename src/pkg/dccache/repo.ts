@@ -24,7 +24,7 @@ export class CppRepoObject<T extends object> extends DataContainerObject<T> {
     return res.json()
   }
 
-  public async getHeader(force?: boolean | undefined): Promise<IDataContainerHeader> {
+  public async getHeader(force?: boolean): Promise<IDataContainerHeader> {
     // DEBUG: return (await import(`../cpp-data-schemas/${encodeURIComponent(this.name)}.json`)).default
 
     const res = await fetch(

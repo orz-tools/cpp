@@ -70,13 +70,7 @@ export const UniEquipIcon = memo(
             'cpp-uniequip-icon',
             `cpp-uniequip-shining-${uniEquip.raw.equipShiningColor}`,
           ].join(' ')}
-          style={{
-            ...(level === 0
-              ? {
-                  filter: 'grayscale(1.0)',
-                }
-              : {}),
-          }}
+          style={level === 0 ? { filter: 'grayscale(1.0)' } : {}}
         >
           <CachedImg
             src={uniEquip.icon}
@@ -84,13 +78,7 @@ export const UniEquipIcon = memo(
             height={'75%'}
             alt={name}
             title={name}
-            style={{
-              ...(level === 0
-                ? {
-                    opacity: 0.5,
-                  }
-                : {}),
-            }}
+            style={level === 0 ? { opacity: 0.5 } : {}}
           />
           {level != null ? <span>{level}</span> : undefined}
         </div>

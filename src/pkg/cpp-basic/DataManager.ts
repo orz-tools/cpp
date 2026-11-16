@@ -60,11 +60,7 @@ export abstract class BasicDataManager<G extends IGame> {
     return Promise.resolve([])
   }
 
-  protected async loadDataObjects(
-    refresh?: boolean | undefined,
-    onRefreshed?: () => any,
-    absolutelyRequiredOnly = false,
-  ) {
+  protected async loadDataObjects(refresh?: boolean, onRefreshed?: () => any, absolutelyRequiredOnly = false) {
     const dos = absolutelyRequiredOnly
       ? await this.getAbsolutelyRequiredDataObjects()
       : await this.getRequiredDataObjects()

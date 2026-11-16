@@ -119,8 +119,10 @@ export class Re1999DataManager extends BasicDataManager<Re1999> {
       const exp = parseInt(consume[1], 10)
       const gold = parseInt(consume[2], 10)
 
-      if (!levelExp[i.rare][insight]) levelExp[i.rare][insight] = new Array(maxLevel[i.rare][insight]).fill(0)
-      if (!levelGold[i.rare][insight]) levelGold[i.rare][insight] = new Array(maxLevel[i.rare][insight]).fill(0)
+      if (!levelExp[i.rare][insight])
+        levelExp[i.rare][insight] = Array.from({ length: maxLevel[i.rare][insight] }, () => 0)
+      if (!levelGold[i.rare][insight])
+        levelGold[i.rare][insight] = Array.from({ length: maxLevel[i.rare][insight] }, () => 0)
       levelExp[i.rare][insight][level - 1] = exp
       levelGold[i.rare][insight][level - 1] = gold
     }

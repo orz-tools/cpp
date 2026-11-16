@@ -11,6 +11,8 @@
     "src/components/re1999/*.json",
     "src/pkg/cpp-re1999/*.json",
     "po/**",
-    "pnpm-lock.yaml"
+    "pnpm-lock.yaml",
+    // 主 checkout 下的 agent worktree
+    ".claude/**"
   ]
 }

@@ -121,7 +121,7 @@ export const CharacterContextMenu = memo(
                     }
                     d.goalOrder.unshift(character.key)
                   })
-                  shouldRefresh && setParam((e) => ({ ...e }))
+                  if (shouldRefresh) setParam((e) => ({ ...e }))
                 }}
               />
               <Button
@@ -134,7 +134,7 @@ export const CharacterContextMenu = memo(
                       d.goalOrder.splice(index - 1, 0, character.key)
                     }
                   })
-                  shouldRefresh && setParam((e) => ({ ...e }))
+                  if (shouldRefresh) setParam((e) => ({ ...e }))
                 }}
               />
               <Button
@@ -147,7 +147,7 @@ export const CharacterContextMenu = memo(
                       d.goalOrder.splice(index + 1, 0, character.key)
                     }
                   })
-                  shouldRefresh && setParam((e) => ({ ...e }))
+                  if (shouldRefresh) setParam((e) => ({ ...e }))
                 }}
               />
               <Button
@@ -160,7 +160,7 @@ export const CharacterContextMenu = memo(
                     }
                     d.goalOrder.push(character.key)
                   })
-                  shouldRefresh && setParam((e) => ({ ...e }))
+                  if (shouldRefresh) setParam((e) => ({ ...e }))
                 }}
               />
             </ButtonGroup>
@@ -652,7 +652,9 @@ const QueryBuilderRight = memo(() => {
   const pgq = useMemo(() => cpp.gameAdapter.getPredefinedQueries(), [cpp])
   const [param, setParam] = useAtom(useCpp().queryParamAtom)
   const custom = useCustomQueryActive()
-  if (custom) dismissed = true
+  useEffect(() => {
+    if (custom) dismissed = true
+  }, [custom])
 
   return (
     <>
