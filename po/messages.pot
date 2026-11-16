@@ -169,7 +169,7 @@ msgstr ""
 msgid "完成"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:82
+#: src/components/arknights/ArkntoolsImporter.tsx:79
 #: src/components/arknights/ImporterMenuItems.tsx:27
 msgid "导入「arkntools 精英材料计算」备份"
 msgstr ""
@@ -215,7 +215,7 @@ msgid "尚不支持角色「%s」。可能游戏数据尚未更新，请静候�
 msgstr ""
 
 #. %s: character names
-#: src/components/arknights/ArkntoolsImporter.tsx:43
+#: src/components/arknights/ArkntoolsImporter.tsx:40
 #: src/components/arknights/MAAOperBoxImporter.tsx:32
 msgid "尚不支持这些干员，已跳过：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。"
 msgstr ""
@@ -246,7 +246,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ArkntoolsImporter.tsx:56
+#: src/components/arknights/ArkntoolsImporter.tsx:53
 msgid "已按备份把排除关卡替换为 %d 个；「撤销」不会恢复这一项。"
 msgid_plural "已按备份把排除关卡替换为 %d 个；「撤销」不会恢复这一项。"
 msgstr[0] ""
@@ -471,7 +471,7 @@ msgstr ""
 msgid "粘贴 JSON"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:77
+#: src/components/arknights/ArkntoolsImporter.tsx:74
 #: src/components/arknights/MAAItemImporter.tsx:57
 #: src/components/arknights/MAAOperBoxImporter.tsx:49
 #: src/components/arknights/SklandImporter.tsx:243
@@ -511,7 +511,7 @@ msgstr ""
 msgid "请在弹出窗口中继续操作"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:92
+#: src/components/arknights/ArkntoolsImporter.tsx:89
 #: src/components/arknights/MAAItemImporter.tsx:82
 #: src/components/arknights/MAAOperBoxImporter.tsx:66
 #: src/components/arknights/SklandImporter.tsx:399
@@ -584,17 +584,17 @@ msgstr ""
 msgid "鸣谢"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:87
+#: src/components/arknights/ArkntoolsImporter.tsx:84
 msgctxt "arknights arkntools step"
 msgid "复制文本框中的所有内容"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:85
+#: src/components/arknights/ArkntoolsImporter.tsx:82
 msgctxt "arknights arkntools step"
 msgid "打开 arkntools「精英材料计算」"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:86
+#: src/components/arknights/ArkntoolsImporter.tsx:83
 msgctxt "arknights arkntools step"
 msgid "点击「导出」按钮，选择「备份」"
 msgstr ""
@@ -1098,8 +1098,8 @@ msgctxt "item list view label"
 msgid "计划"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:37
-#: src/components/arknights/ArkntoolsImporter.tsx:47
+#: src/components/arknights/ArkntoolsImporter.tsx:35
+#: src/components/arknights/ArkntoolsImporter.tsx:44
 #: src/components/arknights/MAAOperBoxImporter.tsx:36
 msgctxt "list separator"
 msgid "、"
