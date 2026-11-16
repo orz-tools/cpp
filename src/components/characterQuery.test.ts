@@ -39,6 +39,13 @@ class StubAdapter {
   public getRootCharacterQuery() {
     return new RootCharacterQuery()
   }
+  public getDataManager() {
+    return {
+      region: undefined,
+      getState: () => ({ status: 'loading', generation: 0, loading: [], updating: false }),
+      subscribe: () => () => {},
+    }
+  }
 }
 
 function createCpp() {

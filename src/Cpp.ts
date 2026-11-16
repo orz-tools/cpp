@@ -1,13 +1,15 @@
-import { WritableAtom, atom, createStore, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { PrimitiveAtom, WritableAtom, atom, createStore, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { atomFamily } from 'jotai-family'
 import React, { SetStateAction, useContext } from 'react'
 import { showAlert } from './components/MessageBox'
 import { IGameComponent } from './components/types'
 import { BlobFlavour } from './pkg/blobcache'
-import { IGame, IGameAdapter, IGameAdapterStatic } from './pkg/cpp-basic'
+import { DataManagerState, IGame, IGameAdapter, IGameAdapterStatic } from './pkg/cpp-basic'
 import { UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
 import { PSTR, gt, lpstr } from './pkg/gt'
+
+export type GameDataStatus = Omit<DataManagerState, 'generation'>
 
 export interface Preference {
   v: number
@@ -86,21 +88,49 @@ export class Cpp<G extends IGame> {
     this.atoms.setAtom(
       atomWithStorage<UserData<any> | undefined>(this.storagePrefix + 'userdata', undefined),
       this.preferenceAtoms.forbiddenFormulaTagsAtom,
+      this.gameDataGenerationAtom,
     )
 
-    this.region = localStorage.getItem(this.storagePrefix + 'region') || ''
+    this.storedRegion = localStorage.getItem(this.storagePrefix + 'region') || ''
 
     const regions = this.gameAdapterStatic.getRegions() || []
-    if (regions.length > 0 && !this.region) {
-      this.region = regions[0].id
+    if (regions.length > 0 && !this.storedRegion) {
+      this.storedRegion = regions[0].id
     }
+
+    const dm = this.gameAdapter.getDataManager()
+    const syncDataState = () => {
+      const { status, generation, loading, updating, error } = dm.getState()
+      this.store.set(this.gameDataGenerationAtom, generation)
+      this.store.set(this.gameDataStatusAtom, { status, loading, updating, error })
+    }
+    syncDataState()
+    dm.subscribe(syncDataState)
+
+    this.store.sub(this.preferenceAtoms.gameAtom, () => {
+      if (this.gameAdapter.applyPreferenceSnapshot?.(this.store.get(this.preferenceAtoms.gameAtom))) {
+        dm.rebuild().catch((e) => console.error('Failed to rebuild game data for new preferences', e))
+      }
+    })
   }
 
-  public readonly region: string
+  private readonly storedRegion: string
   public store = createStore()
   public atoms: UserDataAtomHolder<G>
   public preferenceAtoms: ReturnType<Cpp<G>['createPreferenceAtoms']>
   public queryParamAtom: ReturnType<Cpp<G>['createQueryParamAtom']>
+  /** Changes only when the game data manager commits */
+  public readonly gameDataGenerationAtom: PrimitiveAtom<number> = atom(0)
+  public readonly gameDataStatusAtom: PrimitiveAtom<GameDataStatus> = atom<GameDataStatus>({
+    status: 'loading',
+    loading: [],
+    updating: false,
+  })
+
+  /** The region of the committed game data; until the first commit, the stored one the data is loading for. */
+  public get region(): string {
+    return this.gameAdapter.getDataManager().region ?? this.storedRegion
+  }
 
   public get gameAdapterStatic() {
     return this.gameAdapter.constructor as IGameAdapterStatic<G>
@@ -295,8 +325,16 @@ export function useCpp<G extends IGame>() {
   return useContext(CppContext) as Cpp<G>
 }
 
+/** Re-renders the caller whenever newer game data is committed, so what it reads from the adapter stays current. */
 export function useGameAdapter<G extends IGame>() {
-  return useCpp<G>().gameAdapter
+  const cpp = useCpp<G>()
+  useAtomValue(cpp.gameDataGenerationAtom)
+  return cpp.gameAdapter
+}
+
+/** For a dependency list: changes whenever newer game data is committed. */
+export function useGameDataGeneration() {
+  return useAtomValue(useCpp().gameDataGenerationAtom)
 }
 
 export function useGameAdapterStatic<G extends IGame>() {

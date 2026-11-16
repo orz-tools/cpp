@@ -1,3 +1,4 @@
+import deepEqual from 'deep-equal'
 import { sortBy } from 'ramda'
 import { GameName } from '../../games'
 import {
@@ -92,8 +93,11 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   private itemValues?: ItemValueResult
 
   public applyPreferenceSnapshot(storage: Record<string, any>) {
-    this.itemValueConfig = normalizeItemValueConfig(storage[PreferenceKeys.ItemValue])
-    this.itemValues = undefined
+    const config = normalizeItemValueConfig(storage[PreferenceKeys.ItemValue])
+    if (deepEqual(config, this.itemValueConfig)) return false
+    // The values computed for the old config stay until the rebuild this asks for drops them with the rest.
+    this.itemValueConfig = config
+    return true
   }
 
   public getItemValueConfig(): ItemValueConfig {
@@ -127,6 +131,20 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
 
   public constructor() {
     this.dataManager.itemValueProvider = () => this.getItemValues()
+    this.dataManager.onCommit(() => this.onDataCommit())
+  }
+
+  private onDataCommit() {
+    this.itemValues = undefined
+    this._expItems = undefined
+    this._expItemValueMap = undefined
+    this.stageInfo = undefined
+    this.zoneNames = {}
+    this.zoneTypes = {}
+    this.zoneInfos = undefined
+    this.cacheExpiresAt = Infinity
+    this.getStageInfos()
+    return Number.isFinite(this.cacheExpiresAt) ? this.cacheExpiresAt : undefined
   }
 
   public static codename: string = GameName.Arknights
@@ -591,7 +609,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   private zoneNames: Record<string, string> = {}
   private zoneTypes: Record<string, string | undefined> = {}
   private zoneInfos: Record<string, IZoneInfo> | undefined
-  private stageInfo: Record<string, ArknightsStageInfo> = undefined as any
+  private stageInfo: Record<string, ArknightsStageInfo> | undefined
   private cacheExpiresAt = Infinity
 
   public getZoneInfos() {
@@ -605,12 +623,22 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     const zoneInfos: Record<string, IZoneInfo> = {}
     for (const [id, stageCodes] of Object.entries(codes)) {
       const type = this.zoneTypes[id]
-      zoneInfos[id] = {
+      const info = {
         id,
         name: this.zoneNames[id] || '',
         categoryId: arknightsZoneCategory(type),
         sortKey: arknightsZoneSortKey(id, type, stageCodes),
       }
+      // Our own name rather than one from the game data, so it follows the UI language, which changes without a rebuild.
+      zoneInfos[id] =
+        id === 'weekly_chips'
+          ? {
+              ...info,
+              get name() {
+                return gt.pgettext('arknights zone', '芯片搜索')
+              },
+            }
+          : info
     }
     this.zoneInfos = zoneInfos
     return zoneInfos
@@ -628,7 +656,9 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   }
 
   public getStageInfos() {
-    if (this.stageInfo && Date.now() < this.cacheExpiresAt) return this.stageInfo
+    // Rebuilt only on a commit: rebuilding here when an event starts or ends would swap the stages within a
+    // generation while the item values computed from them stayed.
+    if (this.stageInfo) return this.stageInfo
 
     const base = this.dataManager.raw.local || this.dataManager.raw
     const now = Date.now()
@@ -711,7 +741,6 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       loadZoneName(stageInfo, false)
     }
 
-    this.zoneNames['weekly_chips'] = gt.pgettext('arknights zone', '芯片搜索')
     this.zoneTypes['weekly_chips'] = 'WEEKLY'
     return this.stageInfo
   }

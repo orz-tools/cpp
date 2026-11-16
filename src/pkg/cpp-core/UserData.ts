@@ -26,16 +26,22 @@ export class UserDataAtomHolder<G extends IGame> {
 
   public constructor(public readonly gameAdapter: IGameAdapter<G>) {}
 
-  public setAtom(baseAtom: PrimitiveAtom<UserData<G> | undefined>, forbiddenFormulaTagsAtom: PrimitiveAtom<string[]>) {
+  /** generationAtom: the game data generation; atoms that read game data depend on it to recompute after a commit */
+  public setAtom(
+    baseAtom: PrimitiveAtom<UserData<G> | undefined>,
+    forbiddenFormulaTagsAtom: PrimitiveAtom<string[]>,
+    generationAtom: Atom<number>,
+  ) {
     this.baseAtom = baseAtom
     this.forbiddenFormulaTagsAtom = forbiddenFormulaTagsAtom
-    this.atoms = buildAtoms(this.baseAtom, this.forbiddenFormulaTagsAtom, this.gameAdapter)
+    this.atoms = buildAtoms(this.baseAtom, this.forbiddenFormulaTagsAtom, generationAtom, this.gameAdapter)
   }
 }
 
 function buildAtoms<G extends IGame>(
   baseAtom: PrimitiveAtom<UserData<G> | undefined>,
   forbiddenFormulaTagsAtom: PrimitiveAtom<string[]>,
+  generationAtom: Atom<number>,
   ga: IGameAdapter<G>,
 ) {
   const rootAtom: PrimitiveAtom<UserData<G>> = withDebugLabel(
@@ -122,34 +128,27 @@ function buildAtoms<G extends IGame>(
     string,
     WritableAtom<number, [value: SetStateAction<number>], void>
   >(
-    (itemId: string) => {
-      const allExpItems = ga.getExpItems()
-      if (Object.prototype.hasOwnProperty.call(allExpItems, itemId)) {
-        const thisExpItem = allExpItems[itemId]
-        return withDebugLabel(
-          atom(
-            (get) => {
-              return sum(Object.entries(thisExpItem.value).map((x) => get(itemQuantity(x[0])) * x[1]))
-            },
-            () => {
-              //
-            },
-          ),
-          `itemQuantity(${itemId})`,
-        )
-      }
-      return withDebugLabel(
+    (itemId: string) =>
+      withDebugLabel(
         atom(
-          (get) => get(dataAtom).items[itemId] || 0,
+          (get) => {
+            get(generationAtom)
+            const allExpItems = ga.getExpItems()
+            if (Object.prototype.hasOwnProperty.call(allExpItems, itemId)) {
+              return sum(Object.entries(allExpItems[itemId].value).map((x) => get(itemQuantity(x[0])) * x[1]))
+            }
+            return get(dataAtom).items[itemId] || 0
+          },
           (get, set, value: SetStateAction<number>) => {
+            // The total of the exp items is derived from the counts of each of them.
+            if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), itemId)) return
             set(dataAtom, 'modify', (data) => {
               data.items[itemId] = typeof value === 'function' ? value(data.items[itemId] || 0) : value
             })
           },
         ),
         `itemQuantity(${itemId})`,
-      )
-    },
+      ),
     (a, b) => a === b,
   )
 
@@ -223,6 +222,7 @@ function buildAtoms<G extends IGame>(
     (charId: string) =>
       withDebugLabel(
         atom((get) => {
+          get(generationAtom)
           return ga.getUserDataAdapter().finishedCharacterStatus(charId, get(currentCharacter(charId)))
         }),
         `characterFinishedStatus(${charId})`,
@@ -262,6 +262,7 @@ function buildAtoms<G extends IGame>(
     (charId: string) =>
       withDebugLabel(
         atom((get) => {
+          get(generationAtom)
           // console.log('regen goalTasks', charId)
           const current = get(currentCharacter(charId))
           const goal = get(goalCharacter(charId))
@@ -276,6 +277,7 @@ function buildAtoms<G extends IGame>(
     (charId: string) =>
       withDebugLabel(
         atom((get) => {
+          get(generationAtom)
           // console.log('regen finishedTasks', charId)
           const current = get(currentCharacter(charId))
           const finished = get(characterFinishedStatus(charId))
@@ -287,7 +289,8 @@ function buildAtoms<G extends IGame>(
   )
 
   const allCharacterIds = withDebugLabel(
-    atom(() => {
+    atom((get) => {
+      get(generationAtom)
       return ga.getUserDataAdapter().getAllCharacterIds()
     }),
     `allCharacterIds`,
@@ -409,6 +412,7 @@ function buildAtoms<G extends IGame>(
 
   const allStarredIndirectsDetails = withDebugLabel(
     atom((get) => {
+      get(generationAtom)
       // console.log('allStarredIndirectsDetails')
       return generateIndirects(ga, get(allStarredTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
     }),
@@ -417,6 +421,7 @@ function buildAtoms<G extends IGame>(
 
   const allGoalIndirectsDetails = withDebugLabel(
     atom((get) => {
+      get(generationAtom)
       // console.log('allGoalIndirectsDetails')
       return generateIndirects(ga, get(allGoalTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
     }),
@@ -425,6 +430,7 @@ function buildAtoms<G extends IGame>(
 
   const allFinishedIndirectsDetails = withDebugLabel(
     atom((get) => {
+      get(generationAtom)
       // console.log('allFinishedIndirectsDetails')
       return generateIndirects(ga, get(allFinishedTaskRequirements), get(itemQuantities), get(forbiddenFormulaTagsAtom))
     }),
@@ -475,6 +481,7 @@ function buildAtoms<G extends IGame>(
 
   const starredTasksWithExtra = withDebugLabel(
     atom((get) => {
+      get(generationAtom)
       return generateTaskExtra(ga, get(sortedStarredTasks), get(forbiddenFormulaTagsAtom), get(itemQuantities))
     }),
     `starredTasksWithExtra`,
@@ -482,6 +489,7 @@ function buildAtoms<G extends IGame>(
 
   const goalTasksWithExtra = withDebugLabel(
     atom((get) => {
+      get(generationAtom)
       return generateTaskExtra(ga, get(sortedGoalTasks), get(forbiddenFormulaTagsAtom), get(itemQuantities))
     }),
     `goalTasksWithExtra`,
@@ -489,6 +497,7 @@ function buildAtoms<G extends IGame>(
 
   const finishedTasksWithExtra = withDebugLabel(
     atom((get) => {
+      get(generationAtom)
       return generateTaskExtra(ga, get(sortedFinishedTasks), get(forbiddenFormulaTagsAtom), get(itemQuantities))
     }),
     `finishedTasksWithExtra`,
