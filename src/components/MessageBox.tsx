@@ -21,8 +21,7 @@ let boxes: Box[] = []
 let nextId = 0
 let root: ReactDOM.Root | undefined
 
-// A root of its own rather than a component in the app: Cpp's region switch and main's profile check run outside any
-// React tree, and the latter before the app is mounted at all.
+// A root of its own rather than a component in the app: main's profile check runs before the app is mounted at all.
 function render() {
   if (!root) {
     const container = document.createElement('div')

@@ -59,7 +59,9 @@ export function generateTaskExtra<G extends IGame>(
     const valueTotal: number[] = Array.from({ length: inputCosts.length }, () => 0)
     const valueFulfilled: number[] = Array.from({ length: inputCosts.length }, () => 0)
     let needSynthesis: boolean | undefined = false
-    const newQuantities = clone(quantities)
+    // Consumed in place: every task's result replaces quantities anyway (below), and copying the item map once per task
+    // took most of the time these extras need, which are rebuilt with every new game data generation.
+    const newQuantities = quantities
     const queue: { itemId: string; quantity: number; source: number; root: boolean }[] = inputCosts.map((x, i) => ({
       ...x,
       source: i,

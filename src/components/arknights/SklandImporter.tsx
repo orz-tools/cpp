@@ -1,4 +1,4 @@
-import { Button, Callout, Dialog, DialogBody, DialogFooter, Intent, Spinner } from '@blueprintjs/core'
+import { Button, Callout, Dialog, DialogBody, Intent, Spinner } from '@blueprintjs/core'
 import { useSetAtom } from 'jotai'
 import React, { memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
@@ -38,17 +38,13 @@ export const SklandImporterDialog = memo(({ onClose, popup }: { onClose: () => v
   const dm = ga.getDataManager()
   const refreshData = useEvent(async () => {
     try {
-      const r = await dm.checkUpdates(true)
-      if (r || dm.dataUpdatedAfterInit) {
-        return true
-      }
+      await dm.update({ absolutelyRequiredOnly: true })
     } catch (e) {
       console.error(e)
-      return false
     }
-    return false
+    return true
   })
-  const { loading, send, response } = useRequest(refreshData)
+  const { send, response: checked } = useRequest(refreshData)
 
   const [windowRef, setWindowRef] = useState<WindowProxy | null>(popup ?? null)
 
@@ -84,13 +80,11 @@ export const SklandImporterDialog = memo(({ onClose, popup }: { onClose: () => v
     void importSkland(input)
   })
 
-  // The menu item opens the 提取装置 before the game data has been checked, so data can arrive before the check ends.
+  // Data that arrives while the game data is being checked is imported once the check is over.
   const early = useRef<SklandInput | undefined>(undefined)
   useEffect(() => {
-    if (response === false && early.current) finish(early.current)
-    // Updated game data needs a reload before anything is imported, and the dialog now asks for one.
-    if (response) closeDevice()
-  }, [response, finish, closeDevice])
+    if (checked && early.current) finish(early.current)
+  }, [checked, finish])
 
   const processMessage = useEvent((e: MessageEvent) => {
     if (typeof e.data !== 'object') return
@@ -102,8 +96,8 @@ export const SklandImporterDialog = memo(({ onClose, popup }: { onClose: () => v
       setErr({ error: e, context: gt.pgettext('error context', '与「提取装置」互操作时遇到问题') })
       return
     }
-    if (response === false) finish(input)
-    else if (response === undefined) early.current = input
+    if (checked) finish(input)
+    else early.current = input
   })
 
   useEffect(() => {
@@ -147,10 +141,8 @@ export const SklandImporterDialog = memo(({ onClose, popup }: { onClose: () => v
       canOutsideClickClose={false}
       backdropProps={{ onClick: handleBackdrop }}
     >
-      {loading ? (
+      {!checked ? (
         <Loading />
-      ) : response ? (
-        <ForceRefresh />
       ) : (
         <DialogBody>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }}>
@@ -177,23 +169,6 @@ const Loading = React.memo(() => {
         <p>{gt.gettext('更新数据中…')}</p>
       </div>
     </DialogBody>
-  )
-})
-
-const ForceRefresh = React.memo(() => {
-  return (
-    <>
-      <DialogBody>
-        <Callout intent="warning">{gt.gettext('游戏数据已更新，请重新载入后再尝试导入。')}</Callout>
-      </DialogBody>
-      <DialogFooter
-        actions={
-          <Button onClick={() => location.reload()} variant="minimal" intent={Intent.PRIMARY}>
-            {gt.gettext('重新载入')}
-          </Button>
-        }
-      />
-    </>
   )
 })
 

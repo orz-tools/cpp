@@ -5,6 +5,7 @@ import { Cpp, CppContext } from './Cpp'
 import { Err, ErrAtom } from './components/Err'
 import { IGameComponent } from './components/types'
 import './index.css'
+import { LocaleBoundary } from './locales'
 import { IGame, IGameAdapter } from './pkg/cpp-basic'
 import { gt } from './pkg/gt'
 
@@ -23,7 +24,15 @@ export function runCpp(
     cpp.gameAdapter.applyPreferenceSnapshot?.(cpp.store.get(cpp.preferenceAtoms.gameAtom))
     await cpp.gameAdapter.getDataManager().init(cpp.region)
   })().catch((e) => {
-    cpp.store.set(ErrAtom, { error: e, context: gt.pgettext('error context', '初始化失败') })
+    const err = { error: e, context: gt.pgettext('error context', '初始化失败') }
+    cpp.store.set(ErrAtom, err)
+    // 检查数据更新 in the error dialog can still load the data without a reload; then this has nothing left to say.
+    const dm = cpp.gameAdapter.getDataManager()
+    const unsubscribe = dm.subscribe(() => {
+      if (dm.getState().status !== 'ready') return
+      unsubscribe()
+      if (cpp.store.get(ErrAtom) === err) cpp.store.set(ErrAtom, undefined)
+    })
   })
 
   Object.assign(globalThis, {
@@ -38,7 +47,9 @@ export function runCpp(
     // <React.StrictMode>
     <Provider store={cpp.store}>
       <CppContext.Provider value={cpp}>
-        <AppWrapper />
+        <LocaleBoundary>
+          <AppWrapper />
+        </LocaleBoundary>
       </CppContext.Provider>
     </Provider>,
     // </React.StrictMode>,

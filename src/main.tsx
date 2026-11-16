@@ -6,7 +6,7 @@ import { RetiredGame } from './components/RetiredGame'
 import { runCpp } from './entry'
 import { GameName, RetiredGameInfo, gameAdapterLoaders, gameComponentLoaders, retiredGames } from './games'
 import './icons'
-import { setupLocale } from './locales'
+import { LocaleBoundary, setupLocale } from './locales'
 import { gt } from './pkg/gt'
 import { formatProfileName, getStoragePrefix } from './profiles'
 
@@ -53,13 +53,19 @@ async function runApp() {
 }
 
 function runHome() {
-  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<Home />)
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <LocaleBoundary>
+      <Home />
+    </LocaleBoundary>,
+  )
 }
 
 function runRetired(game: string, profile: string, retired: RetiredGameInfo) {
   document.title = 'Closure' + formatProfileName(game, profile) + '++'
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <RetiredGame game={game} instanceName={profile} retired={retired} />,
+    <LocaleBoundary>
+      <RetiredGame game={game} instanceName={profile} retired={retired} />
+    </LocaleBoundary>,
   )
 }
 

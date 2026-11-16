@@ -46,11 +46,6 @@ export function useCppDumpImportFormat(): ImportFormat {
 
         if (dump.preference && !deepEqual(cpp.store.get(cpp.preferenceAtoms.preferenceStorageAtom), dump.preference)) {
           ctx.addWarning(gt.gettext('偏好设置（排除关卡、价值类型等）已一并覆盖，「撤销」不会恢复这一项。'))
-          // The game adapter reads its part of the preferences only at start-up (applyPreferenceSnapshot).
-          const current = cpp.store.get(cpp.preferenceAtoms.preferenceAtom)
-          if (!deepEqual(current.game || {}, dump.preference.game || {})) {
-            ctx.addWarning(gt.gettext('价值计算等设置需重新载入页面后生效。'))
-          }
         }
 
         if (dump.region && dump.region !== cpp.region) {

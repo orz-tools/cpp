@@ -18,6 +18,9 @@ vi.mock('localforage', () => {
   return { default: { createInstance: () => noop, dropInstance: () => Promise.resolve() } }
 })
 
+// Cpp 导入时会创建 toaster，测试环境里没有 document
+vi.mock('./Toaster', () => ({ AppToaster: new Promise(() => {}) }))
+
 const order: QueryParam['order'] = [['rarity', 'DESC']]
 
 class StubAdapter {
@@ -38,6 +41,13 @@ class StubAdapter {
   }
   public getRootCharacterQuery() {
     return new RootCharacterQuery()
+  }
+  public getDataManager() {
+    return {
+      region: undefined,
+      getState: () => ({ status: 'loading', generation: 0, loading: [], updating: false }),
+      subscribe: () => () => {},
+    }
   }
 }
 

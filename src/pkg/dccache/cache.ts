@@ -49,18 +49,24 @@ export async function destroy(name: string) {
   await store.removeItem(`meta:${name}`)
 }
 
+/**
+ * current: the container already held in memory. It stands in for the copy stored in IndexedDB, so an unchanged
+ * version is neither downloaded again nor read back from storage.
+ */
 export function load<T extends object>(
   obj: DataContainerObject<T>,
   refresh?: boolean,
   onRefreshed?: () => any,
+  current?: IDataContainer<T>,
 ): Promise<IDataContainer<T>> {
+  if (current && obj.safeVerify(current)) current = undefined
   return pool.run(obj.name, async () => {
     if (refresh !== undefined) {
-      return await fetch(obj, refresh, onRefreshed)
+      return await fetch(obj, refresh, onRefreshed, current)
     }
 
     const meta = await loadMeta(obj.name)
-    const data = await loadData<T>(obj.name)
+    const data = current || (await loadData<T>(obj.name))
     const metaVerify = meta ? obj.safeVerify(meta.header) : null
     const dataVerify = data ? obj.safeVerify(data) : null
 
@@ -86,7 +92,7 @@ export function load<T extends object>(
       // break
     }
 
-    return await fetch(obj, undefined, onRefreshed)
+    return await fetch(obj, undefined, onRefreshed, current)
   })
 }
 
@@ -94,13 +100,14 @@ async function fetch<T extends object>(
   obj: DataContainerObject<T>,
   force?: boolean,
   onRefreshed?: () => any,
+  current?: IDataContainer<T>,
 ): Promise<IDataContainer<T>> {
   const header = await obj.getHeader(force)
   const now = Date.now()
   await saveMeta(obj.name, { lastCheckedAt: now, header: Object.assign({}, header, { data: undefined }) })
   obj.verify(header)
 
-  const previousData = await loadData<T>(obj.name)
+  const previousData = current || (await loadData<T>(obj.name))
   if (
     previousData &&
     previousData.version &&
@@ -119,12 +126,13 @@ async function fetch<T extends object>(
     await saveMeta(obj.name, { lastCheckedAt: now, header: Object.assign({}, data, { data: undefined }) })
   }
 
+  // deep-equal spent 1.3 s in a single task on the 1 MB penguin matrix; key order changes only cost an extra rebuild.
   if (
     previousData &&
     previousData.data &&
     data &&
     data.data &&
-    deepEqual(previousData.data, data.data, { strict: true })
+    JSON.stringify(previousData.data) === JSON.stringify(data.data)
   ) {
     // treat as not refreshed
   } else {

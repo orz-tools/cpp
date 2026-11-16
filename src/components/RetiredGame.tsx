@@ -4,7 +4,7 @@ import { RetiredGameInfo } from '../games'
 import { LocaleButton } from '../locales'
 import { gt } from '../pkg/gt'
 import { AppToaster } from './Toaster'
-import { ExportDataButton, clearUserData, useUserDataDump } from './UserDataManager'
+import { ExportDataButton, confirmClearUserData, removeStoredUserData, useUserDataDump } from './UserDataManager'
 
 /** Sets names the reader should find on screen (a profile, the old build's buttons) as tags at %1, %2, … */
 function withTags(template: string, tags: { text: string; icon?: IconName }[]) {
@@ -69,6 +69,11 @@ export const RetiredGame = memo(
     const archiveHref = archive + location.pathname
     const profile = { text: instanceName ? decodeURIComponent(instanceName) : gt.pgettext('profile name', '默认') }
     const name = game.toUpperCase()
+    const clearData = async () => {
+      if (!(await confirmClearUserData())) return
+      await removeStoredUserData(game, instanceName)
+      location.href = '/'
+    }
 
     // I10N: %s: game codename
     const title = gt.gettext('Closure++ 已不再支持 %s')
@@ -199,7 +204,7 @@ export const RetiredGame = memo(
                     intent="danger"
                     icon="trash"
                     text={gt.gettext('清空')}
-                    onClick={() => void clearUserData(game, instanceName)}
+                    onClick={() => void clearData()}
                   />
                 </div>
               </div>

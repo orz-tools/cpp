@@ -62,6 +62,7 @@ export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
   const ga = cpp.gameAdapter
   const atoms = cpp.atoms.atoms
   const store = cpp.store
+  const generation = store.get(cpp.gameDataGenerationAtom)
   const quantities = store.get(atoms.itemQuantities)
   const considerAtom = getLevelTaskRequirementsAtom(atoms, consider)
   const considerRequirements = considerAtom ? store.get(considerAtom) : undefined
@@ -135,6 +136,7 @@ export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
     synthesisList: target === Level.Finished ? undefined : planSynthesisList(cpp, target, formulaUses),
     expired: () => {
       return (
+        store.get(cpp.gameDataGenerationAtom) !== generation ||
         store.get(atoms.dataAtom) !== dataAtomValue ||
         store.get(cpp.preferenceAtoms.preferenceAtom) !== preferenceAtomValue
       )
@@ -187,6 +189,7 @@ export const FarmList = memo(() => {
     }
   })
 
+  useAtomValue(cpp.gameDataGenerationAtom)
   useAtomValue(cpp.atoms.atoms.dataAtom)
   useAtomValue(cpp.preferenceAtoms.preferenceAtom)
 
@@ -289,7 +292,6 @@ export const FarmList = memo(() => {
 
 export const StageLine = memo(({ run }: { run: StageRun }) => {
   const ga = useGameAdapter()
-  const stageInfo = ga.getStageInfos()[run.stageId]
   const samples = Math.max(
     -Infinity,
     ...Object.values(run.stage.dropInfo)
@@ -323,7 +325,8 @@ export const StageLine = memo(({ run }: { run: StageRun }) => {
           </>
         }
       />
-      {stageInfo.sortedDropInfo.map(([k, v, z]) => {
+      {/* The plan's own stage: an event may have ended in the newer data, and the plan is redone only a second later */}
+      {run.stage.sortedDropInfo.map(([k, v, z]) => {
         const item = ga.getItem(k)
         const value = Number.isFinite(z) ? v / z : v
         return (

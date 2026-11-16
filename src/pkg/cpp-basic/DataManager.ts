@@ -23,120 +23,342 @@ for (const name of [
 void destroy('arknights-yituliu')
 void destroy('arknights-yituliu-values')
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export abstract class BasicDataManager<G extends IGame> {
-  public readonly dataObjectMap = new Map<DataContainerObject<any>, IDataContainer>()
+/** The data containers one region uses. */
+export interface DataSources {
+  readonly required: DataContainerObject<any>[]
+  readonly absolutelyRequired: DataContainerObject<any>[]
+}
 
-  public async init(region: string) {
-    this.initialized = false
-    try {
-      await this.setRegion(region)
-      await this.loadDataObjects()
-      this.raw = await this.loadRaw()
-      this.data = await this.transform()
-    } catch (e) {
-      this.error = e as any
-      throw e
-    }
-    this.initialized = true
+export interface DataSnapshot {
+  raw: any
+  data: any
+}
+
+export type ContainerGetter = <T extends object>(obj: DataContainerObject<T>) => IDataContainer<T>
+
+export interface DataManagerState {
+  status: 'loading' | 'ready' | 'error'
+  /** 0 until the first commit; every commit adds one */
+  generation: number
+  /** names of the containers being loaded */
+  loading: string[]
+  /** an operation is running or waiting in the queue */
+  updating: boolean
+  /** only while status is 'error', that is, when the first load failed */
+  error?: Error
+}
+
+export interface UpdateOptions {
+  force?: boolean
+  absolutelyRequiredOnly?: boolean
+}
+
+export interface UpdateResult {
+  applied: boolean
+  notify: boolean
+}
+
+/** Returns when the derived data built at this commit goes stale (an event starting or ending), if ever. */
+export type CommitHook = () => number | undefined
+
+interface Committed<S extends DataSources, Snap extends DataSnapshot> {
+  region: string
+  sources: S
+  containers: Map<DataContainerObject<any>, IDataContainer>
+  snapshot: Snap
+}
+
+// setTimeout fires at once for any delay above this
+const MAX_TIMEOUT = 2 ** 31 - 1
+
+export abstract class BasicDataManager<
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  G extends IGame,
+  S extends DataSources = DataSources,
+  Snap extends DataSnapshot = DataSnapshot,
+> {
+  /** Validates the region and creates its sources without touching this manager; throws for an unknown region. */
+  protected abstract createSources(region: string): S
+  protected abstract buildSnapshot(sources: S, getContainer: ContainerGetter): Snap
+
+  private committed?: Committed<S, Snap>
+  private initRegion?: string
+  private state: DataManagerState = { status: 'loading', generation: 0, loading: [], updating: false }
+  private readonly listeners = new Set<() => void>()
+  private readonly loadingNames = new Set<string>()
+  private readonly commitHooks: CommitHook[] = []
+  private queue: Promise<unknown> = Promise.resolve()
+  private queued = 0
+  private expiresAt?: number
+  private expiryTimer?: ReturnType<typeof setTimeout>
+
+  public get region(): string | undefined {
+    return this.committed?.region
   }
-  public loading = new Set<string>()
-  public initialized = false
-  public error?: Error
-  public dataUpdatedAfterInit = false
 
-  public abstract transform(): Promise<any>
-  public data!: Awaited<ReturnType<this['transform']>>
-
-  public async refresh(absolutelyRequiredOnly = false) {
-    let refreshed = false
-    await this.loadDataObjects(true, () => (refreshed = true), absolutelyRequiredOnly)
-    return refreshed
+  public get sources(): S {
+    return this.committed?.sources as S
   }
 
-  public abstract setRegion(region: string): any
-  public abstract loadRaw(refresh?: boolean): Promise<any>
-  public raw!: Awaited<ReturnType<this['loadRaw']>>
+  public get raw(): Snap['raw'] {
+    return this.committed?.snapshot.raw
+  }
+
+  public get data(): Snap['data'] {
+    return this.committed?.snapshot.data
+  }
 
   public get<T extends object>(d: DataContainerObject<T>): IDataContainer<T> {
-    if (!this.dataObjectMap.has(d)) {
+    const container = this.committed?.containers.get(d)
+    if (!container) {
       throw new Error(`DataContainerObject ${d.name} not found`)
     }
-    return this.dataObjectMap.get(d)! as any as IDataContainer<T>
+    return container as IDataContainer<T>
   }
 
-  public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
-    return Promise.resolve([])
+  public getState(): DataManagerState {
+    return this.state
   }
 
-  public getAbsolutelyRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
-    return Promise.resolve([])
+  public subscribe(listener: () => void): () => void {
+    this.listeners.add(listener)
+    return () => void this.listeners.delete(listener)
   }
 
-  protected async loadDataObjects(refresh?: boolean, onRefreshed?: () => any, absolutelyRequiredOnly = false) {
-    const dos = absolutelyRequiredOnly
-      ? await this.getAbsolutelyRequiredDataObjects()
-      : await this.getRequiredDataObjects()
-    await Promise.all(
-      dos.map(async (x) => {
-        this.loading.add(x.name)
+  public onCommit(hook: CommitHook) {
+    this.commitHooks.push(hook)
+  }
+
+  public init(region: string): Promise<void> {
+    this.initRegion = region
+    return this.enqueue(() => this.doInit(region))
+  }
+
+  public update({ force = false, absolutelyRequiredOnly = false }: UpdateOptions = {}): Promise<UpdateResult> {
+    return this.enqueue(() => this.doUpdate(force, absolutelyRequiredOnly, true))
+  }
+
+  /** Clears the stored copies of the required containers, then downloads them again. */
+  public reset(): Promise<UpdateResult> {
+    return this.enqueue(async () => {
+      const region = this.committed?.region ?? this.initRegion
+      if (region === undefined) throw new Error('DataManager is not initialized')
+      for (const x of (this.committed?.sources ?? this.createSources(region)).required) {
+        await reset(x)
+      }
+      return await this.doUpdate(true, false, false)
+    })
+  }
+
+  public switchRegion(region: string): Promise<boolean> {
+    return this.enqueue(async () => {
+      const committed = this.committed
+      if (!committed) {
+        // The first load failed, so there is nothing to keep; start over in the new region.
+        if (region === this.initRegion) return false
+        const previous = this.initRegion
+        this.initRegion = region
         try {
-          this.dataObjectMap.set(
-            x,
-            await load(x, refresh, () => {
-              if (this.initialized) {
-                this.dataUpdatedAfterInit = true
-              }
-              onRefreshed?.()
-            }),
-          )
+          await this.doInit(region)
         } catch (e) {
-          const realE = e instanceof Error ? e : new Error(e as any)
-          const err = new FriendlyError(`Failed to load DataObject ${x.name}: ${realE.message}`, { cause: e })
-          if (realE.stack) err.stack = realE.stack
-          ;(err as any).friendly = gt.gettext(`无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。`)
-          throw err
-        } finally {
-          this.loading.delete(x.name)
+          this.initRegion = previous
+          throw e
         }
+        return true
+      }
+      if (region === committed.region) return false
+
+      const sources = this.createSources(region)
+      const byName = new Map([...committed.containers].map(([obj, container]) => [obj.name, container]))
+      const containers = await this.loadContainers(sources.required, undefined, (obj) => byName.get(obj.name))
+      this.commit({ region, sources, containers, snapshot: this.buildSnapshot(sources, getter(containers)) })
+      return true
+    })
+  }
+
+  /** Builds the snapshot again from the containers already loaded, for settings the derived data depends on. */
+  public rebuild(): Promise<void> {
+    return this.enqueue(() => Promise.resolve(this.doRebuild()))
+  }
+
+  public checkExpiry(): Promise<void> {
+    if (this.expiresAt === undefined) return Promise.resolve()
+    if (Date.now() < this.expiresAt) {
+      this.armExpiryTimer()
+      return Promise.resolve()
+    }
+    return this.enqueue(() => {
+      // An earlier rebuild in the queue may have moved the expiry already.
+      if (this.expiresAt !== undefined && Date.now() >= this.expiresAt) this.doRebuild()
+      return Promise.resolve()
+    })
+  }
+
+  private async doInit(region: string) {
+    try {
+      const sources = this.createSources(region)
+      const containers = await this.loadContainers(sources.required, undefined, () => undefined)
+      this.commit({ region, sources, containers, snapshot: this.buildSnapshot(sources, getter(containers)) })
+    } catch (e) {
+      if (!this.committed) this.setState({ status: 'error', error: e as Error })
+      throw e
+    }
+  }
+
+  private async doUpdate(force: boolean, absolutelyRequiredOnly: boolean, useCurrent: boolean): Promise<UpdateResult> {
+    const committed = this.committed
+    if (!committed) {
+      if (this.initRegion === undefined) throw new Error('DataManager is not initialized')
+      await this.doInit(this.initRegion)
+      return { applied: true, notify: false }
+    }
+
+    const targets = absolutelyRequiredOnly ? committed.sources.absolutelyRequired : committed.sources.required
+    const changed = new Set<DataContainerObject<any>>()
+    const fresh = new Map<DataContainerObject<any>, IDataContainer>()
+    await Promise.all(
+      targets.map(async (obj) => {
+        if (!force && Date.now() - (await getLastCheckedAt(obj)) < obj.autoUpdateThreshold) return
+        const previous = committed.containers.get(obj)
+        const container = await this.loadContainer(
+          obj,
+          force,
+          () => changed.add(obj),
+          useCurrent ? previous : undefined,
+        )
+        // Downloaded again yet the same (a repo version file can run ahead of its data file): keep the object held,
+        // so what is cached against it, such as the item value inputs, stays valid.
+        const same =
+          !changed.has(obj) &&
+          previous?.version.id === container.version.id &&
+          previous.version.timestamp === container.version.timestamp
+        fresh.set(obj, same ? previous : container)
       }),
+    )
+
+    if (changed.size === 0) {
+      // Only the version moved. Keep it, or the next check downloads the same content again to compare.
+      for (const [obj, container] of fresh) committed.containers.set(obj, container)
+      return { applied: false, notify: false }
+    }
+
+    let notify = false
+    for (const obj of changed) {
+      const previous = committed.containers.get(obj)
+      if (
+        !previous ||
+        fresh.get(obj)!.version.timestamp - previous.version.timestamp > obj.autoUpdateNotificationThreshold
+      ) {
+        notify = true
+      }
+    }
+
+    const containers = new Map(committed.containers)
+    for (const [obj, container] of fresh) containers.set(obj, container)
+    this.commit({ ...committed, containers, snapshot: this.buildSnapshot(committed.sources, getter(containers)) })
+    return { applied: true, notify }
+  }
+
+  private doRebuild() {
+    const committed = this.committed
+    if (!committed) return
+    this.commit({ ...committed, snapshot: this.buildSnapshot(committed.sources, getter(committed.containers)) })
+  }
+
+  private async loadContainers(
+    objs: DataContainerObject<any>[],
+    refresh: boolean | undefined,
+    current: (obj: DataContainerObject<any>) => IDataContainer | undefined,
+  ) {
+    const containers = new Map<DataContainerObject<any>, IDataContainer>()
+    await Promise.all(
+      objs.map(async (obj) => containers.set(obj, await this.loadContainer(obj, refresh, undefined, current(obj)))),
+    )
+    return containers
+  }
+
+  private async loadContainer(
+    obj: DataContainerObject<any>,
+    refresh: boolean | undefined,
+    onRefreshed: (() => void) | undefined,
+    current: IDataContainer | undefined,
+  ) {
+    this.loadingNames.add(obj.name)
+    this.setState({ loading: [...this.loadingNames] })
+    try {
+      return await load(obj, refresh, onRefreshed, current)
+    } catch (e) {
+      const realE = e instanceof Error ? e : new Error(e as any)
+      const err = new FriendlyError(`Failed to load DataObject ${obj.name}: ${realE.message}`, { cause: e })
+      if (realE.stack) err.stack = realE.stack
+      ;(err as any).friendly = gt.gettext(`无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。`)
+      throw err
+    } finally {
+      this.loadingNames.delete(obj.name)
+      this.setState({ loading: [...this.loadingNames] })
+    }
+  }
+
+  private commit(next: Committed<S, Snap>) {
+    this.committed = next
+    this.state = {
+      ...this.state,
+      status: 'ready',
+      generation: this.state.generation + 1,
+      error: undefined,
+    }
+
+    let expiresAt: number | undefined
+    for (const hook of this.commitHooks) {
+      try {
+        const t = hook()
+        if (t !== undefined && Number.isFinite(t) && (expiresAt === undefined || t < expiresAt)) expiresAt = t
+      } catch (e) {
+        console.error('DataManager commit hook failed', e)
+      }
+    }
+    this.expiresAt = expiresAt
+    this.armExpiryTimer()
+    this.emit()
+  }
+
+  private armExpiryTimer() {
+    clearTimeout(this.expiryTimer)
+    this.expiryTimer = undefined
+    if (this.expiresAt === undefined) return
+    this.expiryTimer = setTimeout(
+      () => void this.checkExpiry().catch((e) => console.error('DataManager rebuild failed', e)),
+      Math.min(Math.max(this.expiresAt - Date.now(), 0), MAX_TIMEOUT),
     )
   }
 
-  public async reset() {
-    for (const x of await this.getRequiredDataObjects()) {
-      await reset(x)
-    }
+  private enqueue<T>(op: () => Promise<T>): Promise<T> {
+    if (this.queued++ === 0) this.setState({ updating: true })
+    const run = this.queue.then(op)
+    this.queue = run.then(noop, noop)
+    return run.finally(() => {
+      if (--this.queued === 0) this.setState({ updating: false })
+    })
   }
 
-  public async checkUpdates(absolutelyRequiredOnly = false) {
-    const dos = absolutelyRequiredOnly
-      ? await this.getAbsolutelyRequiredDataObjects()
-      : await this.getRequiredDataObjects()
-    let showNotification = false
-    for (const x of dos) {
-      const l = await getLastCheckedAt(x)
-      if (Date.now() - l < x.autoUpdateThreshold) {
-        continue
-      }
-
-      let refreshed = false
-      const previous = this.dataObjectMap.get(x)
-      const result = await load(x, false, () => (refreshed = true))
-      if (refreshed) {
-        if (this.initialized) {
-          this.dataUpdatedAfterInit = true
-        }
-
-        if (previous) {
-          if (result.version.timestamp - previous?.version.timestamp > x.autoUpdateNotificationThreshold) {
-            showNotification = true
-          }
-        } else {
-          showNotification = true
-        }
-      }
-    }
-    return showNotification
+  private setState(patch: Partial<DataManagerState>) {
+    this.state = { ...this.state, ...patch }
+    this.emit()
   }
+
+  private emit() {
+    for (const listener of this.listeners) listener()
+  }
+}
+
+function getter(containers: Map<DataContainerObject<any>, IDataContainer>): ContainerGetter {
+  return <T extends object>(obj: DataContainerObject<T>) => {
+    const container = containers.get(obj)
+    if (!container) throw new Error(`DataContainerObject ${obj.name} not found`)
+    return container as IDataContainer<T>
+  }
+}
+
+function noop() {
+  //
 }

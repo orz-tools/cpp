@@ -6,7 +6,7 @@
   "rules": {
     "eqeqeq": ["error", "smart"],
     "react/rules-of-hooks": "error",
-    "react/exhaustive-deps": "warn",
+    "react/exhaustive-deps": ["warn", { "additionalHooks": "^useGameDataMemo$" }],
     "react/self-closing-comp": ["error", { "component": true, "html": false }],
     "typescript/explicit-member-accessibility": "error",
     "typescript/no-floating-promises": "error",

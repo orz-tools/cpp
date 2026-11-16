@@ -1,13 +1,16 @@
-import { WritableAtom, atom, createStore, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { PrimitiveAtom, WritableAtom, atom, createStore, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { atomFamily } from 'jotai-family'
-import React, { SetStateAction, useContext } from 'react'
-import { showAlert } from './components/MessageBox'
+import React, { DependencyList, SetStateAction, startTransition, useContext, useMemo } from 'react'
+import { ErrAtom } from './components/Err'
+import { AppToaster } from './components/Toaster'
 import { IGameComponent } from './components/types'
 import { BlobFlavour } from './pkg/blobcache'
-import { IGame, IGameAdapter, IGameAdapterStatic } from './pkg/cpp-basic'
+import { DataManagerState, IGame, IGameAdapter, IGameAdapterStatic } from './pkg/cpp-basic'
 import { UserData, UserDataAtomHolder } from './pkg/cpp-core/UserData'
 import { PSTR, gt, lpstr } from './pkg/gt'
+
+export type GameDataStatus = Omit<DataManagerState, 'generation'>
 
 export interface Preference {
   v: number
@@ -86,30 +89,80 @@ export class Cpp<G extends IGame> {
     this.atoms.setAtom(
       atomWithStorage<UserData<any> | undefined>(this.storagePrefix + 'userdata', undefined),
       this.preferenceAtoms.forbiddenFormulaTagsAtom,
+      this.gameDataGenerationAtom,
     )
+    // Mounted for the life of the page: atomWithStorage reads localStorage again on every mount, and a language
+    // switch remounts the whole React tree. The fresh copy is no longer the head of the undo history, which empties it.
+    this.store.sub(this.atoms.baseAtom, () => {})
 
-    this.region = localStorage.getItem(this.storagePrefix + 'region') || ''
+    this.storedRegion = localStorage.getItem(this.storagePrefix + 'region') || ''
 
     const regions = this.gameAdapterStatic.getRegions() || []
-    if (regions.length > 0 && !this.region) {
-      this.region = regions[0].id
+    if (regions.length > 0 && !this.storedRegion) {
+      this.storedRegion = regions[0].id
     }
+
+    const dm = this.gameAdapter.getDataManager()
+    const syncDataState = () => {
+      const { status, generation, loading, updating, error } = dm.getState()
+      const previous = this.store.get(this.gameDataGenerationAtom)
+      if (previous === 0) {
+        this.store.set(this.gameDataGenerationAtom, generation)
+      } else if (generation !== previous) {
+        // As a transition React redraws the panels in short slices rather than one long task. Not for the first
+        // commit: the app mounts from the status atom, and would render once more when the transition lands.
+        startTransition(() => this.store.set(this.gameDataGenerationAtom, generation))
+      }
+      this.store.set(this.gameDataStatusAtom, { status, loading, updating, error })
+    }
+    syncDataState()
+    dm.subscribe(syncDataState)
+
+    this.store.sub(this.preferenceAtoms.gameAtom, () => {
+      if (this.gameAdapter.applyPreferenceSnapshot?.(this.store.get(this.preferenceAtoms.gameAtom))) {
+        dm.rebuild().catch((e) => console.error('Failed to rebuild game data for new preferences', e))
+      }
+    })
   }
 
-  public readonly region: string
+  private readonly storedRegion: string
   public store = createStore()
   public atoms: UserDataAtomHolder<G>
   public preferenceAtoms: ReturnType<Cpp<G>['createPreferenceAtoms']>
   public queryParamAtom: ReturnType<Cpp<G>['createQueryParamAtom']>
+  /** Changes only when the game data manager commits */
+  public readonly gameDataGenerationAtom: PrimitiveAtom<number> = atom(0)
+  public readonly gameDataStatusAtom: PrimitiveAtom<GameDataStatus> = atom<GameDataStatus>({
+    status: 'loading',
+    loading: [],
+    updating: false,
+  })
+
+  /** The region of the committed game data; until the first commit, the stored one the data is loading for. */
+  public get region(): string {
+    return this.gameAdapter.getDataManager().region ?? this.storedRegion
+  }
 
   public get gameAdapterStatic() {
     return this.gameAdapter.constructor as IGameAdapterStatic<G>
   }
 
-  public setRegion(region: string): boolean {
+  public async setRegion(region: string): Promise<boolean> {
     if (this.region === region) return false
-    localStorage.setItem(this.storagePrefix + 'region', region)
-    void showAlert(gt.gettext('区域已切换，将重新载入页面。')).then(() => location.reload())
+    const toaster = await AppToaster
+    const progress = toaster.show(
+      { message: gt.gettext('正在切换区域…'), isCloseButtonShown: false, timeout: 0, intent: 'primary' },
+      'region',
+    )
+    try {
+      await this.gameAdapter.getDataManager().switchRegion(region)
+      localStorage.setItem(this.storagePrefix + 'region', region)
+      // Replaced in place: a dismiss followed by a show with the same key drops both.
+      toaster.show({ message: gt.gettext('区域已切换'), intent: 'success' }, progress)
+    } catch (e) {
+      toaster.dismiss(progress)
+      this.store.set(ErrAtom, { error: e, context: gt.pgettext('error context', '切换区域失败') })
+    }
     return true
   }
 
@@ -295,8 +348,26 @@ export function useCpp<G extends IGame>() {
   return useContext(CppContext) as Cpp<G>
 }
 
+/** Re-renders the caller whenever newer game data is committed, so what it reads from the adapter stays current. */
 export function useGameAdapter<G extends IGame>() {
-  return useCpp<G>().gameAdapter
+  const cpp = useCpp<G>()
+  useAtomValue(cpp.gameDataGenerationAtom)
+  return cpp.gameAdapter
+}
+
+/** For a dependency list: changes whenever newer game data is committed. */
+export function useGameDataGeneration() {
+  return useAtomValue(useCpp().gameDataGenerationAtom)
+}
+
+/**
+ * useMemo for values read from the game adapter: also recomputes whenever newer game data is committed. Lint checks
+ * the deps of its callers as it does for useMemo (additionalHooks in .oxlintrc.json).
+ */
+export function useGameDataMemo<T>(factory: () => T, deps: DependencyList): T {
+  const generation = useGameDataGeneration()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(factory, [...deps, generation])
 }
 
 export function useGameAdapterStatic<G extends IGame>() {

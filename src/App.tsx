@@ -35,8 +35,8 @@ import { AppToaster } from './components/Toaster'
 import { UserDataManagerButton, UserDataManagerMenuItem } from './components/UserDataManager'
 import { ValueOptionButton } from './components/Value'
 import { useComponents } from './hooks/useComponents'
-import { useRequest } from './hooks/useRequest'
 import { LocaleButton } from './locales'
+import { UpdateResult, UpdateScheduler } from './pkg/cpp-basic'
 import { gt } from './pkg/gt'
 import { formatProfileName } from './profiles'
 
@@ -69,21 +69,21 @@ const UndoButtons = memo(() => {
 })
 
 const ReloadDataButton = memo(() => {
-  const ga = useGameAdapter()
-  const dm = ga.getDataManager()
+  const cpp = useCpp()
+  const dm = cpp.gameAdapter.getDataManager()
+  const { updating } = useAtomValue(cpp.gameDataStatusAtom)
   const setError = useSetAtom(ErrAtom)
-  const { loading, send } = useRequest(async () => {
+  const run = useEvent(async (operation: () => Promise<UpdateResult>) => {
     const toaster = await AppToaster
     const reload = toaster.show(
       { message: gt.gettext('更新数据中…'), isCloseButtonShown: false, timeout: 0, intent: 'primary' },
       'reload',
     )
     try {
-      const r = await dm.refresh()
-      toaster.dismiss(reload)
-      if (r || dm.dataUpdatedAfterInit) {
-        toaster.show({ message: gt.gettext('数据已更新，正在重新载入…'), intent: 'success' }, reload)
-        location.reload()
+      const r = await operation()
+      // Replaced in place: a dismiss followed by a show with the same key drops both, as the dismiss lands last.
+      if (r.applied) {
+        toaster.show({ message: gt.gettext('游戏数据已更新'), intent: 'success' }, reload)
       } else {
         toaster.show({ message: gt.gettext('未找到新数据') }, reload)
       }
@@ -102,22 +102,18 @@ const ReloadDataButton = memo(() => {
             <MenuItem
               text={gt.gettext('重载数据')}
               icon={'reset'}
-              onClick={() => {
-                void (async () => {
-                  await dm.reset()
-                  location.reload()
-                })()
-              }}
+              disabled={updating}
+              onClick={() => void run(() => dm.reset())}
             />
           </Menu>
         }
       >
         <Button
           icon="refresh"
-          disabled={loading}
+          disabled={updating}
           text={<span className={'cpp-very-compact'}>{gt.gettext('检查数据更新')}</span>}
           variant="minimal"
-          onClick={() => send()}
+          onClick={() => void run(() => dm.update({ force: true }))}
         />
       </ContextMenu>
     </>
@@ -159,26 +155,19 @@ const App = memo(() => {
   const charExtraWidth = useAtomValue(charExtraWidthAtom)
   const charStatusWidth = cpp.gameComponent.charStatusWidth || defaultCharStatusWidth
   const charListBaseWidth = 730 - defaultCharStatusWidth * 2 + charStatusWidth * 2
-  const ga = useGameAdapter()
+  const dm = cpp.gameAdapter.getDataManager()
 
   useEffect(() => {
-    void (async () => {
-      const result = await ga.getDataManager().checkUpdates()
-      if (result)
-        (await AppToaster).show(
-          {
-            message: gt.gettext('数据已更新，请重新载入页面'),
-            intent: 'success',
-            action: {
-              text: gt.gettext('重新载入'),
-              icon: 'refresh',
-              onClick: () => location.reload(),
-            },
-          },
-          'auto-update',
-        )
-    })()
-  }, [ga])
+    const scheduler = new UpdateScheduler({
+      check: async () => {
+        const { notify } = await dm.update({})
+        if (notify) (await AppToaster).show({ message: gt.gettext('游戏数据已更新'), intent: 'success' }, 'auto-update')
+      },
+      onVisible: () => void dm.checkExpiry().catch((e) => console.error('Failed to rebuild expired game data', e)),
+    })
+    scheduler.start()
+    return () => scheduler.stop()
+  }, [dm])
 
   return (
     <>
@@ -306,23 +295,11 @@ const DataDropdown = memo(() => {
 })
 
 const SuperAppWrapper = memo(() => {
-  const ga = useGameAdapter()
-  const dm = ga.getDataManager()
-  const [, setTicker] = useState(0)
-  useEffect(() => {
-    let timer: null | ReturnType<typeof setInterval> = setInterval(() => {
-      if (dm.error || dm.initialized) {
-        clearTimeout(timer!)
-        timer = null
-        setTicker((x) => x + 1)
-      }
-    }, 100)
-    return () => void (timer && clearTimeout(timer))
-  }, [dm])
+  const { status, error } = useAtomValue(useCpp().gameDataStatusAtom)
 
-  if (dm.error) throw dm.error
+  if (status === 'error') throw error
 
-  if (!dm.initialized) {
+  if (status === 'loading') {
     return <Loading />
   }
 
@@ -330,34 +307,22 @@ const SuperAppWrapper = memo(() => {
 })
 
 export const Loading = memo(() => {
-  const ga = useGameAdapter()
-  const dm = ga.getDataManager()
-  const [, setTicker] = useState(0)
-  const [status, setStatus] = useState(gt.pgettext('loading status', '别急…') /* I10N: initial */)
-  useEffect(() => {
-    let timer: null | ReturnType<typeof setInterval> = setInterval(() => {
-      if (dm.loading.size > 0) {
-        setStatus(
-          gt
+  const { status: dataStatus, loading } = useAtomValue(useCpp().gameDataStatusAtom)
+  const [started, setStarted] = useState(false)
+  if (loading.length > 0 && !started) setStarted(true)
+  const status =
+    dataStatus !== 'loading'
+      ? gt.pgettext('loading status', '马上就好…') /* I10N: done */
+      : loading.length > 0
+        ? gt
             .pgettext(
               'loading status',
               `仍在加载 %s 中…`,
             ) /* I10N: loading data objects, %s: names of pending data objects */
-            .replaceAll('%s', [...dm.loading].join(', ')),
-        )
-      } else {
-        setStatus(gt.pgettext('loading status', '收拾中…') /* I10N: loaded data objects */)
-      }
-
-      if (dm.error || dm.initialized) {
-        setStatus(gt.pgettext('loading status', '马上就好…') /* I10N: done */)
-        clearTimeout(timer!)
-        timer = null
-        setTicker((x) => x + 1)
-      }
-    }, 100)
-    return () => void (timer && clearTimeout(timer))
-  }, [dm])
+            .replaceAll('%s', loading.join(', '))
+        : started
+          ? gt.pgettext('loading status', '收拾中…') /* I10N: loaded data objects */
+          : gt.pgettext('loading status', '别急…') /* I10N: initial */
 
   return (
     <>
@@ -440,6 +405,8 @@ class ErrorBoundary extends React.Component<
     console.error('error occurred!', error, errorInfo)
   }
 
+  private readonly reset = () => this.setState({ hasError: false, error: undefined })
+
   public render() {
     if (this.state.hasError) {
       return (
@@ -452,6 +419,7 @@ class ErrorBoundary extends React.Component<
           icon="warning-sign"
           isCloseButtonShown={false}
         >
+          <ResetOnDataChange onChange={this.reset} />
           <DialogBody>{renderError({ error: this.state.error! })}</DialogBody>
           <DialogFooter
             actions={
@@ -478,6 +446,18 @@ class ErrorBoundary extends React.Component<
     return this.props.children
   }
 }
+
+/** Mounted only while the boundary shows an error: new game data or replaced user data may be what fixes it. */
+const ResetOnDataChange = memo(({ onChange }: { onChange: () => void }) => {
+  const cpp = useCpp()
+  const generation = useAtomValue(cpp.gameDataGenerationAtom)
+  const data = useAtomValue(cpp.atoms.atoms.dataAtom)
+  const [initial] = useState({ generation, data })
+  useEffect(() => {
+    if (generation !== initial.generation || data !== initial.data) onChange()
+  }, [generation, data, initial, onChange])
+  return null
+})
 
 export const ErrDialog = memo(({ instanceName, codename }: { instanceName: string; codename: string }) => {
   const [err, setErr] = useAtom(ErrAtom)

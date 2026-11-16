@@ -1,7 +1,7 @@
 import { Alignment, AnchorButton, Menu, MenuDivider, MenuItem, MenuItemProps, Navbar } from '@blueprintjs/core'
 import { format } from 'date-fns'
 import { memo } from 'react'
-import { useCpp } from '../Cpp'
+import { useGameAdapter } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { DataContainerObject } from '../pkg/dccache'
 import { PSTR, gt } from '../pkg/gt'
@@ -154,8 +154,7 @@ export const DataObjectStatus = memo(
     notes?: React.ReactNode
     hideCommit?: boolean
   }) => {
-    const cpp = useCpp()
-    const dm = cpp.gameAdapter.getDataManager()
+    const dm = useGameAdapter().getDataManager()
     const data = dm.get(dataObj)
     const shouldShowCommit =
       !hideCommit &&
