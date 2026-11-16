@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "semi": false,
+  "printWidth": 120,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    // 生成文件：data schemas 来自 cpp-data，JSON 由 scripts/update-re1999-*.js 写出
+    "src/pkg/cpp-data-schemas/**",
+    "src/components/re1999/*.json",
+    "src/pkg/cpp-re1999/*.json",
+    "po/**",
+    "pnpm-lock.yaml"
+  ]
+}

@@ -1,8 +1,11 @@
-image: node:20-bullseye
+# 和本地开发、cpp-data-worker 的 CI 用同一个 devshell（.nix/flake.lock），node 和 pnpm 只在那里钉版本。
+image: nixos/nix:2.35.6
+variables:
+  NIX_CONFIG: experimental-features = nix-command flakes
 build:
   script:
-    - yarn
-    - yarn build
+    - nix develop "path:$PWD/.nix" --command pnpm install --frozen-lockfile
+    - nix develop "path:$PWD/.nix" --command pnpm build
     - cp dist/index.html dist/404.html
     - |
       tar c dist | curl \

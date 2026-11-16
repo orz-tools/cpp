@@ -7,7 +7,9 @@
     "dev": "node scripts/build-messages.js && vite",
     "build": "node scripts/build-messages.js && tsc && vite build",
     "preview": "vite preview",
-    "gt": "node scripts/extract-messages.js && scripts/update-messages.sh && node scripts/build-messages.js"
+    "gt": "node scripts/extract-messages.js && scripts/update-messages.sh && node scripts/build-messages.js",
+    "lint": "oxlint --type-aware",
+    "fmt": "oxfmt"
   },
   "dependencies": {
     "@blueprintjs/core": "^5.2.1",
@@ -22,6 +24,7 @@
     "json-stringify-deterministic": "^1.0.11",
     "localforage": "^1.10.0",
     "node-gettext": "^3.0.0",
+    "normalize.css": "^8.0.1",
     "p-limit": "^4.0.0",
     "p-props": "^5.0.0",
     "ramda": "^0.29.0",
@@ -33,32 +36,24 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
-    "@ainou/code-style": "^0.0.25",
-    "@types/deep-equal": "^1.0.1",
-    "@types/node": "20",
-    "@types/node-gettext": "^3",
-    "@types/prettier": "^3.0.0",
+    "@types/deep-equal": "^1.0.4",
+    "@types/node": "^26.6.6",
+    "@types/node-gettext": "^3.0.6",
     "@types/ramda": "^0.29.3",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
-    "@vitejs/plugin-react-swc": "^3.3.2",
-    "@vitest/ui": "^0.34.3",
-    "eslint": "^8.48.0",
-    "gettext-extractor": "^3.8.0",
-    "gettext-parser": "^8.0.0",
-    "node-fetch": "^3.3.2",
-    "prettier": "^3.0.2",
-    "rollup-plugin-visualizer": "^5.9.2",
-    "typescript": "^5.2.2",
-    "vite": "^4.4.9",
-    "vite-node": "^0.34.3",
-    "vite-plugin-svgr": "^4.2.0",
-    "vitest": "^0.34.3"
+    "@vitejs/plugin-react-swc": "^4.3.3",
+    "@vitest/ui": "^5.1.0",
+    "gettext-extractor": "^4.0.6",
+    "gettext-parser": "^10.0.0",
+    "oxfmt": "^0.78.0",
+    "oxlint": "^1.93.0",
+    "oxlint-tsgolint": "^7.0.2007",
+    "rollup-plugin-visualizer": "^7.1.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vite-plugin-svgr": "^5.2.0",
+    "vitest": "^5.1.0"
   },
-  "packageManager": "yarn@3.4.1",
-  "resolutions": {
-    "@blueprintjs/icons@^5.1.5": "patch:@blueprintjs/icons@npm%3A5.1.5#./.yarn/patches/@blueprintjs-icons-npm-5.1.5-a849a30aab.patch"
-  }
+  "packageManager": "pnpm@12.9.0"
 }

@@ -25,8 +25,8 @@ The toolchain is provided by a [nix](https://nixos.org) devshell in `.nix/`. Wit
 
 ```shell
 $ direnv allow
-$ yarn install
-$ yarn dev
+$ pnpm install
+$ pnpm dev
 ```
 
 Without direnv, run `nix develop path:$PWD/.nix` first.
