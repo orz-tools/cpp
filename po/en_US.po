@@ -625,7 +625,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:971
+#: src/components/CharacterList.tsx:978
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -1464,22 +1464,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:424
+#: src/components/CharacterList.tsx:426
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:425
+#: src/components/CharacterList.tsx:427
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:433
+#: src/components/CharacterList.tsx:435
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:434
+#: src/components/CharacterList.tsx:436
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -1564,7 +1564,7 @@ msgstr "Planned"
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
-#: src/components/CharacterList.tsx:508
+#: src/components/CharacterList.tsx:510
 #: src/components/queryEditor/VisualEditor.tsx:348
 msgctxt "list separator"
 msgid "、"
@@ -1662,19 +1662,19 @@ msgctxt "predefined query"
 msgid "小黑盒 精二率（全部）"
 msgstr "Heybox: E2 rate (all)"
 
-#: src/components/CharacterList.tsx:651
+#: src/components/CharacterList.tsx:653
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:644
+#: src/components/CharacterList.tsx:646
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:658
+#: src/components/CharacterList.tsx:660
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -1846,7 +1846,9 @@ msgstr "Restore default…"
 #: src/components/queryEditor/QueryEditor.tsx:275
 msgctxt "query editor"
 msgid "把「常看」恢复为默认条件？自定义的版本会被删除。"
-msgstr "Restore “Watchlist” to its default conditions? Your customized version will be deleted."
+msgstr ""
+"Restore “Watchlist” to its default conditions? Your customized version will "
+"be deleted."
 
 #: src/components/queryEditor/VisualEditor.tsx:78
 msgctxt "query editor"
@@ -2179,42 +2181,42 @@ msgctxt "query group mode"
 msgid "都不满足"
 msgstr "none"
 
-#: src/components/CharacterList.tsx:717
+#: src/components/CharacterList.tsx:724
 msgctxt "query menu"
 msgid "不论持有和练度，列出全部"
 msgstr "Everyone, owned or not, maxed or not"
 
-#: src/components/CharacterList.tsx:721
+#: src/components/CharacterList.tsx:728
 msgctxt "query menu"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:799 src/components/CharacterList.tsx:800
+#: src/components/CharacterList.tsx:806 src/components/CharacterList.tsx:807
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
 
-#: src/components/CharacterList.tsx:707
+#: src/components/CharacterList.tsx:714
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
 
-#: src/components/CharacterList.tsx:751
+#: src/components/CharacterList.tsx:758
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
 
-#: src/components/CharacterList.tsx:791 src/components/CharacterList.tsx:792
+#: src/components/CharacterList.tsx:798 src/components/CharacterList.tsx:799
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
 
-#: src/components/CharacterList.tsx:763
+#: src/components/CharacterList.tsx:770
 msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:799 src/components/CharacterList.tsx:800
+#: src/components/CharacterList.tsx:806 src/components/CharacterList.tsx:807
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -2270,13 +2272,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:505
+#: src/components/CharacterList.tsx:507
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:505
+#: src/components/CharacterList.tsx:507
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
