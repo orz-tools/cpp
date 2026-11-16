@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import type { Character } from './DataManager'
-import { SklandCharacterNotFoundError, SklandData, mergeSklandData, parseSklandData } from './skland'
+import {
+  SklandCharacterNotFoundError,
+  SklandData,
+  mergeSklandData,
+  nextSklandSnapshot,
+  parseSklandData,
+  readSklandSnapshot,
+  sklandUid,
+} from './skland'
 import type { ArknightsCharacterStatus } from './types'
 
 const fakeCharacter = (key: string, opts: { skills?: string[]; equips?: string[][]; hasPatches?: boolean } = {}) =>
@@ -66,8 +74,21 @@ const sklandData = (data: Partial<SklandData>): SklandData => ({ chars: [], ...d
 describe('parseSklandData', () => {
   it('reads the data with or without the response envelope', () => {
     const data = { chars: [chen] }
-    expect(parseSklandData(JSON.stringify(data))).toEqual(data)
-    expect(parseSklandData(JSON.stringify({ code: 0, message: 'OK', data }))).toEqual(data)
+    expect(parseSklandData(JSON.stringify(data)).data).toEqual(data)
+    expect(parseSklandData(JSON.stringify({ code: 0, message: 'OK', data })).data).toEqual(data)
+  })
+
+  it('keeps everything it was given as the raw data, without the envelope', () => {
+    const data = {
+      currentTs: 1700000000,
+      status: { uid: '10000001', name: '测试博士#0001' },
+      chars: [chen],
+      skins: [{ id: 'char_010_chen@test#1', ts: 1690000000 }],
+      charInfoMap: { char_010_chen: { name: '陈' } },
+    }
+    const parsed = parseSklandData(JSON.stringify({ code: 0, message: 'OK', data }))
+    expect(parsed.raw).toEqual(data)
+    expect(parsed.data).not.toHaveProperty('skins')
   })
 
   it('rejects data of another shape', () => {
@@ -225,5 +246,45 @@ describe('mergeSklandData', () => {
     const mastered = mergeSklandData(ga, { current: {}, items: {} }, empty, training('char_010_chen', 2))
     expect(mastered.trainingError).toContain('"charId":"char_010_chen"')
     expect(mastered.trainingError).toContain('Skill already mastered to level 3')
+  })
+})
+
+describe('Skland snapshot', () => {
+  it('reads the UID only when it is a non-empty string', () => {
+    expect(sklandUid({ status: { uid: '10000001' } })).toBe('10000001')
+    expect(sklandUid({ chars: [] })).toBeUndefined()
+    expect(sklandUid({ status: { uid: 10000001 } })).toBeUndefined()
+    expect(sklandUid({ status: { uid: '' } })).toBeUndefined()
+    expect(sklandUid({ status: null })).toBeUndefined()
+  })
+
+  it('keeps the UID it saw before when the new data has none', () => {
+    const withUid = { status: { uid: '10000001' }, chars: [] }
+    const first = nextSklandSnapshot(undefined, withUid, 1000)
+    expect(first).toEqual({ receivedAt: 1000, uid: '10000001', data: withUid })
+    expect(first.data).toBe(withUid)
+
+    const scoped = { currentTs: 1, chars: [] }
+    expect(nextSklandSnapshot(first, scoped, 2000)).toEqual({ receivedAt: 2000, uid: '10000001', data: scoped })
+
+    const other = { status: { uid: '10000002' } }
+    expect(nextSklandSnapshot(first, other, 3000).uid).toBe('10000002')
+    expect(nextSklandSnapshot(undefined, scoped, 4000)).not.toHaveProperty('uid')
+  })
+
+  it('treats a stored value of the wrong shape as no snapshot', () => {
+    expect(readSklandSnapshot(undefined)).toBeUndefined()
+    expect(readSklandSnapshot('x')).toBeUndefined()
+    expect(readSklandSnapshot({ receivedAt: 1 })).toBeUndefined()
+    expect(readSklandSnapshot({ data: [] })).toBeUndefined()
+    expect(readSklandSnapshot({ receivedAt: 1, uid: 5, data: { chars: [] } })).toEqual({
+      receivedAt: 1,
+      data: { chars: [] },
+    })
+    expect(readSklandSnapshot({ receivedAt: 1, uid: '10000001', data: {} })).toEqual({
+      receivedAt: 1,
+      uid: '10000001',
+      data: {},
+    })
   })
 })

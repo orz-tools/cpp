@@ -62,7 +62,7 @@ msgstr "Own Rate (%s)"
 msgid "ArknightsAssets 解析的游戏数据"
 msgstr "Data Mining by ArknightsAssets"
 
-#: src/components/RetiredGame.tsx:39
+#: src/components/RetiredGame.tsx:46
 msgid "Closure++ 对 %s 的支持已彻底下线"
 msgstr "Closure++ no longer supports %s"
 
@@ -74,7 +74,7 @@ msgstr "Discord"
 msgid "Kengxxiao 解析的游戏数据"
 msgstr "Data Mining by Kengxxiao"
 
-#: src/components/arknights/importHooks.ts:73
+#: src/components/arknights/importHooks.ts:81
 msgid ""
 "MAA「干员识别」的截图识别结果只有精英化、等级和潜能，不含技能等级、专精和模"
 "组；这些保持导入前的值，请自行核对。"
@@ -87,25 +87,26 @@ msgstr ""
 msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
-#: src/components/UserDataManager.tsx:259
+#: src/components/UserDataManager.tsx:304
 msgid "从文件导入"
 msgstr "Import from File"
 
-#: src/components/UserDataManager.tsx:266
+#: src/components/UserDataManager.tsx:311
 msgid "从文本框中导入"
 msgstr "Import from Text Box"
 
-#: src/components/Importer.tsx:409
+#: src/components/Importer.tsx:421
 msgid "以往"
 msgstr "Previous"
 
-#: src/components/Importer.tsx:412
+#: src/components/Importer.tsx:424
 msgid "价值变化"
 msgstr "Value Delta"
 
-#: src/components/CppDumpImport.ts:49
+#: src/components/CppDumpImport.ts:55
 msgid "价值计算等设置需重新载入页面后生效。"
-msgstr "Settings such as value calculation take effect after the page is reloaded."
+msgstr ""
+"Settings such as value calculation take effect after the page is reloaded."
 
 #: src/components/arknights/AboutList.tsx:43
 msgid "企鹅物流数据统计 素材掉落统计数据"
@@ -123,9 +124,11 @@ msgstr "Wrong turn?!"
 msgid "使用「提取装置」"
 msgstr "Use «Sklanding»"
 
-#: src/components/CppDumpImport.ts:45
+#: src/components/CppDumpImport.ts:51
 msgid "偏好设置（排除关卡、价值类型等）已一并覆盖，「撤销」不会恢复这一项。"
-msgstr "Preferences (excluded stages, value type and so on) were replaced as well; «Undo» does not restore them."
+msgstr ""
+"Preferences (excluded stages, value type and so on) were replaced as well; "
+"«Undo» does not restore them."
 
 #: src/components/ConfigUi.tsx:339
 msgid "免责声明"
@@ -147,7 +150,7 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:502 src/components/Importer.tsx:126
+#: src/App.tsx:502 src/components/Importer.tsx:138
 msgid "关闭"
 msgstr "Close"
 
@@ -171,7 +174,7 @@ msgid_plural "制作 %d 次所需"
 msgstr[0] "Ingredients for Synthesizing Once"
 msgstr[1] "Ingredients for Synthesizing %d Times"
 
-#: src/components/RetiredGame.tsx:47
+#: src/components/RetiredGame.tsx:54
 msgid "前往存档站"
 msgstr "Go to the archive"
 
@@ -183,7 +186,7 @@ msgstr "The clipboard holds no text or file."
 msgid "区域已切换，将重新载入页面。"
 msgstr "Region switched. Page will be reloaded."
 
-#: src/components/UserDataManager.tsx:201
+#: src/components/UserDataManager.tsx:240
 msgid "可将导出的文件拖入此处，或直接粘贴文件导入。"
 msgstr ""
 "You can also drop an exported file here, or paste the file to import it."
@@ -214,7 +217,7 @@ msgid "声明"
 msgstr "Statements"
 
 #. %d: number
-#: src/components/arknights/importHooks.ts:170
+#: src/components/arknights/importHooks.ts:178
 msgid ""
 "备份中排除了 %d 个关卡，与 cpp 当前的设置不同；排除关卡没有导入，如需一致请在"
 "「关卡」菜单中自行设置。"
@@ -241,7 +244,7 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制角色名"
 msgstr "Copy Name"
 
-#: src/components/Importer.tsx:411
+#: src/components/Importer.tsx:423
 msgid "如今"
 msgstr "Current"
 
@@ -268,7 +271,7 @@ msgstr "Import MAA «Operator» Data"
 msgid "导入/导出"
 msgstr "Import/Export"
 
-#: src/components/Importer.tsx:191
+#: src/components/Importer.tsx:203
 msgid "导入时产生的警告"
 msgstr "Warnings During Import"
 
@@ -282,7 +285,7 @@ msgstr "Import Arknights Toolbox «Material Calculation» Backup"
 msgid "导入森空岛数据"
 msgstr "Import Skland Data"
 
-#: src/components/UserDataManager.tsx:280
+#: src/components/UserDataManager.tsx:325
 msgid "导出为文件"
 msgstr "Export as File"
 
@@ -291,8 +294,8 @@ msgid "小黑盒 app 干员统计数据"
 msgstr "Operator Statistics from Heybox"
 
 #. %s: character names
-#: src/components/arknights/importHooks.ts:155
-#: src/components/arknights/importHooks.ts:80
+#: src/components/arknights/importHooks.ts:163
+#: src/components/arknights/importHooks.ts:88
 msgid ""
 "尚不支持这些干员，已跳过：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据"
 "通常需要 2~24 小时解析。"
@@ -302,7 +305,7 @@ msgstr ""
 "typically takes 2~24 hours to process."
 
 #. %s: character key
-#: src/components/arknights/importHooks.ts:190
+#: src/components/arknights/importHooks.ts:198
 msgid ""
 "尚不支持这名干员：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 "
 "2~24 小时解析。"
@@ -409,11 +412,11 @@ msgstr "Filter by stage code or name"
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
-#: src/App.tsx:54 src/components/Importer.tsx:131
+#: src/App.tsx:54 src/components/Importer.tsx:143
 msgid "撤销"
 msgstr "Undo"
 
-#: src/components/UserDataManager.tsx:123
+#: src/components/UserDataManager.tsx:160
 msgid "数据已导入，将重新载入页面。"
 msgstr "Data imported. A reload is required."
 
@@ -506,7 +509,7 @@ msgstr ""
 "Penguin Statistics and is licensed under a Creative Commons Attribution-"
 "NonCommercial 4.0 International License."
 
-#: src/components/RetiredGame.tsx:43
+#: src/components/RetiredGame.tsx:50
 msgid ""
 "本站已移除相关的全部功能，只保留导出和清空用户数据。如需继续使用，请先导出为"
 "文件，再前往存档站自行导入：两边的数据并不互通。"
@@ -544,7 +547,7 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/UserDataManager.tsx:232
+#: src/components/UserDataManager.tsx:271
 msgid "松开以导入文件"
 msgstr "Drop to Import"
 
@@ -560,14 +563,14 @@ msgstr "Query Failed"
 msgid "检查数据更新"
 msgstr "Check For Data Updates"
 
-#: src/components/arknights/importHooks.ts:213
+#: src/components/arknights/importHooks.ts:233
 msgid ""
 "森空岛的数据分不清模组是未解锁还是 1 级，这些模组保持导入前的值，请自行核对。"
 msgstr ""
 "Skland data cannot tell a locked module from one at Level 1; those modules "
 "keep their values from before the import. Please check them yourself."
 
-#: src/components/arknights/importHooks.ts:217
+#: src/components/arknights/importHooks.ts:237
 msgid ""
 "森空岛的数据分不清训练室里的阿米娅是哪个升变形态，正在训练的专精没有计入，请"
 "自行核对。"
@@ -575,11 +578,11 @@ msgstr ""
 "Skland data cannot tell which form the Amiya in the Training Room is in, so "
 "the specialization in training was not counted. Please check it yourself."
 
-#: src/components/UserDataManager.tsx:217
+#: src/components/UserDataManager.tsx:256
 msgid "没有可导出的数据。"
 msgstr "There is no data to export."
 
-#: src/components/UserDataManager.tsx:252
+#: src/components/UserDataManager.tsx:295
 msgid "清空"
 msgstr "Clear"
 
@@ -604,8 +607,8 @@ msgstr "Potential %d"
 msgid "现在可以合成的道具"
 msgstr "Synthesizing"
 
-#: src/components/RetiredGame.tsx:34 src/components/UserDataManager.tsx:299
-#: src/components/UserDataManager.tsx:318 src/components/UserDataManager.tsx:58
+#: src/components/RetiredGame.tsx:34 src/components/UserDataManager.tsx:344
+#: src/components/UserDataManager.tsx:363 src/components/UserDataManager.tsx:82
 msgid "用户数据管理"
 msgstr "Save Manager"
 
@@ -613,7 +616,7 @@ msgstr "Save Manager"
 msgid "界面语言"
 msgstr "UI Language"
 
-#: src/components/Importer.tsx:209
+#: src/components/Importer.tsx:221
 msgid "目标"
 msgstr "Goals"
 
@@ -636,7 +639,7 @@ msgstr ""
 "You can really synthesizing these items now. However, it will cost you much "
 "more AP in the future. Go farming instead!"
 
-#: src/components/Importer.tsx:203
+#: src/components/Importer.tsx:215
 msgid "角色"
 msgstr "Characters"
 
@@ -644,7 +647,7 @@ msgstr "Characters"
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
-#: src/components/arknights/importHooks.ts:222
+#: src/components/arknights/importHooks.ts:242
 msgid ""
 "解析训练室数据失败，正在训练的专精没有计入。请尽量把下面的信息发给开发者："
 msgstr ""
@@ -656,7 +659,7 @@ msgid "计划中没有 MAA「干员培养」能执行的目标"
 msgstr "The plan has no goals MAA «Operator Progression» can carry out"
 
 #. %s: character names
-#: src/components/arknights/importHooks.ts:123
+#: src/components/arknights/importHooks.ts:131
 msgid ""
 "认不出这些干员，已跳过：%s。cpp 只认识简体中文名、西文代号和当前区服语言的名"
 "字；如果是新干员，可能游戏数据尚未更新。"
@@ -695,7 +698,7 @@ msgstr "Click %s above to continue."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/UserDataManager.tsx:90
+#: src/components/UserDataManager.tsx:123
 msgid ""
 "警告：你确定要导入数据吗？\n"
 "你现在的数据将会被永久覆盖！（真的很久！）\n"
@@ -711,7 +714,7 @@ msgstr ""
 "function properly.\n"
 "In such event, you can clear the data in «Save Manager»."
 
-#: src/components/UserDataManager.tsx:188
+#: src/components/UserDataManager.tsx:225
 msgid ""
 "警告：你确定要清空数据吗？\n"
 "你现在的数据将会永久失去！（真的很久！）"
@@ -728,12 +731,12 @@ msgstr "Recent Patches"
 msgid "返回主页"
 msgstr "Back to Home"
 
-#: src/components/UserDataManager.tsx:102
+#: src/components/UserDataManager.tsx:135
 msgid "这不是 Closure++ 用户数据。"
 msgstr "This is not Closure++ save data."
 
 #. %s: character names
-#: src/components/arknights/importHooks.ts:146
+#: src/components/arknights/importHooks.ts:154
 msgid ""
 "这些干员在 cpp 中尚未持有，已按明日方舟工具箱计划的起点设为持有，等级按计划所"
 "需的最低值填写，请自行核对：%s。"
@@ -743,7 +746,7 @@ msgstr ""
 "plan needs. Please check them: %s."
 
 #. %s: character names
-#: src/components/arknights/importHooks.ts:105
+#: src/components/arknights/importHooks.ts:113
 msgid ""
 "这些干员在 cpp 中尚未持有，已按计划所需的最低状态设为持有，请自行核对：%s。"
 msgstr ""
@@ -751,43 +754,55 @@ msgstr ""
 "lowest state the plan needs. Please check them: %s."
 
 #. %s: character names
-#: src/components/arknights/importHooks.ts:114
+#: src/components/arknights/importHooks.ts:122
 msgid "这些干员的目标超出了可培养的上限（精英化次数或技能），已跳过：%s。"
 msgstr ""
 "Goals for these operators go beyond what they can reach (promotion or "
 "skills) and were skipped: %s."
 
-#: src/components/UserDataManager.tsx:111
+#: src/components/UserDataManager.tsx:144
 msgid "这份 Closure++ 用户数据已损坏。"
 msgstr "This Closure++ save data is damaged."
 
-#: src/components/CppDumpImport.ts:85 src/components/UserDataManager.tsx:103
+#: src/components/CppDumpImport.ts:98 src/components/UserDataManager.tsx:136
 msgid "这份 Closure++ 用户数据的版本无法识别。"
 msgstr "The version of this Closure++ save data is not recognized."
 
+#. %s$new: UID in this data, %s$old: UID imported into this profile before
+#: src/components/arknights/importHooks.ts:249
+msgid ""
+"这份森空岛数据的 UID 是 %s$new，与这个档案上次导入的 %s$old 不同；如果导入错"
+"了档案，请点「撤销」。"
+msgstr ""
+"This Skland data is for UID %s$new, but this profile last imported UID %s$old. "
+"If this is the wrong profile, click «Undo»."
+
 #. %s$from: region of the data, %s$to: current region
-#: src/components/CppDumpImport.ts:57
+#: src/components/CppDumpImport.ts:63
 msgid ""
 "这份用户数据的区域是 %s$from，当前是 %s$to；区域没有改动，如需切换请使用工具"
 "栏上的区域按钮。"
-msgstr "This save data is for the %s$from region, and the current region is %s$to. The region was not changed; to switch, use the region button on the toolbar."
+msgstr ""
+"This save data is for the %s$from region, and the current region is %s$to. "
+"The region was not changed; to switch, use the region button on the toolbar."
 
 #. %s: profile name
-#: src/components/CppDumpImport.ts:38
+#: src/components/CppDumpImport.ts:44
 msgid "这是 Closure++ 从档案 %s 导出的用户数据。"
 msgstr "This is Closure++ save data exported from profile %s."
 
 #. %s$profile: profile name, %s$time: date and time
-#: src/components/CppDumpImport.ts:29
+#: src/components/CppDumpImport.ts:35
 msgid "这是 Closure++ 从档案 %s$profile 导出的用户数据，导出于 %s$time。"
-msgstr "This is Closure++ save data exported from profile %s$profile at %s$time."
+msgstr ""
+"This is Closure++ save data exported from profile %s$profile at %s$time."
 
-#: src/components/CppDumpImport.ts:26
+#: src/components/CppDumpImport.ts:32
 msgid "这是 Closure++ 用户数据。"
 msgstr "This is Closure++ save data."
 
 #. %s: game codename
-#: src/components/CppDumpImport.ts:80 src/components/UserDataManager.tsx:106
+#: src/components/CppDumpImport.ts:93 src/components/UserDataManager.tsx:139
 msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 "This is Closure++ save data for %s; it cannot be imported into this game."
@@ -800,7 +815,7 @@ msgstr "This is a fallback for those who cannot use «Sklanding»."
 msgid "选项"
 msgstr "Options"
 
-#: src/components/Importer.tsx:215 src/components/Importer.tsx:408
+#: src/components/Importer.tsx:227 src/components/Importer.tsx:420
 msgid "道具"
 msgstr "Items"
 
@@ -1283,12 +1298,12 @@ msgctxt "error context"
 msgid "刷本规划时遇到问题"
 msgstr "Error During Planning"
 
-#: src/components/Importer.tsx:84
+#: src/components/Importer.tsx:88
 msgctxt "error context"
 msgid "合并导入数据时遇到问题"
 msgstr "Error During Merging Data"
 
-#: src/components/UserDataManager.tsx:126
+#: src/components/UserDataManager.tsx:163
 msgctxt "error context"
 msgid "导入数据时遇到问题"
 msgstr "Error During Importing"
@@ -1303,12 +1318,12 @@ msgctxt "error context"
 msgid "环境检测失败"
 msgstr "Error During Starting"
 
-#: src/components/Importer.tsx:91
+#: src/components/Importer.tsx:95
 msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr "Error During Processing Imported Data"
 
-#: src/components/ImportPasteBox.tsx:31 src/components/UserDataManager.tsx:136
+#: src/components/ImportPasteBox.tsx:31 src/components/UserDataManager.tsx:173
 msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr "Error During Reading File"
@@ -1348,38 +1363,38 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CppDumpImport.ts:13
+#: src/components/CppDumpImport.ts:14
 msgctxt "import format"
 msgid "Closure++ 用户数据"
 msgstr "Closure++ Save Data"
 
-#: src/components/arknights/importHooks.ts:23
+#: src/components/arknights/importHooks.ts:31
 msgctxt "import format"
 msgid "MAA「仓库识别」数据"
 msgstr "MAA «Depot» Data"
 
-#: src/components/arknights/importHooks.ts:22
+#: src/components/arknights/importHooks.ts:30
 msgctxt "import format"
 msgid "MAA「干员培养」计划"
 msgstr "MAA «Operator Progression» Plan"
 
-#: src/components/arknights/importHooks.ts:21
+#: src/components/arknights/importHooks.ts:29
 msgctxt "import format"
 msgid "MAA「干员识别」数据"
 msgstr "MAA «Operator» Data"
 
-#: src/components/arknights/importHooks.ts:19
+#: src/components/arknights/importHooks.ts:27
 msgctxt "import format"
 msgid "明日方舟工具箱「精英材料计算」备份"
 msgstr "Arknights Toolbox «Material Calculation» Backup"
 
-#: src/components/arknights/importHooks.ts:20
+#: src/components/arknights/importHooks.ts:28
 msgctxt "import format"
 msgid "森空岛数据"
 msgstr "Skland Data"
 
 #. %s: format name
-#: src/components/Importer.tsx:116
+#: src/components/Importer.tsx:128
 msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr "Import Result · %s"
@@ -1424,10 +1439,10 @@ msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
 
-#: src/components/arknights/importHooks.ts:102
-#: src/components/arknights/importHooks.ts:150
-#: src/components/arknights/importHooks.ts:159
-#: src/components/arknights/importHooks.ts:84
+#: src/components/arknights/importHooks.ts:110
+#: src/components/arknights/importHooks.ts:158
+#: src/components/arknights/importHooks.ts:167
+#: src/components/arknights/importHooks.ts:92
 #: src/components/CharacterList.tsx:454 src/components/Importer.tsx:57
 #: src/components/queryEditor/VisualEditor.tsx:345
 msgctxt "list separator"

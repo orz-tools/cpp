@@ -64,10 +64,14 @@ export function useStartImportSession() {
   const store = useStore()
   const { add } = useChamber()
 
-  /** source names the format in the result dialog's title. Returns whether the data was written. */
+  /**
+   * source names the format in the result dialog's title. Returns whether the data was written.
+   * onUndo runs after the result dialog's 撤销 has taken the user data back, for what the import wrote elsewhere.
+   */
   return <G extends IGame>(
     source: string,
     generatorGenerator: () => (draft: Draft<UserData<G>>, ctx: ImportContext) => void,
+    options?: { onUndo?: () => void },
   ): boolean => {
     try {
       const generator = generatorGenerator()
@@ -85,7 +89,7 @@ export function useStartImportSession() {
         return false
       }
       const after = JSON.parse(JSON.stringify(store.get(atoms.allDataAtom)))
-      add(ImportResultDialog, { source, diff: { before, after, warnings } })
+      add(ImportResultDialog, { source, diff: { before, after, warnings }, onUndo: options?.onUndo })
       return true
     } catch (e) {
       setErr({ error: e, context: gt.pgettext('error context', '解析导入数据时遇到问题') })
@@ -100,11 +104,20 @@ interface State {
   warnings: string[]
 }
 
-const ImportResultDialog = memo(({ source, diff, onClose }: { source: string; diff: State; onClose: () => void }) => {
+interface ImportResultDialogProps {
+  source: string
+  diff: State
+  onUndo?: () => void
+  onClose: () => void
+}
+
+const ImportResultDialog = memo(({ source, diff, onUndo, onClose }: ImportResultDialogProps) => {
   const atoms = useAtoms()
   const store = useStore()
   const undoAndClose = useEvent(() => {
-    store.set(atoms.dataAtom, 'undo')
+    // An import that changed nothing leaves no undo step, so undoing would take back the edit before it.
+    if (!deepEqual(diff.before, diff.after)) store.set(atoms.dataAtom, 'undo')
+    onUndo?.()
     onClose()
   })
 

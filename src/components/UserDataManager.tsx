@@ -11,45 +11,69 @@ import {
   TextArea,
 } from '@blueprintjs/core'
 import { useStore } from 'jotai'
-import { type ReactNode, memo, useEffect, useRef, useState } from 'react'
+import { type ReactNode, memo, useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useCpp } from '../Cpp'
+import { CppDump, buildCppDump } from '../pkg/cpp-core/dump'
+import { loadProfileExtras, replaceProfileExtras } from '../pkg/cpp-core/profileExtras'
 import { gt } from '../pkg/gt'
 import { formatProfileName, getStoragePrefix } from '../profiles'
 import { useChamber } from './Chamber'
 import { ErrAtom } from './Err'
 
-/** A snapshot of the stored data, taken once when the component mounts. */
+/**
+ * A snapshot of the stored data, taken once when the component mounts. The profile's extras are in IndexedDB,
+ * so the dump is ready a moment later; until then loading is true and data is undefined.
+ */
 export function useUserDataDump(game: string, instanceName: string) {
-  const [data] = useState(() => {
+  const [stored] = useState((): (CppDump & { exportedAt: number }) | undefined => {
     const storagePrefix = getStoragePrefix(game, instanceName)
     try {
       const d = localStorage.getItem(storagePrefix + 'userdata')
       const p = localStorage.getItem(storagePrefix + 'preference')
       if (!d) throw new Error('empty')
-      const now = Date.now()
-      const userdata = JSON.stringify({
-        '@type': '@orz/cpp/dump',
-        '@version': 1,
+      return {
         game: game,
         instanceName: instanceName,
-        exportedAt: now,
+        exportedAt: Date.now(),
         userdata: JSON.parse(d || ''),
         preference: p ? JSON.parse(p) : undefined,
         region: localStorage.getItem(storagePrefix + 'region') || '',
-      })
-      return { data: userdata, now: now }
+      }
     } catch (e) {
       console.warn(e)
       return undefined
     }
   })
-  return data
+  const [extras, setExtras] = useState<Record<string, unknown>>()
+  useEffect(() => {
+    let current = true
+    loadProfileExtras(getStoragePrefix(game, instanceName)).then(
+      (x) => current && setExtras(x),
+      (e) => {
+        // Without IndexedDB the user data can still be exported, just without its extras.
+        console.error(e)
+        if (current) setExtras({})
+      },
+    )
+    return () => {
+      current = false
+    }
+  }, [game, instanceName])
+
+  return useMemo(() => {
+    if (!extras) return { loading: true }
+    if (!stored) return { loading: false }
+    return {
+      loading: false,
+      data: { data: JSON.stringify(buildCppDump({ ...stored, extras })), now: stored.exportedAt },
+    }
+  }, [stored, extras])
 }
 
 export const UserDataManager = memo(
   ({ game, instanceName, onClose }: { game: string; instanceName: string; onClose?: DialogProps['onClose'] }) => {
-    const data = useUserDataDump(game, instanceName)
+    const { data, loading } = useUserDataDump(game, instanceName)
 
     return (
       <Dialog
@@ -58,7 +82,14 @@ export const UserDataManager = memo(
         title={`Closure${formatProfileName(game, instanceName)}++ ${gt.gettext('用户数据管理')}`}
         icon="database"
       >
-        <UserDataManagerContent data={data} game={game} instanceName={instanceName} />
+        {/* Remounted once the dump is ready, so the text box starts with it. */}
+        <UserDataManagerContent
+          key={loading ? 'loading' : 'ready'}
+          data={data}
+          loading={loading}
+          game={game}
+          instanceName={instanceName}
+        />
       </Dialog>
     )
   },
@@ -67,12 +98,14 @@ export const UserDataManager = memo(
 export const UserDataManagerContent = memo(
   ({
     data,
+    loading,
     game,
     instanceName,
     exportOnly,
     children,
   }: {
     data?: { data: string; now: number } | undefined
+    loading?: boolean
     game: string
     instanceName: string
     /** For a game whose support is gone: the data can still leave and be cleared, but nothing comes in. */
@@ -84,7 +117,7 @@ export const UserDataManagerContent = memo(
     // jotai's hook rather than Cpp's: a retired game's page mounts this without a Cpp around it.
     const store = useStore()
 
-    const importData = useEvent((text: string) => {
+    const importData = useEvent(async (text: string) => {
       if (
         !confirm(
           gt.gettext(
@@ -109,6 +142,10 @@ export const UserDataManagerContent = memo(
           )
         if (!v['userdata'] || typeof v['userdata'] !== 'object')
           throw new Error(gt.gettext('这份 Closure++ 用户数据已损坏。'))
+        // Like preference and region below: a dump without extras leaves the stored ones alone.
+        if (v['extras'] && typeof v['extras'] === 'object' && !Array.isArray(v['extras'])) {
+          await replaceProfileExtras(getStoragePrefix(game, instanceName), v['extras']).catch(console.error)
+        }
         localStorage.setItem(getStoragePrefix(game, instanceName) + 'userdata', JSON.stringify(v['userdata']))
         if (!v['preference'] || typeof v['preference'] !== 'object') {
           //
@@ -137,7 +174,7 @@ export const UserDataManagerContent = memo(
         return
       }
       setValue(text)
-      importData(text)
+      await importData(text)
     })
 
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -184,8 +221,10 @@ export const UserDataManagerContent = memo(
       }
     }, [importFile, exportOnly])
 
-    const resetData = useEvent(() => {
+    const resetData = useEvent(async () => {
       if (!confirm(gt.gettext('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）'))) return
+
+      await replaceProfileExtras(getStoragePrefix(game, instanceName), undefined).catch(console.error)
 
       localStorage.removeItem(getStoragePrefix(game, instanceName) + 'userdata')
       localStorage.removeItem(getStoragePrefix(game, instanceName) + 'preference')
@@ -213,8 +252,8 @@ export const UserDataManagerContent = memo(
                 wordBreak: 'break-all',
               }}
               onChange={(e) => setValue(e.target.value)}
-              readOnly={exportOnly}
-              placeholder={exportOnly ? gt.gettext('没有可导出的数据。') : undefined}
+              readOnly={exportOnly || loading}
+              placeholder={exportOnly && !loading ? gt.gettext('没有可导出的数据。') : undefined}
               spellCheck="false"
             />
             {dragging && (
@@ -249,7 +288,13 @@ export const UserDataManagerContent = memo(
         <DialogFooter
           actions={
             <>
-              <Button variant="minimal" intent={'danger'} icon="trash" text={gt.gettext('清空')} onClick={resetData} />
+              <Button
+                variant="minimal"
+                intent={'danger'}
+                icon="trash"
+                text={gt.gettext('清空')}
+                onClick={() => void resetData()}
+              />
               {exportOnly ? null : (
                 <>
                   <Button
@@ -264,7 +309,7 @@ export const UserDataManagerContent = memo(
                     intent={'primary'}
                     icon="log-in"
                     text={gt.gettext('从文本框中导入')}
-                    onClick={() => importData(value)}
+                    onClick={() => void importData(value)}
                   />
                 </>
               )}

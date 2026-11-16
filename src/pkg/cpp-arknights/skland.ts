@@ -76,13 +76,63 @@ export const SklandData = z.object({
 })
 export type SklandData = z.infer<typeof SklandData>
 
+// 「提取装置」只把这里列出的路径发给 cpp。skins 现在不合并，只为存进快照
+export const SKLAND_SCOPES = ['chars', 'building.training', 'cultivate.characters', 'cultivate.items', 'skins']
+
+export interface SklandInput {
+  data: SklandData
+  // 收到的数据本身，schema 以外的键都在，原样存成快照
+  raw: Record<string, unknown>
+}
+
+export function toSklandInput(raw: unknown): SklandInput {
+  return { data: SklandData.parse(raw), raw: raw as Record<string, unknown> }
+}
+
 // 森空岛接口的原始响应把数据包在 data 里，用户复制整个响应也能认
-export function parseSklandData(input: string): SklandData {
+export function parseSklandData(input: string): SklandInput {
   let raw = JSON.parse(input)
   if (typeof raw === 'object' && typeof raw.data === 'object') {
     raw = raw.data
   }
-  return SklandData.parse(raw)
+  return toSklandInput(raw)
+}
+
+/** 每个档案存一份，在档案附加数据的 skland 键下 */
+export interface SklandSnapshot {
+  receivedAt: number
+  // 这个档案最近一次见到的 UID。「提取装置」不送 UID，那时沿用上一份的，换了账号才认得出
+  uid?: string
+  data: Record<string, unknown>
+}
+
+export function sklandUid(raw: Record<string, unknown>): string | undefined {
+  const status = raw.status
+  if (!isObject(status)) return undefined
+  return typeof status.uid === 'string' && status.uid ? status.uid : undefined
+}
+
+// 存储里的东西可能来自别的版本或被导入的 dump 改过，形状不对就当没有
+export function readSklandSnapshot(stored: unknown): SklandSnapshot | undefined {
+  if (!isObject(stored) || !isObject(stored.data)) return undefined
+  return {
+    receivedAt: typeof stored.receivedAt === 'number' ? stored.receivedAt : 0,
+    ...(typeof stored.uid === 'string' && stored.uid ? { uid: stored.uid } : {}),
+    data: stored.data,
+  }
+}
+
+export function nextSklandSnapshot(
+  previous: SklandSnapshot | undefined,
+  raw: Record<string, unknown>,
+  receivedAt: number,
+): SklandSnapshot {
+  const uid = sklandUid(raw) ?? previous?.uid
+  return { receivedAt, ...(uid ? { uid } : {}), data: raw }
+}
+
+function isObject(v: unknown): v is Record<string, unknown> {
+  return typeof v === 'object' && v !== null && !Array.isArray(v)
 }
 
 export class SklandCharacterNotFoundError extends Error {

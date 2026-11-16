@@ -10,7 +10,15 @@ import {
 } from '../../pkg/cpp-arknights/arkntools'
 import { MAAOperBox, mergeMAAOperBox } from '../../pkg/cpp-arknights/maa'
 import { MaaOperProgressPlanInput, mergeMaaOperProgressPlans } from '../../pkg/cpp-arknights/maaOperProgress'
-import { SklandCharacterNotFoundError, SklandData, mergeSklandData } from '../../pkg/cpp-arknights/skland'
+import {
+  SklandCharacterNotFoundError,
+  SklandInput,
+  mergeSklandData,
+  nextSklandSnapshot,
+  readSklandSnapshot,
+  sklandUid,
+} from '../../pkg/cpp-arknights/skland'
+import { loadProfileExtras, saveProfileExtra } from '../../pkg/cpp-core/profileExtras'
 import { UserData } from '../../pkg/cpp-core/UserData'
 import { gt } from '../../pkg/gt'
 import { ImportContext, useStartImportSession } from '../Importer'
@@ -197,34 +205,63 @@ class CharacterNotFoundError extends Error {
 
 export function useSklandImport() {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
+  const cpp = useCpp()
   const startImportSession = useStartImportSession()
-  return useEvent((data: SklandData) =>
-    startImportSession(importFormatLabels.skland(), () => {
-      const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
-      return (draft: Draft<UserData<Arknights>>, ctx: ImportContext) => {
-        let result
-        try {
-          result = mergeSklandData(ga, draft, empty, data)
-        } catch (e) {
-          if (e instanceof SklandCharacterNotFoundError) throw new CharacterNotFoundError(e.key)
-          throw e
+  return useEvent(async ({ data, raw }: SklandInput) => {
+    const prefix = cpp.storagePrefix
+    // 先读旧快照再开会话：UID 不同的提示要在结果对话框打开时就在
+    const stored = await loadProfileExtras(prefix).then(
+      (extras) => extras.skland,
+      (e) => console.error(e),
+    )
+    const previous = readSklandSnapshot(stored)
+    const uid = sklandUid(raw)
+
+    const written = startImportSession(
+      importFormatLabels.skland(),
+      () => {
+        const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
+        return (draft: Draft<UserData<Arknights>>, ctx: ImportContext) => {
+          let result
+          try {
+            result = mergeSklandData(ga, draft, empty, data)
+          } catch (e) {
+            if (e instanceof SklandCharacterNotFoundError) throw new CharacterNotFoundError(e.key)
+            throw e
+          }
+          if (result.ambiguousEquip) {
+            ctx.addWarning(gt.gettext('森空岛的数据分不清模组是未解锁还是 1 级，这些模组保持导入前的值，请自行核对。'))
+          }
+          if (result.trainingAmiya) {
+            ctx.addWarning(
+              gt.gettext('森空岛的数据分不清训练室里的阿米娅是哪个升变形态，正在训练的专精没有计入，请自行核对。'),
+            )
+          }
+          if (result.trainingError) {
+            ctx.addWarning(
+              gt.gettext('解析训练室数据失败，正在训练的专精没有计入。请尽量把下面的信息发给开发者：') +
+                '\n' +
+                result.trainingError,
+            )
+          }
+          if (uid && previous?.uid && uid !== previous.uid) {
+            ctx.addWarning(
+              gt
+                .gettext(
+                  '这份森空岛数据的 UID 是 %s$new，与这个档案上次导入的 %s$old 不同；如果导入错了档案，请点「撤销」。',
+                ) /* I10N: %s$new: UID in this data, %s$old: UID imported into this profile before */
+                .replaceAll('%s$new', uid)
+                .replaceAll('%s$old', previous.uid),
+            )
+          }
         }
-        if (result.ambiguousEquip) {
-          ctx.addWarning(gt.gettext('森空岛的数据分不清模组是未解锁还是 1 级，这些模组保持导入前的值，请自行核对。'))
-        }
-        if (result.trainingAmiya) {
-          ctx.addWarning(
-            gt.gettext('森空岛的数据分不清训练室里的阿米娅是哪个升变形态，正在训练的专精没有计入，请自行核对。'),
-          )
-        }
-        if (result.trainingError) {
-          ctx.addWarning(
-            gt.gettext('解析训练室数据失败，正在训练的专精没有计入。请尽量把下面的信息发给开发者：') +
-              '\n' +
-              result.trainingError,
-          )
-        }
-      }
-    }),
-  )
+      },
+      // 写回原先存的东西本身，哪怕 readSklandSnapshot 不认它的形状
+      { onUndo: () => void saveProfileExtra(prefix, 'skland', stored).catch(console.error) },
+    )
+    if (written) {
+      void saveProfileExtra(prefix, 'skland', nextSklandSnapshot(previous, raw, Date.now())).catch(console.error)
+    }
+    return written
+  })
 }

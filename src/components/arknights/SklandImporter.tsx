@@ -16,7 +16,7 @@ import { z } from 'zod'
 import { useGameAdapter } from '../../Cpp'
 import { useRequest } from '../../hooks/useRequest'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
-import { SklandData } from '../../pkg/cpp-arknights/skland'
+import { SKLAND_SCOPES, SklandInput, toSklandInput } from '../../pkg/cpp-arknights/skland'
 import { gt } from '../../pkg/gt'
 import { ErrAtom } from '../Err'
 import { useImportByContent } from '../Importer'
@@ -73,15 +73,15 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
   const processMessage = useEvent((e: MessageEvent) => {
     if (typeof e.data !== 'object') return
     if (e.data?.from !== 'sklanding') return
-    let data: SklandData
+    let input: SklandInput
     try {
-      data = SklandingData.parse(e.data).data
+      input = toSklandInput(SklandingData.parse(e.data).data)
     } catch (e) {
       setErr({ error: e, context: gt.pgettext('error context', '与「提取装置」互操作时遇到问题') })
       return
     }
     onClose()
-    importSkland(data)
+    void importSkland(input)
     if (windowRef) {
       try {
         windowRef.close()
@@ -116,7 +116,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
         `https://skland.xkcdn.win/?${new URLSearchParams({
           appName: 'Closure++ 二游计算器',
           origin: window.origin,
-          scopes: ['chars', 'building.training', 'cultivate.characters', 'cultivate.items'].join(','),
+          scopes: SKLAND_SCOPES.join(','),
         })}`,
         '_blank',
         `width=${windowWidth},height=${windowHeight},left=${left},top=${top},popup=yes`,
@@ -247,5 +247,6 @@ const SklandingData = z.object({
   version: z.literal(1),
   from: z.literal('sklanding'),
   type: z.literal('arknights'),
-  data: SklandData,
+  // 原样留着存快照，由 toSklandInput 校验
+  data: z.unknown(),
 })

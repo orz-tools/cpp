@@ -8,6 +8,23 @@ export interface CppDump {
   userdata: Partial<UserData<any>>
   preference?: Record<string, any>
   region?: string
+  /** The profile's extras (profileExtras.ts), such as the Skland snapshot. Older dumps have none. */
+  extras?: Record<string, unknown>
+}
+
+/** The exported object; key order follows what 用户数据管理 has always written, extras last and only when present. */
+export function buildCppDump(dump: CppDump) {
+  return {
+    '@type': '@orz/cpp/dump',
+    '@version': 1,
+    game: dump.game,
+    instanceName: dump.instanceName,
+    exportedAt: dump.exportedAt,
+    userdata: dump.userdata,
+    preference: dump.preference,
+    region: dump.region,
+    ...(dump.extras && Object.keys(dump.extras).length > 0 ? { extras: dump.extras } : {}),
+  }
 }
 
 export type CppDumpParseResult = { dump: CppDump } | { rejected: 'game'; game: string } | { rejected: 'version' }
@@ -32,6 +49,7 @@ export function parseCppDump(text: string, game: string): CppDumpParseResult | u
       userdata: v.userdata,
       preference: isObject(v.preference) ? v.preference : undefined,
       region: typeof v.region === 'string' && v.region ? v.region : undefined,
+      extras: isObject(v.extras) ? v.extras : undefined,
     },
   }
 }

@@ -37,7 +37,7 @@ export function useArknightsImportFormats(): ImportFormat[] {
   const importMAADepot = useMAADepotImport()
   return [
     format(importFormatLabels.arkntools(), detectArkntoolsBackup, importArkntools),
-    format(importFormatLabels.skland(), detectSkland, importSkland),
+    format(importFormatLabels.skland(), detectSkland, (input) => void importSkland(input)),
     format(importFormatLabels.maaOperBox(), detectMAAOperBox, importMAAOperBox),
     format(importFormatLabels.maaOperProgress(), detectMaaOperProgress, importMaaOperProgress),
     format(importFormatLabels.maaDepot(), (text) => detectMAADepot(text, (id) => !!ga.getItem(id)), importMAADepot),

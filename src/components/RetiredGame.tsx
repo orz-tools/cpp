@@ -7,7 +7,7 @@ import { UserDataManagerContent, useUserDataDump } from './UserDataManager'
 
 export const RetiredGame = memo(
   ({ game, instanceName, archive }: { game: string; instanceName: string; archive: string }) => {
-    const data = useUserDataDump(game, instanceName)
+    const { data, loading } = useUserDataDump(game, instanceName)
     // The archive is the same app at an older commit, so the same path opens the same profile there.
     const archiveHref = archive + location.pathname
 
@@ -33,7 +33,14 @@ export const RetiredGame = memo(
                 <Icon icon="database" />
                 <H2>{`Closure${formatProfileName(game, instanceName)}++ ${gt.gettext('用户数据管理')}`}</H2>
               </div>
-              <UserDataManagerContent data={data} game={game} instanceName={instanceName} exportOnly={true}>
+              <UserDataManagerContent
+                key={loading ? 'loading' : 'ready'}
+                data={data}
+                loading={loading}
+                game={game}
+                instanceName={instanceName}
+                exportOnly={true}
+              >
                 <Callout
                   intent="warning"
                   title={gt.gettext('Closure++ 对 %s 的支持已彻底下线').replaceAll('%s', game.toUpperCase())}
