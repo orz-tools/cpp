@@ -91,6 +91,132 @@ body {
   min-height: 0;
 }
 
+/* The same top as .App: the dossier leaves the navbar uncovered. Blueprint's position-right rule has two classes */
+.cpp-dossier.bp6-drawer.bp6-position-right {
+  top: 40px;
+}
+
+.cpp-dossier-frame {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Focus lands on the whole frame when the dossier opens; Blueprint leaves its own drawer unoutlined the same way */
+.cpp-dossier-frame:focus {
+  outline: none;
+}
+
+.cpp-dossier-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 8px 12px 20px;
+  box-shadow: 0 1px 0 rgba(17, 20, 24, 0.15);
+  flex: none;
+}
+
+.cpp-dossier-avatar {
+  display: block;
+  width: 48px;
+  height: 48px;
+  flex: none;
+}
+
+.cpp-dossier-avatar .cpp-char-avatar {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
+.cpp-dossier-avatar .cpp-char-avatar > img {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
+/* The Arknights rarity backdrop is drawn at a fixed 40px for the list */
+.cpp-dossier-avatar .cpp-char-avatar::before {
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+}
+
+.cpp-dossier-heading {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cpp-dossier-name,
+.cpp-dossier-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cpp-dossier-name {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-dossier-meta {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-dossier-body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 16px 20px 20px;
+}
+
+.cpp-dossier-section + .cpp-dossier-section {
+  margin-top: 22px;
+}
+
+.cpp-dossier-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-dossier-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(17, 20, 24, 0.12);
+}
+
+/*
+ * The community statistics widen the Arknights editor past the body; only the editor scrolls. The max-content track
+ * lays it out at the width its popover gives it: in a plain block its button groups would shrink and clip their labels.
+ */
+.cpp-dossier-editor {
+  display: grid;
+  grid-template-columns: max-content;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.cpp-dossier-editor-sep {
+  height: 1px;
+  margin: 16px 0;
+  background: rgba(17, 20, 24, 0.15);
+}
+
+.bp6-menu-item.cpp-dossier-open {
+  box-shadow: inset 3px 0 0 var(--bp-palette-blue-3, #2d72d2);
+}
+
 .bp6-dialog,
 .bp6-alert {
   width: unset !important;

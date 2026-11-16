@@ -19,7 +19,15 @@ const EditorContext = React.createContext<{
 }>(undefined as any)
 
 export const CharacterStatusPopover = memo(
-  <G extends IGame>({ character, isGoal }: { character: ICharacter; isGoal: boolean }) => {
+  <G extends IGame>({
+    character,
+    isGoal,
+    embedded,
+  }: {
+    character: ICharacter
+    isGoal: boolean
+    embedded?: boolean
+  }) => {
     const atoms = useAtoms<G>()
     const charId = character.key
     const statusAtom = isGoal ? atoms.goalCharacter(charId) : atoms.currentCharacter(charId)
@@ -43,7 +51,9 @@ export const CharacterStatusPopover = memo(
     return (
       <EditorContext.Provider value={ctx}>
         <div>
-          {character.name} - {isGoal ? gt.gettext('培养目标') : gt.gettext('当前状态')}
+          {/* The dossier already names the character in its header */}
+          {embedded ? null : `${character.name} - `}
+          {isGoal ? gt.gettext('培养目标') : gt.gettext('当前状态')}
         </div>
         <pre style={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap' }}>{JSON.stringify(status)}</pre>
         <Button text={'update'} onClick={() => void handleEdit()} />

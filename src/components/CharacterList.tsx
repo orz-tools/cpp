@@ -23,6 +23,7 @@ import { CachedImg } from '../components/Icons'
 import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
+import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
 import { IGameComponent } from './types'
 import {
   Assertion,
@@ -242,6 +243,8 @@ const CharacterMenu = memo(
     const c = useComponents()
     const render = c.renderCharacterStatus || renderCharacterStatus
     const CSP = c.CharacterStatusPopover || CharacterStatusPopover
+    const openDossier = useOpenCharacterDossier()
+    const dossierOpen = useDossierOpenFor(charId)
 
     return (
       <li
@@ -254,7 +257,18 @@ const CharacterMenu = memo(
         style={style}
       >
         <ContextMenu content={<CharacterContextMenu character={character} />}>
-          <a role="menuitem" tabIndex={0} className="bp6-menu-item cpp-char-menu-char">
+          <a
+            role="menuitem"
+            tabIndex={0}
+            className={
+              'bp6-menu-item cpp-char-menu-char' +
+              (dossierOpen ? ' bp6-active bp6-intent-primary cpp-dossier-open' : '')
+            }
+            aria-haspopup="dialog"
+            aria-expanded={dossierOpen}
+            onClick={() => openDossier(charId)}
+            onKeyDown={menuItemKeyDown}
+          >
             <>
               <span className="bp6-menu-item-icon cpp-char-avatar">
                 <CachedImg
@@ -677,7 +691,7 @@ const QueryBuilder = memo(() => {
   )
 })
 
-const menuItemKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+export const menuItemKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
   if (e.key !== 'Enter' && e.key !== ' ') return
   e.preventDefault()
   e.currentTarget.click()

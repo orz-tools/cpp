@@ -23,6 +23,7 @@ import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
 import { HelpButton } from './components/AboutList'
 import { Chamber, ChamberPortal } from './components/Chamber'
+import { CharacterDossier } from './components/CharacterDossier'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, MaybeSoulButton, RegionButton, StageButton } from './components/ConfigUi'
 import { Err, ErrAtom } from './components/Err'
@@ -237,6 +238,7 @@ const App = memo(() => {
           <ItemList />
         </section>
       </div>
+      <CharacterDossier />
     </>
   )
 })

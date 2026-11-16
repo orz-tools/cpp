@@ -141,7 +141,7 @@ msgstr "Value Delta"
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr "Drop Rate Data from Penguin Statistics"
 
-#: src/components/TaskList.tsx:137
+#: src/components/TaskList.tsx:138
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
@@ -179,7 +179,8 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:477 src/components/Importer.tsx:160
+#: src/App.tsx:479 src/components/CharacterDossier.tsx:126
+#: src/components/CharacterDossier.tsx:127 src/components/Importer.tsx:160
 msgid "关闭"
 msgstr "Close"
 
@@ -262,7 +263,7 @@ msgstr ""
 "create profile %2; choose OK."
 
 #: src/components/arknights/CharacterStatusPopover.tsx:527
-#: src/components/CharacterStatusPopover.tsx:46
+#: src/components/CharacterStatusPopover.tsx:56
 msgid "培养目标"
 msgstr "Target"
 
@@ -298,7 +299,7 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制数据"
 msgstr "Copy Data"
 
-#: src/components/CharacterList.tsx:194
+#: src/components/CharacterList.tsx:195
 msgid "复制角色名"
 msgstr "Copy Name"
 
@@ -306,7 +307,7 @@ msgstr "Copy Name"
 msgid "如今"
 msgstr "Current"
 
-#: src/components/TaskList.tsx:119
+#: src/components/TaskList.tsx:120
 msgid "完成"
 msgstr "Complete"
 
@@ -325,7 +326,7 @@ msgstr "Import MAA «Operator Progression» Plan"
 msgid "导入 MAA「干员识别」数据"
 msgstr "Import MAA «Operator» Data"
 
-#: src/App.tsx:283 src/components/RetiredGame.tsx:193
+#: src/App.tsx:285 src/components/RetiredGame.tsx:193
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -389,7 +390,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
-#: src/components/CharacterList.tsx:201
+#: src/components/CharacterList.tsx:202
 msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
@@ -440,12 +441,12 @@ msgstr "Documentation"
 msgid "弹出成大窗口"
 msgstr "Open in a window"
 
-#: src/components/TaskList.tsx:130
+#: src/components/TaskList.tsx:131
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
 
 #: src/components/arknights/CharacterStatusPopover.tsx:527
-#: src/components/CharacterStatusPopover.tsx:46
+#: src/components/CharacterStatusPopover.tsx:56
 msgid "当前状态"
 msgstr "Current"
 
@@ -457,7 +458,7 @@ msgstr "Morale"
 msgid "总价值"
 msgstr "Total Value"
 
-#: src/App.tsx:427
+#: src/App.tsx:429
 msgid "您不妨试试"
 msgstr "You may try"
 
@@ -482,7 +483,7 @@ msgstr "Filter by stage code or name"
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
-#: src/App.tsx:55 src/components/Importer.tsx:165
+#: src/App.tsx:56 src/components/Importer.tsx:165
 msgid "撤销"
 msgstr "Undo"
 
@@ -510,7 +511,7 @@ msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:38
 #: src/components/arknights/ExporterMenuItems.tsx:98
-#: src/components/CharacterList.tsx:207
+#: src/components/CharacterList.tsx:208
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
@@ -566,12 +567,16 @@ msgstr "Synthesizing Cannot be Planned for Maxed"
 msgid "暂无可计算来源"
 msgstr "No Feasible Sources"
 
+#: src/components/CharacterDossier.tsx:121
+msgid "更多"
+msgstr "More"
+
 #. %s: datetime
 #: src/components/AboutList.tsx:217
 msgid "更新于 %s"
 msgstr "Last updated at %s"
 
-#: src/App.tsx:80 src/components/arknights/SklandImporter.tsx:169
+#: src/App.tsx:81 src/components/arknights/SklandImporter.tsx:169
 msgid "更新数据中…"
 msgstr "Data updating…"
 
@@ -579,7 +584,7 @@ msgstr "Data updating…"
 msgid "更新笔记"
 msgstr "Patch Notes"
 
-#: src/App.tsx:89
+#: src/App.tsx:90
 msgid "未找到新数据"
 msgstr "No updates found for data"
 
@@ -633,7 +638,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:979
+#: src/components/CharacterList.tsx:993
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -652,7 +657,7 @@ msgstr "Profile %1 has no data, so there is nothing to export."
 msgid "档案 %s 不存在，要新建吗？"
 msgstr "Profile %s does not exist. Do you want to create it?"
 
-#: src/App.tsx:115
+#: src/App.tsx:116
 msgid "检查数据更新"
 msgstr "Check For Data Updates"
 
@@ -679,7 +684,7 @@ msgstr "Switching region…"
 msgid "清空"
 msgstr "Clear"
 
-#: src/App.tsx:165 src/App.tsx:87
+#: src/App.tsx:166 src/App.tsx:88
 msgid "游戏数据已更新"
 msgstr "Game data updated"
 
@@ -745,7 +750,7 @@ msgstr ""
 msgid "角色"
 msgstr "Characters"
 
-#: src/components/CharacterList.tsx:133
+#: src/components/CharacterList.tsx:134
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -815,7 +820,7 @@ msgstr ""
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/App.tsx:420
+#: src/App.tsx:422
 msgid "返回主页"
 msgstr "Back to Home"
 
@@ -907,7 +912,7 @@ msgstr "Items"
 msgid "邮箱"
 msgstr "E-mail"
 
-#: src/App.tsx:104
+#: src/App.tsx:105
 msgid "重载数据"
 msgstr "Reset Data"
 
@@ -1090,6 +1095,7 @@ msgctxt "arknights profession"
 msgid "重装"
 msgstr "Defender"
 
+#: src/components/arknights/CharacterDossierMeta.tsx:6
 #: src/components/arknights/QuickFilterBuilder.tsx:70
 msgctxt "arknights quick filter"
 msgid "%d 星"
@@ -1353,6 +1359,12 @@ msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
 
+#. %s: character name
+#: src/components/CharacterDossier.tsx:90
+msgctxt "character dossier"
+msgid "%s 的档案"
+msgstr "Dossier: %s"
+
 #: src/components/queryEditor/ColumnHeader.tsx:126
 msgctxt "character list column"
 msgid "「%s」的列宽"
@@ -1393,6 +1405,11 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr "assets vectorizing"
 
+#: src/components/CharacterDossier.tsx:33
+msgctxt "dossier section"
+msgid "练度"
+msgstr "Progress"
+
 #: src/components/arknights/SklandImporter.tsx:96
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
@@ -1423,7 +1440,7 @@ msgctxt "error context"
 msgid "导入数据时遇到问题"
 msgstr "Error During Importing"
 
-#: src/App.tsx:94
+#: src/App.tsx:95
 msgctxt "error context"
 msgid "检查数据更新失败"
 msgstr "Error During Checking for Data Updates"
@@ -1443,7 +1460,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr "Error During Reading File"
 
-#: src/App.tsx:407
+#: src/App.tsx:409
 msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
@@ -1478,22 +1495,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:426
+#: src/components/CharacterList.tsx:440
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:427
+#: src/components/CharacterList.tsx:441
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:435
+#: src/components/CharacterList.tsx:449
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:436
+#: src/components/CharacterList.tsx:450
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -1578,50 +1595,50 @@ msgstr "Planned"
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
-#: src/components/CharacterList.tsx:510
+#: src/components/CharacterList.tsx:524
 #: src/components/queryEditor/VisualEditor.tsx:348
 msgctxt "list separator"
 msgid "、"
 msgstr ", "
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:309
+#: src/App.tsx:311
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr "Setting up %s…"
 
 #. initial
-#: src/App.tsx:317
+#: src/App.tsx:319
 msgctxt "loading status"
 msgid "别急…"
 msgstr "Don't hurry…"
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:344
+#: src/App.tsx:346
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr "We're setting things up for you"
 
 #. loaded data objects
-#: src/App.tsx:316
+#: src/App.tsx:318
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr "Almost there…"
 
 #. joke text
-#: src/App.tsx:342
+#: src/App.tsx:344
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr "Installing Macindows X"
 
 #. loading hero line 2
-#: src/App.tsx:351
+#: src/App.tsx:353
 msgctxt "loading status"
 msgid "请稍候"
 msgstr "This won't take long"
 
 #. done
-#: src/App.tsx:307
+#: src/App.tsx:309
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
@@ -1676,19 +1693,19 @@ msgctxt "predefined query"
 msgid "小黑盒 精二率（全部）"
 msgstr "Heybox: E2 rate (all)"
 
-#: src/components/CharacterList.tsx:653
+#: src/components/CharacterList.tsx:667
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:646
+#: src/components/CharacterList.tsx:660
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:660
+#: src/components/CharacterList.tsx:674
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -2195,42 +2212,42 @@ msgctxt "query group mode"
 msgid "都不满足"
 msgstr "none"
 
-#: src/components/CharacterList.tsx:724
+#: src/components/CharacterList.tsx:738
 msgctxt "query menu"
 msgid "不论持有和练度，列出全部"
 msgstr "Everyone, owned or not, maxed or not"
 
-#: src/components/CharacterList.tsx:728
+#: src/components/CharacterList.tsx:742
 msgctxt "query menu"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:806 src/components/CharacterList.tsx:807
+#: src/components/CharacterList.tsx:820 src/components/CharacterList.tsx:821
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
 
-#: src/components/CharacterList.tsx:714
+#: src/components/CharacterList.tsx:728
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
 
-#: src/components/CharacterList.tsx:758
+#: src/components/CharacterList.tsx:772
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
 
-#: src/components/CharacterList.tsx:798 src/components/CharacterList.tsx:799
+#: src/components/CharacterList.tsx:812 src/components/CharacterList.tsx:813
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
 
-#: src/components/CharacterList.tsx:770
+#: src/components/CharacterList.tsx:784
 msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:806 src/components/CharacterList.tsx:807
+#: src/components/CharacterList.tsx:820 src/components/CharacterList.tsx:821
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -2286,13 +2303,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:507
+#: src/components/CharacterList.tsx:521
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:507
+#: src/components/CharacterList.tsx:521
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"

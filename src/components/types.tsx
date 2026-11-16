@@ -30,6 +30,16 @@ export interface SidebarPanel {
   useBadge?: () => boolean
 }
 
+export interface DossierSection {
+  /** 节的锚点，目录用它跳转 */
+  id: string
+  /** 节标题，也是目录按钮上的字 */
+  title: PSTR
+  Body: React.FC<{ character: ICharacter }>
+  /** 返回 false 时这一节不出现，例如这个干员没有模组，或者数据 worker 还没发布 */
+  isAvailable?: (ga: IGameAdapter<any>, character: ICharacter) => boolean
+}
+
 export interface IGameComponent {
   email?: string
   AboutCopyright?: React.FC
@@ -37,7 +47,9 @@ export interface IGameComponent {
   AboutCredits?: React.FC
   AboutDataSources?: React.FC
   CharacterContextMenuItems?: React.FC<{ character: ICharacter }>
-  CharacterStatusPopover?: React.FC<{ character: any; isGoal: boolean }>
+  CharacterStatusPopover?: React.FC<{ character: any; isGoal: boolean; embedded?: boolean }>
+  /** 档案标题里外文名后面的补充信息 */
+  CharacterDossierMeta?: React.FC<{ character: any }>
   renderCharacterStatus?: (status: any, character: any, current?: any, alreadyHide?: boolean) => any
   renderCharacterAvatarBadge?: (status: any, character: any) => any
   charStatusWidth?: number
@@ -63,4 +75,6 @@ export interface IGameComponent {
   quickFilters?: Record<string, string>
   /** 排在外壳自己的「关于」后面，按数组顺序 */
   sidebarPanels?: SidebarPanel[]
+  /** 排在外壳自己的「练度」后面，按数组顺序 */
+  dossierSections?: DossierSection[]
 }

@@ -11,8 +11,9 @@ import { IGame, Task } from '../pkg/cpp-basic'
 import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
 import { StarStatus } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
-import { CharacterContextMenu } from './CharacterList'
+import { CharacterContextMenu, menuItemKeyDown } from './CharacterList'
 import { CachedImg, ItemIcon } from './Icons'
+import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
 import { ValueTagProgressBar } from './Value'
 
 interface TaskListQueryParam {
@@ -163,6 +164,8 @@ export const TaskMenu = memo(
     const character = ga.getCharacter(task.charId)
     const detailsAtom = useAtoms().allStarredTasksDetails
     const details = useAtomValue(detailsAtom)
+    const openDossier = useOpenCharacterDossier()
+    const dossierOpen = useDossierOpenFor(character.key)
     const sortedRequires = useMemo(
       () =>
         sortBy(
@@ -213,8 +216,14 @@ export const TaskMenu = memo(
             <a
               role="menuitem"
               tabIndex={0}
-              className="bp6-menu-item cpp-task-menu"
+              className={
+                'bp6-menu-item cpp-task-menu' + (dossierOpen ? ' bp6-active bp6-intent-primary cpp-dossier-open' : '')
+              }
               style={{ flexShrink: 1, overflow: 'hidden' }}
+              aria-haspopup="dialog"
+              aria-expanded={dossierOpen}
+              onClick={() => openDossier(character.key)}
+              onKeyDown={menuItemKeyDown}
             >
               <>
                 <span className="bp6-menu-item-icon">

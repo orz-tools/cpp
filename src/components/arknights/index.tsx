@@ -1,6 +1,7 @@
 import type { IGameComponent } from '../types'
 import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from './AboutList'
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
+import { CharacterDossierMeta } from './CharacterDossierMeta'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { ConfigMenuItems } from './ConfigMenuItems'
 import { ExporterMenuItems } from './ExporterMenuItems'
@@ -21,6 +22,7 @@ export const ArknightsComponents: IGameComponent = {
   AboutCredits,
   CharacterContextMenuItems,
   CharacterStatusPopover,
+  CharacterDossierMeta,
   renderCharacterStatus,
   renderCharacterAvatarBadge,
   itemSimulatedViewConfig: { limit: 3, horizontal: true, viewMaxSize: 500 },
