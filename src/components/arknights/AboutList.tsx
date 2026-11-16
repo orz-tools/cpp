@@ -47,16 +47,6 @@ export const AboutDataSources = memo(() => {
           '本工具中部分素材掉落统计数据由企鹅物流统计，采用知识共享 署名-非商业性使用 4.0 国际许可协议进行许可。',
         )}
       />
-      <DescriptionMenuItem
-        className="cpp-menu-not-interactive"
-        icon={'calculator'}
-        text={gt.gettext('物品价值计算思路参考 明日方舟一图流')}
-        description={
-          <a href={'https://ark.yituliu.cn/'} {...externalLinkProps}>
-            https://ark.yituliu.cn/
-          </a>
-        }
-      />
       <DataObjectStatus
         title={YituliuSurveySource.Name}
         href={YituliuSurveySource.URL}

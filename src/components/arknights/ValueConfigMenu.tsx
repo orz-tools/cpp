@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonGroup,
+  Classes,
   Dialog,
   DialogBody,
   DialogFooter,
@@ -35,6 +36,7 @@ import {
   normalizeItemValueConfig,
 } from '../../pkg/cpp-arknights/itemValue'
 import { gt } from '../../pkg/gt'
+import { externalLinkProps } from '../AboutList'
 import { StagePopover } from '../ConfigUi'
 import { ItemIcon } from '../Icons'
 
@@ -446,7 +448,21 @@ const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => {
             />
           </>
         }
-      />
+      >
+        <span className={`${Classes.TEXT_MUTED} ${Classes.TEXT_SMALL}`}>
+          {gt
+            .pgettext('value config', '计算思路参考 %s') /* I10N: %s: 明日方舟一图流, linked */
+            .split('%s')
+            .flatMap((x, i) => [
+              i > 0 ? (
+                <a key="link" href="https://ark.yituliu.cn/" {...externalLinkProps}>
+                  {gt.gettext('明日方舟一图流')}
+                </a>
+              ) : null,
+              x,
+            ])}
+        </span>
+      </DialogFooter>
     </Dialog>
   )
 })

@@ -241,14 +241,14 @@ msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
 #. %d: number
-#: src/components/arknights/ValueConfigMenu.tsx:465
+#: src/components/arknights/ValueConfigMenu.tsx:481
 msgid "已定价 %d 种物品"
 msgid_plural "已定价 %d 种物品"
 msgstr[0] "%d item priced"
 msgstr[1] "%d items priced"
 
 #. %d: number
-#: src/components/arknights/ValueConfigMenu.tsx:225
+#: src/components/arknights/ValueConfigMenu.tsx:227
 msgid "已排除 %d 个关卡"
 msgid_plural "已排除 %d 个关卡"
 msgstr[0] "%d stage excluded"
@@ -320,7 +320,7 @@ msgstr "Data updated. Reloading…"
 msgid "数据已更新，请重新载入页面"
 msgstr "Data updated. A reload is required."
 
-#: src/components/arknights/AboutList.tsx:72
+#: src/components/arknights/AboutList.tsx:62
 msgid "数据整理自小黑盒 app 明日方舟干员统计功能。"
 msgstr ""
 "Data gathered from the Heybox app's Operator Statistics for Arknights "
@@ -343,6 +343,10 @@ msgstr "Could not write to the clipboard"
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 "Unable to load required game data. Please check your network connection."
+
+#: src/components/arknights/ValueConfigMenu.tsx:459
+msgid "明日方舟一图流"
+msgstr "Arknights-yituliu"
 
 #: src/pkg/cpp-arknights/survey.ts:23
 msgid "明日方舟一图流 干员练度统计数据"
@@ -413,7 +417,7 @@ msgstr ""
 "YOSTAR (HONG KONG) LIMITED, 株式会社Yostar, YOSTAR LIMITED, 龍成網路, and "
 "others."
 
-#: src/components/arknights/AboutList.tsx:64
+#: src/components/arknights/AboutList.tsx:54
 msgid ""
 "来自明日方舟一图流的数据，除非另有声明，采用 知识共享 署名-非商业性使用 4.0 "
 "国际 许可协议 进行许可。转载、公开或以任何形式复制、发行、再传播明日方舟一图"
@@ -474,10 +478,6 @@ msgstr "Assets from Game"
 #: src/components/arknights/Icons.tsx:93
 msgid "潜能 %d"
 msgstr "Potential %d"
-
-#: src/components/arknights/AboutList.tsx:53
-msgid "物品价值计算思路参考 明日方舟一图流"
-msgstr "Item value calculation inspired by Arknights-yituliu"
 
 #: src/components/SynthesisList.tsx:71
 msgid "现在可以合成的道具"
@@ -995,7 +995,7 @@ msgctxt "credit role"
 msgid "数据源自动化"
 msgstr "data source automation"
 
-#: src/components/arknights/AboutList.tsx:105
+#: src/components/arknights/AboutList.tsx:95
 msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr "assets vectorizing"
@@ -1232,27 +1232,27 @@ msgctxt "stage category"
 msgid "其他"
 msgstr "Other"
 
-#: src/components/arknights/ValueConfigMenu.tsx:249
+#: src/components/arknights/ValueConfigMenu.tsx:251
 msgctxt "value config"
 msgid "1 表示按 CE-6 的理智折算"
 msgstr "1 means valued at CE-6 sanity"
 
-#: src/components/arknights/ValueConfigMenu.tsx:97
+#: src/components/arknights/ValueConfigMenu.tsx:99
 msgctxt "value config"
 msgid "不需要"
 msgstr "Not needed"
 
-#: src/components/arknights/ValueConfigMenu.tsx:269
+#: src/components/arknights/ValueConfigMenu.tsx:271
 msgctxt "value config"
 msgid "不需要（0）"
 msgstr "Not needed (0)"
 
-#: src/components/arknights/ValueConfigMenu.tsx:206
+#: src/components/arknights/ValueConfigMenu.tsx:208
 msgctxt "value config"
 msgid "主线"
 msgstr "Main story"
 
-#: src/components/arknights/ValueConfigMenu.tsx:373
+#: src/components/arknights/ValueConfigMenu.tsx:375
 msgctxt "value config"
 msgid "价值"
 msgstr "Value"
@@ -1262,214 +1262,220 @@ msgctxt "value config"
 msgid "价值计算"
 msgstr "Value Calculation"
 
-#: src/components/arknights/ValueConfigMenu.tsx:474
+#: src/components/arknights/ValueConfigMenu.tsx:490
 msgctxt "value config"
 msgid "价值计算失败"
 msgstr "Value calculation failed"
 
-#: src/components/arknights/ValueConfigMenu.tsx:191
+#: src/components/arknights/ValueConfigMenu.tsx:193
 msgctxt "value config"
 msgid "价值计算设置"
 msgstr "Value Calculation Settings"
 
-#: src/components/arknights/ValueConfigMenu.tsx:397
+#: src/components/arknights/ValueConfigMenu.tsx:399
 msgctxt "value config"
 msgid "删除"
 msgstr "Remove"
 
-#: src/components/arknights/ValueConfigMenu.tsx:332
 #: src/components/arknights/ValueConfigMenu.tsx:334
+#: src/components/arknights/ValueConfigMenu.tsx:336
 msgctxt "value config"
 msgid "加工为 %s"
 msgstr "Convert to %s"
 
-#: src/components/arknights/ValueConfigMenu.tsx:300
+#: src/components/arknights/ValueConfigMenu.tsx:302
 msgctxt "value config"
 msgid "加工站副产物提升量"
 msgstr "Workshop Byproduct Rate Increase"
 
-#: src/components/arknights/ValueConfigMenu.tsx:208
+#: src/components/arknights/ValueConfigMenu.tsx:210
 msgctxt "value config"
 msgid "含开放活动"
 msgstr "Including open events"
 
-#: src/components/arknights/ValueConfigMenu.tsx:339
+#: src/components/arknights/ValueConfigMenu.tsx:341
 msgctxt "value config"
 msgid "固定价值"
 msgstr "Fixed Values"
 
-#: src/components/arknights/ValueConfigMenu.tsx:329
+#: src/components/arknights/ValueConfigMenu.tsx:331
 msgctxt "value config"
 msgid "均分"
 msgstr "Split evenly"
 
-#: src/components/arknights/ValueConfigMenu.tsx:76
+#: src/components/arknights/ValueConfigMenu.tsx:78
 msgctxt "value config"
 msgid "基建材料"
 msgstr "Base materials"
 
-#: src/components/arknights/ValueConfigMenu.tsx:196
+#: src/components/arknights/ValueConfigMenu.tsx:198
 msgctxt "value config"
 msgid "定价关卡"
 msgstr "Pricing Stages"
 
-#: src/components/arknights/ValueConfigMenu.tsx:198
+#: src/components/arknights/ValueConfigMenu.tsx:200
 msgctxt "value config"
 msgid "定价范围"
 msgstr "Stage scope"
 
-#: src/components/arknights/ValueConfigMenu.tsx:207
+#: src/components/arknights/ValueConfigMenu.tsx:209
 msgctxt "value config"
 msgid "常驻"
 msgstr "Permanent"
 
-#: src/components/arknights/ValueConfigMenu.tsx:445
+#: src/components/arknights/ValueConfigMenu.tsx:447
 msgctxt "value config"
 msgid "应用并刷新"
 msgstr "Apply and reload"
 
-#: src/components/arknights/ValueConfigMenu.tsx:439
+#: src/components/arknights/ValueConfigMenu.tsx:441
 msgctxt "value config"
 msgid "恢复默认"
 msgstr "Restore defaults"
 
-#: src/components/arknights/ValueConfigMenu.tsx:72
+#: src/components/arknights/ValueConfigMenu.tsx:74
 msgctxt "value config"
 msgid "技巧概要 卷1→卷2"
 msgstr "Skill Summary 1→2"
 
-#: src/components/arknights/ValueConfigMenu.tsx:74
+#: src/components/arknights/ValueConfigMenu.tsx:76
 msgctxt "value config"
 msgid "技巧概要 卷2→卷3"
 msgstr "Skill Summary 2→3"
 
-#: src/components/arknights/ValueConfigMenu.tsx:264
+#: src/components/arknights/ValueConfigMenu.tsx:266
 msgctxt "value config"
 msgid "按 CE-6 定价（1）"
 msgstr "Valued at CE-6 (1)"
 
-#: src/components/arknights/ValueConfigMenu.tsx:87
+#: src/components/arknights/ValueConfigMenu.tsx:89
 msgctxt "value config"
 msgid "按 LS-6 定价"
 msgstr "Valued at LS-6"
 
-#: src/components/arknights/ValueConfigMenu.tsx:234
+#: src/components/arknights/ValueConfigMenu.tsx:236
 msgctxt "value config"
 msgid "掉落样本少于此数的关卡不参与定价"
 msgstr "Stages with fewer drop samples are left out of pricing"
 
-#: src/components/arknights/ValueConfigMenu.tsx:210
+#: src/components/arknights/ValueConfigMenu.tsx:212
 msgctxt "value config"
 msgid "排除的关卡"
 msgstr "Excluded stages"
 
-#: src/components/arknights/ValueConfigMenu.tsx:423
+#: src/components/arknights/ValueConfigMenu.tsx:425
 msgctxt "value config"
 msgid "新增"
 msgstr "Add"
 
-#: src/components/arknights/ValueConfigMenu.tsx:228
+#: src/components/arknights/ValueConfigMenu.tsx:230
 msgctxt "value config"
 msgid "无"
 msgstr "None"
 
-#: src/components/arknights/ValueConfigMenu.tsx:95
+#: src/components/arknights/ValueConfigMenu.tsx:97
 msgctxt "value config"
 msgid "无人机：1 级贸易站，精 2 但书"
 msgstr "Drones: Trading Post Lv.1, E2 Proviso"
 
-#: src/components/arknights/ValueConfigMenu.tsx:93
+#: src/components/arknights/ValueConfigMenu.tsx:95
 msgctxt "value config"
 msgid "无人机：2 级贸易站，精 2 但书"
 msgstr "Drones: Trading Post Lv.2, E2 Proviso"
 
-#: src/components/arknights/ValueConfigMenu.tsx:89
+#: src/components/arknights/ValueConfigMenu.tsx:91
 msgctxt "value config"
 msgid "无人机：3 级贸易站"
 msgstr "Drones: Trading Post Lv.3"
 
-#: src/components/arknights/ValueConfigMenu.tsx:91
+#: src/components/arknights/ValueConfigMenu.tsx:93
 msgctxt "value config"
 msgid "无人机：3 级贸易站，精 2 龙舌兰、精 2 但书"
 msgstr "Drones: Trading Post Lv.3, E2 Tequila and E2 Proviso"
 
-#: src/components/arknights/ValueConfigMenu.tsx:341
+#: src/components/arknights/ValueConfigMenu.tsx:343
 msgctxt "value config"
 msgid "材料退环境"
 msgstr "Retired materials"
 
-#: src/components/arknights/ValueConfigMenu.tsx:233
+#: src/components/arknights/ValueConfigMenu.tsx:235
 msgctxt "value config"
 msgid "样本量阈值"
 msgstr "Minimum samples"
 
-#: src/components/arknights/ValueConfigMenu.tsx:342
+#: src/components/arknights/ValueConfigMenu.tsx:344
 msgctxt "value config"
 msgid "点亮后按按钮上的数值固定价值"
 msgstr "When lit, the material is fixed at the value on its button"
 
-#: src/components/arknights/ValueConfigMenu.tsx:372
+#: src/components/arknights/ValueConfigMenu.tsx:374
 msgctxt "value config"
 msgid "物品"
 msgstr "Item"
 
-#: src/components/arknights/ValueConfigMenu.tsx:64
+#: src/components/arknights/ValueConfigMenu.tsx:66
 msgctxt "value config"
 msgid "精英材料 T1→T2"
 msgstr "Elite materials T1→T2"
 
-#: src/components/arknights/ValueConfigMenu.tsx:66
+#: src/components/arknights/ValueConfigMenu.tsx:68
 msgctxt "value config"
 msgid "精英材料 T2→T3"
 msgstr "Elite materials T2→T3"
 
-#: src/components/arknights/ValueConfigMenu.tsx:68
+#: src/components/arknights/ValueConfigMenu.tsx:70
 msgctxt "value config"
 msgid "精英材料 T3→T4"
 msgstr "Elite materials T3→T4"
 
-#: src/components/arknights/ValueConfigMenu.tsx:70
+#: src/components/arknights/ValueConfigMenu.tsx:72
 msgctxt "value config"
 msgid "精英材料 T4→T5"
 msgstr "Elite materials T4→T5"
 
-#: src/components/arknights/ValueConfigMenu.tsx:274
+#: src/components/arknights/ValueConfigMenu.tsx:276
 msgctxt "value config"
 msgid "经验系数"
 msgstr "EXP coefficient"
 
-#: src/components/arknights/ValueConfigMenu.tsx:283
+#: src/components/arknights/ValueConfigMenu.tsx:285
 msgctxt "value config"
 msgid "自定义"
 msgstr "Custom"
 
-#: src/components/arknights/ValueConfigMenu.tsx:314
-#: src/components/arknights/ValueConfigMenu.tsx:78
+#: src/components/arknights/ValueConfigMenu.tsx:316
+#: src/components/arknights/ValueConfigMenu.tsx:80
 msgctxt "value config"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/components/arknights/ValueConfigMenu.tsx:80
+#: src/components/arknights/ValueConfigMenu.tsx:82
 msgctxt "value config"
 msgid "芯片组"
 msgstr "Chip packs"
 
-#: src/components/arknights/ValueConfigMenu.tsx:485
+#. %s: 明日方舟一图流, linked
+#: src/components/arknights/ValueConfigMenu.tsx:453
+msgctxt "value config"
+msgid "计算思路参考 %s"
+msgstr "Approach inspired by %s"
+
+#: src/components/arknights/ValueConfigMenu.tsx:501
 msgctxt "value config"
 msgid "设置…"
 msgstr "Settings…"
 
-#: src/components/arknights/ValueConfigMenu.tsx:407
+#: src/components/arknights/ValueConfigMenu.tsx:409
 msgctxt "value config"
 msgid "选择材料…"
 msgstr "Choose a material…"
 
-#: src/components/arknights/ValueConfigMenu.tsx:246
+#: src/components/arknights/ValueConfigMenu.tsx:248
 msgctxt "value config"
 msgid "龙门币与经验"
 msgstr "LMD and EXP"
 
-#: src/components/arknights/ValueConfigMenu.tsx:248
+#: src/components/arknights/ValueConfigMenu.tsx:250
 msgctxt "value config"
 msgid "龙门币系数"
 msgstr "LMD coefficient"
@@ -1483,6 +1489,9 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgid "物品价值计算思路参考 明日方舟一图流"
+#~ msgstr "Item value calculation inspired by Arknights-yituliu"
 
 #~ msgctxt "arknights maa step"
 #~ msgid "点击「导出至明日方舟工具箱」按钮"
