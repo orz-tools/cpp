@@ -13,6 +13,20 @@ msgstr ""
 "X-Generator: Poedit 3.4.2\n"
 "X-Source-Language: zh_CN\n"
 
+#. %d: number
+#: src/components/arknights/ExporterMenuItems.tsx:59
+msgid "%d 名干员尚未持有或是阿米娅，没有导出。"
+msgid_plural "%d 名干员尚未持有或是阿米娅，没有导出。"
+msgstr[0] "%d operator was not exported: not yet owned, or Amiya."
+msgstr[1] "%d operators were not exported: not yet owned, or Amiya."
+
+#. %d: number
+#: src/components/arknights/ExporterMenuItems.tsx:48
+msgid "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
+msgid_plural "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
+msgstr[0] "Level or module goals of %d operator are left out, as MAA cannot carry them out."
+msgstr[1] "Level or module goals of %d operators are left out, as MAA cannot carry them out."
+
 #. %s: stat source name
 #: src/components/arknights/CharacterStatusPopover.tsx:539
 msgid "%s持有率"
@@ -117,6 +131,10 @@ msgstr "Target"
 msgid "声明"
 msgstr "Statements"
 
+#: src/components/arknights/ExporterMenuItems.tsx:77
+msgid "复制为 MAA「干员培养」计划"
+msgstr "Copy as MAA «Operator Progression» Plan"
+
 #: src/components/CharacterList.tsx:176
 msgid "复制角色名"
 msgstr "Copy Name"
@@ -168,6 +186,15 @@ msgstr ""
 "Operator \"%s\" is not yet supported. Game data may not have been updated "
 "yet. Please wait for the data update. Game data typically takes 2~24 hours "
 "to process."
+
+#. %d: number
+#: src/components/arknights/ExporterMenuItems.tsx:38
+msgid ""
+"已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
+msgid_plural ""
+"已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
+msgstr[0] "Copied the plan for %d operator. In MAA «Operator Progression», click «Read from Clipboard»."
+msgstr[1] "Copied the plan for %d operators. In MAA «Operator Progression», click «Read from Clipboard»."
 
 #: src/components/CharacterList.tsx:183
 msgid "已复制「%s」"
@@ -259,6 +286,7 @@ msgstr ""
 msgid "数据源"
 msgstr "Data Sources"
 
+#: src/components/arknights/ExporterMenuItems.tsx:33
 #: src/components/CharacterList.tsx:189
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
@@ -447,6 +475,10 @@ msgstr "Characters"
 #: src/components/CharacterList.tsx:115
 msgid "角色计划排序"
 msgstr "Plan Sorting"
+
+#: src/components/arknights/ExporterMenuItems.tsx:26
+msgid "计划中没有 MAA「干员培养」能执行的目标"
+msgstr "The plan has no goals MAA «Operator Progression» can carry out"
 
 #: src/locales.tsx:40
 msgid "语言已切换，将重新载入页面。"

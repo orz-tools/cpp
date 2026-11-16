@@ -2,6 +2,20 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
+#. %d: number
+#: src/components/arknights/ExporterMenuItems.tsx:59
+msgid "%d 名干员尚未持有或是阿米娅，没有导出。"
+msgid_plural "%d 名干员尚未持有或是阿米娅，没有导出。"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d: number
+#: src/components/arknights/ExporterMenuItems.tsx:48
+msgid "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
+msgid_plural "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
+msgstr[0] ""
+msgstr[1] ""
+
 #. %s: stat source name
 #: src/components/arknights/CharacterStatusPopover.tsx:539
 msgid "%s持有率"
@@ -106,6 +120,10 @@ msgstr ""
 msgid "声明"
 msgstr ""
 
+#: src/components/arknights/ExporterMenuItems.tsx:77
+msgid "复制为 MAA「干员培养」计划"
+msgstr ""
+
 #: src/components/CharacterList.tsx:176
 msgid "复制角色名"
 msgstr ""
@@ -152,6 +170,13 @@ msgstr ""
 #: src/components/arknights/SklandImporter.tsx:30
 msgid "尚不支持角色「%s」。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。"
 msgstr ""
+
+#. %d: number
+#: src/components/arknights/ExporterMenuItems.tsx:38
+msgid "已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
+msgid_plural "已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/components/CharacterList.tsx:183
 msgid "已复制「%s」"
@@ -242,6 +267,7 @@ msgstr ""
 msgid "数据源"
 msgstr ""
 
+#: src/components/arknights/ExporterMenuItems.tsx:33
 #: src/components/CharacterList.tsx:189
 msgid "无法写入剪贴板"
 msgstr ""
@@ -392,6 +418,10 @@ msgstr ""
 
 #: src/components/CharacterList.tsx:115
 msgid "角色计划排序"
+msgstr ""
+
+#: src/components/arknights/ExporterMenuItems.tsx:26
+msgid "计划中没有 MAA「干员培养」能执行的目标"
 msgstr ""
 
 #: src/locales.tsx:40

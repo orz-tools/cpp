@@ -2,6 +2,7 @@ import type { IGameComponent } from '../types'
 import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from './AboutList'
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
+import { ExporterMenuItems } from './ExporterMenuItems'
 import { ImporterMenuItems } from './ImporterMenuItems'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
 import { TaskDisplay } from './TaskDisplay'
@@ -23,6 +24,7 @@ export const ArknightsComponents: IGameComponent = {
   itemSimulatedViewConfig: { limit: 3, horizontal: true, viewMaxSize: 500 },
   blobFlavours: ['normal'],
   ImporterMenuItems,
+  ExporterMenuItems,
   style,
   extraFields: extraFields,
   TaskDisplay,
