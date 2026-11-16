@@ -14,17 +14,22 @@ export function renderCharacterStatus(
   alreadyHide = false,
 ) {
   const uniEquips = character.uniEquips.filter((x) => x.equip.raw.unlockEvolvePhase > 'PHASE_0')
-  const uniX = uniEquips.find((x) => x.equip.raw.typeName2!.toUpperCase() === 'X')
-  const uniY = uniEquips.find((x) => x.equip.raw.typeName2!.toUpperCase() === 'Y')
-  const uniD = uniEquips.find((x) => x.equip.raw.typeName2!.toUpperCase() === 'D')
-  if ([uniX, uniY, uniD].filter((x) => !!x).length !== uniEquips.length) {
-    console.warn('character extra uniEquips', character, uniEquips)
-  }
+  const uniX = uniEquips.find((x) => x.equip.raw.typeName2?.toUpperCase() === 'X')
+  const uniY = uniEquips.find((x) => x.equip.raw.typeName2?.toUpperCase() === 'Y')
+  const rest = uniEquips.filter((x) => x !== uniX && x !== uniY)
 
-  const classes = [`cpp-uniequip-count-${uniEquips.length}`]
+  // X and Y keep their own columns so they line up across the list; every other branch (D, A, B, ...)
+  // goes into a third, narrower column, and only borrows an empty X/Y slot when one column is not enough.
+  const slots: (Character['uniEquips'][number] | undefined)[] = [uniX, uniY]
+  if (rest.length) slots.push(undefined)
+  for (let i = slots.length - 1; i >= 0 && rest.length; i--) {
+    if (!slots[i]) slots[i] = rest.pop()
+  }
+  slots.push(...rest)
+
+  const classes = [`cpp-uniequip-count-${uniEquips.length}`, `cpp-uniequip-slots-${slots.length}`]
   if (uniX) classes.push(`cpp-uniequip-has-x`)
   if (uniY) classes.push(`cpp-uniequip-has-y`)
-  if (uniD) classes.push(`cpp-uniequip-has-d`)
 
   return (
     <>
@@ -34,49 +39,19 @@ export function renderCharacterStatus(
       >
         <LevelIcon level={status} />
       </Hide>
-      {uniX ? (
-        <Hide
-          hide={current ? (status.modLevel[uniX.equipId] || 0) === (current.modLevel[uniX.equipId] || 0) : false}
-          alreadyHide={alreadyHide}
-        >
-          <UniEquipIcon
-            classes={classes}
-            uniEquip={uniX.equip}
-            key={uniX.equipId}
-            level={status.modLevel[uniX.equipId] || 0}
-          />
-        </Hide>
-      ) : (
-        <EmptyIcon classes={classes} />
+      {slots.map((ue, i) =>
+        ue ? (
+          <Hide
+            hide={current ? (status.modLevel[ue.equipId] || 0) === (current.modLevel[ue.equipId] || 0) : false}
+            alreadyHide={alreadyHide}
+            key={ue.equipId}
+          >
+            <UniEquipIcon classes={classes} uniEquip={ue.equip} level={status.modLevel[ue.equipId] || 0} />
+          </Hide>
+        ) : (
+          <EmptyIcon classes={classes} key={`empty-${i}`} />
+        ),
       )}
-      {uniY ? (
-        <Hide
-          hide={current ? (status.modLevel[uniY.equipId] || 0) === (current.modLevel[uniY.equipId] || 0) : false}
-          alreadyHide={alreadyHide}
-        >
-          <UniEquipIcon
-            classes={classes}
-            uniEquip={uniY.equip}
-            key={uniY.equipId}
-            level={status.modLevel[uniY.equipId] || 0}
-          />
-        </Hide>
-      ) : (
-        <EmptyIcon classes={classes} />
-      )}
-      {uniD ? (
-        <Hide
-          hide={current ? (status.modLevel[uniD.equipId] || 0) === (current.modLevel[uniD.equipId] || 0) : false}
-          alreadyHide={alreadyHide}
-        >
-          <UniEquipIcon
-            classes={classes}
-            uniEquip={uniD.equip}
-            key={uniD.equipId}
-            level={status.modLevel[uniD.equipId] || 0}
-          />
-        </Hide>
-      ) : null}
       {character.skills.slice(0, 3).map((skill) => (
         <Hide
           hide={
