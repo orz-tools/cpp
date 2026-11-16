@@ -101,14 +101,12 @@ export const UniEquipIcon = memo(
 
 const potentialIcons = [potential1, potential2, potential3, potential4, potential5, potential6]
 
-export const PotentialIcon = memo(
-  ({ potentialRank, className }: { potentialRank: number; className?: string }) => {
-    const title = gt
-      .gettext('潜能 %d') /* I10N: %d: potential, 1-6 */
-      .replaceAll('%d', `${potentialRank + 1}`)
-    return <img className={className} src={potentialIcons[potentialRank]} alt={title} title={title} />
-  },
-)
+export const PotentialIcon = memo(({ potentialRank, className }: { potentialRank: number; className?: string }) => {
+  const title = gt
+    .gettext('潜能 %d') /* I10N: %d: potential, 1-6 */
+    .replaceAll('%d', `${potentialRank + 1}`)
+  return <img className={className} src={potentialIcons[potentialRank]} alt={title} title={title} />
+})
 
 export const LevelIcon = memo(({ level }: { level: CharacterLevel }) => {
   return (

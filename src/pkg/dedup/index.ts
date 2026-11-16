@@ -1,8 +1,9 @@
 type AsyncFunction = (...args: any[]) => PromiseLike<unknown>
 
-type PromiseValue<PromiseType, Otherwise = PromiseType> = PromiseType extends PromiseLike<infer Value>
-  ? { 0: PromiseValue<Value>; 1: Value }[PromiseType extends PromiseLike<unknown> ? 0 : 1]
-  : Otherwise
+type PromiseValue<PromiseType, Otherwise = PromiseType> =
+  PromiseType extends PromiseLike<infer Value>
+    ? { 0: PromiseValue<Value>; 1: Value }[PromiseType extends PromiseLike<unknown> ? 0 : 1]
+    : Otherwise
 
 type AsyncReturnType<Target extends AsyncFunction> = PromiseValue<ReturnType<Target>>
 

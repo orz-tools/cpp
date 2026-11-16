@@ -120,9 +120,8 @@ export const ItemSimulatedView = memo(
           overflowX: config.horizontal ? 'scroll' : 'hidden',
           overflowY: config.horizontal ? 'hidden' : 'scroll',
           [config.horizontal ? 'height' : 'width']: `${config.viewMaxSize}px`,
-          [config.horizontal
-            ? 'gridTemplateRows'
-            : 'gridTemplateColumns']: `repeat(${config.limit}, minmax(32px, 1fr) 10fr) minmax(32px, 1fr)`,
+          [config.horizontal ? 'gridTemplateRows' : 'gridTemplateColumns']:
+            `repeat(${config.limit}, minmax(32px, 1fr) 10fr) minmax(32px, 1fr)`,
           [config.horizontal ? 'gridTemplateColumns' : 'gridTemplateRows']: `repeat(${Math.ceil(
             count / config.limit,
           )}, minmax(32px, 1fr) 10fr) minmax(32px, 1fr) minmax(min-content, 100%)`,

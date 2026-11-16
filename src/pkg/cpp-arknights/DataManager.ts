@@ -457,8 +457,8 @@ export class Character implements ICharacter {
         a.equip.raw.charEquipOrder > b.equip.raw.charEquipOrder
           ? 1
           : a.equip.raw.charEquipOrder < b.equip.raw.charEquipOrder
-          ? -1
-          : 0,
+            ? -1
+            : 0,
       )))!
   }
 

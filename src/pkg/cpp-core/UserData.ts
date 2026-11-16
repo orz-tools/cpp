@@ -378,8 +378,8 @@ function buildAtoms<G extends IGame>(
   const allStarredTaskRequirements = withDebugLabel(
     atom((get) => {
       const result: Record<string, number> = {}
-      get(allStarredTasks).forEach(
-        (x) => x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
+      get(allStarredTasks).forEach((x) =>
+        x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
       )
       return result
     }),
@@ -389,8 +389,8 @@ function buildAtoms<G extends IGame>(
   const allGoalTaskRequirements = withDebugLabel(
     atom((get) => {
       const result: Record<string, number> = {}
-      get(allGoalTasks).forEach(
-        (x) => x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
+      get(allGoalTasks).forEach((x) =>
+        x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
       )
       return result
     }),
@@ -400,8 +400,8 @@ function buildAtoms<G extends IGame>(
   const allFinishedTaskRequirements = withDebugLabel(
     atom((get) => {
       const result: Record<string, number> = {}
-      get(allFinishedTasks).forEach(
-        (x) => x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
+      get(allFinishedTasks).forEach((x) =>
+        x.requires?.forEach((y) => (result[y.itemId] = (result[y.itemId] || 0) + y.quantity)),
       )
       return result
     }),

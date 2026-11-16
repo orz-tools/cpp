@@ -187,8 +187,8 @@ export const TaskMenu = memo(
     const starred = details.directStars.has(task)
       ? StarStatus.Starred
       : details.indirectStars.has(task)
-      ? StarStatus.Depended
-      : StarStatus.None
+        ? StarStatus.Depended
+        : StarStatus.None
 
     const starIcon: IconName | null = hideCosts
       ? (

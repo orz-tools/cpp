@@ -336,8 +336,8 @@ const InventoryDiffView = memo(
                       ? inventoryValueDelta > 0
                         ? Intent.DANGER
                         : inventoryValueDelta < 0
-                        ? Intent.SUCCESS
-                        : undefined
+                          ? Intent.SUCCESS
+                          : undefined
                       : undefined
                   }
                 />
@@ -397,8 +397,8 @@ const InventoryDiffViewRow = memo(
                 ? valueDelta > 0
                   ? Intent.DANGER
                   : valueDelta < 0
-                  ? Intent.SUCCESS
-                  : undefined
+                    ? Intent.SUCCESS
+                    : undefined
                 : undefined
             }
           />
