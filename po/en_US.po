@@ -14,14 +14,25 @@ msgstr ""
 "X-Source-Language: zh_CN\n"
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:59
+#: src/components/arknights/ExporterMenuItems.tsx:124
+msgid "%d 名一、二星干员 arkntools 没有养成数据，没有导出。"
+msgid_plural "%d 名一、二星干员 arkntools 没有养成数据，没有导出。"
+msgstr[0] ""
+"%d 1- or 2-star operator was not exported: Arknights Toolbox has no "
+"progression data for them."
+msgstr[1] ""
+"%d 1- or 2-star operators were not exported: Arknights Toolbox has no "
+"progression data for them."
+
+#. %d: number
+#: src/components/arknights/ExporterMenuItems.tsx:64
 msgid "%d 名干员尚未持有或是阿米娅，没有导出。"
 msgid_plural "%d 名干员尚未持有或是阿米娅，没有导出。"
 msgstr[0] "%d operator was not exported: not yet owned, or Amiya."
 msgstr[1] "%d operators were not exported: not yet owned, or Amiya."
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:48
+#: src/components/arknights/ExporterMenuItems.tsx:53
 msgid "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
 msgid_plural "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
 msgstr[0] ""
@@ -30,6 +41,17 @@ msgstr[0] ""
 msgstr[1] ""
 "Level or module goals of %d operators are left out, as MAA cannot carry them "
 "out."
+
+#. %d: number
+#: src/components/arknights/ExporterMenuItems.tsx:113
+msgid "%d 名干员的等级目标 arkntools 不计算，未包含在内。"
+msgid_plural "%d 名干员的等级目标 arkntools 不计算，未包含在内。"
+msgstr[0] ""
+"The level goal of %d operator is left out, as Arknights Toolbox does not "
+"calculate levels."
+msgstr[1] ""
+"Level goals of %d operators are left out, as Arknights Toolbox does not "
+"calculate levels."
 
 #. %s: stat source name
 #: src/components/arknights/CharacterStatusPopover.tsx:539
@@ -155,7 +177,11 @@ msgstr "Target"
 msgid "声明"
 msgstr "Statements"
 
-#: src/components/arknights/ExporterMenuItems.tsx:77
+#: src/components/arknights/ExporterMenuItems.tsx:146
+msgid "复制为 arkntools「精英材料计算」备份"
+msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
+
+#: src/components/arknights/ExporterMenuItems.tsx:143
 msgid "复制为 MAA「干员培养」计划"
 msgstr "Copy as MAA «Operator Progression» Plan"
 
@@ -171,17 +197,22 @@ msgstr "Current"
 msgid "完成"
 msgstr "Complete"
 
-#: src/components/arknights/ImporterMenuItems.tsx:16
+#: src/components/arknights/ArkntoolsImporter.tsx:82
+#: src/components/arknights/ImporterMenuItems.tsx:27
+msgid "导入「arkntools 精英材料计算」备份"
+msgstr "Import Backup from Arknights Toolbox «Material Calculation»"
+
+#: src/components/arknights/ImporterMenuItems.tsx:17
 #: src/components/arknights/MAAItemImporter.tsx:65
 msgid "导入「MAA 仓库识别」数据"
 msgstr "Import Data from «MAA Depot Recognizer»"
 
-#: src/components/arknights/ImporterMenuItems.tsx:21
+#: src/components/arknights/ImporterMenuItems.tsx:22
 #: src/components/arknights/MAAOperBoxImporter.tsx:54
 msgid "导入「MAA 干员识别」数据"
 msgstr "Import Data from «MAA Operator Recognizer»"
 
-#: src/components/arknights/ImporterMenuItems.tsx:13
+#: src/components/arknights/ImporterMenuItems.tsx:14
 #: src/components/arknights/SklandImporter.tsx:362
 msgid "导入「森空岛」数据"
 msgstr "Import Data from «Skland»"
@@ -217,6 +248,7 @@ msgstr ""
 "to process."
 
 #. %s: character names
+#: src/components/arknights/ArkntoolsImporter.tsx:43
 #: src/components/arknights/MAAOperBoxImporter.tsx:32
 msgid ""
 "尚不支持这些干员，已跳过：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据"
@@ -227,7 +259,7 @@ msgstr ""
 "typically takes 2~24 hours to process."
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:38
+#: src/components/arknights/ExporterMenuItems.tsx:43
 msgid ""
 "已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
 msgid_plural ""
@@ -244,11 +276,39 @@ msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
 #. %d: number
+#: src/components/arknights/ExporterMenuItems.tsx:103
+msgid ""
+"已复制含 %d 项干员计划的备份，请在 arkntools「精英材料计算」中点击「导入」→"
+"「恢复」并粘贴。恢复会覆盖 arkntools 中现有的计划和库存。"
+msgid_plural ""
+"已复制含 %d 项干员计划的备份，请在 arkntools「精英材料计算」中点击「导入」→"
+"「恢复」并粘贴。恢复会覆盖 arkntools 中现有的计划和库存。"
+msgstr[0] ""
+"Copied a backup with %d operator plan. In Arknights Toolbox «Material "
+"Calculation», click «Import» → «Restore» and paste it. Restoring replaces "
+"the plans and inventory already there."
+msgstr[1] ""
+"Copied a backup with %d operator plans. In Arknights Toolbox «Material "
+"Calculation», click «Import» → «Restore» and paste it. Restoring replaces "
+"the plans and inventory already there."
+
+#. %d: number
 #: src/components/arknights/ValueConfigMenu.tsx:481
 msgid "已定价 %d 种物品"
 msgid_plural "已定价 %d 种物品"
 msgstr[0] "%d item priced"
 msgstr[1] "%d items priced"
+
+#. %d: number
+#: src/components/arknights/ArkntoolsImporter.tsx:56
+msgid "已按备份把排除关卡替换为 %d 个；「撤销」不会恢复这一项。"
+msgid_plural "已按备份把排除关卡替换为 %d 个；「撤销」不会恢复这一项。"
+msgstr[0] ""
+"Excluded stages were replaced from the backup (%d stage); «Undo» does not "
+"restore them."
+msgstr[1] ""
+"Excluded stages were replaced from the backup (%d stages); «Undo» does not "
+"restore them."
 
 #. %d: number
 #: src/components/arknights/ValueConfigMenu.tsx:227
@@ -337,7 +397,8 @@ msgstr "Data Sources"
 msgid "无匹配关卡"
 msgstr "No matching stages"
 
-#: src/components/arknights/ExporterMenuItems.tsx:33
+#: src/components/arknights/ExporterMenuItems.tsx:38
+#: src/components/arknights/ExporterMenuItems.tsx:98
 #: src/components/CharacterList.tsx:189
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
@@ -503,6 +564,7 @@ msgstr "Stats from Community"
 msgid "粘贴 JSON"
 msgstr "Paste JSON"
 
+#: src/components/arknights/ArkntoolsImporter.tsx:77
 #: src/components/arknights/MAAItemImporter.tsx:57
 #: src/components/arknights/MAAOperBoxImporter.tsx:49
 #: src/components/arknights/SklandImporter.tsx:243
@@ -528,7 +590,7 @@ msgstr "Characters"
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
-#: src/components/arknights/ExporterMenuItems.tsx:26
+#: src/components/arknights/ExporterMenuItems.tsx:31
 msgid "计划中没有 MAA「干员培养」能执行的目标"
 msgstr "The plan has no goals MAA «Operator Progression» can carry out"
 
@@ -545,6 +607,7 @@ msgstr "Please continue in the popup window «Sklanding»"
 msgid "请在弹出窗口中继续操作"
 msgstr "Please continue in the popup window"
 
+#: src/components/arknights/ArkntoolsImporter.tsx:92
 #: src/components/arknights/MAAItemImporter.tsx:82
 #: src/components/arknights/MAAOperBoxImporter.tsx:66
 #: src/components/arknights/SklandImporter.tsx:399
@@ -592,6 +655,16 @@ msgstr "Recent Patches"
 msgid "返回主页"
 msgstr "Back to Home"
 
+#. %s: character names
+#: src/components/arknights/ArkntoolsImporter.tsx:31
+msgid ""
+"这些干员在 cpp 中尚未持有，已按 arkntools 计划的起点设为持有，等级按计划所需"
+"的最低值填写，请自行核对：%s。"
+msgstr ""
+"These operators were not owned in cpp; they are now marked as owned at the "
+"starting point of their Arknights Toolbox plan, with the lowest level the "
+"plan needs. Please check them: %s."
+
 #: src/components/ConfigUi.tsx:57
 msgid "选项"
 msgstr "Options"
@@ -620,62 +693,77 @@ msgstr "Hide"
 msgid "鸣谢"
 msgstr "Credits"
 
+#: src/components/arknights/ArkntoolsImporter.tsx:87
+msgctxt "arknights arkntools step"
+msgid "复制文本框中的所有内容"
+msgstr "Copy everything in the text box"
+
+#: src/components/arknights/ArkntoolsImporter.tsx:85
+msgctxt "arknights arkntools step"
+msgid "打开 arkntools「精英材料计算」"
+msgstr "Open Arknights Toolbox «Material Calculation»"
+
+#: src/components/arknights/ArkntoolsImporter.tsx:86
+msgctxt "arknights arkntools step"
+msgid "点击「导出」按钮，选择「备份」"
+msgstr "Click «Export», then choose «Backup»"
+
 #: src/pkg/cpp-arknights/GameAdapter.ts:403
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr "Growth Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:700
+#: src/pkg/cpp-arknights/GameAdapter.ts:705
 msgctxt "arknights item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:697
+#: src/pkg/cpp-arknights/GameAdapter.ts:702
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr "Dualchips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:696
+#: src/pkg/cpp-arknights/GameAdapter.ts:701
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr "Skill, Module & Catalysts"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:695
+#: src/pkg/cpp-arknights/GameAdapter.ts:700
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr "T1 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:692
+#: src/pkg/cpp-arknights/GameAdapter.ts:697
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:694
+#: src/pkg/cpp-arknights/GameAdapter.ts:699
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:699
+#: src/pkg/cpp-arknights/GameAdapter.ts:704
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:698
+#: src/pkg/cpp-arknights/GameAdapter.ts:703
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr "Chip Packs"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:693
+#: src/pkg/cpp-arknights/GameAdapter.ts:698
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:691
+#: src/pkg/cpp-arknights/GameAdapter.ts:696
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:690
+#: src/pkg/cpp-arknights/GameAdapter.ts:695
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
@@ -1123,6 +1211,8 @@ msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
 
+#: src/components/arknights/ArkntoolsImporter.tsx:37
+#: src/components/arknights/ArkntoolsImporter.tsx:47
 #: src/components/arknights/MAAOperBoxImporter.tsx:36
 msgctxt "list separator"
 msgid "、"

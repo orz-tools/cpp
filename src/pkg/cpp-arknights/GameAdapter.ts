@@ -633,6 +633,11 @@ class ArknightsStageInfo extends BasicStageInfo {
     return this.excel.stageId
   }
 
+  // 游戏里的关卡代号，不带难度前缀
+  public get rawCode(): string {
+    return this.excel.code ?? ''
+  }
+
   public get code(): string {
     return `${(diffGroupName[this.excel.diffGroup] || '').toString()}${this.excel.code ?? ''}`
   }

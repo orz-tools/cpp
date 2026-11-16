@@ -2,6 +2,7 @@ import { MenuItem } from '@blueprintjs/core'
 import { memo } from 'react'
 import { gt } from '../../pkg/gt'
 import { useChamber } from '../Chamber'
+import { ArkntoolsImporterDialog } from './ArkntoolsImporter'
 import { MAAItemImporterDialog } from './MAAItemImporter'
 import { MAAOperBoxImporterDialog } from './MAAOperBoxImporter'
 import { SklandImporterDialog } from './SklandImporter'
@@ -20,6 +21,11 @@ export const ImporterMenuItems = memo(() => {
         icon={'log-in'}
         text={gt.gettext('导入「MAA 干员识别」数据')}
         onClick={() => add(MAAOperBoxImporterDialog)}
+      />
+      <MenuItem
+        icon={'log-in'}
+        text={gt.gettext('导入「arkntools 精英材料计算」备份')}
+        onClick={() => add(ArkntoolsImporterDialog)}
       />
     </>
   )
