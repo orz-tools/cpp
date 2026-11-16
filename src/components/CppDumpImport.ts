@@ -28,26 +28,23 @@ export function useCppDumpImportFormat(): ImportFormat {
         }
         Object.assign(target, userdata)
 
-        if (dump.instanceName === cpp.instanceName) {
-          ctx.addWarning(gt.gettext('这是 Closure++ 用户数据。'))
-        } else if (dump.exportedAt != null) {
-          ctx.addWarning(
-            gt
-              .gettext(
-                '这是 Closure++ 从档案 %s$profile 导出的用户数据，导出于 %s$time。',
-              ) /* I10N: %s$profile: profile name, %s$time: date and time */
-              .replaceAll('%s$profile', formatProfileName(game, dump.instanceName))
-              .replaceAll('%s$time', new Date(dump.exportedAt).toLocaleString()),
-          )
-        } else {
-          ctx.addWarning(
-            gt
-              .gettext('这是 Closure++ 从档案 %s 导出的用户数据。') /* I10N: %s: profile name */
-              .replaceAll('%s', formatProfileName(game, dump.instanceName)),
+        // The dialog title already names the format, so data from this same profile needs no note.
+        if (dump.instanceName !== cpp.instanceName) {
+          ctx.addNote(
+            dump.exportedAt != null
+              ? gt
+                  .gettext(
+                    '这是 Closure++ 从档案 %s$profile 导出的用户数据，导出于 %s$time。',
+                  ) /* I10N: %s$profile: profile name, %s$time: date and time */
+                  .replaceAll('%s$profile', formatProfileName(game, dump.instanceName))
+                  .replaceAll('%s$time', new Date(dump.exportedAt).toLocaleString())
+              : gt
+                  .gettext('这是 Closure++ 从档案 %s 导出的用户数据。') /* I10N: %s: profile name */
+                  .replaceAll('%s', formatProfileName(game, dump.instanceName)),
           )
         }
 
-        if (dump.preference) {
+        if (dump.preference && !deepEqual(cpp.store.get(cpp.preferenceAtoms.preferenceStorageAtom), dump.preference)) {
           ctx.addWarning(gt.gettext('偏好设置（排除关卡、价值类型等）已一并覆盖，「撤销」不会恢复这一项。'))
           // The game adapter reads its part of the preferences only at start-up (applyPreferenceSnapshot).
           const current = cpp.store.get(cpp.preferenceAtoms.preferenceAtom)

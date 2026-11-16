@@ -19,7 +19,10 @@ import { showAlert } from './MessageBox'
 import { ValueTag } from './Value'
 
 export interface ImportContext {
+  /** Something the user has to check or act on; the result dialog lists it under 导入时产生的警告. */
   addWarning(text: string): void
+  /** Plain information, such as where the data came from; the result dialog shows it without any alarm. */
+  addNote(text: string): void
 }
 
 // start() imports what match() already parsed, so nothing is parsed twice. rejected: the format is recognised but
@@ -82,9 +85,13 @@ export function useStartImportSession() {
     try {
       const generator = generatorGenerator()
       const warnings = [] as string[]
+      const notes = [] as string[]
       const ctx: ImportContext = {
         addWarning(text: string) {
           warnings.push(text)
+        },
+        addNote(text: string) {
+          notes.push(text)
         },
       }
       const before = JSON.parse(JSON.stringify(store.get(atoms.allDataAtom)))
@@ -95,7 +102,7 @@ export function useStartImportSession() {
         return false
       }
       const after = JSON.parse(JSON.stringify(store.get(atoms.allDataAtom)))
-      add(ImportResultDialog, { source, diff: { before, after, warnings }, onUndo: options?.onUndo })
+      add(ImportResultDialog, { source, diff: { before, after, warnings, notes }, onUndo: options?.onUndo })
       return true
     } catch (e) {
       setErr({ error: e, context: gt.pgettext('error context', '解析导入数据时遇到问题') })
@@ -108,6 +115,7 @@ interface State {
   before: UserData<any>
   after: UserData<any>
   warnings: string[]
+  notes: string[]
 }
 
 interface ImportResultDialogProps {
@@ -206,6 +214,15 @@ const DiffView = memo(({ diff }: { diff: State }) => {
   return (
     <>
       <div style={{ height: '70vh', display: 'flex', flexDirection: 'column', padding: '15px', rowGap: '15px' }}>
+        {diff.notes.length > 0 ? (
+          <Callout icon="info-sign">
+            <ul style={{ margin: 0, padding: 0 }}>
+              {diff.notes.map((n, i) => (
+                <li key={i}>{n}</li>
+              ))}
+            </ul>
+          </Callout>
+        ) : null}
         {diff.warnings.length > 0 ? (
           <Callout intent="warning" title={gt.gettext('导入时产生的警告')}>
             <ul style={{ margin: 0, padding: 0 }}>

@@ -67,15 +67,15 @@ msgstr ""
 msgid "从文本框中导入"
 msgstr ""
 
-#: src/components/Importer.tsx:428
+#: src/components/Importer.tsx:445
 msgid "以往"
 msgstr ""
 
-#: src/components/Importer.tsx:431
+#: src/components/Importer.tsx:448
 msgid "价值变化"
 msgstr ""
 
-#: src/components/CppDumpImport.ts:55
+#: src/components/CppDumpImport.ts:52
 msgid "价值计算等设置需重新载入页面后生效。"
 msgstr ""
 
@@ -91,7 +91,7 @@ msgstr ""
 msgid "使用「提取装置」"
 msgstr ""
 
-#: src/components/CppDumpImport.ts:51
+#: src/components/CppDumpImport.ts:48
 msgid "偏好设置（排除关卡、价值类型等）已一并覆盖，「撤销」不会恢复这一项。"
 msgstr ""
 
@@ -116,7 +116,7 @@ msgid "关卡"
 msgstr ""
 
 #: src/App.tsx:502
-#: src/components/Importer.tsx:145
+#: src/components/Importer.tsx:153
 msgid "关闭"
 msgstr ""
 
@@ -144,7 +144,7 @@ msgstr[1] ""
 msgid "前往存档站"
 msgstr ""
 
-#: src/components/Importer.tsx:48
+#: src/components/Importer.tsx:51
 msgid "剪贴板里没有文本或文件。"
 msgstr ""
 
@@ -203,7 +203,7 @@ msgstr ""
 msgid "复制角色名"
 msgstr ""
 
-#: src/components/Importer.tsx:430
+#: src/components/Importer.tsx:447
 msgid "如今"
 msgstr ""
 
@@ -230,7 +230,7 @@ msgstr ""
 msgid "导入/导出"
 msgstr ""
 
-#: src/components/Importer.tsx:210
+#: src/components/Importer.tsx:227
 msgid "导入时产生的警告"
 msgstr ""
 
@@ -346,7 +346,7 @@ msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
 #: src/App.tsx:54
-#: src/components/Importer.tsx:150
+#: src/components/Importer.tsx:158
 msgid "撤销"
 msgstr ""
 
@@ -385,7 +385,7 @@ msgid "无法加载数据，请检查网络连接/更换网络/使用「加速�
 msgstr ""
 
 #. %s: format names
-#: src/components/Importer.tsx:56
+#: src/components/Importer.tsx:59
 msgid "无法识别粘贴的内容。支持：%s。"
 msgstr ""
 
@@ -517,7 +517,7 @@ msgstr ""
 msgid "界面语言"
 msgstr ""
 
-#: src/components/Importer.tsx:228
+#: src/components/Importer.tsx:245
 msgid "目标"
 msgstr ""
 
@@ -537,7 +537,7 @@ msgstr ""
 msgid "虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！"
 msgstr ""
 
-#: src/components/Importer.tsx:222
+#: src/components/Importer.tsx:239
 msgid "角色"
 msgstr ""
 
@@ -624,7 +624,7 @@ msgstr ""
 msgid "这份 Closure++ 用户数据已损坏。"
 msgstr ""
 
-#: src/components/CppDumpImport.ts:98
+#: src/components/CppDumpImport.ts:95
 #: src/components/UserDataManager.tsx:138
 msgid "这份 Closure++ 用户数据的版本无法识别。"
 msgstr ""
@@ -635,12 +635,12 @@ msgid "这份森空岛数据的 UID 是 %s$new，与这个档案上次导入的 
 msgstr ""
 
 #. %s$from: region of the data, %s$to: current region
-#: src/components/CppDumpImport.ts:63
+#: src/components/CppDumpImport.ts:60
 msgid "这份用户数据的区域是 %s$from，当前是 %s$to；区域没有改动，如需切换请使用工具栏上的区域按钮。"
 msgstr ""
 
 #. %s: profile name
-#: src/components/CppDumpImport.ts:44
+#: src/components/CppDumpImport.ts:41
 msgid "这是 Closure++ 从档案 %s 导出的用户数据。"
 msgstr ""
 
@@ -649,12 +649,8 @@ msgstr ""
 msgid "这是 Closure++ 从档案 %s$profile 导出的用户数据，导出于 %s$time。"
 msgstr ""
 
-#: src/components/CppDumpImport.ts:32
-msgid "这是 Closure++ 用户数据。"
-msgstr ""
-
 #. %s: game codename
-#: src/components/CppDumpImport.ts:93
+#: src/components/CppDumpImport.ts:90
 #: src/components/UserDataManager.tsx:141
 msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
@@ -663,8 +659,8 @@ msgstr ""
 msgid "选项"
 msgstr ""
 
-#: src/components/Importer.tsx:234
-#: src/components/Importer.tsx:427
+#: src/components/Importer.tsx:251
+#: src/components/Importer.tsx:444
 msgid "道具"
 msgstr ""
 
@@ -1144,7 +1140,7 @@ msgctxt "error context"
 msgid "刷本规划时遇到问题"
 msgstr ""
 
-#: src/components/Importer.tsx:94
+#: src/components/Importer.tsx:101
 msgctxt "error context"
 msgid "合并导入数据时遇到问题"
 msgstr ""
@@ -1164,7 +1160,7 @@ msgctxt "error context"
 msgid "环境检测失败"
 msgstr ""
 
-#: src/components/Importer.tsx:101
+#: src/components/Importer.tsx:108
 msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr ""
@@ -1241,7 +1237,7 @@ msgid "森空岛数据"
 msgstr ""
 
 #. %s: format name
-#: src/components/Importer.tsx:135
+#: src/components/Importer.tsx:143
 msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr ""
@@ -1291,7 +1287,7 @@ msgstr ""
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
 #: src/components/CharacterList.tsx:454
-#: src/components/Importer.tsx:58
+#: src/components/Importer.tsx:61
 #: src/components/queryEditor/VisualEditor.tsx:345
 msgctxt "list separator"
 msgid "、"
