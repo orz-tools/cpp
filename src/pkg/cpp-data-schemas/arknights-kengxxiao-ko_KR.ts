@@ -205,7 +205,7 @@ export type CppData_ArknightsKengxxiaoKoKr = {
                 zoneId: string;
                 code: string;
                 name: string | null;
-                difficulty: "NORMAL" | "FOUR_STAR";
+                difficulty: "NORMAL" | "FOUR_STAR" | "SIX_STAR";
                 diffGroup: "NONE" | "EASY" | "NORMAL" | "TOUGH" | "ALL";
                 apCost: number;
             };
@@ -228,7 +228,7 @@ export type CppData_ArknightsKengxxiaoKoKr = {
                 zoneId: string;
                 code: string;
                 name: string | null;
-                difficulty: "NORMAL" | "FOUR_STAR";
+                difficulty: "NORMAL" | "FOUR_STAR" | "SIX_STAR";
                 diffGroup: "NONE" | "EASY" | "NORMAL" | "TOUGH" | "ALL";
                 apCost: number;
             };
@@ -241,7 +241,7 @@ export type CppData_ArknightsKengxxiaoKoKr = {
                 zoneIndex: number;
                 zoneNameFirst: string | null;
                 zoneNameSecond: string | null;
-                type: "MAINLINE" | "WEEKLY" | "CAMPAIGN" | "CLIMB_TOWER" | "ACTIVITY" | "SIDESTORY" | "GUIDE" | "ROGUELIKE" | "BRANCHLINE";
+                type: "MAINLINE" | "WEEKLY" | "CAMPAIGN" | "CLIMB_TOWER" | "ACTIVITY" | "SIDESTORY" | "GUIDE" | "ROGUELIKE" | "BRANCHLINE" | "MAINLINE_ACTIVITY" | "MAINLINE_RETRO";
             };
         };
     };
