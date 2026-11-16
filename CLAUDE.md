@@ -2,9 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Dev environment
+
+The toolchain (node, yarn, gettext for `msgmerge`) comes from the nix devshell in `.nix/`, pinned by `.nix/flake.lock`. Nothing is installed globally.
+
+- With direnv: run `direnv allow` once; the shell loads on `cd`.
+- Without direnv, or from a worktree/agent shell: prefix commands with `nix develop path:$PWD/.nix --command`, e.g. `nix develop path:$PWD/.nix --command yarn build`.
+- `yarn` in the devshell is only a launcher; `.yarnrc.yml`'s `yarnPath` hands off to the committed yarn release.
+- Change tool versions in `.nix/flake.nix`, then `nix flake lock path:$PWD/.nix`. Commit both files.
+
 ## Commands
 
+All of these run inside the devshell.
+
 ```bash
+yarn install      # Install dependencies
 yarn dev          # Start dev server (builds messages first, then vite)
 yarn build        # Production build (tsc + vite)
 yarn preview      # Preview production build

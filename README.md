@@ -21,9 +21,15 @@ Closure++ currently supports the following games:
 
 ### Getting Started
 
+The toolchain is provided by a [nix](https://nixos.org) devshell in `.nix/`. With [direnv](https://direnv.net) and flakes enabled:
+
 ```shell
+$ direnv allow
+$ yarn install
 $ yarn dev
 ```
+
+Without direnv, run `nix develop path:$PWD/.nix` first.
 
 ### Contributions
 
