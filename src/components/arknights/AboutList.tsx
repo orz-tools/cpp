@@ -34,8 +34,8 @@ export const AboutDataSources = memo(() => {
       />
       {dm.$kengxxiaoLocal ? (
         <DataObjectStatus
-          title={`${gt.gettext('Kengxxiao 解析的游戏数据')} (${dm.$kengxxiaoLocal.lang})`}
-          href={'https://github.com/Kengxxiao/ArknightsGameData'}
+          title={`${gt.gettext('ArknightsAssets 解析的游戏数据')} (${dm.$kengxxiaoLocal.lang})`}
+          href={'https://github.com/ArknightsAssets/ArknightsGamedata'}
           dataObj={dm.$kengxxiaoLocal}
         />
       ) : null}

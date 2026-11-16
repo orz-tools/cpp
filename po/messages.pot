@@ -21,6 +21,10 @@ msgstr[1] ""
 msgid "%s持有率"
 msgstr ""
 
+#: src/components/arknights/AboutList.tsx:37
+msgid "ArknightsAssets 解析的游戏数据"
+msgstr ""
+
 #: src/components/RetiredGame.tsx:39
 msgid "Closure++ 对 %s 的支持已彻底下线"
 msgstr ""
@@ -30,7 +34,6 @@ msgid "Discord"
 msgstr ""
 
 #: src/components/arknights/AboutList.tsx:31
-#: src/components/arknights/AboutList.tsx:37
 msgid "Kengxxiao 解析的游戏数据"
 msgstr ""
 
