@@ -26,6 +26,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.CROSS_CIRCLE, Paths16.CrossCircle],
       [IconNames.CUBE, Paths16.Cube],
       [IconNames.DATABASE, Paths16.Database],
+      [IconNames.DOCUMENT_OPEN, Paths16.DocumentOpen],
       [IconNames.DOUBLE_CHEVRON_DOWN, Paths16.DoubleChevronDown],
       [IconNames.DOUBLE_CHEVRON_LEFT, Paths16.DoubleChevronLeft],
       [IconNames.DOUBLE_CHEVRON_RIGHT, Paths16.DoubleChevronRight],
@@ -76,6 +77,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
     new Map([
       [IconNames.AUTOMATIC_UPDATES, Paths20.AutomaticUpdates],
       [IconNames.ERROR, Paths20.Error],
+      [IconNames.IMPORT, Paths20.Import],
       [IconNames.WARNING_SIGN, Paths20.WarningSign],
     ]),
   ],
