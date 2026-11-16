@@ -1,7 +1,7 @@
 import { PrimitiveAtom, WritableAtom, atom, createStore, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { atomFamily } from 'jotai-family'
-import React, { SetStateAction, useContext } from 'react'
+import React, { DependencyList, SetStateAction, useContext, useMemo } from 'react'
 import { showAlert } from './components/MessageBox'
 import { IGameComponent } from './components/types'
 import { BlobFlavour } from './pkg/blobcache'
@@ -335,6 +335,16 @@ export function useGameAdapter<G extends IGame>() {
 /** For a dependency list: changes whenever newer game data is committed. */
 export function useGameDataGeneration() {
   return useAtomValue(useCpp().gameDataGenerationAtom)
+}
+
+/**
+ * useMemo for values read from the game adapter: also recomputes whenever newer game data is committed. Lint checks
+ * the deps of its callers as it does for useMemo (additionalHooks in .oxlintrc.json).
+ */
+export function useGameDataMemo<T>(factory: () => T, deps: DependencyList): T {
+  const generation = useGameDataGeneration()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(factory, [...deps, generation])
 }
 
 export function useGameAdapterStatic<G extends IGame>() {

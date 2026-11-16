@@ -11,10 +11,10 @@ import {
   Popover,
   Tag,
 } from '@blueprintjs/core'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { without } from 'ramda'
 import React, { memo, useState } from 'react'
-import { useAtoms, useCpp, useGameAdapter } from '../Cpp'
+import { useAtoms, useCpp, useGameAdapter, useGameDataGeneration } from '../Cpp'
 import { gt } from '../pkg/gt'
 import { DescriptionMenuItem } from './AboutList'
 import { StageCategoryGroup, groupStages } from './stageGroups'
@@ -302,6 +302,9 @@ export const MaybeSoulButton = memo(() => {
 
 export const RegionButton = memo(() => {
   const cpp = useCpp()
+  // The region is the committed one, so it changes with the generation.
+  useGameDataGeneration()
+  const { updating } = useAtomValue(cpp.gameDataStatusAtom)
   const { region, gameAdapterStatic } = cpp
   const regions = gameAdapterStatic.getRegions() || []
   if (regions.length <= 1) return null
@@ -327,9 +330,8 @@ export const RegionButton = memo(() => {
                   ) : null
                 }
                 active={x.id === region}
-                onClick={() => {
-                  cpp.setRegion(x.id)
-                }}
+                disabled={updating}
+                onClick={() => void cpp.setRegion(x.id)}
               />
             )
           })}

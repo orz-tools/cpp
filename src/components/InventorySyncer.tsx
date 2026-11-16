@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import useResizeObserver from 'use-resize-observer'
-import { useAtoms, useGameAdapter, useStore } from '../Cpp'
+import { useAtoms, useGameAdapter, useGameDataMemo, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, IItem } from '../pkg/cpp-basic'
 import { gt } from '../pkg/gt'
@@ -96,7 +96,7 @@ export const ItemSimulatedView = memo(
   }) => {
     const { itemSimulatedViewConfig } = useComponents()
     const ga = useGameAdapter()
-    const items = useMemo(() => ga.getInventoryItems(page), [ga, page])
+    const items = useGameDataMemo(() => ga.getInventoryItems(page), [ga, page])
     const itemRef = useRef<HTMLDivElement | null>(null)
     const config = itemSimulatedViewConfig || { limit: 3, horizontal: true, viewMaxSize: 500 }
     const [focus, setFocus] = useState(undefined as string | undefined)

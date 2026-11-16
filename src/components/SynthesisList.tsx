@@ -1,6 +1,6 @@
 import { Callout, Icon, Intent, MenuDivider, MenuItem } from '@blueprintjs/core'
-import React, { memo, useMemo } from 'react'
-import { Cpp, Level, useGameAdapter } from '../Cpp'
+import React, { memo } from 'react'
+import { Cpp, Level, useGameAdapter, useGameDataMemo } from '../Cpp'
 import { IGame, IItem } from '../pkg/cpp-basic'
 import { TaskStatus } from '../pkg/cpp-core/Task'
 import { generateIndirects } from '../pkg/cpp-core/UserData'
@@ -45,7 +45,7 @@ export function planSynthesisList(cpp: Cpp<IGame>, target: Level, formulaUses: F
 export const SynthesisList = memo(
   ({ data, refresh }: { data: ReturnType<typeof planSynthesisList>; refresh: () => any }) => {
     const ga = useGameAdapter()
-    const itemGroups = useMemo(() => buildItemList(ga), [ga])
+    const itemGroups = useGameDataMemo(() => buildItemList(ga), [ga])
     const { indirectDetails, inputQuantities } = data
     const categoryNames = ga.getInventoryCategories()
     const expItems = ga.getExpItems()

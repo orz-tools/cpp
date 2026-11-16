@@ -14,8 +14,8 @@ import {
 import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
-import React, { SetStateAction, memo, useEffect, useMemo, useState } from 'react'
-import { Level, useAtoms, useGameAdapter } from '../Cpp'
+import React, { SetStateAction, memo, useEffect, useState } from 'react'
+import { Level, useAtoms, useGameAdapter, useGameDataMemo } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
 import { gt } from '../pkg/gt'
 import { useChamber } from './Chamber'
@@ -61,7 +61,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { 
   const atoms = useAtoms<G>()
   const quantities = useAtomValue(atoms.itemQuantities)
   const setData = useSetAtom(atoms.dataAtom)
-  const formula = useMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
+  const formula = useGameDataMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
   const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
   const [times, setTimes] = useState(1)
 
@@ -167,7 +167,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { 
 
 export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IItem }) => {
   const ga = useGameAdapter<G>()
-  const formula = useMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
+  const formula = useGameDataMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
   const atoms = useAtoms<G>()
   const quantities = useAtomValue(atoms.itemQuantities)
   const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
@@ -549,7 +549,7 @@ export const SyncButton = memo(() => {
 export const ItemList = memo(<G extends IGame>() => {
   const param = useAtomValue(itemListParamAtom)
   const ga = useGameAdapter<G>()
-  const itemGroups = useMemo(() => buildItemList(ga), [ga])
+  const itemGroups = useGameDataMemo(() => buildItemList(ga), [ga])
   const atoms = useAtoms<G>()
   const store = useStore()
   const stars = useAtomValue(atoms.allStarredTaskRequirements)

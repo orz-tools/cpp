@@ -17,7 +17,7 @@ import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { search } from 'text-search-engine'
-import { Cpp, ListCharactersQueryParam, useAtoms, useCpp, useGameAdapter } from '../Cpp'
+import { Cpp, ListCharactersQueryParam, useAtoms, useCpp, useGameAdapter, useGameDataGeneration } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
 import { AppToaster } from '../components/Toaster'
@@ -851,7 +851,8 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     send(cpp, param)
   })
 
-  useEffect(() => refresh(), [param, refresh])
+  const generation = useGameDataGeneration()
+  useEffect(() => refresh(), [param, refresh, generation])
   useEffect(() => {
     if (error) console.error('Failed to query', error)
   }, [error])

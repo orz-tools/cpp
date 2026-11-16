@@ -3,9 +3,9 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { Draft } from 'immer'
 import { useSetAtom } from 'jotai'
-import { memo, ReactNode, useMemo, useRef, useState } from 'react'
+import { memo, ReactNode, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { useAtoms, useGameAdapter, useStore } from '../Cpp'
+import { useAtoms, useGameAdapter, useGameDataMemo, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame } from '../pkg/cpp-basic'
 import { UserData } from '../pkg/cpp-core/UserData'
@@ -174,7 +174,7 @@ const ImportResultDialog = memo(({ source, diff, onUndo, onClose }: ImportResult
 const DiffView = memo(({ diff }: { diff: State }) => {
   const ga = useGameAdapter()
 
-  const detail = useMemo(() => {
+  const detail = useGameDataMemo(() => {
     const { before, after } = diff
 
     const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
