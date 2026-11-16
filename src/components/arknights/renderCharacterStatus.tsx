@@ -1,10 +1,17 @@
-import { Arknights, Character } from '../../pkg/cpp-arknights'
+import { memo } from 'react'
+import { WithGame } from '../../Cpp'
+import { Arknights, Character, PreferenceKeys } from '../../pkg/cpp-arknights'
 import { Hide } from '../CharacterList'
 import { EmptyIcon } from '../Icons'
 import { LevelIcon, PotentialIcon, SkillIcon, UniEquipIcon } from './Icons'
 
+const PotentialBadge = memo(({ potentialRank }: { potentialRank: number }) => {
+  const show = WithGame<Arknights>().useGamePreferenceAtomValue(PreferenceKeys.ShowPotential)
+  return show ? <PotentialIcon className="cpp-char-potential-badge" potentialRank={potentialRank} /> : null
+})
+
 export function renderCharacterAvatarBadge(status: Arknights['characterStatus']) {
-  return <PotentialIcon className="cpp-char-potential-badge" potentialRank={status.potentialRank || 0} />
+  return <PotentialBadge potentialRank={status.potentialRank || 0} />
 }
 
 export function renderCharacterStatus(

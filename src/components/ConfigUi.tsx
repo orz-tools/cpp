@@ -15,6 +15,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { without } from 'ramda'
 import React, { memo, useState } from 'react'
 import { useAtoms, useCpp, useGameAdapter, useGameDataGeneration } from '../Cpp'
+import { useComponents } from '../hooks/useComponents'
 import { gt } from '../pkg/gt'
 import { DescriptionMenuItem } from './AboutList'
 import { StageCategoryGroup, groupStages } from './stageGroups'
@@ -39,6 +40,7 @@ export const ForbiddenFormulaTag = memo(({ tag, text }: { tag: string; text: Rea
 
 export const ConfigButton = memo(() => {
   const ga = useGameAdapter()
+  const { ConfigMenuItems } = useComponents()
   const tags = Object.entries(ga.getFormulaTagNames())
   return (
     <Popover
@@ -49,6 +51,8 @@ export const ConfigButton = memo(() => {
           {tags.map(([k, v]) => {
             return <ForbiddenFormulaTag key={k} tag={k} text={v.toString()} />
           })}
+          {ConfigMenuItems && tags.length > 0 ? <MenuDivider /> : null}
+          {ConfigMenuItems ? <ConfigMenuItems /> : null}
         </Menu>
       }
       position="bottom-left"

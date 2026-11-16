@@ -2,6 +2,7 @@ import type { IGameComponent } from '../types'
 import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from './AboutList'
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
+import { ConfigMenuItems } from './ConfigMenuItems'
 import { ExporterMenuItems } from './ExporterMenuItems'
 import { ImporterMenuItems } from './ImporterMenuItems'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
@@ -26,6 +27,7 @@ export const ArknightsComponents: IGameComponent = {
   blobFlavours: ['normal'],
   ImporterMenuItems,
   ExporterMenuItems,
+  ConfigMenuItems,
   useImportFormats: useArknightsImportFormats,
   style,
   extraFields: extraFields,

@@ -7,6 +7,7 @@ import type { ItemValueConfig } from './itemValue'
 export const enum PreferenceKeys {
   SurveySource = 'surveySource',
   ItemValue = 'arknightsItemValue',
+  ShowPotential = 'showPotential',
 }
 
 export const enum SurveySourceKey {
@@ -23,6 +24,7 @@ export interface Arknights extends IGame {
   preferences: {
     [PreferenceKeys.SurveySource]: SurveySourceKey
     [PreferenceKeys.ItemValue]: ItemValueConfig
+    [PreferenceKeys.ShowPotential]: boolean
   }
 }
 

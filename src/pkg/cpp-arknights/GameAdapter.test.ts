@@ -140,4 +140,14 @@ describe('ArknightsAdapter', () => {
     expect(ga.applyPreferenceSnapshot(changed)).toBe(false)
     expect(ga.getItemValueConfig().stageScope).toBe('mainline')
   })
+
+  it('shows potential unless turned off', () => {
+    const ga = new ArknightsAdapter()
+    expect(ga.readPreference(PreferenceKeys.ShowPotential, {})).toBe(true)
+    const off = ga.writePreference(PreferenceKeys.ShowPotential, false, {})
+    expect(ga.readPreference(PreferenceKeys.ShowPotential, off)).toBe(false)
+    expect(ga.applyPreferenceSnapshot(off)).toBe(false)
+    const on = ga.writePreference(PreferenceKeys.ShowPotential, true, off)
+    expect(ga.readPreference(PreferenceKeys.ShowPotential, on)).toBe(true)
+  })
 })

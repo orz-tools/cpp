@@ -25,6 +25,7 @@ export interface IGameComponent {
   blobFlavours?: BlobFlavour[]
   ImporterMenuItems?: React.FC
   ExporterMenuItems?: React.FC
+  ConfigMenuItems?: React.FC
   /** A hook: the formats the import paste box tries after Closure++'s own, in order */
   useImportFormats?: () => ImportFormat[]
   extraFields?: Record<

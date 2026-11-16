@@ -67,6 +67,9 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     if (key === PreferenceKeys.ItemValue) {
       return normalizeItemValueConfig(storage[PreferenceKeys.ItemValue]) as Arknights['preferences'][K]
     }
+    if (key === PreferenceKeys.ShowPotential) {
+      return (storage[PreferenceKeys.ShowPotential] !== false) as Arknights['preferences'][K]
+    }
     return undefined as never
   }
 
@@ -85,6 +88,12 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       return {
         ...storage,
         [key]: normalizeItemValueConfig(value),
+      }
+    }
+    if (key === PreferenceKeys.ShowPotential) {
+      return {
+        ...storage,
+        [key]: value === true,
       }
     }
     return storage
