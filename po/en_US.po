@@ -95,11 +95,11 @@ msgstr "Import from File"
 msgid "从文本框中导入"
 msgstr "Import from Text Box"
 
-#: src/components/Importer.tsx:421
+#: src/components/Importer.tsx:422
 msgid "以往"
 msgstr "Previous"
 
-#: src/components/Importer.tsx:424
+#: src/components/Importer.tsx:425
 msgid "价值变化"
 msgstr "Value Delta"
 
@@ -150,7 +150,7 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:502 src/components/Importer.tsx:138
+#: src/App.tsx:502 src/components/Importer.tsx:139
 msgid "关闭"
 msgstr "Close"
 
@@ -244,7 +244,7 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制角色名"
 msgstr "Copy Name"
 
-#: src/components/Importer.tsx:423
+#: src/components/Importer.tsx:424
 msgid "如今"
 msgstr "Current"
 
@@ -271,7 +271,7 @@ msgstr "Import MAA «Operator» Data"
 msgid "导入/导出"
 msgstr "Import/Export"
 
-#: src/components/Importer.tsx:203
+#: src/components/Importer.tsx:204
 msgid "导入时产生的警告"
 msgstr "Warnings During Import"
 
@@ -412,7 +412,7 @@ msgstr "Filter by stage code or name"
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
-#: src/App.tsx:54 src/components/Importer.tsx:143
+#: src/App.tsx:54 src/components/Importer.tsx:144
 msgid "撤销"
 msgstr "Undo"
 
@@ -616,7 +616,7 @@ msgstr "Save Manager"
 msgid "界面语言"
 msgstr "UI Language"
 
-#: src/components/Importer.tsx:221
+#: src/components/Importer.tsx:222
 msgid "目标"
 msgstr "Goals"
 
@@ -639,7 +639,7 @@ msgstr ""
 "You can really synthesizing these items now. However, it will cost you much "
 "more AP in the future. Go farming instead!"
 
-#: src/components/Importer.tsx:215
+#: src/components/Importer.tsx:216
 msgid "角色"
 msgstr "Characters"
 
@@ -774,8 +774,8 @@ msgid ""
 "这份森空岛数据的 UID 是 %s$new，与这个档案上次导入的 %s$old 不同；如果导入错"
 "了档案，请点「撤销」。"
 msgstr ""
-"This Skland data is for UID %s$new, but this profile last imported UID %s$old. "
-"If this is the wrong profile, click «Undo»."
+"This Skland data is for UID %s$new, but this profile last imported UID "
+"%s$old. If this is the wrong profile, click «Undo»."
 
 #. %s$from: region of the data, %s$to: current region
 #: src/components/CppDumpImport.ts:63
@@ -815,7 +815,7 @@ msgstr "This is a fallback for those who cannot use «Sklanding»."
 msgid "选项"
 msgstr "Options"
 
-#: src/components/Importer.tsx:227 src/components/Importer.tsx:420
+#: src/components/Importer.tsx:228 src/components/Importer.tsx:421
 msgid "道具"
 msgstr "Items"
 
@@ -1394,7 +1394,7 @@ msgid "森空岛数据"
 msgstr "Skland Data"
 
 #. %s: format name
-#: src/components/Importer.tsx:128
+#: src/components/Importer.tsx:129
 msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr "Import Result · %s"

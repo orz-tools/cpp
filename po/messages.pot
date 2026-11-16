@@ -67,11 +67,11 @@ msgstr ""
 msgid "从文本框中导入"
 msgstr ""
 
-#: src/components/Importer.tsx:421
+#: src/components/Importer.tsx:422
 msgid "以往"
 msgstr ""
 
-#: src/components/Importer.tsx:424
+#: src/components/Importer.tsx:425
 msgid "价值变化"
 msgstr ""
 
@@ -120,7 +120,7 @@ msgid "关卡"
 msgstr ""
 
 #: src/App.tsx:502
-#: src/components/Importer.tsx:138
+#: src/components/Importer.tsx:139
 msgid "关闭"
 msgstr ""
 
@@ -204,7 +204,7 @@ msgstr ""
 msgid "复制角色名"
 msgstr ""
 
-#: src/components/Importer.tsx:423
+#: src/components/Importer.tsx:424
 msgid "如今"
 msgstr ""
 
@@ -231,7 +231,7 @@ msgstr ""
 msgid "导入/导出"
 msgstr ""
 
-#: src/components/Importer.tsx:203
+#: src/components/Importer.tsx:204
 msgid "导入时产生的警告"
 msgstr ""
 
@@ -347,7 +347,7 @@ msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
 #: src/App.tsx:54
-#: src/components/Importer.tsx:143
+#: src/components/Importer.tsx:144
 msgid "撤销"
 msgstr ""
 
@@ -513,7 +513,7 @@ msgstr ""
 msgid "界面语言"
 msgstr ""
 
-#: src/components/Importer.tsx:221
+#: src/components/Importer.tsx:222
 msgid "目标"
 msgstr ""
 
@@ -533,7 +533,7 @@ msgstr ""
 msgid "虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！"
 msgstr ""
 
-#: src/components/Importer.tsx:215
+#: src/components/Importer.tsx:216
 msgid "角色"
 msgstr ""
 
@@ -673,8 +673,8 @@ msgstr ""
 msgid "选项"
 msgstr ""
 
-#: src/components/Importer.tsx:227
-#: src/components/Importer.tsx:420
+#: src/components/Importer.tsx:228
+#: src/components/Importer.tsx:421
 msgid "道具"
 msgstr ""
 
@@ -1251,7 +1251,7 @@ msgid "森空岛数据"
 msgstr ""
 
 #. %s: format name
-#: src/components/Importer.tsx:128
+#: src/components/Importer.tsx:129
 msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr ""
