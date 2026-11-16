@@ -236,6 +236,7 @@ export function fieldLabel(entry: QueryFieldEntry): string {
   const id = entry.config.id
   if (id.startsWith('current.')) label = gt.pgettext('query field', '%s（当前）').replaceAll('%s', label)
   else if (id.startsWith('goal.')) label = gt.pgettext('query field', '%s（目标）').replaceAll('%s', label)
-  if (entry.group === 'sub') label = gt.pgettext('query field', '%1 · %2').replace('%1', String(entry.subName)).replace('%2', label)
+  if (entry.group === 'sub')
+    label = gt.pgettext('query field', '%1 · %2').replace('%1', String(entry.subName)).replace('%2', label)
   return label
 }

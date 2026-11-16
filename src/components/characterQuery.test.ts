@@ -6,8 +6,8 @@ import { remove, saveAs, setFavQuery } from './queryEditor/savedQueries'
 
 // cpp-basic 导入时会初始化 localforage，测试环境里没有存储后端
 vi.mock('localforage', () => {
-  const noop = new Proxy({}, { get: () => async () => null })
-  return { default: { createInstance: () => noop, dropInstance: async () => {} } }
+  const noop = new Proxy({}, { get: () => () => Promise.resolve(null) })
+  return { default: { createInstance: () => noop, dropInstance: () => Promise.resolve() } }
 })
 
 const order: QueryParam['order'] = [['rarity', 'DESC']]

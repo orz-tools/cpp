@@ -9,6 +9,8 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
     IconSize.STANDARD,
     new Map([
       [IconNames.ADD, Paths16.Add],
+      [IconNames.ARROW_DOWN, Paths16.ArrowDown],
+      [IconNames.ARROW_UP, Paths16.ArrowUp],
       [IconNames.BLANK, Paths16.Blank],
       [IconNames.BUILD, Paths16.Build],
       [IconNames.CALCULATOR, Paths16.Calculator],
@@ -52,7 +54,9 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.LOG_IN, Paths16.LogIn],
       [IconNames.LOG_OUT, Paths16.LogOut],
       [IconNames.MEDIA, Paths16.Media],
+      [IconNames.MORE, Paths16.More],
       [IconNames.PEOPLE, Paths16.People],
+      [IconNames.PLUS, Paths16.Plus],
       [IconNames.PERSON, Paths16.Person],
       [IconNames.PREDICTIVE_ANALYSIS, Paths16.PredictiveAnalysis],
       [IconNames.PROPERTIES, Paths16.Properties],

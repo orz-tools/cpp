@@ -127,9 +127,14 @@ export class RootCharacterQuery<G extends IGame, C extends ICharacter> extends F
   public constructor() {
     super()
 
-    this.addField('goal', lpstr(() => gt.pgettext('query field', '有计划')), QBoolean, ({ goal }) => {
-      return !!goal
-    })
+    this.addField(
+      'goal',
+      lpstr(() => gt.pgettext('query field', '有计划')),
+      QBoolean,
+      ({ goal }) => {
+        return !!goal
+      },
+    )
   }
 
   public readonly subQueries = new Map<

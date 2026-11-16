@@ -1,9 +1,7 @@
 import {
   Button,
   ButtonGroup,
-  Card,
   ContextMenu,
-  Elevation,
   Menu,
   MenuDivider,
   MenuItem,
@@ -12,7 +10,6 @@ import {
   Popover,
   Spinner,
   Tag,
-  TextArea,
 } from '@blueprintjs/core'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
@@ -46,11 +43,12 @@ import {
   ListModeFav,
   ListModeWithGoal,
   PredefinedGameQueryPrefix,
+  SavedQueryPrefix,
   compileQuery,
   createListQuerier,
   isCustomQuery,
-  stringifyQuery,
 } from './characterQuery'
+import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
 
 export const Hide = memo(
   ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
@@ -450,9 +448,7 @@ function createFallbackExtraField(id: string, config: FieldConfiguration<any, an
         v ? gt.pgettext('query value', '是') : gt.pgettext('query value', '否'),
       )
     case QStrings:
-      return createSimpleExtraField(id, 65, (v: string[]) =>
-        v.map(labelOf).join(gt.pgettext('list separator', '、')),
-      )
+      return createSimpleExtraField(id, 65, (v: string[]) => v.map(labelOf).join(gt.pgettext('list separator', '、')))
     default:
       return createSimpleExtraField(id, 65, labelOf)
   }
@@ -559,22 +555,6 @@ const QuerySearchBox = memo(() => {
   )
 })
 
-const QueryQueryBox = memo(() => {
-  const [param, setParam] = useAtom(useCpp().queryParamAtom)
-  return (
-    <>
-      <TextArea
-        style={{ flex: 1, border: 0, boxShadow: 'none', maxHeight: '45vh' }}
-        value={param.query}
-        onChange={(e) => setParam((x) => ({ ...x, query: e.currentTarget.value }))}
-        autoCapitalize="false"
-        autoCorrect="false"
-        spellCheck="false"
-      />
-    </>
-  )
-})
-
 export function useCustomQueryActive() {
   const param = useAtomValue(useCpp().queryParamAtom)
   return isCustomQuery(param.query)
@@ -595,6 +575,11 @@ const QueryBuilder = memo(() => {
     pgqKeys.includes(param.query.slice(PredefinedGameQueryPrefix.length))
       ? pgq[param.query.slice(PredefinedGameQueryPrefix.length)]
       : undefined
+  const activeSaved = param.query.startsWith(SavedQueryPrefix)
+    ? data.savedQueries.find((x) => x.id === param.query.slice(SavedQueryPrefix.length))
+    : undefined
+  const activeName = activePredefined ? String(activePredefined.name) : activeSaved?.name
+  const goTo = (query: string) => setParam((x) => ({ ...x, query, source: undefined }))
 
   return (
     <>
@@ -603,14 +588,14 @@ const QueryBuilder = memo(() => {
         variant="minimal"
         active={param.query === ListModeFav}
         text={gt.pgettext('predefined view name', '想看的')}
-        onClick={() => setParam((x) => ({ ...x, query: ListModeFav }))}
+        onClick={() => goTo(ListModeFav)}
         style={{ flexShrink: 0 }}
       />
       <Button
         variant="minimal"
         active={param.query === ListModeAll}
         text={gt.pgettext('predefined view name', '全部')}
-        onClick={() => setParam((x) => ({ ...x, query: ListModeAll }))}
+        onClick={() => goTo(ListModeAll)}
         style={{ flexShrink: 0 }}
       />
       <Button
@@ -618,22 +603,22 @@ const QueryBuilder = memo(() => {
         active={param.query === ListModeWithGoal}
         text={gt.pgettext('predefined view name', '计划')}
         endIcon={goalCount > 0 ? <Tag round={true}>{goalCount}</Tag> : undefined}
-        onClick={() => setParam((x) => ({ ...x, query: ListModeWithGoal }))}
+        onClick={() => goTo(ListModeWithGoal)}
         style={{ flexShrink: 0 }}
       />
       <Button
         variant="minimal"
         active={param.query === ListModeAbsent}
         text={gt.pgettext('predefined view name', '缺席')}
-        onClick={() => setParam((x) => ({ ...x, query: ListModeAbsent }))}
+        onClick={() => goTo(ListModeAbsent)}
         style={{ flexShrink: 0 }}
       />
-      {activePredefined ? (
+      {activeName ? (
         <Button
           variant="minimal"
           active={true}
-          text={activePredefined.name}
-          title={activePredefined.name}
+          text={activeName}
+          title={activeName}
           onClick={() => {}}
           style={{ flexShrink: 42 }}
           className="cpp-overflow-button"
@@ -647,10 +632,9 @@ const QueryBuilderRight = memo(() => {
   const cpp = useCpp()
   const pgq = useMemo(() => cpp.gameAdapter.getPredefinedQueries(), [cpp])
   const [param, setParam] = useAtom(useCpp().queryParamAtom)
-  const custom = useCustomQueryActive()
-  useEffect(() => {
-    if (custom) dismissed = true
-  }, [custom])
+  const savedQueries = useAtomValue(useAtoms().dataAtom).savedQueries
+  const editor = useQueryEditorToggle()
+  const goTo = (query: string) => setParam((x) => ({ ...x, query, source: undefined }))
 
   return (
     <>
@@ -659,52 +643,52 @@ const QueryBuilderRight = memo(() => {
         minimal={true}
         placement="bottom-end"
         content={
-          <Menu>
+          <Menu className="cpp-query-menu">
+            {savedQueries.length > 0 ? (
+              <>
+                <MenuDivider title={gt.pgettext('query menu', '我的过滤器')} />
+                {savedQueries.map((x) => (
+                  <MenuItem
+                    key={x.id}
+                    active={param.query === SavedQueryPrefix + x.id}
+                    text={x.name}
+                    onClick={() => goTo(SavedQueryPrefix + x.id)}
+                  />
+                ))}
+              </>
+            ) : null}
+            <MenuDivider title={gt.pgettext('query menu', '练度统计')} />
             {Object.entries(pgq).map(([k, v]) => {
               return (
                 <MenuItem
                   key={k}
                   active={param.query === PredefinedGameQueryPrefix + k}
                   text={v.name}
-                  onClick={() => {
-                    setParam((x) => ({ ...x, query: PredefinedGameQueryPrefix + k }))
-                  }}
+                  onClick={() => goTo(PredefinedGameQueryPrefix + k)}
                 />
               )
             })}
           </Menu>
         }
       >
-        <Button variant="minimal" icon={'chevron-down'} />
+        <Button
+          variant="minimal"
+          icon={'chevron-down'}
+          title={gt.pgettext('query menu', '更多视图')}
+          aria-label={gt.pgettext('query menu', '更多视图')}
+        />
       </Popover>
       <Button
         variant="minimal"
         icon={'edit'}
-        active={custom}
-        onClick={() => {
-          if (
-            dismissed ||
-            (!dismissed && confirm('继续操作将打开自定义查询面板。\n\n警告：仍在开发中，查询语法将随时发生变化。'))
-          ) {
-            setParam((x) => ({ ...x, query: stringifyQuery(compileQuery(x.query, cpp)) }))
-          }
-        }}
+        active={editor.open}
+        title={editor.open ? gt.pgettext('query menu', '关闭编辑') : gt.pgettext('query menu', '编辑过滤条件')}
+        aria-label={editor.open ? gt.pgettext('query menu', '关闭编辑') : gt.pgettext('query menu', '编辑过滤条件')}
+        aria-pressed={editor.open}
+        onClick={editor.toggle}
       />
     </>
   )
-})
-
-let dismissed = false
-
-const QueryEditor = memo(() => {
-  const custom = useCustomQueryActive()
-  return custom ? (
-    <>
-      <Card elevation={Elevation.ONE} style={{ marginBottom: 1, padding: 0, display: 'flex' }}>
-        <QueryQueryBox />
-      </Card>
-    </>
-  ) : null
 })
 
 export const QuickFilterBuilder = memo(() => {
@@ -734,6 +718,7 @@ export const QuickFilterBuilder = memo(() => {
 
 export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom: PrimitiveAtom<number> }) => {
   const param = useAtomValue(useCpp().queryParamAtom)
+  const stale = useAtomValue(queryEditorStaleAtom)
 
   const cpp = useCpp()
   const { send, response, loading, error } = useRequest(listCharactersQuery)
@@ -835,7 +820,11 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
           <pre style={{ margin: 0 }}>{error.message}</pre>
         </NonIdealState>
       ) : (
-        <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
+        <Menu
+          className={stale ? 'cpp-char-list-stale' : undefined}
+          style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}
+          ulRef={parentRef}
+        >
           <div
             style={{
               height: `${rowVirtualizer.getTotalSize()}px`,

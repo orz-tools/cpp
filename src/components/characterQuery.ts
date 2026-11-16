@@ -1,6 +1,15 @@
 import type { Cpp } from '../Cpp'
 import { SavedQueryPrefix } from '../Cpp'
-import { ExtraCharacterQuery, ICharacter, IGame, QBoolean, QNumber, QString, Querier, QueryParam } from '../pkg/cpp-basic'
+import {
+  ExtraCharacterQuery,
+  ICharacter,
+  IGame,
+  QBoolean,
+  QNumber,
+  QString,
+  Querier,
+  QueryParam,
+} from '../pkg/cpp-basic'
 import { gt, lpstr } from '../pkg/gt'
 
 export { SavedQueryPrefix }
@@ -32,9 +41,12 @@ export class CppCharacterListQuery extends ExtraCharacterQuery<IGame, ICharacter
     const atoms = cpp.atoms.atoms
     const realOrder = store.get(atoms.goalOrder)
 
-    this.addField('id', lpstr(() => gt.pgettext('query field', '内部代号')), QString, ({ character }) => character.key).addAlias(
-      'key',
-    )
+    this.addField(
+      'id',
+      lpstr(() => gt.pgettext('query field', '内部代号')),
+      QString,
+      ({ character }) => character.key,
+    ).addAlias('key')
 
     this.addStatusField(
       'own',
@@ -43,15 +55,25 @@ export class CppCharacterListQuery extends ExtraCharacterQuery<IGame, ICharacter
       ({ character, status }) => !uda.isAbsentCharacter(character, status),
     )
 
-    this.addField('goalOrder', lpstr(() => gt.pgettext('query field', '计划顺序')), QNumber, ({ character }) => {
-      const o = realOrder.indexOf(character.key)
-      if (o < 0) return Number.MAX_SAFE_INTEGER
-      return o
-    })
+    this.addField(
+      'goalOrder',
+      lpstr(() => gt.pgettext('query field', '计划顺序')),
+      QNumber,
+      ({ character }) => {
+        const o = realOrder.indexOf(character.key)
+        if (o < 0) return Number.MAX_SAFE_INTEGER
+        return o
+      },
+    )
 
-    this.addField('finished', lpstr(() => gt.pgettext('query field', '已全面养成')), QBoolean, ({ character }) => {
-      return store.get(atoms.isCharacterFinished(character.key))
-    })
+    this.addField(
+      'finished',
+      lpstr(() => gt.pgettext('query field', '已全面养成')),
+      QBoolean,
+      ({ character }) => {
+        return store.get(atoms.isCharacterFinished(character.key))
+      },
+    )
   }
 }
 

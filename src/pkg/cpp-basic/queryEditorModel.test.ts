@@ -18,8 +18,8 @@ import { QBoolean, QNumber, QString, QStrings } from './queryTypes'
 
 // 预设取自 ArknightsAdapter；导入它会顺带初始化 localforage，测试环境里没有存储后端
 vi.mock('localforage', () => {
-  const noop = new Proxy({}, { get: () => async () => null })
-  return { default: { createInstance: () => noop, dropInstance: async () => {} } }
+  const noop = new Proxy({}, { get: () => () => Promise.resolve(null) })
+  return { default: { createInstance: () => noop, dropInstance: () => Promise.resolve() } }
 })
 
 const a: FieldAssertion = { _: 'field', field: 'rarity', op: '==', operand: 6 }
@@ -127,9 +127,12 @@ describe('operators and values', () => {
     expect(defaultConditionFor(entry(QNumber))).toEqual({ _: 'field', field: 'f', op: 'eq', operand: 0 })
     expect(defaultConditionFor(entry(QString))).toEqual({ _: 'field', field: 'f', op: 'eq', operand: '' })
     expect(defaultConditionFor(entry(QBoolean))).toEqual({ _: 'field', field: 'f', op: '==', operand: true })
-    expect(
-      defaultConditionFor(entry(QStrings, { options: () => [{ value: 'CASTER', label: '术师' }] })),
-    ).toEqual({ _: 'field', field: 'f', op: 'contains', operand: 'CASTER' })
+    expect(defaultConditionFor(entry(QStrings, { options: () => [{ value: 'CASTER', label: '术师' }] }))).toEqual({
+      _: 'field',
+      field: 'f',
+      op: 'contains',
+      operand: 'CASTER',
+    })
     expect(defaultConditionFor(entry(QNumber, { options: () => [{ value: 1, label: '1' }] })).operand).toBe(1)
   })
 
