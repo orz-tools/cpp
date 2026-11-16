@@ -21,6 +21,7 @@ for (const name of [
 ])
   void destroy(name)
 void destroy('arknights-yituliu')
+void destroy('arknights-yituliu-values')
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export abstract class BasicDataManager<G extends IGame> {

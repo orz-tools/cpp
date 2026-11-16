@@ -156,7 +156,15 @@ export class Cpp<G extends IGame> {
   }
 
   public createPreferenceAtoms() {
-    const preferenceStorageAtom = atomWithStorage<Preference>(this.storagePrefix + 'preference', undefined as any)
+    // getOnInit：entry.tsx 在 React 挂载前就读游戏偏好（applyPreferenceSnapshot），那时默认的 onMount 还没从 localStorage 取值
+    const preferenceStorageAtom = atomWithStorage<Preference>(
+      this.storagePrefix + 'preference',
+      undefined as any,
+      undefined,
+      {
+        getOnInit: true,
+      },
+    )
     const preferenceAtom: WritableAtom<Preference, [Preference | SetStateAction<Preference>], void> = atom<
       Preference,
       [Preference | SetStateAction<Preference>],

@@ -9,6 +9,8 @@
     // 生成文件：data schemas 来自 cpp-data
     "src/pkg/cpp-data-schemas/**",
     "po/**",
+    // 测试数据保持紧凑格式，见 __fixtures__/README.md
+    "src/**/__fixtures__/*.json",
     "pnpm-lock.yaml",
     // 主 checkout 下的 agent worktree
     ".claude/**"

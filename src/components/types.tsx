@@ -30,5 +30,6 @@ export interface IGameComponent {
   >
   TaskDisplay?: React.FC<{ type: any; charId: string; formattedString: string }>
   QuickFilterBuilder?: React.FC
+  ValueConfigMenu?: React.FC
   quickFilters?: Record<string, string>
 }

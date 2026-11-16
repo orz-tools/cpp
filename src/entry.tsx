@@ -20,6 +20,7 @@ export function runCpp(
     if (result)
       return cpp.store.set(ErrAtom, Object.assign({ context: gt.pgettext('error context', '环境检测失败') }, result))
 
+    cpp.gameAdapter.applyPreferenceSnapshot?.(cpp.store.get(cpp.preferenceAtoms.gameAtom))
     await cpp.gameAdapter.getDataManager().init(cpp.region)
   })().catch((e) => {
     cpp.store.set(ErrAtom, { error: e, context: gt.pgettext('error context', '初始化失败') })

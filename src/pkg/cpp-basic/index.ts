@@ -1,5 +1,6 @@
 export * from './DataManager'
 export * from './FarmPlanner'
+export * from './ItemValueSolver'
 export * from './managers'
 export * from './queries'
 export * from './queryTypes'

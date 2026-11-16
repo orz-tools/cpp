@@ -40,6 +40,8 @@ export interface IGameAdapter<G extends IGame> {
     value: G['preferences'][K],
     storage: Record<string, any>,
   ): Record<string, any>
+  /** 在 DataManager.init() 之前，以当时的游戏偏好调用；刷新页面前不再变化的配置在这里取快照 */
+  applyPreferenceSnapshot?(storage: Record<string, any>): void
 }
 
 export interface IUserDataAdapter<G extends IGame> {

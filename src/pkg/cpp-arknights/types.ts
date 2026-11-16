@@ -2,9 +2,11 @@ import { IGame } from '../cpp-basic/types'
 import { CppData_ArknightsKengxxiaoEnUs } from '../cpp-data-schemas/arknights-kengxxiao-en_US'
 import { CppData_ArknightsKengxxiaoZhCn } from '../cpp-data-schemas/arknights-kengxxiao-zh_CN'
 import { PSTR, gt, lpstr } from '../gt'
+import type { ItemValueConfig } from './itemValue'
 
 export const enum PreferenceKeys {
   SurveySource = 'surveySource',
+  ItemValue = 'arknightsItemValue',
 }
 
 export const enum SurveySourceKey {
@@ -20,6 +22,7 @@ export interface Arknights extends IGame {
   characterTaskType: ArknightsCharacterTaskType
   preferences: {
     [PreferenceKeys.SurveySource]: SurveySourceKey
+    [PreferenceKeys.ItemValue]: ItemValueConfig
   }
 }
 
@@ -44,6 +47,17 @@ export type ArknightsCharacterTaskType =
 export const AK_ITEM_GOLD = '4001'
 export const AK_ITEM_VIRTUAL_EXP = '##EXP'
 export const AK_ITEM_UNKNOWN_SHIT = '#__UNKNOWN_SHIT'
+
+// 产出固定、不看掉落统计的关卡，龙门币与采购凭证按游戏内的数值写死；apGold 表示另有理智 × 12 的龙门币
+export const AK_FIXED_DROP_STAGES: readonly { stageId: string; drops: Record<string, number>; apGold?: boolean }[] = [
+  { stageId: 'wk_melee_6', drops: { [AK_ITEM_GOLD]: 10000 } },
+  { stageId: 'wk_melee_5', drops: { [AK_ITEM_GOLD]: 7500 } },
+  { stageId: 'wk_melee_4', drops: { [AK_ITEM_GOLD]: 5700 } },
+  { stageId: 'wk_melee_3', drops: { [AK_ITEM_GOLD]: 4100 } },
+  { stageId: 'wk_melee_2', drops: { [AK_ITEM_GOLD]: 2800 } },
+  { stageId: 'wk_melee_1', drops: { [AK_ITEM_GOLD]: 1700 } },
+  { stageId: 'wk_toxic_5', drops: { '4006': 21 }, apGold: true },
+]
 
 export enum ArknightsFormulaTag {
   WorkshopRarity2 = 'workshop_rarity_2',

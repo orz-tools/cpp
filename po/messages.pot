@@ -48,7 +48,7 @@ msgstr ""
 msgid "优先培养（星标）"
 msgstr ""
 
-#: src/components/ConfigUi.tsx:221
+#: src/components/ConfigUi.tsx:234
 msgid "免责声明"
 msgstr ""
 
@@ -56,7 +56,7 @@ msgstr ""
 msgid "关于"
 msgstr ""
 
-#: src/components/ConfigUi.tsx:153
+#: src/components/ConfigUi.tsx:166
 msgid "关卡"
 msgstr ""
 
@@ -157,6 +157,20 @@ msgstr ""
 msgid "已复制「%s」"
 msgstr ""
 
+#. %d: number
+#: src/components/arknights/ValueConfigMenu.tsx:465
+msgid "已定价 %d 种物品"
+msgid_plural "已定价 %d 种物品"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d: number
+#: src/components/arknights/ValueConfigMenu.tsx:225
+msgid "已排除 %d 个关卡"
+msgid_plural "已排除 %d 个关卡"
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/components/AboutList.tsx:231
 msgid "帮助"
 msgstr ""
@@ -220,7 +234,7 @@ msgstr ""
 msgid "数据已更新，请重新载入页面"
 msgstr ""
 
-#: src/components/arknights/AboutList.tsx:67
+#: src/components/arknights/AboutList.tsx:72
 msgid "数据整理自小黑盒 app 明日方舟干员统计功能。"
 msgstr ""
 
@@ -232,16 +246,12 @@ msgstr ""
 msgid "无法写入剪贴板"
 msgstr ""
 
-#: src/pkg/cpp-basic/DataManager.ts:96
+#: src/pkg/cpp-basic/DataManager.ts:97
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 
 #: src/pkg/cpp-arknights/survey.ts:23
 msgid "明日方舟一图流 干员练度统计数据"
-msgstr ""
-
-#: src/components/arknights/AboutList.tsx:51
-msgid "明日方舟一图流 材料价值数据"
 msgstr ""
 
 #. %s: stat source name
@@ -291,7 +301,7 @@ msgstr ""
 msgid "本项目所使用的游戏资源（包括但不限于：游戏图片、动画、音频、文本原文或其转译版本等）仅用于更好地表现游戏资料、增强用户体验，其版权属于上海鹰角网络科技有限公司和其关联公司。"
 msgstr ""
 
-#: src/components/arknights/AboutList.tsx:59
+#: src/components/arknights/AboutList.tsx:64
 msgid "来自明日方舟一图流的数据，除非另有声明，采用 知识共享 署名-非商业性使用 4.0 国际 许可协议 进行许可。转载、公开或以任何形式复制、发行、再传播明日方舟一图流的任何内容时，必须注明从明日方舟一图流转载，并提供版权标识、许可协议标识、免责标识和作品链接；且未经许可，不得将本站内容或由其衍生作品用于商业目的。"
 msgstr ""
 
@@ -323,7 +333,7 @@ msgstr ""
 msgid "清空"
 msgstr ""
 
-#: src/components/ConfigUi.tsx:198
+#: src/components/ConfigUi.tsx:211
 msgid "游戏服务器"
 msgstr ""
 
@@ -334,6 +344,10 @@ msgstr ""
 #. %d: potential, 1-6
 #: src/components/arknights/Icons.tsx:93
 msgid "潜能 %d"
+msgstr ""
+
+#: src/components/arknights/AboutList.tsx:53
+msgid "物品价值计算思路参考 明日方舟一图流"
 msgstr ""
 
 #: src/components/SynthesisList.tsx:71
@@ -398,7 +412,7 @@ msgstr ""
 msgid "请在此粘贴..."
 msgstr ""
 
-#: src/entry.tsx:53
+#: src/entry.tsx:54
 msgid "请更新您的浏览器。"
 msgstr ""
 
@@ -459,62 +473,62 @@ msgstr ""
 msgid "鸣谢"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:353
+#: src/pkg/cpp-arknights/GameAdapter.ts:400
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:633
+#: src/pkg/cpp-arknights/GameAdapter.ts:663
 msgctxt "arknights item category"
 msgid "其他"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:630
+#: src/pkg/cpp-arknights/GameAdapter.ts:660
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:629
+#: src/pkg/cpp-arknights/GameAdapter.ts:659
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:628
+#: src/pkg/cpp-arknights/GameAdapter.ts:658
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:625
+#: src/pkg/cpp-arknights/GameAdapter.ts:655
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:627
+#: src/pkg/cpp-arknights/GameAdapter.ts:657
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:632
+#: src/pkg/cpp-arknights/GameAdapter.ts:662
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:631
+#: src/pkg/cpp-arknights/GameAdapter.ts:661
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:626
+#: src/pkg/cpp-arknights/GameAdapter.ts:656
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:624
+#: src/pkg/cpp-arknights/GameAdapter.ts:654
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:623
+#: src/pkg/cpp-arknights/GameAdapter.ts:653
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr ""
@@ -544,7 +558,7 @@ msgctxt "arknights maa step"
 msgid "选择「仓库识别」功能"
 msgstr ""
 
-#: src/pkg/cpp-arknights/types.ts:53
+#: src/pkg/cpp-arknights/types.ts:67
 msgctxt "arknights option"
 msgid "不从绿材料合成蓝材料"
 msgstr ""
@@ -579,17 +593,17 @@ msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:554
+#: src/pkg/cpp-arknights/GameAdapter.ts:584
 msgctxt "arknights stage difficulty"
 msgid "剧情"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:552
+#: src/pkg/cpp-arknights/GameAdapter.ts:582
 msgctxt "arknights stage difficulty"
 msgid "标准"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:553
+#: src/pkg/cpp-arknights/GameAdapter.ts:583
 msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr ""
@@ -705,7 +719,7 @@ msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr ""
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:546
+#: src/pkg/cpp-arknights/GameAdapter.ts:576
 msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr ""
@@ -790,7 +804,7 @@ msgctxt "credit role"
 msgid "数据源自动化"
 msgstr ""
 
-#: src/components/arknights/AboutList.tsx:100
+#: src/components/arknights/AboutList.tsx:105
 msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr ""
@@ -800,7 +814,7 @@ msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr ""
 
-#: src/entry.tsx:25
+#: src/entry.tsx:26
 msgctxt "error context"
 msgid "初始化失败"
 msgstr ""
@@ -1015,6 +1029,248 @@ msgstr ""
 #: src/Cpp.ts:57
 msgctxt "short name"
 msgid "计划(毕业)"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:249
+msgctxt "value config"
+msgid "1 表示按 CE-6 的理智折算"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:97
+msgctxt "value config"
+msgid "不需要"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:269
+msgctxt "value config"
+msgid "不需要（0）"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:206
+msgctxt "value config"
+msgid "主线"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:373
+msgctxt "value config"
+msgid "价值"
+msgstr ""
+
+#: src/components/Value.tsx:269
+msgctxt "value config"
+msgid "价值计算"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:474
+msgctxt "value config"
+msgid "价值计算失败"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:191
+msgctxt "value config"
+msgid "价值计算设置"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:397
+msgctxt "value config"
+msgid "删除"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:332
+#: src/components/arknights/ValueConfigMenu.tsx:334
+msgctxt "value config"
+msgid "加工为 %s"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:300
+msgctxt "value config"
+msgid "加工站副产物提升量"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:208
+msgctxt "value config"
+msgid "含开放活动"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:339
+msgctxt "value config"
+msgid "固定价值"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:329
+msgctxt "value config"
+msgid "均分"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:76
+msgctxt "value config"
+msgid "基建材料"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:196
+msgctxt "value config"
+msgid "定价关卡"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:198
+msgctxt "value config"
+msgid "定价范围"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:207
+msgctxt "value config"
+msgid "常驻"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:445
+msgctxt "value config"
+msgid "应用并刷新"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:439
+msgctxt "value config"
+msgid "恢复默认"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:72
+msgctxt "value config"
+msgid "技巧概要 卷1→卷2"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:74
+msgctxt "value config"
+msgid "技巧概要 卷2→卷3"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:264
+msgctxt "value config"
+msgid "按 CE-6 定价（1）"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:87
+msgctxt "value config"
+msgid "按 LS-6 定价"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:234
+msgctxt "value config"
+msgid "掉落样本少于此数的关卡不参与定价"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:210
+msgctxt "value config"
+msgid "排除的关卡"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:423
+msgctxt "value config"
+msgid "新增"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:228
+msgctxt "value config"
+msgid "无"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:95
+msgctxt "value config"
+msgid "无人机：1 级贸易站，精 2 但书"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:93
+msgctxt "value config"
+msgid "无人机：2 级贸易站，精 2 但书"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:89
+msgctxt "value config"
+msgid "无人机：3 级贸易站"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:91
+msgctxt "value config"
+msgid "无人机：3 级贸易站，精 2 龙舌兰、精 2 但书"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:341
+msgctxt "value config"
+msgid "材料退环境"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:233
+msgctxt "value config"
+msgid "样本量阈值"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:342
+msgctxt "value config"
+msgid "点亮后按按钮上的数值固定价值"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:372
+msgctxt "value config"
+msgid "物品"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:64
+msgctxt "value config"
+msgid "精英材料 T1→T2"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:66
+msgctxt "value config"
+msgid "精英材料 T2→T3"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:68
+msgctxt "value config"
+msgid "精英材料 T3→T4"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:70
+msgctxt "value config"
+msgid "精英材料 T4→T5"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:274
+msgctxt "value config"
+msgid "经验系数"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:283
+msgctxt "value config"
+msgid "自定义"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:314
+#: src/components/arknights/ValueConfigMenu.tsx:78
+msgctxt "value config"
+msgid "芯片"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:80
+msgctxt "value config"
+msgid "芯片组"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:485
+msgctxt "value config"
+msgid "设置…"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:407
+msgctxt "value config"
+msgid "选择材料…"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:246
+msgctxt "value config"
+msgid "龙门币与经验"
+msgstr ""
+
+#: src/components/arknights/ValueConfigMenu.tsx:248
+msgctxt "value config"
+msgid "龙门币系数"
 msgstr ""
 
 #: src/pkg/cpp-arknights/survey.ts:25

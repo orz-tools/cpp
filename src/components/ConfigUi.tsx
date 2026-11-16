@@ -1,5 +1,5 @@
 import { Button, Card, Checkbox, Icon, Menu, MenuDivider, MenuItem, Popover, Tag } from '@blueprintjs/core'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { groupBy, sortBy, without } from 'ramda'
 import React, { memo } from 'react'
 import { useAtoms, useCpp, useGameAdapter } from '../Cpp'
@@ -47,12 +47,15 @@ export const ConfigButton = memo(() => {
   )
 })
 
-export const ForbiddenStageIdTag = memo(({ stageId }: { stageId: string }) => {
+export interface StageToggleProps {
+  isChecked: (stageId: string) => boolean
+  onToggle: (stageId: string) => void
+}
+
+export const StageIdCheckbox = memo(({ stageId, isChecked, onToggle }: { stageId: string } & StageToggleProps) => {
   const ga = useGameAdapter()
   const stageInfo = ga.getStageInfos()
   const stage = stageInfo[stageId]
-  const cpp = useCpp()
-  const [ids, setIds] = useAtom(cpp.preferenceAtoms.forbiddenStageIdsAtom)
   const samples = Math.max(
     -Infinity,
     ...Object.values(stage.dropInfo)
@@ -63,7 +66,7 @@ export const ForbiddenStageIdTag = memo(({ stageId }: { stageId: string }) => {
   return (
     <Checkbox
       style={{ marginBottom: 0 }}
-      checked={!ids.includes(stageId)}
+      checked={isChecked(stageId)}
       title={`${stageId}: ${stage.name}`}
       labelElement={
         <>
@@ -74,12 +77,7 @@ export const ForbiddenStageIdTag = memo(({ stageId }: { stageId: string }) => {
         </>
       }
       inline={true}
-      onChange={() =>
-        setIds((t) => {
-          if (t.includes(stageId)) return without([stageId], t)
-          return [...t, stageId]
-        })
-      }
+      onChange={() => onToggle(stageId)}
     />
   )
 })
@@ -88,10 +86,10 @@ function makeNumericSortable(x: string) {
   return x.replace(/\d+/g, (y) => String(y).padStart(20, '0'))
 }
 
-export const StagePopover = memo(() => {
+export const StagePopover = memo(({ isChecked, onToggle, stageIds }: StageToggleProps & { stageIds?: string[] }) => {
   const ga = useGameAdapter()
   const stageInfo = ga.getStageInfos()
-  const allStageIds = Object.keys(stageInfo)
+  const allStageIds = stageIds || Object.keys(stageInfo)
   const grouped = sortBy(
     (x) => makeNumericSortable(x[0]),
     Object.entries(
@@ -117,7 +115,7 @@ export const StagePopover = memo(() => {
                 {zoneName}
               </h4>
               {stages!.map((x) => {
-                return <ForbiddenStageIdTag stageId={x} key={x} />
+                return <StageIdCheckbox stageId={x} key={x} isChecked={isChecked} onToggle={onToggle} />
               })}
             </Card>
           </React.Fragment>
@@ -131,13 +129,28 @@ export const StageButton = memo(() => {
   const ga = useGameAdapter()
   const cpp = useCpp()
   const stageInfo = ga.getStageInfos()
-  const forbiddenStageIds = useAtomValue(cpp.preferenceAtoms.forbiddenStageIdsAtom)
+  const [forbiddenStageIds, setForbiddenStageIds] = useAtom(cpp.preferenceAtoms.forbiddenStageIdsAtom)
   const allStageIds = Object.keys(stageInfo)
   const now = without(forbiddenStageIds, allStageIds).length
   const all = allStageIds.length
 
   return (
-    <Popover usePortal={true} minimal={true} content={<StagePopover />} position="bottom-left">
+    <Popover
+      usePortal={true}
+      minimal={true}
+      content={
+        <StagePopover
+          isChecked={(stageId) => !forbiddenStageIds.includes(stageId)}
+          onToggle={(stageId) =>
+            setForbiddenStageIds((t) => {
+              if (t.includes(stageId)) return without([stageId], t)
+              return [...t, stageId]
+            })
+          }
+        />
+      }
+      position="bottom-left"
+    >
       <Button
         icon={'layers'}
         variant="minimal"

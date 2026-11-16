@@ -5,6 +5,7 @@ import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { ImporterMenuItems } from './ImporterMenuItems'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
 import { TaskDisplay } from './TaskDisplay'
+import { ValueConfigMenu } from './ValueConfigMenu'
 import { extraFields } from './extraFields'
 import { renderCharacterAvatarBadge, renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
@@ -26,6 +27,7 @@ export const ArknightsComponents: IGameComponent = {
   extraFields: extraFields,
   TaskDisplay,
   QuickFilterBuilder,
+  ValueConfigMenu,
   quickFilters: {
     professions: 'contains',
     rarity: '==',

@@ -6,9 +6,9 @@ import {
   ArknightsKengxxiaoObject,
   ArknightsPenguinObject,
   ArknightsYituliuOperatorSurveyObject,
-  ArknightsYituliuValuesObject,
 } from './DataObjects'
 import { Category, myCategories } from './GameAdapter'
+import type { ItemValueResult } from './itemValue'
 import {
   AK_ITEM_GOLD,
   AK_ITEM_UNKNOWN_SHIT,
@@ -52,7 +52,6 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
 
   public $kengxxiao = new ArknightsKengxxiaoObject('zh_CN')
   public $kengxxiaoLocal!: ArknightsKengxxiaoObject | null
-  public $yituliu = new ArknightsYituliuValuesObject()
   public $penguin!: ArknightsPenguinObject
   public $surveyYituliu = new ArknightsYituliuOperatorSurveyObject()
   public $surveyHeybox = new ArknightsHeyboxOperatorSurveyObject()
@@ -60,7 +59,6 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
   public getRequiredDataObjects(): Promise<DataContainerObject<any>[]> {
     return Promise.resolve([
       this.$kengxxiao,
-      this.$yituliu,
       this.$penguin,
       this.$surveyYituliu,
       this.$surveyHeybox,
@@ -74,7 +72,6 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
 
   public loadRaw() {
     const k = this.get(this.$kengxxiao)
-    const yituliu = this.get(this.$yituliu)
     const penguin = this.get(this.$penguin)
     const yituliuSurvey = this.get(this.$surveyYituliu)
     const heyboxSurvey = this.get(this.$surveyHeybox)
@@ -94,12 +91,18 @@ export class ArknightsDataManager extends BasicDataManager<Arknights> {
         buildinEvolveMap: {},
         buildinPatchMap: {},
       },
-      yituliuValue: yituliu.data.values,
       penguinMatrix: penguin.data,
       yituliuSurvey: yituliuSurvey.data,
       heyboxSurvey: heyboxSurvey.data,
       local: kLocal ? kLocal.data : null,
     })
+  }
+
+  public itemValueProvider?: () => ItemValueResult
+
+  public getItemValue(key: string): number | undefined {
+    const result = this.itemValueProvider?.()
+    return result?.status === 'ok' ? result.values.get(key) : undefined
   }
 
   public async transform() {
@@ -621,30 +624,8 @@ export class Item implements IItem {
       case 'mod_update_token_2': // 数据增补仪
       case 'mod_update_token_1': // 数据增补条
         return undefined // 氪金也买不到，不应该有价值
-      case '3213': // 先锋双芯片
-        return this.dm.data.items['3212'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
-      case '3223': // 近卫双芯片
-        return this.dm.data.items['3222'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
-      case '3233': // 重装双芯片
-        return this.dm.data.items['3232'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
-      case '3243': // 狙击双芯片
-        return this.dm.data.items['3242'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
-      case '3253': // 术师双芯片
-        return this.dm.data.items['3252'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
-      case '3263': // 医疗双芯片
-        return this.dm.data.items['3262'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
-      case '3273': // 辅助双芯片
-        return this.dm.data.items['3272'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
-      case '3283': // 特种双芯片
-        return this.dm.data.items['3282'].valueAsAp! * 2 + this.dm.data.items['32001'].valueAsAp!
-      default:
-        if (this.dm.raw.exItems.expItems[this.key]) {
-          const ap = this.dm.raw.yituliuValue.find((x) => x.itemId === this.key)?.itemValueAp
-          if (ap == null) return NaN
-          return ap / 0.625
-        }
     }
-    return this.dm.raw.yituliuValue.find((x) => x.itemId === this.key)?.itemValueAp
+    return this.dm.getItemValue(this.key)
   }
 
   public get rarity() {
@@ -709,7 +690,7 @@ export class ExpItem extends Item {
   }
 
   protected override _generateValueAsAp() {
-    return this.dm.data.items['2004'].valueAsAp! / this.dm.raw.exItems.expItems['2004'].gainExp
+    return this.dm.getItemValue(AK_ITEM_VIRTUAL_EXP)
   }
 }
 

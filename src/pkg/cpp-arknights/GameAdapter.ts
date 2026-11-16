@@ -15,8 +15,18 @@ import {
 import { PSTR, gt, lpstr } from '../gt'
 import { ArknightsDataManager, Character } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
+import {
+  DEFAULT_ITEM_VALUE_CONFIG,
+  ItemValueConfig,
+  ItemValueResult,
+  checkStageAssembly,
+  computeArknightsItemValues,
+  exportItemValueGameInputs,
+  normalizeItemValueConfig,
+} from './itemValue'
 import { HeyboxSurveySource, YituliuSurveySource } from './survey'
 import {
+  AK_FIXED_DROP_STAGES,
   AK_ITEM_GOLD,
   AK_ITEM_UNKNOWN_SHIT,
   AK_ITEM_VIRTUAL_EXP,
@@ -35,7 +45,10 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   ): Arknights['preferences'][K] {
     if (key === PreferenceKeys.SurveySource) {
       const value = storage[PreferenceKeys.SurveySource]
-      return SurveySourceKeys.includes(value) ? value : SurveySourceKeys[0]
+      return (SurveySourceKeys.includes(value) ? value : SurveySourceKeys[0]) as Arknights['preferences'][K]
+    }
+    if (key === PreferenceKeys.ItemValue) {
+      return normalizeItemValueConfig(storage[PreferenceKeys.ItemValue]) as Arknights['preferences'][K]
     }
     return undefined as never
   }
@@ -51,7 +64,37 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         [key]: value,
       }
     }
+    if (key === PreferenceKeys.ItemValue) {
+      return {
+        ...storage,
+        [key]: normalizeItemValueConfig(value),
+      }
+    }
     return storage
+  }
+
+  private itemValueConfig: ItemValueConfig = normalizeItemValueConfig(DEFAULT_ITEM_VALUE_CONFIG)
+  private itemValues?: ItemValueResult
+
+  public applyPreferenceSnapshot(storage: Record<string, any>) {
+    this.itemValueConfig = normalizeItemValueConfig(storage[PreferenceKeys.ItemValue])
+    this.itemValues = undefined
+  }
+
+  public getItemValueConfig(): ItemValueConfig {
+    return this.itemValueConfig
+  }
+
+  public getItemValues(): ItemValueResult {
+    return (this.itemValues ||= computeArknightsItemValues(this, this.itemValueConfig))
+  }
+
+  public exportItemValueGameInputs() {
+    return exportItemValueGameInputs(this)
+  }
+
+  public checkStageAssembly() {
+    return checkStageAssembly(this)
   }
 
   public getRealCharacterKey(charId: string) {
@@ -66,6 +109,10 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
 
   private dataManager = new ArknightsDataManager()
   private userDataAdapter = new ArknightsUserDataAdapter(this.dataManager)
+
+  public constructor() {
+    this.dataManager.itemValueProvider = () => this.getItemValues()
+  }
 
   public static codename: string = GameName.Arknights
   public getCodename(): string {
@@ -515,33 +562,16 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       stage.addDrop(i.itemId, i.quantity, i.times)
     }
 
-    const makeCE = (stageId: string, gold: number) => {
-      const stageInfo = this.dataManager.raw.exStage.stages[stageId]
+    for (const fixed of AK_FIXED_DROP_STAGES) {
+      const stageInfo = this.dataManager.raw.exStage.stages[fixed.stageId]
       const stage = new ArknightsStageInfo(this, stageInfo)
       stage.setAp(stageInfo.apCost)
-      stage.addDrop(AK_ITEM_GOLD, gold)
-      map.set(stageId, stage)
-      this.stageInfo[stageId] = stage
+      for (const [itemId, quantity] of Object.entries(fixed.drops)) stage.addDrop(itemId, quantity)
+      if (fixed.apGold) stage.addDrop(AK_ITEM_GOLD, stageInfo.apCost * 12)
+      map.set(fixed.stageId, stage)
+      this.stageInfo[fixed.stageId] = stage
       loadZoneName(stageInfo, false)
     }
-    makeCE('wk_melee_6', 10000)
-    makeCE('wk_melee_5', 7500)
-    makeCE('wk_melee_4', 5700)
-    makeCE('wk_melee_3', 4100)
-    makeCE('wk_melee_2', 2800)
-    makeCE('wk_melee_1', 1700)
-
-    const makeAP = (stageId: string, ticket: number) => {
-      const stageInfo = this.dataManager.raw.exStage.stages[stageId]
-      const stage = new ArknightsStageInfo(this, stageInfo)
-      stage.setAp(stageInfo.apCost)
-      stage.addDrop('4006', ticket)
-      stage.addDrop(AK_ITEM_GOLD, stageInfo.apCost * 12)
-      map.set(stageId, stage)
-      this.stageInfo[stageId] = stage
-      loadZoneName(stageInfo, false)
-    }
-    makeAP('wk_toxic_5', 21)
 
     this.zoneNames['weekly_chips'] = gt.pgettext('arknights zone', '芯片搜索')
     return this.stageInfo

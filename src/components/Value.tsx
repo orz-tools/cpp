@@ -1,7 +1,20 @@
-import { Button, Icon, IconName, Intent, MaybeElement, Menu, MenuItem, Popover, Tag } from '@blueprintjs/core'
+import {
+  Button,
+  Icon,
+  IconName,
+  Intent,
+  MaybeElement,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  Popover,
+  Tag,
+} from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
 import React, { memo } from 'react'
 import { ValueType, useCpp } from '../Cpp'
+import { useComponents } from '../hooks/useComponents'
+import { gt } from '../pkg/gt'
 
 const ValueIcon = {
   [ValueType.Ap]: 'predictive-analysis',
@@ -240,6 +253,7 @@ export const SetValueOptionMenuItem = memo(({ type }: { type: ValueType }) => {
 export const ValueOptionButton = memo(() => {
   const cpp = useCpp()
   const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
+  const { ValueConfigMenu } = useComponents()
 
   return (
     <Popover
@@ -250,6 +264,12 @@ export const ValueOptionButton = memo(() => {
           {Object.values(ValueType).map((x) => (
             <SetValueOptionMenuItem type={x} key={x} />
           ))}
+          {ValueConfigMenu ? (
+            <>
+              <MenuDivider title={gt.pgettext('value config', '价值计算')} />
+              <ValueConfigMenu />
+            </>
+          ) : null}
         </Menu>
       }
       position="bottom-left"

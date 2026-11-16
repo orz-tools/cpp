@@ -366,7 +366,7 @@ const InventoryDiffViewRow = memo(
   ({ row, style }: { row: { key: string; before: number; after: number }; style?: React.CSSProperties }) => {
     const ga = useGameAdapter()
     const item = ga.getItem(row.key)
-    const valueDelta = item.valueAsAp! * (row.after - row.before)
+    const valueDelta = (item.valueAsAp || 0) * (row.after - row.before)
     return (
       <tr role="none" style={style}>
         <td>
