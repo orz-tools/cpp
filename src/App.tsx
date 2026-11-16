@@ -219,7 +219,7 @@ const App = memo(() => {
             width: Math.max(charListBaseWidth + charExtraWidth, 560),
             display: 'flex',
             flexDirection: 'column',
-            // 过滤器编辑器按没有附加列时的宽度排版，加列、拖列宽时控件不跟着变宽
+            // 过滤器编辑器的条件区和 JSON 区按没有附加列时的宽度排版，加列、拖列宽时控件不跟着变宽
             ['--cpp-char-list-base-width' as string]: `${Math.max(charListBaseWidth, 560)}px`,
           }}
         >

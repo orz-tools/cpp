@@ -7,8 +7,9 @@
   border-bottom: 1px solid var(--bp-palette-light-gray-2, #dce0e5);
   box-shadow: 0 1px 2px rgba(17, 20, 24, 0.08);
   /*
-   * 栏比没有附加列时宽出来的部分。各块用右内边距让出它，控件不跟着变宽，
-   * 底色、分隔线和滚动条仍铺到栏的最右边。100% 在使用处解析，即整栏的宽度。
+   * 栏比没有附加列时宽出来的部分。条件区和 JSON 区用右内边距让出它，控件不跟着
+   * 变宽，底色和滚动条仍铺到栏的最右边。标题栏和底部说明里没有会变宽的控件，
+   * 不让，按钮照旧贴着栏的右边。100% 在使用处解析，即整栏的宽度。
    */
   --cpp-qe-spare: max(0px, calc(100% - var(--cpp-char-list-base-width, 100%)));
 }
@@ -18,7 +19,7 @@
   flex-shrink: 0;
   align-items: center;
   gap: 6px;
-  padding: 5px calc(6px + var(--cpp-qe-spare)) 5px 12px;
+  padding: 5px 6px 5px 12px;
   background: var(--bp-palette-white, #fff);
   border-bottom: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
 }
@@ -263,7 +264,7 @@ select.cpp-qe-invalid {
 
 .cpp-qe-footnote {
   flex-shrink: 0;
-  padding: 6px calc(12px + var(--cpp-qe-spare)) 6px 12px;
+  padding: 6px 12px;
   font-size: 12px;
   color: var(--bp-palette-gray-1, #5f6b7c);
   border-top: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
