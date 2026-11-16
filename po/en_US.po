@@ -197,22 +197,27 @@ msgstr "Current"
 msgid "完成"
 msgstr "Complete"
 
+#: src/components/arknights/ImporterMenuItems.tsx:28
+#: src/components/arknights/MAAOperProgressImporter.tsx:68
+msgid "导入 MAA「干员培养」计划"
+msgstr "Import MAA «Operator Progression» Plan"
+
 #: src/components/arknights/ArkntoolsImporter.tsx:79
-#: src/components/arknights/ImporterMenuItems.tsx:27
+#: src/components/arknights/ImporterMenuItems.tsx:33
 msgid "导入「arkntools 精英材料计算」备份"
 msgstr "Import Backup from Arknights Toolbox «Material Calculation»"
 
-#: src/components/arknights/ImporterMenuItems.tsx:17
+#: src/components/arknights/ImporterMenuItems.tsx:18
 #: src/components/arknights/MAAItemImporter.tsx:65
 msgid "导入「MAA 仓库识别」数据"
 msgstr "Import Data from «MAA Depot Recognizer»"
 
-#: src/components/arknights/ImporterMenuItems.tsx:22
+#: src/components/arknights/ImporterMenuItems.tsx:23
 #: src/components/arknights/MAAOperBoxImporter.tsx:54
 msgid "导入「MAA 干员识别」数据"
 msgstr "Import Data from «MAA Operator Recognizer»"
 
-#: src/components/arknights/ImporterMenuItems.tsx:14
+#: src/components/arknights/ImporterMenuItems.tsx:15
 #: src/components/arknights/SklandImporter.tsx:362
 msgid "导入「森空岛」数据"
 msgstr "Import Data from «Skland»"
@@ -567,6 +572,7 @@ msgstr "Paste JSON"
 #: src/components/arknights/ArkntoolsImporter.tsx:74
 #: src/components/arknights/MAAItemImporter.tsx:57
 #: src/components/arknights/MAAOperBoxImporter.tsx:49
+#: src/components/arknights/MAAOperProgressImporter.tsx:63
 #: src/components/arknights/SklandImporter.tsx:243
 msgid "粘贴的东西好像不太对，请重试。"
 msgstr "The content you pasted was bad. Please try again."
@@ -594,6 +600,16 @@ msgstr "Plan Sorting"
 msgid "计划中没有 MAA「干员培养」能执行的目标"
 msgstr "The plan has no goals MAA «Operator Progression» can carry out"
 
+#. %s: character names
+#: src/components/arknights/MAAOperProgressImporter.tsx:46
+msgid ""
+"认不出这些干员，已跳过：%s。cpp 只认识简体中文名、西文代号和当前区服语言的名"
+"字；如果是新干员，可能游戏数据尚未更新。"
+msgstr ""
+"These operators were not recognized and were skipped: %s. cpp only knows "
+"Simplified Chinese names, Western names and names in the current server's "
+"language; for new operators, the game data may not be updated yet."
+
 #: src/locales.tsx:40
 msgid "语言已切换，将重新载入页面。"
 msgstr "UI Language changed. A reload is required."
@@ -610,6 +626,7 @@ msgstr "Please continue in the popup window"
 #: src/components/arknights/ArkntoolsImporter.tsx:89
 #: src/components/arknights/MAAItemImporter.tsx:82
 #: src/components/arknights/MAAOperBoxImporter.tsx:66
+#: src/components/arknights/MAAOperProgressImporter.tsx:81
 #: src/components/arknights/SklandImporter.tsx:399
 msgid "请在此粘贴..."
 msgstr "Paste here..."
@@ -664,6 +681,21 @@ msgstr ""
 "These operators were not owned in cpp; they are now marked as owned at the "
 "starting point of their Arknights Toolbox plan, with the lowest level the "
 "plan needs. Please check them: %s."
+
+#. %s: character names
+#: src/components/arknights/MAAOperProgressImporter.tsx:28
+msgid ""
+"这些干员在 cpp 中尚未持有，已按计划所需的最低状态设为持有，请自行核对：%s。"
+msgstr ""
+"These operators were not owned in cpp and are now marked as owned, at the "
+"lowest state the plan needs. Please check them: %s."
+
+#. %s: character names
+#: src/components/arknights/MAAOperProgressImporter.tsx:37
+msgid "这些干员的目标超出了可培养的上限（精英化次数或技能），已跳过：%s。"
+msgstr ""
+"Goals for these operators go beyond what they can reach (promotion or "
+"skills) and were skipped: %s."
 
 #: src/components/ConfigUi.tsx:57
 msgid "选项"
@@ -779,6 +811,15 @@ msgid ""
 "「导出到」选择「明日方舟工具箱」或「企鹅物流刷图规划」，点击「导出」按钮"
 msgstr ""
 "Choose «Arkntools» or «Arkplanner» in «Export to:», then click «Export»"
+
+#: src/components/arknights/MAAOperProgressImporter.tsx:72
+msgctxt "arknights maa step"
+msgid ""
+"复制 MAA「干员培养」计划的 JSON，例如 arkntools「精英材料计算」中「导出培养方"
+"案至 MAA」的结果"
+msgstr ""
+"Copy the JSON of an MAA «Operator Progression» plan, such as the result of "
+"«Export training plan to MAA» in Arknights Toolbox «Material Calculation»"
 
 #: src/components/arknights/MAAItemImporter.tsx:68
 #: src/components/arknights/MAAOperBoxImporter.tsx:57
@@ -1254,6 +1295,7 @@ msgstr "Planned"
 #: src/components/arknights/ArkntoolsImporter.tsx:35
 #: src/components/arknights/ArkntoolsImporter.tsx:44
 #: src/components/arknights/MAAOperBoxImporter.tsx:36
+#: src/components/arknights/MAAOperProgressImporter.tsx:25
 #: src/components/CharacterList.tsx:454
 #: src/components/queryEditor/VisualEditor.tsx:345
 msgctxt "list separator"
