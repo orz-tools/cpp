@@ -220,7 +220,19 @@ export abstract class BasicDataManager<
       targets.map(async (obj) => {
         if (!force && Date.now() - (await getLastCheckedAt(obj)) < obj.autoUpdateThreshold) return
         const previous = committed.containers.get(obj)
-        fresh.set(obj, await this.loadContainer(obj, force, () => changed.add(obj), useCurrent ? previous : undefined))
+        const container = await this.loadContainer(
+          obj,
+          force,
+          () => changed.add(obj),
+          useCurrent ? previous : undefined,
+        )
+        // Downloaded again yet the same (a repo version file can run ahead of its data file): keep the object held,
+        // so what is cached against it, such as the item value inputs, stays valid.
+        const same =
+          !changed.has(obj) &&
+          previous?.version.id === container.version.id &&
+          previous.version.timestamp === container.version.timestamp
+        fresh.set(obj, same ? previous : container)
       }),
     )
 

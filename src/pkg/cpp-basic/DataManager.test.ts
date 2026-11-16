@@ -17,6 +17,8 @@ interface Remote {
   id: string
   timestamp: number
   data: unknown
+  /** the version file is ahead of the data file, so the same version is downloaded again on every check */
+  stale?: boolean
 }
 
 let remote: Map<string, Remote | Error>
@@ -46,7 +48,7 @@ dc.load.mockImplementation(
     const r = remote.get(o.name)
     if (!r) throw new Error(`no remote ${o.name}`)
     if (r instanceof Error) throw r
-    if (current && current.version.id === r.id) return current
+    if (current && current.version.id === r.id && !r.stale) return current
     if (current ? JSON.stringify(current.data) !== JSON.stringify(r.data) : refresh !== undefined) onRefreshed?.()
     return container(o.name, r)
   },
@@ -151,6 +153,16 @@ describe('BasicDataManager', () => {
     expect(await dm.update({})).toEqual({ applied: false, notify: false })
     expect(dm.get(dm.sources.local).version.id).toBe('x2')
     expect(dm.getState().generation).toBe(1)
+  })
+
+  it('keeps the container it holds when the same version is downloaded again', async () => {
+    const dm = new TestDataManager()
+    await dm.init('x')
+    const held = dm.get(dm.sources.shared)
+    remote.set('shared', { id: 's1', timestamp: 1, data: 'S1', stale: true })
+    setRemote('local-x', 'x2', 'X2')
+    expect(await dm.update({ force: true })).toMatchObject({ applied: true })
+    expect(dm.get(dm.sources.shared)).toBe(held)
   })
 
   it('notifies only when the new version is newer by more than the threshold', async () => {
