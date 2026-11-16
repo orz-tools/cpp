@@ -3,6 +3,7 @@ import { memo } from 'react'
 import { gt } from '../../pkg/gt'
 import { useChamber } from '../Chamber'
 import { MAAItemImporterDialog } from './MAAItemImporter'
+import { MAAOperBoxImporterDialog } from './MAAOperBoxImporter'
 import { SklandImporterDialog } from './SklandImporter'
 
 export const ImporterMenuItems = memo(() => {
@@ -14,6 +15,11 @@ export const ImporterMenuItems = memo(() => {
         icon={'log-in'}
         text={gt.gettext('导入「MAA 仓库识别」数据')}
         onClick={() => add(MAAItemImporterDialog)}
+      />
+      <MenuItem
+        icon={'log-in'}
+        text={gt.gettext('导入「MAA 干员识别」数据')}
+        onClick={() => add(MAAOperBoxImporterDialog)}
       />
     </>
   )

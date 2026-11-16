@@ -24,8 +24,12 @@ msgstr[1] "%d operators were not exported: not yet owned, or Amiya."
 #: src/components/arknights/ExporterMenuItems.tsx:48
 msgid "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
 msgid_plural "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
-msgstr[0] "Level or module goals of %d operator are left out, as MAA cannot carry them out."
-msgstr[1] "Level or module goals of %d operators are left out, as MAA cannot carry them out."
+msgstr[0] ""
+"Level or module goals of %d operator are left out, as MAA cannot carry them "
+"out."
+msgstr[1] ""
+"Level or module goals of %d operators are left out, as MAA cannot carry them "
+"out."
 
 #. %s: stat source name
 #: src/components/arknights/CharacterStatusPopover.tsx:539
@@ -44,6 +48,15 @@ msgstr "Discord"
 #: src/components/arknights/AboutList.tsx:37
 msgid "Kengxxiao 解析的游戏数据"
 msgstr "Data Mining by Kengxxiao"
+
+#: src/components/arknights/MAAOperBoxImporter.tsx:25
+msgid ""
+"MAA 截图识别的结果只有精英化、等级和潜能，不含技能等级、专精和模组；这些保持"
+"导入前的值，请自行核对。"
+msgstr ""
+"MAA screen recognition only reads promotion, level and potential, not skill "
+"level, specialization or modules; those keep their values from before the "
+"import. Please check them yourself."
 
 #: src/components/AboutList.tsx:54
 msgid "QQ 交流群"
@@ -147,12 +160,17 @@ msgstr "Current"
 msgid "完成"
 msgstr "Complete"
 
-#: src/components/arknights/ImporterMenuItems.tsx:15
-#: src/components/arknights/MAAItemImporter.tsx:64
+#: src/components/arknights/ImporterMenuItems.tsx:16
+#: src/components/arknights/MAAItemImporter.tsx:65
 msgid "导入「MAA 仓库识别」数据"
 msgstr "Import Data from «MAA Depot Recognizer»"
 
-#: src/components/arknights/ImporterMenuItems.tsx:12
+#: src/components/arknights/ImporterMenuItems.tsx:21
+#: src/components/arknights/MAAOperBoxImporter.tsx:54
+msgid "导入「MAA 干员识别」数据"
+msgstr "Import Data from «MAA Operator Recognizer»"
+
+#: src/components/arknights/ImporterMenuItems.tsx:13
 #: src/components/arknights/SklandImporter.tsx:362
 msgid "导入「森空岛」数据"
 msgstr "Import Data from «Skland»"
@@ -187,14 +205,28 @@ msgstr ""
 "yet. Please wait for the data update. Game data typically takes 2~24 hours "
 "to process."
 
+#. %s: character names
+#: src/components/arknights/MAAOperBoxImporter.tsx:32
+msgid ""
+"尚不支持这些干员，已跳过：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据"
+"通常需要 2~24 小时解析。"
+msgstr ""
+"These operators are not supported yet and were skipped: %s. The game data "
+"may not have been updated yet. Please wait for the data update. Game data "
+"typically takes 2~24 hours to process."
+
 #. %d: number
 #: src/components/arknights/ExporterMenuItems.tsx:38
 msgid ""
 "已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
 msgid_plural ""
 "已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
-msgstr[0] "Copied the plan for %d operator. In MAA «Operator Progression», click «Read from Clipboard»."
-msgstr[1] "Copied the plan for %d operators. In MAA «Operator Progression», click «Read from Clipboard»."
+msgstr[0] ""
+"Copied the plan for %d operator. In MAA «Operator Progression», click «Read "
+"from Clipboard»."
+msgstr[1] ""
+"Copied the plan for %d operators. In MAA «Operator Progression», click «Read "
+"from Clipboard»."
 
 #: src/components/CharacterList.tsx:183
 msgid "已复制「%s」"
@@ -452,7 +484,8 @@ msgstr "Stats from Community"
 msgid "粘贴 JSON"
 msgstr "Paste JSON"
 
-#: src/components/arknights/MAAItemImporter.tsx:56
+#: src/components/arknights/MAAItemImporter.tsx:57
+#: src/components/arknights/MAAOperBoxImporter.tsx:49
 #: src/components/arknights/SklandImporter.tsx:243
 msgid "粘贴的东西好像不太对，请重试。"
 msgstr "The content you pasted was bad. Please try again."
@@ -493,7 +526,8 @@ msgstr "Please continue in the popup window «Sklanding»"
 msgid "请在弹出窗口中继续操作"
 msgstr "Please continue in the popup window"
 
-#: src/components/arknights/MAAItemImporter.tsx:76
+#: src/components/arknights/MAAItemImporter.tsx:82
+#: src/components/arknights/MAAOperBoxImporter.tsx:66
 #: src/components/arknights/SklandImporter.tsx:399
 msgid "请在此粘贴..."
 msgstr "Paste here..."
@@ -627,30 +661,45 @@ msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
 
-#: src/components/arknights/MAAItemImporter.tsx:67
+#: src/components/arknights/MAAOperBoxImporter.tsx:61
+msgctxt "arknights maa step"
+msgid "「导出到」选择「剪切板」，点击「导出」按钮"
+msgstr "Choose «Clipboard» in «Export to:», then click «Export»"
+
+#: src/components/arknights/MAAItemImporter.tsx:73
+msgctxt "arknights maa step"
+msgid ""
+"「导出到」选择「明日方舟工具箱」或「企鹅物流刷图规划」，点击「导出」按钮"
+msgstr ""
+"Choose «Arkntools» or «Arkplanner» in «Export to:», then click «Export»"
+
+#: src/components/arknights/MAAItemImporter.tsx:68
+#: src/components/arknights/MAAOperBoxImporter.tsx:57
 msgctxt "arknights maa step"
 msgid "打开 MAA「小工具」"
 msgstr "Open MAA «Toolbox»"
 
-#: src/components/arknights/MAAItemImporter.tsx:71
-msgctxt "arknights maa step"
-msgid "点击「导出至明日方舟工具箱」按钮"
-msgstr "Click «Export to Lolicon»"
-
-#: src/components/arknights/MAAItemImporter.tsx:69
+#: src/components/arknights/MAAItemImporter.tsx:70
+#: src/components/arknights/MAAOperBoxImporter.tsx:59
 msgctxt "arknights maa step"
 msgid "点击「开始识别」按钮"
 msgstr "Click «Start to identify»"
 
-#: src/components/arknights/MAAItemImporter.tsx:70
+#: src/components/arknights/MAAItemImporter.tsx:71
+#: src/components/arknights/MAAOperBoxImporter.tsx:60
 msgctxt "arknights maa step"
 msgid "等待识别完成"
 msgstr "Wait for completion"
 
-#: src/components/arknights/MAAItemImporter.tsx:68
+#: src/components/arknights/MAAItemImporter.tsx:69
 msgctxt "arknights maa step"
 msgid "选择「仓库识别」功能"
 msgstr "Switch to «Depot Recognition»"
+
+#: src/components/arknights/MAAOperBoxImporter.tsx:58
+msgctxt "arknights maa step"
+msgid "选择「干员识别」功能"
+msgstr "Switch to «Operator Recognition»"
 
 #: src/pkg/cpp-arknights/types.ts:67
 msgctxt "arknights option"
@@ -1025,6 +1074,11 @@ msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
 
+#: src/components/arknights/MAAOperBoxImporter.tsx:36
+msgctxt "list separator"
+msgid "、"
+msgstr ""
+
 #. loading data objects, %s: names of pending data objects
 #: src/App.tsx:314
 msgctxt "loading status"
@@ -1378,6 +1432,10 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgctxt "arknights maa step"
+#~ msgid "点击「导出至明日方舟工具箱」按钮"
+#~ msgstr "Click «Export to Lolicon»"
 
 #~ msgid "明日方舟一图流 材料价值数据"
 #~ msgstr "Sanity Value of Items from Arknights-yituliu"

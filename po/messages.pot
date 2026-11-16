@@ -34,6 +34,10 @@ msgstr ""
 msgid "Kengxxiao 解析的游戏数据"
 msgstr ""
 
+#: src/components/arknights/MAAOperBoxImporter.tsx:25
+msgid "MAA 截图识别的结果只有精英化、等级和潜能，不含技能等级、专精和模组；这些保持导入前的值，请自行核对。"
+msgstr ""
+
 #: src/components/AboutList.tsx:54
 msgid "QQ 交流群"
 msgstr ""
@@ -136,12 +140,17 @@ msgstr ""
 msgid "完成"
 msgstr ""
 
-#: src/components/arknights/ImporterMenuItems.tsx:15
-#: src/components/arknights/MAAItemImporter.tsx:64
+#: src/components/arknights/ImporterMenuItems.tsx:16
+#: src/components/arknights/MAAItemImporter.tsx:65
 msgid "导入「MAA 仓库识别」数据"
 msgstr ""
 
-#: src/components/arknights/ImporterMenuItems.tsx:12
+#: src/components/arknights/ImporterMenuItems.tsx:21
+#: src/components/arknights/MAAOperBoxImporter.tsx:54
+msgid "导入「MAA 干员识别」数据"
+msgstr ""
+
+#: src/components/arknights/ImporterMenuItems.tsx:13
 #: src/components/arknights/SklandImporter.tsx:362
 msgid "导入「森空岛」数据"
 msgstr ""
@@ -169,6 +178,11 @@ msgstr ""
 #. %s: character key
 #: src/components/arknights/SklandImporter.tsx:30
 msgid "尚不支持角色「%s」。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。"
+msgstr ""
+
+#. %s: character names
+#: src/components/arknights/MAAOperBoxImporter.tsx:32
+msgid "尚不支持这些干员，已跳过：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。"
 msgstr ""
 
 #. %d: number
@@ -399,7 +413,8 @@ msgstr ""
 msgid "粘贴 JSON"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:56
+#: src/components/arknights/MAAItemImporter.tsx:57
+#: src/components/arknights/MAAOperBoxImporter.tsx:49
 #: src/components/arknights/SklandImporter.tsx:243
 msgid "粘贴的东西好像不太对，请重试。"
 msgstr ""
@@ -437,7 +452,8 @@ msgstr ""
 msgid "请在弹出窗口中继续操作"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:76
+#: src/components/arknights/MAAItemImporter.tsx:82
+#: src/components/arknights/MAAOperBoxImporter.tsx:66
 #: src/components/arknights/SklandImporter.tsx:399
 msgid "请在此粘贴..."
 msgstr ""
@@ -563,29 +579,42 @@ msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:67
+#: src/components/arknights/MAAOperBoxImporter.tsx:61
+msgctxt "arknights maa step"
+msgid "「导出到」选择「剪切板」，点击「导出」按钮"
+msgstr ""
+
+#: src/components/arknights/MAAItemImporter.tsx:73
+msgctxt "arknights maa step"
+msgid "「导出到」选择「明日方舟工具箱」或「企鹅物流刷图规划」，点击「导出」按钮"
+msgstr ""
+
+#: src/components/arknights/MAAItemImporter.tsx:68
+#: src/components/arknights/MAAOperBoxImporter.tsx:57
 msgctxt "arknights maa step"
 msgid "打开 MAA「小工具」"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:71
-msgctxt "arknights maa step"
-msgid "点击「导出至明日方舟工具箱」按钮"
-msgstr ""
-
-#: src/components/arknights/MAAItemImporter.tsx:69
+#: src/components/arknights/MAAItemImporter.tsx:70
+#: src/components/arknights/MAAOperBoxImporter.tsx:59
 msgctxt "arknights maa step"
 msgid "点击「开始识别」按钮"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:70
+#: src/components/arknights/MAAItemImporter.tsx:71
+#: src/components/arknights/MAAOperBoxImporter.tsx:60
 msgctxt "arknights maa step"
 msgid "等待识别完成"
 msgstr ""
 
-#: src/components/arknights/MAAItemImporter.tsx:68
+#: src/components/arknights/MAAItemImporter.tsx:69
 msgctxt "arknights maa step"
 msgid "选择「仓库识别」功能"
+msgstr ""
+
+#: src/components/arknights/MAAOperBoxImporter.tsx:58
+msgctxt "arknights maa step"
+msgid "选择「干员识别」功能"
 msgstr ""
 
 #: src/pkg/cpp-arknights/types.ts:67
@@ -957,6 +986,11 @@ msgstr ""
 #: src/components/ItemList.tsx:473
 msgctxt "item list view label"
 msgid "计划"
+msgstr ""
+
+#: src/components/arknights/MAAOperBoxImporter.tsx:36
+msgctxt "list separator"
+msgid "、"
 msgstr ""
 
 #. loading data objects, %s: names of pending data objects

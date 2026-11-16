@@ -5,6 +5,7 @@ import { memo } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useGameAdapter } from '../../Cpp'
 import { Arknights } from '../../pkg/cpp-arknights'
+import { parseMAADepot } from '../../pkg/cpp-arknights/maa'
 import { UserData } from '../../pkg/cpp-core/UserData'
 import { gt } from '../../pkg/gt'
 import { ImportContext, useStartImportSession } from '../Importer'
@@ -20,7 +21,7 @@ export const MAAItemImporterDialog = memo(<G extends Arknights>({ onClose }: { o
   const handleData = useEvent((input: string) => {
     onClose()
     startImportSession(() => {
-      const data = JSON.parse(input)
+      const data = parseMAADepot(input)
       return (draft: Draft<UserData<Arknights>>, ctx: ImportContext) => {
         void ctx
 
@@ -68,7 +69,12 @@ export const MAAItemImporterDialog = memo(<G extends Arknights>({ onClose }: { o
           <MyCard step={2}>{gt.pgettext('arknights maa step', '选择「仓库识别」功能')}</MyCard>
           <MyCard step={3}>{gt.pgettext('arknights maa step', '点击「开始识别」按钮')}</MyCard>
           <MyCard step={4}>{gt.pgettext('arknights maa step', '等待识别完成')}</MyCard>
-          <MyCard step={5}>{gt.pgettext('arknights maa step', '点击「导出至明日方舟工具箱」按钮')}</MyCard>
+          <MyCard step={5}>
+            {gt.pgettext(
+              'arknights maa step',
+              '「导出到」选择「明日方舟工具箱」或「企鹅物流刷图规划」，点击「导出」按钮',
+            )}
+          </MyCard>
           <MyCard step={6}>
             <InputGroup
               onPaste={handleInput}
@@ -86,7 +92,7 @@ export const MAAItemImporterDialog = memo(<G extends Arknights>({ onClose }: { o
   )
 })
 
-const MyCard = memo((props: { children: React.ReactNode; step: number }) => {
+export const MyCard = memo((props: { children: React.ReactNode; step: number }) => {
   return (
     <Card>
       <span style={{ fontSize: '1.5em', marginRight: '1em' }}>{props.step}</span>
@@ -95,4 +101,4 @@ const MyCard = memo((props: { children: React.ReactNode; step: number }) => {
   )
 })
 
-const noop = () => void 0
+export const noop = () => void 0
