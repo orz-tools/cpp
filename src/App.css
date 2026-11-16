@@ -171,6 +171,81 @@ body {
   padding: 15px;
 }
 
+.cpp-stage-popover {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 90vw);
+  max-height: 80vh;
+}
+
+.cpp-stage-popover-toolbar {
+  display: flex;
+  flex: none;
+  gap: 5px;
+  padding: 10px;
+}
+
+.cpp-stage-popover-toolbar > .bp6-button {
+  flex: none;
+  white-space: nowrap;
+}
+
+.cpp-stage-popover-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.cpp-stage-popover-categories {
+  flex: none;
+  width: 200px;
+  overflow: auto;
+}
+
+.cpp-stage-popover-categories .bp6-control.bp6-inline {
+  margin: 0;
+  min-height: 0;
+  padding-left: 20px;
+}
+
+.cpp-stage-popover-zones {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: auto;
+  padding: 0 10px 10px;
+}
+
+.cpp-stage-category-title {
+  margin: 10px 0 0;
+}
+
+.cpp-stage-zone {
+  padding: 10px 0;
+}
+
+.cpp-stage-zone + .cpp-stage-zone {
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.cpp-stage-zone-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.cpp-stage-zone-stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.cpp-stage-zone-stages .bp6-control.bp6-inline {
+  margin-right: 0;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .cpp-item-menu-master > li {
   display: flex;
   align-items: center;

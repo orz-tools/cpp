@@ -5,6 +5,8 @@ import {
   ExpItem,
   IGameAdapter,
   IGameAdapterStatic,
+  IStageCategory,
+  IZoneInfo,
   PredefinedQuery,
   QNumber,
   QString,
@@ -37,6 +39,7 @@ import {
   SurveySourceKeys,
   formulaTagNames,
 } from './types'
+import { ArknightsStageCategory, arknightsZoneCategory, arknightsZoneSortKey } from './zones'
 
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
   public readPreference<K extends keyof Arknights['preferences']>(
@@ -484,12 +487,42 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   }
 
   private zoneNames: Record<string, string> = {}
+  private zoneTypes: Record<string, string | undefined> = {}
+  private zoneInfos: Record<string, IZoneInfo> | undefined
   private stageInfo: Record<string, ArknightsStageInfo> = undefined as any
   private cacheExpiresAt = Infinity
 
-  public getZoneNames() {
-    this.getStageInfos()
-    return this.zoneNames
+  public getZoneInfos() {
+    const stageInfo = this.getStageInfos()
+    if (this.zoneInfos) return this.zoneInfos
+
+    const codes: Record<string, string[]> = {}
+    for (const stage of Object.values(stageInfo)) {
+      ;(codes[stage.zoneId] ||= []).push(stage.code)
+    }
+    const zoneInfos: Record<string, IZoneInfo> = {}
+    for (const [id, stageCodes] of Object.entries(codes)) {
+      const type = this.zoneTypes[id]
+      zoneInfos[id] = {
+        id,
+        name: this.zoneNames[id] || '',
+        categoryId: arknightsZoneCategory(type),
+        sortKey: arknightsZoneSortKey(id, type, stageCodes),
+      }
+    }
+    this.zoneInfos = zoneInfos
+    return zoneInfos
+  }
+
+  public getStageCategories(): IStageCategory[] {
+    return [
+      { id: ArknightsStageCategory.Main, name: gt.pgettext('arknights stage category', '主线') },
+      { id: ArknightsStageCategory.Activity, name: gt.pgettext('arknights stage category', '活动') },
+      { id: ArknightsStageCategory.Sidestory, name: gt.pgettext('arknights stage category', '别传') },
+      { id: ArknightsStageCategory.Branchline, name: gt.pgettext('arknights stage category', '插曲') },
+      { id: ArknightsStageCategory.Resource, name: gt.pgettext('arknights stage category', '资源收集') },
+      { id: ArknightsStageCategory.Other, name: gt.pgettext('arknights stage category', '其他') },
+    ]
   }
 
   public getStageInfos() {
@@ -500,9 +533,12 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     const map = new Map<string, ArknightsStageInfo>()
     this.stageInfo = {}
     this.zoneNames = {}
+    this.zoneTypes = {}
+    this.zoneInfos = undefined
     this.cacheExpiresAt = Infinity
     const loadZoneName = (stageInfo: ArknightsKengxxiao['exStage']['stages'][''], isRetro: boolean) => {
       if (this.zoneNames[stageInfo.zoneId]) return
+      this.zoneTypes[stageInfo.zoneId] = base.exZone.zones[stageInfo.zoneId]?.type
       if (isRetro) {
         const retroId = base.exRetro.zoneToRetro[stageInfo.zoneId]
         if (retroId) {
@@ -574,6 +610,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     }
 
     this.zoneNames['weekly_chips'] = gt.pgettext('arknights zone', '芯片搜索')
+    this.zoneTypes['weekly_chips'] = 'WEEKLY'
     return this.stageInfo
   }
 }
@@ -597,7 +634,7 @@ class ArknightsStageInfo extends BasicStageInfo {
   }
 
   public get code(): string {
-    return `${(diffGroupName[this.excel.diffGroup] || '').toString()}${this.excel.code}`
+    return `${(diffGroupName[this.excel.diffGroup] || '').toString()}${this.excel.code ?? ''}`
   }
 
   public get name(): string {

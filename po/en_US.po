@@ -86,15 +86,23 @@ msgstr "Drop Rate Data from Penguin Statistics"
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
-#: src/components/ConfigUi.tsx:234
+#: src/components/ConfigUi.tsx:339
 msgid "免责声明"
 msgstr "Disclaimer"
+
+#: src/components/ConfigUi.tsx:195
+msgid "全部启用"
+msgstr "Enable all"
+
+#: src/components/ConfigUi.tsx:200
+msgid "全部禁用"
+msgstr "Disable all"
 
 #: src/components/AboutList.tsx:27
 msgid "关于"
 msgstr "About"
 
-#: src/components/ConfigUi.tsx:166
+#: src/components/ConfigUi.tsx:271
 msgid "关卡"
 msgstr "Stages"
 
@@ -288,6 +296,10 @@ msgstr "As of %s"
 msgid "持有"
 msgstr "Own"
 
+#: src/components/ConfigUi.tsx:189
+msgid "按关卡代号或名称筛选"
+msgstr "Filter by stage code or name"
+
 #: src/components/ItemList.tsx:541
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
@@ -317,6 +329,10 @@ msgstr ""
 #: src/components/AboutList.tsx:83
 msgid "数据源"
 msgstr "Data Sources"
+
+#: src/components/ConfigUi.tsx:171
+msgid "无匹配关卡"
+msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:33
 #: src/components/CharacterList.tsx:189
@@ -446,7 +462,7 @@ msgstr "There is no data to export."
 msgid "清空"
 msgstr "Clear"
 
-#: src/components/ConfigUi.tsx:211
+#: src/components/ConfigUi.tsx:316
 msgid "游戏服务器"
 msgstr "Game Region"
 
@@ -573,7 +589,7 @@ msgstr "Recent Patches"
 msgid "返回主页"
 msgstr "Back to Home"
 
-#: src/components/ConfigUi.tsx:44
+#: src/components/ConfigUi.tsx:57
 msgid "选项"
 msgstr "Options"
 
@@ -601,62 +617,62 @@ msgstr "Hide"
 msgid "鸣谢"
 msgstr "Credits"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:400
+#: src/pkg/cpp-arknights/GameAdapter.ts:403
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr "Growth Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:663
+#: src/pkg/cpp-arknights/GameAdapter.ts:700
 msgctxt "arknights item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:660
+#: src/pkg/cpp-arknights/GameAdapter.ts:697
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr "Dualchips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:659
+#: src/pkg/cpp-arknights/GameAdapter.ts:696
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr "Skill, Module & Catalysts"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:658
+#: src/pkg/cpp-arknights/GameAdapter.ts:695
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr "T1 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:655
+#: src/pkg/cpp-arknights/GameAdapter.ts:692
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:657
+#: src/pkg/cpp-arknights/GameAdapter.ts:694
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:662
+#: src/pkg/cpp-arknights/GameAdapter.ts:699
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:661
+#: src/pkg/cpp-arknights/GameAdapter.ts:698
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr "Chip Packs"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:656
+#: src/pkg/cpp-arknights/GameAdapter.ts:693
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:654
+#: src/pkg/cpp-arknights/GameAdapter.ts:691
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:653
+#: src/pkg/cpp-arknights/GameAdapter.ts:690
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
@@ -736,17 +752,47 @@ msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr "S2"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:584
+#: src/pkg/cpp-arknights/GameAdapter.ts:519
+msgctxt "arknights stage category"
+msgid "主线"
+msgstr "Main Story"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:524
+msgctxt "arknights stage category"
+msgid "其他"
+msgstr "Other"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:521
+msgctxt "arknights stage category"
+msgid "别传"
+msgstr "Side Stories"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:522
+msgctxt "arknights stage category"
+msgid "插曲"
+msgstr "Intermezzi"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:520
+msgctxt "arknights stage category"
+msgid "活动"
+msgstr "Events"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:523
+msgctxt "arknights stage category"
+msgid "资源收集"
+msgstr "Supplies"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:621
 msgctxt "arknights stage difficulty"
 msgid "剧情"
 msgstr "Easy "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:582
+#: src/pkg/cpp-arknights/GameAdapter.ts:619
 msgctxt "arknights stage difficulty"
 msgid "标准"
 msgstr "Standard "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:583
+#: src/pkg/cpp-arknights/GameAdapter.ts:620
 msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr "Tough "
@@ -862,7 +908,7 @@ msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:576
+#: src/pkg/cpp-arknights/GameAdapter.ts:612
 msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
@@ -1180,6 +1226,11 @@ msgstr "Maxed"
 msgctxt "short name"
 msgid "计划(毕业)"
 msgstr "Planned t/Maxed"
+
+#: src/components/stageGroups.ts:34
+msgctxt "stage category"
+msgid "其他"
+msgstr "Other"
 
 #: src/components/arknights/ValueConfigMenu.tsx:249
 msgctxt "value config"

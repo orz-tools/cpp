@@ -158,11 +158,11 @@ const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => {
     })
 
   const stageInfos = ga.getStageInfos()
-  const toggleStage = (stageId: string) =>
+  const setStagesIncluded = (stageIds: string[], included: boolean) =>
     update((d) => {
-      d.excludedStageIds = d.excludedStageIds.includes(stageId)
-        ? d.excludedStageIds.filter((x) => x !== stageId)
-        : [...d.excludedStageIds, stageId]
+      d.excludedStageIds = included
+        ? d.excludedStageIds.filter((x) => !stageIds.includes(x))
+        : [...d.excludedStageIds, ...stageIds.filter((x) => !d.excludedStageIds.includes(x))]
     })
   const excludedCount = draft.excludedStageIds.length
 
@@ -216,7 +216,7 @@ const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => {
               <StagePopover
                 stageIds={Object.keys(stageInfos)}
                 isChecked={(stageId) => !draft.excludedStageIds.includes(stageId)}
-                onToggle={toggleStage}
+                onSetChecked={setStagesIncluded}
               />
             }
           >
