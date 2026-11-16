@@ -36,10 +36,22 @@ import {
   ArknightsKengxxiao,
   ArknightsRegion,
   PreferenceKeys,
+  ProfessionNames,
   SurveySourceKeys,
   formulaTagNames,
 } from './types'
 import { ArknightsStageCategory, arknightsZoneCategory, arknightsZoneSortKey } from './zones'
+
+const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
+const numberOptions = (from: number, to: number) => () => range(from, to).map((x) => ({ value: x, label: `${x}` }))
+const rarityOptions = numberOptions(1, 6)
+const potentialOptions = numberOptions(1, 6)
+const skillLevelOptions = numberOptions(1, 7)
+const eliteOptions = () =>
+  range(0, 2).map((x) => ({ value: x, label: gt.pgettext('query value', '精英 %d').replaceAll('%d', `${x}`) }))
+const masteryOptions = () =>
+  range(0, 3).map((x) => ({ value: x, label: gt.pgettext('query value', '专精 %d').replaceAll('%d', `${x}`) }))
+const professionOptions = () => Object.entries(ProfessionNames).map(([value, label]) => ({ value, label }))
 
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
   public readPreference<K extends keyof Arknights['preferences']>(
@@ -141,52 +153,60 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   }
 
   private rootCharacterQuery = new RootCharacterQuery<Arknights, Character>().tap((aa) => {
-    aa.addField('name', '代号', QString, ({ character }) => character.name)
-    aa.addField('code', '西文代号', QString, ({ character }) => character.appellation)
+    aa.addField('name', lpstr(() => gt.pgettext('query field', '代号')), QString, ({ character }) => character.name)
+    aa.addField('code', lpstr(() => gt.pgettext('query field', '西文代号')), QString, ({ character }) => character.appellation)
       .addAlias('appellation')
       .addAlias('en')
-    aa.addField('rarity', '稀有度', QNumber, ({ character }) => character.rarity + 1).addAlias('star')
-    aa.addField('profession', '职业', QString, ({ character }) => character.raw.profession)
-    aa.addField('professions', '职业', QStrings, ({ character }) => [
+    aa.addField('rarity', lpstr(() => gt.pgettext('query field', '稀有度')), QNumber, ({ character }) => character.rarity + 1)
+      .addAlias('star')
+      .withOptions(rarityOptions)
+    aa.addField('profession', lpstr(() => gt.pgettext('query field', '主职业')), QString, ({ character }) => character.raw.profession).withOptions(
+      professionOptions,
+    )
+    aa.addField('professions', lpstr(() => gt.pgettext('query field', '职业')), QStrings, ({ character }) => [
       ...new Set([character.raw.profession, ...character.patches.map((x) => x[1].profession)]),
-    ])
+    ]).withOptions(professionOptions)
 
-    aa.addStatusField('elite', '精英化', QNumber, ({ status }) => status.elite)
-    aa.addStatusField('level', '等级', QNumber, ({ status }) => status.level)
-    aa.addStatusField('elv', '精英化*100+等级', QNumber, ({ status }) => status.elite * 100 + status.level)
-    aa.addStatusField('skillLevel', '技能等级', QNumber, ({ status }) => status.skillLevel)
-    aa.addStatusField('potential', '潜能', QNumber, ({ status }) => (status.potentialRank || 0) + 1)
+    aa.addStatusField('elite', lpstr(() => gt.pgettext('query field', '精英化')), QNumber, ({ status }) => status.elite).withOptions(eliteOptions)
+    aa.addStatusField('level', lpstr(() => gt.pgettext('query field', '等级')), QNumber, ({ status }) => status.level)
+    aa.addStatusField('elv', lpstr(() => gt.pgettext('query field', '精英化 × 100 + 等级')), QNumber, ({ status }) => status.elite * 100 + status.level)
+    aa.addStatusField('skillLevel', lpstr(() => gt.pgettext('query field', '技能等级')), QNumber, ({ status }) => status.skillLevel).withOptions(
+      skillLevelOptions,
+    )
+    aa.addStatusField('potential', lpstr(() => gt.pgettext('query field', '潜能')), QNumber, ({ status }) => (status.potentialRank || 0) + 1).withOptions(
+      potentialOptions,
+    )
 
     const hss = new HeyboxSurveySource(this.dataManager)
     const yss = new YituliuSurveySource(this.dataManager)
 
-    aa.addField('elite2rate.yituliu', '一图流练度统计 精二率', QNumber, ({ character }) => {
+    aa.addField('elite2rate.yituliu', lpstr(() => gt.pgettext('query field', '一图流练度统计 精二率')), QNumber, ({ character }) => {
       return QNumber.parse(yss.elite2(character)?.percent)
-    })
+    }).withFormat('percent')
 
-    aa.addField('elite2rate.heybox', '小黑盒干员统计 精二率', QNumber, ({ character }) => {
+    aa.addField('elite2rate.heybox', lpstr(() => gt.pgettext('query field', '小黑盒干员统计 精二率')), QNumber, ({ character }) => {
       return QNumber.parse(hss.elite2(character)?.percent)
-    })
+    }).withFormat('percent')
 
-    aa.addField('elite2level90rate.heybox', '小黑盒干员统计 精二 90 级率', QNumber, ({ character }) => {
+    aa.addField('elite2level90rate.heybox', lpstr(() => gt.pgettext('query field', '小黑盒干员统计 精二 90 级率')), QNumber, ({ character }) => {
       return QNumber.parse(hss.e2level(character, 90)?.percent)
-    })
+    }).withFormat('percent')
 
     aa.createSubQuery(
       'skill',
-      '技能',
+      lpstr(() => gt.pgettext('query sub query', '技能')),
       (character) => {
         return character.skills.map((_, index) => [index] as const)
       },
       (index) => `${index}`,
     ).tap((sq) => {
-      sq.addField('name', '技能名', QString, ({ character, args: [index] }) => character.skills[index].skill.name)
+      sq.addField('name', lpstr(() => gt.pgettext('query field', '技能名')), QString, ({ character, args: [index] }) => character.skills[index].skill.name)
 
-      sq.addStatusField('mastery', '专精等级', QNumber, ({ character, status, args: [index] }) => {
+      sq.addStatusField('mastery', lpstr(() => gt.pgettext('query field', '专精等级')), QNumber, ({ character, status, args: [index] }) => {
         return status.skillMaster[character.skills[index].skillId] ?? 0
-      })
+      }).withOptions(masteryOptions)
 
-      sq.addField('mastery3rate.yituliu', '一图流练度统计 技能专三率', QNumber, ({ character, args: [index] }) => {
+      sq.addField('mastery3rate.yituliu', lpstr(() => gt.pgettext('query field', '一图流练度统计 技能专三率')), QNumber, ({ character, args: [index] }) => {
         const s = yss.skill(
           character,
           character.skills[index].skill,
@@ -195,9 +215,9 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         )
         if (s?.[0]?.percent == null || s?.[3]?.percent == null) return NaN
         return s?.[0]?.percent * s?.[3]?.percent
-      })
+      }).withFormat('percent')
 
-      sq.addField('mastery3rate.heybox', '小黑盒干员统计 技能专三率', QNumber, ({ character, args: [index] }) => {
+      sq.addField('mastery3rate.heybox', lpstr(() => gt.pgettext('query field', '小黑盒干员统计 技能专三率')), QNumber, ({ character, args: [index] }) => {
         const s = hss.skill(
           character,
           character.skills[index].skill,
@@ -206,7 +226,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         )
         if (s?.[0]?.percent == null || s?.[3]?.percent == null) return NaN
         return s?.[0]?.percent * s?.[3]?.percent
-      })
+      }).withFormat('percent')
     })
   })
 

@@ -37,7 +37,7 @@ import {
   Querier,
   QueryParam,
 } from '../pkg/cpp-basic'
-import { gt } from '../pkg/gt'
+import { gt, lpstr } from '../pkg/gt'
 
 export const Hide = memo(
   ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
@@ -342,17 +342,24 @@ class CppCharacterListQuery extends ExtraCharacterQuery<IGame, ICharacter> {
     const atoms = cpp.atoms.atoms
     const realOrder = store.get(atoms.goalOrder)
 
-    this.addField('id', '内部代号', QString, ({ character }) => character.key).addAlias('key')
+    this.addField('id', lpstr(() => gt.pgettext('query field', '内部代号')), QString, ({ character }) => character.key).addAlias(
+      'key',
+    )
 
-    this.addStatusField('own', '持有', QBoolean, ({ character, status }) => !uda.isAbsentCharacter(character, status))
+    this.addStatusField(
+      'own',
+      lpstr(() => gt.pgettext('query field', '持有')),
+      QBoolean,
+      ({ character, status }) => !uda.isAbsentCharacter(character, status),
+    )
 
-    this.addField('goalOrder', '计划顺序', QNumber, ({ character }) => {
+    this.addField('goalOrder', lpstr(() => gt.pgettext('query field', '计划顺序')), QNumber, ({ character }) => {
       const o = realOrder.indexOf(character.key)
       if (o < 0) return Number.MAX_SAFE_INTEGER
       return o
     })
 
-    this.addField('finished', '已全面养成', QBoolean, ({ character }) => {
+    this.addField('finished', lpstr(() => gt.pgettext('query field', '已全面养成')), QBoolean, ({ character }) => {
       return store.get(atoms.isCharacterFinished(character.key))
     })
   }
