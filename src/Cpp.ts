@@ -1,5 +1,6 @@
 import { WritableAtom, atom, createStore, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { atomFamily, atomWithStorage } from 'jotai/utils'
+import { atomWithStorage } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 import React, { SetStateAction, useContext } from 'react'
 import { IGameComponent } from './components/types'
 import { BlobFlavour } from './pkg/blobcache'
