@@ -149,6 +149,13 @@ msgstr ""
 msgid "声明"
 msgstr ""
 
+#. %d: number
+#: src/components/arknights/ArkntoolsImporter.tsx:54
+msgid "备份中排除了 %d 个关卡，与 cpp 当前的设置不同；排除关卡没有导入，如需一致请在「关卡」菜单中自行设置。"
+msgid_plural "备份中排除了 %d 个关卡，与 cpp 当前的设置不同；排除关卡没有导入，如需一致请在「关卡」菜单中自行设置。"
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/components/arknights/ExporterMenuItems.tsx:146
 msgid "复制为 arkntools「精英材料计算」备份"
 msgstr ""
@@ -220,7 +227,7 @@ msgid "尚不支持角色「%s」。可能游戏数据尚未更新，请静候�
 msgstr ""
 
 #. %s: character names
-#: src/components/arknights/ArkntoolsImporter.tsx:40
+#: src/components/arknights/ArkntoolsImporter.tsx:39
 #: src/components/arknights/MAAOperBoxImporter.tsx:32
 msgid "尚不支持这些干员，已跳过：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。"
 msgstr ""
@@ -247,13 +254,6 @@ msgstr[1] ""
 #: src/components/arknights/ValueConfigMenu.tsx:481
 msgid "已定价 %d 种物品"
 msgid_plural "已定价 %d 种物品"
-msgstr[0] ""
-msgstr[1] ""
-
-#. %d: number
-#: src/components/arknights/ArkntoolsImporter.tsx:53
-msgid "已按备份把排除关卡替换为 %d 个；「撤销」不会恢复这一项。"
-msgid_plural "已按备份把排除关卡替换为 %d 个；「撤销」不会恢复这一项。"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -562,7 +562,7 @@ msgid "返回主页"
 msgstr ""
 
 #. %s: character names
-#: src/components/arknights/ArkntoolsImporter.tsx:31
+#: src/components/arknights/ArkntoolsImporter.tsx:30
 msgid "这些干员在 cpp 中尚未持有，已按 arkntools 计划的起点设为持有，等级按计划所需的最低值填写，请自行核对：%s。"
 msgstr ""
 
@@ -1165,8 +1165,8 @@ msgctxt "item list view label"
 msgid "计划"
 msgstr ""
 
-#: src/components/arknights/ArkntoolsImporter.tsx:35
-#: src/components/arknights/ArkntoolsImporter.tsx:44
+#: src/components/arknights/ArkntoolsImporter.tsx:34
+#: src/components/arknights/ArkntoolsImporter.tsx:43
 #: src/components/arknights/MAAOperBoxImporter.tsx:36
 #: src/components/arknights/MAAOperProgressImporter.tsx:25
 #: src/components/CharacterList.tsx:454

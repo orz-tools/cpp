@@ -4,6 +4,7 @@ import {
   buildArkntoolsBackup,
   decodeArkntoolsBackup,
   encodeArkntoolsBackup,
+  isArkntoolsStageBlacklistDifferent,
   mergeArkntoolsBackup,
 } from './arkntools'
 import { ArknightsCharacterStatus } from './types'
@@ -265,5 +266,20 @@ describe('buildArkntoolsBackup', () => {
     const data = { current: structuredClone(current), goal: {}, items: {} }
     mergeArkntoolsBackup(ga, data, empty, decodeArkntoolsBackup(encodeArkntoolsBackup(backup)), () => true)
     expect(data.goal).toEqual(goal)
+  })
+})
+
+describe('isArkntoolsStageBlacklistDifferent', () => {
+  const stageCodes = { main_01_07: '1-7', tough_01_07: '1-7', main_04_06: '4-6', act_gt_05: 'GT-5' }
+
+  it('compares by code, ignoring codes cpp does not have', () => {
+    expect(isArkntoolsStageBlacklistDifferent(['1-7', 'XX-1'], ['main_01_07'], stageCodes)).toBe(false)
+    expect(isArkntoolsStageBlacklistDifferent([], [], stageCodes)).toBe(false)
+  })
+
+  it('reports a stage excluded on only one side', () => {
+    expect(isArkntoolsStageBlacklistDifferent(['1-7'], [], stageCodes)).toBe(true)
+    expect(isArkntoolsStageBlacklistDifferent([], ['act_gt_05'], stageCodes)).toBe(true)
+    expect(isArkntoolsStageBlacklistDifferent(['1-7'], ['main_04_06'], stageCodes)).toBe(true)
   })
 })

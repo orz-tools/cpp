@@ -6,8 +6,8 @@ import { useCpp } from '../../Cpp'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
 import {
   decodeArkntoolsBackup,
+  isArkntoolsStageBlacklistDifferent,
   mergeArkntoolsBackup,
-  stageIdsFromArkntoolsCodes,
 } from '../../pkg/cpp-arknights/arkntools'
 import { UserData } from '../../pkg/cpp-core/UserData'
 import { gt } from '../../pkg/gt'
@@ -20,7 +20,6 @@ export const ArkntoolsImporterDialog = memo(({ onClose }: { onClose: () => void 
   const startImportSession = useStartImportSession()
   const handleData = useEvent((input: string) => {
     onClose()
-    let forbiddenStageIds: string[] | undefined
     startImportSession(() => {
       const backup = decodeArkntoolsBackup(input)
       const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
@@ -48,21 +47,22 @@ export const ArkntoolsImporterDialog = memo(({ onClose }: { onClose: () => void 
           const stageCodes = Object.fromEntries(
             Object.values(ga.getStageInfos()).map((x) => [x.id, x.rawCode] as const),
           )
-          forbiddenStageIds = stageIdsFromArkntoolsCodes(backup.planStageBlacklist, stageCodes)
-          ctx.addWarning(
-            gt
-              .ngettext(
-                '已按备份把排除关卡替换为 %d 个；「撤销」不会恢复这一项。',
-                '已按备份把排除关卡替换为 %d 个；「撤销」不会恢复这一项。',
-                forbiddenStageIds.length,
-              ) /* I10N: %d: number */
-              .replaceAll('%d', String(forbiddenStageIds.length)),
-          )
+          const forbidden = cpp.store.get(cpp.preferenceAtoms.forbiddenStageIdsAtom)
+          // 排除关卡是偏好而不是用户数据，撤销不了，所以不导入，只在与当前设置不同时提示
+          if (isArkntoolsStageBlacklistDifferent(backup.planStageBlacklist, forbidden, stageCodes)) {
+            ctx.addWarning(
+              gt
+                .ngettext(
+                  '备份中排除了 %d 个关卡，与 cpp 当前的设置不同；排除关卡没有导入，如需一致请在「关卡」菜单中自行设置。',
+                  '备份中排除了 %d 个关卡，与 cpp 当前的设置不同；排除关卡没有导入，如需一致请在「关卡」菜单中自行设置。',
+                  backup.planStageBlacklist.length,
+                ) /* I10N: %d: number */
+                .replaceAll('%d', String(backup.planStageBlacklist.length)),
+            )
+          }
         }
       }
     })
-    // 排除关卡是偏好而不是用户数据，导入会话之外单独写入；合并失败时 forbiddenStageIds 仍是 undefined
-    if (forbiddenStageIds) cpp.store.set(cpp.preferenceAtoms.forbiddenStageIdsAtom, forbiddenStageIds)
   })
 
   const handleInput = useEvent<React.ClipboardEventHandler<HTMLInputElement>>((e) => {

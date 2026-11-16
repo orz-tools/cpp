@@ -355,12 +355,17 @@ export function buildArkntoolsBackup(
   }
 }
 
-// arkntools 的排除关卡按游戏里的关卡代号记（不带「标准」「磨难」前缀）；同一代号在 cpp 里可能对应多个关卡，全部算上
-export function stageIdsFromArkntoolsCodes(codes: readonly string[], stageCodes: Record<string, string>) {
-  const wanted = new Set(codes)
-  return Object.entries(stageCodes)
-    .filter(([, code]) => wanted.has(code))
-    .map(([id]) => id)
+// arkntools 的排除关卡按游戏里的关卡代号记（不带「标准」「磨难」前缀）。
+// 比较只看 cpp 认识的代号：备份里 cpp 没有的关卡，cpp 也无从排除，不算不同。
+export function isArkntoolsStageBlacklistDifferent(
+  codes: readonly string[],
+  forbiddenStageIds: readonly string[],
+  stageCodes: Record<string, string>,
+) {
+  const known = new Set(Object.values(stageCodes))
+  const theirs = new Set(codes.filter((x) => known.has(x)))
+  const ours = new Set(arkntoolsCodesFromStageIds(forbiddenStageIds, stageCodes))
+  return theirs.size !== ours.size || [...theirs].some((x) => !ours.has(x))
 }
 
 export function arkntoolsCodesFromStageIds(ids: readonly string[], stageCodes: Record<string, string>) {
