@@ -12,15 +12,15 @@ export const ImporterMenuItems = memo(() => {
   const { add } = useChamber()
   return (
     <>
-      <MenuItem icon={'log-in'} text={gt.gettext('导入「森空岛」数据')} onClick={() => add(SklandImporterDialog)} />
+      <MenuItem icon={'log-in'} text={gt.gettext('导入森空岛数据')} onClick={() => add(SklandImporterDialog)} />
       <MenuItem
         icon={'log-in'}
-        text={gt.gettext('导入「MAA 仓库识别」数据')}
+        text={gt.gettext('导入 MAA「仓库识别」数据')}
         onClick={() => add(MAAItemImporterDialog)}
       />
       <MenuItem
         icon={'log-in'}
-        text={gt.gettext('导入「MAA 干员识别」数据')}
+        text={gt.gettext('导入 MAA「干员识别」数据')}
         onClick={() => add(MAAOperBoxImporterDialog)}
       />
       <MenuItem
@@ -30,7 +30,7 @@ export const ImporterMenuItems = memo(() => {
       />
       <MenuItem
         icon={'log-in'}
-        text={gt.gettext('导入「arkntools 精英材料计算」备份')}
+        text={gt.gettext('导入明日方舟工具箱「精英材料计算」备份')}
         onClick={() => add(ArkntoolsImporterDialog)}
       />
     </>

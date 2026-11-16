@@ -68,17 +68,13 @@ export const MAAOperProgressImporterDialog = memo(({ onClose }: { onClose: () =>
     <Dialog isOpen={true} onClose={onClose} title={gt.gettext('导入 MAA「干员培养」计划')} icon="log-in">
       <DialogBody>
         <CardList compact>
-          <MyCard step={1}>
-            {gt.pgettext(
-              'arknights maa step',
-              '复制 MAA「干员培养」计划的 JSON，例如 arkntools「精英材料计算」中「导出培养方案至 MAA」的结果',
-            )}
-          </MyCard>
-          <MyCard step={2}>
+          <MyCard step={1}>{gt.pgettext('arknights arkntools step', '打开明日方舟工具箱「精英材料计算」')}</MyCard>
+          <MyCard step={2}>{gt.pgettext('arknights arkntools step', '点击「导出」→「导出培养方案至 MAA」')}</MyCard>
+          <MyCard step={3}>
             <InputGroup
               onPaste={handleInput}
               value={''}
-              placeholder={gt.gettext('请在此粘贴...')}
+              placeholder={gt.gettext('在此粘贴…')}
               autoFocus
               style={{ width: '100%' }}
               onChange={noop}

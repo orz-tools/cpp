@@ -102,8 +102,8 @@ export const ExporterMenuItems = memo(() => {
     const notes = [
       gt
         .ngettext(
-          '已复制含 %d 项干员计划的备份，请在 arkntools「精英材料计算」中点击「导入」→「恢复」并粘贴。恢复会覆盖 arkntools 中现有的计划和库存。',
-          '已复制含 %d 项干员计划的备份，请在 arkntools「精英材料计算」中点击「导入」→「恢复」并粘贴。恢复会覆盖 arkntools 中现有的计划和库存。',
+          '已复制含 %d 项干员计划的备份，请在明日方舟工具箱「精英材料计算」中点击「导入」→「恢复」并粘贴。恢复会覆盖明日方舟工具箱中现有的计划和库存。',
+          '已复制含 %d 项干员计划的备份，请在明日方舟工具箱「精英材料计算」中点击「导入」→「恢复」并粘贴。恢复会覆盖明日方舟工具箱中现有的计划和库存。',
           presets,
         ) /* I10N: %d: number */
         .replaceAll('%d', String(presets)),
@@ -112,8 +112,8 @@ export const ExporterMenuItems = memo(() => {
       notes.push(
         gt
           .ngettext(
-            '%d 名干员的等级目标 arkntools 不计算，未包含在内。',
-            '%d 名干员的等级目标 arkntools 不计算，未包含在内。',
+            '%d 名干员的等级目标明日方舟工具箱不计算，未包含在内。',
+            '%d 名干员的等级目标明日方舟工具箱不计算，未包含在内。',
             partial,
           ) /* I10N: %d: number */
           .replaceAll('%d', String(partial)),
@@ -123,8 +123,8 @@ export const ExporterMenuItems = memo(() => {
       notes.push(
         gt
           .ngettext(
-            '%d 名一、二星干员 arkntools 没有养成数据，没有导出。',
-            '%d 名一、二星干员 arkntools 没有养成数据，没有导出。',
+            '%d 名一、二星干员在明日方舟工具箱中没有养成数据，没有导出。',
+            '%d 名一、二星干员在明日方舟工具箱中没有养成数据，没有导出。',
             excluded,
           ) /* I10N: %d: number */
           .replaceAll('%d', String(excluded)),
@@ -143,7 +143,7 @@ export const ExporterMenuItems = memo(() => {
       <MenuItem icon={'log-out'} text={gt.gettext('复制为 MAA「干员培养」计划')} onClick={() => void copyMaaPlan()} />
       <MenuItem
         icon={'log-out'}
-        text={gt.gettext('复制为 arkntools「精英材料计算」备份')}
+        text={gt.gettext('复制为明日方舟工具箱「精英材料计算」备份')}
         onClick={() => void copyArkntoolsBackup()}
       />
     </>

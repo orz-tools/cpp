@@ -23,7 +23,7 @@ export const MAAOperBoxImporterDialog = memo(({ onClose }: { onClose: () => void
         if (!hasDetails) {
           ctx.addWarning(
             gt.gettext(
-              'MAA 截图识别的结果只有精英化、等级和潜能，不含技能等级、专精和模组；这些保持导入前的值，请自行核对。',
+              'MAA「干员识别」的截图识别结果只有精英化、等级和潜能，不含技能等级、专精和模组；这些保持导入前的值，请自行核对。',
             ),
           )
         }
@@ -51,19 +51,19 @@ export const MAAOperBoxImporterDialog = memo(({ onClose }: { onClose: () => void
   })
 
   return (
-    <Dialog isOpen={true} onClose={onClose} title={gt.gettext('导入「MAA 干员识别」数据')} icon="log-in">
+    <Dialog isOpen={true} onClose={onClose} title={gt.gettext('导入 MAA「干员识别」数据')} icon="log-in">
       <DialogBody>
         <CardList compact>
           <MyCard step={1}>{gt.pgettext('arknights maa step', '打开 MAA「小工具」')}</MyCard>
-          <MyCard step={2}>{gt.pgettext('arknights maa step', '选择「干员识别」功能')}</MyCard>
-          <MyCard step={3}>{gt.pgettext('arknights maa step', '点击「开始识别」按钮')}</MyCard>
+          <MyCard step={2}>{gt.pgettext('arknights maa step', '切换到「干员识别」')}</MyCard>
+          <MyCard step={3}>{gt.pgettext('arknights maa step', '点击「开始识别」')}</MyCard>
           <MyCard step={4}>{gt.pgettext('arknights maa step', '等待识别完成')}</MyCard>
-          <MyCard step={5}>{gt.pgettext('arknights maa step', '「导出到」选择「剪切板」，点击「导出」按钮')}</MyCard>
+          <MyCard step={5}>{gt.pgettext('arknights maa step', '在「导出到」中选择「剪切板」，再点击「导出」')}</MyCard>
           <MyCard step={6}>
             <InputGroup
               onPaste={handleInput}
               value={''}
-              placeholder={gt.gettext('请在此粘贴...')}
+              placeholder={gt.gettext('在此粘贴…')}
               autoFocus
               style={{ width: '100%' }}
               onChange={noop}

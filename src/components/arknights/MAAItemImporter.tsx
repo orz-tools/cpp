@@ -62,24 +62,24 @@ export const MAAItemImporterDialog = memo(<G extends Arknights>({ onClose }: { o
   // const focus = useEvent(() => focusRef.current?.focus())
 
   return (
-    <Dialog isOpen={true} onClose={onClose} title={gt.gettext('导入「MAA 仓库识别」数据')} icon="log-in">
+    <Dialog isOpen={true} onClose={onClose} title={gt.gettext('导入 MAA「仓库识别」数据')} icon="log-in">
       <DialogBody>
         <CardList compact>
           <MyCard step={1}>{gt.pgettext('arknights maa step', '打开 MAA「小工具」')}</MyCard>
-          <MyCard step={2}>{gt.pgettext('arknights maa step', '选择「仓库识别」功能')}</MyCard>
-          <MyCard step={3}>{gt.pgettext('arknights maa step', '点击「开始识别」按钮')}</MyCard>
+          <MyCard step={2}>{gt.pgettext('arknights maa step', '切换到「仓库识别」')}</MyCard>
+          <MyCard step={3}>{gt.pgettext('arknights maa step', '点击「开始识别」')}</MyCard>
           <MyCard step={4}>{gt.pgettext('arknights maa step', '等待识别完成')}</MyCard>
           <MyCard step={5}>
             {gt.pgettext(
               'arknights maa step',
-              '「导出到」选择「明日方舟工具箱」或「企鹅物流刷图规划」，点击「导出」按钮',
+              '在「导出到」中选择「明日方舟工具箱」或「企鹅物流刷图规划」，再点击「导出」',
             )}
           </MyCard>
           <MyCard step={6}>
             <InputGroup
               onPaste={handleInput}
               value={''}
-              placeholder={gt.gettext('请在此粘贴...')}
+              placeholder={gt.gettext('在此粘贴…')}
               autoFocus
               // inputRef={focusRef}
               style={{ width: '100%' }}

@@ -92,17 +92,23 @@ export const UserDataManagerContent = memo(
               '你现在的数据将会被永久覆盖！（真的很久！）\n' +
               '\n' +
               '若导入错误、无效的数据将可能导致页面无法正常运行，\n' +
-              '届时您可在数据管理中清空数据。',
+              '届时可在「用户数据管理」中清空数据。',
           ),
         )
       )
         return
       try {
         const v = JSON.parse(text)
-        if (v['@type'] !== '@orz/cpp/dump') throw new Error('这根本不是 @orz/cpp/dump 数据。')
-        if (v['@version'] !== 1) throw new Error('@orz/cpp/dump 数据版本无法识别。')
-        if (v['game'] !== game) throw new Error(`game 不匹配，请不要把 ${v['game']} 导入到 ${game}。`)
-        if (!v['userdata'] || typeof v['userdata'] !== 'object') throw new Error('userdata 根本无效。')
+        if (v['@type'] !== '@orz/cpp/dump') throw new Error(gt.gettext('这不是 Closure++ 用户数据。'))
+        if (v['@version'] !== 1) throw new Error(gt.gettext('这份 Closure++ 用户数据的版本无法识别。'))
+        if (v['game'] !== game)
+          throw new Error(
+            gt
+              .gettext('这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。') /* I10N: %s: game codename */
+              .replaceAll('%s', String(v['game']).toUpperCase()),
+          )
+        if (!v['userdata'] || typeof v['userdata'] !== 'object')
+          throw new Error(gt.gettext('这份 Closure++ 用户数据已损坏。'))
         localStorage.setItem(getStoragePrefix(game, instanceName) + 'userdata', JSON.stringify(v['userdata']))
         if (!v['preference'] || typeof v['preference'] !== 'object') {
           //

@@ -29,7 +29,7 @@ export const ArkntoolsImporterDialog = memo(({ onClose }: { onClose: () => void 
           ctx.addWarning(
             gt
               .gettext(
-                '这些干员在 cpp 中尚未持有，已按 arkntools 计划的起点设为持有，等级按计划所需的最低值填写，请自行核对：%s。',
+                '这些干员在 cpp 中尚未持有，已按明日方舟工具箱计划的起点设为持有，等级按计划所需的最低值填写，请自行核对：%s。',
               ) /* I10N: %s: character names */
               .replaceAll('%s', inferred.map((x) => ga.getCharacter(x).name).join(gt.pgettext('list separator', '、'))),
           )
@@ -76,17 +76,17 @@ export const ArkntoolsImporterDialog = memo(({ onClose }: { onClose: () => void 
   })
 
   return (
-    <Dialog isOpen={true} onClose={onClose} title={gt.gettext('导入「arkntools 精英材料计算」备份')} icon="log-in">
+    <Dialog isOpen={true} onClose={onClose} title={gt.gettext('导入明日方舟工具箱「精英材料计算」备份')} icon="log-in">
       <DialogBody>
         <CardList compact>
-          <MyCard step={1}>{gt.pgettext('arknights arkntools step', '打开 arkntools「精英材料计算」')}</MyCard>
-          <MyCard step={2}>{gt.pgettext('arknights arkntools step', '点击「导出」按钮，选择「备份」')}</MyCard>
-          <MyCard step={3}>{gt.pgettext('arknights arkntools step', '复制文本框中的所有内容')}</MyCard>
+          <MyCard step={1}>{gt.pgettext('arknights arkntools step', '打开明日方舟工具箱「精英材料计算」')}</MyCard>
+          <MyCard step={2}>{gt.pgettext('arknights arkntools step', '点击「导出」→「备份」')}</MyCard>
+          <MyCard step={3}>{gt.pgettext('arknights arkntools step', '点击「复制到剪贴板」')}</MyCard>
           <MyCard step={4}>
             <InputGroup
               onPaste={handleInput}
               value={''}
-              placeholder={gt.gettext('请在此粘贴...')}
+              placeholder={gt.gettext('在此粘贴…')}
               autoFocus
               style={{ width: '100%' }}
               onChange={noop}

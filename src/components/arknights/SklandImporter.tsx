@@ -29,7 +29,7 @@ class CharacterNotFoundError extends Error {
     this.name = 'CharacterNotFoundError'
     this.friendly = gt
       .gettext(
-        '尚不支持角色「%s」。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。',
+        '尚不支持这名干员：%s。可能游戏数据尚未更新，请静候数据更新。游戏数据通常需要 2~24 小时解析。',
       ) /* I10N: %s: character key */
       .replaceAll('%s', key)
   }
@@ -173,11 +173,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             delete draft.current[key]
           }
           if (shitEquip) {
-            ctx.addWarning(
-              gt.gettext(
-                '森空岛目前提供的数据无法准确区分您的模组到底是没开还是仅 1 级。对于这种情况，此导入程序将会跳过这些模组。如果您有 1 级模组，请自行核对。',
-              ),
-            )
+            ctx.addWarning(gt.gettext('森空岛的数据分不清模组是未解锁还是 1 级，这些模组保持导入前的值，请自行核对。'))
           }
         }
 
@@ -208,7 +204,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             if (!targetCharacter) throw new CharacterNotFoundError(charId)
             if (targetCharacter.hasPatches) {
               ctx.addWarning(
-                `森空岛目前提供的数据无法分辨训练室里的阿米娅的升变状态，因此无法判定技能专精状态，请自行核对。`,
+                gt.gettext('森空岛的数据分不清训练室里的阿米娅是哪个升变形态，正在训练的专精没有计入，请自行核对。'),
               )
             } else {
               const targetCharSkill = targetCharacter.skills.find(
@@ -224,7 +220,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
           } catch (e) {
             console.error(e)
             ctx.addWarning(
-              `解析训练室数据失败，请尽可能将下列信息分享给开发者：\n${JSON.stringify(
+              `${gt.gettext('解析训练室数据失败，正在训练的专精没有计入。请尽量把下面的信息发给开发者：')}\n${JSON.stringify(
                 data.building.training,
               )}\n${e?.toString()}`,
             )
@@ -355,11 +351,13 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     }
   })
 
+  const deviceLabel = windowRef ? gt.gettext('回到「提取装置」') : gt.gettext('使用「提取装置」')
+
   return (
     <Dialog
       isOpen={true}
       onClose={handleClose}
-      title={gt.gettext('导入「森空岛」数据')}
+      title={gt.gettext('导入森空岛数据')}
       icon="log-in"
       canOutsideClickClose={false}
       backdropProps={{ onClick: handleBackdrop }}
@@ -377,26 +375,29 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
               intent={windowRef ? Intent.PRIMARY : Intent.PRIMARY}
               onClick={handleDevice}
             >
-              {windowRef ? `回到「提取装置」` : `使用「提取装置」`}
+              {deviceLabel}
             </Button>
             <Popover
               position="bottom"
               onOpened={focus}
               content={
                 <>
-                  <Callout intent="danger" title={'你走错了？！'}>
-                    请您点击上方<strong>{windowRef ? '回到' : '使用'}「提取装置」</strong>继续。
+                  <Callout intent="danger" title={gt.gettext('你走错了？！')}>
+                    {gt
+                      .gettext('请点击上方的%s继续。') /* I10N: %s: the button label above, in bold */
+                      .split('%s')
+                      .flatMap((x, i) => [i > 0 ? <strong key="label">{deviceLabel}</strong> : null, x])}
                     <br />
                     <br />
-                    这是给无法使用「提取装置」的人提供的备用入口。
+                    {gt.gettext('这是给无法使用「提取装置」的人提供的备用入口。')}
                     <br />
-                    请勿在此粘贴任何凭据。
+                    {gt.gettext('请勿在此粘贴任何凭据。')}
                   </Callout>
                   <div style={{ padding: '1em' }}>
                     <InputGroup
                       onPaste={handleInput}
                       value={''}
-                      placeholder={gt.gettext('请在此粘贴...')}
+                      placeholder={gt.gettext('在此粘贴…')}
                       inputRef={focusRef}
                       style={{ width: '100%' }}
                       onChange={noop}
@@ -429,7 +430,7 @@ const ForceRefresh = React.memo(() => {
   return (
     <>
       <DialogBody>
-        <Callout intent="warning">游戏数据已更新，请重新载入后再尝试导入。</Callout>
+        <Callout intent="warning">{gt.gettext('游戏数据已更新，请重新载入后再尝试导入。')}</Callout>
       </DialogBody>
       <DialogFooter
         actions={
