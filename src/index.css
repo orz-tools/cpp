@@ -15,6 +15,11 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Blueprint 6 puts its own font stack on every portal (popovers, dialogs, toasts). */
+.bp6-theme-root {
+  font-family: inherit;
+}
+
 :root {
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
