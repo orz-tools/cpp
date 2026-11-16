@@ -444,7 +444,7 @@ const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => {
               intent={Intent.PRIMARY}
               disabled={!dirty}
               onClick={apply}
-              text={gt.pgettext('value config', '应用并刷新')}
+              text={gt.pgettext('value config', '应用')}
             />
           </>
         }

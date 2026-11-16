@@ -91,6 +91,9 @@ export class Cpp<G extends IGame> {
       this.preferenceAtoms.forbiddenFormulaTagsAtom,
       this.gameDataGenerationAtom,
     )
+    // Mounted for the life of the page: atomWithStorage reads localStorage again on every mount, and a language
+    // switch remounts the whole React tree. The fresh copy is no longer the head of the undo history, which empties it.
+    this.store.sub(this.atoms.baseAtom, () => {})
 
     this.storedRegion = localStorage.getItem(this.storagePrefix + 'region') || ''
 
