@@ -25,8 +25,17 @@ export const ProfileTitle = memo(({ codename, profile }: { codename: string; pro
 })
 
 export const ProfileMenu = memo(() => {
-  const profiles = useMemo(() => getProfiles().filter((x) => !x[2]), [])
   const cpp = useCpp()
+  const codename = cpp.gameAdapter.getCodename()
+  const instanceName = cpp.instanceName
+  const profiles = useMemo(() => {
+    const isOpen = (x: [string, string, ...unknown[]]) => x[0] === codename && x[1] === instanceName
+    const all = getProfiles()
+    // The open profile has no userdata key until its first save; list it anyway so the menu is never empty.
+    const created: [string, string, ...unknown[]][] = all.filter((x) => !x[2] || isOpen(x))
+    if (!created.some(isOpen)) created.push([codename, instanceName])
+    return created
+  }, [codename, instanceName])
   return (
     <>
       {profiles.map((profile) => (
@@ -34,7 +43,7 @@ export const ProfileMenu = memo(() => {
           key={profile[0] + '/' + profile[1]}
           href={`/${profile[0]}/${profile[1]}`}
           text={<ProfileTitle codename={profile[0]} profile={profile[1]} />}
-          active={profile[0].toString() === cpp.gameAdapter.getCodename() && profile[1] === cpp.instanceName}
+          active={profile[0] === codename && profile[1] === instanceName}
         />
       ))}
       <MenuDivider />
