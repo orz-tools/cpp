@@ -538,6 +538,8 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     return Object.values(this.dataManager.data.items)
       .filter((x) => {
         if (!['MATERIAL', 'CARD_EXP', 'GOLD', '##EXP_VIRTUAL'].includes(String(x.raw.itemType))) return false
+        // 活动纪念品的 itemType 可以是 MATERIAL，id 也不一定以 act 开头，如 ark_odc_act53side_spitem_1
+        if (x.raw.classifyType === 'MEMENTO') return false
         if (
           [
             '3105', // 龙骨

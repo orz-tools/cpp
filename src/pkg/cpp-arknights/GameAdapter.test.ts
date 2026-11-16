@@ -122,6 +122,16 @@ describe('ArknightsAdapter', () => {
     expect(ga.getZoneInfos()['weekly_chips'].name).toBe('芯片搜索')
   })
 
+  it('leaves event mementos out of the inventory', async () => {
+    const memento = { ...item('ark_odc_act53side_spitem_1'), classifyType: 'MEMENTO' }
+    ;(remote.get('arknights-kengxxiao-zh_CN') as any).exItems.items[memento.itemId] = memento
+    const ga = new ArknightsAdapter()
+    await ga.getDataManager().init('zh_CN')
+    const keys = ga.getInventoryItems().map((x) => x.key)
+    expect(keys).toContain('30011')
+    expect(keys).not.toContain(memento.itemId)
+  })
+
   it('asks for a rebuild only when the item value config changes', () => {
     const ga = new ArknightsAdapter()
     expect(ga.applyPreferenceSnapshot({})).toBe(false)
