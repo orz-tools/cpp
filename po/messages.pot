@@ -415,7 +415,7 @@ msgstr ""
 msgid "查看更多…"
 msgstr ""
 
-#: src/components/CharacterList.tsx:819
+#: src/components/CharacterList.tsx:822
 msgid "查询失败"
 msgstr ""
 
@@ -1141,7 +1141,7 @@ msgstr ""
 #: src/components/arknights/ArkntoolsImporter.tsx:35
 #: src/components/arknights/ArkntoolsImporter.tsx:44
 #: src/components/arknights/MAAOperBoxImporter.tsx:36
-#: src/components/CharacterList.tsx:451
+#: src/components/CharacterList.tsx:454
 #: src/components/queryEditor/VisualEditor.tsx:345
 msgctxt "list separator"
 msgid "、"
@@ -1189,25 +1189,75 @@ msgctxt "loading status"
 msgid "马上就好…"
 msgstr ""
 
-#: src/components/CharacterList.tsx:597
+#: src/pkg/cpp-arknights/GameAdapter.ts:334
+msgctxt "predefined query"
+msgid "一图流练度统计 技能专三率"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:356
+msgctxt "predefined query"
+msgid "一图流练度统计 技能专三率（全部）"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:396
+msgctxt "predefined query"
+msgid "一图流练度统计 精二率"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:417
+msgctxt "predefined query"
+msgid "一图流练度统计 精二率（全部）"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:365
+msgctxt "predefined query"
+msgid "小黑盒干员统计 技能专三率"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:387
+msgctxt "predefined query"
+msgid "小黑盒干员统计 技能专三率（全部）"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:454
+msgctxt "predefined query"
+msgid "小黑盒干员统计 精二 90 级率"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:476
+msgctxt "predefined query"
+msgid "小黑盒干员统计 精二 90 级率（全部）"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:425
+msgctxt "predefined query"
+msgid "小黑盒干员统计 精二率"
+msgstr ""
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:446
+msgctxt "predefined query"
+msgid "小黑盒干员统计 精二率（全部）"
+msgstr ""
+
+#: src/components/CharacterList.tsx:600
 #: src/components/queryEditor/QueryEditor.tsx:84
 msgctxt "predefined view name"
 msgid "全部"
 msgstr ""
 
-#: src/components/CharacterList.tsx:590
+#: src/components/CharacterList.tsx:593
 #: src/components/queryEditor/QueryEditor.tsx:82
 msgctxt "predefined view name"
 msgid "想看的"
 msgstr ""
 
-#: src/components/CharacterList.tsx:612
+#: src/components/CharacterList.tsx:615
 #: src/components/queryEditor/QueryEditor.tsx:88
 msgctxt "predefined view name"
 msgid "缺席"
 msgstr ""
 
-#: src/components/CharacterList.tsx:604
+#: src/components/CharacterList.tsx:607
 #: src/components/queryEditor/QueryEditor.tsx:86
 msgctxt "predefined view name"
 msgid "计划"
@@ -1702,30 +1752,30 @@ msgctxt "query group mode"
 msgid "都不满足"
 msgstr ""
 
-#: src/components/CharacterList.tsx:685
-#: src/components/CharacterList.tsx:686
+#: src/components/CharacterList.tsx:688
+#: src/components/CharacterList.tsx:689
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr ""
 
-#: src/components/CharacterList.tsx:649
+#: src/components/CharacterList.tsx:652
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr ""
 
-#: src/components/CharacterList.tsx:677
-#: src/components/CharacterList.tsx:678
+#: src/components/CharacterList.tsx:680
+#: src/components/CharacterList.tsx:681
 msgctxt "query menu"
 msgid "更多视图"
 msgstr ""
 
-#: src/components/CharacterList.tsx:660
+#: src/components/CharacterList.tsx:663
 msgctxt "query menu"
 msgid "练度统计"
 msgstr ""
 
-#: src/components/CharacterList.tsx:685
-#: src/components/CharacterList.tsx:686
+#: src/components/CharacterList.tsx:688
+#: src/components/CharacterList.tsx:689
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr ""
@@ -1781,13 +1831,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr ""
 
-#: src/components/CharacterList.tsx:448
+#: src/components/CharacterList.tsx:451
 #: src/components/queryEditor/VisualEditor.tsx:263
 msgctxt "query value"
 msgid "否"
 msgstr ""
 
-#: src/components/CharacterList.tsx:448
+#: src/components/CharacterList.tsx:451
 #: src/components/queryEditor/VisualEditor.tsx:262
 msgctxt "query value"
 msgid "是"

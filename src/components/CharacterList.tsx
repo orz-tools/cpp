@@ -421,6 +421,9 @@ type ExtraField = NonNullable<IGameComponent['extraFields']>[string]
 
 const fallbackExtraFields = new Map<FieldConfiguration<any, any, any, any>, ExtraField>()
 
+// 14px 等宽字体下 "100.00%" 宽约 59px，加上菜单项左右各 8px 内边距
+export const percentageColumnWidth = 76
+
 const fallbackNumberStyle: React.CSSProperties = {
   fontFamily: 'monospace',
   textAlign: 'right',
@@ -435,7 +438,7 @@ function createFallbackExtraField(id: string, config: FieldConfiguration<any, an
     case QNumber:
       return createSimpleExtraField(
         id,
-        65,
+        config.format === 'percent' ? percentageColumnWidth : 65,
         (v: number) => {
           if (Number.isNaN(v)) return '—'
           if (config.format === 'percent') return `${(v * 100).toFixed(2)}%`
