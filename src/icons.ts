@@ -31,6 +31,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.DOUBLE_CHEVRON_LEFT, Paths16.DoubleChevronLeft],
       [IconNames.DOUBLE_CHEVRON_RIGHT, Paths16.DoubleChevronRight],
       [IconNames.DOUBLE_CHEVRON_UP, Paths16.DoubleChevronUp],
+      [IconNames.DUPLICATE, Paths16.Duplicate],
       [IconNames.EDIT, Paths16.Edit],
       [IconNames.ENVELOPE, Paths16.Envelope],
       [IconNames.ERROR, Paths16.Error],

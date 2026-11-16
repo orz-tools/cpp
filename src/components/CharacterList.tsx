@@ -23,6 +23,7 @@ import { search } from 'text-search-engine'
 import { Cpp, ListCharactersQueryParam, useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
+import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import {
@@ -170,6 +171,26 @@ export const CharacterContextMenu = memo(
             <MenuDivider />
           </>
         ) : null}
+        <MenuItem
+          icon={'duplicate'}
+          text={gt.gettext('复制角色名')}
+          onClick={() => {
+            navigator.clipboard.writeText(character.name).then(
+              async () =>
+                (await AppToaster).show({
+                  icon: 'tick',
+                  intent: 'success',
+                  message: gt.gettext('已复制「%s」').replaceAll('%s', character.name),
+                }),
+              async () =>
+                (await AppToaster).show({
+                  icon: 'error',
+                  intent: 'danger',
+                  message: gt.gettext('无法写入剪贴板'),
+                }),
+            )
+          }}
+        />
         {CharacterContextMenuItems ? <CharacterContextMenuItems character={character} /> : null}
       </Menu>
     )
