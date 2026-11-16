@@ -94,9 +94,13 @@ const DiffView = memo(({ diff }: { diff: State }) => {
 
     const charDiffs = [] as { key: string; before: object; after: object }[]
     {
+      const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
       const allChars = new Set([...Object.keys(before.current), ...Object.keys(after.current)])
       for (const char of allChars) {
-        if (deepEqual(before.current[char], after.current[char])) continue
+        // Data saved before a status field existed lacks its key; importing fills it in, which is not a change.
+        const b = before.current[char] && { ...empty, ...before.current[char] }
+        const a = after.current[char] && { ...empty, ...after.current[char] }
+        if (deepEqual(b, a)) continue
         charDiffs.push({ key: char, before: before.current[char], after: after.current[char] })
       }
     }
@@ -252,6 +256,9 @@ const CharDiffViewRow = memo(
                 alt={character.key}
                 title={character.key}
               />
+              {c.renderCharacterAvatarBadge && !uda.isAbsentCharacter(character, goalCharacter)
+                ? c.renderCharacterAvatarBadge(goalCharacter, character)
+                : null}
             </span>
             <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
               <div className="bp5-text-overflow-ellipsis" title={character.name}>

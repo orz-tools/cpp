@@ -19,6 +19,7 @@ const emptyCharacterStatus = Object.freeze<ArknightsCharacterStatus>({
   skillLevel: 1,
   skillMaster: Object.freeze({}),
   modLevel: Object.freeze({}),
+  potentialRank: 0,
 })
 
 export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
@@ -324,9 +325,12 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     }
   }
 
-  public finishedCharacterStatus(charId: string) {
+  public finishedCharacterStatus(charId: string, current: ArknightsCharacterStatus): ArknightsCharacterStatus {
     const char = this.dataManager.data.characters[charId]
     return {
+      // Not trainable with materials, so "finished" keeps whatever potential the character has.
+      // Spread rather than assigned: an undefined key would break deep-equal against data saved before potential existed.
+      ...('potentialRank' in current ? { potentialRank: current.potentialRank } : {}),
       elite: char.maxElite,
       level: char.maxLevels[char.maxElite],
       skillLevel: char.skills.length > 0 ? 7 : 1,
@@ -351,8 +355,13 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       status.skillLevel = 1
       status.skillMaster = {}
       status.modLevel = {}
+      status.potentialRank = 0
       return
     }
+
+    status.potentialRank = parseInt(String(status.potentialRank))
+    if (!isFinite(status.potentialRank) || status.potentialRank < 0) status.potentialRank = 0
+    if (status.potentialRank > 5) status.potentialRank = 5
 
     if (status.elite > char.maxElite) {
       status.elite = char.maxElite
@@ -410,6 +419,10 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
 
   public rewriteGoal(charId: string, current: Draft<ArknightsCharacterStatus>, goal: Draft<ArknightsCharacterStatus>) {
     const char = this.dataManager.data.characters[charId]
+
+    // Potential costs tokens, not materials, so it has no goal of its own; mirroring it keeps
+    // current and goal deep-equal when nothing else is planned.
+    goal.potentialRank = current.potentialRank
 
     if (goal.elite < current.elite) {
       goal.elite = current.elite

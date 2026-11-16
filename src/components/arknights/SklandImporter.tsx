@@ -63,6 +63,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             o.elite = char.evolvePhase
             o.level = char.level
             o.skillLevel = char.mainSkillLevel
+            o.potentialRank = char.potentialRank
 
             if (char.skills) {
               for (const skill of c.skills) {
@@ -117,6 +118,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
             o.elite = char.evolvePhase
             o.level = char.level
             o.skillLevel = char.mainSkillLvl
+            o.potentialRank = char.potentialRank
 
             if (char.skills) {
               for (const skill of c.skills) {

@@ -17,6 +17,7 @@ export interface IGameComponent {
   CharacterContextMenuItems?: React.FC<{ character: ICharacter }>
   CharacterStatusPopover?: React.FC<{ character: any; isGoal: boolean }>
   renderCharacterStatus?: (status: any, character: any, current?: any, alreadyHide?: boolean) => any
+  renderCharacterAvatarBadge?: (status: any, character: any) => any
   charStatusWidth?: number
   style?: string
   itemSimulatedViewConfig?: ItemSimulatedViewConfig

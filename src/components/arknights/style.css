@@ -53,3 +53,17 @@
 .cpp-char-avatar > img {
   border-radius: 0px;
 }
+
+.cpp-char-avatar > img.cpp-char-potential-badge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 18px;
+  height: 18px;
+  filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);
+}
+
+.cpp-potential-button-icon {
+  width: 20px;
+  height: 20px;
+}

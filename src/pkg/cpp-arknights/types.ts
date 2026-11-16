@@ -29,6 +29,8 @@ export interface ArknightsCharacterStatus {
   skillLevel: number
   skillMaster: Record<string, number>
   modLevel: Record<string, number>
+  // 0-5, as the game's potentialRank; the UI shows it as 1-6. Data saved before it existed lacks the key.
+  potentialRank?: number
 }
 
 export type ArknightsCharacterTaskType =

@@ -6,7 +6,7 @@ import { ImporterMenuItems } from './ImporterMenuItems'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
 import { TaskDisplay } from './TaskDisplay'
 import { extraFields } from './extraFields'
-import { renderCharacterStatus } from './renderCharacterStatus'
+import { renderCharacterAvatarBadge, renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
 
 export const ArknightsComponents: IGameComponent = {
@@ -18,6 +18,7 @@ export const ArknightsComponents: IGameComponent = {
   CharacterContextMenuItems,
   CharacterStatusPopover,
   renderCharacterStatus,
+  renderCharacterAvatarBadge,
   itemSimulatedViewConfig: { limit: 3, horizontal: true, viewMaxSize: 500 },
   blobFlavours: ['normal'],
   ImporterMenuItems,

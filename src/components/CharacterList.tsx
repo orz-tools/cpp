@@ -222,6 +222,9 @@ const CharacterMenu = memo(
                   alt={character.key}
                   title={character.key}
                 />
+                {c.renderCharacterAvatarBadge && !uda.isAbsentCharacter(character, currentCharacter)
+                  ? c.renderCharacterAvatarBadge(currentCharacter, character)
+                  : null}
               </span>
               <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <div className="bp5-text-overflow-ellipsis" title={character.name}>

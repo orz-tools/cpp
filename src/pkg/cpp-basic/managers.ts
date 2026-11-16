@@ -45,7 +45,7 @@ export interface IGameAdapter<G extends IGame> {
 export interface IUserDataAdapter<G extends IGame> {
   getAllCharacterIds(): string[]
   getFrozenEmptyCharacterStatus(): G['characterStatus']
-  finishedCharacterStatus(charId: string): G['characterStatus']
+  finishedCharacterStatus(charId: string, current: G['characterStatus']): G['characterStatus']
   rewriteCharacters(
     charId: string,
     current: Draft<G['characterStatus']> | undefined,

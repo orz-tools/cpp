@@ -222,8 +222,8 @@ function buildAtoms<G extends IGame>(
   const characterFinishedStatus = atomFamily(
     (charId: string) =>
       withDebugLabel(
-        atom(() => {
-          return ga.getUserDataAdapter().finishedCharacterStatus(charId)
+        atom((get) => {
+          return ga.getUserDataAdapter().finishedCharacterStatus(charId, get(currentCharacter(charId)))
         }),
         `characterFinishedStatus(${charId})`,
       ),

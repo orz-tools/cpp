@@ -6,7 +6,7 @@ import { Arknights, ArknightsDataManager, Character, PreferenceKeys, SurveySourc
 import { HeyboxSurveySource, SurveyProps, SurveySource, YituliuSurveySource } from '../../pkg/cpp-arknights/survey'
 import { UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import { gt } from '../../pkg/gt'
-import { ProfessionIcon } from './Icons'
+import { PotentialIcon, ProfessionIcon } from './Icons'
 import m0 from './assets/m0.png'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
@@ -222,6 +222,39 @@ export const SurveyNumber = memo(({ percent, samples, desc }: SurveyProps) => {
     >
       <code>{(p * 100).toFixed(2)}%</code>
     </Tag>
+  )
+})
+
+export const PotentialButton = memo(({ potentialRank }: { potentialRank: number }) => {
+  const { status, setStatus } = useContext(EditorContext)
+  const already = (status.potentialRank || 0) >= potentialRank
+  return (
+    <Button
+      onClick={() =>
+        setStatus((x) => {
+          x.potentialRank = potentialRank
+        })
+      }
+      intent={already ? Intent.PRIMARY : Intent.NONE}
+      icon={<PotentialIcon potentialRank={potentialRank} className="cpp-potential-button-icon" />}
+    />
+  )
+})
+
+// Only the current status has one: potential costs tokens, not materials, so there is nothing to plan.
+export const CharacterStatusPotentialSection = memo(() => {
+  const { currentStatus } = useContext(EditorContext)
+  if (currentStatus) return <></>
+
+  return (
+    <div className="cpp-charstat-group">
+      <ButtonGroup className={Classes.DARK}>
+        <Tag large={true}>{gt.pgettext('arknights status group', '潜能')}</Tag>
+        {[0, 1, 2, 3, 4, 5].map((x) => (
+          <PotentialButton key={x} potentialRank={x} />
+        ))}
+      </ButtonGroup>
+    </div>
   )
 })
 
@@ -579,6 +612,7 @@ export const CharacterStatusPopover = memo(({ character, isGoal }: { character: 
           <CharacterStatusSkillSection />
           <CharacterStatusSkillMasterSection />
           <CharacterStatusModSection />
+          <CharacterStatusPotentialSection />
         </>
       ) : undefined}
     </EditorContext.Provider>

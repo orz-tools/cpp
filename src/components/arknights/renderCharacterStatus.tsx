@@ -1,7 +1,11 @@
 import { Arknights, Character } from '../../pkg/cpp-arknights'
 import { Hide } from '../CharacterList'
 import { EmptyIcon } from '../Icons'
-import { LevelIcon, SkillIcon, UniEquipIcon } from './Icons'
+import { LevelIcon, PotentialIcon, SkillIcon, UniEquipIcon } from './Icons'
+
+export function renderCharacterAvatarBadge(status: Arknights['characterStatus']) {
+  return <PotentialIcon className="cpp-char-potential-badge" potentialRank={status.potentialRank || 0} />
+}
 
 export function renderCharacterStatus(
   status: Arknights['characterStatus'],

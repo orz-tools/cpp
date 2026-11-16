@@ -1,6 +1,7 @@
 import { Icon } from '@blueprintjs/core'
 import { memo } from 'react'
 import { CharacterLevel, Profession, Skill, UniEquip } from '../../pkg/cpp-arknights'
+import { gt } from '../../pkg/gt'
 import { CachedImg } from '../Icons'
 import elite0 from './assets/elite0-small.png'
 import elite1 from './assets/elite1-small.png'
@@ -8,6 +9,12 @@ import elite2 from './assets/elite2-small.png'
 import m1 from './assets/m1.png'
 import m2 from './assets/m2.png'
 import m3 from './assets/m3.png'
+import potential1 from './assets/potential1.png'
+import potential2 from './assets/potential2.png'
+import potential3 from './assets/potential3.png'
+import potential4 from './assets/potential4.png'
+import potential5 from './assets/potential5.png'
+import potential6 from './assets/potential6.png'
 import ProfessionCaster from './assets/profession-CASTER.svg?react'
 import ProfessionMedic from './assets/profession-MEDIC.svg?react'
 import ProfessionPioneer from './assets/profession-PIONEER.svg?react'
@@ -89,6 +96,17 @@ export const UniEquipIcon = memo(
         </div>
       </span>
     )
+  },
+)
+
+const potentialIcons = [potential1, potential2, potential3, potential4, potential5, potential6]
+
+export const PotentialIcon = memo(
+  ({ potentialRank, className }: { potentialRank: number; className?: string }) => {
+    const title = gt
+      .gettext('潜能 %d') /* I10N: %d: potential, 1-6 */
+      .replaceAll('%d', `${potentialRank + 1}`)
+    return <img className={className} src={potentialIcons[potentialRank]} alt={title} title={title} />
   },
 )
 

@@ -105,6 +105,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     aa.addStatusField('level', '等级', QNumber, ({ status }) => status.level)
     aa.addStatusField('elv', '精英化*100+等级', QNumber, ({ status }) => status.elite * 100 + status.level)
     aa.addStatusField('skillLevel', '技能等级', QNumber, ({ status }) => status.skillLevel)
+    aa.addStatusField('potential', '潜能', QNumber, ({ status }) => (status.potentialRank || 0) + 1)
 
     const hss = new HeyboxSurveySource(this.dataManager)
     const yss = new YituliuSurveySource(this.dataManager)
