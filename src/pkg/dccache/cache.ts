@@ -10,6 +10,15 @@ const store = localForage.createInstance({
 
 const pool = new DedupPool<string>()
 
+type Version = IDataContainerHeader['version']
+
+/**
+ * Per container, a version named by the version file whose download carried another version, and the version it carried.
+ * While the version file keeps naming it, getData() would be asked for the same version and bring back what it did
+ * last time, so it is not downloaded again in this session.
+ */
+const mismatches = new Map<string, { named: Version; carried: Version }>()
+
 interface Meta {
   lastCheckedAt: number
   error?: string
@@ -108,13 +117,19 @@ async function fetch<T extends object>(
   obj.verify(header)
 
   const previousData = current || (await loadData<T>(obj.name))
-  if (
-    previousData &&
-    previousData.version &&
-    deepEqual(header.version, previousData.version, { strict: true }) &&
-    !obj.safeVerify(previousData)
-  ) {
-    return previousData
+  if (previousData && previousData.version && !obj.safeVerify(previousData)) {
+    if (deepEqual(header.version, previousData.version, { strict: true })) {
+      return previousData
+    }
+    const mismatch = mismatches.get(obj.name)
+    if (
+      mismatch &&
+      deepEqual(header.version, mismatch.named, { strict: true }) &&
+      deepEqual(previousData.version, mismatch.carried, { strict: true })
+    ) {
+      await saveMeta(obj.name, { lastCheckedAt: now, header: Object.assign({}, previousData, { data: undefined }) })
+      return previousData
+    }
   }
 
   const data = 'data' in header ? header : await obj.getData(header)
@@ -123,6 +138,7 @@ async function fetch<T extends object>(
 
   if (!deepEqual(header.version, data.version, { strict: true })) {
     console.warn('Remote version and data mismatch.')
+    mismatches.set(obj.name, { named: header.version, carried: data.version })
     await saveMeta(obj.name, { lastCheckedAt: now, header: Object.assign({}, data, { data: undefined }) })
   }
 

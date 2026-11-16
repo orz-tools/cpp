@@ -32,11 +32,12 @@ function container(id: string, data: object): IDataContainer<object> {
 class TestObject extends DataContainerObject<object> {
   public readonly name = 'test'
   public remote = container('v1', { a: 1 })
+  public versionFile?: IDataContainerHeader
 
   public getHeader(): Promise<IDataContainerHeader> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, ...header } = this.remote
-    return Promise.resolve(header)
+    return Promise.resolve(this.versionFile ?? header)
   }
 
   public getData(): Promise<IDataContainer<object>> {
@@ -90,5 +91,28 @@ describe('load', () => {
     const changed = vi.fn()
     await load(obj, false, changed)
     expect(changed).toHaveBeenCalledOnce()
+  })
+
+  it('downloads once while the version file names an older version than the data carries', async () => {
+    const obj = new TestObject()
+    memory.set('data:test', container('older', { a: 0 }))
+    obj.remote = container('new', { a: 2 })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { data, ...behind } = container('old', {})
+    obj.versionFile = behind
+    const getData = vi.spyOn(obj, 'getData')
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    expect((await load(obj, false)).version.id).toBe('new')
+    expect((await load(obj, false)).version.id).toBe('new')
+    expect((await load(obj)).version.id).toBe('new')
+    expect(getData).toHaveBeenCalledOnce()
+    expect(warn).toHaveBeenCalledOnce()
+
+    obj.remote = container('newer', { a: 3 })
+    obj.versionFile = undefined
+    expect((await load(obj, false)).version.id).toBe('newer')
+    expect(getData).toHaveBeenCalledTimes(2)
+    warn.mockRestore()
   })
 })
