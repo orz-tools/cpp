@@ -91,7 +91,17 @@ export function normalizeQuery(param: QueryParam): QueryParam {
   if (param.order != null && param.order.length > 0) result.order = param.order
   if (param.select != null && param.select.length > 0) result.select = param.select
   if (param.group != null) result.group = param.group
+  const widths = shownColumnWidths(param)
+  if (widths) result.widths = widths
   return result
+}
+
+/** 只留下还在显示的列（select 与 join）的宽度；一个都不剩时为 undefined */
+export function shownColumnWidths(param: QueryParam): Record<string, number> | undefined {
+  if (param.widths == null) return undefined
+  const shown = new Set([...(param.select ?? []), ...(param.join != null ? [param.join] : [])])
+  const widths = Object.entries(param.widths).filter(([id]) => shown.has(id))
+  return widths.length > 0 ? Object.fromEntries(widths) : undefined
 }
 
 export interface EditorOp {

@@ -29,7 +29,11 @@ export interface IGameComponent {
   useImportFormats?: () => ImportFormat[]
   extraFields?: Record<
     string,
-    { width: number; C: React.FC<{ query: Querier<any, any>; context: FieldContext<any, any, any> }> }
+    {
+      /** 默认宽度；过滤器可以改，所以 C 按传入的 width 画 */
+      width: number
+      C: React.FC<{ query: Querier<any, any>; context: FieldContext<any, any, any>; width: number }>
+    }
   >
   TaskDisplay?: React.FC<{ type: any; charId: string; formattedString: string }>
   QuickFilterBuilder?: React.FC

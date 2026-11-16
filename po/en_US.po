@@ -146,7 +146,7 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:502 src/components/Importer.tsx:160
+#: src/App.tsx:505 src/components/Importer.tsx:160
 msgid "关闭"
 msgstr "Close"
 
@@ -239,7 +239,7 @@ msgstr "Copy as MAA «Operator Progression» Plan"
 msgid "复制为明日方舟工具箱「精英材料计算」备份"
 msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 
-#: src/components/CharacterList.tsx:187
+#: src/components/CharacterList.tsx:192
 msgid "复制角色名"
 msgstr "Copy Name"
 
@@ -249,7 +249,9 @@ msgstr "Current"
 
 #: src/components/RetiredGame.tsx:60
 msgid "存档站能保留多久也不确定，如您需要，也可以查看 GitHub 上的源码。"
-msgstr "How long the archive will stay up is uncertain. If you need it, the source code is also on GitHub."
+msgstr ""
+"How long the archive will stay up is uncertain. If you need it, the source "
+"code is also on GitHub."
 
 #: src/components/TaskList.tsx:119
 msgid "完成"
@@ -270,7 +272,7 @@ msgstr "Import MAA «Operator Progression» Plan"
 msgid "导入 MAA「干员识别」数据"
 msgstr "Import MAA «Operator» Data"
 
-#: src/App.tsx:299
+#: src/App.tsx:302
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -330,7 +332,7 @@ msgstr[1] ""
 "Copied the plan for %d operators. In MAA «Operator Progression», click «Read "
 "from Clipboard»."
 
-#: src/components/CharacterList.tsx:194
+#: src/components/CharacterList.tsx:199
 msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
@@ -394,7 +396,7 @@ msgstr "Morale"
 msgid "总价值"
 msgstr "Total Value"
 
-#: src/App.tsx:464
+#: src/App.tsx:467
 msgid "您不妨试试"
 msgstr "You may try"
 
@@ -427,7 +429,7 @@ msgstr "Data imported. A reload is required."
 msgid "数据已更新，正在重新载入…"
 msgstr "Data updated. Reloading…"
 
-#: src/App.tsx:169
+#: src/App.tsx:170
 msgid "数据已更新，请重新载入页面"
 msgstr "Data updated. A reload is required."
 
@@ -447,7 +449,7 @@ msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:38
 #: src/components/arknights/ExporterMenuItems.tsx:98
-#: src/components/CharacterList.tsx:200
+#: src/components/CharacterList.tsx:205
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
@@ -462,7 +464,9 @@ msgstr "Could not recognize what was pasted. Supported formats:"
 
 #: src/games.ts:15
 msgid "时间重叠、飞跃，令人恍惚，所幸我们共度的时光鲜明而真切……"
-msgstr "Times overlap and leap, leaving one dazed. Fortunately, the time we spent together remains vivid and true..."
+msgstr ""
+"Times overlap and leap, leaving one dazed. Fortunately, the time we spent "
+"together remains vivid and true..."
 
 #: src/components/arknights/ValueConfigMenu.tsx:459
 msgid "明日方舟一图流"
@@ -565,7 +569,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:822
+#: src/components/CharacterList.tsx:859
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -658,7 +662,7 @@ msgstr ""
 msgid "角色"
 msgstr "Characters"
 
-#: src/components/CharacterList.tsx:126
+#: src/components/CharacterList.tsx:131
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -732,7 +736,7 @@ msgstr ""
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/App.tsx:457
+#: src/App.tsx:460
 msgid "返回主页"
 msgstr "Back to Home"
 
@@ -820,7 +824,7 @@ msgstr "Items"
 msgid "邮箱"
 msgstr "E-mail"
 
-#: src/App.tsx:172 src/components/arknights/SklandImporter.tsx:192
+#: src/App.tsx:173 src/components/arknights/SklandImporter.tsx:192
 msgid "重新载入"
 msgstr "Reload"
 
@@ -1265,6 +1269,31 @@ msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
 
+#: src/components/queryEditor/ColumnHeader.tsx:126
+msgctxt "character list column"
+msgid "「%s」的列宽"
+msgstr "Width of “%s”"
+
+#: src/components/queryEditor/ColumnHeader.tsx:75
+msgctxt "character list column"
+msgid "干员"
+msgstr "Operator"
+
+#: src/components/queryEditor/ColumnHeader.tsx:81
+msgctxt "character list column"
+msgid "当前状态"
+msgstr "Current"
+
+#: src/components/queryEditor/ColumnHeader.tsx:135
+msgctxt "character list column"
+msgid "拖动调整列宽，双击恢复默认（%d px）"
+msgstr "Drag to resize, double-click to reset (%d px)"
+
+#: src/components/queryEditor/ColumnHeader.tsx:84
+msgctxt "character list column"
+msgid "目标状态"
+msgstr "Goal"
+
 #: src/components/AboutList.tsx:101
 msgctxt "credit role"
 msgid "帮助文档撰写"
@@ -1325,7 +1354,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr "Error During Reading File"
 
-#: src/App.tsx:445
+#: src/App.tsx:448
 msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
@@ -1440,50 +1469,50 @@ msgstr "Planned"
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
-#: src/components/CharacterList.tsx:454
-#: src/components/queryEditor/VisualEditor.tsx:345
+#: src/components/CharacterList.tsx:459
+#: src/components/queryEditor/VisualEditor.tsx:348
 msgctxt "list separator"
 msgid "、"
 msgstr ", "
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:338
+#: src/App.tsx:341
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr "Setting up %s…"
 
 #. initial
-#: src/App.tsx:333
+#: src/App.tsx:336
 msgctxt "loading status"
 msgid "别急…"
 msgstr "Don't hurry…"
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:384
+#: src/App.tsx:387
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr "We're setting things up for you"
 
 #. loaded data objects
-#: src/App.tsx:346
+#: src/App.tsx:349
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr "Almost there…"
 
 #. joke text
-#: src/App.tsx:382
+#: src/App.tsx:385
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr "Installing Macindows X"
 
 #. loading hero line 2
-#: src/App.tsx:391
+#: src/App.tsx:394
 msgctxt "loading status"
 msgid "请稍候"
 msgstr "This won't take long"
 
 #. done
-#: src/App.tsx:350
+#: src/App.tsx:353
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
@@ -1538,25 +1567,25 @@ msgctxt "predefined query"
 msgid "小黑盒干员统计 精二率（全部）"
 msgstr "Heybox survey: E2 rate (all)"
 
-#: src/components/CharacterList.tsx:600
+#: src/components/CharacterList.tsx:602
 #: src/components/queryEditor/QueryEditor.tsx:84
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:593
+#: src/components/CharacterList.tsx:595
 #: src/components/queryEditor/QueryEditor.tsx:82
 msgctxt "predefined view name"
 msgid "想看的"
 msgstr "Interested"
 
-#: src/components/CharacterList.tsx:615
+#: src/components/CharacterList.tsx:617
 #: src/components/queryEditor/QueryEditor.tsx:88
 msgctxt "predefined view name"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:607
+#: src/components/CharacterList.tsx:609
 #: src/components/queryEditor/QueryEditor.tsx:86
 msgctxt "predefined view name"
 msgid "计划"
@@ -1574,24 +1603,24 @@ msgstr ""
 "“%1” is only available with one row per %2. Switch back to %2, or remove "
 "this condition."
 
-#: src/components/queryEditor/VisualEditor.tsx:295
+#: src/components/queryEditor/VisualEditor.tsx:298
 msgctxt "query editor"
 msgid "「%s」的值"
 msgstr "Value of “%s”"
 
-#: src/components/queryEditor/VisualEditor.tsx:379
-#: src/components/queryEditor/VisualEditor.tsx:380
+#: src/components/queryEditor/VisualEditor.tsx:382
+#: src/components/queryEditor/VisualEditor.tsx:383
 msgctxt "query editor"
 msgid "上移"
 msgstr "Move up"
 
-#: src/components/queryEditor/VisualEditor.tsx:387
-#: src/components/queryEditor/VisualEditor.tsx:388
+#: src/components/queryEditor/VisualEditor.tsx:390
+#: src/components/queryEditor/VisualEditor.tsx:391
 msgctxt "query editor"
 msgid "下移"
 msgstr "Move down"
 
-#: src/components/queryEditor/VisualEditor.tsx:174
+#: src/components/queryEditor/VisualEditor.tsx:177
 msgctxt "query editor"
 msgid "以下条件"
 msgstr "of the following"
@@ -1613,7 +1642,7 @@ msgctxt "query editor"
 msgid "关闭"
 msgstr "Close"
 
-#: src/components/queryEditor/VisualEditor.tsx:164
+#: src/components/queryEditor/VisualEditor.tsx:167
 msgctxt "query editor"
 msgid "分组方式"
 msgstr "Group mode"
@@ -1640,21 +1669,21 @@ msgctxt "query editor"
 msgid "删除过滤器「%s」？"
 msgstr "Delete the filter “%s”?"
 
-#: src/components/queryEditor/VisualEditor.tsx:317
-#: src/components/queryEditor/VisualEditor.tsx:318
-#: src/components/queryEditor/VisualEditor.tsx:395
-#: src/components/queryEditor/VisualEditor.tsx:396
+#: src/components/queryEditor/VisualEditor.tsx:320
+#: src/components/queryEditor/VisualEditor.tsx:321
+#: src/components/queryEditor/VisualEditor.tsx:398
+#: src/components/queryEditor/VisualEditor.tsx:399
 msgctxt "query editor"
 msgid "删除这一条"
 msgstr "Remove this line"
 
-#: src/components/queryEditor/VisualEditor.tsx:180
-#: src/components/queryEditor/VisualEditor.tsx:181
+#: src/components/queryEditor/VisualEditor.tsx:183
+#: src/components/queryEditor/VisualEditor.tsx:184
 msgctxt "query editor"
 msgid "删除这个条件组"
 msgstr "Remove this group"
 
-#: src/components/queryEditor/VisualEditor.tsx:371
+#: src/components/queryEditor/VisualEditor.tsx:374
 msgctxt "query editor"
 msgid "升序"
 msgstr "Ascending"
@@ -1685,7 +1714,7 @@ msgctxt "query editor"
 msgid "基于「%s」· 未保存"
 msgstr "Based on “%s” · not saved"
 
-#: src/components/queryEditor/VisualEditor.tsx:111
+#: src/components/queryEditor/VisualEditor.tsx:114
 msgctxt "query editor"
 msgid "字段"
 msgstr "Field"
@@ -1700,7 +1729,7 @@ msgctxt "query editor"
 msgid "已自定义"
 msgstr "Customized"
 
-#: src/components/queryEditor/VisualEditor.tsx:65
+#: src/components/queryEditor/VisualEditor.tsx:68
 msgctxt "query editor"
 msgid "干员"
 msgstr "Operator"
@@ -1727,12 +1756,12 @@ msgstr ""
 "Restore “Interested” to its default conditions? Your customized version will "
 "be deleted."
 
-#: src/components/queryEditor/VisualEditor.tsx:75
+#: src/components/queryEditor/VisualEditor.tsx:78
 msgctxt "query editor"
 msgid "排序"
 msgstr "Sort"
 
-#: src/components/queryEditor/VisualEditor.tsx:367
+#: src/components/queryEditor/VisualEditor.tsx:370
 msgctxt "query editor"
 msgid "排序方向"
 msgstr "Sort direction"
@@ -1781,12 +1810,12 @@ msgctxt "query editor"
 msgid "未保存"
 msgstr "Not saved"
 
-#: src/components/queryEditor/VisualEditor.tsx:343
+#: src/components/queryEditor/VisualEditor.tsx:346
 msgctxt "query editor"
 msgid "未设置时按默认排序：%s"
 msgstr "When empty, sorted by default: %s"
 
-#: src/components/queryEditor/VisualEditor.tsx:72
+#: src/components/queryEditor/VisualEditor.tsx:75
 msgctxt "query editor"
 msgid "条件"
 msgstr "Conditions"
@@ -1806,8 +1835,8 @@ msgctxt "query editor"
 msgid "正则表达式写错了。检查括号与转义。"
 msgstr "The regular expression is invalid. Check its brackets and escapes."
 
-#: src/components/queryEditor/VisualEditor.tsx:58
 #: src/components/queryEditor/VisualEditor.tsx:61
+#: src/components/queryEditor/VisualEditor.tsx:64
 msgctxt "query editor"
 msgid "每行"
 msgstr "One row per"
@@ -1817,12 +1846,12 @@ msgctxt "query editor"
 msgid "没有「%1」这个字段。换一个字段，或删掉这一条。"
 msgstr "There is no field “%1”. Pick another field, or remove this line."
 
-#: src/components/queryEditor/VisualEditor.tsx:473
+#: src/components/queryEditor/VisualEditor.tsx:476
 msgctxt "query editor"
 msgid "添加列…"
 msgstr "Add column…"
 
-#: src/components/queryEditor/VisualEditor.tsx:162
+#: src/components/queryEditor/VisualEditor.tsx:165
 msgctxt "query editor"
 msgid "满足"
 msgstr "Match"
@@ -1847,7 +1876,7 @@ msgctxt "query editor"
 msgid "输入后回车添加"
 msgstr "Type and press Enter"
 
-#: src/components/queryEditor/VisualEditor.tsx:274
+#: src/components/queryEditor/VisualEditor.tsx:277
 msgctxt "query editor"
 msgid "运算符"
 msgstr "Comparison"
@@ -1867,13 +1896,13 @@ msgctxt "query editor"
 msgid "重命名…"
 msgstr "Rename…"
 
-#: src/components/queryEditor/VisualEditor.tsx:437
-#: src/components/queryEditor/VisualEditor.tsx:78
+#: src/components/queryEditor/VisualEditor.tsx:440
+#: src/components/queryEditor/VisualEditor.tsx:81
 msgctxt "query editor"
 msgid "附加列"
 msgstr "Columns"
 
-#: src/components/queryEditor/VisualEditor.tsx:372
+#: src/components/queryEditor/VisualEditor.tsx:375
 msgctxt "query editor"
 msgid "降序"
 msgstr "Descending"
@@ -1883,32 +1912,32 @@ msgctxt "query editor"
 msgid "默认"
 msgstr "Default"
 
-#: src/components/queryEditor/VisualEditor.tsx:413
+#: src/components/queryEditor/VisualEditor.tsx:416
 msgctxt "query editor add"
 msgid "排序依据"
 msgstr "Sort key"
 
-#: src/components/queryEditor/VisualEditor.tsx:209
+#: src/components/queryEditor/VisualEditor.tsx:212
 msgctxt "query editor add"
 msgid "条件"
 msgstr "Condition"
 
-#: src/components/queryEditor/VisualEditor.tsx:215
+#: src/components/queryEditor/VisualEditor.tsx:218
 msgctxt "query editor add"
 msgid "条件组"
 msgstr "Group"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:240
+#: src/pkg/cpp-basic/queryEditorModel.ts:250
 msgctxt "query field"
 msgid "%1 · %2"
 msgstr "%1 · %2"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:237
+#: src/pkg/cpp-basic/queryEditorModel.ts:247
 msgctxt "query field"
 msgid "%s（当前）"
 msgstr "%s (current)"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:238
+#: src/pkg/cpp-basic/queryEditorModel.ts:248
 msgctxt "query field"
 msgid "%s（目标）"
 msgstr "%s (goal)"
@@ -2023,17 +2052,17 @@ msgctxt "query field"
 msgid "计划顺序"
 msgstr "Plan order"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:224
+#: src/pkg/cpp-basic/queryEditorModel.ts:234
 msgctxt "query field group"
 msgid "干员"
 msgstr "Operator"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:226
+#: src/pkg/cpp-basic/queryEditorModel.ts:236
 msgctxt "query field group"
 msgid "当前状态"
 msgstr "Current"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:228
+#: src/pkg/cpp-basic/queryEditorModel.ts:238
 msgctxt "query field group"
 msgid "目标状态"
 msgstr "Goal"
@@ -2058,68 +2087,68 @@ msgctxt "query group mode"
 msgid "都不满足"
 msgstr "none"
 
-#: src/components/CharacterList.tsx:688 src/components/CharacterList.tsx:689
+#: src/components/CharacterList.tsx:690 src/components/CharacterList.tsx:691
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
 
-#: src/components/CharacterList.tsx:652
+#: src/components/CharacterList.tsx:654
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
 
-#: src/components/CharacterList.tsx:680 src/components/CharacterList.tsx:681
+#: src/components/CharacterList.tsx:682 src/components/CharacterList.tsx:683
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
 
-#: src/components/CharacterList.tsx:663
+#: src/components/CharacterList.tsx:665
 msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:688 src/components/CharacterList.tsx:689
+#: src/components/CharacterList.tsx:690 src/components/CharacterList.tsx:691
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:116
+#: src/pkg/cpp-basic/queryEditorModel.ts:126
 msgctxt "query operator"
 msgid "不是"
 msgstr "is not"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:118
+#: src/pkg/cpp-basic/queryEditorModel.ts:128
 msgctxt "query operator"
 msgid "不是其中之一"
 msgstr "is none of"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:119
-#: src/pkg/cpp-basic/queryEditorModel.ts:125
+#: src/pkg/cpp-basic/queryEditorModel.ts:129
+#: src/pkg/cpp-basic/queryEditorModel.ts:135
 msgctxt "query operator"
 msgid "包含"
 msgstr "contains"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:122
+#: src/pkg/cpp-basic/queryEditorModel.ts:132
 msgctxt "query operator"
 msgid "匹配正则"
 msgstr "matches regex"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:120
+#: src/pkg/cpp-basic/queryEditorModel.ts:130
 msgctxt "query operator"
 msgid "开头是"
 msgstr "starts with"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:115
+#: src/pkg/cpp-basic/queryEditorModel.ts:125
 msgctxt "query operator"
 msgid "是"
 msgstr "is"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:117
+#: src/pkg/cpp-basic/queryEditorModel.ts:127
 msgctxt "query operator"
 msgid "是其中之一"
 msgstr "is one of"
 
-#: src/pkg/cpp-basic/queryEditorModel.ts:121
+#: src/pkg/cpp-basic/queryEditorModel.ts:131
 msgctxt "query operator"
 msgid "结尾是"
 msgstr "ends with"
@@ -2134,14 +2163,14 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:451
-#: src/components/queryEditor/VisualEditor.tsx:263
+#: src/components/CharacterList.tsx:456
+#: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:451
-#: src/components/queryEditor/VisualEditor.tsx:262
+#: src/components/CharacterList.tsx:456
+#: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
 msgstr "Yes"

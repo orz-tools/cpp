@@ -14,7 +14,7 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { search } from 'text-search-engine'
 import { Cpp, ListCharactersQueryParam, useAtoms, useCpp, useGameAdapter } from '../Cpp'
@@ -34,8 +34,12 @@ import {
   QNumber,
   QStrings,
   Querier,
+  QueryFieldEntry,
   QueryParam,
+  listQueryFields,
+  resolveField,
 } from '../pkg/cpp-basic'
+import { fieldLabel } from '../pkg/cpp-basic/queryEditorModel'
 import { gt } from '../pkg/gt'
 import {
   ListModeAbsent,
@@ -48,6 +52,7 @@ import {
   createListQuerier,
   isCustomQuery,
 } from './characterQuery'
+import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
 import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
 
 export const Hide = memo(
@@ -472,13 +477,10 @@ function getExtraField(id: string, query: Querier<any, any>, cpp: Cpp<any>): Ext
   return field
 }
 
-function getResponseExtraWidth(input: Awaited<ReturnType<typeof listCharactersQuery>> | undefined, cpp: Cpp<any>) {
-  if (!input) return 0
-  let width = 0
-  for (const x of getResponseExtraFields(input)) {
-    width += getExtraField(x, input.query, cpp)?.width ?? 0
-  }
-  return width
+function columnLabel(id: string, query: Querier<any, any>, entries: QueryFieldEntry[]) {
+  if (id === query.param.join) return String(query.rootQuery.subQueries.get(id)?.name ?? id)
+  const entry = resolveField(entries, query, id)
+  return entry ? fieldLabel(entry) : id
 }
 
 function getResponseExtraFields(input: Awaited<ReturnType<typeof listCharactersQuery>> | undefined) {
@@ -738,31 +740,55 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   const query = response?.query
   const result = response?.result || []
   const list = (response?.result || []).map((x) => x.character)
-  const extraFields = useMemo(() => (response ? getResponseExtraFields(response) || [] : []), [response])
-  const extraFieldRenderers = useMemo(
+  const extraColumns = useMemo(
     () =>
       response
-        ? extraFields.map((x) => {
-            const field = getExtraField(x, response.query, cpp)
-            return field ? ([x, field.C] as const) : undefined
+        ? getResponseExtraFields(response).flatMap((id) => {
+            const field = getExtraField(id, response.query, cpp)
+            return field ? [{ id, field }] : []
           })
         : [],
-    [cpp, extraFields, response],
+    [cpp, response],
+  )
+
+  const editing = isCustomQuery(param.query)
+  const columnWidths = useColumnWidths(param.query)
+  const [preview, setPreview] = useState<{ id: string; width: number }>()
+  const widths = useMemo(
+    () =>
+      extraColumns.map(({ id, field }) => {
+        if (preview?.id === id) return preview.width
+        const custom = columnWidths.widths[id]
+        return custom == null ? field.width : clampColumnWidth(custom)
+      }),
+    [extraColumns, columnWidths.widths, preview],
   )
 
   const renderExtraFields = useCallback(
     (item: FieldContext<IGame, ICharacter, any>) => {
-      return extraFieldRenderers.map((x) => {
-        if (!x) return null
-        const C = x[1]
-        return (
-          <div key={x[0]}>
-            <C query={query!} context={item} />
-          </div>
-        )
-      })
+      return extraColumns.map(({ id, field: { C } }, i) => (
+        <div key={id}>
+          <C query={query!} context={item} width={widths[i]} />
+        </div>
+      ))
     },
-    [extraFieldRenderers, query],
+    [extraColumns, widths, query],
+  )
+
+  const columnHeads = useMemo(() => {
+    if (!editing || !query) return []
+    const entries = listQueryFields(query)
+    return extraColumns.map(({ id, field }, i) => ({
+      id,
+      label: columnLabel(id, query, entries),
+      width: widths[i],
+      defaultWidth: field.width,
+    }))
+  }, [editing, query, extraColumns, widths])
+
+  const onPreview = useCallback(
+    (id: string, width: number | undefined) => setPreview(width == null ? undefined : { id, width }),
+    [],
   )
 
   const parentRef = useRef<HTMLUListElement>(null)
@@ -774,6 +800,17 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     overscan: 5,
     estimateSize: () => 50,
   })
+
+  // 列头的状态格量自第一行：状态格的宽度由各游戏的渲染结果决定
+  const [statusWidths, setStatusWidths] = useState<readonly number[]>([])
+  const hasRows = rowVirtualizer.getVirtualItems().length > 0
+  useLayoutEffect(() => {
+    if (!editing || !hasRows) return
+    const row = parentRef.current?.querySelector('.cpp-char-menu-master')
+    if (!row) return
+    const measured = [...row.children].slice(-2).map((x) => x.getBoundingClientRect().width)
+    setStatusWidths((x) => (deepEqual(x, measured) ? x : measured))
+  }, [editing, hasRows, response])
 
   const remeasure = useEvent(() => {
     rowVirtualizer.measure()
@@ -789,8 +826,8 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   }, [setCharExtraWidth])
 
   useEffect(() => {
-    setCharExtraWidth(getResponseExtraWidth(response, cpp))
-  }, [response, cpp, setCharExtraWidth])
+    setCharExtraWidth(widths.reduce((a, b) => a + b, 0))
+  }, [widths, setCharExtraWidth])
 
   return (
     <>
@@ -828,6 +865,15 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
           style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}
           ulRef={parentRef}
         >
+          {editing ? (
+            <ColumnHeader
+              columns={columnHeads}
+              statusWidths={statusWidths}
+              disabled={stale}
+              onPreview={onPreview}
+              onResize={columnWidths.setWidth}
+            />
+          ) : null}
           <div
             style={{
               height: `${rowVirtualizer.getTotalSize()}px`,
@@ -906,7 +952,7 @@ export function createSimpleExtraField<
 ) {
   return {
     width: width,
-    C: memo(({ context, query }: { query: Querier<G, C>; context: FieldContext<G, C, Args> }) => {
+    C: memo(({ context, query, width }: { query: Querier<G, C>; context: FieldContext<G, C, Args>; width: number }) => {
       const value = query.getFieldValue(field, context)
       const text = formatter(value, query, context)
 

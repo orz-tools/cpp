@@ -18,7 +18,7 @@ const percentageStyle: React.CSSProperties = {
 export const extraFields: IGameComponent['extraFields'] = {
   skill: {
     width: 150,
-    C: memo(({ context }: { context: FieldContext<Arknights, Character, [number]> }) => {
+    C: memo(({ context, width }: { context: FieldContext<Arknights, Character, [number]>; width: number }) => {
       const skillId = context.args[0]
       const charSkill = context.character.skills[skillId]
       const skillName = charSkill.skill.name
@@ -29,7 +29,7 @@ export const extraFields: IGameComponent['extraFields'] = {
       ][charSkill.charSkillIndex]
 
       return (
-        <CharacterListColumn width={150}>
+        <CharacterListColumn width={width}>
           <span className="bp6-menu-item-icon">
             <CachedImg src={charSkill.skill.icon} width={'100%'} height={'100%'} alt={skillName} title={skillName} />
           </span>

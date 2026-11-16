@@ -197,6 +197,8 @@ export interface QueryParam {
   where?: Assertion | undefined | null
   order?: [string, 'ASC' | 'DESC'][] | undefined | null
   group?: string[] | undefined | null
+  /** 附加列（select 与 join 的列）改过的宽度，以 px 计；查询本身不用它 */
+  widths?: Record<string, number> | undefined | null
 }
 
 export class Querier<G extends IGame, C extends ICharacter> {
@@ -234,12 +236,19 @@ export class Querier<G extends IGame, C extends ICharacter> {
     }
   }
 
-  /** 编译 where/order 并检查 select，只报错不执行 */
+  /** 编译 where/order 并检查 select 与 widths，只报错不执行 */
   public validate(): void {
     this.compileAssertion(this.param.where)
     if (this.param.order != null) this.compileComparatorList(this.param.order)
     if (this.param.select != null) {
       for (const id of this.param.select) this.getField(id)
+    }
+    const widths = this.param.widths
+    if (widths != null) {
+      if (typeof widths !== 'object' || Array.isArray(widths)) throw new Error('Expected widths to be an object')
+      for (const [id, width] of Object.entries(widths)) {
+        if (typeof width !== 'number' || !Number.isFinite(width)) throw new Error(`Invalid width for column ${id}`)
+      }
     }
   }
 

@@ -107,6 +107,12 @@ describe('Querier.validate', () => {
     expect(() => querier({ select: ['potential'] }).validate()).toThrow('potential')
   })
 
+  it('reports widths that are not numbers', () => {
+    expect(() => querier({ select: ['name'], widths: { name: 120, gone: 80 } }).validate()).not.toThrow()
+    expect(() => querier({ select: ['name'], widths: { name: '120' as any } }).validate()).toThrow('name')
+    expect(() => querier({ widths: [120] as any }).validate()).toThrow('widths')
+  })
+
   it('reports a missing join', () => {
     expect(() => querier({ join: 'module' })).toThrow('module')
   })

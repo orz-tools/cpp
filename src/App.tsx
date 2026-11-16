@@ -158,6 +158,7 @@ const App = memo(() => {
   const defaultCharStatusWidth = 43 * 6
   const charExtraWidth = useAtomValue(charExtraWidthAtom)
   const charStatusWidth = cpp.gameComponent.charStatusWidth || defaultCharStatusWidth
+  const charListBaseWidth = 730 - defaultCharStatusWidth * 2 + charStatusWidth * 2
   const ga = useGameAdapter()
 
   useEffect(() => {
@@ -215,9 +216,11 @@ const App = memo(() => {
         <section
           className={Classes.ELEVATION_1}
           style={{
-            width: Math.max(730 - defaultCharStatusWidth * 2 + charStatusWidth * 2 + charExtraWidth, 560),
+            width: Math.max(charListBaseWidth + charExtraWidth, 560),
             display: 'flex',
             flexDirection: 'column',
+            // 过滤器编辑器按没有附加列时的宽度排版，加列、拖列宽时控件不跟着变宽
+            ['--cpp-char-list-base-width' as string]: `${Math.max(charListBaseWidth, 560)}px`,
           }}
         >
           <CharacterList charExtraWidthAtom={charExtraWidthAtom} />

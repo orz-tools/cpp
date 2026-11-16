@@ -6,6 +6,11 @@
   background: var(--bp-palette-light-gray-5, #f6f7f9);
   border-bottom: 1px solid var(--bp-palette-light-gray-2, #dce0e5);
   box-shadow: 0 1px 2px rgba(17, 20, 24, 0.08);
+  /*
+   * 栏比没有附加列时宽出来的部分。各块用右内边距让出它，控件不跟着变宽，
+   * 底色、分隔线和滚动条仍铺到栏的最右边。100% 在使用处解析，即整栏的宽度。
+   */
+  --cpp-qe-spare: max(0px, calc(100% - var(--cpp-char-list-base-width, 100%)));
 }
 
 .cpp-qe-head {
@@ -13,7 +18,7 @@
   flex-shrink: 0;
   align-items: center;
   gap: 6px;
-  padding: 5px 6px 5px 12px;
+  padding: 5px calc(6px + var(--cpp-qe-spare)) 5px 12px;
   background: var(--bp-palette-white, #fff);
   border-bottom: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
 }
@@ -53,7 +58,7 @@
   grid-template-columns: minmax(4.5em, max-content) minmax(0, 1fr);
   gap: 10px 8px;
   align-items: start;
-  padding: 10px 12px 12px;
+  padding: 10px calc(12px + var(--cpp-qe-spare)) 12px 12px;
   overflow: auto;
 }
 
@@ -244,7 +249,7 @@ select.cpp-qe-invalid {
   flex-direction: column;
   gap: 6px;
   min-height: 0;
-  padding: 10px 12px 12px;
+  padding: 10px calc(12px + var(--cpp-qe-spare)) 12px 12px;
 }
 
 .cpp-qe-json.bp6-input {
@@ -258,7 +263,7 @@ select.cpp-qe-invalid {
 
 .cpp-qe-footnote {
   flex-shrink: 0;
-  padding: 6px 12px;
+  padding: 6px calc(12px + var(--cpp-qe-spare)) 6px 12px;
   font-size: 12px;
   color: var(--bp-palette-gray-1, #5f6b7c);
   border-top: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
@@ -282,4 +287,82 @@ select.cpp-qe-invalid {
 .cpp-char-list-stale {
   opacity: 0.55;
   transition: opacity 120ms ease-out;
+}
+
+.cpp-qe-colhead {
+  position: sticky;
+  /* 贴到列表 4px 内边距的上沿，滚动时行不会从列头上方的缝里露出来 */
+  top: -4px;
+  z-index: 1;
+  display: flex;
+  height: 27px;
+  font-size: 12px;
+  line-height: 26px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  background: var(--bp-palette-white, #fff);
+  border-bottom: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
+  user-select: none;
+}
+
+.cpp-qe-colhead > div {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  min-width: 0;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.cpp-qe-colhead > div > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cpp-qe-colhead > .cpp-qe-colhead-name {
+  flex: 1 1 auto;
+}
+
+.cpp-qe-colhead-cell {
+  color: var(--bp-palette-dark-gray-5, #404854);
+}
+
+.cpp-qe-colhead-custom {
+  font-weight: 600;
+}
+
+/* 比分隔线宽，好抓；骑在两列之间 */
+.cpp-qe-colhead-handle {
+  position: absolute;
+  top: 0;
+  right: -5px;
+  bottom: 0;
+  z-index: 1;
+  width: 9px;
+  cursor: col-resize;
+  outline: none;
+  touch-action: none;
+}
+
+.cpp-qe-colhead-handle::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 4px;
+  width: 1px;
+  background: var(--bp-palette-gray-5, #c5cbd3);
+}
+
+.cpp-qe-colhead-handle:not([aria-disabled='true']):hover::after,
+.cpp-qe-colhead-handle:focus-visible::after,
+.cpp-qe-colhead-dragging::after {
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 3px;
+  background: var(--bp-palette-blue-3, #2d72d2);
+}
+
+.cpp-qe-colhead-handle[aria-disabled='true'] {
+  cursor: default;
 }

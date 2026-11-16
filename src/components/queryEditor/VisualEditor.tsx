@@ -25,6 +25,7 @@ import {
   groupModeLabel,
   groupModes,
   readBooleanRow,
+  shownColumnWidths,
   treeToWhere,
   whereToTree,
   writeBooleanRow,
@@ -35,7 +36,7 @@ import { FieldCatalog, explainConditionError } from './catalog'
 
 const RootJoin = '\u0000'
 
-/** 去掉空的部分，写出的 JSON 与手写的一样干净 */
+/** 去掉空的部分和已经不显示的列的宽度，写出的 JSON 与手写的一样干净 */
 export function cleanQuery(q: QueryParam): QueryParam {
   const result: QueryParam = {}
   if (q.select != null && q.select.length > 0) result.select = q.select
@@ -43,6 +44,8 @@ export function cleanQuery(q: QueryParam): QueryParam {
   if (q.where != null) result.where = q.where
   if (q.order != null && q.order.length > 0) result.order = q.order
   if (q.group != null) result.group = q.group
+  const widths = shownColumnWidths(q)
+  if (widths) result.widths = widths
   return result
 }
 

@@ -7,8 +7,10 @@ import {
   convertOperand,
   defaultConditionFor,
   fromDisplay,
+  normalizeQuery,
   readBooleanRow,
   readRegexOperand,
+  shownColumnWidths,
   toDisplay,
   treeToWhere,
   whereToTree,
@@ -143,5 +145,27 @@ describe('operators and values', () => {
     expect(convertOperand(e, 'in', 'ne', ['A', 'B'])).toBe('A')
     expect(convertOperand(e, 'eq', 'contains', 'x')).toBe('x')
     expect(convertOperand(e, 'eq', 'matches', 'x')).toBe('')
+  })
+})
+
+describe('column widths', () => {
+  it('keeps widths only for the columns still shown', () => {
+    expect(shownColumnWidths({ select: ['code'], join: 'skill', widths: { code: 120, skill: 200, name: 90 } })).toEqual(
+      {
+        code: 120,
+        skill: 200,
+      },
+    )
+    expect(shownColumnWidths({ select: ['code'], widths: { name: 90 } })).toBeUndefined()
+    expect(shownColumnWidths({ select: ['code'] })).toBeUndefined()
+  })
+
+  it('compares queries with their shown widths', () => {
+    expect(normalizeQuery({ select: ['code'], widths: { code: 120 } })).toEqual({
+      select: ['code'],
+      widths: { code: 120 },
+    })
+    expect(normalizeQuery({ select: ['code'], widths: { name: 90 } })).toEqual({ select: ['code'] })
+    expect(normalizeQuery({ widths: {} })).toEqual({})
   })
 })
