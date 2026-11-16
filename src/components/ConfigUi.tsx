@@ -1,10 +1,23 @@
-import { Button, Card, Checkbox, Icon, Menu, MenuDivider, MenuItem, Popover, Tag } from '@blueprintjs/core'
+import {
+  Button,
+  Checkbox,
+  H5,
+  Icon,
+  InputGroup,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  NonIdealState,
+  Popover,
+  Tag,
+} from '@blueprintjs/core'
 import { useAtom } from 'jotai'
-import { groupBy, sortBy, without } from 'ramda'
-import React, { memo } from 'react'
+import { without } from 'ramda'
+import React, { memo, useState } from 'react'
 import { useAtoms, useCpp, useGameAdapter } from '../Cpp'
 import { gt } from '../pkg/gt'
 import { DescriptionMenuItem } from './AboutList'
+import { StageCategoryGroup, groupStages } from './stageGroups'
 import { SampleTag } from './Value'
 
 export const ForbiddenFormulaTag = memo(({ tag, text }: { tag: string; text: React.ReactNode }) => {
@@ -49,10 +62,10 @@ export const ConfigButton = memo(() => {
 
 export interface StageToggleProps {
   isChecked: (stageId: string) => boolean
-  onToggle: (stageId: string) => void
+  onSetChecked: (stageIds: string[], checked: boolean) => void
 }
 
-export const StageIdCheckbox = memo(({ stageId, isChecked, onToggle }: { stageId: string } & StageToggleProps) => {
+export const StageIdCheckbox = memo(({ stageId, isChecked, onSetChecked }: { stageId: string } & StageToggleProps) => {
   const ga = useGameAdapter()
   const stageInfo = ga.getStageInfos()
   const stage = stageInfo[stageId]
@@ -77,53 +90,148 @@ export const StageIdCheckbox = memo(({ stageId, isChecked, onToggle }: { stageId
         </>
       }
       inline={true}
-      onChange={() => onToggle(stageId)}
+      onChange={() => onSetChecked([stageId], !isChecked(stageId))}
     />
   )
 })
 
-function makeNumericSortable(x: string) {
-  return x.replace(/\d+/g, (y) => String(y).padStart(20, '0'))
+function countChecked(stageIds: string[], isChecked: (stageId: string) => boolean) {
+  let on = 0
+  for (const x of stageIds) if (isChecked(x)) on++
+  return on
 }
 
-export const StagePopover = memo(({ isChecked, onToggle, stageIds }: StageToggleProps & { stageIds?: string[] }) => {
-  const ga = useGameAdapter()
-  const stageInfo = ga.getStageInfos()
-  const allStageIds = stageIds || Object.keys(stageInfo)
-  const grouped = sortBy(
-    (x) => makeNumericSortable(x[0]),
-    Object.entries(
-      groupBy(
-        (x: string) => {
-          return stageInfo[x].zoneId
-        },
-        sortBy((x) => {
-          return makeNumericSortable(stageInfo[x].sortKey)
-        }, allStageIds),
-      ),
-    ),
-  )
-
+const TriStateCheckbox = ({
+  stageIds,
+  isChecked,
+  onSetChecked,
+  label,
+  title,
+}: StageToggleProps & { stageIds: string[]; label?: React.ReactNode; title?: string }) => {
+  const all = stageIds.length
+  const on = countChecked(stageIds, isChecked)
+  const checked = all > 0 && on === all
   return (
-    <div style={{ minWidth: '200px', maxWidth: '60vw', maxHeight: '80vh', overflow: 'auto' }}>
-      {grouped.map(([k, stages]) => {
-        const zoneName = ga.getZoneNames()[k] || k
-        return (
-          <React.Fragment key={k}>
-            <Card style={{ padding: 15 }}>
-              <h4 style={{ margin: 0, padding: 0 }} title={k}>
-                {zoneName}
-              </h4>
-              {stages!.map((x) => {
-                return <StageIdCheckbox stageId={x} key={x} isChecked={isChecked} onToggle={onToggle} />
-              })}
-            </Card>
-          </React.Fragment>
-        )
-      })}
-    </div>
+    <Checkbox
+      style={{ marginBottom: 0 }}
+      inline={true}
+      checked={checked}
+      indeterminate={on > 0 && on < all}
+      disabled={all === 0}
+      labelElement={label}
+      title={title}
+      onChange={() => onSetChecked(stageIds, !checked)}
+    />
   )
-})
+}
+
+const CountTag = ({ stageIds, isChecked }: { stageIds: string[]; isChecked: (stageId: string) => boolean }) => (
+  <Tag minimal>
+    {countChecked(stageIds, isChecked)}/{stageIds.length}
+  </Tag>
+)
+
+const categoryStageIds = (group: StageCategoryGroup | undefined) =>
+  group ? group.zones.flatMap((x) => x.stageIds) : []
+
+export const StagePopover = memo(
+  ({ isChecked, onSetChecked, stageIds }: StageToggleProps & { stageIds?: string[] }) => {
+    const ga = useGameAdapter()
+    const stageInfo = ga.getStageInfos()
+    const allStageIds = stageIds || Object.keys(stageInfo)
+    const zoneInfos = ga.getZoneInfos()
+    const categories = ga.getStageCategories()
+    const [query, setQuery] = useState('')
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string>()
+
+    const groups = groupStages(allStageIds, stageInfo, zoneInfos, categories, '')
+    const filtering = query.trim() !== ''
+    const shown = filtering ? groupStages(allStageIds, stageInfo, zoneInfos, categories, query) : groups
+    const shownStageIds = shown.flatMap(categoryStageIds)
+    const selected = groups.find((x) => x.category.id === selectedCategoryId) || groups[0]
+    const toggle = { isChecked, onSetChecked }
+
+    const renderZones = (group: StageCategoryGroup) =>
+      group.zones.map(({ zone, stageIds }) => (
+        <div key={zone.id} className="cpp-stage-zone">
+          <div className="cpp-stage-zone-header">
+            <TriStateCheckbox {...toggle} stageIds={stageIds} title={zone.id} label={<b>{zone.name || zone.id}</b>} />
+            <CountTag stageIds={stageIds} isChecked={isChecked} />
+          </div>
+          <div className="cpp-stage-zone-stages">
+            {stageIds.map((x) => (
+              <StageIdCheckbox stageId={x} key={x} {...toggle} />
+            ))}
+          </div>
+        </div>
+      ))
+
+    let right: React.ReactNode
+    if (shownStageIds.length === 0) {
+      right = <NonIdealState icon="search" title={gt.gettext('无匹配关卡')} />
+    } else if (filtering) {
+      right = shown.map((group) => (
+        <React.Fragment key={group.category.id}>
+          <H5 className="cpp-stage-category-title">{group.category.name}</H5>
+          {renderZones(group)}
+        </React.Fragment>
+      ))
+    } else if (selected) {
+      right = renderZones(selected)
+    }
+
+    return (
+      <div className="cpp-stage-popover">
+        <div className="cpp-stage-popover-toolbar">
+          <InputGroup
+            type="search"
+            leftIcon="search"
+            placeholder={gt.gettext('按关卡代号或名称筛选')}
+            value={query}
+            onChange={(e) => setQuery(e.currentTarget.value)}
+            fill={true}
+          />
+          <Button
+            text={gt.gettext('全部启用')}
+            disabled={shownStageIds.length === 0}
+            onClick={() => onSetChecked(shownStageIds, true)}
+          />
+          <Button
+            text={gt.gettext('全部禁用')}
+            disabled={shownStageIds.length === 0}
+            onClick={() => onSetChecked(shownStageIds, false)}
+          />
+        </div>
+        <div className="cpp-stage-popover-body">
+          <Menu className="cpp-stage-popover-categories">
+            {groups.map((group) => {
+              const ids = categoryStageIds(filtering ? shown.find((x) => x.category.id === group.category.id) : group)
+              return (
+                <MenuItem
+                  key={group.category.id}
+                  active={!filtering && group === selected}
+                  disabled={ids.length === 0}
+                  shouldDismissPopover={false}
+                  onClick={() => setSelectedCategoryId(group.category.id)}
+                  icon={
+                    // 菜单项被点击会切换选中的分类，复选框只负责开关
+                    <span onClick={(e) => e.stopPropagation()}>
+                      <TriStateCheckbox {...toggle} stageIds={ids} />
+                    </span>
+                  }
+                  text={group.category.name}
+                  htmlTitle={group.category.name}
+                  labelElement={<CountTag stageIds={ids} isChecked={isChecked} />}
+                />
+              )
+            })}
+          </Menu>
+          <div className="cpp-stage-popover-zones">{right}</div>
+        </div>
+      </div>
+    )
+  },
+)
 
 export const StageButton = memo(() => {
   const ga = useGameAdapter()
@@ -141,11 +249,8 @@ export const StageButton = memo(() => {
       content={
         <StagePopover
           isChecked={(stageId) => !forbiddenStageIds.includes(stageId)}
-          onToggle={(stageId) =>
-            setForbiddenStageIds((t) => {
-              if (t.includes(stageId)) return without([stageId], t)
-              return [...t, stageId]
-            })
+          onSetChecked={(ids, checked) =>
+            setForbiddenStageIds((t) => (checked ? without(ids, t) : [...t, ...without(t, ids)]))
           }
         />
       }

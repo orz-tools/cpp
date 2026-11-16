@@ -9,6 +9,19 @@ export interface PredefinedQuery {
   query: QueryParam
 }
 
+export interface IZoneInfo {
+  readonly id: string
+  readonly name: string
+  readonly categoryId: string
+  /** 同一分类内按字符串升序 */
+  readonly sortKey: string
+}
+
+export interface IStageCategory {
+  readonly id: string
+  readonly name: string
+}
+
 export interface IGameAdapterStatic<G extends IGame = IGame> {
   new (region: any): IGameAdapter<G>
   codename: string
@@ -29,7 +42,9 @@ export interface IGameAdapter<G extends IGame> {
   getExpItems(): Record<string, ExpItem>
   getExpItemValue(key: string): [number, string] | null | undefined
   getStageInfos(): Record<string, IStageInfo>
-  getZoneNames(): Record<string, string>
+  getZoneInfos(): Record<string, IZoneInfo>
+  /** 按显示顺序 */
+  getStageCategories(): IStageCategory[]
   getFormulaTagNames(): Record<string, PSTR>
   getDefaultCharacterQueryOrder(): QueryParam['order']
   getFavCharacterQueryWhere(): QueryParam['where']

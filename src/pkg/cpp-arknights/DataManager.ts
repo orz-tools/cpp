@@ -1,5 +1,5 @@
 import { BlobImages, blobImage } from '../blobcache'
-import { BasicDataManager, Formula, ICharacter, IItem } from '../cpp-basic'
+import { BasicDataManager, Formula, ICharacter, IItem, makeNumericSortable } from '../cpp-basic'
 import { DataContainerObject } from '../dccache'
 import {
   ArknightsHeyboxOperatorSurveyObject,
@@ -576,10 +576,6 @@ export class UniEquip {
       ),
     }
   }
-}
-
-function makeNumericSortable(x: string) {
-  return x.replace(/\d+/g, (y) => String(y).padStart(20, '0'))
 }
 
 export class Item implements IItem {
