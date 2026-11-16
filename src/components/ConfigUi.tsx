@@ -40,7 +40,7 @@ export const ConfigButton = memo(() => {
       }
       position="bottom-left"
     >
-      <Button icon={'properties'} minimal={true} rightIcon={'chevron-down'}>
+      <Button icon={'properties'} variant="minimal" endIcon={'chevron-down'}>
         <span className="cpp-very-compact">{gt.gettext('选项')}</span>
       </Button>
     </Popover>
@@ -140,8 +140,8 @@ export const StageButton = memo(() => {
     <Popover usePortal={true} minimal={true} content={<StagePopover />} position="bottom-left">
       <Button
         icon={'layers'}
-        minimal={true}
-        rightIcon={
+        variant="minimal"
+        endIcon={
           <>
             <Tag minimal className="cpp-very-compact">
               {now}/{all}
@@ -168,7 +168,7 @@ export const SoulButton = memo(() => {
   }
 
   return (
-    <Button icon={'image-rotate-right'} minimal={true} active={blobFlavour !== 'normal'} onClick={handleClick}>
+    <Button icon={'image-rotate-right'} variant="minimal" active={blobFlavour !== 'normal'} onClick={handleClick}>
       <span className="cpp-very-compact">?</span>
     </Button>
   )
@@ -233,8 +233,8 @@ export const RegionButton = memo(() => {
             <Icon icon={'globe'} />
           </>
         }
-        minimal={true}
-        rightIcon={'chevron-down'}
+        variant="minimal"
+        endIcon={'chevron-down'}
       >
         {currentRegion?.short ? (
           <Tag minimal style={{ fontFamily: 'monospace' }} className="cpp-very-compact">

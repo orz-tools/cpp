@@ -355,7 +355,7 @@ const HideCostsButton = memo(() => {
   const [param, setParam] = useAtom(queryParamAtom)
   return (
     <Button
-      minimal={true}
+      variant="minimal"
       active={param.hideCosts}
       icon={'eye-off'}
       onClick={() => {

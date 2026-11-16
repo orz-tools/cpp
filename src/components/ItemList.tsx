@@ -90,7 +90,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { 
 
   return (
     <>
-      <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+      <ButtonGroup variant="minimal" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
         {formula.apCost ? (
           <>
             <span style={{ marginLeft: 10 }}>
@@ -465,7 +465,7 @@ const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level;
 
   return (
     <Button
-      minimal={true}
+      variant="minimal"
       disabled={disabled}
       text={
         {
@@ -474,7 +474,7 @@ const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level;
           [Level.Star]: gt.pgettext('item list view label', '星标'),
         }[level]
       }
-      rightIcon={<ValueTagProgressBar value={remaining} maxValue={total} />}
+      endIcon={<ValueTagProgressBar value={remaining} maxValue={total} />}
       active={param.level === level}
       onClick={() => {
         setParam((p) => ({ ...p, level: p.level === level ? undefined : level }))
@@ -487,7 +487,7 @@ const HideCompletedButton = memo(() => {
   const [param, setParam] = useAtom(itemListParamAtom)
   return (
     <Button
-      minimal={true}
+      variant="minimal"
       active={param.hideCompleted}
       icon={'eye-off'}
       onClick={() => {
@@ -536,7 +536,7 @@ export const SyncButton = memo(() => {
   const { add } = useChamber()
   return (
     <Button
-      minimal={true}
+      variant="minimal"
       icon={'fullscreen'}
       title={gt.gettext('按游戏内仓库排布形式展示')}
       onClick={() => {

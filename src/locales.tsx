@@ -78,8 +78,8 @@ export const LocaleButton = memo(() => {
             <Icon icon={'translate'} />
           </>
         }
-        minimal={true}
-        rightIcon={'chevron-down'}
+        variant="minimal"
+        endIcon={'chevron-down'}
       >
         <Tag minimal style={{ fontFamily: 'monospace' }} className="cpp-very-compact">
           {currentLocale}

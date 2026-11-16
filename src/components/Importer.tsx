@@ -71,12 +71,12 @@ const ImportResultDialog = memo(({ diff, onClose }: { diff: State; onClose: () =
           <DiffView diff={diff} />
           <DialogFooter
             actions={
-              <Button onClick={onClose} minimal>
+              <Button onClick={onClose} variant="minimal">
                 {gt.gettext('关闭')}
               </Button>
             }
           >
-            <Button icon="undo" onClick={undoAndClose} minimal>
+            <Button icon="undo" onClick={undoAndClose} variant="minimal">
               {gt.gettext('撤销')}
             </Button>
           </DialogFooter>

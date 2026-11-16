@@ -106,7 +106,10 @@ export const CharacterContextMenu = memo(
       <Menu>
         {alwaysSorting || (alwaysSorting !== false && param.query === ListModeWithGoal) ? (
           <>
-            <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <ButtonGroup
+              variant="minimal"
+              style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}
+            >
               <>
                 <span style={{ marginLeft: 10 }}>{gt.gettext('角色计划排序')}</span>
                 <div style={{ flex: 1 }} />
@@ -503,8 +506,8 @@ const QuerySearchBox = memo(() => {
       <div className="bp6-input-group">
         {!empty ? (
           <Button
-            minimal
-            small
+            variant="minimal"
+            size="small"
             icon={'cross'}
             onClick={() => {
               setParam((x) => ({ ...x, search: '' }))
@@ -604,29 +607,29 @@ const QueryBuilder = memo(() => {
     <>
       <QuerySearchBox />
       <Button
-        minimal={true}
+        variant="minimal"
         active={param.query === ListModeFav}
         text={gt.pgettext('predefined view name', '想看的')}
         onClick={() => setParam((x) => ({ ...x, query: ListModeFav }))}
         style={{ flexShrink: 0 }}
       />
       <Button
-        minimal={true}
+        variant="minimal"
         active={param.query === ListModeAll}
         text={gt.pgettext('predefined view name', '全部')}
         onClick={() => setParam((x) => ({ ...x, query: ListModeAll }))}
         style={{ flexShrink: 0 }}
       />
       <Button
-        minimal={true}
+        variant="minimal"
         active={param.query === ListModeWithGoal}
         text={gt.pgettext('predefined view name', '计划')}
-        rightIcon={goalCount > 0 ? <Tag round={true}>{goalCount}</Tag> : undefined}
+        endIcon={goalCount > 0 ? <Tag round={true}>{goalCount}</Tag> : undefined}
         onClick={() => setParam((x) => ({ ...x, query: ListModeWithGoal }))}
         style={{ flexShrink: 0 }}
       />
       <Button
-        minimal={true}
+        variant="minimal"
         active={param.query === ListModeAbsent}
         text={gt.pgettext('predefined view name', '缺席')}
         onClick={() => setParam((x) => ({ ...x, query: ListModeAbsent }))}
@@ -634,7 +637,7 @@ const QueryBuilder = memo(() => {
       />
       {activePredefined ? (
         <Button
-          minimal={true}
+          variant="minimal"
           active={true}
           text={activePredefined.name}
           title={activePredefined.name}
@@ -679,10 +682,10 @@ const QueryBuilderRight = memo(() => {
           </Menu>
         }
       >
-        <Button minimal={true} icon={'chevron-down'} />
+        <Button variant="minimal" icon={'chevron-down'} />
       </Popover>
       <Button
-        minimal={true}
+        variant="minimal"
         icon={'edit'}
         active={custom}
         onClick={() => {
@@ -826,7 +829,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
           <QueryBuilderRight />
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
-            minimal={true}
+            variant="minimal"
             disabled={loading}
             onClick={refresh}
           />

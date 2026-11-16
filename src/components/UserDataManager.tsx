@@ -125,7 +125,7 @@ const UserDataManagerContent = memo(
       <>
         <DialogBody>
           <TextArea
-            small
+            size="small"
             value={value}
             style={{
               width: '100%',
@@ -142,9 +142,9 @@ const UserDataManagerContent = memo(
         <DialogFooter
           actions={
             <>
-              <Button minimal intent={'danger'} icon="trash" text={gt.gettext('清空')} onClick={resetData} />
+              <Button variant="minimal" intent={'danger'} icon="trash" text={gt.gettext('清空')} onClick={resetData} />
               <Button
-                minimal
+                variant="minimal"
                 intent={'primary'}
                 icon="log-in"
                 text={gt.gettext('从文本框中导入')}
@@ -155,7 +155,7 @@ const UserDataManagerContent = memo(
         >
           <iframe name="cpp-export-download-target" style={{ display: 'none' }}></iframe>
           <AnchorButton
-            minimal
+            variant="minimal"
             href={data ? 'data:text/json,' + encodeURIComponent(data.data) : ''}
             icon={'log-out'}
             target={'cpp-export-download-target'}
@@ -176,7 +176,7 @@ export const UserDataManagerButton = memo(() => {
   const { add } = useChamber()
   return (
     <Button
-      minimal
+      variant="minimal"
       icon={'database'}
       text={gt.gettext('用户数据管理')}
       onClick={() => {

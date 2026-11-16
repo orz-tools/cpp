@@ -230,13 +230,18 @@ export const FarmList = memo(() => {
             }
             position="bottom-right"
           >
-            <Button minimal={true} rightIcon={<Icon size={10} icon="chevron-down" />} small style={{ marginRight: -5 }}>
+            <Button
+              variant="minimal"
+              endIcon={<Icon size={10} icon="chevron-down" />}
+              size="small"
+              style={{ marginRight: -5 }}
+            >
               {FarmLevelShortNames[farmLevel].toString()}
             </Button>
           </Popover>
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
-            minimal={true}
+            variant="minimal"
             disabled={loading}
             onClick={() => refresh()}
           />
