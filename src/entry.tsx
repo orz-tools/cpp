@@ -5,6 +5,7 @@ import { Cpp, CppContext } from './Cpp'
 import { Err, ErrAtom } from './components/Err'
 import { IGameComponent } from './components/types'
 import './index.css'
+import { LocaleBoundary } from './locales'
 import { IGame, IGameAdapter } from './pkg/cpp-basic'
 import { gt } from './pkg/gt'
 
@@ -38,7 +39,9 @@ export function runCpp(
     // <React.StrictMode>
     <Provider store={cpp.store}>
       <CppContext.Provider value={cpp}>
-        <AppWrapper />
+        <LocaleBoundary>
+          <AppWrapper />
+        </LocaleBoundary>
       </CppContext.Provider>
     </Provider>,
     // </React.StrictMode>,

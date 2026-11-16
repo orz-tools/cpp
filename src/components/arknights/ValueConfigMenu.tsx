@@ -183,7 +183,7 @@ const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => {
 
   const apply = () => {
     setSaved(normalizeItemValueConfig(draft))
-    location.reload()
+    onClose()
   }
 
   return (

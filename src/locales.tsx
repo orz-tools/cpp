@@ -1,5 +1,5 @@
 import { Button, Icon, Menu, MenuDivider, MenuItem, Popover, Tag } from '@blueprintjs/core'
-import { memo } from 'react'
+import { Fragment, ReactNode, memo, useSyncExternalStore } from 'react'
 import { PSTRs } from './components/LineBreaks'
 import { showAlert } from './components/MessageBox'
 import { gt } from './pkg/gt'
@@ -19,28 +19,54 @@ const locales = {
 const LOCALE_STORAGE_KEY = 'cpp$locale'
 
 let currentLocale = ''
+const loadedLocales = new Set<string>()
+const localeListeners = new Set<() => void>()
+
+export function getLocale() {
+  return currentLocale
+}
+
+export function subscribeLocale(listener: () => void) {
+  localeListeners.add(listener)
+  return () => void localeListeners.delete(listener)
+}
+
+async function loadLocale(locale: string) {
+  const loc = locales[locale]
+  if (loc.loader && !loadedLocales.has(locale)) {
+    gt.addTranslations(locale, 'messages', await loc.loader())
+    loadedLocales.add(locale)
+  }
+}
 
 export async function setupLocale() {
   const locale = localStorage.getItem(LOCALE_STORAGE_KEY) || 'zh_Hans'
   if (!Object.prototype.hasOwnProperty.call(locales, locale)) return
   currentLocale = locale
-  const loc = locales[locale]
-  if (loc.loader) {
-    gt.addTranslations(locale, 'messages', await loc.loader())
-  }
+  await loadLocale(locale)
   gt.setLocale(locale)
 }
 
-function setLocale(locale: string) {
+async function setLocale(locale: string) {
   if (!Object.prototype.hasOwnProperty.call(locales, locale)) return
   if (currentLocale === locale) return
+  try {
+    await loadLocale(locale)
+  } catch (e) {
+    console.error(e)
+    void showAlert(`${gt.gettext('切换语言失败')}\n${e instanceof Error ? e.message : String(e)}`)
+    return
+  }
   localStorage.setItem(LOCALE_STORAGE_KEY, locale)
-  const str = [
-    'UI Language changed. A reload is required.',
-    '语言已切换，将重新载入页面。',
-    gt.gettext('语言已切换，将重新载入页面。'),
-  ]
-  void showAlert([...new Set(str)].join('\n')).then(() => location.reload())
+  gt.setLocale(locale)
+  currentLocale = locale
+  for (const listener of localeListeners) listener()
+}
+
+/** Mounts its children again whenever the UI language changes, so every string is translated anew. */
+export const LocaleBoundary = ({ children }: { children: ReactNode }) => {
+  const locale = useSyncExternalStore(subscribeLocale, getLocale)
+  return <Fragment key={locale}>{children}</Fragment>
 }
 
 export const LocaleButton = memo(() => {
@@ -62,9 +88,7 @@ export const LocaleButton = memo(() => {
                   </Tag>
                 }
                 active={k === currentLocale}
-                onClick={() => {
-                  setLocale(k)
-                }}
+                onClick={() => void setLocale(k)}
               />
             )
           })}

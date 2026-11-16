@@ -2,7 +2,8 @@ import { PrimitiveAtom, WritableAtom, atom, createStore, useAtom, useAtomValue, 
 import { atomWithStorage } from 'jotai/utils'
 import { atomFamily } from 'jotai-family'
 import React, { DependencyList, SetStateAction, useContext, useMemo } from 'react'
-import { showAlert } from './components/MessageBox'
+import { ErrAtom } from './components/Err'
+import { AppToaster } from './components/Toaster'
 import { IGameComponent } from './components/types'
 import { BlobFlavour } from './pkg/blobcache'
 import { DataManagerState, IGame, IGameAdapter, IGameAdapterStatic } from './pkg/cpp-basic'
@@ -136,10 +137,22 @@ export class Cpp<G extends IGame> {
     return this.gameAdapter.constructor as IGameAdapterStatic<G>
   }
 
-  public setRegion(region: string): boolean {
+  public async setRegion(region: string): Promise<boolean> {
     if (this.region === region) return false
-    localStorage.setItem(this.storagePrefix + 'region', region)
-    void showAlert(gt.gettext('区域已切换，将重新载入页面。')).then(() => location.reload())
+    const toaster = await AppToaster
+    const progress = toaster.show(
+      { message: gt.gettext('正在切换区域…'), isCloseButtonShown: false, timeout: 0, intent: 'primary' },
+      'region',
+    )
+    try {
+      await this.gameAdapter.getDataManager().switchRegion(region)
+      localStorage.setItem(this.storagePrefix + 'region', region)
+      toaster.dismiss(progress)
+      toaster.show({ message: gt.gettext('区域已切换'), intent: 'success' }, progress)
+    } catch (e) {
+      toaster.dismiss(progress)
+      this.store.set(ErrAtom, { error: e, context: gt.pgettext('error context', '切换区域失败') })
+    }
     return true
   }
 

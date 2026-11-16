@@ -6,16 +6,17 @@ import {
   Dialog,
   DialogBody,
   DialogFooter,
-  type DialogProps,
   MenuItem,
   NonIdealState,
   TextArea,
 } from '@blueprintjs/core'
+import { RESET } from 'jotai/utils'
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { useCpp, useStore } from '../Cpp'
+import { Cpp, Preference, useCpp, useStore } from '../Cpp'
 import { CppDump, buildCppDump } from '../pkg/cpp-core/dump'
 import { loadProfileExtras, replaceProfileExtras } from '../pkg/cpp-core/profileExtras'
+import { newUserData } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { formatProfileName, getStoragePrefix } from '../profiles'
 import { useChamber } from './Chamber'
@@ -73,8 +74,9 @@ export function useUserDataDump(game: string, instanceName: string) {
 }
 
 export const UserDataManager = memo(
-  ({ game, instanceName, onClose }: { game: string; instanceName: string; onClose?: DialogProps['onClose'] }) => {
+  ({ game, instanceName, onClose }: { game: string; instanceName: string; onClose?: () => void }) => {
     const { data, loading } = useUserDataDump(game, instanceName)
+    const close = useEvent(() => onClose?.())
 
     return (
       <Dialog
@@ -90,6 +92,7 @@ export const UserDataManager = memo(
           loading={loading}
           game={game}
           instanceName={instanceName}
+          onDone={close}
         />
       </Dialog>
     )
@@ -121,22 +124,31 @@ export const ExportDataButton = ({
   </>
 )
 
-/** Asks first; on yes, removes the profile's stored data and reloads. */
-export async function clearUserData(game: string, instanceName: string) {
-  if (
-    !(await showConfirm(gt.gettext('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）'), {
-      icon: 'warning-sign',
-      intent: 'danger',
-    }))
-  )
-    return
+export function confirmClearUserData() {
+  return showConfirm(gt.gettext('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）'), {
+    icon: 'warning-sign',
+    intent: 'danger',
+  })
+}
 
+/** Removes the profile's stored data, for a profile that is not open in the app. */
+export async function removeStoredUserData(game: string, instanceName: string) {
   await replaceProfileExtras(getStoragePrefix(game, instanceName), undefined).catch(console.error)
 
   localStorage.removeItem(getStoragePrefix(game, instanceName) + 'userdata')
   localStorage.removeItem(getStoragePrefix(game, instanceName) + 'preference')
   localStorage.removeItem(getStoragePrefix(game, instanceName) + 'region')
-  location.reload()
+}
+
+/** Replaces the user data in one step, so that a single undo brings the old data back. */
+function replaceUserData(cpp: Cpp<any>, userdata: Record<string, unknown>) {
+  cpp.store.set(cpp.atoms.atoms.dataAtom, 'modify', (draft) => {
+    const target = draft as Record<string, unknown>
+    for (const key of Object.keys(target)) {
+      if (!(key in userdata)) delete target[key]
+    }
+    Object.assign(target, userdata)
+  })
 }
 
 const UserDataManagerContent = memo(
@@ -145,15 +157,29 @@ const UserDataManagerContent = memo(
     loading,
     game,
     instanceName,
+    onDone,
   }: {
     data?: { data: string; now: number } | undefined
     loading?: boolean
     game: string
     instanceName: string
+    onDone: () => void
   }) => {
     const [value, setValue] = useState(() => data?.data || '')
 
+    const cpp = useCpp()
     const store = useStore()
+
+    const clearData = useEvent(async () => {
+      if (!(await confirmClearUserData())) return
+      await replaceProfileExtras(getStoragePrefix(game, instanceName), undefined).catch(console.error)
+      replaceUserData(cpp, { ...newUserData() })
+      store.set(cpp.preferenceAtoms.preferenceStorageAtom, RESET)
+      const defaultRegion = cpp.gameAdapterStatic.getRegions()?.[0]?.id
+      if (defaultRegion) await cpp.setRegion(defaultRegion)
+      localStorage.removeItem(getStoragePrefix(game, instanceName) + 'region')
+      onDone()
+    })
 
     const importData = useEvent(async (text: string) => {
       if (
@@ -185,18 +211,19 @@ const UserDataManagerContent = memo(
         if (v['extras'] && typeof v['extras'] === 'object' && !Array.isArray(v['extras'])) {
           await replaceProfileExtras(getStoragePrefix(game, instanceName), v['extras']).catch(console.error)
         }
-        localStorage.setItem(getStoragePrefix(game, instanceName) + 'userdata', JSON.stringify(v['userdata']))
+        replaceUserData(cpp, { ...newUserData(), ...v['userdata'] })
         if (!v['preference'] || typeof v['preference'] !== 'object') {
           //
         } else {
-          localStorage.setItem(getStoragePrefix(game, instanceName) + 'preference', JSON.stringify(v['preference']))
+          store.set(cpp.preferenceAtoms.preferenceAtom, v['preference'] as Preference)
         }
-        if (v['region'] == null || typeof v['region'] !== 'string') {
+        if (!v['region'] || typeof v['region'] !== 'string') {
           //
         } else {
-          localStorage.setItem(getStoragePrefix(game, instanceName) + 'region', v['region'])
+          await cpp.setRegion(v['region'])
         }
-        void showAlert(gt.gettext('数据已导入，将重新载入页面。')).then(() => location.reload())
+        await showAlert(gt.gettext('数据已导入。'))
+        onDone()
       } catch (e) {
         store.set(ErrAtom, { error: e, context: gt.pgettext('error context', '导入数据时遇到问题') })
       }
@@ -315,7 +342,7 @@ const UserDataManagerContent = memo(
                 intent={'danger'}
                 icon="trash"
                 text={gt.gettext('清空')}
-                onClick={() => void clearUserData(game, instanceName)}
+                onClick={() => void clearData()}
               />
               <Button
                 variant="minimal"

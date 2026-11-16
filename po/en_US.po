@@ -53,7 +53,7 @@ msgstr[1] ""
 "Level goals of %d operators are left out, as Arknights Toolbox does not "
 "calculate levels."
 
-#: src/components/RetiredGame.tsx:81
+#: src/components/RetiredGame.tsx:86
 msgid ""
 "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版"
 "（下面称作「旧版」），您可以在那里继续使用。旧版和这里的数据分开存放，按下面"
@@ -64,7 +64,7 @@ msgstr ""
 "below, where they all still work. It stores its data separately from this "
 "site, so the three steps below move yours over."
 
-#: src/components/RetiredGame.tsx:77
+#: src/components/RetiredGame.tsx:82
 msgid ""
 "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版"
 "（下面称作「旧版」），您可以在那里继续使用。这个档案里没有数据，直接打开旧版"
@@ -85,7 +85,7 @@ msgid "ArknightsAssets 解析的游戏数据"
 msgstr "Data Mining by ArknightsAssets"
 
 #. %s: game codename
-#: src/components/RetiredGame.tsx:74
+#: src/components/RetiredGame.tsx:79
 msgid "Closure++ 已不再支持 %s"
 msgstr "Closure++ no longer supports %s"
 
@@ -110,17 +110,17 @@ msgstr ""
 msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
-#: src/components/RetiredGame.tsx:195
+#: src/components/RetiredGame.tsx:200
 msgid "不再需要这里的数据时，可以把它清空，旧版里的数据不受影响。"
 msgstr ""
 "When you no longer need the data here, you can clear it. The data in the old "
 "version is not affected."
 
-#: src/components/UserDataManager.tsx:324
+#: src/components/UserDataManager.tsx:351
 msgid "从文件导入"
 msgstr "Import from File"
 
-#: src/components/RetiredGame.tsx:190 src/components/UserDataManager.tsx:331
+#: src/components/RetiredGame.tsx:195 src/components/UserDataManager.tsx:358
 msgid "从文本框中导入"
 msgstr "Import from Text Box"
 
@@ -132,11 +132,6 @@ msgstr "Previous"
 msgid "价值变化"
 msgstr "Value Delta"
 
-#: src/components/CppDumpImport.ts:52
-msgid "价值计算等设置需重新载入页面后生效。"
-msgstr ""
-"Settings such as value calculation take effect after the page is reloaded."
-
 #: src/components/arknights/AboutList.tsx:43
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr "Drop Rate Data from Penguin Statistics"
@@ -145,7 +140,7 @@ msgstr "Drop Rate Data from Penguin Statistics"
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
-#: src/components/arknights/SklandImporter.tsx:163
+#: src/components/arknights/SklandImporter.tsx:155
 msgid "使用「提取装置」"
 msgstr "Use «Sklanding»"
 
@@ -155,7 +150,7 @@ msgstr ""
 "Preferences (excluded stages, value type and so on) were replaced as well; "
 "«Undo» does not restore them."
 
-#: src/components/ConfigUi.tsx:339
+#: src/components/ConfigUi.tsx:341
 msgid "免责声明"
 msgstr "Disclaimer"
 
@@ -175,7 +170,7 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:505 src/components/Importer.tsx:160
+#: src/App.tsx:485 src/components/Importer.tsx:160
 msgid "关闭"
 msgstr "Close"
 
@@ -192,7 +187,11 @@ msgstr "Better Not Synthesizing"
 msgid "切换至%s"
 msgstr "Switch to %s"
 
-#: src/components/RetiredGame.tsx:162
+#: src/locales.tsx:57
+msgid "切换语言失败"
+msgstr "Failed to switch the UI language"
+
+#: src/components/RetiredGame.tsx:167
 msgid "到旧版去"
 msgstr "Head to the old version"
 
@@ -207,24 +206,24 @@ msgstr[1] "Ingredients for Synthesizing %d Times"
 msgid "剪贴板里没有文本或文件。"
 msgstr "The clipboard holds no text or file."
 
-#: src/Cpp.ts:112
-msgid "区域已切换，将重新载入页面。"
-msgstr "Region switched. Page will be reloaded."
+#: src/Cpp.ts:151
+msgid "区域已切换"
+msgstr "Region switched"
 
-#: src/components/MessageBox.tsx:76
+#: src/components/MessageBox.tsx:75
 msgid "取消"
 msgstr "Cancel"
 
-#: src/components/UserDataManager.tsx:264
+#: src/components/UserDataManager.tsx:291
 msgid "可将导出的文件拖入此处，或直接粘贴文件导入。"
 msgstr ""
 "You can also drop an exported file here, or paste the file to import it."
 
-#: src/components/arknights/SklandImporter.tsx:163
+#: src/components/arknights/SklandImporter.tsx:155
 msgid "回到「提取装置」"
 msgstr "Back to «Sklanding»"
 
-#: src/components/RetiredGame.tsx:186
+#: src/components/RetiredGame.tsx:191
 msgid "在旧版里导入"
 msgstr "Import in the old version"
 
@@ -239,15 +238,15 @@ msgstr "Paste here…"
 msgid "在此粘贴数据或文件，自动识别格式"
 msgstr "Paste data or a file here, format auto-detected"
 
-#: src/components/RetiredGame.tsx:137
+#: src/components/RetiredGame.tsx:142
 msgid "在这里导出"
 msgstr "Export here"
 
-#: src/components/RetiredGame.tsx:93
+#: src/components/RetiredGame.tsx:98
 msgid "地址是 %1，会在新标签页打开。"
 msgstr "It is at %1 and opens in a new tab."
 
-#: src/components/RetiredGame.tsx:91
+#: src/components/RetiredGame.tsx:96
 msgid "地址是 %1，会在新标签页打开。旧版会询问是否新建档案 %2，请选确定。"
 msgstr ""
 "It is at %1 and opens in a new tab. The old version will ask whether to "
@@ -286,7 +285,7 @@ msgstr "Copy as MAA «Operator Progression» Plan"
 msgid "复制为明日方舟工具箱「精英材料计算」备份"
 msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 
-#: src/components/RetiredGame.tsx:143
+#: src/components/RetiredGame.tsx:148
 msgid "复制数据"
 msgstr "Copy Data"
 
@@ -317,7 +316,7 @@ msgstr "Import MAA «Operator Progression» Plan"
 msgid "导入 MAA「干员识别」数据"
 msgstr "Import MAA «Operator» Data"
 
-#: src/App.tsx:302 src/components/RetiredGame.tsx:188
+#: src/App.tsx:291 src/components/RetiredGame.tsx:193
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -331,11 +330,11 @@ msgid "导入明日方舟工具箱「精英材料计算」备份"
 msgstr "Import Arknights Toolbox «Material Calculation» Backup"
 
 #: src/components/arknights/ImporterMenuItems.tsx:17
-#: src/components/arknights/SklandImporter.tsx:145
+#: src/components/arknights/SklandImporter.tsx:139
 msgid "导入森空岛数据"
 msgstr "Import Skland Data"
 
-#: src/components/UserDataManager.tsx:114
+#: src/components/UserDataManager.tsx:117
 msgid "导出为文件"
 msgstr "Export as File"
 
@@ -377,7 +376,7 @@ msgstr[1] ""
 "Copied the plan for %d operators. In MAA «Operator Progression», click «Read "
 "from Clipboard»."
 
-#: src/components/RetiredGame.tsx:109
+#: src/components/RetiredGame.tsx:114
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
@@ -416,7 +415,7 @@ msgid_plural "已排除 %d 个关卡"
 msgstr[0] "%d stage excluded"
 msgstr[1] "%d stages excluded"
 
-#: src/components/AboutList.tsx:231
+#: src/components/AboutList.tsx:230
 msgid "帮助"
 msgstr "Help"
 
@@ -445,7 +444,7 @@ msgstr "Morale"
 msgid "总价值"
 msgstr "Total Value"
 
-#: src/App.tsx:467
+#: src/App.tsx:435
 msgid "您不妨试试"
 msgstr "You may try"
 
@@ -454,7 +453,7 @@ msgstr "You may try"
 msgid "截止 %s"
 msgstr "As of %s"
 
-#: src/components/RetiredGame.tsx:170
+#: src/components/RetiredGame.tsx:175
 msgid "打开旧版"
 msgstr "Open the old version"
 
@@ -474,17 +473,9 @@ msgstr "Display as In-game Layout"
 msgid "撤销"
 msgstr "Undo"
 
-#: src/components/UserDataManager.tsx:199
-msgid "数据已导入，将重新载入页面。"
-msgstr "Data imported. A reload is required."
-
-#: src/App.tsx:85
-msgid "数据已更新，正在重新载入…"
-msgstr "Data updated. Reloading…"
-
-#: src/App.tsx:170
-msgid "数据已更新，请重新载入页面"
-msgstr "Data updated. A reload is required."
+#: src/components/UserDataManager.tsx:225
+msgid "数据已导入。"
+msgstr "Data imported."
 
 #: src/components/arknights/AboutList.tsx:62
 msgid "数据整理自小黑盒 app 明日方舟干员统计功能。"
@@ -506,11 +497,11 @@ msgstr "No matching stages"
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
-#: src/components/RetiredGame.tsx:105
+#: src/components/RetiredGame.tsx:110
 msgid "无法写入剪贴板，请改用「导出为文件」。"
 msgstr "Could not write to the clipboard. Use «Export as File» instead."
 
-#: src/pkg/cpp-basic/DataManager.ts:97
+#: src/pkg/cpp-basic/DataManager.ts:282
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 "Unable to load required game data. Please check your network connection."
@@ -519,7 +510,7 @@ msgstr ""
 msgid "无法识别粘贴的内容。支持以下格式："
 msgstr "Could not recognize what was pasted. Supported formats:"
 
-#: src/components/RetiredGame.tsx:179
+#: src/components/RetiredGame.tsx:184
 msgid ""
 "旧版能保留多久，我们也说不准。万一它打不开了，源码还在 GitHub 上，可以自行部"
 "署。"
@@ -550,20 +541,20 @@ msgstr "Show %s"
 msgid "显示全部"
 msgstr "Show All"
 
-#: src/components/FarmList.tsx:272
+#: src/components/FarmList.tsx:275
 msgid "暂不支持计算毕业合成"
 msgstr "Synthesizing Cannot be Planned for Maxed"
 
-#: src/components/FarmList.tsx:354
+#: src/components/FarmList.tsx:357
 msgid "暂无可计算来源"
 msgstr "No Feasible Sources"
 
 #. %s: datetime
-#: src/components/AboutList.tsx:185
+#: src/components/AboutList.tsx:184
 msgid "更新于 %s"
 msgstr "Last updated at %s"
 
-#: src/App.tsx:78 src/components/arknights/SklandImporter.tsx:177
+#: src/App.tsx:79 src/components/arknights/SklandImporter.tsx:169
 msgid "更新数据中…"
 msgstr "Data updating…"
 
@@ -613,7 +604,7 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/UserDataManager.tsx:293
+#: src/components/UserDataManager.tsx:320
 msgid "松开以导入文件"
 msgstr "Drop to Import"
 
@@ -621,21 +612,21 @@ msgstr "Drop to Import"
 msgid "查看更多…"
 msgstr "Read More…"
 
-#: src/components/RetiredGame.tsx:181
+#: src/components/RetiredGame.tsx:186
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:978
+#: src/components/CharacterList.tsx:979
 msgid "查询失败"
 msgstr "Query Failed"
 
-#: src/components/RetiredGame.tsx:88
+#: src/components/RetiredGame.tsx:93
 msgid "档案 %1 的数据可以存成文件留作备份，也可以直接复制，到旧版里粘贴。"
 msgstr ""
 "Save the data of profile %1 as a file to keep as a backup, or copy it and "
 "paste it into the old version."
 
-#: src/components/RetiredGame.tsx:86
+#: src/components/RetiredGame.tsx:91
 msgid "档案 %1 里没有数据，不用导出。"
 msgstr "Profile %1 has no data, so there is nothing to export."
 
@@ -644,7 +635,7 @@ msgstr "Profile %1 has no data, so there is nothing to export."
 msgid "档案 %s 不存在，要新建吗？"
 msgstr "Profile %s does not exist. Do you want to create it?"
 
-#: src/App.tsx:118
+#: src/App.tsx:114
 msgid "检查数据更新"
 msgstr "Check For Data Updates"
 
@@ -663,15 +654,19 @@ msgstr ""
 "Skland data cannot tell which form the Amiya in the Training Room is in, so "
 "the specialization in training was not counted. Please check it yourself."
 
-#: src/components/RetiredGame.tsx:201 src/components/UserDataManager.tsx:317
+#: src/Cpp.ts:144
+msgid "正在切换区域…"
+msgstr "Switching region…"
+
+#: src/components/RetiredGame.tsx:206 src/components/UserDataManager.tsx:344
 msgid "清空"
 msgstr "Clear"
 
-#: src/components/arknights/SklandImporter.tsx:187
-msgid "游戏数据已更新，请重新载入后再尝试导入。"
-msgstr "The game data has been updated. Reload the page, then import again."
+#: src/App.tsx:164 src/App.tsx:86
+msgid "游戏数据已更新"
+msgstr "Game data updated"
 
-#: src/components/ConfigUi.tsx:316
+#: src/components/ConfigUi.tsx:319
 msgid "游戏服务器"
 msgstr "Game Region"
 
@@ -684,7 +679,7 @@ msgstr "Assets from Game"
 msgid "潜能 %d"
 msgstr "Potential %d"
 
-#: src/components/RetiredGame.tsx:97
+#: src/components/RetiredGame.tsx:102
 msgid ""
 "点右上角的 %1，选 %2；把文本框清空，粘贴刚才复制的数据或导出文件的全部内容，"
 "再点 %3 并确认。"
@@ -697,12 +692,12 @@ msgstr ""
 msgid "现在可以合成的道具"
 msgstr "Synthesizing"
 
-#: src/components/RetiredGame.tsx:189 src/components/UserDataManager.tsx:353
-#: src/components/UserDataManager.tsx:372 src/components/UserDataManager.tsx:83
+#: src/components/RetiredGame.tsx:194 src/components/UserDataManager.tsx:380
+#: src/components/UserDataManager.tsx:399 src/components/UserDataManager.tsx:85
 msgid "用户数据管理"
 msgstr "Save Manager"
 
-#: src/locales.tsx:53
+#: src/locales.tsx:79
 msgid "界面语言"
 msgstr "UI Language"
 
@@ -710,7 +705,7 @@ msgstr "UI Language"
 msgid "目标"
 msgstr "Goals"
 
-#: src/components/MessageBox.tsx:75
+#: src/components/MessageBox.tsx:74
 msgid "确定"
 msgstr "OK"
 
@@ -718,7 +713,7 @@ msgstr "OK"
 msgid "社区练度统计数据"
 msgstr "Stats from Community"
 
-#: src/components/FarmList.tsx:281
+#: src/components/FarmList.tsx:284
 msgid "线性规划失败"
 msgstr "Failed to Plan"
 
@@ -758,27 +753,23 @@ msgstr ""
 "Simplified Chinese names, Western names and names in the current server's "
 "language; for new operators, the game data may not be updated yet."
 
-#: src/locales.tsx:41
-msgid "语言已切换，将重新载入页面。"
-msgstr "UI Language changed. A reload is required."
-
-#: src/components/arknights/SklandImporter.tsx:121
+#: src/components/arknights/SklandImporter.tsx:115
 msgid "请在弹出的「提取装置」中继续操作"
 msgstr "Please continue in the popup window «Sklanding»"
 
-#: src/components/arknights/SklandImporter.tsx:157
+#: src/components/arknights/SklandImporter.tsx:149
 msgid "请在弹出窗口中继续操作"
 msgstr "Please continue in the popup window"
 
-#: src/entry.tsx:54
+#: src/entry.tsx:57
 msgid "请更新您的浏览器。"
 msgstr "Please upgrade your browser."
 
-#: src/components/FarmList.tsx:283
+#: src/components/FarmList.tsx:286
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/UserDataManager.tsx:161
+#: src/components/UserDataManager.tsx:187
 msgid ""
 "警告：你确定要导入数据吗？\n"
 "你现在的数据将会被永久覆盖！（真的很久！）\n"
@@ -794,7 +785,7 @@ msgstr ""
 "function properly.\n"
 "In such event, you can clear the data in «Save Manager»."
 
-#: src/components/UserDataManager.tsx:127
+#: src/components/UserDataManager.tsx:128
 msgid ""
 "警告：你确定要清空数据吗？\n"
 "你现在的数据将会永久失去！（真的很久！）"
@@ -807,15 +798,15 @@ msgstr ""
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/App.tsx:460
+#: src/App.tsx:428
 msgid "返回主页"
 msgstr "Back to Home"
 
-#: src/components/UserDataManager.tsx:174
+#: src/components/UserDataManager.tsx:200
 msgid "这不是 Closure++ 用户数据。"
 msgstr "This is not Closure++ save data."
 
-#: src/components/RetiredGame.tsx:95
+#: src/components/RetiredGame.tsx:100
 msgid "这个档案没有数据，不需要导入。"
 msgstr "This profile has no data, so there is nothing to import."
 
@@ -844,11 +835,11 @@ msgstr ""
 "Goals for these operators go beyond what they can reach (promotion or "
 "skills) and were skipped: %s."
 
-#: src/components/UserDataManager.tsx:183
+#: src/components/UserDataManager.tsx:209
 msgid "这份 Closure++ 用户数据已损坏。"
 msgstr "This Closure++ save data is damaged."
 
-#: src/components/CppDumpImport.ts:95 src/components/UserDataManager.tsx:175
+#: src/components/CppDumpImport.ts:90 src/components/UserDataManager.tsx:201
 msgid "这份 Closure++ 用户数据的版本无法识别。"
 msgstr "The version of this Closure++ save data is not recognized."
 
@@ -862,7 +853,7 @@ msgstr ""
 "%s$old. If this is the wrong profile, click «Undo»."
 
 #. %s$from: region of the data, %s$to: current region
-#: src/components/CppDumpImport.ts:60
+#: src/components/CppDumpImport.ts:55
 msgid ""
 "这份用户数据的区域是 %s$from，当前是 %s$to；区域没有改动，如需切换请使用工具"
 "栏上的区域按钮。"
@@ -882,7 +873,7 @@ msgstr ""
 "This is Closure++ save data exported from profile %s$profile at %s$time."
 
 #. %s: game codename
-#: src/components/CppDumpImport.ts:90 src/components/UserDataManager.tsx:178
+#: src/components/CppDumpImport.ts:85 src/components/UserDataManager.tsx:204
 msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 "This is Closure++ save data for %s; it cannot be imported into this game."
@@ -898,10 +889,6 @@ msgstr "Items"
 #: src/components/AboutList.tsx:66
 msgid "邮箱"
 msgstr "E-mail"
-
-#: src/App.tsx:173 src/components/arknights/SklandImporter.tsx:192
-msgid "重新载入"
-msgstr "Reload"
 
 #: src/App.tsx:103
 msgid "重载数据"
@@ -936,62 +923,62 @@ msgctxt "arknights arkntools step"
 msgid "点击「导出」→「导出培养方案至 MAA」"
 msgstr "Click «Export» → «Export training plan to MAA»"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:505
+#: src/pkg/cpp-arknights/GameAdapter.ts:523
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr "Growth Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:807
+#: src/pkg/cpp-arknights/GameAdapter.ts:836
 msgctxt "arknights item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:804
+#: src/pkg/cpp-arknights/GameAdapter.ts:833
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr "Dualchips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:803
+#: src/pkg/cpp-arknights/GameAdapter.ts:832
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr "Skill, Module & Catalysts"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:802
+#: src/pkg/cpp-arknights/GameAdapter.ts:831
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr "T1 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:799
+#: src/pkg/cpp-arknights/GameAdapter.ts:828
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:801
+#: src/pkg/cpp-arknights/GameAdapter.ts:830
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:806
+#: src/pkg/cpp-arknights/GameAdapter.ts:835
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:805
+#: src/pkg/cpp-arknights/GameAdapter.ts:834
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr "Chip Packs"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:800
+#: src/pkg/cpp-arknights/GameAdapter.ts:829
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:798
+#: src/pkg/cpp-arknights/GameAdapter.ts:827
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:797
+#: src/pkg/cpp-arknights/GameAdapter.ts:826
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
@@ -1111,47 +1098,47 @@ msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr "S2"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:621
+#: src/pkg/cpp-arknights/GameAdapter.ts:649
 msgctxt "arknights stage category"
 msgid "主线"
 msgstr "Main Story"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:626
+#: src/pkg/cpp-arknights/GameAdapter.ts:654
 msgctxt "arknights stage category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:623
+#: src/pkg/cpp-arknights/GameAdapter.ts:651
 msgctxt "arknights stage category"
 msgid "别传"
 msgstr "Side Stories"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:624
+#: src/pkg/cpp-arknights/GameAdapter.ts:652
 msgctxt "arknights stage category"
 msgid "插曲"
 msgstr "Intermezzi"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:622
+#: src/pkg/cpp-arknights/GameAdapter.ts:650
 msgctxt "arknights stage category"
 msgid "活动"
 msgstr "Events"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:625
+#: src/pkg/cpp-arknights/GameAdapter.ts:653
 msgctxt "arknights stage category"
 msgid "资源收集"
 msgstr "Supplies"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:723
+#: src/pkg/cpp-arknights/GameAdapter.ts:752
 msgctxt "arknights stage difficulty"
 msgid "剧情"
 msgstr "Easy "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:721
+#: src/pkg/cpp-arknights/GameAdapter.ts:750
 msgctxt "arknights stage difficulty"
 msgid "标准"
 msgstr "Standard "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:722
+#: src/pkg/cpp-arknights/GameAdapter.ts:751
 msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr "Tough "
@@ -1267,7 +1254,7 @@ msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:714
+#: src/pkg/cpp-arknights/GameAdapter.ts:638
 msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
@@ -1384,17 +1371,22 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr "assets vectorizing"
 
-#: src/components/arknights/SklandImporter.tsx:102
+#: src/components/arknights/SklandImporter.tsx:96
 msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr "Error During Interacting with «Sklanding»"
 
-#: src/entry.tsx:26
+#: src/Cpp.ts:154
+msgctxt "error context"
+msgid "切换区域失败"
+msgstr "Error During Switching Region"
+
+#: src/entry.tsx:27
 msgctxt "error context"
 msgid "初始化失败"
 msgstr "Error During Initializing"
 
-#: src/components/FarmList.tsx:186
+#: src/components/FarmList.tsx:188
 msgctxt "error context"
 msgid "刷本规划时遇到问题"
 msgstr "Error During Planning"
@@ -1404,7 +1396,7 @@ msgctxt "error context"
 msgid "合并导入数据时遇到问题"
 msgstr "Error During Merging Data"
 
-#: src/components/UserDataManager.tsx:201
+#: src/components/UserDataManager.tsx:228
 msgctxt "error context"
 msgid "导入数据时遇到问题"
 msgstr "Error During Importing"
@@ -1414,7 +1406,7 @@ msgctxt "error context"
 msgid "检查数据更新失败"
 msgstr "Error During Checking for Data Updates"
 
-#: src/entry.tsx:21
+#: src/entry.tsx:22
 msgctxt "error context"
 msgid "环境检测失败"
 msgstr "Error During Starting"
@@ -1424,42 +1416,42 @@ msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr "Error During Processing Imported Data"
 
-#: src/components/ImportPasteBox.tsx:25 src/components/UserDataManager.tsx:211
+#: src/components/ImportPasteBox.tsx:25 src/components/UserDataManager.tsx:238
 msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr "Error During Reading File"
 
-#: src/App.tsx:448
+#: src/App.tsx:415
 msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
 
-#: src/Cpp.ts:45
+#: src/Cpp.ts:48
 msgctxt "full name"
 msgid "仅星标"
 msgstr "Starred only"
 
-#: src/Cpp.ts:48
+#: src/Cpp.ts:51
 msgctxt "full name"
 msgid "仅计划"
 msgstr "Planned only"
 
-#: src/Cpp.ts:47
+#: src/Cpp.ts:50
 msgctxt "full name"
 msgid "星标 (以毕业为目标)"
 msgstr "Starred targeting Maxed"
 
-#: src/Cpp.ts:46
+#: src/Cpp.ts:49
 msgctxt "full name"
 msgid "星标 (以计划为目标)"
 msgstr "Starred targeting Planned"
 
-#: src/Cpp.ts:50
+#: src/Cpp.ts:53
 msgctxt "full name"
 msgid "毕业"
 msgstr "Maxed"
 
-#: src/Cpp.ts:49
+#: src/Cpp.ts:52
 msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
@@ -1571,93 +1563,93 @@ msgid "、"
 msgstr ", "
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:341
+#: src/App.tsx:317
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr "Setting up %s…"
 
 #. initial
-#: src/App.tsx:336
+#: src/App.tsx:325
 msgctxt "loading status"
 msgid "别急…"
 msgstr "Don't hurry…"
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:387
+#: src/App.tsx:352
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr "We're setting things up for you"
 
 #. loaded data objects
-#: src/App.tsx:349
+#: src/App.tsx:324
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr "Almost there…"
 
 #. joke text
-#: src/App.tsx:385
+#: src/App.tsx:350
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr "Installing Macindows X"
 
 #. loading hero line 2
-#: src/App.tsx:394
+#: src/App.tsx:359
 msgctxt "loading status"
 msgid "请稍候"
 msgstr "This won't take long"
 
 #. done
-#: src/App.tsx:353
+#: src/App.tsx:315
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:334
+#: src/pkg/cpp-arknights/GameAdapter.ts:352
 msgctxt "predefined query"
 msgid "一图流 技能专三率"
 msgstr "yituliu: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:357
+#: src/pkg/cpp-arknights/GameAdapter.ts:375
 msgctxt "predefined query"
 msgid "一图流 技能专三率（全部）"
 msgstr "yituliu: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:398
+#: src/pkg/cpp-arknights/GameAdapter.ts:416
 msgctxt "predefined query"
 msgid "一图流 精二率"
 msgstr "yituliu: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:420
+#: src/pkg/cpp-arknights/GameAdapter.ts:438
 msgctxt "predefined query"
 msgid "一图流 精二率（全部）"
 msgstr "yituliu: E2 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:366
+#: src/pkg/cpp-arknights/GameAdapter.ts:384
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率"
 msgstr "Heybox: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:389
+#: src/pkg/cpp-arknights/GameAdapter.ts:407
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率（全部）"
 msgstr "Heybox: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:458
+#: src/pkg/cpp-arknights/GameAdapter.ts:476
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率"
 msgstr "Heybox: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:481
+#: src/pkg/cpp-arknights/GameAdapter.ts:499
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率（全部）"
 msgstr "Heybox: E2 Lv 90 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:428
+#: src/pkg/cpp-arknights/GameAdapter.ts:446
 msgctxt "predefined query"
 msgid "小黑盒 精二率"
 msgstr "Heybox: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:450
+#: src/pkg/cpp-arknights/GameAdapter.ts:468
 msgctxt "predefined query"
 msgid "小黑盒 精二率（全部）"
 msgstr "Heybox: E2 rate (all)"
@@ -2036,27 +2028,27 @@ msgctxt "query field"
 msgid "%s（目标）"
 msgstr "%s (goal)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:278
+#: src/pkg/cpp-arknights/GameAdapter.ts:296
 msgctxt "query field"
 msgid "一图流练度统计 技能专三率"
 msgstr "yituliu survey: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:227
+#: src/pkg/cpp-arknights/GameAdapter.ts:245
 msgctxt "query field"
 msgid "一图流练度统计 精二率"
 msgstr "yituliu survey: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:269
+#: src/pkg/cpp-arknights/GameAdapter.ts:287
 msgctxt "query field"
 msgid "专精等级"
 msgstr "Mastery"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:180
+#: src/pkg/cpp-arknights/GameAdapter.ts:198
 msgctxt "query field"
 msgid "主职业"
 msgstr "Main class"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:158
+#: src/pkg/cpp-arknights/GameAdapter.ts:176
 msgctxt "query field"
 msgid "代号"
 msgstr "Name"
@@ -2066,17 +2058,17 @@ msgctxt "query field"
 msgid "内部代号"
 msgstr "Internal ID"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:294
+#: src/pkg/cpp-arknights/GameAdapter.ts:312
 msgctxt "query field"
 msgid "小黑盒干员统计 技能专三率"
 msgstr "Heybox survey: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:245
+#: src/pkg/cpp-arknights/GameAdapter.ts:263
 msgctxt "query field"
 msgid "小黑盒干员统计 精二 90 级率"
 msgstr "Heybox survey: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:236
+#: src/pkg/cpp-arknights/GameAdapter.ts:254
 msgctxt "query field"
 msgid "小黑盒干员统计 精二率"
 msgstr "Heybox survey: E2 rate"
@@ -2086,12 +2078,12 @@ msgctxt "query field"
 msgid "已全面养成"
 msgstr "Fully trained"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:262
+#: src/pkg/cpp-arknights/GameAdapter.ts:280
 msgctxt "query field"
 msgid "技能名"
 msgstr "Skill name"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:211
+#: src/pkg/cpp-arknights/GameAdapter.ts:229
 msgctxt "query field"
 msgid "技能等级"
 msgstr "Skill level"
@@ -2106,37 +2098,37 @@ msgctxt "query field"
 msgid "有计划"
 msgstr "Has plan"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:217
+#: src/pkg/cpp-arknights/GameAdapter.ts:235
 msgctxt "query field"
 msgid "潜能"
 msgstr "Potential"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:172
+#: src/pkg/cpp-arknights/GameAdapter.ts:190
 msgctxt "query field"
 msgid "稀有度"
 msgstr "Rarity"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:199
+#: src/pkg/cpp-arknights/GameAdapter.ts:217
 msgctxt "query field"
 msgid "等级"
 msgstr "Level"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:193
+#: src/pkg/cpp-arknights/GameAdapter.ts:211
 msgctxt "query field"
 msgid "精英化"
 msgstr "Elite"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:205
+#: src/pkg/cpp-arknights/GameAdapter.ts:223
 msgctxt "query field"
 msgid "精英化 × 100 + 等级"
 msgstr "Elite × 100 + Level"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:186
+#: src/pkg/cpp-arknights/GameAdapter.ts:204
 msgctxt "query field"
 msgid "职业"
 msgstr "Class"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:164
+#: src/pkg/cpp-arknights/GameAdapter.ts:182
 msgctxt "query field"
 msgid "西文代号"
 msgstr "Western name"
@@ -2262,12 +2254,12 @@ msgctxt "query operator"
 msgid "结尾是"
 msgstr "ends with"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:254
+#: src/pkg/cpp-arknights/GameAdapter.ts:272
 msgctxt "query sub query"
 msgid "技能"
 msgstr "Skill"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:53
+#: src/pkg/cpp-arknights/GameAdapter.ts:54
 msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
@@ -2284,7 +2276,7 @@ msgctxt "query value"
 msgid "是"
 msgstr "Yes"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:51
+#: src/pkg/cpp-arknights/GameAdapter.ts:52
 msgctxt "query value"
 msgid "精英 %d"
 msgstr "E%d"
@@ -2294,12 +2286,12 @@ msgctxt "short name"
 msgid "一图流练度统计"
 msgstr "Stats from Arknights-yituliu"
 
-#: src/Cpp.ts:54
+#: src/Cpp.ts:57
 msgctxt "short name"
 msgid "仅星标"
 msgstr "Starred"
 
-#: src/Cpp.ts:57
+#: src/Cpp.ts:60
 msgctxt "short name"
 msgid "仅计划"
 msgstr "Planned"
@@ -2309,22 +2301,22 @@ msgctxt "short name"
 msgid "小黑盒干员统计"
 msgstr "Stats from Heybox"
 
-#: src/Cpp.ts:56
+#: src/Cpp.ts:59
 msgctxt "short name"
 msgid "星标(毕业)"
 msgstr "Starred t/Maxed"
 
-#: src/Cpp.ts:55
+#: src/Cpp.ts:58
 msgctxt "short name"
 msgid "星标(计划)"
 msgstr "Starred t/Planned"
 
-#: src/Cpp.ts:59
+#: src/Cpp.ts:62
 msgctxt "short name"
 msgid "毕业"
 msgstr "Maxed"
 
-#: src/Cpp.ts:58
+#: src/Cpp.ts:61
 msgctxt "short name"
 msgid "计划(毕业)"
 msgstr "Planned t/Maxed"
@@ -2591,6 +2583,31 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgid "价值计算等设置需重新载入页面后生效。"
+#~ msgstr ""
+#~ "Settings such as value calculation take effect after the page is reloaded."
+
+#~ msgid "区域已切换，将重新载入页面。"
+#~ msgstr "Region switched. Page will be reloaded."
+
+#~ msgid "数据已导入，将重新载入页面。"
+#~ msgstr "Data imported. A reload is required."
+
+#~ msgid "数据已更新，正在重新载入…"
+#~ msgstr "Data updated. Reloading…"
+
+#~ msgid "数据已更新，请重新载入页面"
+#~ msgstr "Data updated. A reload is required."
+
+#~ msgid "游戏数据已更新，请重新载入后再尝试导入。"
+#~ msgstr "The game data has been updated. Reload the page, then import again."
+
+#~ msgid "语言已切换，将重新载入页面。"
+#~ msgstr "UI Language changed. A reload is required."
+
+#~ msgid "重新载入"
+#~ msgstr "Reload"
 
 #~ msgctxt "arknights quick filter"
 #~ msgid "精英化"
