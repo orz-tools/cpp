@@ -1,12 +1,14 @@
-import { Drawer, IconName, Menu, MenuDivider, MenuItem } from '@blueprintjs/core'
+import { IconName, MenuDivider, MenuItem } from '@blueprintjs/core'
+import { useAtom, useAtomValue } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import { groupBy, sortBy } from 'ramda'
-import React, { memo, useMemo } from 'react'
+import React, { memo, useEffect, useMemo } from 'react'
 import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 import { PSTR, gt, lpstr } from '../pkg/gt'
 import { externalLinkProps } from './AboutList'
-import { useChamber } from './Chamber'
 import { PSTRs } from './LineBreaks'
+import { LogMark, hasUnseenLogs, readLogMark } from './sidebarState'
 
 const logs = [
   {
@@ -164,27 +166,6 @@ const iconMap = {
   fix: 'build',
 } satisfies Record<string, IconName>
 
-export const LogPanel = memo(({ onClose }: { onClose: () => any }) => {
-  const ga = useGameAdapter()
-  const groupedLogs = useMemo(() => groupLog(ga.getCodename() as GameName), [ga])
-  return (
-    <Drawer
-      isOpen={true}
-      onClose={onClose}
-      position="left"
-      size={'300px'}
-      title={gt.gettext('更新笔记')}
-      icon={'automatic-updates'}
-    >
-      <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
-        {Object.entries(groupedLogs).map(([k, v]) => {
-          return <LogGroup key={k} title={k} items={v!} />
-        })}
-      </Menu>
-    </Drawer>
-  )
-})
-
 const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: typeof logs }) => {
   return (
     <>
@@ -220,10 +201,47 @@ function groupLog(codename: GameName) {
   return groupBy((x) => x.date, sortedLogs)
 }
 
-export const SimpleLogList = memo(() => {
+function latestLogMark(codename: GameName): LogMark | undefined {
+  const [latest] = Object.entries(groupLog(codename))
+  return latest ? { date: latest[0], count: latest[1]!.length } : undefined
+}
+
+const changelogSeenAtom = atomWithStorage<unknown>('cpp_changelog_seen', null, undefined, { getOnInit: true })
+
+function useLatestLogMark() {
+  const ga = useGameAdapter()
+  return useMemo(() => latestLogMark(ga.getCodename() as GameName), [ga])
+}
+
+export function useChangelogBadge() {
+  const latest = useLatestLogMark()
+  return hasUnseenLogs(latest, readLogMark(useAtomValue(changelogSeenAtom)))
+}
+
+export function useMarkChangelogSeen() {
+  const latest = useLatestLogMark()
+  const [stored, setStored] = useAtom(changelogSeenAtom)
+  useEffect(() => {
+    const seen = readLogMark(stored)
+    if (latest && (seen?.date !== latest.date || seen.count !== latest.count)) setStored(latest)
+  }, [latest, stored, setStored])
+}
+
+export const FullLogList = memo(() => {
+  const ga = useGameAdapter()
+  const groupedLogs = useMemo(() => groupLog(ga.getCodename() as GameName), [ga])
+  return (
+    <>
+      {Object.entries(groupedLogs).map(([k, v]) => {
+        return <LogGroup key={k} title={k} items={v!} />
+      })}
+    </>
+  )
+})
+
+export const SimpleLogList = memo(({ onMore }: { onMore: () => void }) => {
   const ga = useGameAdapter()
   const groupedLogs = useMemo(() => Object.entries(groupLog(ga.getCodename() as GameName)), [ga])
-  const { add } = useChamber()
 
   return (
     <>
@@ -249,13 +267,7 @@ export const SimpleLogList = memo(() => {
             ),
           )}
       />
-      <MenuItem
-        icon="double-chevron-right"
-        text={gt.gettext('查看更多…')}
-        onClick={() => {
-          add(LogPanel)
-        }}
-      />
+      <MenuItem icon="double-chevron-right" text={gt.gettext('查看更多…')} onClick={onMore} />
     </>
   )
 })

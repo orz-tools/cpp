@@ -21,7 +21,7 @@ import React, { ErrorInfo, memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import './App.css'
 import { useAtoms, useCpp, useGameAdapter } from './Cpp'
-import { AboutList, HelpButton } from './components/AboutList'
+import { HelpButton } from './components/AboutList'
 import { Chamber, ChamberPortal } from './components/Chamber'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, MaybeSoulButton, RegionButton, StageButton } from './components/ConfigUi'
@@ -30,6 +30,7 @@ import { FarmList } from './components/FarmList'
 import { ImportPasteBox } from './components/ImportPasteBox'
 import { ItemList } from './components/ItemList'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
+import { Sidebar } from './components/Sidebar'
 import { TaskList } from './components/TaskList'
 import { AppToaster } from './components/Toaster'
 import { UserDataManagerButton, UserDataManagerMenuItem } from './components/UserDataManager'
@@ -192,16 +193,7 @@ const App = memo(() => {
         </Navbar.Group>
       </Navbar>
       <div className="App">
-        <section
-          className={Classes.ELEVATION_1}
-          style={{
-            width: '300px',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <AboutList />
-        </section>
+        <Sidebar />
         <section
           className={Classes.ELEVATION_1}
           style={{

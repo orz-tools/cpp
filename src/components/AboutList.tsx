@@ -1,11 +1,14 @@
-import { Alignment, AnchorButton, Menu, MenuDivider, MenuItem, MenuItemProps, Navbar } from '@blueprintjs/core'
+import { AnchorButton, Menu, MenuDivider, MenuItem, MenuItemProps } from '@blueprintjs/core'
 import { format } from 'date-fns'
 import { memo } from 'react'
+import useEvent from 'react-use-event-hook'
 import { useGameAdapter } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { DataContainerObject } from '../pkg/dccache'
-import { PSTR, gt } from '../pkg/gt'
-import { SimpleLogList } from './LogList'
+import { PSTR, gt, lpstr } from '../pkg/gt'
+import { FullLogList, SimpleLogList, useChangelogBadge, useMarkChangelogSeen } from './LogList'
+import { useOpenSidebarPanel } from './SidebarPanelDialog'
+import { SidebarPanel } from './types'
 
 export const externalLinkProps = {
   rel: 'noreferrer noopener',
@@ -16,103 +19,133 @@ export const externalLinkProps = {
   },
 } satisfies React.AnchorHTMLAttributes<HTMLAnchorElement>
 
-export const AboutList = memo(() => {
+const AboutLinks = memo(() => {
   const { AboutCopyright, AboutCredits, AboutThirdParty, AboutDataSources, email } = useComponents()
   const realEmail = email || 'cpp@ouomail.com'
 
   return (
     <>
-      <Navbar style={{ paddingLeft: '0.5em', paddingRight: '0.5em' }}>
-        <Navbar.Group align={Alignment.RIGHT} />
-        <Navbar.Group align={Alignment.LEFT}>{gt.gettext('关于')}</Navbar.Group>
-      </Navbar>
-      <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
-        <SimpleLogList />
-        <MenuDivider title={gt.gettext('帮助与社区')} />
-        <MenuItem
-          href="https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp"
-          icon="help"
-          text={gt.gettext('帮助文档')}
-          {...externalLinkProps}
-        />
-        <MenuItem
-          icon={'chat'}
-          multiline={true}
-          href={'https://discord.gg/vsgEuT6VBJ'}
-          {...externalLinkProps}
-          text={<>{gt.gettext('Discord')}</>}
-        />
-        <MenuItem
-          icon={'people'}
-          multiline={true}
-          href={
-            'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zFTyI8xNj6mivBd_h6hEoG3tRTPipBbH&authKey=jdONrgUlL5FP4QyYbxFJN46RSB2kr5IHYqmtEbzhegfTYGl%2FSH3tZqZpzMUDTa22&noverify=0&group_code=897997981'
-          }
-          {...externalLinkProps}
-          text={
-            <>
-              {gt.gettext('QQ 交流群')}
-              <span style={{ marginLeft: '0.5em', fontWeight: 300 }}>897997981</span>
-            </>
-          }
-        />
-        <MenuItem
-          icon={'envelope'}
-          multiline={true}
-          href={'mailto:' + realEmail}
-          {...externalLinkProps}
-          text={
-            <>
-              {gt.gettext('邮箱')}
-              <span style={{ userSelect: 'text', marginLeft: '0.5em', fontWeight: 300 }}>{realEmail}</span>
-            </>
-          }
-        />
-        <MenuItem
-          icon={'git-repo'}
-          multiline={true}
-          href={'https://github.com/orz-tools/cpp'}
-          {...externalLinkProps}
-          text={
-            <>
-              GitHub
-              <span style={{ marginLeft: '0.5em', fontWeight: 300 }}>AGPL-3.0-or-later</span>
-            </>
-          }
-        />
-        <MenuDivider title={gt.gettext('数据源')} />
-        {AboutDataSources && <AboutDataSources />}
-        <MenuDivider title={gt.gettext('其他资源')} />
-        {AboutThirdParty && <AboutThirdParty />}
-        <MenuItem
-          icon={'font'}
-          text="Source Han Sans"
-          href={
-            'https://github.com/adobe-fonts/source-han-sans/blob/e3bfa7062185d1ec689b07b9236e108a9a00e9c5/LICENSE.txt'
-          }
-          {...externalLinkProps}
-        />
-        <MenuDivider title={gt.gettext('鸣谢')} />
-        {AboutCredits && <AboutCredits />}
-        <DescriptionMenuItem
-          icon={'person'}
-          text="若淇未央"
-          {...externalLinkProps}
-          description={gt.pgettext('credit role', '帮助文档撰写')}
-        />
-        <DescriptionMenuItem
-          icon={'person'}
-          text="西園寺玲咲 (SaionjiReisaki)"
-          href={'https://github.com/SaionjiReisaki/'}
-          {...externalLinkProps}
-          description={gt.pgettext('credit role', '数据源自动化')}
-        />
-        <MenuDivider title={gt.gettext('声明')} />
-        {AboutCopyright && <AboutCopyright />}
-      </Menu>
+      <MenuDivider title={gt.gettext('帮助与社区')} />
+      <MenuItem
+        href="https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp"
+        icon="help"
+        text={gt.gettext('帮助文档')}
+        {...externalLinkProps}
+      />
+      <MenuItem
+        icon={'chat'}
+        multiline={true}
+        href={'https://discord.gg/vsgEuT6VBJ'}
+        {...externalLinkProps}
+        text={<>{gt.gettext('Discord')}</>}
+      />
+      <MenuItem
+        icon={'people'}
+        multiline={true}
+        href={
+          'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zFTyI8xNj6mivBd_h6hEoG3tRTPipBbH&authKey=jdONrgUlL5FP4QyYbxFJN46RSB2kr5IHYqmtEbzhegfTYGl%2FSH3tZqZpzMUDTa22&noverify=0&group_code=897997981'
+        }
+        {...externalLinkProps}
+        text={
+          <>
+            {gt.gettext('QQ 交流群')}
+            <span style={{ marginLeft: '0.5em', fontWeight: 300 }}>897997981</span>
+          </>
+        }
+      />
+      <MenuItem
+        icon={'envelope'}
+        multiline={true}
+        href={'mailto:' + realEmail}
+        {...externalLinkProps}
+        text={
+          <>
+            {gt.gettext('邮箱')}
+            <span style={{ userSelect: 'text', marginLeft: '0.5em', fontWeight: 300 }}>{realEmail}</span>
+          </>
+        }
+      />
+      <MenuItem
+        icon={'git-repo'}
+        multiline={true}
+        href={'https://github.com/orz-tools/cpp'}
+        {...externalLinkProps}
+        text={
+          <>
+            GitHub
+            <span style={{ marginLeft: '0.5em', fontWeight: 300 }}>AGPL-3.0-or-later</span>
+          </>
+        }
+      />
+      <MenuDivider title={gt.gettext('数据源')} />
+      {AboutDataSources && <AboutDataSources />}
+      <MenuDivider title={gt.gettext('其他资源')} />
+      {AboutThirdParty && <AboutThirdParty />}
+      <MenuItem
+        icon={'font'}
+        text="Source Han Sans"
+        href={
+          'https://github.com/adobe-fonts/source-han-sans/blob/e3bfa7062185d1ec689b07b9236e108a9a00e9c5/LICENSE.txt'
+        }
+        {...externalLinkProps}
+      />
+      <MenuDivider title={gt.gettext('鸣谢')} />
+      {AboutCredits && <AboutCredits />}
+      <DescriptionMenuItem
+        icon={'person'}
+        text="若淇未央"
+        {...externalLinkProps}
+        description={gt.pgettext('credit role', '帮助文档撰写')}
+      />
+      <DescriptionMenuItem
+        icon={'person'}
+        text="西園寺玲咲 (SaionjiReisaki)"
+        href={'https://github.com/SaionjiReisaki/'}
+        {...externalLinkProps}
+        description={gt.pgettext('credit role', '数据源自动化')}
+      />
+      <MenuDivider title={gt.gettext('声明')} />
+      {AboutCopyright && <AboutCopyright />}
     </>
   )
 })
+
+const AboutPanelBody = memo(() => {
+  useMarkChangelogSeen()
+  const open = useOpenSidebarPanel()
+  const openWide = useEvent(() => open(aboutPanel))
+  return (
+    <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
+      <SimpleLogList onMore={openWide} />
+      <AboutLinks />
+    </Menu>
+  )
+})
+
+const AboutWide = memo(() => {
+  useMarkChangelogSeen()
+  return (
+    <div className="cpp-about-wide">
+      <Menu>
+        <MenuDivider title={gt.gettext('更新笔记')} />
+        <FullLogList />
+      </Menu>
+      <Menu>
+        <AboutLinks />
+      </Menu>
+    </div>
+  )
+})
+
+export const aboutPanel: SidebarPanel = {
+  id: 'about',
+  icon: 'info-sign',
+  label: lpstr(() => gt.gettext('关于')),
+  title: lpstr(() => gt.gettext('关于')),
+  Body: AboutPanelBody,
+  Wide: AboutWide,
+  useBadge: useChangelogBadge,
+}
 
 export const DescriptionMenuItem = memo((props: MenuItemProps & { description?: React.ReactNode }) => {
   const p = Object.assign({}, props)

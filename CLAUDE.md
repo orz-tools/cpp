@@ -48,7 +48,7 @@ After changing any user-facing strings, run:
 Each game provides two things registered in `src/games.ts`:
 
 - **GameAdapter** (`src/pkg/cpp-{game}/GameAdapter.ts`) — implements `IGameAdapter`: data fetching, region configs, character/item definitions
-- **GameComponent** (`src/components/{game}/index.tsx`) — game-specific UI components (character status, importers, filters)
+- **GameComponent** (`src/components/{game}/index.tsx`) — game-specific UI components (character status, importers, filters), and the sidebar panels (`sidebarPanels`) that follow the shell's own 「关于」, which always comes first; see `src/components/Sidebar.tsx`
 
 Games are code-split via dynamic imports. The URL path (`/{game}/{profile}`) determines which game loads.
 

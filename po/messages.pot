@@ -38,6 +38,11 @@ msgstr ""
 msgid "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版（下面称作「旧版」），您可以在那里继续使用。这个档案里没有数据，直接打开旧版就好。"
 msgstr ""
 
+#. %s: sidebar panel label
+#: src/components/Sidebar.tsx:36
+msgid "%s（有新内容）"
+msgstr ""
+
 #. %s: stat source name
 #: src/components/arknights/CharacterStatusPopover.tsx:539
 msgid "%s持有率"
@@ -52,7 +57,7 @@ msgstr ""
 msgid "Closure++ 已不再支持 %s"
 msgstr ""
 
-#: src/components/AboutList.tsx:43
+#: src/components/AboutList.tsx:40
 msgid "Discord"
 msgstr ""
 
@@ -64,7 +69,7 @@ msgstr ""
 msgid "MAA「干员识别」的截图识别结果只有精英化、等级和潜能，不含技能等级、专精和模组；这些保持导入前的值，请自行核对。"
 msgstr ""
 
-#: src/components/AboutList.tsx:54
+#: src/components/AboutList.tsx:51
 msgid "QQ 交流群"
 msgstr ""
 
@@ -101,6 +106,10 @@ msgstr ""
 msgid "使用「提取装置」"
 msgstr ""
 
+#: src/components/Sidebar.tsx:101
+msgid "侧栏"
+msgstr ""
+
 #: src/components/CppDumpImport.ts:48
 msgid "偏好设置（排除关卡、价值类型等）已一并覆盖，「撤销」不会恢复这一项。"
 msgstr ""
@@ -117,7 +126,8 @@ msgstr ""
 msgid "全部禁用"
 msgstr ""
 
-#: src/components/AboutList.tsx:27
+#: src/components/AboutList.tsx:143
+#: src/components/AboutList.tsx:144
 msgid "关于"
 msgstr ""
 
@@ -125,12 +135,12 @@ msgstr ""
 msgid "关卡"
 msgstr ""
 
-#: src/App.tsx:485
+#: src/App.tsx:477
 #: src/components/Importer.tsx:160
 msgid "关闭"
 msgstr ""
 
-#: src/components/AboutList.tsx:85
+#: src/components/AboutList.tsx:82
 msgid "其他资源"
 msgstr ""
 
@@ -210,7 +220,7 @@ msgstr ""
 msgid "培养目标"
 msgstr ""
 
-#: src/components/AboutList.tsx:110
+#: src/components/AboutList.tsx:107
 msgid "声明"
 msgstr ""
 
@@ -260,7 +270,7 @@ msgstr ""
 msgid "导入 MAA「干员识别」数据"
 msgstr ""
 
-#: src/App.tsx:291
+#: src/App.tsx:283
 #: src/components/RetiredGame.tsx:193
 msgid "导入/导出"
 msgstr ""
@@ -334,16 +344,20 @@ msgid_plural "已排除 %d 个关卡"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/AboutList.tsx:230
+#: src/components/AboutList.tsx:263
 msgid "帮助"
 msgstr ""
 
-#: src/components/AboutList.tsx:31
+#: src/components/AboutList.tsx:28
 msgid "帮助与社区"
 msgstr ""
 
-#: src/components/AboutList.tsx:35
+#: src/components/AboutList.tsx:32
 msgid "帮助文档"
+msgstr ""
+
+#: src/components/Sidebar.tsx:63
+msgid "弹出成大窗口"
 msgstr ""
 
 #: src/components/TaskList.tsx:130
@@ -363,12 +377,12 @@ msgstr ""
 msgid "总价值"
 msgstr ""
 
-#: src/App.tsx:435
+#: src/App.tsx:427
 msgid "您不妨试试"
 msgstr ""
 
 #. %s: datetime
-#: src/components/LogList.tsx:234
+#: src/components/LogList.tsx:252
 msgid "截止 %s"
 msgstr ""
 
@@ -388,9 +402,13 @@ msgstr ""
 msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
-#: src/App.tsx:54
+#: src/App.tsx:55
 #: src/components/Importer.tsx:165
 msgid "撤销"
+msgstr ""
+
+#: src/components/Sidebar.tsx:67
+msgid "收起"
 msgstr ""
 
 #: src/components/UserDataManager.tsx:225
@@ -401,7 +419,7 @@ msgstr ""
 msgid "数据整理自小黑盒 app 明日方舟干员统计功能。"
 msgstr ""
 
-#: src/components/AboutList.tsx:83
+#: src/components/AboutList.tsx:80
 msgid "数据源"
 msgstr ""
 
@@ -461,20 +479,20 @@ msgid "暂无可计算来源"
 msgstr ""
 
 #. %s: datetime
-#: src/components/AboutList.tsx:184
+#: src/components/AboutList.tsx:217
 msgid "更新于 %s"
 msgstr ""
 
-#: src/App.tsx:79
+#: src/App.tsx:80
 #: src/components/arknights/SklandImporter.tsx:169
 msgid "更新数据中…"
 msgstr ""
 
-#: src/components/LogList.tsx:176
+#: src/components/AboutList.tsx:130
 msgid "更新笔记"
 msgstr ""
 
-#: src/App.tsx:88
+#: src/App.tsx:89
 msgid "未找到新数据"
 msgstr ""
 
@@ -494,7 +512,7 @@ msgstr ""
 msgid "松开以导入文件"
 msgstr ""
 
-#: src/components/LogList.tsx:254
+#: src/components/LogList.tsx:270
 msgid "查看更多…"
 msgstr ""
 
@@ -519,7 +537,7 @@ msgstr ""
 msgid "档案 %s 不存在，要新建吗？"
 msgstr ""
 
-#: src/App.tsx:114
+#: src/App.tsx:115
 msgid "检查数据更新"
 msgstr ""
 
@@ -540,8 +558,8 @@ msgstr ""
 msgid "清空"
 msgstr ""
 
-#: src/App.tsx:164
-#: src/App.tsx:86
+#: src/App.tsx:165
+#: src/App.tsx:87
 msgid "游戏数据已更新"
 msgstr ""
 
@@ -649,11 +667,11 @@ msgid ""
 "你现在的数据将会永久失去！（真的很久！）"
 msgstr ""
 
-#: src/components/LogList.tsx:238
+#: src/components/LogList.tsx:256
 msgid "近期更新"
 msgstr ""
 
-#: src/App.tsx:428
+#: src/App.tsx:420
 msgid "返回主页"
 msgstr ""
 
@@ -724,11 +742,11 @@ msgstr ""
 msgid "道具"
 msgstr ""
 
-#: src/components/AboutList.tsx:66
+#: src/components/AboutList.tsx:63
 msgid "邮箱"
 msgstr ""
 
-#: src/App.tsx:103
+#: src/App.tsx:104
 msgid "重载数据"
 msgstr ""
 
@@ -736,7 +754,7 @@ msgstr ""
 msgid "隐藏"
 msgstr ""
 
-#: src/components/AboutList.tsx:95
+#: src/components/AboutList.tsx:92
 msgid "鸣谢"
 msgstr ""
 
@@ -1100,72 +1118,72 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr ""
 
-#: src/components/LogList.tsx:27
+#: src/components/LogList.tsx:29
 msgctxt "changelog"
 msgid "从 MAA 导入仓库时保留不支持识别的道具"
 msgstr ""
 
-#: src/components/LogList.tsx:43
+#: src/components/LogList.tsx:45
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr ""
 
-#: src/components/LogList.tsx:69
+#: src/components/LogList.tsx:71
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr ""
 
-#: src/components/LogList.tsx:38
+#: src/components/LogList.tsx:40
 msgctxt "changelog"
 msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
 msgstr ""
 
-#: src/components/LogList.tsx:75
+#: src/components/LogList.tsx:77
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr ""
 
-#: src/components/LogList.tsx:81
+#: src/components/LogList.tsx:83
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr ""
 
-#: src/components/LogList.tsx:32
+#: src/components/LogList.tsx:34
 msgctxt "changelog"
 msgid "增加角色的快速过滤器"
 msgstr ""
 
-#: src/components/LogList.tsx:16
+#: src/components/LogList.tsx:18
 msgctxt "changelog"
 msgid "导入前检查数据更新"
 msgstr ""
 
-#: src/components/LogList.tsx:88
+#: src/components/LogList.tsx:90
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr ""
 
-#: src/components/LogList.tsx:94
+#: src/components/LogList.tsx:96
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr ""
 
-#: src/components/LogList.tsx:21
+#: src/components/LogList.tsx:23
 msgctxt "changelog"
 msgid "支持拼音、模糊匹配"
 msgstr ""
 
-#: src/components/LogList.tsx:63
+#: src/components/LogList.tsx:65
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr ""
 
-#: src/components/LogList.tsx:56
+#: src/components/LogList.tsx:58
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr ""
 
-#: src/components/LogList.tsx:48
+#: src/components/LogList.tsx:50
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr ""
@@ -1195,12 +1213,12 @@ msgctxt "character list column"
 msgid "目标状态"
 msgstr ""
 
-#: src/components/AboutList.tsx:101
+#: src/components/AboutList.tsx:98
 msgctxt "credit role"
 msgid "帮助文档撰写"
 msgstr ""
 
-#: src/components/AboutList.tsx:108
+#: src/components/AboutList.tsx:105
 msgctxt "credit role"
 msgid "数据源自动化"
 msgstr ""
@@ -1240,7 +1258,7 @@ msgctxt "error context"
 msgid "导入数据时遇到问题"
 msgstr ""
 
-#: src/App.tsx:93
+#: src/App.tsx:94
 msgctxt "error context"
 msgid "检查数据更新失败"
 msgstr ""
@@ -1261,7 +1279,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr ""
 
-#: src/App.tsx:415
+#: src/App.tsx:407
 msgctxt "error context"
 msgid "遇到错误"
 msgstr ""
@@ -1403,43 +1421,43 @@ msgid "、"
 msgstr ""
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:317
+#: src/App.tsx:309
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr ""
 
 #. initial
-#: src/App.tsx:325
+#: src/App.tsx:317
 msgctxt "loading status"
 msgid "别急…"
 msgstr ""
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:352
+#: src/App.tsx:344
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr ""
 
 #. loaded data objects
-#: src/App.tsx:324
+#: src/App.tsx:316
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr ""
 
 #. joke text
-#: src/App.tsx:350
+#: src/App.tsx:342
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr ""
 
 #. loading hero line 2
-#: src/App.tsx:359
+#: src/App.tsx:351
 msgctxt "loading status"
 msgid "请稍候"
 msgstr ""
 
 #. done
-#: src/App.tsx:315
+#: src/App.tsx:307
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr ""

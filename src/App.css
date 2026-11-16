@@ -26,6 +26,71 @@ body {
   margin-right: 0;
 }
 
+.cpp-sidebar {
+  display: flex;
+  flex-direction: row;
+}
+
+.cpp-sidebar-rail {
+  width: 48px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 4px;
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  box-shadow: inset -1px 0 0 rgba(17, 20, 24, 0.15);
+}
+
+.cpp-sidebar-rail-item.bp6-button {
+  position: relative;
+  width: 42px;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 0 4px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+/* Blueprint spaces a row button's children with margin-right, which would push the icon off centre in a column */
+.cpp-sidebar-rail-item.bp6-button > * {
+  margin-right: 0;
+}
+
+.cpp-sidebar-dot {
+  position: absolute;
+  top: 4px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bp-palette-red-3, #cd4246);
+  box-shadow: 0 0 0 2px var(--bp-palette-light-gray-5, #f6f7f9);
+}
+
+.cpp-sidebar-panel {
+  width: 300px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.cpp-about-wide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  column-gap: 15px;
+  width: 860px;
+  max-width: calc(80vw - 40px);
+  height: min(70vh, 720px);
+}
+
+.cpp-about-wide > .bp6-menu {
+  overflow: auto;
+  min-height: 0;
+}
+
 .bp6-dialog,
 .bp6-alert {
   width: unset !important;
