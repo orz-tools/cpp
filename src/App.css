@@ -529,3 +529,230 @@ body .bp6-tag:not(.bp6-fill) > .bp6-fill:only-child {
     display: none;
   }
 }
+
+/* A retired game's page: Blueprint's light grays, one column of 696px, and the farewell as a footer at the bottom. */
+.cpp-retired {
+  flex: 1;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background: #f6f7f9;
+  color: #1c2127;
+}
+
+.cpp-retired-body {
+  width: 100%;
+  max-width: 744px;
+  margin: 0 auto;
+  padding: 64px 24px 56px;
+}
+
+.cpp-retired h2 {
+  margin: 0 0 12px;
+  font-size: 28px;
+  line-height: 1.35;
+}
+
+.cpp-retired h2 > span {
+  white-space: nowrap;
+}
+
+.cpp-retired-intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #404854;
+  text-wrap: pretty;
+}
+
+.cpp-retired-panel {
+  margin-top: 28px;
+  background: #ffffff;
+  border: 1px solid #d3d8de;
+  border-radius: 4px;
+}
+
+.cpp-retired-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cpp-retired-steps > li {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  column-gap: 20px;
+  align-items: center;
+  padding: 20px 24px;
+}
+
+.cpp-retired-steps > li + li {
+  border-top: 1px solid #e5e8eb;
+}
+
+.cpp-retired-step-no {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #abb3bf;
+  border-radius: 50%;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #404854;
+  transition:
+    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cpp-retired-step-no.is-done {
+  background: #238551;
+  border-color: #238551;
+  color: #ffffff;
+}
+
+.cpp-retired-step-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Nothing to move: the step stays in place so the numbering holds, but reads as not needed. */
+.cpp-retired-steps > li.is-skipped .cpp-retired-step-no {
+  border-style: dashed;
+  color: #8f99a8;
+}
+
+.cpp-retired-steps > li.is-skipped .cpp-retired-step-title {
+  color: #5f6b7c;
+}
+
+.cpp-retired-step-desc {
+  margin-top: 2px;
+  line-height: 1.7;
+  color: #5f6b7c;
+  text-wrap: pretty;
+}
+
+.cpp-retired-step-desc > p {
+  margin: 0;
+}
+
+.cpp-retired-step-desc > p + p {
+  margin-top: 4px;
+}
+
+.cpp-retired-step-desc .bp6-tag {
+  margin: 0 2px;
+  vertical-align: 1px;
+}
+
+.cpp-retired-step-desc .bp6-tag > .bp6-icon {
+  color: #5f6b7c;
+}
+
+.cpp-retired-step-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cpp-retired-link,
+.cpp-retired-link:hover {
+  font-weight: inherit;
+  color: #215db0;
+  white-space: nowrap;
+}
+
+.cpp-retired-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cpp-retired-link .bp6-icon {
+  margin-left: 3px;
+  vertical-align: 0;
+}
+
+/* The panel's last row; its text starts where the steps' text does, past the 28px number and its 20px gap. */
+.cpp-retired-clear {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px 10px 72px;
+  border-top: 1px solid #e5e8eb;
+  font-size: 13px;
+  color: #5f6b7c;
+}
+
+.cpp-retired-clear > span {
+  flex: 1;
+}
+
+/* A minimal button keeps its padding without a background; this lines its label up with the buttons above. */
+.cpp-retired-clear > .bp6-button {
+  margin-right: -8px;
+}
+
+/* The page's footer, set as the maintainer set it in the original deprecation dialog. */
+.cpp-retired-farewell {
+  margin-top: auto;
+  padding: 24px;
+  border-top: 1px solid #dce0e5;
+  text-align: center;
+  text-wrap: balance;
+  color: #66717f;
+}
+
+.cpp-retired-farewell > span {
+  display: inline-block;
+  transform: skewX(-10deg);
+}
+
+.cpp-retired ::selection {
+  background: rgba(45, 114, 210, 0.2);
+}
+
+@media (max-width: 600px) {
+  .cpp-retired-body {
+    padding: 32px 16px 40px;
+  }
+
+  .cpp-retired-farewell {
+    padding: 20px 16px;
+  }
+
+  .cpp-retired h2 {
+    font-size: 22px;
+  }
+
+  .cpp-retired-steps > li {
+    grid-template-columns: 28px 1fr;
+    column-gap: 14px;
+    align-items: start;
+    row-gap: 12px;
+    padding: 16px;
+  }
+
+  .cpp-retired-steps > li > .bp6-button,
+  .cpp-retired-steps > li > .cpp-retired-step-actions {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .cpp-retired-step-actions {
+    flex-wrap: wrap;
+  }
+
+  .cpp-retired-clear {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 12px 16px 12px 58px;
+  }
+
+  .cpp-retired-clear > .bp6-button {
+    margin: 0 0 0 -8px;
+  }
+}

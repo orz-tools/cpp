@@ -66,6 +66,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.REFRESH, Paths16.Refresh],
       [IconNames.RESET, Paths16.Reset],
       [IconNames.SEARCH, Paths16.Search],
+      [IconNames.SHARE, Paths16.Share],
       [IconNames.STAR, Paths16.Star],
       [IconNames.STAR_EMPTY, Paths16.StarEmpty],
       [IconNames.TH_DERIVED, Paths16.ThDerived],

@@ -1,5 +1,6 @@
 import {
   AnchorButton,
+  type AnchorButtonProps,
   Button,
   Classes,
   Dialog,
@@ -10,10 +11,9 @@ import {
   NonIdealState,
   TextArea,
 } from '@blueprintjs/core'
-import { useStore } from 'jotai'
-import { type ReactNode, memo, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { useCpp } from '../Cpp'
+import { useCpp, useStore } from '../Cpp'
 import { CppDump, buildCppDump } from '../pkg/cpp-core/dump'
 import { loadProfileExtras, replaceProfileExtras } from '../pkg/cpp-core/profileExtras'
 import { gt } from '../pkg/gt'
@@ -96,26 +96,63 @@ export const UserDataManager = memo(
   },
 )
 
-export const UserDataManagerContent = memo(
+/** Downloads the dump as a file; disabled while there is nothing to export. */
+export const ExportDataButton = ({
+  game,
+  instanceName,
+  data,
+  ...props
+}: {
+  game: string
+  instanceName: string
+  data?: { data: string; now: number }
+} & Omit<AnchorButtonProps, 'href' | 'target' | 'download' | 'disabled'>) => (
+  <>
+    <iframe name="cpp-export-download-target" style={{ display: 'none' }}></iframe>
+    <AnchorButton
+      icon="log-out"
+      text={gt.gettext('导出为文件')}
+      {...props}
+      href={data ? 'data:text/json,' + encodeURIComponent(data.data) : ''}
+      target="cpp-export-download-target"
+      download={data ? `cpp-dump-${game}-${instanceName}-${data.now}.json` : undefined}
+      disabled={!data}
+    />
+  </>
+)
+
+/** Asks first; on yes, removes the profile's stored data and reloads. */
+export async function clearUserData(game: string, instanceName: string) {
+  if (
+    !(await showConfirm(gt.gettext('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）'), {
+      icon: 'warning-sign',
+      intent: 'danger',
+    }))
+  )
+    return
+
+  await replaceProfileExtras(getStoragePrefix(game, instanceName), undefined).catch(console.error)
+
+  localStorage.removeItem(getStoragePrefix(game, instanceName) + 'userdata')
+  localStorage.removeItem(getStoragePrefix(game, instanceName) + 'preference')
+  localStorage.removeItem(getStoragePrefix(game, instanceName) + 'region')
+  location.reload()
+}
+
+const UserDataManagerContent = memo(
   ({
     data,
     loading,
     game,
     instanceName,
-    exportOnly,
-    children,
   }: {
     data?: { data: string; now: number } | undefined
     loading?: boolean
     game: string
     instanceName: string
-    /** For a game whose support is gone: the data can still leave and be cleared, but nothing comes in. */
-    exportOnly?: boolean
-    children?: ReactNode
   }) => {
     const [value, setValue] = useState(() => data?.data || '')
 
-    // jotai's hook rather than Cpp's: a retired game's page mounts this without a Cpp around it.
     const store = useStore()
 
     const importData = useEvent(async (text: string) => {
@@ -181,7 +218,6 @@ export const UserDataManagerContent = memo(
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [dragging, setDragging] = useState(false)
     useEffect(() => {
-      if (exportOnly) return
       // Listening on window rather than the dialog: Blueprint focuses its own container, which sits outside
       // our children, so a paste right after opening would never reach an element of ours. The dialog is
       // modal, so nothing else on the page competes for these events while it is open.
@@ -220,32 +256,12 @@ export const UserDataManagerContent = memo(
         window.removeEventListener('drop', onDrop)
         window.removeEventListener('paste', onPaste)
       }
-    }, [importFile, exportOnly])
-
-    const resetData = useEvent(async () => {
-      if (
-        !(await showConfirm(gt.gettext('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）'), {
-          icon: 'warning-sign',
-          intent: 'danger',
-        }))
-      )
-        return
-
-      await replaceProfileExtras(getStoragePrefix(game, instanceName), undefined).catch(console.error)
-
-      localStorage.removeItem(getStoragePrefix(game, instanceName) + 'userdata')
-      localStorage.removeItem(getStoragePrefix(game, instanceName) + 'preference')
-      localStorage.removeItem(getStoragePrefix(game, instanceName) + 'region')
-      location.reload()
-    })
+    }, [importFile])
 
     return (
       <>
         <DialogBody>
-          {children}
-          {exportOnly ? null : (
-            <p className={Classes.TEXT_MUTED}>{gt.gettext('可将导出的文件拖入此处，或直接粘贴文件导入。')}</p>
-          )}
+          <p className={Classes.TEXT_MUTED}>{gt.gettext('可将导出的文件拖入此处，或直接粘贴文件导入。')}</p>
           <div style={{ position: 'relative' }}>
             <TextArea
               size="small"
@@ -259,8 +275,7 @@ export const UserDataManagerContent = memo(
                 wordBreak: 'break-all',
               }}
               onChange={(e) => setValue(e.target.value)}
-              readOnly={exportOnly || loading}
-              placeholder={exportOnly && !loading ? gt.gettext('没有可导出的数据。') : undefined}
+              readOnly={loading}
               spellCheck="false"
             />
             {dragging && (
@@ -300,39 +315,26 @@ export const UserDataManagerContent = memo(
                 intent={'danger'}
                 icon="trash"
                 text={gt.gettext('清空')}
-                onClick={() => void resetData()}
+                onClick={() => void clearUserData(game, instanceName)}
               />
-              {exportOnly ? null : (
-                <>
-                  <Button
-                    variant="minimal"
-                    intent={'primary'}
-                    icon="document-open"
-                    text={gt.gettext('从文件导入')}
-                    onClick={() => fileInputRef.current?.click()}
-                  />
-                  <Button
-                    variant="minimal"
-                    intent={'primary'}
-                    icon="log-in"
-                    text={gt.gettext('从文本框中导入')}
-                    onClick={() => void importData(value)}
-                  />
-                </>
-              )}
+              <Button
+                variant="minimal"
+                intent={'primary'}
+                icon="document-open"
+                text={gt.gettext('从文件导入')}
+                onClick={() => fileInputRef.current?.click()}
+              />
+              <Button
+                variant="minimal"
+                intent={'primary'}
+                icon="log-in"
+                text={gt.gettext('从文本框中导入')}
+                onClick={() => void importData(value)}
+              />
             </>
           }
         >
-          <iframe name="cpp-export-download-target" style={{ display: 'none' }}></iframe>
-          <AnchorButton
-            variant="minimal"
-            href={data ? 'data:text/json,' + encodeURIComponent(data.data) : ''}
-            icon={'log-out'}
-            target={'cpp-export-download-target'}
-            text={gt.gettext('导出为文件')}
-            download={data ? `cpp-dump-${game}-${instanceName}-${data.now}.json` : undefined}
-            disabled={!data}
-          />
+          <ExportDataButton variant="minimal" game={game} instanceName={instanceName} data={data} />
         </DialogFooter>
       </>
     )

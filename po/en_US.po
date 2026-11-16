@@ -53,6 +53,28 @@ msgstr[1] ""
 "Level goals of %d operators are left out, as Arknights Toolbox does not "
 "calculate levels."
 
+#: src/components/RetiredGame.tsx:81
+msgid ""
+"%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版"
+"（下面称作「旧版」），您可以在那里继续使用。旧版和这里的数据分开存放，按下面"
+"三步就能搬过去。"
+msgstr ""
+"All %s features have been removed; here you can only export or clear your "
+"data. We kept the last version before the removal, called the old version "
+"below, where they all still work. It stores its data separately from this "
+"site, so the three steps below move yours over."
+
+#: src/components/RetiredGame.tsx:77
+msgid ""
+"%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版"
+"（下面称作「旧版」），您可以在那里继续使用。这个档案里没有数据，直接打开旧版"
+"就好。"
+msgstr ""
+"All %s features have been removed; here you can only export or clear your "
+"data. We kept the last version before the removal, called the old version "
+"below, where they all still work. This profile has no data, so you can go "
+"straight there."
+
 #. %s: stat source name
 #: src/components/arknights/CharacterStatusPopover.tsx:539
 msgid "%s持有率"
@@ -62,8 +84,9 @@ msgstr "Own Rate (%s)"
 msgid "ArknightsAssets 解析的游戏数据"
 msgstr "Data Mining by ArknightsAssets"
 
-#: src/components/RetiredGame.tsx:48
-msgid "Closure++ 对 %s 的支持已彻底下线"
+#. %s: game codename
+#: src/components/RetiredGame.tsx:74
+msgid "Closure++ 已不再支持 %s"
 msgstr "Closure++ no longer supports %s"
 
 #: src/components/AboutList.tsx:43
@@ -87,11 +110,17 @@ msgstr ""
 msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
-#: src/components/UserDataManager.tsx:311
+#: src/components/RetiredGame.tsx:195
+msgid "不再需要这里的数据时，可以把它清空，旧版里的数据不受影响。"
+msgstr ""
+"When you no longer need the data here, you can clear it. The data in the old "
+"version is not affected."
+
+#: src/components/UserDataManager.tsx:324
 msgid "从文件导入"
 msgstr "Import from File"
 
-#: src/components/UserDataManager.tsx:318
+#: src/components/RetiredGame.tsx:190 src/components/UserDataManager.tsx:331
 msgid "从文本框中导入"
 msgstr "Import from Text Box"
 
@@ -163,16 +192,16 @@ msgstr "Better Not Synthesizing"
 msgid "切换至%s"
 msgstr "Switch to %s"
 
+#: src/components/RetiredGame.tsx:162
+msgid "到旧版去"
+msgstr "Head to the old version"
+
 #. %d: number
 #: src/components/ItemList.tsx:143
 msgid "制作 %d 次所需"
 msgid_plural "制作 %d 次所需"
 msgstr[0] "Ingredients for Synthesizing Once"
 msgstr[1] "Ingredients for Synthesizing %d Times"
-
-#: src/components/RetiredGame.tsx:57
-msgid "前往存档站"
-msgstr "Go to the archive"
 
 #: src/components/Importer.tsx:51
 msgid "剪贴板里没有文本或文件。"
@@ -186,7 +215,7 @@ msgstr "Region switched. Page will be reloaded."
 msgid "取消"
 msgstr "Cancel"
 
-#: src/components/UserDataManager.tsx:247
+#: src/components/UserDataManager.tsx:264
 msgid "可将导出的文件拖入此处，或直接粘贴文件导入。"
 msgstr ""
 "You can also drop an exported file here, or paste the file to import it."
@@ -194,6 +223,10 @@ msgstr ""
 #: src/components/arknights/SklandImporter.tsx:163
 msgid "回到「提取装置」"
 msgstr "Back to «Sklanding»"
+
+#: src/components/RetiredGame.tsx:186
+msgid "在旧版里导入"
+msgstr "Import in the old version"
 
 #: src/components/arknights/ArkntoolsImporter.tsx:26
 #: src/components/arknights/MAAItemImporter.tsx:35
@@ -205,6 +238,20 @@ msgstr "Paste here…"
 #: src/components/ImportPasteBox.tsx:46
 msgid "在此粘贴数据或文件，自动识别格式"
 msgstr "Paste data or a file here, format auto-detected"
+
+#: src/components/RetiredGame.tsx:137
+msgid "在这里导出"
+msgstr "Export here"
+
+#: src/components/RetiredGame.tsx:93
+msgid "地址是 %1，会在新标签页打开。"
+msgstr "It is at %1 and opens in a new tab."
+
+#: src/components/RetiredGame.tsx:91
+msgid "地址是 %1，会在新标签页打开。旧版会询问是否新建档案 %2，请选确定。"
+msgstr ""
+"It is at %1 and opens in a new tab. The old version will ask whether to "
+"create profile %2; choose OK."
 
 #: src/components/arknights/CharacterStatusPopover.tsx:527
 #: src/components/CharacterStatusPopover.tsx:46
@@ -239,6 +286,10 @@ msgstr "Copy as MAA «Operator Progression» Plan"
 msgid "复制为明日方舟工具箱「精英材料计算」备份"
 msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 
+#: src/components/RetiredGame.tsx:143
+msgid "复制数据"
+msgstr "Copy Data"
+
 #: src/components/CharacterList.tsx:192
 msgid "复制角色名"
 msgstr "Copy Name"
@@ -246,12 +297,6 @@ msgstr "Copy Name"
 #: src/components/Importer.tsx:454
 msgid "如今"
 msgstr "Current"
-
-#: src/components/RetiredGame.tsx:60
-msgid "存档站能保留多久也不确定，如您需要，也可以查看 GitHub 上的源码。"
-msgstr ""
-"How long the archive will stay up is uncertain. If you need it, the source "
-"code is also on GitHub."
 
 #: src/components/TaskList.tsx:119
 msgid "完成"
@@ -272,7 +317,7 @@ msgstr "Import MAA «Operator Progression» Plan"
 msgid "导入 MAA「干员识别」数据"
 msgstr "Import MAA «Operator» Data"
 
-#: src/App.tsx:302
+#: src/App.tsx:302 src/components/RetiredGame.tsx:188
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -290,7 +335,7 @@ msgstr "Import Arknights Toolbox «Material Calculation» Backup"
 msgid "导入森空岛数据"
 msgstr "Import Skland Data"
 
-#: src/components/UserDataManager.tsx:332
+#: src/components/UserDataManager.tsx:114
 msgid "导出为文件"
 msgstr "Export as File"
 
@@ -331,6 +376,10 @@ msgstr[0] ""
 msgstr[1] ""
 "Copied the plan for %d operators. In MAA «Operator Progression», click «Read "
 "from Clipboard»."
+
+#: src/components/RetiredGame.tsx:109
+msgid "已复制，到旧版里粘贴就好。"
+msgstr "Copied. Paste it into the old version."
 
 #: src/components/CharacterList.tsx:199
 msgid "已复制「%s」"
@@ -405,6 +454,10 @@ msgstr "You may try"
 msgid "截止 %s"
 msgstr "As of %s"
 
+#: src/components/RetiredGame.tsx:170
+msgid "打开旧版"
+msgstr "Open the old version"
+
 #: src/components/arknights/CharacterStatusPopover.tsx:524
 msgid "持有"
 msgstr "Own"
@@ -421,7 +474,7 @@ msgstr "Display as In-game Layout"
 msgid "撤销"
 msgstr "Undo"
 
-#: src/components/UserDataManager.tsx:162
+#: src/components/UserDataManager.tsx:199
 msgid "数据已导入，将重新载入页面。"
 msgstr "Data imported. A reload is required."
 
@@ -453,6 +506,10 @@ msgstr "No matching stages"
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
+#: src/components/RetiredGame.tsx:105
+msgid "无法写入剪贴板，请改用「导出为文件」。"
+msgstr "Could not write to the clipboard. Use «Export as File» instead."
+
 #: src/pkg/cpp-basic/DataManager.ts:97
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
@@ -461,6 +518,14 @@ msgstr ""
 #: src/components/Importer.tsx:61
 msgid "无法识别粘贴的内容。支持以下格式："
 msgstr "Could not recognize what was pasted. Supported formats:"
+
+#: src/components/RetiredGame.tsx:179
+msgid ""
+"旧版能保留多久，我们也说不准。万一它打不开了，源码还在 GitHub 上，可以自行部"
+"署。"
+msgstr ""
+"We can't say how long the old version will stay up. If it ever goes away, "
+"its source code is on GitHub, so you can run it yourself."
 
 #: src/games.ts:15
 msgid "时间重叠、飞跃，令人恍惚，所幸我们共度的时光鲜明而真切……"
@@ -519,15 +584,6 @@ msgstr ""
 "Penguin Statistics and is licensed under a Creative Commons Attribution-"
 "NonCommercial 4.0 International License."
 
-#: src/components/RetiredGame.tsx:52
-msgid ""
-"本站已移除相关的全部功能，只保留导出和清空用户数据。如需继续使用，请先导出为"
-"文件，再前往存档站自行导入：两边的数据并不互通。"
-msgstr ""
-"All of its features have been removed here; only exporting and clearing your "
-"user data remain. To keep using it, export your data to a file, then import "
-"it yourself on the archive site: the two sites do not share data."
-
 #: src/components/arknights/AboutList.tsx:16
 msgid ""
 "本项目所使用的游戏资源（包括但不限于：游戏图片、动画、音频、文本原文或其转译"
@@ -557,7 +613,7 @@ msgstr ""
 "work. Furthermore, the content from this site or derivative works thereof "
 "may not be used for commercial purposes without permission."
 
-#: src/components/UserDataManager.tsx:278
+#: src/components/UserDataManager.tsx:293
 msgid "松开以导入文件"
 msgstr "Drop to Import"
 
@@ -565,13 +621,23 @@ msgstr "Drop to Import"
 msgid "查看更多…"
 msgstr "Read More…"
 
-#: src/components/RetiredGame.tsx:61
+#: src/components/RetiredGame.tsx:181
 msgid "查看源码"
 msgstr "View source"
 
 #: src/components/CharacterList.tsx:859
 msgid "查询失败"
 msgstr "Query Failed"
+
+#: src/components/RetiredGame.tsx:88
+msgid "档案 %1 的数据可以存成文件留作备份，也可以直接复制，到旧版里粘贴。"
+msgstr ""
+"Save the data of profile %1 as a file to keep as a backup, or copy it and "
+"paste it into the old version."
+
+#: src/components/RetiredGame.tsx:86
+msgid "档案 %1 里没有数据，不用导出。"
+msgstr "Profile %1 has no data, so there is nothing to export."
 
 #. %s: profile name
 #: src/main.tsx:40
@@ -597,11 +663,7 @@ msgstr ""
 "Skland data cannot tell which form the Amiya in the Training Room is in, so "
 "the specialization in training was not counted. Please check it yourself."
 
-#: src/components/UserDataManager.tsx:263
-msgid "没有可导出的数据。"
-msgstr "There is no data to export."
-
-#: src/components/UserDataManager.tsx:302
+#: src/components/RetiredGame.tsx:201 src/components/UserDataManager.tsx:317
 msgid "清空"
 msgstr "Clear"
 
@@ -622,12 +684,21 @@ msgstr "Assets from Game"
 msgid "潜能 %d"
 msgstr "Potential %d"
 
+#: src/components/RetiredGame.tsx:97
+msgid ""
+"点右上角的 %1，选 %2；把文本框清空，粘贴刚才复制的数据或导出文件的全部内容，"
+"再点 %3 并确认。"
+msgstr ""
+"Click %1 at the top right and choose %2. Empty the text box, paste the data "
+"you copied or the whole contents of the exported file, then click %3 and "
+"confirm."
+
 #: src/components/SynthesisList.tsx:71
 msgid "现在可以合成的道具"
 msgstr "Synthesizing"
 
-#: src/components/RetiredGame.tsx:36 src/components/UserDataManager.tsx:351
-#: src/components/UserDataManager.tsx:370 src/components/UserDataManager.tsx:83
+#: src/components/RetiredGame.tsx:189 src/components/UserDataManager.tsx:353
+#: src/components/UserDataManager.tsx:372 src/components/UserDataManager.tsx:83
 msgid "用户数据管理"
 msgstr "Save Manager"
 
@@ -707,7 +778,7 @@ msgstr "Please upgrade your browser."
 msgid "请稍候"
 msgstr "Loading"
 
-#: src/components/UserDataManager.tsx:124
+#: src/components/UserDataManager.tsx:161
 msgid ""
 "警告：你确定要导入数据吗？\n"
 "你现在的数据将会被永久覆盖！（真的很久！）\n"
@@ -723,7 +794,7 @@ msgstr ""
 "function properly.\n"
 "In such event, you can clear the data in «Save Manager»."
 
-#: src/components/UserDataManager.tsx:227
+#: src/components/UserDataManager.tsx:127
 msgid ""
 "警告：你确定要清空数据吗？\n"
 "你现在的数据将会永久失去！（真的很久！）"
@@ -740,9 +811,13 @@ msgstr "Recent Patches"
 msgid "返回主页"
 msgstr "Back to Home"
 
-#: src/components/UserDataManager.tsx:137
+#: src/components/UserDataManager.tsx:174
 msgid "这不是 Closure++ 用户数据。"
 msgstr "This is not Closure++ save data."
+
+#: src/components/RetiredGame.tsx:95
+msgid "这个档案没有数据，不需要导入。"
+msgstr "This profile has no data, so there is nothing to import."
 
 #. %s: character names
 #: src/components/arknights/importHooks.ts:154
@@ -769,11 +844,11 @@ msgstr ""
 "Goals for these operators go beyond what they can reach (promotion or "
 "skills) and were skipped: %s."
 
-#: src/components/UserDataManager.tsx:146
+#: src/components/UserDataManager.tsx:183
 msgid "这份 Closure++ 用户数据已损坏。"
 msgstr "This Closure++ save data is damaged."
 
-#: src/components/CppDumpImport.ts:95 src/components/UserDataManager.tsx:138
+#: src/components/CppDumpImport.ts:95 src/components/UserDataManager.tsx:175
 msgid "这份 Closure++ 用户数据的版本无法识别。"
 msgstr "The version of this Closure++ save data is not recognized."
 
@@ -807,7 +882,7 @@ msgstr ""
 "This is Closure++ save data exported from profile %s$profile at %s$time."
 
 #. %s: game codename
-#: src/components/CppDumpImport.ts:90 src/components/UserDataManager.tsx:141
+#: src/components/CppDumpImport.ts:90 src/components/UserDataManager.tsx:178
 msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 "This is Closure++ save data for %s; it cannot be imported into this game."
@@ -1329,7 +1404,7 @@ msgctxt "error context"
 msgid "合并导入数据时遇到问题"
 msgstr "Error During Merging Data"
 
-#: src/components/UserDataManager.tsx:164
+#: src/components/UserDataManager.tsx:201
 msgctxt "error context"
 msgid "导入数据时遇到问题"
 msgstr "Error During Importing"
@@ -1349,7 +1424,7 @@ msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr "Error During Processing Imported Data"
 
-#: src/components/ImportPasteBox.tsx:25 src/components/UserDataManager.tsx:174
+#: src/components/ImportPasteBox.tsx:25 src/components/UserDataManager.tsx:211
 msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr "Error During Reading File"
@@ -1590,6 +1665,11 @@ msgstr "Absent"
 msgctxt "predefined view name"
 msgid "计划"
 msgstr "Planned"
+
+#: src/components/RetiredGame.tsx:70
+msgctxt "profile name"
+msgid "默认"
+msgstr "Default"
 
 #: src/components/queryEditor/catalog.ts:48
 msgctxt "query editor"
@@ -2482,6 +2562,77 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgid "档案 %1 的数据会存成一个文件，它也是您的备份。"
+#~ msgstr ""
+#~ "The data of profile %1 is saved as a file, which also serves as your "
+#~ "backup."
+
+#~ msgid ""
+#~ "点右上角的 %1，选 %2；把文本框清空，粘贴导出文件的全部内容（任意文本编辑器"
+#~ "都能打开它），再点 %3 并确认。"
+#~ msgstr ""
+#~ "Click %1 at the top right and choose %2. Empty the text box, paste the "
+#~ "whole contents of the exported file (any text editor can open it), then "
+#~ "click %3 and confirm."
+
+#~ msgid ""
+#~ "%s 的功能已经全部移除，这里只能导出或清空您的数据。移除前的最后一版仍可在"
+#~ "另一个网址继续使用，但两边的数据分开存放，需要您按下面三步自己搬过去。"
+#~ msgstr ""
+#~ "All %s features have been removed; here you can only export or clear your "
+#~ "data. The last version before the removal still works at another address, "
+#~ "but the two keep their data separately, so you will need to move it over "
+#~ "in the three steps below."
+
+#~ msgid ""
+#~ "依次打开 %1 和 %2，把文本框里的内容全部换成导出文件里的内容（文件可以用记"
+#~ "事本打开），再点 %3。"
+#~ msgstr ""
+#~ "Open %1, then %2, replace everything in the text box with the contents of "
+#~ "the exported file (any text editor can open it), then click %3."
+
+#~ msgid ""
+#~ "地址是 %1，会在新标签页打开。旧版会询问是否新建档案「%2」，请选确定。"
+#~ msgstr ""
+#~ "It is at %1 and opens in a new tab. The old version will ask whether to "
+#~ "create profile “%2”; choose OK."
+
+#~ msgid ""
+#~ "旧版能保留多久，我们也说不准。如您需要，也可以查看它在 GitHub 上的源码。"
+#~ msgstr ""
+#~ "We can't say how long the old version will stay up. If you need it, its "
+#~ "source code is also on GitHub."
+
+#~ msgid "档案「%s」的数据会存成一个文件，它也是您的备份。"
+#~ msgstr ""
+#~ "The data of profile “%s” is saved as a file, which also serves as your "
+#~ "backup."
+
+#~ msgid "档案「%s」里没有数据，可以跳过这一步。"
+#~ msgstr "Profile “%s” has no data; you can skip this step."
+
+#~ msgid "Closure++ 对 %s 的支持已彻底下线"
+#~ msgstr "Closure++ no longer supports %s"
+
+#~ msgid "前往存档站"
+#~ msgstr "Go to the archive"
+
+#~ msgid "存档站能保留多久也不确定，如您需要，也可以查看 GitHub 上的源码。"
+#~ msgstr ""
+#~ "How long the archive will stay up is uncertain. If you need it, the "
+#~ "source code is also on GitHub."
+
+#~ msgid ""
+#~ "本站已移除相关的全部功能，只保留导出和清空用户数据。如需继续使用，请先导出"
+#~ "为文件，再前往存档站自行导入：两边的数据并不互通。"
+#~ msgstr ""
+#~ "All of its features have been removed here; only exporting and clearing "
+#~ "your user data remain. To keep using it, export your data to a file, then "
+#~ "import it yourself on the archive site: the two sites do not share data."
+
+#~ msgid "没有可导出的数据。"
+#~ msgstr "There is no data to export."
 
 #~ msgid "无法识别粘贴的内容。支持：%s。"
 #~ msgstr "Could not recognize what was pasted. Supported: %s."

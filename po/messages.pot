@@ -30,6 +30,14 @@ msgid_plural "%d 名干员的等级目标明日方舟工具箱不计算，未包
 msgstr[0] ""
 msgstr[1] ""
 
+#: src/components/RetiredGame.tsx:81
+msgid "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版（下面称作「旧版」），您可以在那里继续使用。旧版和这里的数据分开存放，按下面三步就能搬过去。"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:77
+msgid "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版（下面称作「旧版」），您可以在那里继续使用。这个档案里没有数据，直接打开旧版就好。"
+msgstr ""
+
 #. %s: stat source name
 #: src/components/arknights/CharacterStatusPopover.tsx:539
 msgid "%s持有率"
@@ -39,8 +47,9 @@ msgstr ""
 msgid "ArknightsAssets 解析的游戏数据"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:48
-msgid "Closure++ 对 %s 的支持已彻底下线"
+#. %s: game codename
+#: src/components/RetiredGame.tsx:74
+msgid "Closure++ 已不再支持 %s"
 msgstr ""
 
 #: src/components/AboutList.tsx:43
@@ -59,11 +68,16 @@ msgstr ""
 msgid "QQ 交流群"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:311
+#: src/components/RetiredGame.tsx:195
+msgid "不再需要这里的数据时，可以把它清空，旧版里的数据不受影响。"
+msgstr ""
+
+#: src/components/UserDataManager.tsx:324
 msgid "从文件导入"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:318
+#: src/components/RetiredGame.tsx:190
+#: src/components/UserDataManager.tsx:331
 msgid "从文本框中导入"
 msgstr ""
 
@@ -133,16 +147,16 @@ msgstr ""
 msgid "切换至%s"
 msgstr ""
 
+#: src/components/RetiredGame.tsx:162
+msgid "到旧版去"
+msgstr ""
+
 #. %d: number
 #: src/components/ItemList.tsx:143
 msgid "制作 %d 次所需"
 msgid_plural "制作 %d 次所需"
 msgstr[0] ""
 msgstr[1] ""
-
-#: src/components/RetiredGame.tsx:57
-msgid "前往存档站"
-msgstr ""
 
 #: src/components/Importer.tsx:51
 msgid "剪贴板里没有文本或文件。"
@@ -156,12 +170,16 @@ msgstr ""
 msgid "取消"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:247
+#: src/components/UserDataManager.tsx:264
 msgid "可将导出的文件拖入此处，或直接粘贴文件导入。"
 msgstr ""
 
 #: src/components/arknights/SklandImporter.tsx:163
 msgid "回到「提取装置」"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:186
+msgid "在旧版里导入"
 msgstr ""
 
 #: src/components/arknights/ArkntoolsImporter.tsx:26
@@ -173,6 +191,18 @@ msgstr ""
 
 #: src/components/ImportPasteBox.tsx:46
 msgid "在此粘贴数据或文件，自动识别格式"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:137
+msgid "在这里导出"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:93
+msgid "地址是 %1，会在新标签页打开。"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:91
+msgid "地址是 %1，会在新标签页打开。旧版会询问是否新建档案 %2，请选确定。"
 msgstr ""
 
 #: src/components/arknights/CharacterStatusPopover.tsx:527
@@ -199,16 +229,16 @@ msgstr ""
 msgid "复制为明日方舟工具箱「精英材料计算」备份"
 msgstr ""
 
+#: src/components/RetiredGame.tsx:143
+msgid "复制数据"
+msgstr ""
+
 #: src/components/CharacterList.tsx:192
 msgid "复制角色名"
 msgstr ""
 
 #: src/components/Importer.tsx:454
 msgid "如今"
-msgstr ""
-
-#: src/components/RetiredGame.tsx:60
-msgid "存档站能保留多久也不确定，如您需要，也可以查看 GitHub 上的源码。"
 msgstr ""
 
 #: src/components/TaskList.tsx:119
@@ -231,6 +261,7 @@ msgid "导入 MAA「干员识别」数据"
 msgstr ""
 
 #: src/App.tsx:302
+#: src/components/RetiredGame.tsx:188
 msgid "导入/导出"
 msgstr ""
 
@@ -248,7 +279,7 @@ msgstr ""
 msgid "导入森空岛数据"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:332
+#: src/components/UserDataManager.tsx:114
 msgid "导出为文件"
 msgstr ""
 
@@ -273,6 +304,10 @@ msgid "已复制 %d 名干员的培养计划，请在 MAA「干员培养」中�
 msgid_plural "已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
 msgstr[0] ""
 msgstr[1] ""
+
+#: src/components/RetiredGame.tsx:109
+msgid "已复制，到旧版里粘贴就好。"
+msgstr ""
 
 #: src/components/CharacterList.tsx:199
 msgid "已复制「%s」"
@@ -337,6 +372,10 @@ msgstr ""
 msgid "截止 %s"
 msgstr ""
 
+#: src/components/RetiredGame.tsx:170
+msgid "打开旧版"
+msgstr ""
+
 #: src/components/arknights/CharacterStatusPopover.tsx:524
 msgid "持有"
 msgstr ""
@@ -354,7 +393,7 @@ msgstr ""
 msgid "撤销"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:162
+#: src/components/UserDataManager.tsx:199
 msgid "数据已导入，将重新载入页面。"
 msgstr ""
 
@@ -384,12 +423,20 @@ msgstr ""
 msgid "无法写入剪贴板"
 msgstr ""
 
+#: src/components/RetiredGame.tsx:105
+msgid "无法写入剪贴板，请改用「导出为文件」。"
+msgstr ""
+
 #: src/pkg/cpp-basic/DataManager.ts:97
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 
 #: src/components/Importer.tsx:61
 msgid "无法识别粘贴的内容。支持以下格式："
+msgstr ""
+
+#: src/components/RetiredGame.tsx:179
+msgid "旧版能保留多久，我们也说不准。万一它打不开了，源码还在 GitHub 上，可以自行部署。"
 msgstr ""
 
 #: src/games.ts:15
@@ -443,10 +490,6 @@ msgstr ""
 msgid "本工具中部分素材掉落统计数据由企鹅物流统计，采用知识共享 署名-非商业性使用 4.0 国际许可协议进行许可。"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:52
-msgid "本站已移除相关的全部功能，只保留导出和清空用户数据。如需继续使用，请先导出为文件，再前往存档站自行导入：两边的数据并不互通。"
-msgstr ""
-
 #: src/components/arknights/AboutList.tsx:16
 msgid "本项目所使用的游戏资源（包括但不限于：游戏图片、动画、音频、文本原文或其转译版本等）仅用于更好地表现游戏资料、增强用户体验，其版权属于上海鹰角网络科技有限公司和其关联公司。"
 msgstr ""
@@ -455,7 +498,7 @@ msgstr ""
 msgid "来自明日方舟一图流的数据，除非另有声明，采用 知识共享 署名-非商业性使用 4.0 国际 许可协议 进行许可。转载、公开或以任何形式复制、发行、再传播明日方舟一图流的任何内容时，必须注明从明日方舟一图流转载，并提供版权标识、许可协议标识、免责标识和作品链接；且未经许可，不得将本站内容或由其衍生作品用于商业目的。"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:278
+#: src/components/UserDataManager.tsx:293
 msgid "松开以导入文件"
 msgstr ""
 
@@ -463,12 +506,20 @@ msgstr ""
 msgid "查看更多…"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:61
+#: src/components/RetiredGame.tsx:181
 msgid "查看源码"
 msgstr ""
 
 #: src/components/CharacterList.tsx:859
 msgid "查询失败"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:88
+msgid "档案 %1 的数据可以存成文件留作备份，也可以直接复制，到旧版里粘贴。"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:86
+msgid "档案 %1 里没有数据，不用导出。"
 msgstr ""
 
 #. %s: profile name
@@ -488,11 +539,8 @@ msgstr ""
 msgid "森空岛的数据分不清训练室里的阿米娅是哪个升变形态，正在训练的专精没有计入，请自行核对。"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:263
-msgid "没有可导出的数据。"
-msgstr ""
-
-#: src/components/UserDataManager.tsx:302
+#: src/components/RetiredGame.tsx:201
+#: src/components/UserDataManager.tsx:317
 msgid "清空"
 msgstr ""
 
@@ -513,13 +561,17 @@ msgstr ""
 msgid "潜能 %d"
 msgstr ""
 
+#: src/components/RetiredGame.tsx:97
+msgid "点右上角的 %1，选 %2；把文本框清空，粘贴刚才复制的数据或导出文件的全部内容，再点 %3 并确认。"
+msgstr ""
+
 #: src/components/SynthesisList.tsx:71
 msgid "现在可以合成的道具"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:36
-#: src/components/UserDataManager.tsx:351
-#: src/components/UserDataManager.tsx:370
+#: src/components/RetiredGame.tsx:189
+#: src/components/UserDataManager.tsx:353
+#: src/components/UserDataManager.tsx:372
 #: src/components/UserDataManager.tsx:83
 msgid "用户数据管理"
 msgstr ""
@@ -589,7 +641,7 @@ msgstr ""
 msgid "请稍候"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:124
+#: src/components/UserDataManager.tsx:161
 msgid ""
 "警告：你确定要导入数据吗？\n"
 "你现在的数据将会被永久覆盖！（真的很久！）\n"
@@ -598,7 +650,7 @@ msgid ""
 "届时可在「用户数据管理」中清空数据。"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:227
+#: src/components/UserDataManager.tsx:127
 msgid ""
 "警告：你确定要清空数据吗？\n"
 "你现在的数据将会永久失去！（真的很久！）"
@@ -612,8 +664,12 @@ msgstr ""
 msgid "返回主页"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:137
+#: src/components/UserDataManager.tsx:174
 msgid "这不是 Closure++ 用户数据。"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:95
+msgid "这个档案没有数据，不需要导入。"
 msgstr ""
 
 #. %s: character names
@@ -631,12 +687,12 @@ msgstr ""
 msgid "这些干员的目标超出了可培养的上限（精英化次数或技能），已跳过：%s。"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:146
+#: src/components/UserDataManager.tsx:183
 msgid "这份 Closure++ 用户数据已损坏。"
 msgstr ""
 
 #: src/components/CppDumpImport.ts:95
-#: src/components/UserDataManager.tsx:138
+#: src/components/UserDataManager.tsx:175
 msgid "这份 Closure++ 用户数据的版本无法识别。"
 msgstr ""
 
@@ -662,7 +718,7 @@ msgstr ""
 
 #. %s: game codename
 #: src/components/CppDumpImport.ts:90
-#: src/components/UserDataManager.tsx:141
+#: src/components/UserDataManager.tsx:178
 msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 
@@ -1181,7 +1237,7 @@ msgctxt "error context"
 msgid "合并导入数据时遇到问题"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:164
+#: src/components/UserDataManager.tsx:201
 msgctxt "error context"
 msgid "导入数据时遇到问题"
 msgstr ""
@@ -1202,7 +1258,7 @@ msgid "解析导入数据时遇到问题"
 msgstr ""
 
 #: src/components/ImportPasteBox.tsx:25
-#: src/components/UserDataManager.tsx:174
+#: src/components/UserDataManager.tsx:211
 msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr ""
@@ -1442,6 +1498,11 @@ msgstr ""
 #: src/components/queryEditor/QueryEditor.tsx:86
 msgctxt "predefined view name"
 msgid "计划"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:70
+msgctxt "profile name"
+msgid "默认"
 msgstr ""
 
 #: src/components/queryEditor/catalog.ts:48
