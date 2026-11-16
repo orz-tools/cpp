@@ -1,6 +1,6 @@
-import { Callout, InputGroup } from '@blueprintjs/core'
+import { InputGroup } from '@blueprintjs/core'
 import { useSetAtom } from 'jotai'
-import { memo, useState } from 'react'
+import { memo } from 'react'
 import useEvent from 'react-use-event-hook'
 import { gt } from '../pkg/gt'
 import { ErrAtom } from './Err'
@@ -11,12 +11,11 @@ export const ImportPasteBox = memo(
   ({ inputRef, onImported }: { inputRef: React.Ref<HTMLInputElement>; onImported: () => void }) => {
     const importByContent = useImportByContent()
     const setErr = useSetAtom(ErrAtom)
-    const [error, setError] = useState<string>()
 
     const importText = useEvent((text: string) => {
       const error = importByContent(text)
       if (error) {
-        setError(error)
+        alert(error)
       } else {
         onImported()
       }
@@ -35,7 +34,6 @@ export const ImportPasteBox = memo(
     })
 
     const importData = (data: DataTransfer) => {
-      setError(undefined)
       const file = data.files[0]
       if (file) {
         void importFile(file)
@@ -68,17 +66,6 @@ export const ImportPasteBox = memo(
             importData(e.dataTransfer)
           }}
         />
-        {error ? (
-          <Callout
-            intent="danger"
-            compact
-            icon={null}
-            // width 0 + min-width 100%: wrap at the menu's width instead of stretching the menu to one long line
-            style={{ marginTop: '5px', width: 0, minWidth: '100%' }}
-          >
-            {error}
-          </Callout>
-        ) : null}
       </li>
     )
   },
