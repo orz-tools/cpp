@@ -213,9 +213,9 @@ export function mergeSklandData(
               return d.level
             }
             if (d.level === 1) {
-              if ('locked' in d) {
-                if (d.locked === false) return 0
-                if (d.locked === true) return 1
+              // locked: true 是未解锁（未精二干员的模组都是 true）。早期数据没有这个字段，未解锁的也报 1 级
+              if (d.locked !== undefined) {
+                return d.locked ? 0 : 1
               }
               if (char.defaultEquipId === ue.equipId) {
                 return 1

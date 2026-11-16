@@ -100,21 +100,60 @@ describe('mergeSklandData', () => {
     })
   })
 
-  it('reads 1-level modules by their locked flag', () => {
-    const draft = { current: {} as Record<string, ArknightsCharacterStatus>, items: {} }
+  it('reads 1-level modules by their locked flag: true is not unlocked', () => {
+    const draft = {
+      current: { char_010_chen: status({ modLevel: { uniequip_003_chen: 1 } }) },
+      items: {},
+    }
     const data = sklandData({
       chars: [
         {
           ...chen,
           equip: [
+            { id: 'uniequip_001_chen', level: 1, locked: false },
             { id: 'uniequip_002_chen', level: 1, locked: false },
             { id: 'uniequip_003_chen', level: 1, locked: true },
           ],
+          defaultEquipId: 'uniequip_001_chen',
         },
       ],
     })
     expect(mergeSklandData(ga, draft, empty, data).ambiguousEquip).toBe(false)
-    expect(draft.current.char_010_chen.modLevel).toEqual({ uniequip_003_chen: 1 })
+    expect(draft.current.char_010_chen.modLevel).toEqual({ uniequip_002_chen: 1 })
+
+    const draft3 = { current: {} as Record<string, ArknightsCharacterStatus>, items: {} }
+    const data3 = sklandData({
+      chars: [{ ...chen, equip: [{ id: 'uniequip_003_chen', level: 3, locked: false }] }],
+    })
+    mergeSklandData(ga, draft3, empty, data3)
+    expect(draft3.current.char_010_chen.modLevel).toEqual({ uniequip_003_chen: 3 })
+  })
+
+  it('writes potential from both kinds of data', () => {
+    const fromChars = { current: {} as Record<string, ArknightsCharacterStatus>, items: {} }
+    mergeSklandData(ga, fromChars, empty, sklandData({ chars: [{ ...chen, potentialRank: 4 }] }))
+    expect(fromChars.current.char_010_chen.potentialRank).toBe(4)
+
+    const fromCultivate = { current: {} as Record<string, ArknightsCharacterStatus>, items: {} }
+    const data = sklandData({
+      chars: [chen],
+      cultivate: {
+        characters: [
+          {
+            id: 'char_010_chen',
+            level: 1,
+            evolvePhase: 0,
+            mainSkillLevel: 1,
+            skills: [],
+            equips: [],
+            potentialRank: 5,
+          },
+        ],
+        items: [],
+      },
+    })
+    mergeSklandData(ga, fromCultivate, empty, data)
+    expect(fromCultivate.current.char_010_chen.potentialRank).toBe(5)
   })
 
   it('writes cultivate characters and items', () => {
