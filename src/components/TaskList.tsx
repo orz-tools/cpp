@@ -213,11 +213,11 @@ export const TaskMenu = memo(
             <a
               role="menuitem"
               tabIndex={0}
-              className="bp5-menu-item cpp-task-menu"
+              className="bp6-menu-item cpp-task-menu"
               style={{ flexShrink: 1, overflow: 'hidden' }}
             >
               <>
-                <span className="bp5-menu-item-icon">
+                <span className="bp6-menu-item-icon">
                   <CachedImg
                     src={character.avatar}
                     width={'16'}
@@ -227,9 +227,9 @@ export const TaskMenu = memo(
                   />
                 </span>
 
-                <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                   <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
-                    <div className="bp5-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
+                    <div className="bp6-text-overflow-ellipsis" style={{ flexShrink: 2, overflow: 'hidden' }}>
                       {character.name}
                       <span style={{ paddingLeft: '0.5em', fontWeight: 'normal', opacity: 0.75 }}>
                         {character.appellation}
@@ -265,7 +265,7 @@ export const TaskMenu = memo(
                   ) : null}
                   {starIcon == null ? null : (
                     <div style={{ marginLeft: 4 }}>
-                      <Icon icon={starIcon} className="bp5-menu-item-icon" size={16} />
+                      <Icon icon={starIcon} className="bp6-menu-item-icon" size={16} />
                     </div>
                   )}
                 </div>
@@ -355,7 +355,7 @@ const HideCostsButton = memo(() => {
   const [param, setParam] = useAtom(queryParamAtom)
   return (
     <Button
-      minimal={true}
+      variant="minimal"
       active={param.hideCosts}
       icon={'eye-off'}
       onClick={() => {

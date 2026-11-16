@@ -50,17 +50,17 @@ const UndoButtons = memo(() => {
         icon="undo"
         disabled={undoCounter === 0}
         text={<span className={'cpp-very-compact'}>{gt.gettext('撤销')}</span>}
-        minimal={true}
+        variant="minimal"
         onClick={() => setData('undo')}
-        rightIcon={undoCounter > 0 ? <Tag round={true}>{undoCounter}</Tag> : undefined}
+        endIcon={undoCounter > 0 ? <Tag round={true}>{undoCounter}</Tag> : undefined}
       />
       <Button
         icon="redo"
         disabled={redoCounter === 0}
         text=""
-        minimal={true}
+        variant="minimal"
         onClick={() => setData('redo')}
-        rightIcon={redoCounter > 0 ? <Tag round={true}>{redoCounter}</Tag> : undefined}
+        endIcon={redoCounter > 0 ? <Tag round={true}>{redoCounter}</Tag> : undefined}
       />
     </>
   )
@@ -71,22 +71,23 @@ const ReloadDataButton = memo(() => {
   const dm = ga.getDataManager()
   const setError = useSetAtom(ErrAtom)
   const { loading, send } = useRequest(async () => {
-    const reload = AppToaster.show(
+    const toaster = await AppToaster
+    const reload = toaster.show(
       { message: gt.gettext('更新数据中…'), isCloseButtonShown: false, timeout: 0, intent: 'primary' },
       'reload',
     )
     try {
       const r = await dm.refresh()
-      AppToaster.dismiss(reload)
+      toaster.dismiss(reload)
       if (r || dm.dataUpdatedAfterInit) {
-        AppToaster.show({ message: gt.gettext('数据已更新，正在重新载入…'), intent: 'success' }, reload)
+        toaster.show({ message: gt.gettext('数据已更新，正在重新载入…'), intent: 'success' }, reload)
         location.reload()
       } else {
-        AppToaster.show({ message: gt.gettext('未找到新数据') }, reload)
+        toaster.show({ message: gt.gettext('未找到新数据') }, reload)
       }
     } catch (e) {
       console.log(e)
-      AppToaster.dismiss(reload)
+      toaster.dismiss(reload)
       setError({ error: e, context: gt.pgettext('error context', '检查数据更新失败') })
     }
   })
@@ -113,7 +114,7 @@ const ReloadDataButton = memo(() => {
           icon="refresh"
           disabled={loading}
           text={<span className={'cpp-very-compact'}>{gt.gettext('检查数据更新')}</span>}
-          minimal={true}
+          variant="minimal"
           onClick={() => send()}
         />
       </ContextMenu>
@@ -138,7 +139,7 @@ const ClosureButtonHeading = memo(() => {
         }
         position="bottom-left"
       >
-        <Button minimal style={{ paddingLeft: 0, paddingRight: 0 }}>
+        <Button variant="minimal" style={{ paddingLeft: 0, paddingRight: 0 }}>
           <ProfileTitle codename={ga.getCodename()} profile={cpp.instanceName} />
         </Button>
       </Popover>
@@ -161,7 +162,7 @@ const App = memo(() => {
     void (async () => {
       const result = await ga.getDataManager().checkUpdates()
       if (result)
-        AppToaster.show(
+        (await AppToaster).show(
           {
             message: gt.gettext('数据已更新，请重新载入页面'),
             intent: 'success',
@@ -271,7 +272,7 @@ const DataMenu = memo(() => {
 const DataDropdown = memo(() => {
   return (
     <Popover usePortal={true} minimal={true} content={<DataMenu />} position="bottom-right">
-      <Button icon={'th-derived'} minimal={true} rightIcon={'chevron-down'}>
+      <Button icon={'th-derived'} variant="minimal" endIcon={'chevron-down'}>
         <span className="cpp-very-compact">{gt.gettext('导入/导出')}</span>
       </Button>
     </Popover>
@@ -429,14 +430,14 @@ class ErrorBoundary extends React.Component<
           <DialogFooter
             actions={
               <>
-                <AnchorButton href={'/'} minimal icon={'home'}>
+                <AnchorButton href={'/'} variant="minimal" icon={'home'}>
                   {gt.gettext('返回主页')}
                 </AnchorButton>
               </>
             }
           >
             <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <Button minimal disabled>
+              <Button variant="minimal" disabled>
                 {gt.gettext('您不妨试试')}
               </Button>
               <ReloadDataButton />
@@ -473,7 +474,7 @@ export const ErrDialog = memo(({ instanceName, codename }: { instanceName: strin
       <DialogFooter
         actions={
           <>
-            <Button onClick={() => setErr(undefined)} minimal>
+            <Button onClick={() => setErr(undefined)} variant="minimal">
               {/* 晓得了 */}
               {gt.gettext('关闭')}
             </Button>
@@ -536,7 +537,7 @@ const DeprecationWarning = memo(() => {
       <DialogFooter
         actions={
           <>
-            <Button onClick={() => setShow(false)} minimal>
+            <Button onClick={() => setShow(false)} variant="minimal">
               {gt.gettext('关闭提示')}
             </Button>
           </>

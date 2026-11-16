@@ -1,4 +1,13 @@
-import { AnchorButton, Button, Dialog, DialogBody, DialogFooter, MenuItem, TextArea } from '@blueprintjs/core'
+import {
+  AnchorButton,
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  type DialogProps,
+  MenuItem,
+  TextArea,
+} from '@blueprintjs/core'
 import { memo, useEffect, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useCpp, useStore } from '../Cpp'
@@ -8,7 +17,7 @@ import { useChamber } from './Chamber'
 import { ErrAtom } from './Err'
 
 export const UserDataManager = memo(
-  ({ game, instanceName, onClose }: { game: string; instanceName: string; onClose?: Dialog['props']['onClose'] }) => {
+  ({ game, instanceName, onClose }: { game: string; instanceName: string; onClose?: DialogProps['onClose'] }) => {
     const storagePrefix = getStoragePrefix(game, instanceName)
     const [data, setData] = useState<{ data: string; now: number } | undefined>(undefined)
     useEffect(() => {
@@ -116,7 +125,7 @@ const UserDataManagerContent = memo(
       <>
         <DialogBody>
           <TextArea
-            small
+            size="small"
             value={value}
             style={{
               width: '100%',
@@ -133,9 +142,9 @@ const UserDataManagerContent = memo(
         <DialogFooter
           actions={
             <>
-              <Button minimal intent={'danger'} icon="trash" text={gt.gettext('清空')} onClick={resetData} />
+              <Button variant="minimal" intent={'danger'} icon="trash" text={gt.gettext('清空')} onClick={resetData} />
               <Button
-                minimal
+                variant="minimal"
                 intent={'primary'}
                 icon="log-in"
                 text={gt.gettext('从文本框中导入')}
@@ -146,7 +155,7 @@ const UserDataManagerContent = memo(
         >
           <iframe name="cpp-export-download-target" style={{ display: 'none' }}></iframe>
           <AnchorButton
-            minimal
+            variant="minimal"
             href={data ? 'data:text/json,' + encodeURIComponent(data.data) : ''}
             icon={'log-out'}
             target={'cpp-export-download-target'}
@@ -167,7 +176,7 @@ export const UserDataManagerButton = memo(() => {
   const { add } = useChamber()
   return (
     <Button
-      minimal
+      variant="minimal"
       icon={'database'}
       text={gt.gettext('用户数据管理')}
       onClick={() => {

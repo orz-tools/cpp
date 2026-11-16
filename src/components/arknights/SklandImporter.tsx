@@ -405,7 +405,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
                 </>
               }
             >
-              <Button minimal text={gt.gettext('粘贴 JSON')} style={{ color: 'rgba(0, 0, 0, 0.25)' }} />
+              <Button variant="minimal" text={gt.gettext('粘贴 JSON')} style={{ color: 'rgba(0, 0, 0, 0.25)' }} />
             </Popover>
           </div>
         </DialogBody>
@@ -433,7 +433,7 @@ const ForceRefresh = React.memo(() => {
       </DialogBody>
       <DialogFooter
         actions={
-          <Button onClick={() => location.reload()} minimal intent={Intent.PRIMARY}>
+          <Button onClick={() => location.reload()} variant="minimal" intent={Intent.PRIMARY}>
             {gt.gettext('重新载入')}
           </Button>
         }

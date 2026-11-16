@@ -90,7 +90,7 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { 
 
   return (
     <>
-      <ButtonGroup minimal={true} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+      <ButtonGroup variant="minimal" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
         {formula.apCost ? (
           <>
             <span style={{ marginLeft: 10 }}>
@@ -222,7 +222,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp5-menu-item cpp-item-menu"
+        className="bp6-menu-item cpp-item-menu"
         style={{ lineHeight: '21px', padding: 0, fontWeight: 'normal', visibility: !formula ? 'hidden' : undefined }}
       >
         <Popover
@@ -374,18 +374,18 @@ export const ItemMenu = memo(({ item }: { item: IItem }) => {
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp5-menu-item cpp-item-menu cpp-menu-not-interactive"
+        className="bp6-menu-item cpp-item-menu cpp-menu-not-interactive"
         style={{ flexShrink: 1, overflow: 'hidden' }}
       >
         <>
-          <span className="bp5-menu-item-icon">
+          <span className="bp6-menu-item-icon">
             <ItemIcon item={item} size={40} />
           </span>
-          <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp5-text-overflow-ellipsis" title={item.name}>
+          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp6-text-overflow-ellipsis" title={item.name}>
               {item.name}
             </div>
-            <div className="bp5-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
+            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
               <ValueTag value={item.valueAsAp} minimal={true} single={true} />
             </div>
           </div>
@@ -465,7 +465,7 @@ const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level;
 
   return (
     <Button
-      minimal={true}
+      variant="minimal"
       disabled={disabled}
       text={
         {
@@ -474,7 +474,7 @@ const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level;
           [Level.Star]: gt.pgettext('item list view label', '星标'),
         }[level]
       }
-      rightIcon={<ValueTagProgressBar value={remaining} maxValue={total} />}
+      endIcon={<ValueTagProgressBar value={remaining} maxValue={total} />}
       active={param.level === level}
       onClick={() => {
         setParam((p) => ({ ...p, level: p.level === level ? undefined : level }))
@@ -487,7 +487,7 @@ const HideCompletedButton = memo(() => {
   const [param, setParam] = useAtom(itemListParamAtom)
   return (
     <Button
-      minimal={true}
+      variant="minimal"
       active={param.hideCompleted}
       icon={'eye-off'}
       onClick={() => {
@@ -536,7 +536,7 @@ export const SyncButton = memo(() => {
   const { add } = useChamber()
   return (
     <Button
-      minimal={true}
+      variant="minimal"
       icon={'fullscreen'}
       title={gt.gettext('按游戏内仓库排布形式展示')}
       onClick={() => {

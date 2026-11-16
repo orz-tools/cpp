@@ -71,7 +71,7 @@ export const CachedImg = memo(
 )
 
 export const EmptyIcon = memo(({ classes }: { classes?: string[] }) => {
-  return <span className={['bp5-menu-item-icon', ...(classes || [])].join(' ')}></span>
+  return <span className={['bp6-menu-item-icon', ...(classes || [])].join(' ')}></span>
 })
 
 export const ItemIcon = memo(({ item, size }: { item: IItem; size: number | string }) => {

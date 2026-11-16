@@ -245,7 +245,7 @@ const Gap = memo(
             </Menu>
           }
         >
-          <Button minimal tabIndex={-1} icon={'add'} />
+          <Button variant="minimal" tabIndex={-1} icon={'add'} />
         </Popover>
       </div>
     )
@@ -301,7 +301,7 @@ export const InventorySyncer = memo(() => {
         <Navbar.Group align={Alignment.LEFT}>{title}</Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <Button
-            minimal
+            variant="minimal"
             active={!showAll}
             icon="eye-off"
             onClick={() => setShowAll(!showAll)}

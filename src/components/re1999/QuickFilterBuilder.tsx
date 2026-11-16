@@ -21,7 +21,7 @@ export const QuickFilterBuilder = memo(() => {
   return (
     <>
       <ButtonGroup>
-        <Tag large minimal style={{ background: 'none' }}>
+        <Tag size="large" minimal style={{ background: 'none' }}>
           {gt.pgettext('re1999 quick filter', '灵感')}
         </Tag>
         <CareerFilter career={1} />
@@ -38,7 +38,7 @@ export const QuickFilterBuilder = memo(() => {
       </ButtonGroup>
       <Navbar.Divider />
       <ButtonGroup>
-        <Tag large minimal style={{ background: 'none' }}>
+        <Tag size="large" minimal style={{ background: 'none' }}>
           {gt.pgettext('re1999 quick filter', '稀有度')}
         </Tag>
         <RarityFilter rarity={6} />
@@ -49,7 +49,7 @@ export const QuickFilterBuilder = memo(() => {
       </ButtonGroup>
       <Navbar.Divider />
       <ButtonGroup>
-        <Tag large minimal style={{ background: 'none' }}>
+        <Tag size="large" minimal style={{ background: 'none' }}>
           {gt.pgettext('re1999 quick filter', '洞悉')}
         </Tag>
         <InsightFilter insight={3} />
@@ -65,7 +65,7 @@ const CareerFilter = memo(({ career }: { career: number }) => {
   const { active, toggle } = useQuickFilter('career', career)
   return (
     <Button
-      minimal
+      variant="minimal"
       active={active}
       onClick={toggle}
       style={{ padding: 5 }}
@@ -87,7 +87,7 @@ const DmgtypeFilter = memo(({ dmgtype }: { dmgtype: number }) => {
   const { active, toggle } = useQuickFilter('dmgtype', dmgtype)
   return (
     <Button
-      minimal
+      variant="minimal"
       active={active}
       onClick={toggle}
       style={{ padding: 5 }}
@@ -109,7 +109,7 @@ const DmgtypeFilter = memo(({ dmgtype }: { dmgtype: number }) => {
 const RarityFilter = memo(({ rarity }: { rarity: number }) => {
   const { active, toggle } = useQuickFilter('rarity', rarity)
   return (
-    <Button minimal active={active} onClick={toggle} style={{ padding: 5 }}>
+    <Button variant="minimal" active={active} onClick={toggle} style={{ padding: 5 }}>
       {rarity}
     </Button>
   )
@@ -120,7 +120,7 @@ const InsightFilter = memo(({ insight }: { insight: number }) => {
   const img = [undefined, dongxi1, dongxi2, dongxi3][insight]
   return (
     <Button
-      minimal
+      variant="minimal"
       active={active}
       onClick={toggle}
       style={{ padding: 5 }}

@@ -227,7 +227,7 @@ export const HelpButton = memo(() => {
     <AnchorButton
       href="https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp"
       icon="help"
-      minimal={true}
+      variant="minimal"
       text={<span className="cpp-very-compact">{gt.gettext('帮助')}</span>}
       {...externalLinkProps}
     />

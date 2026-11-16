@@ -85,7 +85,7 @@ export function CharacterStatusInsightLevelSection() {
       ) ? (
         <div className="cpp-charstat-group">
           <ButtonGroup>
-            <Tag large={true}>{gt.pgettext('re1999 status group', '洞零')}</Tag>
+            <Tag size="large">{gt.pgettext('re1999 status group', '洞零')}</Tag>
             <InsightLevelButton insight={0} level={1} />
             {Array.from({ length: character.maxLevels[0] / 10 + 1 }, () => 0)
               .map((_, i) => i * 10)
@@ -104,7 +104,7 @@ export function CharacterStatusInsightLevelSection() {
       ) ? (
         <div className="cpp-charstat-group">
           <ButtonGroup>
-            <Tag large={true}>{gt.pgettext('re1999 status group', '洞一')}</Tag>
+            <Tag size="large">{gt.pgettext('re1999 status group', '洞一')}</Tag>
             <InsightLevelButton insight={1} level={1} />
             {Array.from({ length: character.maxLevels[1] / 10 + 1 }, () => 0)
               .map((_, i) => i * 10)
@@ -123,7 +123,7 @@ export function CharacterStatusInsightLevelSection() {
       ) ? (
         <div className="cpp-charstat-group">
           <ButtonGroup>
-            <Tag large={true}>{gt.pgettext('re1999 status group', '洞二')}</Tag>
+            <Tag size="large">{gt.pgettext('re1999 status group', '洞二')}</Tag>
             <InsightLevelButton insight={2} level={1} />
             {Array.from({ length: character.maxLevels[2] / 10 + 1 }, () => 0)
               .map((_, i) => i * 10)
@@ -142,7 +142,7 @@ export function CharacterStatusInsightLevelSection() {
       ) ? (
         <div className="cpp-charstat-group">
           <ButtonGroup>
-            <Tag large={true}>{gt.pgettext('re1999 status group', '洞三')}</Tag>
+            <Tag size="large">{gt.pgettext('re1999 status group', '洞三')}</Tag>
             <InsightLevelButton insight={3} level={1} />
             {Array.from({ length: character.maxLevels[3] / 10 + 1 }, () => 0)
               .map((_, i) => i * 10)
@@ -190,7 +190,7 @@ export function CharacterStatusResonateSection() {
     <>
       <div className="cpp-charstat-group">
         <ButtonGroup>
-          <Tag large={true}>
+          <Tag size="large">
             {character.isHuman
               ? gt.pgettext('re1999 status group', '觉察')
               : gt.pgettext('re1999 status group', '共鸣')}
@@ -249,7 +249,7 @@ export function CharacterStatusResonateStyleSection() {
     <>
       <div className="cpp-charstat-group">
         <ButtonGroup>
-          <Tag large={true}>
+          <Tag size="large">
             {character.isHuman
               ? gt.pgettext('re1999 status group', '调适')
               : gt.pgettext('re1999 status group', '调频')}

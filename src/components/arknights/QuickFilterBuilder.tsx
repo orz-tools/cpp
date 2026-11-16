@@ -12,7 +12,7 @@ export const QuickFilterBuilder = memo(() => {
   return (
     <>
       <ButtonGroup>
-        <Tag large minimal style={{ background: 'none' }}>
+        <Tag size="large" minimal style={{ background: 'none' }}>
           {gt.pgettext('arknights quick filter', '职业')}
         </Tag>
         <ProfessionFilter profession={Profession.PIONEER} />
@@ -26,7 +26,7 @@ export const QuickFilterBuilder = memo(() => {
       </ButtonGroup>
       <Navbar.Divider />
       <ButtonGroup>
-        <Tag large minimal style={{ background: 'none' }}>
+        <Tag size="large" minimal style={{ background: 'none' }}>
           {gt.pgettext('arknights quick filter', '稀有度')}
         </Tag>
         <RarityFilter rarity={6} />
@@ -38,7 +38,7 @@ export const QuickFilterBuilder = memo(() => {
       </ButtonGroup>
       <Navbar.Divider />
       <ButtonGroup>
-        <Tag large minimal style={{ background: 'none' }}>
+        <Tag size="large" minimal style={{ background: 'none' }}>
           {gt.pgettext('arknights quick filter', '精英化')}
         </Tag>
         <EliteFilter elite={2} />
@@ -54,7 +54,7 @@ const ProfessionFilter = memo(({ profession }: { profession: Profession }) => {
   const { active, toggle } = useQuickFilter('professions', profession)
   return (
     <Button
-      minimal
+      variant="minimal"
       active={active}
       onClick={toggle}
       style={{ minWidth: 32 }}
@@ -66,7 +66,7 @@ const ProfessionFilter = memo(({ profession }: { profession: Profession }) => {
 const RarityFilter = memo(({ rarity }: { rarity: number }) => {
   const { active, toggle } = useQuickFilter('rarity', rarity)
   return (
-    <Button minimal active={active} onClick={toggle}>
+    <Button variant="minimal" active={active} onClick={toggle}>
       {rarity}
     </Button>
   )
@@ -77,7 +77,7 @@ const EliteFilter = memo(({ elite }: { elite: number }) => {
   const img = [elite0, elite1, elite2][elite]
   return (
     <Button
-      minimal
+      variant="minimal"
       active={active}
       onClick={toggle}
       icon={

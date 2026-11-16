@@ -97,7 +97,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
         <div className="cpp-charstat-group">
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite0(character)} /> : null}
-            <Tag large={true}>{gt.pgettext('arknights status group', '精零')}</Tag>
+            <Tag size="large">{gt.pgettext('arknights status group', '精零')}</Tag>
             {
               <Survey
                 survey={
@@ -119,7 +119,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
         <div className="cpp-charstat-group">
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite1(character)} /> : null}
-            <Tag large={true}>{gt.pgettext('arknights status group', '精一')}</Tag>
+            <Tag size="large">{gt.pgettext('arknights status group', '精一')}</Tag>
             {
               <Survey
                 survey={
@@ -141,7 +141,7 @@ export const CharacterStatusEliteLevelSection = memo(() => {
         <div className="cpp-charstat-group">
           <ButtonGroup>
             {surveySource ? <Survey survey={surveySource.elite2(character)} /> : null}
-            <Tag large={true}>{gt.pgettext('arknights status group', '精二')}</Tag>
+            <Tag size="large">{gt.pgettext('arknights status group', '精二')}</Tag>
             {<Survey survey={surveySource?.e2level(character, 1)} />}
             <EliteLevelButton elite={2} level={1} />
             {Array.from({ length: character.maxLevels[2] / 10 + 1 }, () => 0)
@@ -184,7 +184,6 @@ export const Survey = memo(({ survey }: { survey: SurveyProps | undefined | null
 export const SurveyDummy = memo(() => {
   return (
     <Tag
-      large={false}
       style={{
         width: 'calc(7ex)',
         boxSizing: 'content-box',
@@ -209,7 +208,6 @@ export const SurveyNumber = memo(({ percent, samples, desc }: SurveyProps) => {
   }`
   return (
     <Tag
-      large={false}
       style={{
         width: 'calc(7ex)',
         boxSizing: 'content-box',
@@ -252,7 +250,7 @@ export const CharacterStatusPotentialSection = memo(() => {
   return (
     <div className="cpp-charstat-group">
       <ButtonGroup className={Classes.DARK}>
-        <Tag large={true}>{gt.pgettext('arknights status group', '潜能')}</Tag>
+        <Tag size="large">{gt.pgettext('arknights status group', '潜能')}</Tag>
         {[0, 1, 2, 3, 4, 5].map((x) => (
           <PotentialButton key={x} potentialRank={x} />
         ))}
@@ -336,7 +334,7 @@ export const CharacterStatusSkillMasterSection = memo(() => {
             <Survey survey={ss ? ss[0] : ss} />
             <ButtonGroup className={Classes.DARK}>
               <Tag
-                large={true}
+                size="large"
                 icon={
                   character.hasPatches ? (
                     <ProfessionIcon profession={character.getPatchProfession(charSkill.rawCharId)} />
@@ -352,7 +350,6 @@ export const CharacterStatusSkillMasterSection = memo(() => {
               <SkillMasterButton skillId={charSkill.skillId} level={2} survey={ss ? ss[2] : ss} />
               <SkillMasterButton skillId={charSkill.skillId} level={3} survey={ss ? ss[3] : ss} />
               <Tag
-                large={false}
                 style={{ width: 150, overflow: 'hidden', background: 'none' }}
                 className={Classes.TEXT_OVERFLOW_ELLIPSIS}
               >
@@ -419,7 +416,7 @@ export const CharacterStatusModSection = memo(() => {
             <Survey survey={ss ? ss[0] : ss} />
             <ButtonGroup className={Classes.DARK}>
               <Tag
-                large={true}
+                size="large"
                 style={{ fontFamily: 'monospace' }}
                 title={charMod.equipId}
                 icon={
@@ -435,7 +432,6 @@ export const CharacterStatusModSection = memo(() => {
               <ModButton modId={charMod.equipId} level={2} survey={ss ? ss[2] : ss} />
               <ModButton modId={charMod.equipId} level={3} survey={ss ? ss[3] : ss} />
               <Tag
-                large={false}
                 style={{ width: 150, overflow: 'hidden', background: 'none' }}
                 className={Classes.TEXT_OVERFLOW_ELLIPSIS}
               >
@@ -459,7 +455,7 @@ export function CharacterStatusSkillSection() {
       <div className="cpp-charstat-group">
         <ButtonGroup>
           {surveySource ? <SurveyDummy /> : null}
-          <Tag large={true}>{gt.pgettext('arknights status group', '技能')}</Tag>
+          <Tag size="large">{gt.pgettext('arknights status group', '技能')}</Tag>
           <SkillButton level={1} />
           <SkillButton level={2} />
           <SkillButton level={3} />

@@ -230,13 +230,18 @@ export const FarmList = memo(() => {
             }
             position="bottom-right"
           >
-            <Button minimal={true} rightIcon={<Icon size={10} icon="chevron-down" />} small style={{ marginRight: -5 }}>
+            <Button
+              variant="minimal"
+              endIcon={<Icon size={10} icon="chevron-down" />}
+              size="small"
+              style={{ marginRight: -5 }}
+            >
               {FarmLevelShortNames[farmLevel].toString()}
             </Button>
           </Popover>
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
-            minimal={true}
+            variant="minimal"
             disabled={loading}
             onClick={() => refresh()}
           />
@@ -256,18 +261,18 @@ export const FarmList = memo(() => {
       >
         {response ? (
           <>
-            <Menu className="bp5-elevation-1" style={{ width: 250, overflow: 'auto' }}>
+            <Menu className="bp6-elevation-1" style={{ width: 250, overflow: 'auto' }}>
               {response.stageRuns.map((run) => (
                 <StageLine run={run} key={run.stageId} />
               ))}
               {response.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
             </Menu>
             {!response.synthesisList ? (
-              <div className="bp5-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
+              <div className="bp6-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
                 <NonIdealState title={gt.gettext('暂不支持计算毕业合成')} icon="warning-sign" />
               </div>
             ) : (
-              <Menu className="bp5-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
+              <Menu className="bp6-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
                 <SynthesisList data={response.synthesisList} refresh={refresh} />
               </Menu>
             )}
