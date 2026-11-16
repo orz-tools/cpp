@@ -481,7 +481,7 @@ export function computeItemValuesFromInputs(
 export function computeArknightsItemValues(ga: ArknightsAdapter, config: ItemValueConfig): ItemValueResult {
   let gameInputs: ItemValueGameInputs
   try {
-    gameInputs = exportItemValueGameInputs(ga)
+    gameInputs = ga.exportItemValueGameInputs()
   } catch (e) {
     console.error('[itemValue] failed to export game inputs', e)
     return { status: 'error', reason: e instanceof Error ? e.message : String(e) }

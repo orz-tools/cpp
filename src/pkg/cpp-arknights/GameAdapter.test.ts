@@ -100,11 +100,14 @@ describe('ArknightsAdapter', () => {
     expect(Object.keys(stages).sort()).toEqual(['act_01', 'main_01', ...fixedStages].sort())
     const expItems = ga.getExpItems()
     const values = ga.getItemValues()
+    const inputs = ga.exportItemValueGameInputs()
 
     await dm.rebuild()
     expect(ga.getStageInfos()).not.toBe(stages)
     expect(ga.getExpItems()).not.toBe(expItems)
     expect(ga.getItemValues()).not.toBe(values)
+    // Same containers, so the inputs built from the game data alone are kept.
+    expect(ga.exportItemValueGameInputs()).toBe(inputs)
   })
 
   it('reports the end of an open event as the expiry of its commit', async () => {

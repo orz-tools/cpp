@@ -81,7 +81,7 @@ const ReloadDataButton = memo(() => {
     )
     try {
       const r = await operation()
-      toaster.dismiss(reload)
+      // Replaced in place: a dismiss followed by a show with the same key drops both, as the dismiss lands last.
       if (r.applied) {
         toaster.show({ message: gt.gettext('游戏数据已更新'), intent: 'success' }, reload)
       } else {

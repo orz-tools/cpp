@@ -21,6 +21,7 @@ import { ArknightsUserDataAdapter } from './UserDataAdapter'
 import {
   DEFAULT_ITEM_VALUE_CONFIG,
   ItemValueConfig,
+  ItemValueGameInputs,
   ItemValueResult,
   checkStageAssembly,
   computeArknightsItemValues,
@@ -108,8 +109,17 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     return (this.itemValues ||= computeArknightsItemValues(this, this.itemValueConfig))
   }
 
-  public exportItemValueGameInputs() {
-    return exportItemValueGameInputs(this)
+  private itemValueGameInputs?: { containers: unknown[]; inputs: ItemValueGameInputs }
+
+  /** Kept across commits while the game data containers stay the same, as when only the penguin matrix changed. */
+  public exportItemValueGameInputs(): ItemValueGameInputs {
+    const dm = this.dataManager
+    const containers = [dm.get(dm.$kengxxiao), dm.$kengxxiaoLocal ? dm.get(dm.$kengxxiaoLocal) : null]
+    const cached = this.itemValueGameInputs
+    if (cached && cached.containers.every((x, i) => x === containers[i])) return cached.inputs
+    const inputs = exportItemValueGameInputs(this)
+    this.itemValueGameInputs = { containers, inputs }
+    return inputs
   }
 
   public checkStageAssembly() {

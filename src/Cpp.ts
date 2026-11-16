@@ -1,7 +1,7 @@
 import { PrimitiveAtom, WritableAtom, atom, createStore, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { atomFamily } from 'jotai-family'
-import React, { DependencyList, SetStateAction, useContext, useMemo } from 'react'
+import React, { DependencyList, SetStateAction, startTransition, useContext, useMemo } from 'react'
 import { ErrAtom } from './components/Err'
 import { AppToaster } from './components/Toaster'
 import { IGameComponent } from './components/types'
@@ -102,7 +102,14 @@ export class Cpp<G extends IGame> {
     const dm = this.gameAdapter.getDataManager()
     const syncDataState = () => {
       const { status, generation, loading, updating, error } = dm.getState()
-      this.store.set(this.gameDataGenerationAtom, generation)
+      const previous = this.store.get(this.gameDataGenerationAtom)
+      if (previous === 0) {
+        this.store.set(this.gameDataGenerationAtom, generation)
+      } else if (generation !== previous) {
+        // As a transition React redraws the panels in short slices rather than one long task. Not for the first
+        // commit: the app mounts from the status atom, and would render once more when the transition lands.
+        startTransition(() => this.store.set(this.gameDataGenerationAtom, generation))
+      }
       this.store.set(this.gameDataStatusAtom, { status, loading, updating, error })
     }
     syncDataState()
@@ -147,7 +154,7 @@ export class Cpp<G extends IGame> {
     try {
       await this.gameAdapter.getDataManager().switchRegion(region)
       localStorage.setItem(this.storagePrefix + 'region', region)
-      toaster.dismiss(progress)
+      // Replaced in place: a dismiss followed by a show with the same key drops both.
       toaster.show({ message: gt.gettext('区域已切换'), intent: 'success' }, progress)
     } catch (e) {
       toaster.dismiss(progress)

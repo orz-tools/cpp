@@ -15,6 +15,7 @@ import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom, useStore } from 
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
 import React, { SetStateAction, memo, useEffect, useState } from 'react'
+import useEvent from 'react-use-event-hook'
 import { Level, useAtoms, useGameAdapter, useGameDataMemo } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
 import { gt } from '../pkg/gt'
@@ -25,6 +26,9 @@ import { ValueTag, ValueTagProgressBar } from './Value'
 
 const formatter = (q: number) => q.toFixed(0)
 const parser = (q: string) => Math.floor(parseFloat(q) || 0)
+// NumericInput sanitizes its value whenever its parent renders, even when it then skips its own render as a pure
+// component; the item list holds one per item, and they all render again with each new game data generation.
+const MemoNumericInput = memo(NumericInput)
 export const ItemQuantityEditor = memo(
   <G extends IGame>({ item, style }: { item: IItem; style?: React.CSSProperties }) => {
     const ga = useGameAdapter<G>()
@@ -32,25 +36,29 @@ export const ItemQuantityEditor = memo(
     const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
     const [input, setInput] = useState(formatter(quantity))
     useEffect(() => setInput(formatter(quantity)), [quantity])
+    // Stable handlers let MemoNumericInput skip the re-render each new game data generation brings.
+    const onValueChange = useEvent((_: number, valueAsString: string) => setInput(valueAsString))
+    const onBlur = useEvent(() => {
+      if (input === formatter(quantity)) return
+      setInput(formatter(quantity))
+      setQuantity(parser(input))
+    })
+    const onButtonClick = useEvent((_: number, valueAsString: string) => {
+      setQuantity(parser(valueAsString))
+    })
 
     if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
       return <NumericInput value={input} style={style} disabled={true} allowNumericCharactersOnly={false} />
     }
     return (
-      <NumericInput
+      <MemoNumericInput
         allowNumericCharactersOnly={false}
         value={input}
         style={style}
         min={0}
-        onValueChange={(_, valueAsString) => setInput(valueAsString)}
-        onBlur={() => {
-          if (input === formatter(quantity)) return
-          setInput(formatter(quantity))
-          setQuantity(parser(input))
-        }}
-        onButtonClick={(_, valueAsString) => {
-          setQuantity(parser(valueAsString))
-        }}
+        onValueChange={onValueChange}
+        onBlur={onBlur}
+        onButtonClick={onButtonClick}
       />
     )
   },
