@@ -6,6 +6,7 @@ import { useAtoms } from '../Cpp'
 import { ICharacter, IGame } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
+import { showAlert, showPrompt } from './MessageBox'
 
 const useTypeHolderForSetStatusAtom = () =>
   useSetAtom(null as any as ReturnType<UserDataAtomHolder<IGame>['atoms']['goalCharacter']>)
@@ -27,19 +28,16 @@ export const CharacterStatusPopover = memo(
     if (!isGoal) currentStatus = undefined
     const ctx = { status, setStatus, character, currentStatus }
 
-    const handleEdit = useEvent(() => {
-      setStatus((draft) => {
-        try {
-          const v = prompt('input new status', JSON.stringify(draft))
-          if (!v) return draft
-          const vv = JSON.parse(v)
-          if (typeof vv !== 'object') throw new Error('bad status')
-          return vv
-        } catch (e: any) {
-          alert(e?.message || e?.stack || String(e))
-          return draft
-        }
-      })
+    const handleEdit = useEvent(async () => {
+      const v = await showPrompt('input new status', JSON.stringify(status))
+      if (!v) return
+      try {
+        const vv = JSON.parse(v)
+        if (typeof vv !== 'object') throw new Error('bad status')
+        setStatus(() => vv)
+      } catch (e: any) {
+        void showAlert(e?.message || e?.stack || String(e))
+      }
     })
 
     return (
@@ -48,7 +46,7 @@ export const CharacterStatusPopover = memo(
           {character.name} - {isGoal ? gt.gettext('培养目标') : gt.gettext('当前状态')}
         </div>
         <pre style={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap' }}>{JSON.stringify(status)}</pre>
-        <Button text={'update'} onClick={handleEdit} />
+        <Button text={'update'} onClick={() => void handleEdit()} />
       </EditorContext.Provider>
     )
   },

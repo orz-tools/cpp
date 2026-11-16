@@ -15,6 +15,7 @@ import { renderCharacterStatus } from './CharacterList'
 import { useCppDumpImportFormat } from './CppDumpImport'
 import { ErrAtom } from './Err'
 import { CachedImg, ItemIcon } from './Icons'
+import { showAlert } from './MessageBox'
 import { ValueTag } from './Value'
 
 export interface ImportContext {
@@ -40,10 +41,10 @@ export function useImportFormats(): ImportFormat[] {
   return [cppDump, ...game]
 }
 
-/** Imports text in whichever format it turns out to be. Returns why it could not, for the user; undefined once started. */
+/** Imports text in whichever format it turns out to be, or tells the user why it cannot. Returns whether it started. */
 export function useImportByContent() {
   const formats = useImportFormats()
-  return useEvent((text: string): string | undefined => {
+  const why = (text: string): string | undefined => {
     if (!text.trim()) return gt.gettext('剪贴板里没有文本或文件。')
     for (const format of formats) {
       const match = format.match(text)
@@ -55,6 +56,11 @@ export function useImportByContent() {
     return gt
       .gettext('无法识别粘贴的内容。支持：%s。') /* I10N: %s: format names */
       .replaceAll('%s', formats.map((x) => x.label).join(gt.pgettext('list separator', '、')))
+  }
+  return useEvent((text: string): boolean => {
+    const error = why(text)
+    if (error) void showAlert(error, { icon: 'warning-sign', intent: 'warning' })
+    return !error
   })
 }
 

@@ -1,6 +1,7 @@
 import { Button, Icon, Menu, MenuDivider, MenuItem, Popover, Tag } from '@blueprintjs/core'
 import { memo } from 'react'
 import { PSTRs } from './components/LineBreaks'
+import { showAlert } from './components/MessageBox'
 import { gt } from './pkg/gt'
 
 const locales = {
@@ -39,8 +40,7 @@ function setLocale(locale: string) {
     '语言已切换，将重新载入页面。',
     gt.gettext('语言已切换，将重新载入页面。'),
   ]
-  alert([...new Set(str)].join('\n'))
-  location.reload()
+  void showAlert([...new Set(str)].join('\n')).then(() => location.reload())
 }
 
 export const LocaleButton = memo(() => {

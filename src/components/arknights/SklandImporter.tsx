@@ -1,14 +1,4 @@
-import {
-  Button,
-  Callout,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  InputGroup,
-  Intent,
-  Popover,
-  Spinner,
-} from '@blueprintjs/core'
+import { Button, Callout, Dialog, DialogBody, DialogFooter, Intent, Spinner } from '@blueprintjs/core'
 import { useSetAtom } from 'jotai'
 import React, { memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
@@ -19,26 +9,30 @@ import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
 import { SKLAND_SCOPES, SklandInput, toSklandInput } from '../../pkg/cpp-arknights/skland'
 import { gt } from '../../pkg/gt'
 import { ErrAtom } from '../Err'
-import { useImportByContent } from '../Importer'
+import { showAlert } from '../MessageBox'
 import { useSklandImport } from './importHooks'
 
-export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) => {
+/** Call it straight from a click: browsers block a popup opened any later. Returns null when it was blocked. */
+export function openSklandDevice() {
+  const windowWidth = 500
+  const windowHeight = 700
+  const left = Math.floor((window.screenLeft || 0) + window.innerWidth / 2 - windowWidth / 2)
+  const top = Math.floor((window.screenTop || 0) + window.innerHeight / 2 - windowHeight / 2)
+  return window.open(
+    `https://skland.xkcdn.win/?${new URLSearchParams({
+      appName: 'Closure++ 二游计算器',
+      origin: window.origin,
+      scopes: SKLAND_SCOPES.join(','),
+    })}`,
+    '_blank',
+    `width=${windowWidth},height=${windowHeight},left=${left},top=${top},popup=yes`,
+  )
+}
+
+/** popup: the 提取装置 the menu item opened. The dialog's own button opens it again when it did not appear. */
+export const SklandImporterDialog = memo(({ onClose, popup }: { onClose: () => void; popup?: WindowProxy | null }) => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
   const importSkland = useSklandImport()
-  const importByContent = useImportByContent()
-
-  const handleInput = useEvent<React.ClipboardEventHandler<HTMLInputElement>>((e) => {
-    e.preventDefault()
-    const error = importByContent(e.clipboardData.getData('Text'))
-    if (error) {
-      alert(error)
-    } else {
-      handleClose()
-    }
-  })
-
-  const focusRef = useRef<HTMLInputElement>(null)
-  const focus = useEvent(() => focusRef.current?.focus())
   const setErr = useSetAtom(ErrAtom)
 
   const dm = ga.getDataManager()
@@ -56,7 +50,7 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
   })
   const { loading, send, response } = useRequest(refreshData)
 
-  const [windowRef, setWindowRef] = useState<WindowProxy | null>(null)
+  const [windowRef, setWindowRef] = useState<WindowProxy | null>(popup ?? null)
 
   useEffect(() => {
     if (!windowRef) return
@@ -70,6 +64,34 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     send()
   }, [send])
 
+  const closeDevice = useEvent(() => {
+    if (!windowRef) return
+    try {
+      windowRef.close()
+    } catch (e) {
+      console.error(e)
+    }
+    setWindowRef(null)
+  })
+
+  const handleClose = useEvent(() => {
+    closeDevice()
+    onClose()
+  })
+
+  const finish = useEvent((input: SklandInput) => {
+    handleClose()
+    void importSkland(input)
+  })
+
+  // The menu item opens the 提取装置 before the game data has been checked, so data can arrive before the check ends.
+  const early = useRef<SklandInput | undefined>(undefined)
+  useEffect(() => {
+    if (response === false && early.current) finish(early.current)
+    // Updated game data needs a reload before anything is imported, and the dialog now asks for one.
+    if (response) closeDevice()
+  }, [response, finish, closeDevice])
+
   const processMessage = useEvent((e: MessageEvent) => {
     if (typeof e.data !== 'object') return
     if (e.data?.from !== 'sklanding') return
@@ -80,16 +102,8 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
       setErr({ error: e, context: gt.pgettext('error context', '与「提取装置」互操作时遇到问题') })
       return
     }
-    onClose()
-    void importSkland(input)
-    if (windowRef) {
-      try {
-        windowRef.close()
-        setWindowRef(null)
-      } catch {
-        //
-      }
-    }
+    if (response === false) finish(input)
+    else if (response === undefined) early.current = input
   })
 
   useEffect(() => {
@@ -100,56 +114,29 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
     return () => window.removeEventListener('message', handler)
   }, [processMessage])
 
-  const handleDevice = useEvent(() => {
-    if (windowRef) {
-      try {
-        windowRef.focus()
-      } catch {
-        alert(gt.gettext('请在弹出的「提取装置」中继续操作'))
-      }
-    } else {
-      const windowWidth = 500
-      const windowHeight = 700
-      const left = Math.floor((window.screenLeft || 0) + window.innerWidth / 2 - windowWidth / 2)
-      const top = Math.floor((window.screenTop || 0) + window.innerHeight / 2 - windowHeight / 2)
-      const popup = window.open(
-        `https://skland.xkcdn.win/?${new URLSearchParams({
-          appName: 'Closure++ 二游计算器',
-          origin: window.origin,
-          scopes: SKLAND_SCOPES.join(','),
-        })}`,
-        '_blank',
-        `width=${windowWidth},height=${windowHeight},left=${left},top=${top},popup=yes`,
-      )
-      setWindowRef(popup)
+  const focusDevice = useEvent((device: WindowProxy) => {
+    try {
+      device.focus()
+    } catch {
+      void showAlert(gt.gettext('请在弹出的「提取装置」中继续操作'))
     }
   })
 
-  const handleClose = useEvent(() => {
+  const handleDevice = useEvent(() => {
     if (windowRef) {
-      try {
-        windowRef.close()
-      } catch (e) {
-        console.error(e)
-      }
-      setWindowRef(null)
+      focusDevice(windowRef)
+    } else {
+      setWindowRef(openSklandDevice())
     }
-    onClose()
   })
 
   const handleBackdrop = useEvent(() => {
     if (windowRef) {
-      try {
-        windowRef.focus()
-      } catch {
-        alert(gt.gettext('请在弹出的「提取装置」中继续操作'))
-      }
+      focusDevice(windowRef)
     } else {
       handleClose()
     }
   })
-
-  const deviceLabel = windowRef ? gt.gettext('回到「提取装置」') : gt.gettext('使用「提取装置」')
 
   return (
     <Dialog
@@ -173,39 +160,8 @@ export const SklandImporterDialog = memo(({ onClose }: { onClose: () => void }) 
               intent={windowRef ? Intent.PRIMARY : Intent.PRIMARY}
               onClick={handleDevice}
             >
-              {deviceLabel}
+              {windowRef ? gt.gettext('回到「提取装置」') : gt.gettext('使用「提取装置」')}
             </Button>
-            <Popover
-              position="bottom"
-              onOpened={focus}
-              content={
-                <>
-                  <Callout intent="danger" title={gt.gettext('你走错了？！')}>
-                    {gt
-                      .gettext('请点击上方的%s继续。') /* I10N: %s: the button label above, in bold */
-                      .split('%s')
-                      .flatMap((x, i) => [i > 0 ? <strong key="label">{deviceLabel}</strong> : null, x])}
-                    <br />
-                    <br />
-                    {gt.gettext('这是给无法使用「提取装置」的人提供的备用入口。')}
-                    <br />
-                    {gt.gettext('请勿在此粘贴任何凭据。')}
-                  </Callout>
-                  <div style={{ padding: '1em' }}>
-                    <InputGroup
-                      onPaste={handleInput}
-                      value={''}
-                      placeholder={gt.gettext('在此粘贴…')}
-                      inputRef={focusRef}
-                      style={{ width: '100%' }}
-                      onChange={noop}
-                    />
-                  </div>
-                </>
-              }
-            >
-              <Button variant="minimal" text={gt.gettext('粘贴 JSON')} style={{ color: 'rgba(0, 0, 0, 0.25)' }} />
-            </Popover>
           </div>
         </DialogBody>
       )}
@@ -240,8 +196,6 @@ const ForceRefresh = React.memo(() => {
     </>
   )
 })
-
-const noop = () => void 0
 
 const SklandingData = z.object({
   version: z.literal(1),

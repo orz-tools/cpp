@@ -6,13 +6,17 @@ import { ArkntoolsImporterDialog } from './ArkntoolsImporter'
 import { MAAItemImporterDialog } from './MAAItemImporter'
 import { MAAOperBoxImporterDialog } from './MAAOperBoxImporter'
 import { MAAOperProgressImporterDialog } from './MAAOperProgressImporter'
-import { SklandImporterDialog } from './SklandImporter'
+import { SklandImporterDialog, openSklandDevice } from './SklandImporter'
 
 export const ImporterMenuItems = memo(() => {
   const { add } = useChamber()
   return (
     <>
-      <MenuItem icon={'log-in'} text={gt.gettext('导入森空岛数据')} onClick={() => add(SklandImporterDialog)} />
+      <MenuItem
+        icon={'log-in'}
+        text={gt.gettext('导入森空岛数据')}
+        onClick={() => add(SklandImporterDialog, { popup: openSklandDevice() })}
+      />
       <MenuItem
         icon={'log-in'}
         text={gt.gettext('导入 MAA「仓库识别」数据')}

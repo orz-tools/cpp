@@ -2,6 +2,7 @@ import { WritableAtom, atom, createStore, useAtom, useAtomValue, useSetAtom } fr
 import { atomWithStorage } from 'jotai/utils'
 import { atomFamily } from 'jotai-family'
 import React, { SetStateAction, useContext } from 'react'
+import { showAlert } from './components/MessageBox'
 import { IGameComponent } from './components/types'
 import { BlobFlavour } from './pkg/blobcache'
 import { IGame, IGameAdapter, IGameAdapterStatic } from './pkg/cpp-basic'
@@ -108,8 +109,7 @@ export class Cpp<G extends IGame> {
   public setRegion(region: string): boolean {
     if (this.region === region) return false
     localStorage.setItem(this.storagePrefix + 'region', region)
-    alert(gt.gettext('区域已切换，将重新载入页面。'))
-    location.reload()
+    void showAlert(gt.gettext('区域已切换，将重新载入页面。')).then(() => location.reload())
     return true
   }
 

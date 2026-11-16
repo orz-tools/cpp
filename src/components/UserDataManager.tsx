@@ -20,6 +20,7 @@ import { gt } from '../pkg/gt'
 import { formatProfileName, getStoragePrefix } from '../profiles'
 import { useChamber } from './Chamber'
 import { ErrAtom } from './Err'
+import { showAlert, showConfirm } from './MessageBox'
 
 /**
  * A snapshot of the stored data, taken once when the component mounts. The profile's extras are in IndexedDB,
@@ -119,7 +120,7 @@ export const UserDataManagerContent = memo(
 
     const importData = useEvent(async (text: string) => {
       if (
-        !confirm(
+        !(await showConfirm(
           gt.gettext(
             '警告：你确定要导入数据吗？\n' +
               '你现在的数据将会被永久覆盖！（真的很久！）\n' +
@@ -127,7 +128,8 @@ export const UserDataManagerContent = memo(
               '若导入错误、无效的数据将可能导致页面无法正常运行，\n' +
               '届时可在「用户数据管理」中清空数据。',
           ),
-        )
+          { icon: 'warning-sign', intent: 'danger' },
+        ))
       )
         return
       try {
@@ -157,8 +159,7 @@ export const UserDataManagerContent = memo(
         } else {
           localStorage.setItem(getStoragePrefix(game, instanceName) + 'region', v['region'])
         }
-        alert(gt.gettext('数据已导入，将重新载入页面。'))
-        location.reload()
+        void showAlert(gt.gettext('数据已导入，将重新载入页面。')).then(() => location.reload())
       } catch (e) {
         store.set(ErrAtom, { error: e, context: gt.pgettext('error context', '导入数据时遇到问题') })
       }
@@ -222,7 +223,13 @@ export const UserDataManagerContent = memo(
     }, [importFile, exportOnly])
 
     const resetData = useEvent(async () => {
-      if (!confirm(gt.gettext('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）'))) return
+      if (
+        !(await showConfirm(gt.gettext('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）'), {
+          icon: 'warning-sign',
+          intent: 'danger',
+        }))
+      )
+        return
 
       await replaceProfileExtras(getStoragePrefix(game, instanceName), undefined).catch(console.error)
 

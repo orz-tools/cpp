@@ -9,12 +9,7 @@ export const MAAOperProgressImporterDialog = memo(({ onClose }: { onClose: () =>
   const importByContent = useImportByContent()
   const handleInput = useEvent<React.ClipboardEventHandler<HTMLInputElement>>((e) => {
     e.preventDefault()
-    const error = importByContent(e.clipboardData.getData('Text'))
-    if (error) {
-      alert(error)
-    } else {
-      onClose()
-    }
+    if (importByContent(e.clipboardData.getData('Text'))) onClose()
   })
 
   return (

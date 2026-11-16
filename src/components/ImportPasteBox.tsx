@@ -13,12 +13,7 @@ export const ImportPasteBox = memo(
     const setErr = useSetAtom(ErrAtom)
 
     const importText = useEvent((text: string) => {
-      const error = importByContent(text)
-      if (error) {
-        alert(error)
-      } else {
-        onImported()
-      }
+      if (importByContent(text)) onImported()
     })
 
     const importFile = useEvent(async (file: File) => {

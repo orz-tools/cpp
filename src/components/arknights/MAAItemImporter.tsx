@@ -8,12 +8,7 @@ export const MAAItemImporterDialog = memo(({ onClose }: { onClose: () => void })
   const importByContent = useImportByContent()
   const handleInput = useEvent<React.ClipboardEventHandler<HTMLInputElement>>((e) => {
     e.preventDefault()
-    const error = importByContent(e.clipboardData.getData('Text'))
-    if (error) {
-      alert(error)
-    } else {
-      onClose()
-    }
+    if (importByContent(e.clipboardData.getData('Text'))) onClose()
   })
 
   // const focusRef = useRef<HTMLInputElement>(null)

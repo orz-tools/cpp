@@ -1,11 +1,13 @@
 import { FocusStyleManager } from '@blueprintjs/core'
 import ReactDOM from 'react-dom/client'
 import { Home } from './components/Home'
+import { showConfirm } from './components/MessageBox'
 import { RetiredGame } from './components/RetiredGame'
 import { runCpp } from './entry'
 import { GameName, gameAdapterLoaders, gameComponentLoaders, retiredGames } from './games'
 import './icons'
 import { setupLocale } from './locales'
+import { gt } from './pkg/gt'
 import { formatProfileName, getStoragePrefix } from './profiles'
 
 FocusStyleManager.onlyShowFocusOnTabs()
@@ -34,7 +36,12 @@ async function runApp() {
   const storagePrefix = getStoragePrefix(game, profile)
 
   if (profile && !localStorage.getItem(storagePrefix + 'userdata')) {
-    if (!confirm('profile ' + formatProfileName(game, profile) + ' does not exist. do you want to create it?')) {
+    const create = await showConfirm(
+      gt
+        .gettext('档案 %s 不存在，要新建吗？') /* I10N: %s: profile name */
+        .replaceAll('%s', formatProfileName(game, profile)),
+    )
+    if (!create) {
       location.href = '/'
       return
     }
