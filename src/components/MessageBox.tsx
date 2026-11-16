@@ -1,5 +1,5 @@
 import { Alert, IconName, Intent, TextArea } from '@blueprintjs/core'
-import { memo, useState } from 'react'
+import { memo, ReactNode, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { gt } from '../pkg/gt'
 
@@ -10,7 +10,7 @@ export interface MessageBoxOptions {
 
 interface Box extends MessageBoxOptions {
   id: number
-  message: string
+  message: ReactNode
   cancelable: boolean
   /** Set for a prompt: the text field's initial value. */
   defaultValue?: string
@@ -50,11 +50,11 @@ function remove(id: number) {
   render()
 }
 
-export async function showAlert(message: string, options?: MessageBoxOptions): Promise<void> {
+export async function showAlert(message: ReactNode, options?: MessageBoxOptions): Promise<void> {
   await open({ ...options, message, cancelable: false })
 }
 
-export async function showConfirm(message: string, options?: MessageBoxOptions): Promise<boolean> {
+export async function showConfirm(message: ReactNode, options?: MessageBoxOptions): Promise<boolean> {
   return (await open({ ...options, message, cancelable: true })).confirmed
 }
 

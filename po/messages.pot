@@ -67,11 +67,11 @@ msgstr ""
 msgid "从文本框中导入"
 msgstr ""
 
-#: src/components/Importer.tsx:445
+#: src/components/Importer.tsx:452
 msgid "以往"
 msgstr ""
 
-#: src/components/Importer.tsx:448
+#: src/components/Importer.tsx:455
 msgid "价值变化"
 msgstr ""
 
@@ -116,7 +116,7 @@ msgid "关卡"
 msgstr ""
 
 #: src/App.tsx:502
-#: src/components/Importer.tsx:153
+#: src/components/Importer.tsx:160
 msgid "关闭"
 msgstr ""
 
@@ -203,7 +203,7 @@ msgstr ""
 msgid "复制角色名"
 msgstr ""
 
-#: src/components/Importer.tsx:447
+#: src/components/Importer.tsx:454
 msgid "如今"
 msgstr ""
 
@@ -230,7 +230,7 @@ msgstr ""
 msgid "导入/导出"
 msgstr ""
 
-#: src/components/Importer.tsx:227
+#: src/components/Importer.tsx:234
 msgid "导入时产生的警告"
 msgstr ""
 
@@ -346,7 +346,7 @@ msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
 #: src/App.tsx:54
-#: src/components/Importer.tsx:158
+#: src/components/Importer.tsx:165
 msgid "撤销"
 msgstr ""
 
@@ -384,9 +384,8 @@ msgstr ""
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 
-#. %s: format names
-#: src/components/Importer.tsx:59
-msgid "无法识别粘贴的内容。支持：%s。"
+#: src/components/Importer.tsx:61
+msgid "无法识别粘贴的内容。支持以下格式："
 msgstr ""
 
 #: src/components/arknights/ValueConfigMenu.tsx:459
@@ -517,7 +516,7 @@ msgstr ""
 msgid "界面语言"
 msgstr ""
 
-#: src/components/Importer.tsx:245
+#: src/components/Importer.tsx:252
 msgid "目标"
 msgstr ""
 
@@ -537,7 +536,7 @@ msgstr ""
 msgid "虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！"
 msgstr ""
 
-#: src/components/Importer.tsx:239
+#: src/components/Importer.tsx:246
 msgid "角色"
 msgstr ""
 
@@ -659,8 +658,8 @@ msgstr ""
 msgid "选项"
 msgstr ""
 
-#: src/components/Importer.tsx:251
-#: src/components/Importer.tsx:444
+#: src/components/Importer.tsx:258
+#: src/components/Importer.tsx:451
 msgid "道具"
 msgstr ""
 
@@ -1140,7 +1139,7 @@ msgctxt "error context"
 msgid "刷本规划时遇到问题"
 msgstr ""
 
-#: src/components/Importer.tsx:101
+#: src/components/Importer.tsx:108
 msgctxt "error context"
 msgid "合并导入数据时遇到问题"
 msgstr ""
@@ -1160,7 +1159,7 @@ msgctxt "error context"
 msgid "环境检测失败"
 msgstr ""
 
-#: src/components/Importer.tsx:108
+#: src/components/Importer.tsx:115
 msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr ""
@@ -1237,7 +1236,7 @@ msgid "森空岛数据"
 msgstr ""
 
 #. %s: format name
-#: src/components/Importer.tsx:143
+#: src/components/Importer.tsx:150
 msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr ""
@@ -1287,7 +1286,6 @@ msgstr ""
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
 #: src/components/CharacterList.tsx:454
-#: src/components/Importer.tsx:61
 #: src/components/queryEditor/VisualEditor.tsx:345
 msgctxt "list separator"
 msgid "、"

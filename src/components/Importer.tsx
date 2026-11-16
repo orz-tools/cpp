@@ -1,9 +1,9 @@
-import { Button, Callout, Dialog, DialogFooter, Intent, Menu, Tab, Tabs } from '@blueprintjs/core'
+import { Button, Callout, Classes, Dialog, DialogFooter, Intent, Menu, Tab, Tabs } from '@blueprintjs/core'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { Draft } from 'immer'
 import { useSetAtom } from 'jotai'
-import { memo, useMemo, useRef, useState } from 'react'
+import { memo, ReactNode, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
@@ -47,7 +47,7 @@ export function useImportFormats(): ImportFormat[] {
 /** Imports text in whichever format it turns out to be, or tells the user why it cannot. Returns whether it started. */
 export function useImportByContent() {
   const formats = useImportFormats()
-  const why = (text: string): string | undefined => {
+  const why = (text: string): ReactNode => {
     if (!text.trim()) return gt.gettext('剪贴板里没有文本或文件。')
     for (const format of formats) {
       const match = format.match(text)
@@ -56,9 +56,16 @@ export function useImportByContent() {
       match.start()
       return undefined
     }
-    return gt
-      .gettext('无法识别粘贴的内容。支持：%s。') /* I10N: %s: format names */
-      .replaceAll('%s', formats.map((x) => x.label).join(gt.pgettext('list separator', '、')))
+    return (
+      <>
+        {gt.gettext('无法识别粘贴的内容。支持以下格式：')}
+        <ul className={Classes.LIST} style={{ marginBottom: 0 }}>
+          {formats.map((x) => (
+            <li key={x.label}>{x.label}</li>
+          ))}
+        </ul>
+      </>
+    )
   }
   return useEvent((text: string): boolean => {
     const error = why(text)

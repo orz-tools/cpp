@@ -95,11 +95,11 @@ msgstr "Import from File"
 msgid "从文本框中导入"
 msgstr "Import from Text Box"
 
-#: src/components/Importer.tsx:445
+#: src/components/Importer.tsx:452
 msgid "以往"
 msgstr "Previous"
 
-#: src/components/Importer.tsx:448
+#: src/components/Importer.tsx:455
 msgid "价值变化"
 msgstr "Value Delta"
 
@@ -146,7 +146,7 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:502 src/components/Importer.tsx:153
+#: src/App.tsx:502 src/components/Importer.tsx:160
 msgid "关闭"
 msgstr "Close"
 
@@ -243,7 +243,7 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制角色名"
 msgstr "Copy Name"
 
-#: src/components/Importer.tsx:447
+#: src/components/Importer.tsx:454
 msgid "如今"
 msgstr "Current"
 
@@ -270,7 +270,7 @@ msgstr "Import MAA «Operator» Data"
 msgid "导入/导出"
 msgstr "Import/Export"
 
-#: src/components/Importer.tsx:227
+#: src/components/Importer.tsx:234
 msgid "导入时产生的警告"
 msgstr "Warnings During Import"
 
@@ -411,7 +411,7 @@ msgstr "Filter by stage code or name"
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
-#: src/App.tsx:54 src/components/Importer.tsx:158
+#: src/App.tsx:54 src/components/Importer.tsx:165
 msgid "撤销"
 msgstr "Undo"
 
@@ -452,10 +452,9 @@ msgid "无法加载数据，请检查网络连接/更换网络/使用「加速�
 msgstr ""
 "Unable to load required game data. Please check your network connection."
 
-#. %s: format names
-#: src/components/Importer.tsx:59
-msgid "无法识别粘贴的内容。支持：%s。"
-msgstr "Could not recognize what was pasted. Supported: %s."
+#: src/components/Importer.tsx:61
+msgid "无法识别粘贴的内容。支持以下格式："
+msgstr "Could not recognize what was pasted. Supported formats:"
 
 #: src/components/arknights/ValueConfigMenu.tsx:459
 msgid "明日方舟一图流"
@@ -620,7 +619,7 @@ msgstr "Save Manager"
 msgid "界面语言"
 msgstr "UI Language"
 
-#: src/components/Importer.tsx:245
+#: src/components/Importer.tsx:252
 msgid "目标"
 msgstr "Goals"
 
@@ -643,7 +642,7 @@ msgstr ""
 "You can really synthesizing these items now. However, it will cost you much "
 "more AP in the future. Go farming instead!"
 
-#: src/components/Importer.tsx:239
+#: src/components/Importer.tsx:246
 msgid "角色"
 msgstr "Characters"
 
@@ -801,7 +800,7 @@ msgstr ""
 msgid "选项"
 msgstr "Options"
 
-#: src/components/Importer.tsx:251 src/components/Importer.tsx:444
+#: src/components/Importer.tsx:258 src/components/Importer.tsx:451
 msgid "道具"
 msgstr "Items"
 
@@ -1284,7 +1283,7 @@ msgctxt "error context"
 msgid "刷本规划时遇到问题"
 msgstr "Error During Planning"
 
-#: src/components/Importer.tsx:101
+#: src/components/Importer.tsx:108
 msgctxt "error context"
 msgid "合并导入数据时遇到问题"
 msgstr "Error During Merging Data"
@@ -1304,7 +1303,7 @@ msgctxt "error context"
 msgid "环境检测失败"
 msgstr "Error During Starting"
 
-#: src/components/Importer.tsx:108
+#: src/components/Importer.tsx:115
 msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr "Error During Processing Imported Data"
@@ -1380,7 +1379,7 @@ msgid "森空岛数据"
 msgstr "Skland Data"
 
 #. %s: format name
-#: src/components/Importer.tsx:143
+#: src/components/Importer.tsx:150
 msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr "Import Result · %s"
@@ -1429,7 +1428,7 @@ msgstr "Planned"
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
-#: src/components/CharacterList.tsx:454 src/components/Importer.tsx:61
+#: src/components/CharacterList.tsx:454
 #: src/components/queryEditor/VisualEditor.tsx:345
 msgctxt "list separator"
 msgid "、"
@@ -2442,6 +2441,9 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgid "无法识别粘贴的内容。支持：%s。"
+#~ msgstr "Could not recognize what was pasted. Supported: %s."
 
 #~ msgid "这是 Closure++ 用户数据。"
 #~ msgstr "This is Closure++ save data."
