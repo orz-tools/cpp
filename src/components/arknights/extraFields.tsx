@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { Arknights, Character } from '../../pkg/cpp-arknights'
 import { FieldContext } from '../../pkg/cpp-basic'
 import { gt } from '../../pkg/gt'
-import { CharacterListColumn, createSimpleExtraField } from '../CharacterList'
+import { CharacterListColumn, createSimpleExtraField, percentageColumnWidth } from '../CharacterList'
 import { CachedImg } from '../Icons'
 import { IGameComponent } from '../types'
 
@@ -47,21 +47,31 @@ export const extraFields: IGameComponent['extraFields'] = {
   },
   'skill.mastery3rate.yituliu': createSimpleExtraField(
     'skill.mastery3rate.yituliu',
-    65,
+    percentageColumnWidth,
     percentageFormatter,
     percentageStyle,
   ),
   'skill.mastery3rate.heybox': createSimpleExtraField(
     'skill.mastery3rate.heybox',
-    65,
+    percentageColumnWidth,
     percentageFormatter,
     percentageStyle,
   ),
-  'elite2rate.yituliu': createSimpleExtraField('elite2rate.yituliu', 65, percentageFormatter, percentageStyle),
-  'elite2rate.heybox': createSimpleExtraField('elite2rate.heybox', 65, percentageFormatter, percentageStyle),
+  'elite2rate.yituliu': createSimpleExtraField(
+    'elite2rate.yituliu',
+    percentageColumnWidth,
+    percentageFormatter,
+    percentageStyle,
+  ),
+  'elite2rate.heybox': createSimpleExtraField(
+    'elite2rate.heybox',
+    percentageColumnWidth,
+    percentageFormatter,
+    percentageStyle,
+  ),
   'elite2level90rate.heybox': createSimpleExtraField(
     'elite2level90rate.heybox',
-    65,
+    percentageColumnWidth,
     percentageFormatter,
     percentageStyle,
   ),

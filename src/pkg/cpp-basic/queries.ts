@@ -1,3 +1,4 @@
+import { PSTR, gt, lpstr } from '../gt'
 import { QBoolean, QueryValueType } from './queryTypes'
 import { ICharacter, IGame } from './types'
 
@@ -21,12 +22,32 @@ export interface StatusFieldContext<G extends IGame, C extends ICharacter, Args 
   args: Args
 }
 
+export interface FieldOption {
+  value: any
+  label: PSTR
+}
+
+export type FieldFormat = 'percent'
+
 export interface FieldConfiguration<G extends IGame, C extends ICharacter, Args extends readonly any[], T> {
   id: string
-  name: string
+  name: PSTR
   type: QueryValueType<T>
   getter: (context: FieldContext<G, C, Args>) => T
   aliases: string[]
+  options?: () => FieldOption[]
+  format?: FieldFormat
+}
+
+export interface FieldBuilder {
+  addAlias(alias: string): FieldBuilder
+  withOptions(options: () => FieldOption[]): FieldBuilder
+  withFormat(format: FieldFormat): FieldBuilder
+}
+
+export interface StatusFieldBuilder {
+  withOptions(options: () => FieldOption[]): StatusFieldBuilder
+  withFormat(format: FieldFormat): StatusFieldBuilder
 }
 
 export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args extends readonly any[]> {
@@ -34,10 +55,10 @@ export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args ex
 
   public addField<T>(
     id: string,
-    name: string,
+    name: PSTR,
     type: QueryValueType<T>,
     getter: (context: FieldContext<G, C, Args>) => T,
-  ) {
+  ): FieldBuilder {
     const field: FieldConfiguration<G, C, Args, T> = {
       id,
       name,
@@ -47,10 +68,18 @@ export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args ex
     }
     this.fields.set(id, field)
 
-    const result = {
+    const result: FieldBuilder = {
       addAlias: (alias: string) => {
         this.fields.set(alias, field)
         field.aliases.push(alias)
+        return result
+      },
+      withOptions: (options) => {
+        field.options = options
+        return result
+      },
+      withFormat: (format) => {
+        field.format = format
         return result
       },
     }
@@ -60,18 +89,32 @@ export abstract class FieldHolder<G extends IGame, C extends ICharacter, Args ex
 
   public addStatusField<T>(
     id: string,
-    name: string,
+    name: PSTR,
     type: QueryValueType<T>,
     getter: (context: StatusFieldContext<G, C, Args>) => T,
-  ) {
-    this.addField('current.' + id, name, type, ({ character, current, args }) => {
+  ): StatusFieldBuilder {
+    const current = this.addField('current.' + id, name, type, ({ character, current, args }) => {
       return getter({ character, status: current, args })
     }).addAlias(id)
 
-    this.addField('goal.' + id, name, type, ({ character, goal, args }) => {
+    const goal = this.addField('goal.' + id, name, type, ({ character, goal, args }) => {
       if (goal === undefined) return type.parse(undefined)
       return getter({ character, status: goal, args })
     })
+
+    const result: StatusFieldBuilder = {
+      withOptions: (options) => {
+        current.withOptions(options)
+        goal.withOptions(options)
+        return result
+      },
+      withFormat: (format) => {
+        current.withFormat(format)
+        goal.withFormat(format)
+        return result
+      },
+    }
+    return result
   }
 
   public tap(callback: (self: this) => void) {
@@ -84,21 +127,26 @@ export class RootCharacterQuery<G extends IGame, C extends ICharacter> extends F
   public constructor() {
     super()
 
-    this.addField('goal', '有计划', QBoolean, ({ goal }) => {
-      return !!goal
-    })
+    this.addField(
+      'goal',
+      lpstr(() => gt.pgettext('query field', '有计划')),
+      QBoolean,
+      ({ goal }) => {
+        return !!goal
+      },
+    )
   }
 
   public readonly subQueries = new Map<
     string,
     {
       id: string
-      name: string
+      name: PSTR
       query: SubCharacterQuery<G, C, any>
     }
   >()
 
-  public addSubQuery<Args extends readonly any[]>(id: string, name: string, query: SubCharacterQuery<G, C, Args>) {
+  public addSubQuery<Args extends readonly any[]>(id: string, name: PSTR, query: SubCharacterQuery<G, C, Args>) {
     this.subQueries.set(id, {
       id,
       name,
@@ -108,7 +156,7 @@ export class RootCharacterQuery<G extends IGame, C extends ICharacter> extends F
 
   public createSubQuery<Args extends readonly any[]>(
     id: string,
-    name: string,
+    name: PSTR,
     execute: (character: C) => Array<Readonly<Args>>,
     getKey: (...args: Args) => string,
   ) {
@@ -186,6 +234,15 @@ export class Querier<G extends IGame, C extends ICharacter> {
     }
   }
 
+  /** 编译 where/order 并检查 select，只报错不执行 */
+  public validate(): void {
+    this.compileAssertion(this.param.where)
+    if (this.param.order != null) this.compileComparatorList(this.param.order)
+    if (this.param.select != null) {
+      for (const id of this.param.select) this.getField(id)
+    }
+  }
+
   public execute(input: Generator<QueryInput<G, C>>) {
     if (this.executed) throw new Error('Already executed')
     this.executed = true
@@ -236,14 +293,17 @@ export class Querier<G extends IGame, C extends ICharacter> {
     const field = this.getField(a.field)
 
     const getter = this.compileFieldGetter(a.field)
-    const operand = a.operand
 
     const op = field.type.ops.get(a.op)
-    if (op !== undefined) {
-      return (item) => op.result.parse(op.body(field.type.parse(getter(item)), op.type.parse(operand)))
-    }
+    if (op === undefined) throw new Error(`Unknown operator ${a.op} for field ${a.field} (${field.type.name})`)
 
-    throw new Error(`Unknown operator ${a.op} for type ${field.type.name}`)
+    let operand: any
+    try {
+      operand = op.type.parse(a.operand)
+    } catch (e) {
+      throw new Error(`Invalid operand for ${a.field} ${a.op}: ${(e as Error).message}`)
+    }
+    return (item) => op.result.parse(op.body(field.type.parse(getter(item)), operand))
   }
 
   private compileAndAssertion(a: AndAssertion): (item: FieldContext<G, C, any>) => boolean {
@@ -274,6 +334,8 @@ export class Querier<G extends IGame, C extends ICharacter> {
         return this.compileOrAssertion(a)
       case '!':
         return this.compileNotAssertion(a)
+      default:
+        throw new Error(`Unknown assertion ${JSON.stringify((a as any)?._)}`)
     }
   }
 
@@ -285,6 +347,7 @@ export class Querier<G extends IGame, C extends ICharacter> {
     const getter = this.compileFieldGetter(comparator[0])
 
     const order = comparator[1]
+    if (order !== 'ASC' && order !== 'DESC') throw new Error(`Unknown order ${order} for field ${comparator[0]}`)
 
     return (a, b) => {
       const va = getter(a)
@@ -307,4 +370,38 @@ export class Querier<G extends IGame, C extends ICharacter> {
       return 0
     }
   }
+}
+
+export type QueryFieldGroup = 'character' | 'current' | 'goal' | 'sub'
+
+export interface QueryFieldEntry {
+  id: string
+  config: FieldConfiguration<any, any, any, any>
+  group: QueryFieldGroup
+  subName?: PSTR
+}
+
+export function listQueryFields(querier: Querier<any, any>): QueryFieldEntry[] {
+  const subConfigs = new Set(querier.subQuery ? querier.subQuery.fields.values() : [])
+  const subName = querier.subQueryId ? querier.rootQuery.subQueries.get(querier.subQueryId)?.name : undefined
+  const seen = new Set<FieldConfiguration<any, any, any, any>>()
+  const entries: QueryFieldEntry[] = []
+  for (const config of querier.fields.values()) {
+    if (seen.has(config)) continue
+    seen.add(config)
+    if (subConfigs.has(config)) {
+      entries.push({ id: `${querier.subQueryId}.${config.id}`, config, group: 'sub', subName })
+      continue
+    }
+    const group = config.id.startsWith('current.') ? 'current' : config.id.startsWith('goal.') ? 'goal' : 'character'
+    entries.push({ id: config.id, config, group })
+  }
+  const order: QueryFieldGroup[] = ['character', 'current', 'goal', 'sub']
+  return order.flatMap((g) => entries.filter((x) => x.group === g))
+}
+
+export function resolveField(entries: QueryFieldEntry[], querier: Querier<any, any>, idOrAlias: string) {
+  const config = querier.fields.get(idOrAlias)
+  if (config === undefined) return undefined
+  return entries.find((x) => x.config === config)
 }

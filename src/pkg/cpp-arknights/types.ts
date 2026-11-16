@@ -88,3 +88,16 @@ export const enum Profession {
   TANK = 'TANK',
   WARRIOR = 'WARRIOR',
 }
+
+export type DeployableProfession = Exclude<Profession, Profession.TOKEN | Profession.TRAP>
+
+export const ProfessionNames: Record<DeployableProfession, PSTR> = {
+  [Profession.PIONEER]: lpstr(() => gt.pgettext('arknights profession', '先锋')),
+  [Profession.WARRIOR]: lpstr(() => gt.pgettext('arknights profession', '近卫')),
+  [Profession.TANK]: lpstr(() => gt.pgettext('arknights profession', '重装')),
+  [Profession.SNIPER]: lpstr(() => gt.pgettext('arknights profession', '狙击')),
+  [Profession.CASTER]: lpstr(() => gt.pgettext('arknights profession', '术师')),
+  [Profession.MEDIC]: lpstr(() => gt.pgettext('arknights profession', '医疗')),
+  [Profession.SUPPORT]: lpstr(() => gt.pgettext('arknights profession', '辅助')),
+  [Profession.SPECIAL]: lpstr(() => gt.pgettext('arknights profession', '特种')),
+}
