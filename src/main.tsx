@@ -4,7 +4,7 @@ import { Home } from './components/Home'
 import { showConfirm } from './components/MessageBox'
 import { RetiredGame } from './components/RetiredGame'
 import { runCpp } from './entry'
-import { GameName, gameAdapterLoaders, gameComponentLoaders, retiredGames } from './games'
+import { GameName, RetiredGameInfo, gameAdapterLoaders, gameComponentLoaders, retiredGames } from './games'
 import './icons'
 import { setupLocale } from './locales'
 import { gt } from './pkg/gt'
@@ -29,7 +29,7 @@ async function runApp() {
   if (parts.length > 3) throw new Error('invalid parts.length')
 
   if (Object.prototype.hasOwnProperty.call(retiredGames, game)) {
-    return runRetired(game, profile, retiredGames[game].archive)
+    return runRetired(game, profile, retiredGames[game])
   }
   if (!Object.prototype.hasOwnProperty.call(gameAdapterLoaders, game)) throw new Error('invalid game name')
 
@@ -56,10 +56,10 @@ function runHome() {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<Home />)
 }
 
-function runRetired(game: string, profile: string, archive: string) {
+function runRetired(game: string, profile: string, retired: RetiredGameInfo) {
   document.title = 'Closure' + formatProfileName(game, profile) + '++'
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <RetiredGame game={game} instanceName={profile} archive={archive} />,
+    <RetiredGame game={game} instanceName={profile} retired={retired} />,
   )
 }
 

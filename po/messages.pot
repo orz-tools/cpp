@@ -39,7 +39,7 @@ msgstr ""
 msgid "ArknightsAssets 解析的游戏数据"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:46
+#: src/components/RetiredGame.tsx:48
 msgid "Closure++ 对 %s 的支持已彻底下线"
 msgstr ""
 
@@ -140,7 +140,7 @@ msgid_plural "制作 %d 次所需"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/RetiredGame.tsx:54
+#: src/components/RetiredGame.tsx:57
 msgid "前往存档站"
 msgstr ""
 
@@ -205,6 +205,10 @@ msgstr ""
 
 #: src/components/Importer.tsx:454
 msgid "如今"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:60
+msgid "存档站能保留多久也不确定，如您需要，也可以查看 GitHub 上的源码。"
 msgstr ""
 
 #: src/components/TaskList.tsx:119
@@ -388,6 +392,10 @@ msgstr ""
 msgid "无法识别粘贴的内容。支持以下格式："
 msgstr ""
 
+#: src/games.ts:15
+msgid "时间重叠、飞跃，令人恍惚，所幸我们共度的时光鲜明而真切……"
+msgstr ""
+
 #: src/components/arknights/ValueConfigMenu.tsx:459
 msgid "明日方舟一图流"
 msgstr ""
@@ -435,7 +443,7 @@ msgstr ""
 msgid "本工具中部分素材掉落统计数据由企鹅物流统计，采用知识共享 署名-非商业性使用 4.0 国际许可协议进行许可。"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:50
+#: src/components/RetiredGame.tsx:52
 msgid "本站已移除相关的全部功能，只保留导出和清空用户数据。如需继续使用，请先导出为文件，再前往存档站自行导入：两边的数据并不互通。"
 msgstr ""
 
@@ -453,6 +461,10 @@ msgstr ""
 
 #: src/components/LogList.tsx:254
 msgid "查看更多…"
+msgstr ""
+
+#: src/components/RetiredGame.tsx:61
+msgid "查看源码"
 msgstr ""
 
 #: src/components/CharacterList.tsx:822
@@ -505,7 +517,7 @@ msgstr ""
 msgid "现在可以合成的道具"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:34
+#: src/components/RetiredGame.tsx:36
 #: src/components/UserDataManager.tsx:351
 #: src/components/UserDataManager.tsx:370
 #: src/components/UserDataManager.tsx:83

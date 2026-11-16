@@ -39,7 +39,7 @@ After changing any user-facing strings, run:
 
 ## Architecture
 
-**Multi-game toolbox** — Closure++ supports gacha games through a plugin system; Arknights is the only one left. A game whose support was removed is listed in `retiredGames` (`src/games.ts`): its URL renders `RetiredGame`, which only exports or clears the stored user data and links to an archived build.
+**Multi-game toolbox** — Closure++ supports gacha games through a plugin system; Arknights is the only one left. A game whose support was removed is listed in `retiredGames` (`src/games.ts`): its URL renders `RetiredGame`, which only exports or clears the stored user data and links to an archived build and the source it was built from.
 
 **Stack**: React 18 + Jotai (state) + BlueprintJS 5 (UI) + Vite + TypeScript (strict).
 

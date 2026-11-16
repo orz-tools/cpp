@@ -1,13 +1,15 @@
 import { Alignment, AnchorButton, Callout, Classes, H2, Icon, Navbar } from '@blueprintjs/core'
 import { memo } from 'react'
+import { RetiredGameInfo } from '../games'
 import { LocaleButton } from '../locales'
 import { gt } from '../pkg/gt'
 import { formatProfileName } from '../profiles'
 import { UserDataManagerContent, useUserDataDump } from './UserDataManager'
 
 export const RetiredGame = memo(
-  ({ game, instanceName, archive }: { game: string; instanceName: string; archive: string }) => {
+  ({ game, instanceName, retired }: { game: string; instanceName: string; retired: RetiredGameInfo }) => {
     const { data, loading } = useUserDataDump(game, instanceName)
+    const { archive, source, farewell } = retired
     // The archive is the same app at an older commit, so the same path opens the same profile there.
     const archiveHref = archive + location.pathname
 
@@ -51,8 +53,20 @@ export const RetiredGame = memo(
                       '本站已移除相关的全部功能，只保留导出和清空用户数据。如需继续使用，请先导出为文件，再前往存档站自行导入：两边的数据并不互通。',
                     )}
                   </p>
-                  <AnchorButton intent="primary" icon="globe" href={archiveHref} text={gt.gettext('前往存档站')} />{' '}
-                  <code className={Classes.TEXT_MUTED}>{archive.replace(/^https:\/\//, '')}</code>
+                  <p>
+                    <AnchorButton intent="primary" icon="globe" href={archiveHref} text={gt.gettext('前往存档站')} />{' '}
+                    <code className={Classes.TEXT_MUTED}>{archive.replace(/^https:\/\//, '')}</code>
+                  </p>
+                  <p>{gt.gettext('存档站能保留多久也不确定，如您需要，也可以查看 GitHub 上的源码。')}</p>
+                  <AnchorButton icon="git-repo" href={source} text={gt.gettext('查看源码')} />
+                  {farewell ? (
+                    <blockquote
+                      className={`${Classes.BLOCKQUOTE} ${Classes.TEXT_SMALL}`}
+                      style={{ opacity: 0.6, margin: '1em 0 0' }}
+                    >
+                      <span style={{ display: 'inline-block', transform: 'skewX(-10deg)' }}>{farewell.toString()}</span>
+                    </blockquote>
+                  ) : null}
                 </Callout>
               </UserDataManagerContent>
             </div>

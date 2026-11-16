@@ -18,7 +18,7 @@ Closure++ currently supports the following games:
 
 - Arknights: A 2D tower defense mobile game developed and published by Hypergryph.
 
-Support for Reverse: 1999 has been removed. Its pages now only export or clear existing user data; the last build that supported it is kept at <https://cpp--re1999.orz.tools>.
+Support for Reverse: 1999 has been removed. Its pages now only export or clear existing user data; the last build that supported it is kept at <https://cpp--re1999.orz.tools>, built from [6ff9fb0](https://github.com/orz-tools/cpp/tree/6ff9fb0b1a6c2ff0fcd4917583fcfe611efc2baf).
 
 ### Getting Started
 
