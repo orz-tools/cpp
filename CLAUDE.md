@@ -39,7 +39,7 @@ After changing any user-facing strings, run:
 
 ## Architecture
 
-**Multi-game toolbox** — Closure++ supports multiple gacha games (Arknights, Reverse:1999) through a plugin system.
+**Multi-game toolbox** — Closure++ supports gacha games through a plugin system; Arknights is the only one left. A game whose support was removed is listed in `retiredGames` (`src/games.ts`): its URL renders `RetiredGame`, which only exports or clears the stored user data and links to an archived build.
 
 **Stack**: React 18 + Jotai (state) + BlueprintJS 5 (UI) + Vite + TypeScript (strict).
 
@@ -69,7 +69,6 @@ Games are code-split via dynamic imports. The URL path (`/{game}/{profile}`) det
 | `cpp-basic`     | Core interfaces (`IGame`, `IGameAdapter`, `DataManager`)   |
 | `cpp-core`      | Shared logic (UserData atoms, Task solver, formula system) |
 | `cpp-arknights` | Arknights adapter                                          |
-| `cpp-re1999`    | Reverse:1999 adapter                                       |
 | `gt`            | Gettext wrapper                                            |
 | `dccache`       | Data container caching                                     |
 | `blobcache`     | Image/asset variant handling                               |

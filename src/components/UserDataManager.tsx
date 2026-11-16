@@ -10,40 +10,46 @@ import {
   NonIdealState,
   TextArea,
 } from '@blueprintjs/core'
-import { memo, useEffect, useRef, useState } from 'react'
+import { useStore } from 'jotai'
+import { type ReactNode, memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { useCpp, useStore } from '../Cpp'
+import { useCpp } from '../Cpp'
 import { gt } from '../pkg/gt'
 import { formatProfileName, getStoragePrefix } from '../profiles'
 import { useChamber } from './Chamber'
 import { ErrAtom } from './Err'
 
+/** A snapshot of the stored data, taken once when the component mounts. */
+export function useUserDataDump(game: string, instanceName: string) {
+  const [data] = useState(() => {
+    const storagePrefix = getStoragePrefix(game, instanceName)
+    try {
+      const d = localStorage.getItem(storagePrefix + 'userdata')
+      const p = localStorage.getItem(storagePrefix + 'preference')
+      if (!d) throw new Error('empty')
+      const now = Date.now()
+      const userdata = JSON.stringify({
+        '@type': '@orz/cpp/dump',
+        '@version': 1,
+        game: game,
+        instanceName: instanceName,
+        exportedAt: now,
+        userdata: JSON.parse(d || ''),
+        preference: p ? JSON.parse(p) : undefined,
+        region: localStorage.getItem(storagePrefix + 'region') || '',
+      })
+      return { data: userdata, now: now }
+    } catch (e) {
+      console.warn(e)
+      return undefined
+    }
+  })
+  return data
+}
+
 export const UserDataManager = memo(
   ({ game, instanceName, onClose }: { game: string; instanceName: string; onClose?: DialogProps['onClose'] }) => {
-    const storagePrefix = getStoragePrefix(game, instanceName)
-    const [data, setData] = useState<{ data: string; now: number } | undefined>(undefined)
-    useEffect(() => {
-      try {
-        const d = localStorage.getItem(storagePrefix + 'userdata')
-        const p = localStorage.getItem(storagePrefix + 'preference')
-        if (!d) throw new Error('empty')
-        const now = Date.now()
-        const userdata = JSON.stringify({
-          '@type': '@orz/cpp/dump',
-          '@version': 1,
-          game: game,
-          instanceName: instanceName,
-          exportedAt: now,
-          userdata: JSON.parse(d || ''),
-          preference: p ? JSON.parse(p) : undefined,
-          region: localStorage.getItem(storagePrefix + 'region') || '',
-        })
-        setData({ data: userdata, now: now })
-      } catch (e) {
-        console.warn(e)
-        setData(undefined)
-      }
-    }, [storagePrefix, game, instanceName])
+    const data = useUserDataDump(game, instanceName)
 
     return (
       <Dialog
@@ -58,23 +64,24 @@ export const UserDataManager = memo(
   },
 )
 
-const UserDataManagerContent = memo(
+export const UserDataManagerContent = memo(
   ({
     data,
     game,
     instanceName,
+    exportOnly,
+    children,
   }: {
     data?: { data: string; now: number } | undefined
     game: string
     instanceName: string
+    /** For a game whose support is gone: the data can still leave and be cleared, but nothing comes in. */
+    exportOnly?: boolean
+    children?: ReactNode
   }) => {
-    const [value, setValue] = useState('')
-    useEffect(() => {
-      if (data) {
-        setValue(data.data || '')
-      }
-    }, [data])
+    const [value, setValue] = useState(() => data?.data || '')
 
+    // jotai's hook rather than Cpp's: a retired game's page mounts this without a Cpp around it.
     const store = useStore()
 
     const importData = useEvent((text: string) => {
@@ -130,6 +137,7 @@ const UserDataManagerContent = memo(
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [dragging, setDragging] = useState(false)
     useEffect(() => {
+      if (exportOnly) return
       // Listening on window rather than the dialog: Blueprint focuses its own container, which sits outside
       // our children, so a paste right after opening would never reach an element of ours. The dialog is
       // modal, so nothing else on the page competes for these events while it is open.
@@ -168,7 +176,7 @@ const UserDataManagerContent = memo(
         window.removeEventListener('drop', onDrop)
         window.removeEventListener('paste', onPaste)
       }
-    }, [importFile])
+    }, [importFile, exportOnly])
 
     const resetData = useEvent(() => {
       if (!confirm(gt.gettext('警告：你确定要清空数据吗？\n' + '你现在的数据将会永久失去！（真的很久！）'))) return
@@ -182,7 +190,10 @@ const UserDataManagerContent = memo(
     return (
       <>
         <DialogBody>
-          <p className={Classes.TEXT_MUTED}>{gt.gettext('可将导出的文件拖入此处，或直接粘贴文件导入。')}</p>
+          {children}
+          {exportOnly ? null : (
+            <p className={Classes.TEXT_MUTED}>{gt.gettext('可将导出的文件拖入此处，或直接粘贴文件导入。')}</p>
+          )}
           <div style={{ position: 'relative' }}>
             <TextArea
               size="small"
@@ -196,6 +207,8 @@ const UserDataManagerContent = memo(
                 wordBreak: 'break-all',
               }}
               onChange={(e) => setValue(e.target.value)}
+              readOnly={exportOnly}
+              placeholder={exportOnly ? gt.gettext('没有可导出的数据。') : undefined}
               spellCheck="false"
             />
             {dragging && (
@@ -231,20 +244,24 @@ const UserDataManagerContent = memo(
           actions={
             <>
               <Button variant="minimal" intent={'danger'} icon="trash" text={gt.gettext('清空')} onClick={resetData} />
-              <Button
-                variant="minimal"
-                intent={'primary'}
-                icon="document-open"
-                text={gt.gettext('从文件导入')}
-                onClick={() => fileInputRef.current?.click()}
-              />
-              <Button
-                variant="minimal"
-                intent={'primary'}
-                icon="log-in"
-                text={gt.gettext('从文本框中导入')}
-                onClick={() => importData(value)}
-              />
+              {exportOnly ? null : (
+                <>
+                  <Button
+                    variant="minimal"
+                    intent={'primary'}
+                    icon="document-open"
+                    text={gt.gettext('从文件导入')}
+                    onClick={() => fileInputRef.current?.click()}
+                  />
+                  <Button
+                    variant="minimal"
+                    intent={'primary'}
+                    icon="log-in"
+                    text={gt.gettext('从文本框中导入')}
+                    onClick={() => importData(value)}
+                  />
+                </>
+              )}
             </>
           }
         >

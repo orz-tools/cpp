@@ -8,6 +8,18 @@ import { IGame } from './types'
 void localForage.dropInstance({ name: 'cpp_dm' })
 void destroy('reverse1999-hisboundenduty-drops')
 void destroy('reverse1999-hisboundenduty-values')
+for (const name of [
+  'reverse1999-yuanyan3060-zh_CN',
+  'reverse1999-enigmaticnebula-en',
+  'reverse1999-enigmaticnebula-jp',
+  'reverse1999-enigmaticnebula-kr',
+  'reverse1999-enigmaticnebula-tw',
+  'reverse1999-enigmaticnebula-zh',
+  'reverse1999-hisboundenduty-drops-china',
+  'reverse1999-hisboundenduty-drops-haiwai',
+  'reverse1999-hisboundenduty-values-china',
+])
+  void destroy(name)
 void destroy('arknights-yituliu')
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

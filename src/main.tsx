@@ -1,8 +1,9 @@
 import { FocusStyleManager } from '@blueprintjs/core'
 import ReactDOM from 'react-dom/client'
 import { Home } from './components/Home'
+import { RetiredGame } from './components/RetiredGame'
 import { runCpp } from './entry'
-import { GameName, gameAdapterLoaders, gameComponentLoaders } from './games'
+import { GameName, gameAdapterLoaders, gameComponentLoaders, retiredGames } from './games'
 import './icons'
 import { setupLocale } from './locales'
 import { formatProfileName, getStoragePrefix } from './profiles'
@@ -22,12 +23,15 @@ async function runApp() {
   if (!game) {
     return runHome()
   }
+  const profile = parts[2] || ''
+  if (parts.length > 3) throw new Error('invalid parts.length')
+
+  if (Object.prototype.hasOwnProperty.call(retiredGames, game)) {
+    return runRetired(game, profile, retiredGames[game].archive)
+  }
   if (!Object.prototype.hasOwnProperty.call(gameAdapterLoaders, game)) throw new Error('invalid game name')
 
-  const profile = parts[2] || ''
   const storagePrefix = getStoragePrefix(game, profile)
-
-  if (parts.length > 3) throw new Error('invalid parts.length')
 
   if (profile && !localStorage.getItem(storagePrefix + 'userdata')) {
     if (!confirm('profile ' + formatProfileName(game, profile) + ' does not exist. do you want to create it?')) {
@@ -43,6 +47,13 @@ async function runApp() {
 
 function runHome() {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<Home />)
+}
+
+function runRetired(game: string, profile: string, archive: string) {
+  document.title = 'Closure' + formatProfileName(game, profile) + '++'
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <RetiredGame game={game} instanceName={profile} archive={archive} />,
+  )
 }
 
 runApp().catch((e) => {

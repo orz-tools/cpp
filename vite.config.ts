@@ -5,8 +5,6 @@ import svgr from 'vite-plugin-svgr'
 
 const chunks = {
   'game-arknights': [/\/src\/components\/arknights\//, /\/src\/pkg\/cpp-arknights\//],
-  // 'game-re1999-data': [/\/src\/pkg\/cpp-re1999\/data\//],
-  'game-re1999': [/\/src\/components\/re1999\//, /\/src\/pkg\/cpp-re1999\//],
 } as Record<string, RegExp[]>
 
 // https://vitejs.dev/config/

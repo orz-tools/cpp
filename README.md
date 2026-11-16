@@ -17,7 +17,8 @@ Closure++ is an open-source project aimed at providing a comprehensive toolbox f
 Closure++ currently supports the following games:
 
 - Arknights: A 2D tower defense mobile game developed and published by Hypergryph.
-- Reverse: 1999: A turn-based tactical role-playing video game developed by Bluepoch
+
+Support for Reverse: 1999 has been removed. Its pages now only export or clear existing user data; the last build that supported it is kept at <https://cpp--re1999.orz.tools>.
 
 ### Getting Started
 
