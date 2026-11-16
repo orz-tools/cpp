@@ -1,0 +1,22 @@
+diff --git a/lib/esm/iconLoader.js b/lib/esm/iconLoader.js
+index 25319ce01fc47e4fd5b87b66ec7ad8d3307da180..beb88460e1dcf9c6d2d327effa3a38d6b54fe698 100644
+--- a/lib/esm/iconLoader.js
++++ b/lib/esm/iconLoader.js
+@@ -21,16 +21,7 @@ async function getLoaderFn(options) {
+     if (typeof loader === "function") {
+         return loader;
+     }
+-    else if (loader === "all") {
+-        return (await import(
+-        /* webpackChunkName: "blueprint-icons-all-paths-loader" */
+-        "./paths-loaders/allPathsLoader")).allPathsLoader;
+-    }
+-    else {
+-        return (await import(
+-        /* webpackChunkName: "blueprint-icons-split-paths-by-size-loader" */
+-        "./paths-loaders/splitPathsBySizeLoader")).splitPathsBySizeLoader;
+-    }
++    return () => Promise.resolve([]);
+ }
+ /**
+  * Blueprint icons loader.

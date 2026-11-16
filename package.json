@@ -12,8 +12,8 @@
     "fmt": "oxfmt"
   },
   "dependencies": {
-    "@blueprintjs/core": "^5.2.1",
-    "@blueprintjs/icons": "^5.1.5",
+    "@blueprintjs/core": "^6.23.0",
+    "@blueprintjs/icons": "^6.16.0",
     "@tanstack/react-virtual": "^3.0.0-alpha.0",
     "browser-stream-tar": "^1.2.5",
     "date-fns": "^2.30.0",

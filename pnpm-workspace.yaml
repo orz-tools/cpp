@@ -2,7 +2,7 @@ allowBuilds:
   '@swc/core': true
 
 overrides:
-  '@blueprintjs/icons': 5.1.5
+  '@blueprintjs/icons': 6.16.0
 
 patchedDependencies:
-  '@blueprintjs/icons@5.1.5': patches/@blueprintjs__icons@5.1.5.patch
+  '@blueprintjs/icons@6.16.0': patches/@blueprintjs__icons@6.16.0.patch

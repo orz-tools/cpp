@@ -222,7 +222,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp5-menu-item cpp-item-menu"
+        className="bp6-menu-item cpp-item-menu"
         style={{ lineHeight: '21px', padding: 0, fontWeight: 'normal', visibility: !formula ? 'hidden' : undefined }}
       >
         <Popover
@@ -374,18 +374,18 @@ export const ItemMenu = memo(({ item }: { item: IItem }) => {
       <a
         role="menuitem"
         tabIndex={0}
-        className="bp5-menu-item cpp-item-menu cpp-menu-not-interactive"
+        className="bp6-menu-item cpp-item-menu cpp-menu-not-interactive"
         style={{ flexShrink: 1, overflow: 'hidden' }}
       >
         <>
-          <span className="bp5-menu-item-icon">
+          <span className="bp6-menu-item-icon">
             <ItemIcon item={item} size={40} />
           </span>
-          <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp5-text-overflow-ellipsis" title={item.name}>
+          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp6-text-overflow-ellipsis" title={item.name}>
               {item.name}
             </div>
-            <div className="bp5-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
+            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
               <ValueTag value={item.valueAsAp} minimal={true} single={true} />
             </div>
           </div>

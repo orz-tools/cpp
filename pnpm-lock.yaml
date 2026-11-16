@@ -163,21 +163,21 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@blueprintjs/icons': 5.1.5
+  '@blueprintjs/icons': 6.16.0
 
 patchedDependencies:
-  '@blueprintjs/icons@5.1.5': 51cd8845510bde64443e7878433df98353256d25f86975c28c96e7d45f27790c
+  '@blueprintjs/icons@6.16.0': a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a
 
 importers:
 
   .:
     dependencies:
       '@blueprintjs/core':
-        specifier: ^5.2.1
-        version: 5.2.1(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^6.23.0
+        version: 6.23.0(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@blueprintjs/icons':
-        specifier: 5.1.5
-        version: 5.1.5(patch_hash=51cd8845510bde64443e7878433df98353256d25f86975c28c96e7d45f27790c)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 6.16.0
+        version: 6.16.0(patch_hash=a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tanstack/react-virtual':
         specifier: ^3.0.0-alpha.0
         version: 3.0.0-beta.54(react@18.2.0)
@@ -394,26 +394,26 @@ packages:
     resolution: {integrity: sha512-XEFXSlxiG5td2EJRe8vOmRbaXVgfcBlszKujvVmWIK/UpywWljQCfzAv3RQCGujWQ1RD4YYWEAqDXfuJiy8f5Q==}
     engines: {node: '>=6.9.0'}
 
-  '@blueprintjs/colors@5.0.1':
-    resolution: {integrity: sha512-Lz3TSHJBL7+Ar/pQS15ewbNMMZc9p0CyBTPvICx4sWVH2STIJrvh05f+rdOBsKyx+FdTGTBoISyw67ZOSXvWVA==}
+  '@blueprintjs/colors@5.1.16':
+    resolution: {integrity: sha512-P9uX0Aj2TP9+6aUcori1iPl4snxM/Vgq0LZbhUl1l5bHTgNxxwm/0+IoS/SlQg93HBRl8KTAM1evEqtPbwV10A==}
 
-  '@blueprintjs/core@5.2.1':
-    resolution: {integrity: sha512-m5aqF5NOcNEIrexawpkVvBu0SK0sxxcSjOwXcmsHZuJIgSsluJcdNTmnha8SOxw/7uaAWogiog66bGIpXfy8FQ==}
+  '@blueprintjs/core@6.23.0':
+    resolution: {integrity: sha512-tcG7UzSVAMyvQVJegZiRDK3N/2Km/ACJv/wVG6/qJjSjn7+waiJB8B6W4HuZ0w7Xj2G76mImlo2Vcxdtkl+mOg==}
     hasBin: true
     peerDependencies:
-      '@types/react': ^16.14.32 || 17 || 18
-      react: ^16.8 || 17 || 18
-      react-dom: ^16.8 || 17 || 18
+      '@types/react': 18 || 19
+      react: 18 || 19
+      react-dom: 18 || 19
     peerDependenciesMeta:
       '@types/react':
         optional: true
 
-  '@blueprintjs/icons@5.1.5':
-    resolution: {integrity: sha512-Fvtmehxgff59OvPmtnws18wk1HJENQZj31HuxvAlZWIU/0XGEGqumUyCCCFQ8zHsM9G9D6Glg+BCjiX2qCcFIg==}
+  '@blueprintjs/icons@6.16.0':
+    resolution: {integrity: sha512-hwQ5nVGsaUNiR91A2Q2aOcOkBg9RWP4y4YqFlc6j41BQ3oj7wBTydzgug2BHi5EKgyIyrdJcl0qrnBpL+6mjHg==}
     peerDependencies:
-      '@types/react': ^16.14.32 || 17 || 18
-      react: ^16.8 || 17 || 18
-      react-dom: ^16.8 || 17 || 18
+      '@types/react': 18 || 19
+      react: 18 || 19
+      react-dom: 18 || 19
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -426,6 +426,27 @@ packages:
 
   '@emnapi/wasi-threads@2.2.0':
     resolution: {integrity: sha512-JP7OYH38Q7+pyTAe14raZHLQIK7BDKbdwji+Xi3pcd/6QkJYQH3SX4wu6EplGrGJWRepoNzedfm0G3B9Z4e9Rw==}
+
+  '@floating-ui/core@1.8.0':
+    resolution: {integrity: sha512-0CIZ5itps/8x7BG8dEIhs53BvCUH2PCoogtakwRTut+Arm58sJooJ0AuZhLw2HJYIR5cMLNPBSS728sPho2khQ==}
+
+  '@floating-ui/dom@1.8.0':
+    resolution: {integrity: sha512-yXSrzeHZBTZadLOlfyhCkJHNeLJnHRnRInwdZ40L7ZiaAtrBwoYlsDrX3v5zB1Utk7CLfzcOVnVVWoXEky7Ceg==}
+
+  '@floating-ui/react-dom@2.1.9':
+    resolution: {integrity: sha512-JDjEFGCpImxDCA7JJKviA0M9+RtmJdj0m/NVU5IMgBK+AmZouAQQ7/+2GLH0GXXY0YMw9oXPB8hKdbPYg5QLYg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
+  '@floating-ui/react@0.27.20':
+    resolution: {integrity: sha512-CMqMy7OaXl9W0eq1Uy7L7i2Y/anPvHmFmESd2CEw0t5YvZhcVCeo4MBevAmswRllX7Y2dEidA4ozGPunLSTQpw==}
+    peerDependencies:
+      react: '>=17.0.0'
+      react-dom: '>=17.0.0'
+
+  '@floating-ui/utils@0.2.12':
+    resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
   '@isaacs/cliui@9.0.0':
     resolution: {integrity: sha512-AokJm4tuBHillT+FpMtxQ60n8ObyXBatq7jD2/JA9dxbDDokKQm8KMht5ibGzLVU9IJDIKK4TPKgMHEYMn3lMg==}
@@ -2101,6 +2122,9 @@ packages:
   svg-parser@2.0.4:
     resolution: {integrity: sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==}
 
+  tabbable@6.5.2:
+    resolution: {integrity: sha512-XgdnB1nGU6KU4VgMnZPaZCx7M1hBrLyEiZYau2G2gq9UT0d7d4FUBlNX7vvPlm/B1vk1PjrzJBx9Lbv4fsqS9g==}
+
   text-search-engine@1.4.2:
     resolution: {integrity: sha512-15lh/KIiq0d7RBq3yrmkLGZ60n3TUe/OFW7QhqWhtQitY1iL1tSpX7wAXQntSfE1MohyuXfldsZ2IZKayCLm1g==}
     peerDependencies:
@@ -2139,6 +2163,9 @@ packages:
 
   tslib@2.5.3:
     resolution: {integrity: sha512-mSxlJJwl3BMEQCUNnxXBU9jP4JBktcEGhURcPR6VQVlnP0FdDEsIaz0C35dXNGLyRfrATNofF0F5p2KPxQgB+w==}
+
+  tslib@2.6.3:
+    resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
   types-ramda@0.29.4:
     resolution: {integrity: sha512-XO/820iRsCDwqLjE8XE+b57cVGPyk1h+U9lBGpDWvbEky+NQChvHVwaKM05WnW1c5z3EVQh8NhXFmh2E/1YazQ==}
@@ -2460,14 +2487,15 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
 
-  '@blueprintjs/colors@5.0.1':
+  '@blueprintjs/colors@5.1.16':
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.3
 
-  '@blueprintjs/core@5.2.1(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@blueprintjs/core@6.23.0(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
-      '@blueprintjs/colors': 5.0.1
-      '@blueprintjs/icons': 5.1.5(patch_hash=51cd8845510bde64443e7878433df98353256d25f86975c28c96e7d45f27790c)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@blueprintjs/colors': 5.1.16
+      '@blueprintjs/icons': 6.16.0(patch_hash=a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@floating-ui/react': 0.27.20(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@popperjs/core': 2.11.8
       classnames: 2.3.2
       normalize.css: 8.0.1
@@ -2475,17 +2503,17 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       react-popper: 2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-transition-group: 4.4.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      tslib: 2.5.3
+      tslib: 2.6.3
     optionalDependencies:
       '@types/react': 18.2.21
 
-  '@blueprintjs/icons@5.1.5(patch_hash=51cd8845510bde64443e7878433df98353256d25f86975c28c96e7d45f27790c)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@blueprintjs/icons@6.16.0(patch_hash=a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       change-case: 4.1.2
       classnames: 2.3.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      tslib: 2.5.3
+      tslib: 2.6.3
     optionalDependencies:
       '@types/react': 18.2.21
 
@@ -2504,6 +2532,31 @@ snapshots:
     dependencies:
       tslib: 2.5.3
     optional: true
+
+  '@floating-ui/core@1.8.0':
+    dependencies:
+      '@floating-ui/utils': 0.2.12
+
+  '@floating-ui/dom@1.8.0':
+    dependencies:
+      '@floating-ui/core': 1.8.0
+      '@floating-ui/utils': 0.2.12
+
+  '@floating-ui/react-dom@2.1.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@floating-ui/dom': 1.8.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
+  '@floating-ui/react@0.27.20(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@floating-ui/react-dom': 2.1.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@floating-ui/utils': 0.2.12
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      tabbable: 6.5.2
+
+  '@floating-ui/utils@0.2.12': {}
 
   '@isaacs/cliui@9.0.0': {}
 
@@ -3897,6 +3950,8 @@ snapshots:
 
   svg-parser@2.0.4: {}
 
+  tabbable@6.5.2: {}
+
   text-search-engine@1.4.2(react@18.2.0):
     dependencies:
       react: 18.2.0
@@ -3921,6 +3976,8 @@ snapshots:
   ts-toolbelt@9.6.0: {}
 
   tslib@2.5.3: {}
+
+  tslib@2.6.3: {}
 
   types-ramda@0.29.4:
     dependencies:

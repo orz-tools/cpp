@@ -88,12 +88,14 @@ Icons.setLoaderOptions({
     return pool.run(`${name}-${size}`, () => {
       const value = map.get(size)?.get(name)
       if (value) return Promise.resolve(value)
-      AppToaster.show({
-        icon: 'warning-sign',
-        message: `missing icon ${name} ${size}, please report`,
-        timeout: 0,
-        intent: 'warning',
-      })
+      void AppToaster.then((toaster) =>
+        toaster.show({
+          icon: 'warning-sign',
+          message: `missing icon ${name} ${size}, please report`,
+          timeout: 0,
+          intent: 'warning',
+        }),
+      )
       return Promise.resolve([])
     })
   },

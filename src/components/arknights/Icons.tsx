@@ -40,7 +40,7 @@ const proMap = {
 export const ProfessionIcon = memo(({ profession, style }: { profession: Profession; style?: React.CSSProperties }) => {
   const C = proMap[profession]
   return (
-    <span className="bp5-icon" style={style}>
+    <span className="bp6-icon" style={style}>
       {C ? <C width={16} height={16} /> : <Icon icon="blank" size={16} />}
     </span>
   )
@@ -50,7 +50,7 @@ export const SkillIcon = memo(({ skill, level, master }: { skill: Skill; level?:
   const name = skill.name
 
   return (
-    <span className="bp5-menu-item-icon">
+    <span className="bp6-menu-item-icon">
       <div className="cpp-simple-target">
         <CachedImg src={skill.icon} width={'100%'} height={'100%'} alt={name} title={name} />
         {!level ? undefined : <span>{master && master > 0 ? <img src={[m1, m2, m3][master - 1]} /> : level}</span>}
@@ -63,7 +63,7 @@ export const UniEquipIcon = memo(
   ({ classes, uniEquip, level }: { uniEquip: UniEquip; level?: number; classes?: string[] }) => {
     const name = `${uniEquip.name} (${uniEquip.raw.typeName1}-${uniEquip.raw.typeName2})`
     return (
-      <span className={['bp5-menu-item-icon', ...(classes || [])].join(' ')}>
+      <span className={['bp6-menu-item-icon', ...(classes || [])].join(' ')}>
         <div
           className={[
             'cpp-simple-target',
@@ -98,7 +98,7 @@ export const PotentialIcon = memo(({ potentialRank, className }: { potentialRank
 
 export const LevelIcon = memo(({ level }: { level: CharacterLevel }) => {
   return (
-    <span className="bp5-menu-item-icon">
+    <span className="bp6-menu-item-icon">
       <div className="cpp-simple-target">
         <img
           src={[elite0, elite1, elite2][level.elite]}
@@ -113,7 +113,7 @@ export const LevelIcon = memo(({ level }: { level: CharacterLevel }) => {
 
 export const LevelTarget2 = memo(({ source, target }: { source: CharacterLevel; target: CharacterLevel }) => {
   return (
-    <span className="bp5-menu-item-icon">
+    <span className="bp6-menu-item-icon">
       <div className="cpp-level-target">
         <span className="source">
           <img src={[elite0, elite1, elite2][source.elite]} />

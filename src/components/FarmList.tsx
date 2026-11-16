@@ -256,18 +256,18 @@ export const FarmList = memo(() => {
       >
         {response ? (
           <>
-            <Menu className="bp5-elevation-1" style={{ width: 250, overflow: 'auto' }}>
+            <Menu className="bp6-elevation-1" style={{ width: 250, overflow: 'auto' }}>
               {response.stageRuns.map((run) => (
                 <StageLine run={run} key={run.stageId} />
               ))}
               {response.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
             </Menu>
             {!response.synthesisList ? (
-              <div className="bp5-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
+              <div className="bp6-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
                 <NonIdealState title={gt.gettext('暂不支持计算毕业合成')} icon="warning-sign" />
               </div>
             ) : (
-              <Menu className="bp5-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
+              <Menu className="bp6-elevation-1" style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}>
                 <SynthesisList data={response.synthesisList} refresh={refresh} />
               </Menu>
             )}

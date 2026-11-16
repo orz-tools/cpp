@@ -1,4 +1,13 @@
-import { AnchorButton, Button, Dialog, DialogBody, DialogFooter, MenuItem, TextArea } from '@blueprintjs/core'
+import {
+  AnchorButton,
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  type DialogProps,
+  MenuItem,
+  TextArea,
+} from '@blueprintjs/core'
 import { memo, useEffect, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useCpp, useStore } from '../Cpp'
@@ -8,7 +17,7 @@ import { useChamber } from './Chamber'
 import { ErrAtom } from './Err'
 
 export const UserDataManager = memo(
-  ({ game, instanceName, onClose }: { game: string; instanceName: string; onClose?: Dialog['props']['onClose'] }) => {
+  ({ game, instanceName, onClose }: { game: string; instanceName: string; onClose?: DialogProps['onClose'] }) => {
     const storagePrefix = getStoragePrefix(game, instanceName)
     const [data, setData] = useState<{ data: string; now: number } | undefined>(undefined)
     useEffect(() => {

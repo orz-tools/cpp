@@ -212,9 +212,9 @@ const CharacterMenu = memo(
         style={style}
       >
         <ContextMenu content={<CharacterContextMenu character={character} />}>
-          <a role="menuitem" tabIndex={0} className="bp5-menu-item cpp-char-menu-char">
+          <a role="menuitem" tabIndex={0} className="bp6-menu-item cpp-char-menu-char">
             <>
-              <span className="bp5-menu-item-icon cpp-char-avatar">
+              <span className="bp6-menu-item-icon cpp-char-avatar">
                 <CachedImg
                   src={character.avatar}
                   width={'100%'}
@@ -226,12 +226,12 @@ const CharacterMenu = memo(
                   ? c.renderCharacterAvatarBadge(currentCharacter, character)
                   : null}
               </span>
-              <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                <div className="bp5-text-overflow-ellipsis" title={character.name}>
+              <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div className="bp6-text-overflow-ellipsis" title={character.name}>
                   {character.name}
                 </div>
                 <div
-                  className="bp5-text-overflow-ellipsis"
+                  className="bp6-text-overflow-ellipsis"
                   title={character.appellation}
                   style={{ fontWeight: 'normal', opacity: 0.75 }}
                 >
@@ -251,7 +251,7 @@ const CharacterMenu = memo(
           <a
             role="menuitem"
             tabIndex={0}
-            className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-current"
+            className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-current"
             style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
           >
             {render(currentCharacter, character)}
@@ -266,7 +266,7 @@ const CharacterMenu = memo(
           <a
             role="menuitem"
             tabIndex={0}
-            className="bp5-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
+            className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
             style={{ opacity: finished ? 0 : goalSame ? 0.25 : 1 }}
           >
             {render(goalCharacter, character, currentCharacter, goalSame)}
@@ -500,7 +500,7 @@ const QuerySearchBox = memo(() => {
 
   return (
     <>
-      <div className="bp5-input-group">
+      <div className="bp6-input-group">
         {!empty ? (
           <Button
             minimal
@@ -523,7 +523,7 @@ const QuerySearchBox = memo(() => {
           />
         ) : (
           <span
-            className="bp5-icon bp5-icon-search"
+            className="bp6-icon bp6-icon-search"
             onClick={() => {
               ref?.current?.focus()
             }}
@@ -534,7 +534,7 @@ const QuerySearchBox = memo(() => {
         )}
         <input
           style={{ width: active || !empty ? '200px' : '60px' }}
-          className="bp5-input"
+          className="bp6-input"
           onFocus={() => setActive(true)}
           onBlur={() => setActive(false)}
           ref={ref}
@@ -886,7 +886,7 @@ export const CharacterListColumn = memo(
       <div
         role="menuitem"
         tabIndex={0}
-        className={`bp5-menu-item ${className || ''}`}
+        className={`bp6-menu-item ${className || ''}`}
         style={{
           display: 'flex',
           flexDirection: 'row',
@@ -924,8 +924,8 @@ export function createSimpleExtraField<
 
       return (
         <CharacterListColumn width={width}>
-          <div className="bp5-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp5-text-overflow-ellipsis" title={text} style={style}>
+          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp6-text-overflow-ellipsis" title={text} style={style}>
               {text}
             </div>
           </div>

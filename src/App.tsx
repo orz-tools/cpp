@@ -71,22 +71,23 @@ const ReloadDataButton = memo(() => {
   const dm = ga.getDataManager()
   const setError = useSetAtom(ErrAtom)
   const { loading, send } = useRequest(async () => {
-    const reload = AppToaster.show(
+    const toaster = await AppToaster
+    const reload = toaster.show(
       { message: gt.gettext('更新数据中…'), isCloseButtonShown: false, timeout: 0, intent: 'primary' },
       'reload',
     )
     try {
       const r = await dm.refresh()
-      AppToaster.dismiss(reload)
+      toaster.dismiss(reload)
       if (r || dm.dataUpdatedAfterInit) {
-        AppToaster.show({ message: gt.gettext('数据已更新，正在重新载入…'), intent: 'success' }, reload)
+        toaster.show({ message: gt.gettext('数据已更新，正在重新载入…'), intent: 'success' }, reload)
         location.reload()
       } else {
-        AppToaster.show({ message: gt.gettext('未找到新数据') }, reload)
+        toaster.show({ message: gt.gettext('未找到新数据') }, reload)
       }
     } catch (e) {
       console.log(e)
-      AppToaster.dismiss(reload)
+      toaster.dismiss(reload)
       setError({ error: e, context: gt.pgettext('error context', '检查数据更新失败') })
     }
   })
@@ -161,7 +162,7 @@ const App = memo(() => {
     void (async () => {
       const result = await ga.getDataManager().checkUpdates()
       if (result)
-        AppToaster.show(
+        (await AppToaster).show(
           {
             message: gt.gettext('数据已更新，请重新载入页面'),
             intent: 'success',
