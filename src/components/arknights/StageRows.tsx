@@ -1,20 +1,27 @@
 import { Button, Callout, Checkbox, Icon, NonIdealState, SegmentedControl, Tag } from '@blueprintjs/core'
 import { memo } from 'react'
-import { useGameAdapter } from '../../Cpp'
+import { Level, useGameAdapter } from '../../Cpp'
 import type { IStageInfo, IZoneInfo } from '../../pkg/cpp-basic'
 import { MaterialGroup, StageDrop } from '../../pkg/cpp-arknights/stageEfficiency'
+import { AK_ITEM_VIRTUAL_EXP } from '../../pkg/cpp-arknights/types'
 import { ArknightsStageCategory } from '../../pkg/cpp-arknights/zones'
 import { gt } from '../../pkg/gt'
 import type { StageToggleProps } from '../ConfigUi'
 import { ItemIcon } from '../Icons'
 import { SampleTag } from '../Value'
 import {
+  MaterialStock,
   StageModel,
   StageView,
   efficiencyTone,
+  formatCount,
+  formatCountShort,
   formatEfficiency,
   formatEfficiencyShort,
+  levelName,
   materialName,
+  stockItemOf,
+  useMaterialStock,
 } from './stagePanelModel'
 
 export const EfficiencyText = memo(
@@ -125,6 +132,49 @@ export const MaterialStageRow = memo(
 
 const TOP = 3
 
+/** 需求的来历：哪一档目标，直接、间接各多少；「作战记录」一组还要说明数字是经验 */
+function needNote(groupId: string, level: Level, s: MaterialStock) {
+  const note =
+    stockItemOf(groupId) === AK_ITEM_VIRTUAL_EXP
+      ? gt.pgettext(
+          'stage panel',
+          '按%s$level目标：直接需求 %s$direct，间接需求 %s$indirect；数字都是经验，库存是作战记录折成的经验',
+        ) /* I10N: %s$level: 星标, 计划 or 毕业 */
+      : gt.pgettext(
+          'stage panel',
+          '按%s$level目标：直接需求 %s$direct，间接需求 %s$indirect',
+        ) /* I10N: %s$level: 星标, 计划 or 毕业 */
+  return note
+    .replaceAll('%s$level', levelName(level))
+    .replaceAll('%s$direct', formatCount(s.direct))
+    .replaceAll('%s$indirect', formatCount(s.indirect))
+}
+
+/** 进入一种材料后，标题下的需求、库存 */
+export const StockSummary = memo(({ groupId }: { groupId: string }) => {
+  const { level, stockOf } = useMaterialStock()
+  const s = stockOf(groupId)
+  const lack = s.need - s.have
+  return (
+    <div className="cpp-stages-stock">
+      <span>
+        {gt.pgettext('stage panel', '需求')} <b>{formatCount(s.need)}</b>
+      </span>
+      <span>
+        {gt.pgettext('stage panel', '库存')} <b>{formatCount(s.have)}</b>
+      </span>
+      {lack > 0 ? (
+        <span>
+          {gt.pgettext('stage panel', '还缺')} <b>{formatCount(lack)}</b>
+        </span>
+      ) : (
+        <span>{gt.pgettext('stage panel', '够了')}</span>
+      )}
+      <span className="cpp-stages-stock-note">{needNote(groupId, level, s)}</span>
+    </div>
+  )
+})
+
 export const MaterialGroupCard = memo(
   ({
     model,
@@ -133,21 +183,39 @@ export const MaterialGroupCard = memo(
     ...toggle
   }: { model: StageModel; group: MaterialGroup; onOpen: (itemId: string) => void } & StageToggleProps) => {
     const ga = useGameAdapter()
+    const { level, stockOf } = useMaterialStock()
+    const s = stockOf(group.itemId)
     const top: string[] = []
     for (const id of group.stageIds) {
       if (top.length >= TOP || !model.efficiencies.get(id)?.ranked) break
       top.push(id)
     }
     const more = group.stageIds.length - top.length
+    const name = materialName(ga, group.itemId)
     return (
       <div className="cpp-stages-group">
-        <button
-          type="button"
-          className="cpp-stages-group-head"
-          title={materialName(ga, group.itemId)}
-          onClick={() => onOpen(group.itemId)}
-        >
-          <MaterialLabel itemId={group.itemId} size={24} />
+        <button type="button" className="cpp-stages-group-head" title={name} onClick={() => onOpen(group.itemId)}>
+          {/* 库存像游戏仓库一样叠在图标右下角 */}
+          <span className="cpp-stages-stock-icon">
+            <ItemIcon item={ga.getItem(group.itemId)} size={28} />
+            <span
+              className="cpp-stages-stock-badge"
+              title={gt.pgettext('stage panel', '库存 %s').replaceAll('%s', formatCount(s.have))}
+            >
+              {formatCountShort(s.have)}
+            </span>
+          </span>
+          <span className="cpp-stages-material-name">{name}</span>
+          <span
+            className={'cpp-stages-need' + (s.need > s.have ? ' cpp-stages-need-short' : '')}
+            title={
+              gt.pgettext('stage panel', '需求 %s').replaceAll('%s', formatCount(s.need)) +
+              '\n' +
+              needNote(group.itemId, level, s)
+            }
+          >
+            {gt.pgettext('stage panel', '需 %s').replaceAll('%s', formatCountShort(s.need))}
+          </span>
           <EfficiencyText value={group.best} />
           <Icon icon="chevron-right" />
         </button>

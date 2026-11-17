@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import type { IStageInfo } from '../cpp-basic/types'
-import { RECORDS_GROUP, computeStageEfficiencies, eliteSeries, groupByMaterial } from './stageEfficiency'
+import {
+  RECORDS_GROUP,
+  arrangeMaterialGroups,
+  computeStageEfficiencies,
+  eliteSeries,
+  groupByMaterial,
+} from './stageEfficiency'
 
 type Drops = Record<string, [drops: number, samples: number]>
 
@@ -150,26 +156,6 @@ describe('computeStageEfficiencies', () => {
 })
 
 describe('groupByMaterial', () => {
-  const sortIds: Record<string, string> = { '30013': '1', '31043': '2', '30063': '3', '4001': '9' }
-  const sortIdOf = (id: string) => sortIds[id] ?? id
-
-  it('orders groups by their best efficiency, then by warehouse order', () => {
-    const groups = groupByMaterial(
-      compute([
-        // 1.2
-        stage('event', 10, { '31043': [600, 1000] }),
-        // 1.0, and 30063 ties at 1.0 one rounding error below
-        stage('main', 10, { '30013': [1000, 1000] }),
-        stage('other', 25, { '30063': [999999, 1000000] }),
-        // 0.9
-        stage('ce', 10, { '4001': [2250, Infinity] }),
-      ]),
-      sortIdOf,
-    )
-    expect(groups.map((x) => x.itemId)).toEqual(['31043', '30013', '30063', '4001'])
-    expect(groups[0].best).toBeCloseTo(1.2)
-  })
-
   it('keeps low-sample stages out of the best efficiency and puts them last', () => {
     const groups = groupByMaterial(
       compute([
@@ -178,19 +164,63 @@ describe('groupByMaterial', () => {
         stage('a', 10, { '30013': [900, 1000] }, '1'),
         stage('c', 10, { '30013': [1000, 1000] }),
       ]),
-      sortIdOf,
     )
     expect(groups).toEqual([{ itemId: '30013', stageIds: ['c', 'a', 'b', 'few'], best: expect.closeTo(1) }])
   })
 
-  it('leaves the best efficiency empty when no stage counts, and puts the group last', () => {
+  it('leaves the best efficiency empty when no stage counts', () => {
     const groups = groupByMaterial(
       compute([stage('few', 10, { '31043': [600, 100] }), stage('main', 10, { '30013': [100, 1000] })]),
-      sortIdOf,
     )
-    expect(groups.map((x) => [x.itemId, x.best])).toEqual([
-      ['30013', expect.closeTo(0.1)],
-      ['31043', undefined],
+    expect(Object.fromEntries(groups.map((x) => [x.itemId, x.best]))).toEqual({
+      '30013': expect.closeTo(0.1),
+      '31043': undefined,
+    })
+  })
+})
+
+describe('arrangeMaterialGroups', () => {
+  type Section = 'material' | 'chip' | 'other'
+  const SECTIONS: Section[] = ['material', 'chip', 'other']
+  const sections: Record<string, Section> = { '3221': 'chip', '3261': 'chip', '4001': 'other', '2004': 'other' }
+  const sectionOf = (id: string) => sections[id] ?? 'material'
+  // 仓库顺序：全新装置在固源岩组前面，作战记录在龙门币前面
+  const depot: Record<string, string> = { '30063': '1', '30013': '2', '31043': '3', '2004': '1', '4001': '2' }
+  const depotKeyOf = (id: string) => depot[id] ?? id
+  const arrange = (stages: IStageInfo[]) =>
+    arrangeMaterialGroups(groupByMaterial(compute(stages)), SECTIONS, sectionOf, depotKeyOf).map((x) => [
+      x.section,
+      x.groups.map((g) => g.itemId),
+    ])
+
+  it('puts the groups above 100% first, by their best efficiency, and the rest by section and depot order', () => {
+    expect(
+      arrange([
+        stage('event-1', 10, { '3221': [556, 1000] }), // 1.0008，显示为 100.1%
+        stage('event-2', 10, { '31043': [600, 1000] }), // 1.2
+        stage('main-1', 10, { '30013': [1000, 1000] }),
+        stage('main-2', 10, { '30063': [360, 1000] }), // 0.9
+        stage('ce', 10, { '4001': [2500, Infinity] }),
+        stage('ls', 10, { '2004': [1000, 1000] }), // 0.8，只有作战记录
+        stage('pr', 10, { '3261': [500, 1000] }),
+      ]),
+    ).toEqual([
+      ['up', ['31043', '3221']],
+      ['material', ['30063', '30013']],
+      ['chip', ['3261']],
+      ['other', ['2004', '4001']],
+    ])
+  })
+
+  it('counts a best efficiency only as shown, so 100.0% is not up', () => {
+    // 1.0004 显示为 100.0%
+    expect(arrange([stage('main', 25, { '30063': [1000400, 1000000] })])).toEqual([['material', ['30063']]])
+  })
+
+  it('files a group without a best efficiency under its section and leaves out empty sections', () => {
+    expect(arrange([stage('few', 10, { '31043': [600, 100] }), stage('pr', 10, { '3261': [500, 1000] })])).toEqual([
+      ['material', ['31043']],
+      ['chip', ['3261']],
     ])
   })
 })

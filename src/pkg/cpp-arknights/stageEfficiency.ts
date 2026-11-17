@@ -120,11 +120,8 @@ export interface MaterialGroup {
   best: number | undefined
 }
 
-/** 按 best 从高到低，best 相同时按 sortIdOf；best 为 undefined 的组排在最后 */
-export function groupByMaterial(
-  efficiencies: ReadonlyMap<string, StageEfficiency>,
-  sortIdOf: (itemId: string) => string,
-): MaterialGroup[] {
+/** 组的先后由 arrangeMaterialGroups 决定 */
+export function groupByMaterial(efficiencies: ReadonlyMap<string, StageEfficiency>): MaterialGroup[] {
   const members = new Map<string, StageEfficiency[]>()
   for (const e of efficiencies.values()) {
     for (const g of e.groups) {
@@ -146,5 +143,32 @@ export function groupByMaterial(
     for (const x of list) if (x.ranked && (best === undefined || x.efficiency! > best)) best = x.efficiency
     groups.push({ itemId, stageIds: list.map((x) => x.stageId), best })
   }
-  return groups.sort((a, b) => shown(b.best) - shown(a.best) || compareStrings(sortIdOf(a.itemId), sortIdOf(b.itemId)))
+  return groups
+}
+
+/** 最高效率超过 100%：只有不参与定价的关卡能超过，实际上就是开放中的活动关比常驻关划算 */
+const isUpGroup = (group: MaterialGroup) => shown(group.best) > 1000
+
+export interface ArrangedSection<S> {
+  section: S | 'up'
+  groups: MaterialGroup[]
+}
+
+/**
+ * up 的组单独一段排在最前，按最高效率从高到低；其余按 sectionOf 分到 sections 的各段，段内按 depotKeyOf（物品分类、仓库顺序）。
+ * 没有组的段不出现。
+ */
+export function arrangeMaterialGroups<S>(
+  groups: readonly MaterialGroup[],
+  sections: readonly S[],
+  sectionOf: (itemId: string) => S,
+  depotKeyOf: (itemId: string) => string,
+): ArrangedSection<S>[] {
+  const byDepot = (a: MaterialGroup, b: MaterialGroup) => compareStrings(depotKeyOf(a.itemId), depotKeyOf(b.itemId))
+  const up = groups.filter(isUpGroup).sort((a, b) => shown(b.best) - shown(a.best) || byDepot(a, b))
+  const rest = groups.filter((g) => !isUpGroup(g)).sort(byDepot)
+  return [
+    { section: 'up' as const, groups: up },
+    ...sections.map((section) => ({ section, groups: rest.filter((g) => sectionOf(g.itemId) === section) })),
+  ].filter((x) => x.groups.length > 0)
 }

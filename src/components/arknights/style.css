@@ -1181,6 +1181,41 @@ p > .cpp-charstat-det-tag,
   color: var(--bp-typography-color-muted, #5f6b7c);
 }
 
+.cpp-stages-stock-icon {
+  position: relative;
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+
+/* 游戏仓库的数量角标：深色底、白字，压在图标右下角 */
+.cpp-stages-stock-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -2px;
+  padding: 0 2px;
+  border-radius: 2px;
+  background: rgba(28, 33, 39, 0.78);
+  color: #fff;
+  font-size: 10.5px;
+  line-height: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cpp-stages-need {
+  flex: none;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--bp-typography-color-muted, #5f6b7c);
+}
+
+.cpp-stages-need-short {
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+  font-weight: 600;
+}
+
 .cpp-stages-group .cpp-stages-mrow {
   padding-left: 4px;
 }
@@ -1221,6 +1256,35 @@ p > .cpp-charstat-det-tag,
 .cpp-stages-drill-title .cpp-stages-muted {
   flex: none;
   font-size: 12px;
+}
+
+.cpp-stages-stock {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 12.5px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--bp-typography-color-muted, #5f6b7c);
+}
+
+.cpp-stages-stock b {
+  font-weight: 600;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-stages-stock-note {
+  color: var(--bp-palette-gray-3, #8f99a8);
+}
+
+/* 和标题文字对齐：28px 图标加 8px 间距 */
+.cpp-stages-drill-head .cpp-stages-stock {
+  margin-top: 6px;
+  padding-left: 36px;
+}
+
+.cpp-stages-wide-drill-head .cpp-stages-stock {
+  margin-left: 10px;
 }
 
 .cpp-stages-drill-head ~ .cpp-stages-mrow {

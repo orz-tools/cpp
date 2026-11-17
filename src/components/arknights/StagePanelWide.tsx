@@ -15,15 +15,15 @@ import {
   MaterialLabel,
   StageCheckbox,
   StageViewSwitch,
+  StockSummary,
   ValuesFailedCallout,
   ZoneShortName,
 } from './StageRows'
 import {
-  MATERIAL_SECTIONS,
-  MaterialSection,
   StageModel,
   efficiencyTone,
   materialName,
+  materialSectionName,
   matchesStage,
   useMaterialFilter,
   useScopedQuery,
@@ -213,17 +213,6 @@ const ChapterWide = memo(
   },
 )
 
-function sectionName(section: MaterialSection) {
-  switch (section) {
-    case 'material':
-      return gt.pgettext('stage panel', '材料')
-    case 'chip':
-      return gt.pgettext('stage panel', '芯片')
-    case 'other':
-      return gt.pgettext('stage panel', '其他')
-  }
-}
-
 const MaterialWide = memo(
   ({
     model,
@@ -236,24 +225,20 @@ const MaterialWide = memo(
     toggle: StageToggleProps
     onOpen: (itemId: string) => void
   }) => {
-    const groups = useMaterialFilter(model, query)
+    const sections = useMaterialFilter(model, query)
     return (
       <div className="cpp-stages-wide-scroll">
-        <MaterialEmpty model={model} shown={groups.length} />
-        {MATERIAL_SECTIONS.map((section) => {
-          const list = groups.filter((g) => model.sectionOf(g.itemId) === section)
-          if (list.length === 0) return null
-          return (
-            <section key={section}>
-              <div className="cpp-stages-wide-section">{sectionName(section)}</div>
-              <div className="cpp-stages-wide-columns">
-                {list.map((g) => (
-                  <MaterialGroupCard key={g.itemId} model={model} group={g} onOpen={onOpen} {...toggle} />
-                ))}
-              </div>
-            </section>
-          )
-        })}
+        <MaterialEmpty model={model} shown={sections.length} />
+        {sections.map(({ section, groups }) => (
+          <section key={section}>
+            <div className="cpp-stages-wide-section">{materialSectionName(section)}</div>
+            <div className="cpp-stages-wide-columns">
+              {groups.map((g) => (
+                <MaterialGroupCard key={g.itemId} model={model} group={g} onOpen={onOpen} {...toggle} />
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
     )
   },
@@ -306,6 +291,7 @@ const DrillWide = memo(
               {gt.pgettext('stage panel', '全部材料')}
             </Button>
             <MaterialLabel itemId={group.itemId} size={24} />
+            <StockSummary groupId={group.itemId} />
           </div>
           {ids.length === 0 ? (
             <NonIdealState icon="search" title={gt.gettext('无匹配关卡')} />
@@ -351,6 +337,7 @@ export const StagesWide = memo(() => {
     body = <MaterialWide model={model} query={query} toggle={toggle} onOpen={nav.openMaterial} />
   }
   const overview = nav.view === 'material' && !nav.drill
+  const hint = overview ? gt.pgettext('stage panel', '图标角上是库存，「需」是需求；点材料看它的全部关卡') : undefined
   const actOn = shownIds
 
   return (
@@ -365,9 +352,10 @@ export const StagesWide = memo(() => {
           value={query}
           onChange={(e) => setQuery(e.currentTarget.value)}
         />
-        {overview ? (
-          <span className="cpp-stages-muted cpp-stages-wide-hint">
-            {gt.pgettext('stage panel', '每种材料一组，按最高效率排序；点材料看它的全部关卡')}
+        {hint ? (
+          // 窄窗口下英文会被截断，悬停看全文
+          <span className="cpp-stages-muted cpp-stages-wide-hint" title={hint}>
+            {hint}
           </span>
         ) : null}
         <span className="cpp-stages-spacer" />

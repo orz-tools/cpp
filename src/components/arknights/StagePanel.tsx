@@ -17,12 +17,14 @@ import {
   MaterialStageRow,
   StageCheckbox,
   StageViewSwitch,
+  StockSummary,
   ValuesFailedCallout,
 } from './StageRows'
 import {
   StageModel,
   categoryLabel,
   matchesStage,
+  materialSectionName,
   stageCategoryFilterAtom,
   stageZoneOpenAtom,
   useChapterCategories,
@@ -154,12 +156,17 @@ const MaterialOverview = memo(
     toggle: StageToggleProps
     onOpen: (itemId: string) => void
   }) => {
-    const groups = useMaterialFilter(model, query)
+    const sections = useMaterialFilter(model, query)
     return (
       <>
-        <MaterialEmpty model={model} shown={groups.length} />
-        {groups.map((g) => (
-          <MaterialGroupCard key={g.itemId} model={model} group={g} onOpen={onOpen} {...toggle} />
+        <MaterialEmpty model={model} shown={sections.length} />
+        {sections.map(({ section, groups }) => (
+          <section key={section}>
+            <div className="cpp-stages-cat">{materialSectionName(section)}</div>
+            {groups.map((g) => (
+              <MaterialGroupCard key={g.itemId} model={model} group={g} onOpen={onOpen} {...toggle} />
+            ))}
+          </section>
         ))}
       </>
     )
@@ -196,6 +203,7 @@ const MaterialDrill = memo(
                 .replaceAll('%d', String(count))}
             </span>
           </div>
+          <StockSummary groupId={group.itemId} />
         </div>
         {ids.length === 0 ? <NonIdealState icon="search" title={gt.gettext('无匹配关卡')} /> : null}
         {ids.map((id) => (

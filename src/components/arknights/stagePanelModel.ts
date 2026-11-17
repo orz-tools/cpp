@@ -1,12 +1,16 @@
-import { atom, useAtom } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import { useCallback, useMemo, useState } from 'react'
-import { useCpp, useGameAdapter, useGameDataMemo } from '../../Cpp'
+import { FarmLevel, Level, useAtoms, useCpp, useGameAdapter, useGameDataMemo } from '../../Cpp'
+import { getLocale } from '../../locales'
 import type { IStageCategory, IStageInfo, IZoneInfo } from '../../pkg/cpp-basic'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
+import { AK_ITEM_VIRTUAL_EXP } from '../../pkg/cpp-arknights/types'
 import {
+  ArrangedSection,
   MaterialGroup,
   RECORDS_GROUP,
   StageEfficiency,
+  arrangeMaterialGroups,
   computeStageEfficiencies,
   groupByMaterial,
 } from '../../pkg/cpp-arknights/stageEfficiency'
@@ -26,6 +30,7 @@ export const stageZoneOpenAtom = atom<Readonly<Record<string, boolean>>>({})
 
 export type MaterialSection = 'material' | 'chip' | 'other'
 export const MATERIAL_SECTIONS: MaterialSection[] = ['material', 'chip', 'other']
+export type MaterialSectionGroups = ArrangedSection<MaterialSection>
 
 export interface StageModel {
   stages: Record<string, IStageInfo>
@@ -34,11 +39,12 @@ export interface StageModel {
   categories: IStageCategory[]
   valuesOk: boolean
   efficiencies: Map<string, StageEfficiency>
-  /** 按最高效率排序 */
+  /** 按材料时的分段：up 的一段在最前，其余按物品分类 */
+  sections: MaterialSectionGroups[]
+  /** sections 里的全部组，按显示的顺序 */
   groups: MaterialGroup[]
   /** 章节里计入排名的关卡的最高效率 */
   zoneBest: Map<string, number>
-  sectionOf: (itemId: string) => MaterialSection
   /** 大窗口材料格的顺序 */
   depotOrder: string[]
 }
@@ -58,9 +64,6 @@ function buildStageModel(ga: ArknightsAdapter): StageModel {
     isRecord: (id) => ga.getExpItemValue(id) != null,
     minSamples: ga.getItemValueConfig().minSamples,
   })
-  const sortIdOf = (id: string) => ga.getItem(id)?.sortId ?? id
-  const groups = groupByMaterial(efficiencies, sortIdOf)
-
   const zoneBest = new Map<string, number>()
   for (const e of efficiencies.values()) {
     if (!e.ranked) continue
@@ -69,10 +72,14 @@ function buildStageModel(ga: ArknightsAdapter): StageModel {
     if (best === undefined || e.efficiency! > best) zoneBest.set(zoneId, e.efficiency!)
   }
 
+  const sortIdOf = (id: string) => ga.getItem(id)?.sortId ?? id
   const categoryOf = (id: string) => ga.getItem(id)?.inventoryCategory ?? ''
   const sectionOf = (id: string) => sectionOfCategory(categoryOf(id))
   const depotKey = (id: string) => [MATERIAL_SECTIONS.indexOf(sectionOf(id)), categoryOf(id), sortIdOf(id)].join(' ')
-  const depotOrder = groups
+  const unordered = groupByMaterial(efficiencies)
+  const sections = arrangeMaterialGroups(unordered, MATERIAL_SECTIONS, sectionOf, depotKey)
+  const groups = sections.flatMap((x) => x.groups)
+  const depotOrder = unordered
     .map((g) => [depotKey(g.itemId), g.itemId] as const)
     .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
     .map(([, id]) => id)
@@ -89,9 +96,9 @@ function buildStageModel(ga: ArknightsAdapter): StageModel {
     categories,
     valuesOk,
     efficiencies,
+    sections,
     groups,
     zoneBest,
-    sectionOf,
     depotOrder,
   }
 }
@@ -179,16 +186,112 @@ export function materialName(ga: { getItem(id: string): { name: string } }, item
   return itemId === RECORDS_GROUP ? gt.pgettext('stage panel', '作战记录') : ga.getItem(itemId).name
 }
 
-export function useMaterialFilter(model: StageModel, query: string): MaterialGroup[] {
+export interface MaterialStock {
+  /** 直接需求 + 间接需求，和物品栏里这种材料的一行一致 */
+  need: number
+  direct: number
+  indirect: number
+  have: number
+}
+
+/** 「作战记录」组的数字取物品栏的「经验」一行，它把四种作战记录折成经验 */
+export const stockItemOf = (groupId: string) => (groupId === RECORDS_GROUP ? AK_ITEM_VIRTUAL_EXP : groupId)
+
+/** 刷图规划要满足的那一档；「以…为目标」只影响规划怎么刷，不影响要满足哪一档 */
+function farmTarget(farmLevel: FarmLevel): Level {
+  switch (farmLevel) {
+    case FarmLevel.StarOnly:
+    case FarmLevel.StarForGoal:
+    case FarmLevel.StarForFinished:
+      return Level.Star
+    case FarmLevel.Finished:
+      return Level.Finished
+    default:
+      return Level.Goal
+  }
+}
+
+/** 和物品栏顶上那几个按钮同名 */
+export function levelName(level: Level) {
+  switch (level) {
+    case Level.Star:
+      return gt.pgettext('item list view label', '星标')
+    case Level.Goal:
+      return gt.pgettext('item list view label', '计划')
+    case Level.Finished:
+      return gt.pgettext('item list view label', '毕业')
+  }
+}
+
+export function useMaterialStock(): { level: Level; stockOf: (groupId: string) => MaterialStock } {
+  const cpp = useCpp()
+  const atoms = useAtoms()
+  const level = farmTarget(useAtomValue(cpp.preferenceAtoms.farmLevelAtom))
+  const requirements = useAtomValue(
+    level === Level.Star
+      ? atoms.allStarredTaskRequirements
+      : level === Level.Goal
+        ? atoms.allGoalTaskRequirements
+        : atoms.allFinishedTaskRequirements,
+  )
+  const indirects = useAtomValue(
+    level === Level.Star
+      ? atoms.allStarredIndirects
+      : level === Level.Goal
+        ? atoms.allGoalIndirects
+        : atoms.allFinishedIndirects,
+  )
+  const quantities = useAtomValue(atoms.itemQuantities)
+  const exp = useAtomValue(atoms.itemQuantity(AK_ITEM_VIRTUAL_EXP))
+  const stockOf = useCallback(
+    (groupId: string) => {
+      const id = stockItemOf(groupId)
+      const direct = requirements[id] || 0
+      const indirect = indirects[id] || 0
+      const have = id === AK_ITEM_VIRTUAL_EXP ? exp : quantities[id] || 0
+      return { need: direct + indirect, direct, indirect, have }
+    },
+    [requirements, indirects, quantities, exp],
+  )
+  return { level, stockOf }
+}
+
+/** 没有匹配的段不出现 */
+export function useMaterialFilter(model: StageModel, query: string): MaterialSectionGroups[] {
   const ga = useGameAdapter()
   const q = query.trim().toLowerCase()
-  if (!q) return model.groups
-  return model.groups.filter((g) => materialName(ga, g.itemId).toLowerCase().includes(q))
+  if (!q) return model.sections
+  return model.sections
+    .map((x) => ({ ...x, groups: x.groups.filter((g) => materialName(ga, g.itemId).toLowerCase().includes(q)) }))
+    .filter((x) => x.groups.length > 0)
+}
+
+export function materialSectionName(section: MaterialSectionGroups['section']) {
+  switch (section) {
+    case 'up':
+      return gt.pgettext('stage panel', '效率超过 100%')
+    case 'material':
+      return gt.pgettext('stage panel', '材料')
+    case 'chip':
+      return gt.pgettext('stage panel', '芯片')
+    case 'other':
+      return gt.pgettext('stage panel', '其他')
+  }
 }
 
 export function matchesStage(stage: IStageInfo, query: string) {
   const q = query.trim().toLowerCase()
   return !q || stage.code.toLowerCase().includes(q) || stage.name.toLowerCase().includes(q)
+}
+
+export function formatCount(n: number) {
+  return n.toLocaleString('en-US')
+}
+
+/** 组标题里的数字：龙门币、经验动辄几百万，一万以上和养成成本一样按界面语言缩写 */
+export function formatCountShort(n: number) {
+  if (n < 10000) return `${n}`
+  return new Intl.NumberFormat(getLocale().replace('_', '-'), { notation: 'compact' }).format(n)
 }
 
 /** 显示出来的千分数：比较大小、定颜色都按显示的一位小数 */
