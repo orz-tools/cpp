@@ -127,11 +127,11 @@ const BrandRow = memo(
     const ga = useArknights()
     const activate = useActivateSkin()
     let owned = 0
-    let available = 0
+    let obtainable = 0
     for (const skin of brand.skins) {
       const s = model.states.get(skin.id)!
       if (s.owned) owned++
-      else if (s.available.length > 0) available++
+      if (s.obtainable) obtainable++
     }
     const name = brand.name || gt.pgettext('skins', '其他')
     return (
@@ -146,9 +146,9 @@ const BrandRow = memo(
           <Icon icon={open ? 'chevron-down' : 'chevron-right'} size={14} />
           <span className="cpp-skins-brand-name">{name}</span>
           <span className="cpp-skins-brand-cap">{brand.capitalName}</span>
-          {available > 0 ? (
+          {obtainable > 0 ? (
             <span className="cpp-skins-avail" title={gt.pgettext('skins', '缺的里面现在能拿到的件数')}>
-              {gt.pgettext('skins', '能拿 %d').replaceAll('%d', String(available))}
+              {gt.pgettext('skins', '可获得 %d').replaceAll('%d', String(obtainable))}
             </span>
           ) : null}
           <span className="cpp-skins-brand-count" title={gt.pgettext('skins', '已有 / 全部')}>

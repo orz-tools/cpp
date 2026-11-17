@@ -4407,7 +4407,7 @@ msgctxt "skins"
 msgid "你的获得"
 msgstr "Acquired"
 
-#: src/components/arknights/SkinControls.tsx:62
+#: src/components/arknights/SkinControls.tsx:63
 msgctxt "skins"
 msgid "全部"
 msgstr "All"
@@ -4434,17 +4434,22 @@ msgctxt "skins"
 msgid "危机合约兑换"
 msgstr "Contract exchange"
 
-#: src/components/arknights/SkinControls.tsx:117
+#: src/components/arknights/SkinControls.tsx:126
 msgctxt "skins"
 msgid "只看已有、但干员还没有的时装"
 msgstr "Only owned outfits whose operator you do not have"
 
-#: src/components/arknights/SkinControls.tsx:110
+#: src/components/arknights/SkinControls.tsx:119
 msgctxt "skins"
 msgid "只看现在能用时装自选凭证兑换的"
 msgstr "Only outfits an outfit voucher can buy now"
 
-#: src/components/arknights/SkinControls.tsx:108
+#: src/components/arknights/SkinControls.tsx:112
+msgctxt "skins"
+msgid "只看缺的、现在能拿到的"
+msgstr "Only missing outfits you can get now"
+
+#: src/components/arknights/SkinControls.tsx:117
 msgctxt "skins"
 msgid "可用券"
 msgstr "Voucher"
@@ -4453,6 +4458,16 @@ msgstr "Voucher"
 msgctxt "skins"
 msgid "可用时装自选凭证"
 msgstr "An outfit voucher can buy it"
+
+#: src/components/arknights/SkinControls.tsx:110
+msgctxt "skins"
+msgid "可获得"
+msgstr "Obtainable"
+
+#: src/components/arknights/SkinsPanel.tsx:151
+msgctxt "skins"
+msgid "可获得 %d"
+msgstr "%d obtainable"
 
 #: src/components/arknights/SkinsWide.tsx:248
 msgctxt "skins"
@@ -4476,7 +4491,7 @@ msgctxt "skins"
 msgid "完成"
 msgstr "Done"
 
-#: src/components/arknights/SkinControls.tsx:64
+#: src/components/arknights/SkinControls.tsx:65
 #: src/components/arknights/SkinImages.tsx:95
 #: src/components/arknights/SkinsSection.tsx:74
 msgctxt "skins"
@@ -4501,8 +4516,8 @@ msgctxt "skins"
 msgid "常驻"
 msgstr "Permanent"
 
-#: src/components/arknights/SkinControls.tsx:131
-#: src/components/arknights/SkinControls.tsx:132
+#: src/components/arknights/SkinControls.tsx:140
+#: src/components/arknights/SkinControls.tsx:141
 msgctxt "skins"
 msgid "干员或时装名"
 msgstr "Operator or outfit"
@@ -4563,7 +4578,7 @@ msgctxt "skins"
 msgid "暂时拿不到"
 msgstr "Not available now"
 
-#: src/components/arknights/SkinControls.tsx:115
+#: src/components/arknights/SkinControls.tsx:124
 msgctxt "skins"
 msgid "有时装没干员"
 msgstr "Outfit, no operator"
@@ -4636,14 +4651,14 @@ msgctxt "skins"
 msgid "精英零"
 msgstr "Elite 0"
 
-#: src/components/arknights/SkinControls.tsx:63
+#: src/components/arknights/SkinControls.tsx:64
 #: src/components/arknights/SkinsWide.tsx:161
 msgctxt "skins"
 msgid "缺"
 msgstr "Missing"
 
 #. %1: missing, %2: total
-#: src/components/arknights/SkinControls.tsx:158
+#: src/components/arknights/SkinControls.tsx:168
 msgctxt "skins"
 msgid "缺 %1/%2"
 msgstr "%1/%2 missing"
@@ -4652,11 +4667,6 @@ msgstr "%1/%2 missing"
 msgctxt "skins"
 msgid "缺的里面现在能拿到的件数"
 msgstr "Missing outfits you can get now"
-
-#: src/components/arknights/SkinsPanel.tsx:151
-msgctxt "skins"
-msgid "能拿 %d"
-msgstr "%d to get"
 
 #. %s: end date and time
 #: src/components/arknights/SkinImages.tsx:68
@@ -5355,6 +5365,9 @@ msgstr "Heybox"
 #~ msgstr ""
 #~ "One group per material, best first. Click a material to see all its "
 #~ "stages."
+#~ msgctxt "skins"
+#~ msgid "能拿 %d"
+#~ msgstr "%d to get"
 
 #~ msgctxt "predefined query"
 #~ msgid "专三价值（能用）"

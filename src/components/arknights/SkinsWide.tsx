@@ -250,11 +250,11 @@ const BrandSteps = memo(
         </div>
         {model.catalog.brands.map((brand) => {
           let owned = 0
-          let available = 0
+          let obtainable = 0
           for (const skin of brand.skins) {
             const s = model.states.get(skin.id)!
             if (s.owned) owned++
-            else if (s.available.length > 0) available++
+            if (s.obtainable) obtainable++
           }
           const total = brand.skins.length
           const name = brand.name || gt.pgettext('skins', '其他')
@@ -269,7 +269,7 @@ const BrandSteps = memo(
               onClick={() => onPick(brand.id)}
             >
               <i style={{ width: `${(owned / total) * 100}%` }} />
-              <em style={{ left: `${(owned / total) * 100}%`, width: `${(available / total) * 100}%` }} />
+              <em style={{ left: `${(owned / total) * 100}%`, width: `${(obtainable / total) * 100}%` }} />
               <span className="cpp-skins-step-name">{name}</span>
               <span className="cpp-skins-step-count">
                 {owned}/{total}
