@@ -169,18 +169,15 @@ export class YituliuSurveySource implements SurveySource {
       return null
     }
 
-    const modSurveys = survey
-      ? ({
-          X: survey.modX,
-          Y: survey.modY,
-          D: survey.modD,
-        } as Record<string, ArknightsDataManager['raw']['yituliuSurvey']['result'][0]['modX']>)
-      : null
-    if (!modSurveys) {
-      return null
+    const modSurveys: Record<string, ArknightsDataManager['raw']['yituliuSurvey']['result'][0]['modA']> = {
+      X: survey.modX,
+      Y: survey.modY,
+      D: survey.modD,
+      A: survey.modA,
+      B: survey.modB,
     }
 
-    const ss = modSurveys?.[equip.raw.typeName2!]
+    const ss = modSurveys[equip.raw.typeName2!]
     if (!ss) {
       return null
     }

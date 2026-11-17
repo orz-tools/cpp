@@ -35,7 +35,8 @@ import {
 } from './itemValue'
 import { EnemyLevel, MissionCatalog, MissionModule, MissionStageInfo } from './moduleMissions'
 import { SkinCatalog, buildSkinCatalog } from './skins'
-import { HeyboxSurveySource, YituliuSurveySource, toTierShares } from './survey'
+import { editableUniEquips } from './statusEdit'
+import { HeyboxSurveySource, SurveySource, YituliuSurveySource, toTierShares } from './survey'
 import { TrainingCost } from './trainingCost'
 import {
   AK_FIXED_DROP_STAGES,
@@ -68,6 +69,14 @@ const eliteOptions = () =>
   range(0, 2).map((x) => ({ value: x, label: gt.pgettext('query value', '精英 %d').replaceAll('%d', `${x}`) }))
 const masteryOptions = () =>
   range(0, 3).map((x) => ({ value: x, label: gt.pgettext('query value', '专精 %d').replaceAll('%d', `${x}`) }))
+const modLevelOptions = () =>
+  range(0, 3).map((x) => ({
+    value: x,
+    label:
+      x === 0
+        ? gt.pgettext('query value', '未解锁')
+        : gt.pgettext('query value', '模组 %d 级').replaceAll('%d', `${x}`),
+  }))
 const professionOptions = () => Object.entries(ProfessionNames).map(([value, label]) => ({ value, label }))
 const roomOptions = () => BASE_ROOMS.map((value) => ({ value, label: baseRoomName(value).full }))
 
@@ -451,6 +460,57 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     })
 
     aa.createSubQuery(
+      'mod',
+      lpstr(() => gt.pgettext('query sub query', '模组')),
+      (character) => editableUniEquips(character).map((m) => [character.uniEquips.indexOf(m)] as const),
+      (index) => `${index}`,
+    ).tap((sq) => {
+      const tiers = (source: SurveySource, character: Character, index: number) => {
+        const { equip, rawCharId } = character.uniEquips[index]
+        return toTierShares(source.mod(character, equip, rawCharId))
+      }
+
+      sq.addField(
+        'name',
+        lpstr(() => gt.pgettext('query field', '模组名')),
+        QString,
+        ({ character, args: [index] }) => character.uniEquips[index].equip.name,
+      )
+
+      sq.addStatusField(
+        'level',
+        lpstr(() => gt.pgettext('query field', '模组等级')),
+        QNumber,
+        ({ character, status, args: [index] }) => status.modLevel[character.uniEquips[index].equipId] || 0,
+      ).withOptions(modLevelOptions)
+
+      sq.addField(
+        'unlockrate.yituliu',
+        lpstr(() => gt.pgettext('query field', '一图流练度统计 模组解锁率')),
+        QNumber,
+        ({ character, args: [index] }) => {
+          const t = tiers(yss, character, index)
+          return t?.base === 'elite2' ? 1 - t.shares[0]! : NaN
+        },
+      ).withFormat('percent')
+
+      sq.addField(
+        'level3rate.yituliu',
+        lpstr(() => gt.pgettext('query field', '一图流练度统计 模组三级率')),
+        QNumber,
+        ({ character, args: [index] }) => tiers(yss, character, index)?.shares[3] ?? NaN,
+      ).withFormat('percent')
+
+      // 小黑盒只给解锁了的人里各级的占比，没有解锁率，这个三级率和一图流的不能比
+      sq.addField(
+        'level3rate.heybox',
+        lpstr(() => gt.pgettext('query field', '小黑盒干员统计 模组三级率（解锁者中）')),
+        QNumber,
+        ({ character, args: [index] }) => tiers(hss, character, index)?.shares[3] ?? NaN,
+      ).withFormat('percent')
+    })
+
+    aa.createSubQuery(
       'building',
       lpstr(() => gt.pgettext('query sub query', '基建技能')),
       (character) => character.baseSkills.flatMap((s, slot) => s.map((_, index) => [slot, index] as const)),
@@ -726,6 +786,65 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
           select: ['elite2level90rate.heybox'],
           where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
           order: [['elite2level90rate.heybox', 'DESC']],
+        },
+      },
+      'mod.unlockrate.yituliu': {
+        name: gt.pgettext('predefined query', '一图流 模组解锁率'),
+        group: 'stats',
+        segments: [allSegment('mod.unlockrate.all.yituliu')],
+        query: {
+          select: ['mod.unlockrate.yituliu'],
+          join: 'mod',
+          where: {
+            _: '&&',
+            operand: [
+              { _: '||', operand: [own, { _: 'field', field: 'goal', op: '==', operand: true }] },
+              { _: 'field', field: 'mod.level', op: '==', operand: 0 },
+              { _: 'field', field: 'rarity', op: '==', operand: 6 },
+            ],
+          },
+          order: [['mod.unlockrate.yituliu', 'DESC']],
+        },
+      },
+      'mod.unlockrate.all.yituliu': {
+        name: gt.pgettext('predefined query', '一图流 模组解锁率（全部）'),
+        group: 'stats',
+        query: {
+          select: ['mod.unlockrate.yituliu'],
+          join: 'mod',
+          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
+          order: [['mod.unlockrate.yituliu', 'DESC']],
+        },
+      },
+      'mod.level3rate.heybox': {
+        name: gt.pgettext('predefined query', '小黑盒 模组三级率'),
+        group: 'stats',
+        title: lpstr(() =>
+          gt.pgettext('query menu', '只列出还没练到三级的。小黑盒没有模组的解锁率，按解锁者里练到三级的占比排'),
+        ),
+        segments: [allSegment('mod.level3rate.all.heybox')],
+        query: {
+          select: ['mod.level3rate.heybox'],
+          join: 'mod',
+          where: {
+            _: '&&',
+            operand: [
+              { _: '||', operand: [own, { _: 'field', field: 'goal', op: '==', operand: true }] },
+              { _: 'field', field: 'mod.level', op: '<', operand: 3 },
+              { _: 'field', field: 'rarity', op: '==', operand: 6 },
+            ],
+          },
+          order: [['mod.level3rate.heybox', 'DESC']],
+        },
+      },
+      'mod.level3rate.all.heybox': {
+        name: gt.pgettext('predefined query', '小黑盒 模组三级率（全部）'),
+        group: 'stats',
+        query: {
+          select: ['mod.level3rate.heybox'],
+          join: 'mod',
+          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
+          order: [['mod.level3rate.heybox', 'DESC']],
         },
       },
       'cost.elite2': {

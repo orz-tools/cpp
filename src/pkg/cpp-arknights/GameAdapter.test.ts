@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { Querier, QueryParam } from '../cpp-basic'
 import type { DataContainerObject } from '../dccache'
 import { ArknightsAdapter } from './GameAdapter'
-import { PreferenceKeys } from './types'
+import { Arknights, PreferenceKeys } from './types'
 
 vi.mock('localforage', () => ({
   default: {
@@ -209,5 +210,111 @@ describe('ArknightsAdapter', () => {
     expect(ga.applyPreferenceSnapshot(off)).toBe(false)
     const on = ga.writePreference(PreferenceKeys.ShowPotential, true, off)
     expect(ga.readPreference(PreferenceKeys.ShowPotential, on)).toBe(true)
+  })
+
+  describe('module rows', () => {
+    const equip = (id: string, typeName1: string, typeName2: string | null, order: number) => ({
+      uniEquipId: id,
+      uniEquipName: id,
+      charId: 'char_4195_radian',
+      typeName1,
+      typeName2,
+      charEquipOrder: order,
+      unlockEvolvePhase: typeName2 ? 'PHASE_2' : 'PHASE_0',
+    })
+
+    beforeEach(() => {
+      const k = remote.get('arknights-kengxxiao-zh_CN') as any
+      k.exCharacters.char_4195_radian = { name: '电弧', rarity: 'TIER_6', profession: 'SUPPORT', skills: [] }
+      k.exUniEquips.equipDict = {
+        uniequip_001_radian: equip('uniequip_001_radian', 'ORIGINAL', null, 0),
+        uniequip_002_radian: equip('uniequip_002_radian', 'SO', 'A', 4),
+        uniequip_003_radian: equip('uniequip_003_radian', 'SO', 'B', 5),
+      }
+      k.exUniEquips.charEquip = {
+        char_4195_radian: ['uniequip_001_radian', 'uniequip_002_radian', 'uniequip_003_radian'],
+      }
+      const counts = (count: number, rank1: number, rank2: number, rank3: number) => ({
+        count,
+        rank0: 1 - count,
+        rank1,
+        rank2,
+        rank3,
+      })
+      const none = counts(0, 0, 0, 0)
+      remote.set('arknights-yituliu-operatorsurvey', {
+        result: [
+          {
+            charId: 'char_4195_radian',
+            sampleSize: 1000,
+            own: 0.9,
+            elite: { count: 1, rank0: 0, rank1: 0.2, rank2: 0.8, rank3: 0 },
+            modX: none,
+            modY: none,
+            modD: none,
+            modA: counts(0.4, 0.1, 0, 0.3),
+            modB: counts(0.6, 0.1, 0.1, 0.4),
+          },
+        ],
+        userCount: 1000,
+      })
+      remote.set('arknights-heybox-operatorsurvey', {
+        rows: [
+          { i: 'char_4195_radian', e2m1: [0.55, 0.035, 0.415], e2m2: [0.068, 0.049, 0.883], e2m3: [null, null, null] },
+        ],
+      })
+    })
+
+    async function run(param: QueryParam, modLevel: Record<string, number> = {}) {
+      const ga = new ArknightsAdapter()
+      await ga.getDataManager().init('zh_CN')
+      const character = ga.getCharacter('char_4195_radian')
+      const current = { ...ga.getUserDataAdapter().getFrozenEmptyCharacterStatus(), elite: 2, level: 1, modLevel }
+      const querier = new Querier<Arknights, any>(ga.getRootCharacterQuery(), param)
+      querier.execute(
+        (function* () {
+          yield { character, current, goal: undefined }
+        })(),
+      )
+      return querier.result.map((x) => ({
+        name: querier.getFieldValue('mod.name', x),
+        level: querier.getFieldValue('mod.level', x),
+        unlock: querier.getFieldValue('mod.unlockrate.yituliu', x),
+        yituliu3: querier.getFieldValue('mod.level3rate.yituliu', x),
+        heybox3: querier.getFieldValue('mod.level3rate.heybox', x),
+      }))
+    }
+
+    it('gives each module but the initial one a row, with its survey rates', async () => {
+      const rows = await run({ join: 'mod' })
+      expect(rows.map((x) => x.name)).toEqual(['uniequip_002_radian', 'uniequip_003_radian'])
+      expect(rows[0].unlock).toBeCloseTo(0.4 / 0.8, 10)
+      expect(rows[1].unlock).toBeCloseTo(0.6 / 0.8, 10)
+      expect(rows[0].yituliu3).toBeCloseTo(0.3 / 0.8, 10)
+      // Heybox's modules go by the number in the id and count only those who unlocked them
+      expect(rows.map((x) => x.heybox3)).toEqual([0.415, 0.883])
+    })
+
+    it('sorts by unlock rate and leaves out the unlocked ones, as the yituliu preset does', async () => {
+      const presets = ArknightsAdapter.prototype.getPredefinedQueries.call({ hasBaseSkills: () => false } as any)
+      const preset = presets['mod.unlockrate.yituliu'].query
+      const where = { _: 'field' as const, field: 'mod.level', op: '==', operand: 0 }
+      expect(preset.where).toMatchObject({ operand: expect.arrayContaining([where]) })
+      const all = await run({ join: 'mod', order: preset.order })
+      expect(all.map((x) => x.name)).toEqual(['uniequip_003_radian', 'uniequip_002_radian'])
+      const locked = await run({ join: 'mod', where, order: preset.order }, { uniequip_003_radian: 1 })
+      expect(locked.map((x) => [x.name, x.level])).toEqual([['uniequip_002_radian', 0]])
+    })
+
+    it('has no rates for an operator neither survey knows', async () => {
+      remote.set('arknights-yituliu-operatorsurvey', { result: [], userCount: 0 })
+      remote.set('arknights-heybox-operatorsurvey', { rows: [] })
+      const rows = await run({ join: 'mod' })
+      for (const row of rows) {
+        expect(row.unlock).toBeNaN()
+        expect(row.yituliu3).toBeNaN()
+        expect(row.heybox3).toBeNaN()
+      }
+    })
   })
 })

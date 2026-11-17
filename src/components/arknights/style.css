@@ -2084,6 +2084,14 @@ section:first-child > .cpp-stages-wide-section {
   margin-right: 4px;
 }
 
+/* 模组类型图标是白的，和状态编辑里一样垫一块深色底 */
+.cpp-mod-icon.bp6-menu-item-icon {
+  display: grid;
+  place-items: center;
+  border-radius: 2px;
+  background: #30363d;
+}
+
 /* 养成成本的列表格子：一根条一个数，全列同一个比例 */
 .cpp-cost-cell.bp6-menu-item {
   align-items: center;

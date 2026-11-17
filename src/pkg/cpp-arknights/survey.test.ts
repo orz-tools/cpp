@@ -48,8 +48,22 @@ const heyboxRow = {
   e2s2: [0.909, 0.018, 0.009, 0.064],
 }
 
+// 电弧 has no X, Y or D module, only A and B; yituliu, 2026-11-17
+const radianRow = {
+  charId: 'char_4195_radian',
+  elite: { count: 0.9738, rank0: 0.0262, rank1: 0.1188, rank2: 0.855, rank3: 0 },
+  modX: { count: 0, rank0: 1, rank1: 0, rank2: 0, rank3: 0 },
+  modA: { count: 0.5427, rank0: 0.4573, rank1: 0.194, rank2: 0.0174, rank3: 0.3313 },
+  modB: { count: 0.265, rank0: 0.735, rank1: 0.0067, rank2: 0.0051, rank3: 0.2532 },
+  own: 0.9187,
+  sampleSize: 120916,
+}
+
 const dm = {
-  data: { yituliuSurvey: { char_492_quercu: yituliuRow }, heyboxSurvey: { char_492_quercu: heyboxRow } },
+  data: {
+    yituliuSurvey: { char_492_quercu: yituliuRow, char_4195_radian: radianRow },
+    heyboxSurvey: { char_492_quercu: heyboxRow },
+  },
   raw: { yituliuSurvey: { userCount: 136626 } },
 } as unknown as ArknightsDataManager
 
@@ -80,6 +94,17 @@ describe('toTierShares', () => {
     const expected = [0.5317, 0.208, 0.042, 0.2183]
     t.shares.forEach((x, i) => expect(x).toBeCloseTo(expected[i], 3))
     expect(sum(t.shares)).toBeCloseTo(1, 10)
+  })
+
+  it('reads Yituliu A and B modules as well', () => {
+    const radian = { key: 'char_4195_radian' } as Character
+    const mod = (typeName2: string) => ({ key: 'uniequip_002_radian', raw: { typeName2 } }) as UniEquip
+    const a = toTierShares(new YituliuSurveySource(dm).mod(radian, mod('A'), radian.key))!
+    expect(1 - a.shares[0]!).toBeCloseTo(0.5427 / 0.855, 10)
+    expect(a.shares[3]).toBeCloseTo(0.3313 / 0.855, 10)
+    const b = toTierShares(new YituliuSurveySource(dm).mod(radian, mod('B'), radian.key))!
+    expect(b.shares[3]).toBeCloseTo(0.2532 / 0.855, 10)
+    expect(new YituliuSurveySource(dm).mod(radian, mod('Y'), radian.key)).toBeNull()
   })
 
   it('reads Heybox masteries as they come, already shares of E2 owners', () => {

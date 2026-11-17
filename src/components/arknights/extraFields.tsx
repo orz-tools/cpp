@@ -221,6 +221,27 @@ export const extraFields: IGameComponent['extraFields'] = {
       )
     }),
   },
+  mod: {
+    width: 150,
+    C: memo(({ context, width }: { context: FieldContext<Arknights, Character, [number]>; width: number }) => {
+      const { equip } = context.character.uniEquips[context.args[0]]
+      return (
+        <CharacterListColumn width={width}>
+          <span className="bp6-menu-item-icon cpp-mod-icon">
+            <CachedImg src={equip.icon} width={28} height={28} alt="" />
+          </span>
+          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp6-text-overflow-ellipsis" title={equip.name}>
+              {equip.name}
+            </div>
+            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.25 }}>
+              {`${equip.raw.typeName1}-${equip.raw.typeName2}`}
+            </div>
+          </div>
+        </CharacterListColumn>
+      )
+    }),
+  },
   'skill.mastery3rate.yituliu': createSimpleExtraField(
     'skill.mastery3rate.yituliu',
     percentageColumnWidth,

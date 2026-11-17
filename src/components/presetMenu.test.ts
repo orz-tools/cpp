@@ -56,7 +56,7 @@ describe('presetMenu', () => {
       expect(menu.map((x) => String(x.group.title))).toEqual(['练度统计', '养成成本', '基建技能'])
     })
 
-    it('keeps the survey presets as before, each with 「全部」', () => {
+    it('lists the survey presets first, each with 「全部」', () => {
       expect(shape(menu)[0]).toEqual([
         'stats',
         [
@@ -65,6 +65,8 @@ describe('presetMenu', () => {
           ['elite2rate.yituliu', 'elite2rate.all.yituliu'],
           ['elite2rate.heybox', 'elite2rate.all.heybox'],
           ['elite2level90rate.heybox', 'elite2level90rate.all.heybox'],
+          ['mod.unlockrate.yituliu', 'mod.unlockrate.all.yituliu'],
+          ['mod.level3rate.heybox', 'mod.level3rate.all.heybox'],
         ],
       ])
       for (const row of menu[0].rows) expect(row.segments.map((s) => String(s.label))).toEqual(['全部'])
