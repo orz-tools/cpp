@@ -2,6 +2,7 @@ import deepEqual from 'deep-equal'
 import { sortBy } from 'ramda'
 import { GameName } from '../../games'
 import {
+  Assertion,
   BasicStageInfo,
   ExpItem,
   IGameAdapter,
@@ -32,6 +33,7 @@ import {
 } from './itemValue'
 import { EnemyLevel, MissionCatalog, MissionModule, MissionStageInfo } from './moduleMissions'
 import { HeyboxSurveySource, YituliuSurveySource, toTierShares } from './survey'
+import { TrainingCost } from './trainingCost'
 import {
   AK_FIXED_DROP_STAGES,
   AK_ITEM_GOLD,
@@ -64,10 +66,15 @@ const masteryOptions = () =>
   range(0, 3).map((x) => ({ value: x, label: gt.pgettext('query value', '专精 %d').replaceAll('%d', `${x}`) }))
 const professionOptions = () => Object.entries(ProfessionNames).map(([value, label]) => ({ value, label }))
 
-const allSegment = (key: string): PredefinedQuerySegment => ({
+const allSegment = (
+  key: string,
+  title: PSTR = lpstr(() => gt.pgettext('query menu', '不论持有和练度，列出全部')),
+): PredefinedQuerySegment => ({ key, label: lpstr(() => gt.pgettext('query menu', '全部')), title })
+
+const usableSegment = (key: string, title: PSTR): PredefinedQuerySegment => ({
   key,
-  label: lpstr(() => gt.pgettext('query menu', '全部')),
-  title: lpstr(() => gt.pgettext('query menu', '不论持有和练度，列出全部')),
+  label: lpstr(() => gt.pgettext('query menu', '能用')),
+  title,
 })
 
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
@@ -177,6 +184,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     this.zoneTypes = {}
     this.zoneInfos = undefined
     this.missionCatalog = undefined
+    this.trainingCost = undefined
     this.cacheExpiresAt = Infinity
     this.getStageInfos()
     return Number.isFinite(this.cacheExpiresAt) ? this.cacheExpiresAt : undefined
@@ -302,6 +310,20 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
     ).withFormat('percent')
 
+    aa.addField(
+      'cost.elite2',
+      lpstr(() => gt.pgettext('query field', '精二直升价值')),
+      QNumber,
+      ({ character, current }) => this.getTrainingCost().elite2Saving(character, current)?.value ?? NaN,
+    )
+
+    aa.addField(
+      'cost.invested',
+      lpstr(() => gt.pgettext('query field', '已投入')),
+      QNumber,
+      ({ character, current }) => this.getTrainingCost().invested(character, current)?.value ?? NaN,
+    )
+
     aa.createSubQuery(
       'skill',
       lpstr(() => gt.pgettext('query sub query', '技能')),
@@ -355,6 +377,18 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
           return toTierShares(s)?.shares[3] ?? NaN
         },
       ).withFormat('percent')
+
+      sq.addField(
+        'cost.mastery3',
+        lpstr(() => gt.pgettext('query field', '专三价值')),
+        QNumber,
+        ({ character, current, args: [index] }) => {
+          const saving = this.getTrainingCost().mastery3Saving(character, current, index)
+          if (!saving) return NaN
+          // A mastery that costs nothing is 0 even while the values are unknown, so the presets can drop it with `!= 0`
+          return saving.items.size === 0 ? 0 : saving.value
+        },
+      )
     })
   })
 
@@ -380,10 +414,26 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   }
 
   public getPredefinedQueryGroups(): PredefinedQueryGroup[] {
-    return [{ id: 'stats', title: lpstr(() => gt.pgettext('query menu', '练度统计')) }]
+    return [
+      { id: 'stats', title: lpstr(() => gt.pgettext('query menu', '练度统计')) },
+      { id: 'cost', title: lpstr(() => gt.pgettext('query menu', '养成成本')) },
+    ]
   }
 
   public getPredefinedQueries(): Record<string, PredefinedQuery> {
+    // 直升道具只有 4–6 星的；道具分星级，所以先按星级排
+    const voucherRarity: Assertion = { _: 'field', field: 'rarity', op: '>=', operand: 4 }
+    const own: Assertion = { _: 'field', field: 'own', op: '==', operand: true }
+    const elite2Order: QueryParam['order'] = [
+      ['rarity', 'DESC'],
+      ['cost.elite2', 'DESC'],
+    ]
+    const mastery3Order: QueryParam['order'] = [
+      ['rarity', 'DESC'],
+      ['skill.cost.mastery3', 'DESC'],
+    ]
+    const costsMaterials: Assertion = { _: 'field', field: 'skill.cost.mastery3', op: '!=', operand: 0 }
+
     return {
       'skill.mastery3rate.yituliu': {
         name: gt.pgettext('predefined query', '一图流 技能专三率'),
@@ -550,6 +600,124 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
           order: [['elite2level90rate.heybox', 'DESC']],
         },
       },
+      'cost.elite2': {
+        name: gt.pgettext('predefined query', '精二直升价值'),
+        group: 'cost',
+        title: lpstr(() => gt.pgettext('query menu', '计划练到精二、现在还没精二的')),
+        segments: [
+          usableSegment(
+            'cost.elite2.usable',
+            lpstr(() => gt.pgettext('query menu', '已持有、还没精二的，不看计划')),
+          ),
+          allSegment(
+            'cost.elite2.all',
+            lpstr(() => gt.pgettext('query menu', '全部 4–6 星干员')),
+          ),
+        ],
+        query: {
+          select: ['cost.elite2'],
+          where: {
+            _: '&&',
+            operand: [
+              voucherRarity,
+              { _: 'field', field: 'goal.elite', op: '==', operand: 2 },
+              { _: 'field', field: 'elite', op: '<', operand: 2 },
+            ],
+          },
+          order: elite2Order,
+        },
+      },
+      'cost.elite2.usable': {
+        name: gt.pgettext('predefined query', '精二直升价值（能用）'),
+        group: 'cost',
+        query: {
+          select: ['cost.elite2'],
+          where: {
+            _: '&&',
+            operand: [voucherRarity, own, { _: 'field', field: 'elite', op: '<', operand: 2 }],
+          },
+          order: elite2Order,
+        },
+      },
+      'cost.elite2.all': {
+        name: gt.pgettext('predefined query', '精二直升价值（全部）'),
+        group: 'cost',
+        query: {
+          select: ['cost.elite2'],
+          where: voucherRarity,
+          order: elite2Order,
+        },
+      },
+      'skill.cost.mastery3': {
+        name: gt.pgettext('predefined query', '专三价值'),
+        group: 'cost',
+        title: lpstr(() => gt.pgettext('query menu', '计划专三、现在还没专三的技能')),
+        segments: [
+          usableSegment(
+            'skill.cost.mastery3.usable',
+            lpstr(() => gt.pgettext('query menu', '已持有、精二、技能 7 级，还没专三的技能，不看计划')),
+          ),
+          allSegment(
+            'skill.cost.mastery3.all',
+            lpstr(() => gt.pgettext('query menu', '全部 4–6 星干员的技能')),
+          ),
+        ],
+        query: {
+          select: ['skill.cost.mastery3'],
+          join: 'skill',
+          where: {
+            _: '&&',
+            operand: [
+              voucherRarity,
+              { _: 'field', field: 'skill.goal.mastery', op: '==', operand: 3 },
+              { _: 'field', field: 'skill.mastery', op: '<', operand: 3 },
+              costsMaterials,
+            ],
+          },
+          order: mastery3Order,
+        },
+      },
+      'skill.cost.mastery3.usable': {
+        name: gt.pgettext('predefined query', '专三价值（能用）'),
+        group: 'cost',
+        query: {
+          select: ['skill.cost.mastery3'],
+          join: 'skill',
+          where: {
+            _: '&&',
+            operand: [
+              voucherRarity,
+              own,
+              { _: 'field', field: 'elite', op: '==', operand: 2 },
+              { _: 'field', field: 'skillLevel', op: '==', operand: 7 },
+              { _: 'field', field: 'skill.mastery', op: '<', operand: 3 },
+              costsMaterials,
+            ],
+          },
+          order: mastery3Order,
+        },
+      },
+      'skill.cost.mastery3.all': {
+        name: gt.pgettext('predefined query', '专三价值（全部）'),
+        group: 'cost',
+        query: {
+          select: ['skill.cost.mastery3'],
+          join: 'skill',
+          where: { _: '&&', operand: [voucherRarity, costsMaterials] },
+          order: mastery3Order,
+        },
+      },
+      'cost.invested': {
+        name: gt.pgettext('predefined query', '已投入'),
+        group: 'cost',
+        title: lpstr(() => gt.pgettext('query menu', '已持有的干员，从精零 1 级练到现在花了多少')),
+        totalValue: 'cost.invested',
+        query: {
+          select: ['cost.invested'],
+          where: own,
+          order: [['cost.invested', 'DESC']],
+        },
+      },
     }
   }
 
@@ -694,6 +862,12 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       isOwned: (charId, status) => !uda.isAbsentCharacter(this.getCharacter(charId), status ?? empty),
     }
+  }
+
+  // A change to the item value settings rebuilds the game data too, so the costs never use stale values.
+  private trainingCost?: TrainingCost
+  public getTrainingCost(): TrainingCost {
+    return (this.trainingCost ||= new TrainingCost(this))
   }
 
   public getFormulas() {

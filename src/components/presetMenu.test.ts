@@ -43,13 +43,19 @@ describe('presetMenu', () => {
     ])
   })
 
-  it('reads the Arknights presets', () => {
+  describe('with the Arknights presets', () => {
     const groups = ArknightsAdapter.prototype.getPredefinedQueryGroups.call(undefined)
     const presets = ArknightsAdapter.prototype.getPredefinedQueries.call(undefined)
     const menu = presetMenu(groups, presets)
-    expect(menu.map((x) => String(x.group.title))).toEqual(['练度统计'])
-    expect(shape(menu)).toEqual([
-      [
+
+    it('puts every preset in a group the adapter names', () => {
+      const ids = new Set(groups.map((x) => x.id))
+      for (const [k, v] of Object.entries(presets)) expect(ids.has(v.group), k).toBe(true)
+      expect(menu.map((x) => String(x.group.title))).toEqual(['练度统计', '养成成本'])
+    })
+
+    it('keeps the survey presets as before, each with 「全部」', () => {
+      expect(shape(menu)[0]).toEqual([
         'stats',
         [
           ['skill.mastery3rate.yituliu', 'skill.mastery3rate.all.yituliu'],
@@ -58,8 +64,22 @@ describe('presetMenu', () => {
           ['elite2rate.heybox', 'elite2rate.all.heybox'],
           ['elite2level90rate.heybox', 'elite2level90rate.all.heybox'],
         ],
-      ],
-    ])
-    for (const row of menu[0].rows) expect(row.segments.map((s) => String(s.label))).toEqual(['全部'])
+      ])
+      for (const row of menu[0].rows) expect(row.segments.map((s) => String(s.label))).toEqual(['全部'])
+    })
+
+    it('lists the training costs after them', () => {
+      expect(shape(menu)[1]).toEqual([
+        'cost',
+        [
+          ['cost.elite2', 'cost.elite2.usable', 'cost.elite2.all'],
+          ['skill.cost.mastery3', 'skill.cost.mastery3.usable', 'skill.cost.mastery3.all'],
+          ['cost.invested'],
+        ],
+      ])
+      for (const row of menu[1].rows.slice(0, 2)) {
+        expect(row.segments.map((s) => String(s.label))).toEqual(['能用', '全部'])
+      }
+    })
   })
 })

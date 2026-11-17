@@ -101,11 +101,13 @@ describe('ArknightsAdapter', () => {
     const expItems = ga.getExpItems()
     const values = ga.getItemValues()
     const inputs = ga.exportItemValueGameInputs()
+    const trainingCost = ga.getTrainingCost()
 
     await dm.rebuild()
     expect(ga.getStageInfos()).not.toBe(stages)
     expect(ga.getExpItems()).not.toBe(expItems)
     expect(ga.getItemValues()).not.toBe(values)
+    expect(ga.getTrainingCost()).not.toBe(trainingCost)
     // Same containers, so the inputs built from the game data alone are kept.
     expect(ga.exportItemValueGameInputs()).toBe(inputs)
   })
