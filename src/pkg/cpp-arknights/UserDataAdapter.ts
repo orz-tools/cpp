@@ -65,6 +65,10 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     return task.type._ === 'join'
   }
 
+  /**
+   * Levels past the character's tables have nothing to pay for, so the loops stop there: a dump restored in 用户数据管理
+   * skips rewriteCharacter and can hold one, such as a skill level for an operator without skills.
+   */
   public generateTasksForCharacter(charId: string, current: ArknightsCharacterStatus, goal: ArknightsCharacterStatus) {
     if (current === goal) return []
     const dataManager = this.dataManager
@@ -94,7 +98,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     const meetEliteLevel = (goalElite: number, goalLevel: number) => {
       if (elite > goalElite || (elite === goalElite && level >= goalLevel)) return
 
-      while (elite < goalElite) {
+      while (elite < Math.min(goalElite, character.maxElite)) {
         const goalLevel = character.maxLevels[elite]
         if (level < goalLevel) {
           dep = add(
@@ -160,7 +164,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     let skillLevel = current.skillLevel
     let skillDep: typeof dep = undefined
     {
-      while (skillLevel < goal.skillLevel) {
+      while (skillLevel < goal.skillLevel && skillLevel <= character.allSkillLvlup.length) {
         if (skillLevel === 4) {
           meetEliteLevel(1, 1)
         }
@@ -186,7 +190,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       const sdata = character.skills.find((x) => x.skillId === skillId)?.charSkill
       const data = sdata?.levelUpCostCond
       if (!data) continue
-      while (sc < sg) {
+      while (sc < Math.min(sg, data.length)) {
         sDep = add(
           { _: 'skillMaster', skillId: skillId, to: sc + 1 },
           (data[sc].levelUpCost || []).map((x) => ({
@@ -451,16 +455,20 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     current: Draft<ArknightsCharacterStatus> | undefined,
     goal: Draft<ArknightsCharacterStatus> | undefined,
   ) {
-    if (!current || !goal) return [current, goal] as const
+    if (!current) return [current, goal] as const
 
     const char = this.dataManager.data.characters[charId]
-    if (!char) return [undefined, undefined] as const
+    // Imports write characters without a plan; one of them the game data does not know yet (a new release, another
+    // region's) was always kept, and dropping it now would lose it.
+    if (!char) return goal ? ([undefined, undefined] as const) : ([current, goal] as const)
 
     this.rewriteCharacter(charId, current)
-    this.rewriteCharacter(charId, goal)
-    this.rewriteGoal(charId, current, goal)
-    if (deepEqual(current, goal, { strict: true })) {
-      goal = undefined
+    if (goal) {
+      this.rewriteCharacter(charId, goal)
+      this.rewriteGoal(charId, current, goal)
+      if (deepEqual(current, goal, { strict: true })) {
+        goal = undefined
+      }
     }
     if (current.elite === 0 && current.level === 0) current = undefined
 
