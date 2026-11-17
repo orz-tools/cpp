@@ -1,5 +1,5 @@
 import { Alignment, Button, Classes, Navbar } from '@blueprintjs/core'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { memo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
@@ -8,10 +8,16 @@ import { useComponents } from '../hooks/useComponents'
 import { gt } from '../pkg/gt'
 import { aboutPanel } from './AboutList'
 import { useOpenSidebarPanel } from './SidebarPanelDialog'
-import { activePanelId, clickRailItem, readSidebarState } from './sidebarState'
+import { SidebarState, activePanelId, clickRailItem, readSidebarState } from './sidebarState'
 import { SidebarPanel } from './types'
 
 const sidebarStateAtom = atomWithStorage<unknown>('cpp_sidebar', null, undefined, { getOnInit: true })
+
+/** 展开侧栏并切到这个面板，例如档案里的「在侧栏里看」；档案是没有遮罩的抽屉，侧栏露在外面，所以不用关档案 */
+export function useShowSidebarPanel(): (id: string) => void {
+  const setStored = useSetAtom(sidebarStateAtom)
+  return useEvent((id: string) => setStored({ open: true, panel: id } satisfies SidebarState))
+}
 
 const noBadge = () => false
 

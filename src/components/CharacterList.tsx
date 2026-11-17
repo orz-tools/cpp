@@ -57,6 +57,7 @@ import {
 } from './characterQuery'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
 import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
+import { RosterPin, clearRosterPin, useActiveRosterPin } from './rosterPin'
 
 export const Hide = memo(
   ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
@@ -455,7 +456,11 @@ const HoldingFilter = memo(() => {
   )
 })
 
-async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListCharactersQueryParam) {
+async function listCharactersQuery<G extends IGame>(
+  cpp: Cpp<G>,
+  param: ListCharactersQueryParam,
+  pin: RosterPin | null,
+) {
   await Promise.resolve()
 
   const ga = cpp.gameAdapter
@@ -466,23 +471,31 @@ async function listCharactersQuery<G extends IGame>(cpp: Cpp<G>, param: ListChar
 
   const emptyCharacterStatus = uda.getFrozenEmptyCharacterStatus()
 
+  // 面板的筛选不看当前视图的条件、快捷过滤和搜索词，只列它给的干员
   const query = createListQuerier(
     cpp,
-    wrapQueryWithQuickFilter(compileQuery(param.query, cpp), param.quick, cpp.gameComponent.quickFilters),
+    pin
+      ? compileQuery(ListModeAll, cpp)
+      : wrapQueryWithQuickFilter(compileQuery(param.query, cpp), param.quick, cpp.gameComponent.quickFilters),
   )
 
-  const matcher = buildMatcher(param.search)
-  const strictMatcher = buildMatcher(param.search, true)
+  const matcher = buildMatcher(pin ? '' : param.search)
+  const strictMatcher = buildMatcher(pin ? '' : param.search, true)
 
   query.execute(
     (function* () {
-      for (const x of uda.getAllCharacterIds()) {
+      for (const x of pin ? pin.charIds : uda.getAllCharacterIds()) {
         const character = ga.getCharacter(x)
+        if (!character) continue
         if (!(matcher(character.name) || matcher(character.appellation) || strictMatcher(character.key))) continue
         yield { character, current: ud.current[character.key] || emptyCharacterStatus, goal: ud.goal[character.key] }
       }
     })(),
   )
+  if (pin) {
+    const rank = new Map(pin.charIds.map((x, i) => [x, i]))
+    query.result.sort((a, b) => rank.get(a.character.key)! - rank.get(b.character.key)!)
+  }
 
   return { query: query, result: query.result }
 }
@@ -650,27 +663,29 @@ const QueryBuilder = memo(() => {
     : undefined
   const activeName = activePredefined ? String(activePredefined.name) : activeSaved?.name
   const goTo = (query: string) => setParam((x) => ({ ...x, query, source: undefined }))
+  const pin = useActiveRosterPin()
+  const viewActive = (query: string) => !pin && param.query === query
 
   return (
     <>
       <QuerySearchBox />
       <Button
         variant="minimal"
-        active={param.query === ListModeFav}
+        active={viewActive(ListModeFav)}
         text={gt.pgettext('predefined view name', '常看')}
         onClick={() => goTo(ListModeFav)}
         style={{ flexShrink: 0 }}
       />
       <Button
         variant="minimal"
-        active={param.query === ListModeAll}
+        active={viewActive(ListModeAll)}
         text={gt.pgettext('predefined view name', '全部')}
         onClick={() => goTo(ListModeAll)}
         style={{ flexShrink: 0 }}
       />
       <Button
         variant="minimal"
-        active={param.query === ListModeWithGoal}
+        active={viewActive(ListModeWithGoal)}
         text={gt.pgettext('predefined view name', '计划')}
         endIcon={goalCount > 0 ? <Tag round={true}>{goalCount}</Tag> : undefined}
         onClick={() => goTo(ListModeWithGoal)}
@@ -679,13 +694,23 @@ const QueryBuilder = memo(() => {
       {activeName ? (
         <Button
           variant="minimal"
-          active={true}
+          active={!pin}
           text={activeName}
           title={activeName}
           onClick={() => {}}
           style={{ flexShrink: 42 }}
           className="cpp-overflow-button"
         />
+      ) : null}
+      {pin ? (
+        <Tag
+          intent="primary"
+          onRemove={() => clearRosterPin(cpp)}
+          title={pin.label}
+          style={{ flexShrink: 1, minWidth: 0, marginLeft: 4 }}
+        >
+          {pin.label}
+        </Tag>
       ) : null}
     </>
   )
@@ -860,13 +885,14 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
 
   const cpp = useCpp()
   const { send, response, loading, error } = useRequest(listCharactersQuery)
+  const pin = useActiveRosterPin()
 
   const refresh = useEvent(() => {
-    send(cpp, param)
+    send(cpp, param, pin)
   })
 
   const generation = useGameDataGeneration()
-  useEffect(() => refresh(), [param, refresh, generation])
+  useEffect(() => refresh(), [param, pin, refresh, generation])
   useEffect(() => {
     if (error) console.error('Failed to query', error)
   }, [error])
@@ -952,7 +978,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
 
   useEffect(() => {
     remeasure()
-  }, [param, remeasure])
+  }, [param, pin, remeasure])
 
   const setCharExtraWidth = useSetAtom(charExtraWidthAtom)
   useEffect(() => {

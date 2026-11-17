@@ -620,3 +620,511 @@ section:first-child > .cpp-stages-wide-section {
   margin-bottom: 6px;
   font-weight: 600;
 }
+
+/* 模组任务：侧栏面板、大窗口、档案一节 */
+
+.cpp-mm-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.cpp-mm-board {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 8px 12px;
+}
+
+.cpp-mm-scope {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+}
+
+.cpp-mm-muted {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-num {
+  margin: 0 2px;
+  font-size: 16px;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-mm-stats-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cpp-mm-all-done {
+  padding: 12px 0;
+  text-align: center;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-ticket {
+  position: relative;
+  border: 1px solid rgba(17, 20, 24, 0.2);
+  border-radius: 4px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.cpp-mm-ticket.is-clickable,
+.cpp-mm-stub-button {
+  cursor: pointer;
+}
+
+.cpp-mm-ticket.is-clickable:hover {
+  border-color: rgba(17, 20, 24, 0.4);
+}
+
+.cpp-mm-ticket.is-selected {
+  border-color: var(--bp-palette-blue-3, #2d72d2);
+  box-shadow: 0 0 0 1px var(--bp-palette-blue-3, #2d72d2);
+}
+
+.cpp-mm-ticket:focus-visible,
+.cpp-mm-stub-button:focus-visible {
+  outline: 2px solid var(--bp-palette-blue-4, #4c90f0);
+  outline-offset: 1px;
+}
+
+.cpp-mm-ticket-top {
+  display: flex;
+  align-items: stretch;
+}
+
+.cpp-mm-stub-button {
+  display: flex;
+  flex: none;
+}
+
+.cpp-mm-stub {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 62px;
+  flex: none;
+  padding: 6px 2px;
+  border-right: 1px dashed rgba(17, 20, 24, 0.25);
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  text-align: center;
+}
+
+.cpp-mm-stub-code {
+  font-family: monospace;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.cpp-mm-stub-line {
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cpp-mm-ticket.is-selected .cpp-mm-stub {
+  border-right-color: transparent;
+  background: var(--bp-palette-blue-3, #2d72d2);
+  color: #fff;
+}
+
+.cpp-mm-ticket.is-selected .cpp-mm-stub-line {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.cpp-mm-crew {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 6px 8px;
+}
+
+.cpp-mm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  height: 24px;
+  padding: 0 6px 0 2px;
+  border: 1px solid rgba(17, 20, 24, 0.15);
+  border-radius: 3px;
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  font-size: 12px;
+}
+
+.cpp-mm-chip.is-blocked .cpp-mm-avatar,
+.cpp-mm-run-who.is-blocked .cpp-mm-avatar,
+.cpp-mm-table .is-blocked .cpp-mm-avatar {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.cpp-mm-chip.is-done .cpp-mm-name {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  text-decoration: line-through;
+}
+
+.cpp-mm-name {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cpp-mm-name > .bp6-icon {
+  margin-right: 1px;
+  transform: scale(0.8);
+}
+
+.cpp-mm-avatar {
+  flex: none;
+  border-radius: 2px;
+}
+
+.cpp-mm-operator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cpp-mm-operator:hover .cpp-mm-name {
+  color: var(--bp-palette-blue-2, #215db0);
+  text-decoration: underline;
+}
+
+.cpp-mm-equip {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-summary {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* 下半截横跨整张券 */
+.cpp-mm-cap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px 8px;
+  padding: 4px 8px;
+  border-top: 1px dashed rgba(17, 20, 24, 0.25);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-cap .cpp-mm-num {
+  font-size: 13px;
+}
+
+.cpp-mm-cap-note {
+  flex-basis: 100%;
+}
+
+.cpp-mm-pros {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.cpp-mm-pro {
+  position: relative;
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  color: var(--bp-palette-dark-gray-3, #383e47);
+}
+
+.cpp-mm-pro .bp6-icon,
+.cpp-mm-pro svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cpp-mm-pro.is-barred svg {
+  opacity: 0.3;
+}
+
+.cpp-mm-pro.is-barred::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  right: -2px;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 1px;
+  background: var(--bp-palette-red-3, #cd4246);
+  transform: rotate(-45deg);
+}
+
+.cpp-mm-run {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px 8px;
+}
+
+.cpp-mm-run-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.cpp-mm-check.bp6-control {
+  margin: 4px 0 0;
+}
+
+.cpp-mm-run-who {
+  min-width: 0;
+}
+
+.cpp-mm-run-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cpp-mm-note {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.cpp-mm-note.is-warning {
+  color: var(--bp-palette-orange-2, #935610);
+}
+
+.cpp-mm-run-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cpp-mm-ticket.is-used {
+  opacity: 0.7;
+}
+
+.cpp-mm-ticket.is-used .cpp-mm-stub {
+  background: #fff;
+}
+
+.cpp-mm-stamp {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  padding: 0 4px;
+  border: 2px solid var(--bp-palette-red-3, #cd4246);
+  border-radius: 3px;
+  color: var(--bp-palette-red-3, #cd4246);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  transform: translateY(-50%) rotate(-12deg);
+  pointer-events: none;
+}
+
+.cpp-mm-group > .bp6-button {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0 0 4px;
+}
+
+.cpp-mm-any {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cpp-mm-any-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  padding-left: 4px;
+}
+
+.cpp-mm-any-row .cpp-mm-summary {
+  padding-top: 3px;
+}
+
+.cpp-mm-any-row.is-done .cpp-mm-summary,
+.cpp-mm-dossier-mission.is-done .cpp-mm-summary,
+.cpp-mm-dossier-mission.is-done .cpp-mm-muted {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  text-decoration: line-through;
+}
+
+.cpp-mm-blocked-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* 大窗口：和「关于」的大窗口一样大，两栏各自滚动 */
+.cpp-mm-wide {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  column-gap: 15px;
+  width: 860px;
+  max-width: calc(80vw - 40px);
+  height: min(70vh, 720px);
+}
+
+.cpp-mm-wide-left,
+.cpp-mm-wide-right {
+  min-height: 0;
+  overflow: auto;
+}
+
+.cpp-mm-wide-left .cpp-mm-board {
+  padding-left: 0;
+}
+
+.cpp-mm-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 6px 4px 12px;
+}
+
+.cpp-mm-detail-title {
+  margin: 0 0 2px;
+  font-size: 18px;
+}
+
+.cpp-mm-detail-label {
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-detail-pros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.cpp-mm-detail-pros .bp6-tag.is-barred {
+  color: var(--bp-palette-gray-3, #8f99a8);
+  text-decoration: line-through;
+}
+
+.cpp-mm-detail-pros .bp6-tag.is-barred .bp6-icon {
+  opacity: 0.4;
+}
+
+.cpp-mm-table {
+  width: 100%;
+}
+
+.cpp-mm-table th {
+  white-space: nowrap;
+}
+
+.cpp-mm-table td {
+  vertical-align: top;
+}
+
+.cpp-mm-table .cpp-mm-check.bp6-control {
+  margin: 0;
+}
+
+.cpp-mm-summary-big {
+  font-size: 15px;
+}
+
+.cpp-mm-summary-big .cpp-mm-num {
+  font-size: 22px;
+}
+
+/* 档案一节 */
+.cpp-mm-dossier {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cpp-mm-dossier-title {
+  margin-bottom: 6px;
+}
+
+.cpp-mm-dossier-mission + .cpp-mm-dossier-mission {
+  margin-top: 8px;
+}
+
+.cpp-mm-dossier-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.cpp-mm-dossier-row .cpp-mm-summary {
+  padding-top: 3px;
+  font-size: 13px;
+}
+
+.cpp-mm-together {
+  margin: 6px 0 0 24px;
+  padding: 6px 8px;
+  border-radius: 3px;
+  background: rgba(45, 114, 210, 0.1);
+}
+
+.cpp-mm-together-title {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-mm-together-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cpp-mm-together-crew {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cpp-mm-task-tag.bp6-tag {
+  margin-right: 4px;
+}

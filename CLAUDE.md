@@ -48,7 +48,7 @@ After changing any user-facing strings, run:
 Each game provides two things registered in `src/games.ts`:
 
 - **GameAdapter** (`src/pkg/cpp-{game}/GameAdapter.ts`) — implements `IGameAdapter`: data fetching, region configs, character/item definitions
-- **GameComponent** (`src/components/{game}/index.tsx`) — game-specific UI components (character status, importers, filters), and the sidebar panels (`sidebarPanels`) that follow the shell's own 「关于」, which always comes first; see `src/components/Sidebar.tsx`. Clicking a character opens its dossier, a drawer on the right: the game's `dossierSections` follow the shell's own 「练度」 section, which always comes first; see `src/components/CharacterDossier.tsx`. Characters drawn by a sidebar panel or its pop-out window open the dossier through `useOpenCharacterDossier()`
+- **GameComponent** (`src/components/{game}/index.tsx`) — game-specific UI components (character status, importers, filters), and the sidebar panels (`sidebarPanels`) that follow the shell's own 「关于」, which always comes first; see `src/components/Sidebar.tsx`. Clicking a character opens its dossier, a drawer on the right: the game's `dossierSections` follow the shell's own 「练度」 section, which always comes first; see `src/components/CharacterDossier.tsx`. Characters drawn by a sidebar panel or its pop-out window open the dossier through `useOpenCharacterDossier()`. A sidebar panel can narrow the character list to a set of characters through `rosterPinAtom` (`src/components/rosterPin.ts`); the pin lapses when the list's view, search or quick filters change
 
 Games are code-split via dynamic imports. The URL path (`/{game}/{profile}`) determines which game loads.
 

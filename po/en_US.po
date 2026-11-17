@@ -83,7 +83,7 @@ msgstr ""
 "straight there."
 
 #. %s: sidebar panel label
-#: src/components/Sidebar.tsx:36
+#: src/components/Sidebar.tsx:42
 msgid "%s（有新内容）"
 msgstr "%s (new)"
 
@@ -128,6 +128,12 @@ msgstr ""
 "When you no longer need the data here, you can clear it. The data in the old "
 "version is not affected."
 
+#: src/components/arknights/ModuleMissionPanel.tsx:466
+msgid "不限关卡 · %d 条"
+msgid_plural "不限关卡 · %d 条"
+msgstr[0] "Any stage · %d mission"
+msgstr[1] "Any stage · %d missions"
+
 #: src/components/UserDataManager.tsx:351
 msgid "从文件导入"
 msgstr "Import from File"
@@ -156,7 +162,7 @@ msgstr "Prioritize (mark as starred)"
 msgid "使用「提取装置」"
 msgstr "Use «Sklanding»"
 
-#: src/components/Sidebar.tsx:101
+#: src/components/Sidebar.tsx:107
 msgid "侧栏"
 msgstr "Sidebar"
 
@@ -165,6 +171,12 @@ msgid "偏好设置（排除关卡、价值类型等）已一并覆盖，「撤�
 msgstr ""
 "Preferences (excluded stages, value type and so on) were replaced as well; "
 "«Undo» does not restore them."
+
+#: src/components/arknights/ModuleMissionPanel.tsx:616
+msgid "做完 %d 条"
+msgid_plural "做完 %d 条"
+msgstr[0] "%d done"
+msgstr[1] "%d done"
 
 #: src/components/ConfigUi.tsx:304
 msgid "免责声明"
@@ -190,10 +202,16 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:478 src/components/CharacterDossier.tsx:126
-#: src/components/CharacterDossier.tsx:127 src/components/Importer.tsx:160
+#: src/App.tsx:478 src/components/CharacterDossier.tsx:203
+#: src/components/CharacterDossier.tsx:204 src/components/Importer.tsx:160
 msgid "关闭"
 msgstr "Close"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:621
+msgid "其中 %d 次有人还不能做"
+msgid_plural "其中 %d 次有人还不能做"
+msgstr[0] "%d run has someone who cannot count yet"
+msgstr[1] "%d runs have someone who cannot count yet"
 
 #: src/components/AboutList.tsx:82
 msgid "其他资源"
@@ -317,7 +335,7 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制数据"
 msgstr "Copy Data"
 
-#: src/components/CharacterList.tsx:195
+#: src/components/CharacterList.tsx:196
 msgid "复制角色名"
 msgstr "Copy Name"
 
@@ -408,7 +426,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
-#: src/components/CharacterList.tsx:202
+#: src/components/CharacterList.tsx:203
 msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
@@ -443,6 +461,13 @@ msgid_plural "已排除 %d 个关卡"
 msgstr[0] "%d stage excluded"
 msgstr[1] "%d stages excluded"
 
+#. %1: stage code
+#: src/components/arknights/ModuleMissionPanel.tsx:145
+msgid "已标为完成：%1 的 %2 条"
+msgid_plural "已标为完成：%1 的 %2 条"
+msgstr[0] "Marked %2 mission on %1 done"
+msgstr[1] "Marked %2 missions on %1 done"
+
 #: src/components/AboutList.tsx:263
 msgid "帮助"
 msgstr "Help"
@@ -455,7 +480,7 @@ msgstr "Help & Community"
 msgid "帮助文档"
 msgstr "Documentation"
 
-#: src/components/Sidebar.tsx:63
+#: src/components/Sidebar.tsx:69
 msgid "弹出成大窗口"
 msgstr "Open in a window"
 
@@ -505,7 +530,7 @@ msgstr "Display as In-game Layout"
 msgid "撤销"
 msgstr "Undo"
 
-#: src/components/Sidebar.tsx:67
+#: src/components/Sidebar.tsx:73
 msgid "收起"
 msgstr "Collapse"
 
@@ -533,7 +558,7 @@ msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:38
 #: src/components/arknights/ExporterMenuItems.tsx:98
-#: src/components/CharacterList.tsx:208
+#: src/components/CharacterList.tsx:209
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
@@ -589,7 +614,7 @@ msgstr "Synthesizing Cannot be Planned for Maxed"
 msgid "暂无可计算来源"
 msgstr "No Feasible Sources"
 
-#: src/components/CharacterDossier.tsx:121
+#: src/components/CharacterDossier.tsx:198
 msgid "更多"
 msgstr "More"
 
@@ -660,7 +685,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:993
+#: src/components/CharacterList.tsx:1019
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -745,6 +770,12 @@ msgstr "Synthesizing"
 msgid "用户数据管理"
 msgstr "Save Manager"
 
+#: src/components/arknights/ModuleMissionPanel.tsx:524
+msgid "用过的 · %d 张"
+msgid_plural "用过的 · %d 张"
+msgstr[0] "Used · %d ticket"
+msgstr[1] "Used · %d tickets"
+
 #: src/locales.tsx:79
 msgid "界面语言"
 msgstr "UI Language"
@@ -776,7 +807,7 @@ msgstr ""
 msgid "角色"
 msgstr "Characters"
 
-#: src/components/CharacterList.tsx:134
+#: src/components/CharacterList.tsx:135
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -849,6 +880,26 @@ msgstr "Recent Patches"
 #: src/App.tsx:421
 msgid "返回主页"
 msgstr "Back to Home"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:496
+msgid "还不能做 · %d 条"
+msgid_plural "还不能做 · %d 条"
+msgstr[0] "Cannot count yet · %d mission"
+msgstr[1] "Cannot count yet · %d missions"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:610
+#: src/components/arknights/ModuleMissionPanel.tsx:858
+msgid "还剩 %d 次作战"
+msgid_plural "还剩 %d 次作战"
+msgstr[0] "%d run left"
+msgstr[1] "%d runs left"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:272
+#: src/components/arknights/ModuleMissionPanel.tsx:750
+msgid "还能编入 %d 位"
+msgid_plural "还能编入 %d 位"
+msgstr[0] "Room for %d more"
+msgstr[1] "Room for %d more"
 
 #: src/components/UserDataManager.tsx:200
 msgid "这不是 Closure++ 用户数据。"
@@ -946,6 +997,13 @@ msgstr "Reset Data"
 msgid "隐藏"
 msgstr "Hide"
 
+#. %1: a number; %2: operator names
+#: src/components/arknights/ModuleMissionPanel.tsx:333
+msgid "顺带推进 %1 条不限关卡任务（%2）"
+msgid_plural "顺带推进 %1 条不限关卡任务（%2）"
+msgstr[0] "Also advances %1 any-stage mission (%2)"
+msgstr[1] "Also advances %1 any-stage missions (%2)"
+
 #: src/components/AboutList.tsx:92
 msgid "鸣谢"
 msgstr "Credits"
@@ -971,62 +1029,62 @@ msgctxt "arknights arkntools step"
 msgid "点击「导出」→「导出培养方案至 MAA」"
 msgstr "Click «Export» → «Export training plan to MAA»"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:548
+#: src/pkg/cpp-arknights/GameAdapter.ts:550
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr "Growth Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:891
+#: src/pkg/cpp-arknights/GameAdapter.ts:972
 msgctxt "arknights item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:888
+#: src/pkg/cpp-arknights/GameAdapter.ts:969
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr "Dualchips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:887
+#: src/pkg/cpp-arknights/GameAdapter.ts:968
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr "Skill, Module & Catalysts"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:886
+#: src/pkg/cpp-arknights/GameAdapter.ts:967
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr "T1 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:883
+#: src/pkg/cpp-arknights/GameAdapter.ts:964
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:885
+#: src/pkg/cpp-arknights/GameAdapter.ts:966
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:890
+#: src/pkg/cpp-arknights/GameAdapter.ts:971
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:889
+#: src/pkg/cpp-arknights/GameAdapter.ts:970
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr "Chip Packs"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:884
+#: src/pkg/cpp-arknights/GameAdapter.ts:965
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:882
+#: src/pkg/cpp-arknights/GameAdapter.ts:963
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:881
+#: src/pkg/cpp-arknights/GameAdapter.ts:962
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
@@ -1081,42 +1139,42 @@ msgctxt "arknights option"
 msgid "显示潜能"
 msgstr "Show Potential"
 
-#: src/pkg/cpp-arknights/types.ts:97
+#: src/pkg/cpp-arknights/types.ts:99
 msgctxt "arknights profession"
 msgid "先锋"
 msgstr "Vanguard"
 
-#: src/pkg/cpp-arknights/types.ts:102
+#: src/pkg/cpp-arknights/types.ts:104
 msgctxt "arknights profession"
 msgid "医疗"
 msgstr "Medic"
 
-#: src/pkg/cpp-arknights/types.ts:101
+#: src/pkg/cpp-arknights/types.ts:103
 msgctxt "arknights profession"
 msgid "术师"
 msgstr "Caster"
 
-#: src/pkg/cpp-arknights/types.ts:104
+#: src/pkg/cpp-arknights/types.ts:106
 msgctxt "arknights profession"
 msgid "特种"
 msgstr "Specialist"
 
-#: src/pkg/cpp-arknights/types.ts:100
+#: src/pkg/cpp-arknights/types.ts:102
 msgctxt "arknights profession"
 msgid "狙击"
 msgstr "Sniper"
 
-#: src/pkg/cpp-arknights/types.ts:103
+#: src/pkg/cpp-arknights/types.ts:105
 msgctxt "arknights profession"
 msgid "辅助"
 msgstr "Supporter"
 
-#: src/pkg/cpp-arknights/types.ts:98
+#: src/pkg/cpp-arknights/types.ts:100
 msgctxt "arknights profession"
 msgid "近卫"
 msgstr "Guard"
 
-#: src/pkg/cpp-arknights/types.ts:99
+#: src/pkg/cpp-arknights/types.ts:101
 msgctxt "arknights profession"
 msgid "重装"
 msgstr "Defender"
@@ -1152,32 +1210,32 @@ msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr "S2"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:704
+#: src/pkg/cpp-arknights/GameAdapter.ts:785
 msgctxt "arknights stage category"
 msgid "主线"
 msgstr "Main Story"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:709
+#: src/pkg/cpp-arknights/GameAdapter.ts:790
 msgctxt "arknights stage category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:706
+#: src/pkg/cpp-arknights/GameAdapter.ts:787
 msgctxt "arknights stage category"
 msgid "别传"
 msgstr "Side Stories"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:707
+#: src/pkg/cpp-arknights/GameAdapter.ts:788
 msgctxt "arknights stage category"
 msgid "插曲"
 msgstr "Intermezzi"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:705
+#: src/pkg/cpp-arknights/GameAdapter.ts:786
 msgctxt "arknights stage category"
 msgid "活动"
 msgstr "Events"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:708
+#: src/pkg/cpp-arknights/GameAdapter.ts:789
 msgctxt "arknights stage category"
 msgid "资源收集"
 msgstr "Supplies"
@@ -1197,17 +1255,17 @@ msgctxt "arknights stage category short"
 msgid "资源"
 msgstr "Resources"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:807
+#: src/pkg/cpp-arknights/GameAdapter.ts:888
 msgctxt "arknights stage difficulty"
 msgid "剧情"
 msgstr "Easy "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:805
+#: src/pkg/cpp-arknights/GameAdapter.ts:886
 msgctxt "arknights stage difficulty"
 msgid "标准"
 msgstr "Standard "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:806
+#: src/pkg/cpp-arknights/GameAdapter.ts:887
 msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr "Tough "
@@ -1323,8 +1381,8 @@ msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:690
-#: src/pkg/cpp-arknights/GameAdapter.ts:693
+#: src/pkg/cpp-arknights/GameAdapter.ts:771
+#: src/pkg/cpp-arknights/GameAdapter.ts:774
 msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
@@ -1402,10 +1460,15 @@ msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
 
 #. %s: character name
-#: src/components/CharacterDossier.tsx:90
+#: src/components/CharacterDossier.tsx:167
 msgctxt "character dossier"
 msgid "%s 的档案"
 msgstr "Dossier: %s"
+
+#: src/components/CharacterDossier.tsx:87
+msgctxt "character dossier"
+msgid "目录"
+msgstr "Contents"
 
 #: src/components/queryEditor/ColumnHeader.tsx:126
 msgctxt "character list column"
@@ -1446,6 +1509,11 @@ msgstr "data source automation"
 msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr "assets vectorizing"
+
+#: src/components/arknights/ModuleMissionSection.tsx:124
+msgctxt "dossier section"
+msgid "模组任务"
+msgstr "Module missions"
 
 #: src/components/CharacterDossier.tsx:33
 msgctxt "dossier section"
@@ -1537,22 +1605,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:440
+#: src/components/CharacterList.tsx:441
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:441
+#: src/components/CharacterList.tsx:442
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:449
+#: src/components/CharacterList.tsx:450
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:450
+#: src/components/CharacterList.tsx:451
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -1637,8 +1705,10 @@ msgstr "Planned"
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
-#: src/components/CharacterList.tsx:524
+#: src/components/arknights/ModuleMissionPanel.tsx:259
+#: src/components/CharacterList.tsx:537
 #: src/components/queryEditor/VisualEditor.tsx:348
+#: src/pkg/cpp-arknights/moduleMissions.ts:803
 msgctxt "list separator"
 msgid "、"
 msgstr ", "
@@ -1685,69 +1755,498 @@ msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:377
+#: src/pkg/cpp-arknights/moduleMissions.ts:956
+msgctxt "module mission"
+msgid "；"
+msgstr "; "
+
+#: src/components/arknights/ModuleMissionPanel.tsx:731
+msgctxt "module mission"
+msgid "。其余几次："
+msgstr ". Other runs: "
+
+#. %1: stage code; %2: a number; %3: the reasons
+#: src/components/arknights/ModuleMissionPanel.tsx:300
+msgctxt "module mission"
+msgid "%1 要打 %2 次：%3"
+msgstr "%1 takes %2 runs: %3"
+
+#. %1: 其他人只能是…; %2: a number
+#: src/pkg/cpp-arknights/moduleMissions.ts:808
+msgctxt "module mission"
+msgid "%1，至多 %2 名"
+msgstr "%1, at most %2"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:935
+msgctxt "module mission"
+msgid "%1不编入%3，%2是%3"
+msgstr "%1 allows no %3 (%2)"
+
+#. %1, %2: operators; %3: class
+#: src/pkg/cpp-arknights/moduleMissions.ts:934
+msgctxt "module mission"
+msgid "%1不编入其他%3，%2是%3"
+msgstr "%1 allows no other %3 (%2)"
+
+#. %1, %2: operators; %3, %4: numbers
+#: src/pkg/cpp-arknights/moduleMissions.ts:945
+msgctxt "module mission"
+msgid "%1的其他人只能是 %3 星，%2是 %4 星"
+msgstr "%1 allows only %3★ alongside, not %2 (%4★)"
+
+#. %1, %2: operators; %3, %4: 先锋 / 近战位
+#: src/pkg/cpp-arknights/moduleMissions.ts:922
+msgctxt "module mission"
+msgid "%1的其他人只能是%3，%2是%4"
+msgstr "%1 allows only %3 alongside, not %2 (%4)"
+
+#. %1: operator names; %2: enemy name
+#: src/pkg/cpp-arknights/moduleMissions.ts:901
+msgctxt "module mission"
+msgid "%1都要本人歼灭%2"
+msgstr "%1 must each defeat %2 personally"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:219
+#: src/components/arknights/ModuleMissionPanel.tsx:612
+#: src/components/arknights/ModuleMissionPanel.tsx:716
+#: src/components/arknights/ModuleMissionPanel.tsx:860
+msgctxt "module mission"
+msgid "%d 理智"
+msgstr "%d sanity"
+
+#. %s: stage code
+#: src/components/arknights/ModuleMissionSection.tsx:76
+msgctxt "module mission"
+msgid "%s 这一次还能做"
+msgstr "Also in this run of %s"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:908
+msgctxt "module mission"
+msgid "%s一次只能带一种形态"
+msgstr "%s can come in one form per run"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:930
+msgctxt "module mission"
+msgid "%s不编入其他人"
+msgstr "%s allows no one else"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:912
+msgctxt "module mission"
+msgid "%s的任务条件我们还不认识"
+msgstr "we do not recognise the condition of %s yet"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:910
+msgctxt "module mission"
+msgid "%s都要第一个部署"
+msgstr "%s must each be deployed first"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:654
+msgctxt "module mission"
+msgid "不按星级筛"
+msgstr "Show all rarities"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:825
+msgctxt "module mission"
+msgid "不编入%s"
+msgstr "No %s"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:824
+msgctxt "module mission"
+msgid "不编入其他%s"
+msgstr "No other %s"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:828
+#: src/pkg/cpp-arknights/moduleMissions.ts:836
+#: src/pkg/cpp-arknights/moduleMissions.ts:842
+msgctxt "module mission"
+msgid "不编入其他人"
+msgstr "No one else"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:268
+#: src/components/arknights/ModuleMissionPanel.tsx:748
+msgctxt "module mission"
+msgid "不能再编入别人"
+msgstr "No room for anyone else"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:283
+#: src/components/arknights/ModuleMissionPanel.tsx:764
+msgctxt "module mission"
+msgid "不能编入%s"
+msgstr "No %s"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:869
+msgctxt "module mission"
+msgid "不限关卡任务做完"
+msgstr "Any-stage missions done"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:914
+msgctxt "module mission"
+msgid "人数超过限制"
+msgstr "too many operators for one squad"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:784
+#: src/components/arknights/ModuleMissionPanel.tsx:820
+msgctxt "module mission"
+msgid "任务"
+msgstr "Mission"
+
+#. %1: missions done; %2: missions
+#: src/components/arknights/TaskDisplay.tsx:18
+msgctxt "module mission"
+msgid "任务 %1/%2"
+msgstr "Missions %1/%2"
+
+#. %1: a number; %2: skill name
+#: src/pkg/cpp-arknights/moduleMissions.ts:887
+msgctxt "module mission"
+msgid "使用 %1 次「%2」"
+msgstr "Use “%2” ×%1"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:865
+msgctxt "module mission"
+msgid "关卡任务做完"
+msgstr "Stage missions done"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:607
+#: src/components/arknights/ModuleMissionPanel.tsx:676
+msgctxt "module mission"
+msgid "关卡任务都做完了"
+msgstr "All stage missions are done"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:844
+msgctxt "module mission"
+msgid "其他人只能是 %d 星"
+msgstr "Others must be %d★"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:830
+#: src/pkg/cpp-arknights/moduleMissions.ts:838
+msgctxt "module mission"
+msgid "其他人只能是%s"
+msgstr "Others must be %s"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:848
+msgctxt "module mission"
+msgid "其他人至多 %d 名"
+msgstr "At most %d others"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:850
+msgctxt "module mission"
+msgid "其他人至多部署 %d 位"
+msgstr "Deploy at most %d others"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:591
+msgctxt "module mission"
+msgid "只看 %d 星干员的模组"
+msgstr "Only modules of %d★ operators"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:258
+msgctxt "module mission"
+msgid "只能 %d★"
+msgstr "Only %d★"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:256
+msgctxt "module mission"
+msgid "只能近战位"
+msgstr "Melee only"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:257
+msgctxt "module mission"
+msgid "只能远程位"
+msgstr "Ranged only"
+
+#: src/components/arknights/ModuleMissionSection.tsx:97
+msgctxt "module mission"
+msgid "在侧栏里看"
+msgstr "Show in sidebar"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:637
+msgctxt "module mission"
+msgid "在干员的培养目标里把模组设到 1 级以上，它的任务就会列在这里。"
+msgstr ""
+"Set a module to level 1 or above in an operator’s goal, and its missions are "
+"listed here."
+
+#: src/components/arknights/ModuleMissionPanel.tsx:781
+#: src/components/arknights/ModuleMissionPanel.tsx:818
+msgctxt "module mission"
+msgid "完成"
+msgstr "Done"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:434
+msgctxt "module mission"
+msgid "已完成"
+msgstr "Done"
+
+#: src/components/arknights/ModuleMissionSection.tsx:39
+msgctxt "module mission"
+msgid "已解锁，任务已完成"
+msgstr "unlocked, missions done"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:782
+#: src/components/arknights/ModuleMissionPanel.tsx:819
+msgctxt "module mission"
+msgid "干员"
+msgstr "Operator"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:854
+msgctxt "module mission"
+msgid "所有干员不被击倒"
+msgstr "No operator falls"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:376
+#: src/components/arknights/ModuleMissionPanel.tsx:843
+msgctxt "module mission"
+msgid "打完了"
+msgstr "Cleared"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:151
+msgctxt "module mission"
+msgid "撤销"
+msgstr "Undo"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:71
+msgctxt "module mission"
+msgid "未持有"
+msgstr "Not owned"
+
+#: src/components/arknights/ModuleMissionSection.tsx:51
+msgctxt "module mission"
+msgid "未解锁"
+msgstr "Locked"
+
+#: src/components/arknights/ModuleMissionSection.tsx:50
+msgctxt "module mission"
+msgid "未解锁 · 计划解锁到 %d 级"
+msgstr "Locked · planned for level %d"
+
+#. %1: a number; %2: enemy name
+#: src/pkg/cpp-arknights/moduleMissions.ts:861
+msgctxt "module mission"
+msgid "本人歼灭 %1 名%2"
+msgstr "Defeat %1 %2 personally"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:875
+msgctxt "module mission"
+msgid "本人歼灭 %1 名敌人，其中 %3 名%2"
+msgstr "Defeat %1 enemies personally, %3 of them %2"
+
+#. %1: a number; %2: enemy names
+#: src/pkg/cpp-arknights/moduleMissions.ts:874
+msgctxt "module mission"
+msgid "本人歼灭 %1 名敌人，其中有%2"
+msgstr "Defeat %1 enemies personally, including %2"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:883
+msgctxt "module mission"
+msgid "本人歼灭 %d 名敌人"
+msgstr "Defeat %d enemies personally"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:860
+msgctxt "module mission"
+msgid "本人歼灭%s"
+msgstr "Defeat %s personally"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:783
+msgctxt "module mission"
+msgid "模组"
+msgstr "Module"
+
+#. %1: stage code; %2: run number
+#: src/components/arknights/ModuleMissionPanel.tsx:110
+msgctxt "module mission"
+msgid "模组任务 · %1 第 %2 次"
+msgstr "Module missions · %1 run %2"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:114
+msgctxt "module mission"
+msgid "模组任务 · %s"
+msgstr "Module missions · %s"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:201
+msgctxt "module mission"
+msgid "模组已解锁"
+msgstr "Module unlocked"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:874
+msgctxt "module mission"
+msgid "点左边的券，看这一次带谁"
+msgstr "Pick a ticket on the left to see whom to bring"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:640
+msgctxt "module mission"
+msgid "看任务已开放的"
+msgstr "Show open missions"
+
+#. %1, %2: numbers
+#: src/components/arknights/ModuleMissionPanel.tsx:717
+msgctxt "module mission"
+msgid "第 %1 次，共 %2 次"
+msgstr "run %1 of %2"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:736
+msgctxt "module mission"
+msgid "第 %d 次"
+msgstr "Run %d"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:852
+msgctxt "module mission"
+msgid "第一个部署，全程不撤退"
+msgstr "Deploy first, never retreat"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:72
+msgctxt "module mission"
+msgid "精二 %d 级后才算"
+msgstr "Counts from Elite 2 level %d"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:579
+msgctxt "module mission"
+msgid "范围"
+msgstr "Scope"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:636
+msgctxt "module mission"
+msgid "计划里没有要解锁的模组"
+msgstr "No module to unlock in the plan"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:796
+msgctxt "module mission"
+msgid "近战位"
+msgstr "melee"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:799
+msgctxt "module mission"
+msgid "近战位和远程位"
+msgstr "melee and ranged"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:650
+msgctxt "module mission"
+msgid "这一档里没有模组"
+msgstr "No module in this scope"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:777
+msgctxt "module mission"
+msgid "这一次的任务"
+msgstr "Missions in this run"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:325
+msgctxt "module mission"
+msgid "这条任务的条件我们还不认识，只能单独算一次"
+msgstr ""
+"We do not recognise this mission’s condition yet, so it gets a run of its own"
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:798
+msgctxt "module mission"
+msgid "远程位"
+msgstr "ranged"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:318
+msgctxt "module mission"
+msgid "都要歼灭%s，数量可能不够分"
+msgstr "All need to defeat %s; there may not be enough to go round"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:814
+msgctxt "module mission"
+msgid "顺带推进（不限关卡）"
+msgstr "Also advances (any stage)"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:53
+msgctxt "module mission scope"
+msgid "任务已开放"
+msgstr "Open missions"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:570
+msgctxt "module mission scope"
+msgid "含已完成"
+msgstr "incl. done"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:57
+msgctxt "module mission scope"
+msgid "所有任务"
+msgstr "All missions"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:55
+msgctxt "module mission scope"
+msgid "所有已有干员"
+msgstr "All owned"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:56
+msgctxt "module mission scope"
+msgid "所有干员"
+msgstr "All operators"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:54
+msgctxt "module mission scope"
+msgid "所有精二"
+msgstr "All Elite 2"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:52
+msgctxt "module mission scope"
+msgid "计划内"
+msgstr "In plan"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:379
 msgctxt "predefined query"
 msgid "一图流 技能专三率"
 msgstr "yituliu: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:400
+#: src/pkg/cpp-arknights/GameAdapter.ts:402
 msgctxt "predefined query"
 msgid "一图流 技能专三率（全部）"
 msgstr "yituliu: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:441
+#: src/pkg/cpp-arknights/GameAdapter.ts:443
 msgctxt "predefined query"
 msgid "一图流 精二率"
 msgstr "yituliu: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:463
+#: src/pkg/cpp-arknights/GameAdapter.ts:465
 msgctxt "predefined query"
 msgid "一图流 精二率（全部）"
 msgstr "yituliu: E2 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:409
+#: src/pkg/cpp-arknights/GameAdapter.ts:411
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率"
 msgstr "Heybox: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:432
+#: src/pkg/cpp-arknights/GameAdapter.ts:434
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率（全部）"
 msgstr "Heybox: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:501
+#: src/pkg/cpp-arknights/GameAdapter.ts:503
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率"
 msgstr "Heybox: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:524
+#: src/pkg/cpp-arknights/GameAdapter.ts:526
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率（全部）"
 msgstr "Heybox: E2 Lv 90 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:471
+#: src/pkg/cpp-arknights/GameAdapter.ts:473
 msgctxt "predefined query"
 msgid "小黑盒 精二率"
 msgstr "Heybox: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:493
+#: src/pkg/cpp-arknights/GameAdapter.ts:495
 msgctxt "predefined query"
 msgid "小黑盒 精二率（全部）"
 msgstr "Heybox: E2 rate (all)"
 
-#: src/components/CharacterList.tsx:667
+#: src/components/CharacterList.tsx:682
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:660
+#: src/components/CharacterList.tsx:675
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:674
+#: src/components/CharacterList.tsx:689
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -2109,27 +2608,27 @@ msgctxt "query field"
 msgid "%s（目标）"
 msgstr "%s (goal)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:321
+#: src/pkg/cpp-arknights/GameAdapter.ts:323
 msgctxt "query field"
 msgid "一图流练度统计 技能专三率"
 msgstr "yituliu survey: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:270
+#: src/pkg/cpp-arknights/GameAdapter.ts:272
 msgctxt "query field"
 msgid "一图流练度统计 精二率"
 msgstr "yituliu survey: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:312
+#: src/pkg/cpp-arknights/GameAdapter.ts:314
 msgctxt "query field"
 msgid "专精等级"
 msgstr "Mastery"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:223
+#: src/pkg/cpp-arknights/GameAdapter.ts:225
 msgctxt "query field"
 msgid "主职业"
 msgstr "Main class"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:201
+#: src/pkg/cpp-arknights/GameAdapter.ts:203
 msgctxt "query field"
 msgid "代号"
 msgstr "Name"
@@ -2139,17 +2638,17 @@ msgctxt "query field"
 msgid "内部代号"
 msgstr "Internal ID"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:337
+#: src/pkg/cpp-arknights/GameAdapter.ts:339
 msgctxt "query field"
 msgid "小黑盒干员统计 技能专三率"
 msgstr "Heybox survey: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:288
+#: src/pkg/cpp-arknights/GameAdapter.ts:290
 msgctxt "query field"
 msgid "小黑盒干员统计 精二 90 级率"
 msgstr "Heybox survey: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:279
+#: src/pkg/cpp-arknights/GameAdapter.ts:281
 msgctxt "query field"
 msgid "小黑盒干员统计 精二率"
 msgstr "Heybox survey: E2 rate"
@@ -2159,12 +2658,12 @@ msgctxt "query field"
 msgid "已全面养成"
 msgstr "Fully trained"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:305
+#: src/pkg/cpp-arknights/GameAdapter.ts:307
 msgctxt "query field"
 msgid "技能名"
 msgstr "Skill name"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:254
+#: src/pkg/cpp-arknights/GameAdapter.ts:256
 msgctxt "query field"
 msgid "技能等级"
 msgstr "Skill level"
@@ -2179,37 +2678,37 @@ msgctxt "query field"
 msgid "有计划"
 msgstr "Has plan"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:260
+#: src/pkg/cpp-arknights/GameAdapter.ts:262
 msgctxt "query field"
 msgid "潜能"
 msgstr "Potential"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:215
+#: src/pkg/cpp-arknights/GameAdapter.ts:217
 msgctxt "query field"
 msgid "稀有度"
 msgstr "Rarity"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:242
+#: src/pkg/cpp-arknights/GameAdapter.ts:244
 msgctxt "query field"
 msgid "等级"
 msgstr "Level"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:236
+#: src/pkg/cpp-arknights/GameAdapter.ts:238
 msgctxt "query field"
 msgid "精英化"
 msgstr "Elite"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:248
+#: src/pkg/cpp-arknights/GameAdapter.ts:250
 msgctxt "query field"
 msgid "精英化 × 100 + 等级"
 msgstr "Elite × 100 + Level"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:229
+#: src/pkg/cpp-arknights/GameAdapter.ts:231
 msgctxt "query field"
 msgid "职业"
 msgstr "Class"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:207
+#: src/pkg/cpp-arknights/GameAdapter.ts:209
 msgctxt "query field"
 msgid "西文代号"
 msgstr "Western name"
@@ -2254,42 +2753,42 @@ msgctxt "query group mode"
 msgid "都不满足"
 msgstr "none"
 
-#: src/components/CharacterList.tsx:738
+#: src/components/CharacterList.tsx:763
 msgctxt "query menu"
 msgid "不论持有和练度，列出全部"
 msgstr "Everyone, owned or not, maxed or not"
 
-#: src/components/CharacterList.tsx:742
+#: src/components/CharacterList.tsx:767
 msgctxt "query menu"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:820 src/components/CharacterList.tsx:821
+#: src/components/CharacterList.tsx:845 src/components/CharacterList.tsx:846
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
 
-#: src/components/CharacterList.tsx:728
+#: src/components/CharacterList.tsx:753
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
 
-#: src/components/CharacterList.tsx:772
+#: src/components/CharacterList.tsx:797
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
 
-#: src/components/CharacterList.tsx:812 src/components/CharacterList.tsx:813
+#: src/components/CharacterList.tsx:837 src/components/CharacterList.tsx:838
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
 
-#: src/components/CharacterList.tsx:784
+#: src/components/CharacterList.tsx:809
 msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:820 src/components/CharacterList.tsx:821
+#: src/components/CharacterList.tsx:845 src/components/CharacterList.tsx:846
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -2335,29 +2834,29 @@ msgctxt "query operator"
 msgid "结尾是"
 msgstr "ends with"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:297
+#: src/pkg/cpp-arknights/GameAdapter.ts:299
 msgctxt "query sub query"
 msgid "技能"
 msgstr "Skill"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:61
+#: src/pkg/cpp-arknights/GameAdapter.ts:62
 msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:521
+#: src/components/CharacterList.tsx:534
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:521
+#: src/components/CharacterList.tsx:534
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
 msgstr "Yes"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:59
+#: src/pkg/cpp-arknights/GameAdapter.ts:60
 msgctxt "query value"
 msgid "精英 %d"
 msgstr "E%d"
@@ -2401,6 +2900,16 @@ msgstr "Maxed"
 msgctxt "short name"
 msgid "计划(毕业)"
 msgstr "Planned t/Maxed"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:900
+msgctxt "sidebar panel"
+msgid "模组"
+msgstr "Modules"
+
+#: src/components/arknights/ModuleMissionPanel.tsx:901
+msgctxt "sidebar panel"
+msgid "模组任务"
+msgstr "Module missions"
 
 #: src/components/stageGroups.ts:34
 msgctxt "stage category"

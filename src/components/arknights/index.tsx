@@ -6,6 +6,8 @@ import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { ConfigMenuItems } from './ConfigMenuItems'
 import { ExporterMenuItems } from './ExporterMenuItems'
 import { ImporterMenuItems } from './ImporterMenuItems'
+import { moduleMissionsPanel } from './ModuleMissionPanel'
+import { moduleMissionsSection } from './ModuleMissionSection'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
 import { stagesPanel } from './StagePanel'
 import { TaskDisplay } from './TaskDisplay'
@@ -37,10 +39,11 @@ export const ArknightsComponents: IGameComponent = {
   TaskDisplay,
   QuickFilterBuilder,
   ValueConfigMenu,
-  sidebarPanels: [stagesPanel],
   quickFilters: {
     professions: 'contains',
     rarity: '==',
     elite: '==',
   },
+  sidebarPanels: [stagesPanel, moduleMissionsPanel],
+  dossierSections: [moduleMissionsSection],
 }

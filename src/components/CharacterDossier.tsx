@@ -1,6 +1,6 @@
 import { Button, Drawer, Popover } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useGameAdapter, useGameDataMemo } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
@@ -33,6 +33,83 @@ export const statusSection: DossierSection = {
   title: lpstr(() => gt.pgettext('dossier section', '练度')),
   Body: StatusSectionBody,
 }
+
+/** 目录高亮的节：顶边不低于滚动区顶边 + 8px 的最后一节；滚到底时是最后一节 */
+function currentSection(body: HTMLElement): string | undefined {
+  const els = [...body.querySelectorAll<HTMLElement>('[data-dossier-section]')]
+  if (els.length === 0) return undefined
+  if (body.scrollTop + body.clientHeight >= body.scrollHeight - 1) return els[els.length - 1].dataset.dossierSection
+  const top = body.getBoundingClientRect().top + 8
+  let current = els[0].dataset.dossierSection
+  for (const el of els) if (el.getBoundingClientRect().top <= top) current = el.dataset.dossierSection
+  return current
+}
+
+const DossierSections = memo(({ character, sections }: { character: ICharacter; sections: DossierSection[] }) => {
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const [active, setActive] = useState<string | undefined>(sections[0]?.id)
+  const ids = sections.map((s) => s.id).join(' ')
+
+  useEffect(() => {
+    const body = bodyRef.current
+    if (!body) return
+    let frame = 0
+    const onScroll = () => {
+      if (frame) return
+      frame = requestAnimationFrame(() => {
+        frame = 0
+        setActive(currentSection(body))
+      })
+    }
+    body.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      body.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(frame)
+    }
+  }, [ids])
+
+  // 换干员时回到第一节
+  useLayoutEffect(() => {
+    if (bodyRef.current) bodyRef.current.scrollTop = 0
+    setActive(undefined)
+  }, [character.key])
+
+  const jump = (id: string) => {
+    const el = bodyRef.current?.querySelector(`[data-dossier-section="${CSS.escape(id)}"]`)
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    el?.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
+  }
+  const current = active && sections.some((s) => s.id === active) ? active : sections[0]?.id
+
+  return (
+    <>
+      {sections.length >= 2 ? (
+        <nav className="cpp-dossier-toc" aria-label={gt.pgettext('character dossier', '目录')}>
+          {sections.map(({ id, title }) => (
+            <Button
+              key={id}
+              variant="minimal"
+              size="small"
+              text={title.toString()}
+              active={id === current}
+              intent={id === current ? 'primary' : undefined}
+              aria-current={id === current ? 'location' : undefined}
+              onClick={() => jump(id)}
+            />
+          ))}
+        </nav>
+      ) : null}
+      <div className="cpp-dossier-body" ref={bodyRef}>
+        {sections.map(({ id, title, Body }) => (
+          <section key={id} className="cpp-dossier-section" data-dossier-section={id}>
+            <h5 className="cpp-dossier-section-title">{title.toString()}</h5>
+            <Body key={character.key} character={character} />
+          </section>
+        ))}
+      </div>
+    </>
+  )
+})
 
 export const CharacterDossier = memo(() => {
   const state = useAtomValue(dossierAtom)
@@ -128,14 +205,7 @@ export const CharacterDossier = memo(() => {
             onClick={close}
           />
         </div>
-        <div className="cpp-dossier-body">
-          {sections.map(({ id, title, Body }) => (
-            <section key={id} className="cpp-dossier-section" data-dossier-section={id}>
-              <h5 className="cpp-dossier-section-title">{title.toString()}</h5>
-              <Body key={character.key} character={character} />
-            </section>
-          ))}
-        </div>
+        <DossierSections character={character} sections={sections} />
       </div>
     </Drawer>
   )

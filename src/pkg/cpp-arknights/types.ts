@@ -91,6 +91,8 @@ export const enum Profession {
   WARRIOR = 'WARRIOR',
 }
 
+export type Position = 'MELEE' | 'RANGED' | 'ALL' | 'NONE'
+
 export type DeployableProfession = Exclude<Profession, Profession.TOKEN | Profession.TRAP>
 
 export const ProfessionNames: Record<DeployableProfession, PSTR> = {

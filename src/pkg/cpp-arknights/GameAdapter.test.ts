@@ -161,6 +161,35 @@ describe('ArknightsAdapter', () => {
     expect(keys).not.toContain(memento.itemId)
   })
 
+  it('has no module missions or enemies in data published before them', async () => {
+    const ga = new ArknightsAdapter()
+    await ga.getDataManager().init('zh_CN')
+    expect(ga.hasModuleMissions()).toBe(false)
+    expect(ga.getEnemy('enemy_1500_skulsr')).toBeUndefined()
+    expect(ga.getMissionCatalog().modules).toEqual([])
+  })
+
+  it('reads module missions and enemies once published', async () => {
+    const k = remote.get('arknights-kengxxiao-zh_CN') as any
+    k.exUniEquips.missionList = {
+      uniequip_002_test_2: {
+        template: 'EquipmentSquadNoAnyDead',
+        desc: '3星通关',
+        paramList: ['3', 'main_01', 'char_test'],
+        uniEquipId: 'uniequip_002_test',
+        uniEquipMissionSort: 2,
+        jumpStageId: 'main_01',
+      },
+    }
+    k.exEnemies = { enemyData: { enemy_1500_skulsr: { name: '碎骨', enemyLevel: 'BOSS' } } }
+    const ga = new ArknightsAdapter()
+    await ga.getDataManager().init('zh_CN')
+    expect(ga.hasModuleMissions()).toBe(true)
+    expect(ga.getEnemy('enemy_1500_skulsr')).toEqual({ name: '碎骨', level: 'BOSS' })
+    expect(ga.getMissionCatalog().stage('main_01')).toMatchObject({ code: 'main_01', apCost: 6, zoneName: 'Main 1' })
+    expect(ga.getMissionCatalog().stage('main_99')).toMatchObject({ code: 'main_99', name: '', apCost: 0 })
+  })
+
   it('asks for a rebuild only when the item value config changes', () => {
     const ga = new ArknightsAdapter()
     expect(ga.applyPreferenceSnapshot({})).toBe(false)

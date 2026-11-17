@@ -28,6 +28,7 @@ import {
   exportItemValueGameInputs,
   normalizeItemValueConfig,
 } from './itemValue'
+import { EnemyLevel, MissionCatalog, MissionModule, MissionStageInfo } from './moduleMissions'
 import { HeyboxSurveySource, YituliuSurveySource } from './survey'
 import {
   AK_FIXED_DROP_STAGES,
@@ -167,6 +168,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     this.zoneNames = {}
     this.zoneTypes = {}
     this.zoneInfos = undefined
+    this.missionCatalog = undefined
     this.cacheExpiresAt = Infinity
     this.getStageInfos()
     return Number.isFinite(this.cacheExpiresAt) ? this.cacheExpiresAt : undefined
@@ -593,6 +595,85 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
 
   public getCharacter(key: string) {
     return this.dataManager.data.characters[key]
+  }
+
+  public getEnemy(id: string): { name: string; level: EnemyLevel } | undefined {
+    const raw = this.dataManager.raw.exEnemies.enemyData[id]
+    if (!raw) return undefined
+    const local = this.dataManager.raw.local?.exEnemies?.enemyData[id]
+    return { name: local?.name || raw.name, level: raw.enemyLevel }
+  }
+
+  /** 数据 worker 发布模组任务之前的缓存数据里没有 */
+  public hasModuleMissions(): boolean {
+    return Object.keys(this.dataManager.raw.exUniEquips.missionList ?? {}).length > 0
+  }
+
+  private missionCatalog?: MissionCatalog
+  public getMissionCatalog(): MissionCatalog {
+    return (this.missionCatalog ||= this.buildMissionCatalog())
+  }
+
+  private buildMissionCatalog(): MissionCatalog {
+    const raw = this.dataManager.raw
+    const uda = this.userDataAdapter
+    const empty = uda.getFrozenEmptyCharacterStatus()
+    const modules: MissionModule[] = []
+    for (const charId of uda.getAllCharacterIds()) {
+      const c = this.getCharacter(charId)
+      const seen = new Set<string>()
+      for (const { equip } of c.uniEquips) {
+        if (seen.has(equip.key) || equip.missions.length === 0) continue
+        seen.add(equip.key)
+        const formId = equip.formId
+        modules.push({
+          equipId: equip.key,
+          charId,
+          stars: c.rarity + 1,
+          unlockLevel: c.modUnlockLevel,
+          missions: equip.missions.map((m) => ({
+            id: m.id,
+            template: m.template,
+            paramList: m.paramList,
+            stageId: m.stageId,
+            desc: m.desc,
+            equipId: equip.key,
+            charId,
+            formId,
+            profession: c.getPatchProfession(formId),
+            position: c.getPatchPosition(formId),
+            stars: c.rarity + 1,
+          })),
+        })
+      }
+    }
+
+    const stages = new Map<string, MissionStageInfo>()
+    const readStage = (stageId: string): MissionStageInfo => {
+      // 国际服还没开的活动关卡，退回国服的数据
+      const base = raw.local?.exStage.stages[stageId] ? raw.local : raw
+      const excel = base.exStage.stages[stageId]
+      if (!excel) return { id: stageId, code: stageId, name: '', apCost: 0, zoneName: '' }
+      const zone = base.exZone.zones[excel.zoneId]
+      const retroId = base.exRetro.zoneToRetro[excel.zoneId]
+      const zoneName = zone
+        ? [zone.zoneNameFirst, zone.zoneNameSecond].filter(Boolean).join(' ')
+        : retroId
+          ? (base.exRetro.retroActList[retroId]?.name ?? '')
+          : ''
+      return { id: stageId, code: excel.code ?? stageId, name: excel.name ?? '', apCost: excel.apCost, zoneName }
+    }
+
+    return {
+      modules,
+      world: { enemyLevel: (id) => raw.exEnemies.enemyData[id]?.enemyLevel },
+      stage: (stageId) => {
+        let info = stages.get(stageId)
+        if (!info) stages.set(stageId, (info = readStage(stageId)))
+        return info
+      },
+      isOwned: (charId, status) => !uda.isAbsentCharacter(this.getCharacter(charId), status ?? empty),
+    }
   }
 
   public getFormulas() {

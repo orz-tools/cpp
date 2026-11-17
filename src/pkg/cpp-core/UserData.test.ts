@@ -89,4 +89,24 @@ describe('UserDataAtomHolder', () => {
     store.set(atoms.itemQuantity('b1'), 3)
     expect(store.get(atoms.itemQuantity('exp'))).toBe(1600)
   })
+
+  it('reads done module missions from data saved before them as none', () => {
+    const store = createStore()
+    const holder = new UserDataAtomHolder(ga)
+    const { doneMissions: _, ...old } = newUserData()
+    holder.setAtom(atom<UserData<IGame> | undefined>(old as UserData<IGame>), atom<string[]>([]), atom(0))
+    expect(store.get(holder.atoms.dataAtom).doneMissions).toEqual([])
+  })
+
+  it('undoes and redoes marking module missions done', () => {
+    const { store, atoms } = setup()
+    store.set(atoms.dataAtom, 'modify', (d) => {
+      d.doneMissions.push('uniequip_002_test_2')
+    })
+    expect(store.get(atoms.dataAtom).doneMissions).toEqual(['uniequip_002_test_2'])
+    store.set(atoms.dataAtom, 'undo')
+    expect(store.get(atoms.dataAtom).doneMissions).toEqual([])
+    store.set(atoms.dataAtom, 'redo')
+    expect(store.get(atoms.dataAtom).doneMissions).toEqual(['uniequip_002_test_2'])
+  })
 })

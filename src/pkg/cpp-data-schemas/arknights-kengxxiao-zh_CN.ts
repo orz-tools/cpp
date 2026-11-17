@@ -7,6 +7,7 @@ export type CppData_ArknightsKengxxiaoZhCn = {
             displayNumber: string | null;
             appellation: string;
             profession: "CASTER" | "MEDIC" | "PIONEER" | "SNIPER" | "SPECIAL" | "SUPPORT" | "TANK" | "WARRIOR" | "TRAP" | "TOKEN";
+            position: "MELEE" | "RANGED" | "ALL" | "NONE";
             rarity: "TIER_1" | "TIER_2" | "TIER_3" | "TIER_4" | "TIER_5" | "TIER_6";
             skills: {
                 skillId: string | null;
@@ -58,6 +59,7 @@ export type CppData_ArknightsKengxxiaoZhCn = {
                 displayNumber: string | null;
                 appellation: string;
                 profession: "CASTER" | "MEDIC" | "PIONEER" | "SNIPER" | "SPECIAL" | "SUPPORT" | "TANK" | "WARRIOR" | "TRAP" | "TOKEN";
+                position: "MELEE" | "RANGED" | "ALL" | "NONE";
                 rarity: "TIER_1" | "TIER_2" | "TIER_3" | "TIER_4" | "TIER_5" | "TIER_6";
                 skills: {
                     skillId: string | null;
@@ -136,6 +138,18 @@ export type CppData_ArknightsKengxxiaoZhCn = {
                         type: "MATERIAL" | "GOLD";
                     }[];
                 } | null;
+                tmplId: string | null;
+                missionList: string[];
+            };
+        };
+        missionList: {
+            [x: string]: {
+                template: string;
+                desc: string;
+                paramList: string[];
+                uniEquipId: string;
+                uniEquipMissionSort: number;
+                jumpStageId: string | null;
             };
         };
         charEquip: {
@@ -242,6 +256,14 @@ export type CppData_ArknightsKengxxiaoZhCn = {
                 zoneNameFirst: string | null;
                 zoneNameSecond: string | null;
                 type: "MAINLINE" | "WEEKLY" | "CAMPAIGN" | "CLIMB_TOWER" | "ACTIVITY" | "SIDESTORY" | "GUIDE" | "ROGUELIKE" | "BRANCHLINE" | "MAINLINE_ACTIVITY" | "MAINLINE_RETRO";
+            };
+        };
+    };
+    exEnemies: {
+        enemyData: {
+            [x: string]: {
+                name: string;
+                enemyLevel: "NORMAL" | "ELITE" | "BOSS";
             };
         };
     };

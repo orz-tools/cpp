@@ -168,6 +168,16 @@ body {
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
+/* Outside the scrolling body, so it stays at the top */
+.cpp-dossier-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 16px;
+  box-shadow: 0 1px 0 rgba(17, 20, 24, 0.15);
+  flex: none;
+}
+
 .cpp-dossier-body {
   flex: 1 1 auto;
   overflow: auto;

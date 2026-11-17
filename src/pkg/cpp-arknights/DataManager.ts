@@ -25,6 +25,7 @@ import {
   ArknightsFormulaTag,
   ArknightsKengxxiao,
   ArknightsRegion,
+  Position,
   Profession,
 } from './types'
 
@@ -87,6 +88,7 @@ function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter) {
       buildinEvolveMap: {},
       buildinPatchMap: {},
     },
+    exEnemies: k.data.exEnemies || { enemyData: {} },
     penguinMatrix: penguin.data,
     yituliuSurvey: yituliuSurvey.data,
     heyboxSurvey: heyboxSurvey.data,
@@ -391,6 +393,17 @@ export class Character implements ICharacter {
     return patch[1].profession as Profession
   }
 
+  public get position(): Position {
+    return this.raw.position ?? 'NONE'
+  }
+
+  public getPatchPosition(charId: string): Position {
+    if (charId === this.key) return this.position
+    const patch = this.patches.find((x) => x[0] === charId)
+    if (!patch) return 'NONE'
+    return patch[1].position ?? 'NONE'
+  }
+
   public get defaultSkinId(): string {
     return this.snapshot.raw.exSkin.buildinEvolveMap[this.key]?.['0'] || ''
   }
@@ -588,6 +601,29 @@ export class UniEquip {
     return this.rawLocal?.uniEquipName || this.raw.uniEquipName
   }
 
+  /** 多形态干员（阿米娅）的模组属于哪个形态；属于基础形态时是 null */
+  public get tmplId(): string | null {
+    return this.raw.tmplId ?? null
+  }
+
+  public get formId(): string {
+    return this.tmplId ?? this.raw.charId
+  }
+
+  private _missions?: UniEquipMission[]
+  public get missions(): UniEquipMission[] {
+    return (this._missions ||= this.generateMissions())
+  }
+
+  private generateMissions() {
+    const all = this.snapshot.raw.exUniEquips.missionList ?? {}
+    const local = this.snapshot.raw.local?.exUniEquips.missionList ?? {}
+    return (this.raw.missionList ?? [])
+      .filter((id) => Object.hasOwn(all, id))
+      .map((id) => new UniEquipMission(id, all[id], Object.hasOwn(local, id) ? local[id] : null, this))
+      .sort((a, b) => a.raw.uniEquipMissionSort - b.raw.uniEquipMissionSort)
+  }
+
   private _icon?: [BlobImages]
   public get icon() {
     return (this._icon || (this._icon = [this.iconGenerator]))[0]
@@ -609,6 +645,32 @@ export class UniEquip {
         yysrc,
       ),
     }
+  }
+}
+
+export class UniEquipMission {
+  public constructor(
+    public readonly id: string,
+    public readonly raw: ArknightsKengxxiao['exUniEquips']['missionList'][''],
+    public readonly rawLocal: ArknightsKengxxiao['exUniEquips']['missionList'][''] | null,
+    public readonly uniEquip: UniEquip,
+  ) {}
+
+  public get template() {
+    return this.raw.template
+  }
+
+  public get paramList() {
+    return this.raw.paramList
+  }
+
+  /** 绑定的关卡；不绑关卡的任务是 null */
+  public get stageId() {
+    return this.raw.jumpStageId
+  }
+
+  public get desc() {
+    return this.rawLocal?.desc || this.raw.desc
   }
 }
 

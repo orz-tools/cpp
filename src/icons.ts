@@ -40,6 +40,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.ERROR, Paths16.Error],
       [IconNames.EYE_OFF, Paths16.EyeOff],
       [IconNames.FILTER, Paths16.Filter],
+      [IconNames.FLAG, Paths16.Flag],
       [IconNames.FONT, Paths16.Font],
       [IconNames.FULLSCREEN, Paths16.Fullscreen],
       [IconNames.GLOBE, Paths16.Globe],
@@ -84,6 +85,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
     new Map([
       [IconNames.AUTOMATIC_UPDATES, Paths20.AutomaticUpdates],
       [IconNames.ERROR, Paths20.Error],
+      [IconNames.FLAG, Paths20.Flag],
       [IconNames.IMPORT, Paths20.Import],
       [IconNames.WARNING_SIGN, Paths20.WarningSign],
     ]),
