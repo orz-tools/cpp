@@ -42,7 +42,13 @@ import {
   SurveySourceKeys,
   formulaTagNames,
 } from './types'
-import { ArknightsStageCategory, arknightsZoneCategory, arknightsZoneSortKey } from './zones'
+import {
+  ArknightsStageCategory,
+  arknightsChapterLabel,
+  arknightsChapterOf,
+  arknightsZoneCategory,
+  arknightsZoneSortKey,
+} from './zones'
 
 const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
 const numberOptions = (from: number, to: number) => () => range(from, to).map((x) => ({ value: x, label: `${x}` }))
@@ -627,7 +633,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     return this._expItemValueMap.get(key)
   }
 
-  private zoneNames: Record<string, string> = {}
+  private zoneNames: Record<string, [first: string, second: string]> = {}
   private zoneTypes: Record<string, string | undefined> = {}
   private zoneInfos: Record<string, IZoneInfo> | undefined
   private stageInfo: Record<string, ArknightsStageInfo> | undefined
@@ -641,12 +647,37 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     for (const stage of Object.values(stageInfo)) {
       ;(codes[stage.zoneId] ||= []).push(stage.code)
     }
+    // From chapter 15 on, the first part of a main story name is an English subtitle instead of the chapter number
+    let template: [chapter: number, label: string] | undefined
+    for (const [id, [first]] of Object.entries(this.zoneNames)) {
+      const m = /^main_(\d+)$/.exec(id)
+      if (!m || !first || this.zoneTypes[id] !== 'MAINLINE') continue
+      const chapter = Number(m[1])
+      if (!template || chapter > template[0]) template = [chapter, first]
+    }
+
     const zoneInfos: Record<string, IZoneInfo> = {}
     for (const [id, stageCodes] of Object.entries(codes)) {
       const type = this.zoneTypes[id]
+      const [first, second] = this.zoneNames[id] || ['', '']
+      const joined = [first, second].filter((x) => x).join(' ')
+      let name = joined
+      let shortName = joined
+      if (type === 'MAINLINE') {
+        shortName = first || second
+      } else if (type === 'MAINLINE_ACTIVITY' || type === 'MAINLINE_RETRO') {
+        const chapter = arknightsChapterOf(stageCodes)
+        const label =
+          template && chapter !== undefined ? arknightsChapterLabel(template[1], template[0], chapter) : undefined
+        if (label) {
+          name = [label, second].filter((x) => x).join(' ')
+          shortName = label
+        }
+      }
       const info = {
         id,
-        name: this.zoneNames[id] || '',
+        name,
+        shortName,
         categoryId: arknightsZoneCategory(type),
         sortKey: arknightsZoneSortKey(id, type, stageCodes),
       }
@@ -656,6 +687,9 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
           ? {
               ...info,
               get name() {
+                return gt.pgettext('arknights zone', '芯片搜索')
+              },
+              get shortName() {
                 return gt.pgettext('arknights zone', '芯片搜索')
               },
             }
@@ -695,11 +729,11 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       if (isRetro) {
         const retroId = base.exRetro.zoneToRetro[stageInfo.zoneId]
         if (retroId) {
-          this.zoneNames[stageInfo.zoneId] = base.exRetro.retroActList[retroId]?.name
+          this.zoneNames[stageInfo.zoneId] = ['', base.exRetro.retroActList[retroId]?.name?.trim() || '']
         }
       } else {
         const zone = base.exZone.zones[stageInfo.zoneId]
-        this.zoneNames[stageInfo.zoneId] = [zone?.zoneNameFirst || '', zone?.zoneNameSecond || ''].join(' ')
+        this.zoneNames[stageInfo.zoneId] = [zone?.zoneNameFirst?.trim() || '', zone?.zoneNameSecond?.trim() || '']
       }
     }
     const matrixKeys = new Set(this.dataManager.raw.penguinMatrix.matrix.map((x) => x.stageId))

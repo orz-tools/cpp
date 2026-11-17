@@ -14,6 +14,8 @@ export interface PredefinedQuery {
 export interface IZoneInfo {
   readonly id: string
   readonly name: string
+  /** 窄处显示的短名，例如「第十三章」「残照终尽」；没有时用 name */
+  readonly shortName?: string
   readonly categoryId: string
   /** 同一分类内按字符串升序 */
   readonly sortKey: string

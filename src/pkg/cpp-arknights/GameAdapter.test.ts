@@ -122,6 +122,35 @@ describe('ArknightsAdapter', () => {
     expect(ga.getZoneInfos()['weekly_chips'].name).toBe('芯片搜索')
   })
 
+  it('names the newer main story chapters by their chapter number', async () => {
+    const kengxxiao = remote.get('arknights-kengxxiao-zh_CN') as any
+    Object.assign(kengxxiao.exStage.stages, {
+      main_14_01: stage('main_14_01', 'main_14'),
+      main_15_01: { ...stage('main_15_01', 'act2mainss_zone1'), code: '15-1' },
+      act_02: stage('act_02', 'act_2'),
+    })
+    Object.assign(kengxxiao.exZone.zones, {
+      main_14: { type: 'MAINLINE', zoneNameFirst: '第十四章', zoneNameSecond: '慈悲灯塔' },
+      act2mainss_zone1: {
+        type: 'MAINLINE_ACTIVITY',
+        zoneNameFirst: 'Dissociative Recombination',
+        zoneNameSecond: '离解复合',
+      },
+      act_2: { type: 'ACTIVITY', zoneNameFirst: null, zoneNameSecond: '残照终尽' },
+    })
+    const matrix = (remote.get('arknights-penguin-CN') as any).matrix
+    for (const stageId of ['main_14_01', 'main_15_01', 'act_02']) {
+      matrix.push({ stageId, itemId: '30011', quantity: 10, times: 100, start: 0, end: null })
+    }
+    const ga = new ArknightsAdapter()
+    await ga.getDataManager().init('zh_CN')
+    const zones = ga.getZoneInfos()
+    expect(zones['act2mainss_zone1']).toMatchObject({ name: '第十五章 离解复合', shortName: '第十五章' })
+    expect(zones['main_14']).toMatchObject({ name: '第十四章 慈悲灯塔', shortName: '第十四章' })
+    expect(zones['act_2']).toMatchObject({ name: '残照终尽', shortName: '残照终尽' })
+    expect(zones['weekly_chips']).toMatchObject({ name: '芯片搜索', shortName: '芯片搜索' })
+  })
+
   it('leaves event mementos out of the inventory', async () => {
     const memento = { ...item('ark_odc_act53side_spitem_1'), classifyType: 'MEMENTO' }
     ;(remote.get('arknights-kengxxiao-zh_CN') as any).exItems.items[memento.itemId] = memento
