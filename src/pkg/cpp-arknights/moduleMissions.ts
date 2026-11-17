@@ -609,6 +609,18 @@ export function successorTicket(tickets: readonly Ticket[], key: string): Ticket
   })
 }
 
+/** 这名干员还没解锁的模组（当前 modLevel < 1）的任务：已完成数和总数；没有这样的模组时是 null */
+export function missionProgress(
+  modules: readonly MissionModule[],
+  current: ArknightsCharacterStatus | undefined,
+  done: ReadonlySet<string>,
+): { done: number; total: number } | null {
+  const locked = modules.filter((m) => (current?.modLevel[m.equipId] ?? 0) < 1)
+  if (locked.length === 0) return null
+  const missions = locked.flatMap((m) => m.missions)
+  return { done: missions.filter((x) => done.has(x.id)).length, total: missions.length }
+}
+
 let last: { input: BoardInput; board: Board } | undefined
 
 /** 同样的输入（各项按引用比较）直接返回上一次的结果，面板、大窗口、档案同时开着时只算一次 */

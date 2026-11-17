@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonGroup,
+  Classes,
   ContextMenu,
   Menu,
   MenuDivider,
@@ -8,6 +9,8 @@ import {
   Navbar,
   NonIdealState,
   Popover,
+  PopoverProps,
+  PopupKind,
   Spinner,
   Tag,
 } from '@blueprintjs/core'
@@ -219,6 +222,29 @@ export const CharacterContextMenu = memo(
   },
 )
 
+// 纵向放不下时交给 preventOverflow 往上挪，不因此翻到左边；顶上让出 40px 的顶栏
+const statusPopoverModifiers: PopoverProps['modifiers'] = {
+  flip: { options: { fallbackPlacements: ['left-start'], altAxis: false } },
+  preventOverflow: { options: { altAxis: true, tether: false, padding: { top: 48, right: 8, bottom: 8, left: 8 } } },
+}
+
+/**
+ * 浮层按 portal 在 body 里的先后叠放，而弹窗一直用第一次打开时建的 portal，之后打开的档案、大窗口会盖住它；
+ * 挂在格子旁边时常常和档案重叠，所以每次打开都挪到最后，后打开的在上面。焦点在下一帧才移进弹窗，挪动不会丢焦点
+ */
+function raisePortal(node: HTMLElement) {
+  const portal = node.closest(`.${Classes.PORTAL}`)
+  if (portal?.nextElementSibling) portal.parentElement?.appendChild(portal)
+}
+
+/** 弹窗关上时 Blueprint 卸载内容，所以切换过的那一边不记住，下次按点的是哪一格重新开始 */
+const StatusPopoverContent = ({ character, initialGoal }: { character: ICharacter; initialGoal: boolean }) => {
+  const CSP = useComponents().CharacterStatusPopover || CharacterStatusPopover
+  const [isGoal, setIsGoal] = useState(initialGoal)
+  // 以模式为 key：打开着的 (i) 说明和输入到一半的等级不带到另一边
+  return <CSP key={isGoal ? 'goal' : 'current'} character={character} isGoal={isGoal} onModeChange={setIsGoal} />
+}
+
 const CharacterMenu = memo(
   <G extends IGame>({
     character,
@@ -245,7 +271,6 @@ const CharacterMenu = memo(
     const finished = useAtomValue(atoms.isCharacterFinished(charId))
     const c = useComponents()
     const render = c.renderCharacterStatus || renderCharacterStatus
-    const CSP = c.CharacterStatusPopover || CharacterStatusPopover
     const openDossier = useOpenCharacterDossier()
     const dossierOpen = useDossierOpenFor(charId)
 
@@ -303,9 +328,12 @@ const CharacterMenu = memo(
         {renderExtraFields ? renderExtraFields(item) : null}
         <Popover
           usePortal={true}
-          popoverClassName={'cpp-popover'}
-          content={<CSP character={character} isGoal={false} />}
-          placement="bottom"
+          popoverClassName="cpp-popover cpp-status-popover"
+          popupKind={PopupKind.DIALOG}
+          content={<StatusPopoverContent character={character} initialGoal={false} />}
+          placement="right-start"
+          modifiers={statusPopoverModifiers}
+          onOpening={raisePortal}
         >
           <a
             role="menuitem"
@@ -318,9 +346,12 @@ const CharacterMenu = memo(
         </Popover>
         <Popover
           usePortal={true}
-          popoverClassName={'cpp-popover'}
-          content={<CSP character={character} isGoal={true} />}
-          placement="bottom"
+          popoverClassName="cpp-popover cpp-status-popover"
+          popupKind={PopupKind.DIALOG}
+          content={<StatusPopoverContent character={character} initialGoal={true} />}
+          placement="right-start"
+          modifiers={statusPopoverModifiers}
+          onOpening={raisePortal}
         >
           <a
             role="menuitem"

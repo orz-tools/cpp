@@ -63,7 +63,7 @@
   filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);
 }
 
-/* Character status editor: the list's popovers and the dossier's 练度 section */
+/* Character status editor: the list's popovers and the dossier's 练度 page */
 
 /* The editor pads its own sections; the shell's popover padding would double it. */
 .cpp-popover .bp6-popover-content:has(> .cpp-charstat) {
@@ -160,6 +160,40 @@
 
 .cpp-charstat .bp6-control.cpp-charstat-owned {
   margin: 0;
+}
+
+/* The switch between the current status and the goal, with 持有 on the right */
+.cpp-charstat-modebar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px 10px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.cpp-charstat .cpp-charstat-modebar > .bp6-control.cpp-charstat-owned {
+  margin-left: auto;
+}
+
+.cpp-charstat-hd:has(+ .cpp-charstat-modebar) {
+  padding-bottom: 8px;
+}
+
+/* The dossier's 练度 page: the bars run edge to edge, the content lines up with the tabs above */
+.cpp-charstat.cpp-charstat-embedded {
+  width: auto;
+}
+
+.cpp-charstat-embedded .cpp-charstat-modebar {
+  padding: 14px 20px 10px;
+}
+
+.cpp-charstat-embedded .cpp-charstat-bar,
+.cpp-charstat-embedded .cpp-charstat-sec,
+.cpp-charstat-embedded .cpp-charstat-empty {
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .cpp-charstat-bar {

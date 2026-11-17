@@ -31,13 +31,15 @@ export interface SidebarPanel {
 }
 
 export interface DossierSection {
-  /** 节的锚点，目录用它跳转 */
+  /** 页签的 id；选中的页签记在 cpp_dossier 里，所以发布之后不能改 */
   id: string
-  /** 节标题，也是目录按钮上的字 */
+  /** 页签上的字 */
   title: PSTR
   Body: React.FC<{ character: ICharacter }>
-  /** 返回 false 时这一节不出现，例如这个干员没有模组，或者数据 worker 还没发布 */
+  /** 返回 false 时这一页不出现，例如这个干员没有模组，或者数据 worker 还没发布 */
   isAvailable?: (ga: IGameAdapter<any>, character: ICharacter) => boolean
+  /** hook：页签标题后面的小标记，例如「0/4」；返回 null 时不画 */
+  useTag?: (character: ICharacter) => string | null
 }
 
 export interface IGameComponent {
@@ -47,7 +49,13 @@ export interface IGameComponent {
   AboutCredits?: React.FC
   AboutDataSources?: React.FC
   CharacterContextMenuItems?: React.FC<{ character: ICharacter }>
-  CharacterStatusPopover?: React.FC<{ character: any; isGoal: boolean; embedded?: boolean }>
+  CharacterStatusPopover?: React.FC<{
+    character: any
+    isGoal: boolean
+    embedded?: boolean
+    /** 给了时，编辑器在原来写「当前状态」「培养目标」的地方画切换条，切换时回调；不给时照旧只写模式名 */
+    onModeChange?: (isGoal: boolean) => void
+  }>
   /** 档案标题里外文名后面的补充信息 */
   CharacterDossierMeta?: React.FC<{ character: any }>
   renderCharacterStatus?: (status: any, character: any, current?: any, alreadyHide?: boolean) => any

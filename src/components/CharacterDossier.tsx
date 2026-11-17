@@ -1,6 +1,6 @@
-import { Button, Drawer, Popover } from '@blueprintjs/core'
-import { useAtomValue } from 'jotai'
-import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Button, Classes, Drawer, Popover, Tab, Tabs, Tag } from '@blueprintjs/core'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { RefObject, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useGameAdapter, useGameDataMemo } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
@@ -9,22 +9,25 @@ import { gt, lpstr } from '../pkg/gt'
 import { CharacterContextMenu } from './CharacterList'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { CachedImg } from './Icons'
-import { dossierAtom, useCloseCharacterDossier } from './dossierHooks'
-import { DossierState, visibleSections } from './dossierState'
+import { dossierAtom, dossierPrefsAtom, useCloseCharacterDossier } from './dossierHooks'
+import { DossierState, shownSection, visibleSections } from './dossierState'
 import { DossierSection } from './types'
 
 const StatusSectionBody = memo(({ character }: { character: ICharacter }) => {
   const CSP = useComponents().CharacterStatusPopover || CharacterStatusPopover
+  const [prefs, setPrefs] = useAtom(dossierPrefsAtom)
+  const onModeChange = useEvent((isGoal: boolean) =>
+    setPrefs((p) => ({ ...p, statusMode: isGoal ? 'goal' : 'current' })),
+  )
+  // Keyed by the mode, so an open (i) panel or a half-typed level stays with the side it was opened on
   return (
-    <>
-      <div className="cpp-dossier-editor">
-        <CSP character={character} isGoal={false} embedded />
-      </div>
-      <div className="cpp-dossier-editor-sep" />
-      <div className="cpp-dossier-editor">
-        <CSP character={character} isGoal={true} embedded />
-      </div>
-    </>
+    <CSP
+      key={prefs.statusMode}
+      character={character}
+      isGoal={prefs.statusMode === 'goal'}
+      embedded
+      onModeChange={onModeChange}
+    />
   )
 })
 
@@ -34,82 +37,102 @@ export const statusSection: DossierSection = {
   Body: StatusSectionBody,
 }
 
-/** 目录高亮的节：顶边不低于滚动区顶边 + 8px 的最后一节；滚到底时是最后一节 */
-function currentSection(body: HTMLElement): string | undefined {
-  const els = [...body.querySelectorAll<HTMLElement>('[data-dossier-section]')]
-  if (els.length === 0) return undefined
-  if (body.scrollTop + body.clientHeight >= body.scrollHeight - 1) return els[els.length - 1].dataset.dossierSection
-  const top = body.getBoundingClientRect().top + 8
-  let current = els[0].dataset.dossierSection
-  for (const el of els) if (el.getBoundingClientRect().top <= top) current = el.dataset.dossierSection
-  return current
-}
+const noTag = () => null
 
-const DossierSections = memo(({ character, sections }: { character: ICharacter; sections: DossierSection[] }) => {
-  const bodyRef = useRef<HTMLDivElement>(null)
-  const [active, setActive] = useState<string | undefined>(sections[0]?.id)
-  const ids = sections.map((s) => s.id).join(' ')
-
-  useEffect(() => {
-    const body = bodyRef.current
-    if (!body) return
-    let frame = 0
-    const onScroll = () => {
-      if (frame) return
-      frame = requestAnimationFrame(() => {
-        frame = 0
-        setActive(currentSection(body))
-      })
-    }
-    body.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      body.removeEventListener('scroll', onScroll)
-      cancelAnimationFrame(frame)
-    }
-  }, [ids])
-
-  // 换干员时回到第一节
-  useLayoutEffect(() => {
-    if (bodyRef.current) bodyRef.current.scrollTop = 0
-    setActive(undefined)
-  }, [character.key])
-
-  const jump = (id: string) => {
-    const el = bodyRef.current?.querySelector(`[data-dossier-section="${CSS.escape(id)}"]`)
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    el?.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
-  }
-  const current = active && sections.some((s) => s.id === active) ? active : sections[0]?.id
-
+/** Blueprint's own tagContent draws an empty Tag for a hook that returns null, so the tag is drawn here */
+const DossierTabTitle = ({
+  section,
+  character,
+  selected,
+}: {
+  section: DossierSection
+  character: ICharacter
+  selected: boolean
+}) => {
+  // Fixed for as long as the tab exists, so the hooks keep their order
+  const useTag = section.useTag ?? noTag
+  const tag = useTag(character)
   return (
     <>
-      {sections.length >= 2 ? (
-        <nav className="cpp-dossier-toc" aria-label={gt.pgettext('character dossier', '目录')}>
-          {sections.map(({ id, title }) => (
-            <Button
-              key={id}
-              variant="minimal"
-              size="small"
-              text={title.toString()}
-              active={id === current}
-              intent={id === current ? 'primary' : undefined}
-              aria-current={id === current ? 'location' : undefined}
-              onClick={() => jump(id)}
-            />
-          ))}
-        </nav>
+      {section.title.toString()}
+      {tag != null ? (
+        <Tag minimal round intent={selected ? 'primary' : 'none'} className={Classes.TAB_TAG}>
+          {tag}
+        </Tag>
       ) : null}
-      <div className="cpp-dossier-body" ref={bodyRef}>
-        {sections.map(({ id, title, Body }) => (
-          <section key={id} className="cpp-dossier-section" data-dossier-section={id}>
-            <h5 className="cpp-dossier-section-title">{title.toString()}</h5>
-            <Body key={character.key} character={character} />
-          </section>
-        ))}
-      </div>
     </>
   )
-})
+}
+
+/** The 练度 page lets the editor's bars run to the drawer's edges */
+const pageClassName = (id: string) => 'cpp-dossier-body' + (id === statusSection.id ? ' cpp-dossier-body-flush' : '')
+
+const DossierTabs = memo(
+  ({
+    character,
+    sections,
+    frameRef,
+  }: {
+    character: ICharacter
+    sections: DossierSection[]
+    frameRef: RefObject<HTMLDivElement>
+  }) => {
+    const { section } = useAtomValue(dossierPrefsAtom)
+    const setPrefs = useSetAtom(dossierPrefsAtom)
+    const shown = shownSection(
+      section,
+      sections.map((s) => s.id),
+    )
+
+    // A new page, or a new character on the same page, starts at the top. SkinsSection scrolls to the skin it
+    // frames in a plain effect, which runs after this one
+    useLayoutEffect(() => {
+      const frame = frameRef.current
+      const body = frame?.querySelector('.cpp-dossier-body')
+      if (body) body.scrollTop = 0
+      // Only the tab list scrolls: scrollIntoView would also scroll the drawer's ancestors while it slides in
+      const tab = frame?.querySelector<HTMLElement>('.cpp-dossier-tabs [role="tab"][aria-selected="true"]')
+      const list = tab?.parentElement
+      if (!tab || !list) return
+      const pad = parseFloat(getComputedStyle(list).paddingLeft) || 0
+      const left = tab.offsetLeft - pad
+      const right = tab.offsetLeft + tab.offsetWidth + pad - list.clientWidth
+      if (list.scrollLeft > left) list.scrollLeft = left
+      else if (list.scrollLeft < right) list.scrollLeft = right
+    }, [character.key, shown, frameRef])
+
+    if (sections.length < 2) {
+      const page = sections[0]
+      if (!page) return null
+      return (
+        <div className={pageClassName(page.id)}>
+          <page.Body key={character.key} character={character} />
+        </div>
+      )
+    }
+
+    return (
+      <Tabs
+        id="cpp-dossier-tabs"
+        className="cpp-dossier-tabs"
+        selectedTabId={shown}
+        onChange={(id) => setPrefs((p) => ({ ...p, section: String(id) }))}
+        animate={false}
+        renderActiveTabPanelOnly
+      >
+        {sections.map((s) => (
+          <Tab
+            key={s.id}
+            id={s.id}
+            title={<DossierTabTitle section={s} character={character} selected={s.id === shown} />}
+            panel={<s.Body key={character.key} character={character} />}
+            panelClassName={pageClassName(s.id)}
+          />
+        ))}
+      </Tabs>
+    )
+  },
+)
 
 export const CharacterDossier = memo(() => {
   const state = useAtomValue(dossierAtom)
@@ -205,7 +228,7 @@ export const CharacterDossier = memo(() => {
             onClick={close}
           />
         </div>
-        <DossierSections character={character} sections={sections} />
+        <DossierTabs character={character} sections={sections} frameRef={frameRef} />
       </div>
     </Drawer>
   )

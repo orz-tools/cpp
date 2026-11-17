@@ -273,12 +273,12 @@ export function useSelectedPeriod(model: SkinModel): SkinPeriod | null {
 
 let focusNonce = 0
 
-/** 点一件时装：打开这名干员的档案，滚到「时装」一节，框出那一件 */
+/** 点一件时装：打开这名干员的档案，切到「时装」页，框出那一件 */
 export function useShowSkin(): (skin: Skin) => void {
   const cpp = useCpp<Arknights>()
   const show = useShowCharacterDossier()
   return useEvent((skin: Skin) => {
-    show(skin.charId)
+    show(skin.charId, { section: 'skins' })
     cpp.store.set(focusedSkinAtom, { skinId: skin.id, nonce: ++focusNonce })
   })
 }

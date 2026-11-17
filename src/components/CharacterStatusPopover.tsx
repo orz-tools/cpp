@@ -7,6 +7,7 @@ import { ICharacter, IGame } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { showAlert, showPrompt } from './MessageBox'
+import { StatusModeSwitch } from './StatusModeSwitch'
 
 const useTypeHolderForSetStatusAtom = () =>
   useSetAtom(null as any as ReturnType<UserDataAtomHolder<IGame>['atoms']['goalCharacter']>)
@@ -23,10 +24,12 @@ export const CharacterStatusPopover = memo(
     character,
     isGoal,
     embedded,
+    onModeChange,
   }: {
     character: ICharacter
     isGoal: boolean
     embedded?: boolean
+    onModeChange?: (isGoal: boolean) => void
   }) => {
     const atoms = useAtoms<G>()
     const charId = character.key
@@ -53,7 +56,13 @@ export const CharacterStatusPopover = memo(
         <div>
           {/* The dossier already names the character in its header */}
           {embedded ? null : `${character.name} - `}
-          {isGoal ? gt.gettext('培养目标') : gt.gettext('当前状态')}
+          {onModeChange ? (
+            <StatusModeSwitch isGoal={isGoal} onChange={onModeChange} />
+          ) : isGoal ? (
+            gt.gettext('培养目标')
+          ) : (
+            gt.gettext('当前状态')
+          )}
         </div>
         <pre style={{ wordBreak: 'break-all', whiteSpace: 'pre-wrap' }}>{JSON.stringify(status)}</pre>
         <Button text={'update'} onClick={() => void handleEdit()} />
