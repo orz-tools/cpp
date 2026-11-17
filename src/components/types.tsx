@@ -78,9 +78,13 @@ export interface IGameComponent {
     }
   >
   TaskDisplay?: React.FC<{ type: any; charId: string; formattedString: string }>
-  QuickFilterBuilder?: React.FC
+  /** join 是当前查询展开的子查询，按它画这一组的按钮 */
+  QuickFilterBuilder?: React.FC<{ join?: string }>
   ValueConfigMenu?: React.FC
+  /** 快捷过滤的字段 → 比较符 */
   quickFilters?: Record<string, string>
+  /** 展开了这里列出的子查询时用它的那一组，代替 quickFilters */
+  quickFiltersByJoin?: Record<string, Record<string, string>>
   /** 排在外壳自己的「关于」后面，按数组顺序 */
   sidebarPanels?: SidebarPanel[]
   /** 排在外壳自己的「练度」后面，按数组顺序 */

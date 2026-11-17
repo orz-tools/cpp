@@ -20,7 +20,15 @@ import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { search } from 'text-search-engine'
-import { Cpp, ListCharactersQueryParam, useAtoms, useCpp, useGameAdapter, useGameDataGeneration } from '../Cpp'
+import {
+  Cpp,
+  ListCharactersQueryParam,
+  useAtoms,
+  useCpp,
+  useGameAdapter,
+  useGameDataGeneration,
+  useGameDataMemo,
+} from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
 import { AppToaster } from '../components/Toaster'
@@ -30,7 +38,6 @@ import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
 import { IGameComponent } from './types'
 import {
-  Assertion,
   FieldConfiguration,
   FieldContext,
   ICharacter,
@@ -40,7 +47,6 @@ import {
   QStrings,
   Querier,
   QueryFieldEntry,
-  QueryParam,
   listQueryFields,
   resolveField,
 } from '../pkg/cpp-basic'
@@ -56,10 +62,10 @@ import {
   SavedQueryPrefix,
   compileQuery,
   createListQuerier,
-  holdingAssertion,
   isCustomQuery,
 } from './characterQuery'
 import { presetMenu } from './presetMenu'
+import { quickFiltersFor, wrapQueryWithQuickFilter } from './quickFilters'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
 import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
 import { RosterPin, clearRosterPin, useActiveRosterPin } from './rosterPin'
@@ -399,27 +405,6 @@ function buildMatcher(query: string, strict: boolean = false): (x: string) => bo
   return (x: string) => !!search(x, query)
 }
 
-function wrapQueryWithQuickFilter(query: QueryParam, field?: Record<string, any>, valids?: Record<string, string>) {
-  if (!field) return query
-  const keys = Object.keys(field)
-  if (keys.length === 0) return query
-
-  if (!valids) valids = {}
-  const extra: Assertion[] = []
-  const holding = holdingAssertion(field.holding)
-  if (holding) extra.push(holding)
-  for (const [k, v] of Object.entries(field)) {
-    const op = Object.prototype.hasOwnProperty.call(valids, k) ? valids[k] : null
-    if (op == null) continue
-    extra.push({ _: 'field', field: k, op: op, operand: v })
-  }
-  if (extra.length === 0) return query
-
-  // 已保存的过滤器来自 immer 冻结的用户数据，不能就地改
-  const base = !query.where ? [] : query.where._ === '&&' ? query.where.operand : [query.where]
-  return { ...query, where: { _: '&&', operand: [...base, ...extra] } } satisfies QueryParam
-}
-
 export const useQuickFilter = (field: string, value: any) => {
   const [param, setParam] = useAtom(useCpp().queryParamAtom)
   const quick = param.quick || {}
@@ -505,11 +490,10 @@ async function listCharactersQuery<G extends IGame>(
   const emptyCharacterStatus = uda.getFrozenEmptyCharacterStatus()
 
   // 面板的筛选不看当前视图的条件、快捷过滤和搜索词，只列它给的干员
+  const compiled = compileQuery(pin ? ListModeAll : param.query, cpp)
   const query = createListQuerier(
     cpp,
-    pin
-      ? compileQuery(ListModeAll, cpp)
-      : wrapQueryWithQuickFilter(compileQuery(param.query, cpp), param.quick, cpp.gameComponent.quickFilters),
+    pin ? compiled : wrapQueryWithQuickFilter(compiled, param.quick, quickFiltersFor(cpp.gameComponent, compiled.join)),
   )
 
   const matcher = buildMatcher(pin ? '' : param.search)
@@ -684,7 +668,8 @@ interface ViewTotal {
 
 const QueryBuilder = memo(({ total }: { total?: ViewTotal }) => {
   const cpp = useCpp()
-  const [pgq, pgqKeys] = useMemo(() => {
+  // 游戏数据第一次带上基建技能时，那一组预设才出现
+  const [pgq, pgqKeys] = useGameDataMemo(() => {
     const pgq = cpp.gameAdapter.getPredefinedQueries()
     return [pgq, Object.keys(pgq)]
   }, [cpp])
@@ -840,7 +825,7 @@ const PresetSplitMenuItem = memo(
 
 const QueryBuilderRight = memo(() => {
   const cpp = useCpp()
-  const menu = useMemo(
+  const menu = useGameDataMemo(
     () => presetMenu(cpp.gameAdapter.getPredefinedQueryGroups(), cpp.gameAdapter.getPredefinedQueries()),
     [cpp],
   )
@@ -929,6 +914,16 @@ const QueryBuilderRight = memo(() => {
 
 export const QuickFilterBuilder = memo(() => {
   const { QuickFilterBuilder } = useComponents()
+  const cpp = useCpp()
+  const query = useAtomValue(cpp.queryParamAtom).query
+  // 游戏按查询展开的是什么画按钮；正在编辑、还编译不了的查询当作没有展开
+  const join = useGameDataMemo(() => {
+    try {
+      return compileQuery(query, cpp).join ?? undefined
+    } catch {
+      return undefined
+    }
+  }, [cpp, query])
 
   // 「可练」「缺席」只看持有和练度，每个游戏、每种展开都适用，所以由这里放在最前面，不归游戏的快捷过滤管
   return (
@@ -948,7 +943,7 @@ export const QuickFilterBuilder = memo(() => {
       {QuickFilterBuilder ? (
         <>
           <Navbar.Divider />
-          <QuickFilterBuilder />
+          <QuickFilterBuilder join={join} />
         </>
       ) : null}
     </Navbar>

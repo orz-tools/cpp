@@ -12,6 +12,7 @@ import {
   PredefinedQuery,
   PredefinedQueryGroup,
   PredefinedQuerySegment,
+  QBoolean,
   QNumber,
   QString,
   QStrings,
@@ -21,6 +22,7 @@ import {
 import { PSTR, gt, lpstr } from '../gt'
 import { ArknightsDataManager, Character } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
+import { BASE_ROOMS, baseRoomName, reached, roomOrder, unlockCost } from './baseSkills'
 import {
   DEFAULT_ITEM_VALUE_CONFIG,
   ItemValueConfig,
@@ -41,6 +43,7 @@ import {
   AK_ITEM_UNKNOWN_SHIT,
   AK_ITEM_VIRTUAL_EXP,
   Arknights,
+  ArknightsCharacterStatus,
   ArknightsKengxxiao,
   ArknightsRegion,
   PreferenceKeys,
@@ -66,6 +69,7 @@ const eliteOptions = () =>
 const masteryOptions = () =>
   range(0, 3).map((x) => ({ value: x, label: gt.pgettext('query value', '专精 %d').replaceAll('%d', `${x}`) }))
 const professionOptions = () => Object.entries(ProfessionNames).map(([value, label]) => ({ value, label }))
+const roomOptions = () => BASE_ROOMS.map((value) => ({ value, label: baseRoomName(value).full }))
 
 const allSegment = (
   key: string,
@@ -77,6 +81,65 @@ const usableSegment = (key: string, title: PSTR): PredefinedQuerySegment => ({
   label: lpstr(() => gt.pgettext('query menu', '能用')),
   title,
 })
+
+const ownedSegment = (key: string, title: PSTR): PredefinedQuerySegment => ({
+  key,
+  label: lpstr(() => gt.pgettext('query menu', '已持有')),
+  title,
+})
+
+// 每次给一份新的，拿去改的地方不会互相影响
+const defaultOrder = (): NonNullable<QueryParam['order']> => [
+  ['rarity', 'DESC'],
+  ['elite', 'DESC'],
+  ['level', 'DESC'],
+]
+
+function baseSkillQueries(own: Assertion): Record<string, PredefinedQuery> {
+  const notReplaced: Assertion = { _: 'field', field: 'building.replaced', op: '==', operand: false }
+  // 先按房间，房间里按游戏的效率数，再按默认顺序
+  const query = (where: Assertion): QueryParam => ({
+    select: ['building.efficiency', 'building.unlockCost'],
+    join: 'building',
+    where,
+    order: [['building.roomOrder', 'ASC'], ['building.efficiency', 'DESC'], ...defaultOrder()],
+  })
+
+  return {
+    'building.locked': {
+      name: gt.pgettext('predefined query', '未解锁的基建技能'),
+      group: 'building',
+      title: lpstr(() => gt.pgettext('query menu', '已持有和计划里的干员，还没解锁的基建技能')),
+      segments: [
+        ownedSegment(
+          'building.owned',
+          lpstr(() => gt.pgettext('query menu', '已持有的干员的全部基建技能，含已解锁的')),
+        ),
+        allSegment(
+          'building.all',
+          lpstr(() => gt.pgettext('query menu', '所有干员的全部基建技能，含没持有的和已解锁的')),
+        ),
+      ],
+      query: query({
+        _: '&&',
+        operand: [
+          { _: '||', operand: [own, { _: 'field', field: 'goal', op: '==', operand: true }] },
+          { _: 'field', field: 'building.unlocked', op: '==', operand: false },
+        ],
+      }),
+    },
+    'building.owned': {
+      name: gt.pgettext('predefined query', '基建技能（已持有）'),
+      group: 'building',
+      query: query({ _: '&&', operand: [own, notReplaced] }),
+    },
+    'building.all': {
+      name: gt.pgettext('predefined query', '基建技能（全部）'),
+      group: 'building',
+      query: query(notReplaced),
+    },
+  }
+}
 
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
   public readPreference<K extends keyof Arknights['preferences']>(
@@ -392,6 +455,78 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         },
       )
     })
+
+    aa.createSubQuery(
+      'building',
+      lpstr(() => gt.pgettext('query sub query', '基建技能')),
+      (character) => character.baseSkills.flatMap((s, slot) => s.map((_, index) => [slot, index] as const)),
+      (slot, index) => `${slot}.${index}`,
+    ).tap((sq) => {
+      const skill = (character: Character, slot: number, index: number) => character.baseSkills[slot][index]
+      const unlocked = (character: Character, status: ArknightsCharacterStatus, slot: number, index: number) => {
+        const at = character.baseSkills[slot][index]
+        return !!at && !this.userDataAdapter.isAbsentCharacter(character, status) && reached(status, at)
+      }
+
+      sq.addField(
+        'name',
+        lpstr(() => gt.pgettext('query field', '技能名')),
+        QString,
+        ({ character, args: [slot, index] }) => skill(character, slot, index).buff.name,
+      )
+      sq.addField(
+        'room',
+        lpstr(() => gt.pgettext('query field', '房间')),
+        QString,
+        ({ character, args: [slot, index] }) => skill(character, slot, index).buff.roomType,
+      ).withOptions(roomOptions)
+      sq.addField(
+        'roomOrder',
+        lpstr(() => gt.pgettext('query field', '房间顺序')),
+        QNumber,
+        ({ character, args: [slot, index] }) => roomOrder(skill(character, slot, index).buff.roomType),
+      )
+      // 游戏给的效率数，进驻界面也按它排；概括只管显示
+      sq.addField(
+        'efficiency',
+        lpstr(() => gt.pgettext('query field', '效果')),
+        QNumber,
+        ({ character, args: [slot, index] }) => skill(character, slot, index).buff.efficiency,
+      )
+      sq.addField(
+        'unlockElite',
+        lpstr(() => gt.pgettext('query field', '解锁所需精英化')),
+        QNumber,
+        ({ character, args: [slot, index] }) => skill(character, slot, index).elite,
+      ).withOptions(eliteOptions)
+      sq.addField(
+        'unlockLevel',
+        lpstr(() => gt.pgettext('query field', '解锁所需等级')),
+        QNumber,
+        ({ character, args: [slot, index] }) => skill(character, slot, index).level,
+      )
+      sq.addStatusField(
+        'unlocked',
+        lpstr(() => gt.pgettext('query field', '已解锁')),
+        QBoolean,
+        ({ character, status, args: [slot, index] }) => unlocked(character, status, slot, index),
+      )
+      // 同一技能位的下一条也解锁了：这一条已经被它取代
+      sq.addStatusField(
+        'replaced',
+        lpstr(() => gt.pgettext('query field', '已升级')),
+        QBoolean,
+        ({ character, status, args: [slot, index] }) =>
+          unlocked(character, status, slot, index) && unlocked(character, status, slot, index + 1),
+      )
+      sq.addField(
+        'unlockCost',
+        lpstr(() => gt.pgettext('query field', '解锁花费')),
+        QNumber,
+        ({ character, current, args: [slot, index] }) =>
+          unlockCost(this, character, current, skill(character, slot, index)),
+      )
+    })
   })
 
   public getRootCharacterQuery() {
@@ -399,11 +534,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   }
 
   public getDefaultCharacterQueryOrder(): QueryParam['order'] {
-    return [
-      ['rarity', 'DESC'],
-      ['elite', 'DESC'],
-      ['level', 'DESC'],
-    ]
+    return defaultOrder()
   }
 
   public getFavCharacterQueryWhere(): QueryParam['where'] {
@@ -419,6 +550,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     return [
       { id: 'stats', title: lpstr(() => gt.pgettext('query menu', '练度统计')) },
       { id: 'cost', title: lpstr(() => gt.pgettext('query menu', '养成成本')) },
+      { id: 'building', title: lpstr(() => gt.pgettext('query menu', '基建技能')) },
     ]
   }
 
@@ -436,7 +568,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     ]
     const costsMaterials: Assertion = { _: 'field', field: 'skill.cost.mastery3', op: '!=', operand: 0 }
 
-    return {
+    const presets: Record<string, PredefinedQuery> = {
       'skill.mastery3rate.yituliu': {
         name: gt.pgettext('predefined query', '一图流 技能专三率'),
         group: 'stats',
@@ -721,6 +853,9 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         },
       },
     }
+    // 数据 worker 发布基建技能之前，这一组不出现
+    if (this.hasBaseSkills()) Object.assign(presets, baseSkillQueries(own))
+    return presets
   }
 
   public getFormulaTagNames() {

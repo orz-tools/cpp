@@ -47,6 +47,10 @@ export const ArknightsComponents: IGameComponent = {
     rarity: '==',
     elite: '==',
   },
+  // 十个房间按钮放不下职业和精英化
+  quickFiltersByJoin: {
+    building: { 'building.room': '==', rarity: '==' },
+  },
   sidebarPanels: [stagesPanel, moduleMissionsPanel, skinsPanel],
   dossierSections: [costSection, skinsSection, moduleMissionsSection],
 }

@@ -1,6 +1,7 @@
 import { Button, ButtonGroup, Colors, Icon, Navbar } from '@blueprintjs/core'
 import { memo } from 'react'
 import { DeployableProfession, Profession, ProfessionNames } from '../../pkg/cpp-arknights'
+import { BASE_ROOMS, baseRoomName } from '../../pkg/cpp-arknights/baseSkills'
 import { gt } from '../../pkg/gt'
 import { useQuickFilter } from '../CharacterList'
 import { ProfessionIcon } from './Icons'
@@ -8,7 +9,21 @@ import elite0 from './assets/elite0-small.png'
 import elite1 from './assets/elite1-small.png'
 import elite2 from './assets/elite2-small.png'
 
-export const QuickFilterBuilder = memo(() => {
+export const QuickFilterBuilder = memo(({ join }: { join?: string }) => {
+  // 展开基建技能时职业和精英化让位给十个房间
+  if (join === 'building') {
+    return (
+      <>
+        <ButtonGroup>
+          {BASE_ROOMS.map((roomType) => (
+            <RoomFilter key={roomType} roomType={roomType} />
+          ))}
+        </ButtonGroup>
+        <Navbar.Divider />
+        <RarityFilters />
+      </>
+    )
+  }
   return (
     <>
       <ButtonGroup>
@@ -22,21 +37,7 @@ export const QuickFilterBuilder = memo(() => {
         <ProfessionFilter profession={Profession.SPECIAL} />
       </ButtonGroup>
       <Navbar.Divider />
-      {/* 星号按数字的基线对齐、和数字一样高，居中对齐会显得比数字低 */}
-      <ButtonGroup style={{ alignItems: 'baseline' }}>
-        <Icon
-          icon="star"
-          size={12}
-          title={gt.pgettext('arknights quick filter', '稀有度')}
-          style={{ color: Colors.GRAY1, paddingLeft: 7, paddingRight: 3 }}
-        />
-        <RarityFilter rarity={6} />
-        <RarityFilter rarity={5} />
-        <RarityFilter rarity={4} />
-        <RarityFilter rarity={3} />
-        <RarityFilter rarity={2} />
-        <RarityFilter rarity={1} />
-      </ButtonGroup>
+      <RarityFilters />
       <Navbar.Divider />
       <ButtonGroup>
         <EliteFilter elite={2} />
@@ -44,6 +45,36 @@ export const QuickFilterBuilder = memo(() => {
         <EliteFilter elite={0} />
       </ButtonGroup>
     </>
+  )
+})
+
+const RarityFilters = memo(() => {
+  return (
+    // 星号按数字的基线对齐、和数字一样高，居中对齐会显得比数字低
+    <ButtonGroup style={{ alignItems: 'baseline' }}>
+      <Icon
+        icon="star"
+        size={12}
+        title={gt.pgettext('arknights quick filter', '稀有度')}
+        style={{ color: Colors.GRAY1, paddingLeft: 7, paddingRight: 3 }}
+      />
+      <RarityFilter rarity={6} />
+      <RarityFilter rarity={5} />
+      <RarityFilter rarity={4} />
+      <RarityFilter rarity={3} />
+      <RarityFilter rarity={2} />
+      <RarityFilter rarity={1} />
+    </ButtonGroup>
+  )
+})
+
+const RoomFilter = memo(({ roomType }: { roomType: string }) => {
+  const { active, toggle } = useQuickFilter('building.room', roomType)
+  const { short, full } = baseRoomName(roomType)
+  return (
+    <Button variant="minimal" active={active} aria-pressed={active} title={full} aria-label={full} onClick={toggle}>
+      {short}
+    </Button>
   )
 })
 
