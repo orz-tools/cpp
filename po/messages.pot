@@ -599,7 +599,7 @@ msgstr ""
 msgid "查看源码"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1097
+#: src/components/CharacterList.tsx:1099
 msgid "查询失败"
 msgstr ""
 
@@ -2315,27 +2315,27 @@ msgctxt "character dossier"
 msgid "%s 的档案"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:126
+#: src/components/queryEditor/ColumnHeader.tsx:154
 msgctxt "character list column"
 msgid "「%s」的列宽"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:75
+#: src/components/queryEditor/ColumnHeader.tsx:103
 msgctxt "character list column"
 msgid "干员"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:81
+#: src/components/queryEditor/ColumnHeader.tsx:109
 msgctxt "character list column"
 msgid "当前状态"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:135
+#: src/components/queryEditor/ColumnHeader.tsx:163
 msgctxt "character list column"
 msgid "拖动调整列宽，双击恢复默认（%d px）"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:84
+#: src/components/queryEditor/ColumnHeader.tsx:112
 msgctxt "character list column"
 msgid "目标状态"
 msgstr ""
@@ -3672,7 +3672,7 @@ msgctxt "query field"
 msgid "代号"
 msgstr ""
 
-#: src/components/characterQuery.ts:70
+#: src/components/characterQuery.ts:71
 msgctxt "query field"
 msgid "内部代号"
 msgstr ""
@@ -3692,7 +3692,7 @@ msgctxt "query field"
 msgid "小黑盒干员统计 精二率"
 msgstr ""
 
-#: src/components/characterQuery.ts:95
+#: src/components/characterQuery.ts:96
 msgctxt "query field"
 msgid "已全面养成"
 msgstr ""
@@ -3733,7 +3733,7 @@ msgctxt "query field"
 msgid "技能等级"
 msgstr ""
 
-#: src/components/characterQuery.ts:77
+#: src/components/characterQuery.ts:78
 msgctxt "query field"
 msgid "持有"
 msgstr ""
@@ -3803,7 +3803,7 @@ msgctxt "query field"
 msgid "解锁花费"
 msgstr ""
 
-#: src/components/characterQuery.ts:84
+#: src/components/characterQuery.ts:85
 msgctxt "query field"
 msgid "计划顺序"
 msgstr ""

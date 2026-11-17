@@ -715,7 +715,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:1097
+#: src/components/CharacterList.tsx:1099
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -2483,27 +2483,27 @@ msgctxt "character dossier"
 msgid "%s 的档案"
 msgstr "Dossier: %s"
 
-#: src/components/queryEditor/ColumnHeader.tsx:126
+#: src/components/queryEditor/ColumnHeader.tsx:154
 msgctxt "character list column"
 msgid "「%s」的列宽"
 msgstr "Width of “%s”"
 
-#: src/components/queryEditor/ColumnHeader.tsx:75
+#: src/components/queryEditor/ColumnHeader.tsx:103
 msgctxt "character list column"
 msgid "干员"
 msgstr "Operator"
 
-#: src/components/queryEditor/ColumnHeader.tsx:81
+#: src/components/queryEditor/ColumnHeader.tsx:109
 msgctxt "character list column"
 msgid "当前状态"
 msgstr "Current"
 
-#: src/components/queryEditor/ColumnHeader.tsx:135
+#: src/components/queryEditor/ColumnHeader.tsx:163
 msgctxt "character list column"
 msgid "拖动调整列宽，双击恢复默认（%d px）"
 msgstr "Drag to resize, double-click to reset (%d px)"
 
-#: src/components/queryEditor/ColumnHeader.tsx:84
+#: src/components/queryEditor/ColumnHeader.tsx:112
 msgctxt "character list column"
 msgid "目标状态"
 msgstr "Goal"
@@ -3850,7 +3850,7 @@ msgctxt "query field"
 msgid "代号"
 msgstr "Name"
 
-#: src/components/characterQuery.ts:70
+#: src/components/characterQuery.ts:71
 msgctxt "query field"
 msgid "内部代号"
 msgstr "Internal ID"
@@ -3870,7 +3870,7 @@ msgctxt "query field"
 msgid "小黑盒干员统计 精二率"
 msgstr "Heybox survey: E2 rate"
 
-#: src/components/characterQuery.ts:95
+#: src/components/characterQuery.ts:96
 msgctxt "query field"
 msgid "已全面养成"
 msgstr "Fully trained"
@@ -3911,7 +3911,7 @@ msgctxt "query field"
 msgid "技能等级"
 msgstr "Skill level"
 
-#: src/components/characterQuery.ts:77
+#: src/components/characterQuery.ts:78
 msgctxt "query field"
 msgid "持有"
 msgstr "Owned"
@@ -3981,7 +3981,7 @@ msgctxt "query field"
 msgid "解锁花费"
 msgstr "Unlock cost"
 
-#: src/components/characterQuery.ts:84
+#: src/components/characterQuery.ts:85
 msgctxt "query field"
 msgid "计划顺序"
 msgstr "Plan order"
