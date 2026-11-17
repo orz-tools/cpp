@@ -426,8 +426,9 @@ export function unlockShort(at: UnlockAt): string {
   ][at.elite]
 }
 
-/** The game's own words for the unlock: 「精英阶段2解锁」「等级30解锁」 */
+/** The game's own words for the unlock: 「精英阶段2解锁」「等级30解锁」; nothing for a skill that comes with the operator */
 export function unlockSentence(at: UnlockAt): string {
+  if (at.elite === 0 && at.level <= 1) return ''
   if (at.elite === 0) {
     return gt
       .pgettext('arknights base skill', '等级%d$level解锁') /* I10N: as the game says it */

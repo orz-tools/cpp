@@ -3448,10 +3448,272 @@ section:first-child > .cpp-stages-wide-section {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: flex-start;
   column-gap: 8px;
 }
 
 .cpp-bskill-sum.is-card .cpp-bskill-sum-h,
 .cpp-bskill-sum.is-card .cpp-bskill-sum-d {
   white-space: normal;
+}
+
+/* 档案的「基建技能」一节：上面一条解锁轨道，下面两个技能位的卡片 */
+.cpp-bskill-dossier {
+  font-size: 13px;
+}
+
+.cpp-bskill-rail {
+  position: relative;
+  height: 92px;
+  margin-bottom: 12px;
+}
+
+.cpp-bskill-rail > i {
+  position: absolute;
+  display: block;
+}
+
+.cpp-bskill-rail-label {
+  position: absolute;
+  top: 0;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--bp-palette-gray-3, #8f99a8);
+}
+
+.cpp-bskill-rail-segment,
+.cpp-bskill-rail-have,
+.cpp-bskill-rail-plan {
+  top: 18px;
+  height: 10px;
+}
+
+.cpp-bskill-rail-segment {
+  border-radius: 3px;
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.12);
+}
+
+.cpp-bskill-rail-have {
+  background: var(--bp-palette-light-gray-1, #d3d8de);
+}
+
+.cpp-bskill-rail-plan {
+  background: var(--bp-intent-primary-rest, #2d72d2);
+}
+
+.cpp-bskill-rail-current {
+  top: 15px;
+  width: 3px;
+  height: 16px;
+  border-radius: 1px;
+  background: var(--bp-palette-dark-gray-5, #404854);
+}
+
+.cpp-bskill-rail-goal {
+  top: 16px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 0 2px var(--bp-intent-primary-rest, #2d72d2),
+    0 1px 3px rgba(17, 20, 24, 0.3);
+}
+
+.cpp-bskill-rail-stalk {
+  top: 28px;
+  width: 1px;
+  height: 18px;
+  background: var(--bp-palette-gray-3, #8f99a8);
+}
+
+.cpp-bskill-rail-stalk.is-plan {
+  background: var(--bp-intent-primary-rest, #2d72d2);
+}
+
+.cpp-bskill-hang {
+  position: absolute;
+  top: 46px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.cpp-bskill-hang-icons {
+  display: flex;
+  gap: 4px;
+}
+
+.cpp-bskill-plate-icon {
+  position: relative;
+  flex: none;
+  display: block;
+}
+
+.cpp-bskill-plate-icon > img {
+  display: block;
+  border-radius: 2px;
+}
+
+.cpp-bskill-plate-icon.is-locked > img {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.cpp-bskill-badge {
+  position: absolute;
+  right: -4px;
+  bottom: -3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cpp-bskill-badge img {
+  width: 14px;
+  height: 14px;
+  opacity: 0.72;
+}
+
+.cpp-bskill-badge.is-num {
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-bskill-badge.is-plan {
+  background: var(--bp-intent-primary-rest, #2d72d2);
+  box-shadow: none;
+  color: #fff;
+}
+
+.cpp-bskill-badge.is-plan img {
+  filter: invert(1);
+  opacity: 1;
+}
+
+.cpp-bskill-hang .cpp-bskill-badge {
+  width: 13px;
+  height: 13px;
+  right: -3px;
+  bottom: -2px;
+  font-size: 8px;
+}
+
+.cpp-bskill-hang .cpp-bskill-badge img {
+  width: 10px;
+  height: 10px;
+}
+
+.cpp-bskill-slots {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.cpp-bskill-card {
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--bp-palette-light-gray-3, #e5e8eb);
+  padding: 10px 10px 8px;
+}
+
+.cpp-bskill-card.is-locked {
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+}
+
+.cpp-bskill-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cpp-bskill-card-title {
+  min-width: 0;
+}
+
+.cpp-bskill-card-name {
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.cpp-bskill-card-room {
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+/* 没解锁的和已升级的，字都是灰的 */
+.cpp-bskill-card.is-locked .cpp-bskill-card-name,
+.cpp-bskill-card.is-locked .cpp-bskill-desc,
+.cpp-bskill-card.is-replaced .cpp-bskill-card-name,
+.cpp-bskill-card.is-replaced .cpp-bskill-desc,
+.cpp-bskill-card.is-replaced .cpp-bskill-sum-h {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-bskill-desc {
+  margin: 4px 0 6px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-bskill-card-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.cpp-bskill-lock {
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-bskill-lock.is-plan {
+  font-weight: 600;
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-bskill-lock.is-have {
+  color: var(--bp-palette-gray-3, #8f99a8);
+}
+
+.cpp-bskill-upgrade {
+  margin: 4px 0;
+  text-align: center;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--bp-palette-gray-3, #8f99a8);
+}
+
+.cpp-bskill-upgrade::before {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 8px;
+  margin: 0 auto 2px;
+  background: var(--bp-palette-gray-3, #8f99a8);
+}
+
+.cpp-bskill-upgrade.is-plan {
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-bskill-upgrade.is-plan::before {
+  background: var(--bp-intent-primary-rest, #2d72d2);
+}
+
+.cpp-bskill-retry {
+  margin-top: 10px;
 }

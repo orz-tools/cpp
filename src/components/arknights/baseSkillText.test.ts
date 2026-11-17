@@ -208,6 +208,7 @@ describe('unlock conditions', () => {
     expect(unlockSentence({ elite: 2, level: 1 })).toBe('精英阶段2解锁')
     expect(unlockSentence({ elite: 0, level: 30 })).toBe('等级30解锁')
     expect(unlockSentence({ elite: 1, level: 30 })).toBe('精英阶段1等级30解锁')
+    expect(unlockSentence({ elite: 0, level: 1 })).toBe('')
   })
 })
 
