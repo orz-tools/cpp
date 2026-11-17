@@ -36,17 +36,23 @@ export function setSkinOwned(cpp: UserDataHost, ids: readonly string[], owned: b
 }
 
 export interface SkinPrefs {
-  /** 档期那一块收起来了 */
+  /** 面板的档期那一块收起来了 */
   timelineCollapsed: boolean
+  /** 大窗口的甘特图收起来了；和面板各记各的，面板上收起是因为侧栏窄 */
+  wideTimelineCollapsed: boolean
 }
 
-const defaultPrefs: SkinPrefs = { timelineCollapsed: false }
+const defaultPrefs: SkinPrefs = { timelineCollapsed: false, wideTimelineCollapsed: false }
 
+/** 逐个字段读：旧版本只存了 timelineCollapsed，一个字段坏了也不连累另一个 */
 export function readSkinPrefs(stored: unknown): SkinPrefs {
   if (typeof stored !== 'object' || stored == null) return defaultPrefs
-  const { timelineCollapsed } = stored as Partial<Record<keyof SkinPrefs, unknown>>
-  if (typeof timelineCollapsed !== 'boolean') return defaultPrefs
-  return { timelineCollapsed }
+  const { timelineCollapsed, wideTimelineCollapsed } = stored as Partial<Record<keyof SkinPrefs, unknown>>
+  return {
+    timelineCollapsed: typeof timelineCollapsed === 'boolean' ? timelineCollapsed : defaultPrefs.timelineCollapsed,
+    wideTimelineCollapsed:
+      typeof wideTimelineCollapsed === 'boolean' ? wideTimelineCollapsed : defaultPrefs.wideTimelineCollapsed,
+  }
 }
 
 // 和 cpp_sidebar 一样记在本机、不分档案
@@ -61,6 +67,8 @@ export const skinPrefsAtom = atom(
 export type OwnFilter = 'all' | 'missing' | 'owned'
 export const skinOwnFilterAtom = atom<OwnFilter>('all')
 export const skinQueryAtom = atom('')
+/** 只留缺、现在能拿的 */
+export const skinObtainableOnlyAtom = atom(false)
 /** 只留现在能用时装自选凭证换的 */
 export const skinVoucherOnlyAtom = atom(false)
 /** 只留有时装、没干员的 */
@@ -150,6 +158,8 @@ export interface SkinState {
   windows: SkinWindow[]
   /** 现在能拿的档期，时装商店、风尚回顾在前，再按截止先后 */
   available: SkinWindow[]
+  /** 缺，而且现在至少有一段档期开着，渠道不限；还没开始的档期不算 */
+  obtainable: boolean
   /** 缺的时候能用时装自选凭证换 */
   voucher: boolean
   /** 已有，干员却没有 */
@@ -162,6 +172,7 @@ export interface SkinModel {
   states: ReadonlyMap<string, SkinState>
   periods: SkinPeriod[]
   owned: number
+  obtainableCount: number
   voucherCount: number
   orphanCount: number
   prts: { status: PrtsStatus; retry: () => void }
@@ -209,12 +220,14 @@ export function useSkinModel(): SkinModel {
       const windows = windowsBySkin.get(skin.id) ?? []
       const owned = Object.hasOwn(ownedSkins, skin.id)
       const character = ga.getCharacter(skin.charId)
+      const available = availableWindows(windows, now).sort(byWay)
       map.set(skin.id, {
         skin,
         owned,
         acquiredAt: owned ? ownedSkins[skin.id] : null,
         windows,
-        available: availableWindows(windows, now).sort(byWay),
+        available,
+        obtainable: !owned && available.length > 0,
         voucher: canUseVoucher(skin, windows, owned, now),
         orphan:
           owned &&
@@ -227,10 +240,12 @@ export function useSkinModel(): SkinModel {
 
   return useMemo(() => {
     let owned = 0
+    let obtainableCount = 0
     let voucherCount = 0
     let orphanCount = 0
     for (const s of states.values()) {
       if (s.owned) owned++
+      if (s.obtainable) obtainableCount++
       if (s.voucher) voucherCount++
       if (s.orphan) orphanCount++
     }
@@ -240,6 +255,7 @@ export function useSkinModel(): SkinModel {
       states,
       periods,
       owned,
+      obtainableCount,
       voucherCount,
       orphanCount,
       prts: { status: prts.status, retry: prts.retry },
@@ -248,20 +264,22 @@ export function useSkinModel(): SkinModel {
   }, [game, now, states, periods, prts.status, prts.retry])
 }
 
-/** 面板和大窗口共用的筛选：三档、两个开关、搜索，同时开时取交集 */
+/** 面板和大窗口共用的筛选：三档、三个开关、搜索，同时开时取交集 */
 export function useSkinFilter(): (state: SkinState) => boolean {
   const ga = useArknights()
   const own = useAtomValue(skinOwnFilterAtom)
   const query = useAtomValue(skinQueryAtom)
+  const obtainableOnly = useAtomValue(skinObtainableOnlyAtom)
   const voucherOnly = useAtomValue(skinVoucherOnlyAtom)
   const orphanOnly = useAtomValue(skinOrphanOnlyAtom)
   return useMemo(
     () => (s: SkinState) =>
       (own === 'all' || (own === 'owned') === s.owned) &&
+      (!obtainableOnly || s.obtainable) &&
       (!voucherOnly || s.voucher) &&
       (!orphanOnly || s.orphan) &&
       matchesQuery(s.skin, ga.getCharacter(s.skin.charId), query),
-    [ga, own, query, voucherOnly, orphanOnly],
+    [ga, own, query, obtainableOnly, voucherOnly, orphanOnly],
   )
 }
 

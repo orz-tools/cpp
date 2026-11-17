@@ -11,6 +11,7 @@ import {
   SkinModel,
   SkinState,
   markingAtom,
+  skinObtainableOnlyAtom,
   skinOrphanOnlyAtom,
   skinOwnFilterAtom,
   skinQueryAtom,
@@ -98,10 +99,18 @@ const FilterToggle = memo(
 )
 
 export const SkinToggles = memo(({ model }: { model: SkinModel }) => {
+  const [obtainable, setObtainable] = useAtom(skinObtainableOnlyAtom)
   const [voucher, setVoucher] = useAtom(skinVoucherOnlyAtom)
   const [orphan, setOrphan] = useAtom(skinOrphanOnlyAtom)
   return (
     <>
+      <FilterToggle
+        on={obtainable}
+        onChange={setObtainable}
+        text={gt.pgettext('skins', '可获得')}
+        count={model.obtainableCount}
+        title={gt.pgettext('skins', '只看缺的、现在能拿到的')}
+      />
       <FilterToggle
         on={voucher}
         onChange={setVoucher}
@@ -139,9 +148,10 @@ export const SkinSearch = memo(({ className }: { className?: string }) => {
 /** 搜索或开着开关时，结果不多，有符合的品牌都展开 */
 export function useNarrowed() {
   const query = useAtomValue(skinQueryAtom)
+  const obtainable = useAtomValue(skinObtainableOnlyAtom)
   const voucher = useAtomValue(skinVoucherOnlyAtom)
   const orphan = useAtomValue(skinOrphanOnlyAtom)
-  return voucher || orphan || query.trim() !== ''
+  return obtainable || voucher || orphan || query.trim() !== ''
 }
 
 /** 一期的清单：缺的在前，能用券的再往前；已有的排在后面 */

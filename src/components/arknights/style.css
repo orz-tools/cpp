@@ -2834,23 +2834,6 @@ section:first-child > .cpp-stages-wide-section {
   line-height: 16px;
 }
 
-/* 缺的：灰度、半透明，虚线框 */
-.is-missing .cpp-skins-pic img {
-  filter: grayscale(1);
-  opacity: 0.38;
-}
-
-.cpp-skins-tile.is-missing::after,
-.is-missing > .cpp-skins-card-pic::after,
-.is-missing > .cpp-skins-dcard-pic::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1px dashed var(--bp-palette-gray-4, #abb3bf);
-  border-radius: inherit;
-  pointer-events: none;
-}
-
 .cpp-skins-badge {
   position: absolute;
   right: -3px;
@@ -3010,8 +2993,9 @@ section:first-child > .cpp-stages-wide-section {
   border-radius: 3px;
 }
 
-.cpp-skins-row.is-owned .cpp-skins-row-pic img {
-  opacity: 0.4;
+.cpp-skins-row-pic .cpp-skins-check {
+  width: 14px;
+  height: 14px;
 }
 
 .cpp-skins-row-text {
@@ -3118,10 +3102,12 @@ section:first-child > .cpp-stages-wide-section {
   height: min(82vh, 780px);
 }
 
+/* 放不下时（英文界面）右边的按钮整组换到第二行，靠右 */
 .cpp-skins-wide-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px 8px;
   flex: none;
   padding-bottom: 8px;
   white-space: nowrap;
@@ -3140,7 +3126,14 @@ section:first-child > .cpp-stages-wide-section {
   flex: 1 1 auto;
 }
 
-.cpp-skins-wide-bar > .cpp-skins-muted {
+.cpp-skins-wide-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.cpp-skins-wide-actions > .cpp-skins-muted {
   font-size: 12px;
 }
 
@@ -3158,6 +3151,27 @@ section:first-child > .cpp-stages-wide-section {
   box-shadow:
     inset 0 1px 0 rgba(17, 20, 24, 0.15),
     inset 0 -1px 0 rgba(17, 20, 24, 0.15);
+}
+
+.cpp-skins-wide-chart.is-collapsed {
+  padding: 0 0 4px;
+}
+
+.cpp-skins-wide-chart .cpp-skins-time-head {
+  padding: 4px 6px 2px;
+}
+
+/* 收起按钮放进月份那一行，和泳道名对齐 */
+.cpp-skins-gantt-corner {
+  position: absolute;
+  left: 6px;
+  top: -2px;
+  font-size: 12px;
+  color: var(--bp-palette-dark-gray-5, #404854);
+}
+
+.cpp-skins-gantt-corner .cpp-skins-time-toggle {
+  padding: 0 2px;
 }
 
 .cpp-skins-gantt-band {
@@ -3371,7 +3385,8 @@ section:first-child > .cpp-stages-wide-section {
   box-shadow: none;
 }
 
-.cpp-skins-card-pic .cpp-skins-check {
+.cpp-skins-card-pic .cpp-skins-check,
+.cpp-skins-dcard-pic .cpp-skins-check {
   right: 6px;
   top: 6px;
 }

@@ -32,12 +32,13 @@ import {
   stateText,
   untilText,
 } from './SkinImages'
-import { WideGantt } from './SkinTimeline'
+import { TimelineHead, TimelineToggle, WideGantt } from './SkinTimeline'
 import {
   SkinModel,
   SkinState,
   WideSort,
   selectedPeriodAtom,
+  skinPrefsAtom,
   useSelectedPeriod,
   useSkinFilter,
   useSkinModel,
@@ -64,7 +65,7 @@ const SkinCard = memo(({ state, marking, now }: { state: SkinState; marking: boo
       aria-pressed={marking ? state.owned : undefined}
       aria-label={readLabel(state.skin.name, sub, status)}
       title={`${state.skin.name}\n${sub}\n${status}`}
-      className={'cpp-skins-card' + (state.owned ? '' : ' is-missing')}
+      className="cpp-skins-card"
       onClick={() => activate(state)}
       onKeyDown={onButtonKey}
     >
@@ -250,11 +251,11 @@ const BrandSteps = memo(
         </div>
         {model.catalog.brands.map((brand) => {
           let owned = 0
-          let available = 0
+          let obtainable = 0
           for (const skin of brand.skins) {
             const s = model.states.get(skin.id)!
             if (s.owned) owned++
-            else if (s.available.length > 0) available++
+            if (s.obtainable) obtainable++
           }
           const total = brand.skins.length
           const name = brand.name || gt.pgettext('skins', '其他')
@@ -269,7 +270,7 @@ const BrandSteps = memo(
               onClick={() => onPick(brand.id)}
             >
               <i style={{ width: `${(owned / total) * 100}%` }} />
-              <em style={{ left: `${(owned / total) * 100}%`, width: `${(available / total) * 100}%` }} />
+              <em style={{ left: `${(owned / total) * 100}%`, width: `${(obtainable / total) * 100}%` }} />
               <span className="cpp-skins-step-name">{name}</span>
               <span className="cpp-skins-step-count">
                 {owned}/{total}
@@ -281,6 +282,22 @@ const BrandSteps = memo(
     )
   },
 )
+
+/** 甘特图可以收起，和面板的档期各记各的；收起时选中的一期照旧 */
+const WideTimeline = memo(({ model }: { model: SkinModel }) => {
+  const [prefs, setPrefs] = useAtom(skinPrefsAtom)
+  const open = !prefs.wideTimelineCollapsed
+  const onToggle = () => setPrefs({ ...prefs, wideTimelineCollapsed: open })
+  return (
+    <div className={'cpp-skins-wide-chart' + (open ? '' : ' is-collapsed')}>
+      {open ? (
+        <WideGantt model={model} corner={<TimelineToggle open onToggle={onToggle} />} />
+      ) : (
+        <TimelineHead open={false} onToggle={onToggle} now={model.now} />
+      )}
+    </div>
+  )
+})
 
 export const SkinsWide = memo(() => {
   const model = useSkinModel()
@@ -326,46 +343,45 @@ export const SkinsWide = memo(() => {
             { value: 'acquired', label: gt.pgettext('skins', '按获得时间') },
           ]}
         />
-        <span className="cpp-skins-spacer" />
-        {model.prts.status === 'error' ? (
-          <span className="cpp-skins-wide-error">
-            <Icon icon="warning-sign" size={12} />
-            {gt.pgettext('skins', 'PRTS 数据载入失败')}
-            <Button variant="minimal" size="small" text={gt.pgettext('skins', '重试')} onClick={model.prts.retry} />
-          </span>
-        ) : null}
-        {model.canImportSkland ? (
-          <Button
-            variant="minimal"
-            size="small"
-            icon="import"
-            text={gt.pgettext('skins', '从森空岛导入')}
-            onClick={openSkland}
-          />
-        ) : null}
-        {marking ? (
-          <>
-            <span className="cpp-skins-muted">{gt.pgettext('skins', '点半身像切换已有 / 缺')}</span>
+        <span className="cpp-skins-wide-actions">
+          {model.prts.status === 'error' ? (
+            <span className="cpp-skins-wide-error">
+              <Icon icon="warning-sign" size={12} />
+              {gt.pgettext('skins', 'PRTS 数据载入失败')}
+              <Button variant="minimal" size="small" text={gt.pgettext('skins', '重试')} onClick={model.prts.retry} />
+            </span>
+          ) : null}
+          {model.canImportSkland ? (
             <Button
+              variant="minimal"
               size="small"
-              intent="primary"
-              text={gt.pgettext('skins', '完成')}
-              onClick={() => setMarking(false)}
+              icon="import"
+              text={gt.pgettext('skins', '从森空岛导入')}
+              onClick={openSkland}
             />
-          </>
-        ) : (
-          <Button
-            variant="minimal"
-            size="small"
-            icon="edit"
-            text={gt.pgettext('skins', '手动标记')}
-            onClick={() => setMarking(true)}
-          />
-        )}
+          ) : null}
+          {marking ? (
+            <>
+              <span className="cpp-skins-muted">{gt.pgettext('skins', '点半身像切换已有 / 缺')}</span>
+              <Button
+                size="small"
+                intent="primary"
+                text={gt.pgettext('skins', '完成')}
+                onClick={() => setMarking(false)}
+              />
+            </>
+          ) : (
+            <Button
+              variant="minimal"
+              size="small"
+              icon="edit"
+              text={gt.pgettext('skins', '手动标记')}
+              onClick={() => setMarking(true)}
+            />
+          )}
+        </span>
       </div>
-      <div className="cpp-skins-wide-chart">
-        <WideGantt model={model} />
-      </div>
+      <WideTimeline model={model} />
       <div className="cpp-skins-wide-main">
         <BrandSteps model={model} period={period} onPick={pickBrand} />
         <div className="cpp-skins-wide-content" ref={contentRef} key={period?.key ?? sort}>

@@ -1,6 +1,6 @@
-import { Tag } from '@blueprintjs/core'
+import { Icon, Tag } from '@blueprintjs/core'
 import { useAtom } from 'jotai'
-import { memo, useMemo, useRef } from 'react'
+import { ReactNode, memo, useMemo, useRef } from 'react'
 import useResizeObserver from 'use-resize-observer'
 import { DAY, PeriodLane, SkinPeriod, packLanes } from '../../pkg/cpp-arknights/skins'
 import { gt } from '../../pkg/gt'
@@ -76,6 +76,26 @@ function usePeriodToggle() {
   const [selected, setSelected] = useAtom(selectedPeriodAtom)
   return { selected, toggle: (key: string) => setSelected(selected === key ? null : key) }
 }
+
+/** 「▾ 档期」：收起、展开档期图 */
+export const TimelineToggle = memo(({ open, onToggle }: { open: boolean; onToggle: () => void }) => (
+  <button type="button" className="cpp-skins-time-toggle" aria-expanded={open} onClick={onToggle}>
+    <Icon icon={open ? 'chevron-down' : 'chevron-right'} size={12} />
+    {gt.pgettext('skins', '档期')}
+  </button>
+))
+
+/** 档期图上面那一行，收起时只剩它：左边「档期」，右边「今天 11-17」 */
+export const TimelineHead = memo(({ open, onToggle, now }: { open: boolean; onToggle: () => void; now: number }) => (
+  <div className="cpp-skins-time-head">
+    <TimelineToggle open={open} onToggle={onToggle} />
+    <span className="cpp-skins-today-text">
+      {gt
+        .pgettext('skins', '今天 %s') /* I10N: %s: date */
+        .replaceAll('%s', formatMonthDay(now))}
+    </span>
+  </div>
+))
 
 /**
  * 面板的档期图：今天往前 26 天到往后 21 天，只画还没结束的；下面一排常驻渠道。每一条都是按钮，点一下选中这一期，再点取消。
@@ -214,8 +234,9 @@ const TOP = 18
 
 /**
  * 大窗口的甘特图：五个半月前到三周后，四条泳道，同一泳道里重叠的往下错开一行；最下面一行「你的获得」，每件已有时装在获得那天画一个点。
+ * 左上角泳道名上面、月份那一行空着，放收起按钮（corner），打开时不加高。
  */
-export const WideGantt = memo(({ model }: { model: SkinModel }) => {
+export const WideGantt = memo(({ model, corner }: { model: SkinModel; corner?: ReactNode }) => {
   const { selected, toggle } = usePeriodToggle()
   const ref = useRef<HTMLDivElement>(null)
   const { width = 1000 } = useResizeObserver({ ref })
@@ -349,6 +370,7 @@ export const WideGantt = memo(({ model }: { model: SkinModel }) => {
           )
         }),
       )}
+      {corner ? <div className="cpp-skins-gantt-corner">{corner}</div> : null}
     </div>
   )
 })

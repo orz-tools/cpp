@@ -19,12 +19,11 @@ import {
   useOpenSkland,
 } from './SkinControls'
 import {
-  SkinMarks,
+  MarkCheck,
   SkinPicture,
   SkinTile,
   VoucherMark,
   acquiredText,
-  formatMonthDay,
   onButtonKey,
   periodName,
   periodTimeText,
@@ -32,7 +31,7 @@ import {
   skinSubtitle,
   untilText,
 } from './SkinImages'
-import { PanelTimeline } from './SkinTimeline'
+import { PanelTimeline, TimelineHead } from './SkinTimeline'
 import { SkinsWide } from './SkinsWide'
 import {
   SkinModel,
@@ -87,22 +86,7 @@ const TimelineBlock = memo(({ model }: { model: SkinModel }) => {
   const open = !prefs.timelineCollapsed
   return (
     <div className="cpp-skins-time">
-      <div className="cpp-skins-time-head">
-        <button
-          type="button"
-          className="cpp-skins-time-toggle"
-          aria-expanded={open}
-          onClick={() => setPrefs({ ...prefs, timelineCollapsed: open })}
-        >
-          <Icon icon={open ? 'chevron-down' : 'chevron-right'} size={12} />
-          {gt.pgettext('skins', '档期')}
-        </button>
-        <span className="cpp-skins-today-text">
-          {gt
-            .pgettext('skins', '今天 %s') /* I10N: %s: date */
-            .replaceAll('%s', formatMonthDay(model.now))}
-        </span>
-      </div>
+      <TimelineHead open={open} onToggle={() => setPrefs({ ...prefs, timelineCollapsed: open })} now={model.now} />
       {open ? <PanelTimeline model={model} /> : null}
     </div>
   )
@@ -127,11 +111,11 @@ const BrandRow = memo(
     const ga = useArknights()
     const activate = useActivateSkin()
     let owned = 0
-    let available = 0
+    let obtainable = 0
     for (const skin of brand.skins) {
       const s = model.states.get(skin.id)!
       if (s.owned) owned++
-      else if (s.available.length > 0) available++
+      if (s.obtainable) obtainable++
     }
     const name = brand.name || gt.pgettext('skins', '其他')
     return (
@@ -146,9 +130,9 @@ const BrandRow = memo(
           <Icon icon={open ? 'chevron-down' : 'chevron-right'} size={14} />
           <span className="cpp-skins-brand-name">{name}</span>
           <span className="cpp-skins-brand-cap">{brand.capitalName}</span>
-          {available > 0 ? (
+          {obtainable > 0 ? (
             <span className="cpp-skins-avail" title={gt.pgettext('skins', '缺的里面现在能拿到的件数')}>
-              {gt.pgettext('skins', '能拿 %d').replaceAll('%d', String(available))}
+              {gt.pgettext('skins', '可获得 %d').replaceAll('%d', String(obtainable))}
             </span>
           ) : null}
           <span className="cpp-skins-brand-count" title={gt.pgettext('skins', '已有 / 全部')}>
@@ -215,7 +199,8 @@ const PeriodRow = memo(({ period, state, marking }: { period: SkinPeriod; state:
     >
       <span className="cpp-skins-row-pic">
         <SkinPicture id={state.skin.id} kind="avatar" name={state.skin.name} />
-        {marking ? <SkinMarks state={state} marking /> : null}
+        {/* 渠道就是这一期，右边写着「券」和价格，头像上只打勾 */}
+        {state.owned || marking ? <MarkCheck owned={state.owned} /> : null}
       </span>
       <span className="cpp-skins-row-text">
         <span className="cpp-skins-row-name">{state.skin.name}</span>

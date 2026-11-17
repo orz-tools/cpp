@@ -38,8 +38,22 @@ describe('skin state', () => {
   })
 
   it('reads the stored preferences, or the defaults', () => {
-    expect(readSkinPrefs({ timelineCollapsed: true })).toEqual({ timelineCollapsed: true })
-    expect(readSkinPrefs({ timelineCollapsed: 'yes' })).toEqual({ timelineCollapsed: false })
-    expect(readSkinPrefs(null)).toEqual({ timelineCollapsed: false })
+    expect(readSkinPrefs({ timelineCollapsed: true })).toEqual({
+      timelineCollapsed: true,
+      wideTimelineCollapsed: false,
+    })
+    expect(readSkinPrefs({ wideTimelineCollapsed: true })).toEqual({
+      timelineCollapsed: false,
+      wideTimelineCollapsed: true,
+    })
+    expect(readSkinPrefs({ timelineCollapsed: 'yes', wideTimelineCollapsed: true })).toEqual({
+      timelineCollapsed: false,
+      wideTimelineCollapsed: true,
+    })
+    expect(readSkinPrefs({ timelineCollapsed: true, wideTimelineCollapsed: 1 })).toEqual({
+      timelineCollapsed: true,
+      wideTimelineCollapsed: false,
+    })
+    expect(readSkinPrefs(null)).toEqual({ timelineCollapsed: false, wideTimelineCollapsed: false })
   })
 })

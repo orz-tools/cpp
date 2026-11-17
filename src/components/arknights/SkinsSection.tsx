@@ -8,9 +8,8 @@ import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { DossierSection } from '../types'
 import {
-  ChannelBadge,
+  SkinMarks,
   SkinPicture,
-  VoucherMark,
   acquiredText,
   channelName,
   channelTone,
@@ -53,14 +52,10 @@ const SkinDossierCard = memo(
     const { skin } = state
     const w = state.owned ? undefined : state.available[0]
     return (
-      <div
-        className={'cpp-skins-dcard' + (state.owned ? '' : ' is-missing') + (focused ? ' is-focused' : '')}
-        data-skin={skin.id}
-      >
+      <div className={'cpp-skins-dcard' + (focused ? ' is-focused' : '')} data-skin={skin.id}>
         <span className="cpp-skins-dcard-pic">
           <SkinPicture id={skin.id} kind="portrait" name={skin.name} />
-          {w ? <ChannelBadge channel={w.channel} /> : null}
-          {state.voucher ? <VoucherMark /> : null}
+          <SkinMarks state={state} marking={false} />
         </span>
         <span className="cpp-skins-dcard-name" title={skin.name}>
           {skin.name}

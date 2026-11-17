@@ -157,7 +157,7 @@ msgstr "Drop Rate Data from Penguin Statistics"
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
-#: src/components/arknights/SkinsSection.tsx:141
+#: src/components/arknights/SkinsSection.tsx:136
 msgid "你有这名干员的 %d 件时装，但还没有这名干员。"
 msgid_plural "你有这名干员的 %d 件时装，但还没有这名干员。"
 msgstr[0] "You own %d outfit of this operator, but not the operator."
@@ -483,7 +483,7 @@ msgid_plural "已排除 %d 个关卡"
 msgstr[0] "%d stage excluded"
 msgstr[1] "%d stages excluded"
 
-#: src/components/arknights/SkinsSection.tsx:159
+#: src/components/arknights/SkinsSection.tsx:154
 msgid "已有 %1/%2 件时装"
 msgid_plural "已有 %1/%2 件时装"
 msgstr[0] "%1/%2 outfit owned"
@@ -2533,7 +2533,7 @@ msgctxt "dossier section"
 msgid "基建技能"
 msgstr "Base skills"
 
-#: src/components/arknights/SkinsSection.tsx:170
+#: src/components/arknights/SkinsSection.tsx:165
 msgctxt "dossier section"
 msgid "时装"
 msgstr "Outfits"
@@ -3299,62 +3299,62 @@ msgctxt "module mission scope"
 msgid "计划内"
 msgstr "In plan"
 
-#: src/components/arknights/SkinTimeline.tsx:196
+#: src/components/arknights/SkinTimeline.tsx:216
 msgctxt "month"
 msgid "1 月"
 msgstr "Jan"
 
-#: src/components/arknights/SkinTimeline.tsx:205
+#: src/components/arknights/SkinTimeline.tsx:225
 msgctxt "month"
 msgid "10 月"
 msgstr "Oct"
 
-#: src/components/arknights/SkinTimeline.tsx:206
+#: src/components/arknights/SkinTimeline.tsx:226
 msgctxt "month"
 msgid "11 月"
 msgstr "Nov"
 
-#: src/components/arknights/SkinTimeline.tsx:207
+#: src/components/arknights/SkinTimeline.tsx:227
 msgctxt "month"
 msgid "12 月"
 msgstr "Dec"
 
-#: src/components/arknights/SkinTimeline.tsx:197
+#: src/components/arknights/SkinTimeline.tsx:217
 msgctxt "month"
 msgid "2 月"
 msgstr "Feb"
 
-#: src/components/arknights/SkinTimeline.tsx:198
+#: src/components/arknights/SkinTimeline.tsx:218
 msgctxt "month"
 msgid "3 月"
 msgstr "Mar"
 
-#: src/components/arknights/SkinTimeline.tsx:199
+#: src/components/arknights/SkinTimeline.tsx:219
 msgctxt "month"
 msgid "4 月"
 msgstr "Apr"
 
-#: src/components/arknights/SkinTimeline.tsx:200
+#: src/components/arknights/SkinTimeline.tsx:220
 msgctxt "month"
 msgid "5 月"
 msgstr "May"
 
-#: src/components/arknights/SkinTimeline.tsx:201
+#: src/components/arknights/SkinTimeline.tsx:221
 msgctxt "month"
 msgid "6 月"
 msgstr "Jun"
 
-#: src/components/arknights/SkinTimeline.tsx:202
+#: src/components/arknights/SkinTimeline.tsx:222
 msgctxt "month"
 msgid "7 月"
 msgstr "Jul"
 
-#: src/components/arknights/SkinTimeline.tsx:203
+#: src/components/arknights/SkinTimeline.tsx:223
 msgctxt "month"
 msgid "8 月"
 msgstr "Aug"
 
-#: src/components/arknights/SkinTimeline.tsx:204
+#: src/components/arknights/SkinTimeline.tsx:224
 msgctxt "month"
 msgid "9 月"
 msgstr "Sep"
@@ -4300,8 +4300,8 @@ msgctxt "short name"
 msgid "计划(毕业)"
 msgstr "Planned t/Maxed"
 
-#: src/components/arknights/SkinsPanel.tsx:348
-#: src/components/arknights/SkinsPanel.tsx:349
+#: src/components/arknights/SkinsPanel.tsx:333
+#: src/components/arknights/SkinsPanel.tsx:334
 msgctxt "sidebar panel"
 msgid "时装"
 msgstr "Outfits"
@@ -4328,7 +4328,7 @@ msgid "%1 · %2，%3"
 msgstr "%1 · %2, %3"
 
 #. %1: total, %2: missing
-#: src/components/arknights/SkinsWide.tsx:216
+#: src/components/arknights/SkinsWide.tsx:217
 msgctxt "skins"
 msgid "%1 件，缺 %2"
 msgstr "%1 outfits, %2 missing"
@@ -4363,8 +4363,8 @@ msgctxt "skins"
 msgid "%s 获得"
 msgstr "acquired %s"
 
-#: src/components/arknights/SkinsPanel.tsx:278
-#: src/components/arknights/SkinsWide.tsx:333
+#: src/components/arknights/SkinsPanel.tsx:263
+#: src/components/arknights/SkinsWide.tsx:350
 msgctxt "skins"
 msgid "PRTS 数据载入失败"
 msgstr "Failed to load PRTS data"
@@ -4374,25 +4374,25 @@ msgctxt "skins"
 msgid "不到 1 天"
 msgstr "under a day left"
 
-#: src/components/arknights/SkinsWide.tsx:162
+#: src/components/arknights/SkinsWide.tsx:163
 msgctxt "skins"
 msgid "不知道获得时间"
 msgstr "Acquired at an unknown time"
 
-#: src/components/arknights/SkinTimeline.tsx:331
+#: src/components/arknights/SkinTimeline.tsx:352
 msgctxt "skins"
 msgid "今天"
 msgstr "Today"
 
 #. %s: date
-#: src/components/arknights/SkinsPanel.tsx:101
+#: src/components/arknights/SkinTimeline.tsx:93
 msgctxt "skins"
 msgid "今天 %s"
 msgstr "Today %s"
 
-#: src/components/arknights/SkinsPanel.tsx:298
-#: src/components/arknights/SkinsPanel.tsx:74
-#: src/components/arknights/SkinsWide.tsx:342
+#: src/components/arknights/SkinsPanel.tsx:283
+#: src/components/arknights/SkinsPanel.tsx:73
+#: src/components/arknights/SkinsWide.tsx:359
 msgctxt "skins"
 msgid "从森空岛导入"
 msgstr "Import from Skland"
@@ -4402,19 +4402,19 @@ msgctxt "skins"
 msgid "任务奖励"
 msgstr "Mission reward"
 
-#: src/components/arknights/SkinTimeline.tsx:287
+#: src/components/arknights/SkinTimeline.tsx:308
 msgctxt "skins"
 msgid "你的获得"
 msgstr "Acquired"
 
-#: src/components/arknights/SkinControls.tsx:62
+#: src/components/arknights/SkinControls.tsx:63
 msgctxt "skins"
 msgid "全部"
 msgstr "All"
 
-#: src/components/arknights/SkinsPanel.tsx:136
-#: src/components/arknights/SkinsWide.tsx:132
-#: src/components/arknights/SkinsWide.tsx:260
+#: src/components/arknights/SkinsPanel.tsx:120
+#: src/components/arknights/SkinsWide.tsx:133
+#: src/components/arknights/SkinsWide.tsx:261
 msgctxt "skins"
 msgid "其他"
 msgstr "Other"
@@ -4434,58 +4434,73 @@ msgctxt "skins"
 msgid "危机合约兑换"
 msgstr "Contract exchange"
 
-#: src/components/arknights/SkinControls.tsx:117
+#: src/components/arknights/SkinControls.tsx:126
 msgctxt "skins"
 msgid "只看已有、但干员还没有的时装"
 msgstr "Only owned outfits whose operator you do not have"
 
-#: src/components/arknights/SkinControls.tsx:110
+#: src/components/arknights/SkinControls.tsx:119
 msgctxt "skins"
 msgid "只看现在能用时装自选凭证兑换的"
 msgstr "Only outfits an outfit voucher can buy now"
 
-#: src/components/arknights/SkinControls.tsx:108
+#: src/components/arknights/SkinControls.tsx:112
+msgctxt "skins"
+msgid "只看缺的、现在能拿到的"
+msgstr "Only missing outfits you can get now"
+
+#: src/components/arknights/SkinControls.tsx:117
 msgctxt "skins"
 msgid "可用券"
 msgstr "Voucher"
 
-#: src/components/arknights/SkinImages.tsx:267
+#: src/components/arknights/SkinImages.tsx:266
 msgctxt "skins"
 msgid "可用时装自选凭证"
 msgstr "An outfit voucher can buy it"
 
-#: src/components/arknights/SkinsWide.tsx:248
+#: src/components/arknights/SkinControls.tsx:110
+msgctxt "skins"
+msgid "可获得"
+msgstr "Obtainable"
+
+#: src/components/arknights/SkinsPanel.tsx:135
+msgctxt "skins"
+msgid "可获得 %d"
+msgstr "%d obtainable"
+
+#: src/components/arknights/SkinsWide.tsx:249
 msgctxt "skins"
 msgid "品牌"
 msgstr "Brand"
 
-#: src/components/arknights/SkinsWide.tsx:227
+#: src/components/arknights/SkinsWide.tsx:228
 msgctxt "skins"
 msgid "回到全部"
 msgstr "Back to all"
 
 #: src/components/arknights/SkinImages.tsx:45
-#: src/components/arknights/SkinTimeline.tsx:190
+#: src/components/arknights/SkinTimeline.tsx:210
 msgctxt "skins"
 msgid "复刻"
 msgstr "Rerun"
 
-#: src/components/arknights/SkinsPanel.tsx:286
-#: src/components/arknights/SkinsWide.tsx:352
+#: src/components/arknights/SkinsPanel.tsx:271
+#: src/components/arknights/SkinsWide.tsx:369
 msgctxt "skins"
 msgid "完成"
 msgstr "Done"
 
-#: src/components/arknights/SkinControls.tsx:64
+#: src/components/arknights/SkinControls.tsx:65
 #: src/components/arknights/SkinImages.tsx:95
-#: src/components/arknights/SkinsSection.tsx:74
+#: src/components/arknights/SkinsSection.tsx:69
 msgctxt "skins"
 msgid "已有"
 msgstr "Owned"
 
-#: src/components/arknights/SkinsPanel.tsx:154
-#: src/components/arknights/SkinsPanel.tsx:56
-#: src/components/arknights/SkinsWide.tsx:249
+#: src/components/arknights/SkinsPanel.tsx:138
+#: src/components/arknights/SkinsPanel.tsx:55
+#: src/components/arknights/SkinsWide.tsx:250
 msgctxt "skins"
 msgid "已有 / 全部"
 msgstr "Owned / all"
@@ -4501,46 +4516,46 @@ msgctxt "skins"
 msgid "常驻"
 msgstr "Permanent"
 
-#: src/components/arknights/SkinControls.tsx:131
-#: src/components/arknights/SkinControls.tsx:132
+#: src/components/arknights/SkinControls.tsx:140
+#: src/components/arknights/SkinControls.tsx:141
 msgctxt "skins"
 msgid "干员或时装名"
 msgstr "Operator or outfit"
 
-#: src/components/arknights/SkinsPanel.tsx:307
-#: src/components/arknights/SkinsPanel.tsx:78
-#: src/components/arknights/SkinsWide.tsx:361
+#: src/components/arknights/SkinsPanel.tsx:292
+#: src/components/arknights/SkinsPanel.tsx:77
+#: src/components/arknights/SkinsWide.tsx:378
 msgctxt "skins"
 msgid "手动标记"
 msgstr "Mark by hand"
 
-#: src/components/arknights/SkinsPanel.tsx:290
+#: src/components/arknights/SkinsPanel.tsx:275
 msgctxt "skins"
 msgid "拥有情况"
 msgstr "Ownership"
 
-#: src/components/arknights/SkinsWide.tsx:325
+#: src/components/arknights/SkinsWide.tsx:342
 msgctxt "skins"
 msgid "按上线时间"
 msgstr "By release"
 
-#: src/components/arknights/SkinsWide.tsx:324
+#: src/components/arknights/SkinsWide.tsx:341
 msgctxt "skins"
 msgid "按品牌"
 msgstr "By brand"
 
-#: src/components/arknights/SkinsWide.tsx:326
+#: src/components/arknights/SkinsWide.tsx:343
 msgctxt "skins"
 msgid "按获得时间"
 msgstr "By acquisition"
 
-#: src/components/arknights/SkinsWide.tsx:321
+#: src/components/arknights/SkinsWide.tsx:338
 msgctxt "skins"
 msgid "排序"
 msgstr "Sort"
 
 #: src/components/arknights/SkinImages.tsx:44
-#: src/components/arknights/SkinTimeline.tsx:189
+#: src/components/arknights/SkinTimeline.tsx:209
 msgctxt "skins"
 msgid "新装"
 msgstr "New"
@@ -4557,31 +4572,31 @@ msgid "时装商店"
 msgstr "Outfit Store"
 
 #: src/components/arknights/SkinImages.tsx:115
-#: src/components/arknights/SkinsSection.tsx:90
-#: src/components/arknights/SkinsWide.tsx:86
+#: src/components/arknights/SkinsSection.tsx:85
+#: src/components/arknights/SkinsWide.tsx:87
 msgctxt "skins"
 msgid "暂时拿不到"
 msgstr "Not available now"
 
-#: src/components/arknights/SkinControls.tsx:115
+#: src/components/arknights/SkinControls.tsx:124
 msgctxt "skins"
 msgid "有时装没干员"
 msgstr "Outfit, no operator"
 
-#: src/components/arknights/SkinsPanel.tsx:285
+#: src/components/arknights/SkinsPanel.tsx:270
 msgctxt "skins"
 msgid "标记中：点头像切换「已有」和「缺」"
 msgstr "Marking: click an avatar to switch owned / missing"
 
-#: src/components/arknights/SkinsPanel.tsx:98
+#: src/components/arknights/SkinTimeline.tsx:84
 msgctxt "skins"
 msgid "档期"
 msgstr "Sales"
 
-#: src/components/arknights/SkinsPanel.tsx:188
-#: src/components/arknights/SkinsPanel.tsx:262
-#: src/components/arknights/SkinsWide.tsx:175
-#: src/components/arknights/SkinsWide.tsx:231
+#: src/components/arknights/SkinsPanel.tsx:172
+#: src/components/arknights/SkinsPanel.tsx:247
+#: src/components/arknights/SkinsWide.tsx:176
+#: src/components/arknights/SkinsWide.tsx:232
 msgctxt "skins"
 msgid "没有符合的时装"
 msgstr "No matching outfits"
@@ -4591,72 +4606,67 @@ msgctxt "skins"
 msgid "活动"
 msgstr "Event"
 
-#: src/components/arknights/SkinImages.tsx:269
+#: src/components/arknights/SkinImages.tsx:268
 msgctxt "skins"
 msgid "点击切换已有 / 缺"
 msgstr "Click to switch owned / missing"
 
-#: src/components/arknights/SkinImages.tsx:269
+#: src/components/arknights/SkinImages.tsx:268
 msgctxt "skins"
 msgid "点击打开干员档案"
 msgstr "Click to open the operator dossier"
 
-#: src/components/arknights/SkinsWide.tsx:348
+#: src/components/arknights/SkinsWide.tsx:365
 msgctxt "skins"
 msgid "点半身像切换已有 / 缺"
 msgstr "Click a portrait to switch owned / missing"
 
-#: src/components/arknights/SkinTimeline.tsx:104
+#: src/components/arknights/SkinTimeline.tsx:124
 msgctxt "skins"
 msgid "现在没有在卖的时装"
 msgstr "No outfits on sale now"
 
-#: src/components/arknights/SkinsSection.tsx:25
+#: src/components/arknights/SkinsSection.tsx:24
 msgctxt "skins"
 msgid "精英一"
 msgstr "Elite 1"
 
-#: src/components/arknights/SkinsSection.tsx:30
+#: src/components/arknights/SkinsSection.tsx:29
 msgctxt "skins"
 msgid "精英一解锁"
 msgstr "Unlocked at Elite 1"
 
-#: src/components/arknights/SkinsSection.tsx:26
+#: src/components/arknights/SkinsSection.tsx:25
 msgctxt "skins"
 msgid "精英二"
 msgstr "Elite 2"
 
-#: src/components/arknights/SkinsSection.tsx:31
+#: src/components/arknights/SkinsSection.tsx:30
 msgctxt "skins"
 msgid "精英二解锁"
 msgstr "Unlocked at Elite 2"
 
-#: src/components/arknights/SkinsSection.tsx:24
+#: src/components/arknights/SkinsSection.tsx:23
 msgctxt "skins"
 msgid "精英零"
 msgstr "Elite 0"
 
-#: src/components/arknights/SkinControls.tsx:63
-#: src/components/arknights/SkinsWide.tsx:161
+#: src/components/arknights/SkinControls.tsx:64
+#: src/components/arknights/SkinsWide.tsx:162
 msgctxt "skins"
 msgid "缺"
 msgstr "Missing"
 
 #. %1: missing, %2: total
-#: src/components/arknights/SkinControls.tsx:158
+#: src/components/arknights/SkinControls.tsx:168
 msgctxt "skins"
 msgid "缺 %1/%2"
 msgstr "%1/%2 missing"
 
-#: src/components/arknights/SkinsPanel.tsx:150
+#: src/components/arknights/SkinsPanel.tsx:134
 msgctxt "skins"
 msgid "缺的里面现在能拿到的件数"
 msgstr "Missing outfits you can get now"
-
-#: src/components/arknights/SkinsPanel.tsx:151
-msgctxt "skins"
-msgid "能拿 %d"
-msgstr "%d to get"
 
 #. %s: end date and time
 #: src/components/arknights/SkinImages.tsx:68
@@ -4669,7 +4679,7 @@ msgctxt "skins"
 msgid "记录修复"
 msgstr "Record Restoration"
 
-#: src/components/arknights/SkinsPanel.tsx:67
+#: src/components/arknights/SkinsPanel.tsx:66
 msgctxt "skins"
 msgid "还没有记下你有哪些时装，下面全算「缺」。"
 msgstr "No owned outfits recorded yet, so all of them count as missing below."
@@ -4679,8 +4689,8 @@ msgctxt "skins"
 msgid "里程碑奖励"
 msgstr "Milestone reward"
 
-#: src/components/arknights/SkinsPanel.tsx:279
-#: src/components/arknights/SkinsWide.tsx:334
+#: src/components/arknights/SkinsPanel.tsx:264
+#: src/components/arknights/SkinsWide.tsx:351
 msgctxt "skins"
 msgid "重试"
 msgstr "Retry"
@@ -4690,7 +4700,7 @@ msgctxt "skins"
 msgid "风尚回顾"
 msgstr "Fashion Review"
 
-#: src/components/arknights/SkinsSection.tsx:29
+#: src/components/arknights/SkinsSection.tsx:28
 msgctxt "skins"
 msgid "默认"
 msgstr "Default"
@@ -5355,6 +5365,9 @@ msgstr "Heybox"
 #~ msgstr ""
 #~ "One group per material, best first. Click a material to see all its "
 #~ "stages."
+#~ msgctxt "skins"
+#~ msgid "能拿 %d"
+#~ msgstr "%d to get"
 
 #~ msgctxt "predefined query"
 #~ msgid "专三价值（能用）"
