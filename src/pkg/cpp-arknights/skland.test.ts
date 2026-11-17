@@ -88,7 +88,7 @@ describe('parseSklandData', () => {
     }
     const parsed = parseSklandData(JSON.stringify({ code: 0, message: 'OK', data }))
     expect(parsed.raw).toEqual(data)
-    expect(parsed.data).not.toHaveProperty('skins')
+    expect(parsed.data).not.toHaveProperty('charInfoMap')
   })
 
   it('rejects data of another shape', () => {
@@ -246,6 +246,44 @@ describe('mergeSklandData', () => {
     const mastered = mergeSklandData(ga, { current: {}, items: {} }, empty, training('char_010_chen', 2))
     expect(mastered.trainingError).toContain('"charId":"char_010_chen"')
     expect(mastered.trainingError).toContain('Skill already mastered to level 3')
+  })
+})
+
+describe('mergeSklandData skins', () => {
+  const draftWith = (skins: Record<string, number>) => ({
+    current: {} as Record<string, ArknightsCharacterStatus>,
+    items: {},
+    skins,
+  })
+
+  it('replaces the owned skins, dropping ones marked by hand that Skland does not list', () => {
+    const draft = draftWith({ 'char_010_chen@test#1': 0, 'char_009_12fce@sale#1': 0 })
+    const result = mergeSklandData(
+      ga,
+      draft,
+      empty,
+      sklandData({
+        skins: [
+          { id: 'char_010_chen@test#1', ts: 1690000000 },
+          { id: 'char_002_amiya@winter#1', ts: 1600000000 },
+        ],
+      }),
+    )
+    expect(result.skins).toEqual({ added: 1, removed: 1 })
+    expect(draft.skins).toEqual({ 'char_010_chen@test#1': 1690000000, 'char_002_amiya@winter#1': 1600000000 })
+  })
+
+  it('keeps skins the game data does not know yet', () => {
+    const draft = draftWith({})
+    mergeSklandData(ga, draft, empty, sklandData({ skins: [{ id: 'char_999_new@future#1', ts: 1 }] }))
+    expect(draft.skins).toEqual({ 'char_999_new@future#1': 1 })
+  })
+
+  it('leaves them alone when the data has no skins', () => {
+    const draft = draftWith({ 'char_010_chen@test#1': 0 })
+    const result = mergeSklandData(ga, draft, empty, sklandData({}))
+    expect(result.skins).toBeUndefined()
+    expect(draft.skins).toEqual({ 'char_010_chen@test#1': 0 })
   })
 })
 

@@ -109,6 +109,34 @@ export type CppData_ArknightsKengxxiaoZhCn = {
                 [x: string]: string;
             };
         };
+        charSkins: {
+            [x: string]: {
+                skinId: string;
+                charId: string;
+                tmplId: string | null;
+                dynIllust: boolean;
+                displaySkin: {
+                    skinName: string | null;
+                    skinGroupId: string | null;
+                    skinGroupName: string | null;
+                    sortId: number;
+                    getTime: number;
+                    obtainApproach: string | null;
+                    displayTagId: string | null;
+                };
+            };
+        };
+        brandList: {
+            [x: string]: {
+                brandId: string;
+                brandName: string;
+                brandCapitalName: string | null;
+                sortId: number;
+                groupList: {
+                    skinGroupId: string;
+                }[];
+            };
+        };
     };
     exSkills: {
         [x: string]: {
@@ -266,5 +294,21 @@ export type CppData_ArknightsKengxxiaoZhCn = {
                 enemyLevel: "NORMAL" | "ELITE" | "BOSS";
             };
         };
+    };
+    exShop: {
+        recommendList: {
+            tagName: string;
+            startDatetime: number;
+            endDatetime: number;
+            skins: {
+                skinId: string;
+                goodId: string | null;
+            }[];
+        }[];
+        carousels: {
+            skinId: string;
+            startTime: number;
+            endTime: number;
+        }[];
     };
 }

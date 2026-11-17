@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { Character } from './DataManager'
+import { replaceSkins } from './skins'
 import type { ArknightsCharacterStatus } from './types'
 
 export const SklandData = z.object({
@@ -73,10 +74,12 @@ export const SklandData = z.object({
         .optional(),
     })
     .optional(),
+  // 这个账号的全部时装，ts 是获得时间（Unix 秒）
+  skins: z.array(z.object({ id: z.string(), ts: z.number() })).optional(),
 })
 export type SklandData = z.infer<typeof SklandData>
 
-// 「提取装置」只把这里列出的路径发给 cpp。skins 现在不合并，只为存进快照
+// 「提取装置」只把这里列出的路径发给 cpp。skins 是已有的时装，换掉用户数据里的整份
 export const SKLAND_SCOPES = ['chars', 'building.training', 'cultivate.characters', 'cultivate.items', 'skins']
 
 export interface SklandInput {
@@ -155,11 +158,17 @@ export interface SklandMergeResult {
   trainingAmiya: boolean
   // 训练室数据读不懂：原始数据与异常，给用户转交开发者
   trainingError?: string
+  // 数据里有时装时，和导入前比多了、少了几件
+  skins?: { added: number; removed: number }
 }
 
 export function mergeSklandData(
   ga: SklandLookup,
-  draft: { current: Record<string, ArknightsCharacterStatus>; items: Record<string, number> },
+  draft: {
+    current: Record<string, ArknightsCharacterStatus>
+    items: Record<string, number>
+    skins?: Record<string, number>
+  },
   empty: ArknightsCharacterStatus,
   data: SklandData,
 ): SklandMergeResult {
@@ -298,6 +307,8 @@ export function mergeSklandData(
         }),
     )
   }
+
+  if (data.skins) result.skins = replaceSkins(draft, data.skins)
 
   const training = data.building?.training
   if (training && training.trainee && training.trainee.targetSkill >= 0) {
