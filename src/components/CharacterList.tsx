@@ -55,6 +55,7 @@ import {
   holdingAssertion,
   isCustomQuery,
 } from './characterQuery'
+import { presetMenu } from './presetMenu'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
 import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
 import { RosterPin, clearRosterPin, useActiveRosterPin } from './rosterPin'
@@ -722,20 +723,20 @@ export const menuItemKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
   e.currentTarget.click()
 }
 
-/** 一个指标的两版合成一行：左边进这一版，右边进「全部」版，两段各自可点、各自高亮 */
+/** 一个指标的几版合成一行：名字进这一版，后面每段进各自那一版，各段各自可点、各自高亮 */
 const PresetSplitMenuItem = memo(
   ({
     text,
+    title,
     active,
-    allActive,
     onClick,
-    onAllClick,
+    segments,
   }: {
     text: string
+    title?: string
     active: boolean
-    allActive: boolean
     onClick: () => void
-    onAllClick: () => void
+    segments: { key: string; label: string; title: string; active: boolean; onClick: () => void }[]
   }) => {
     const className = (on: boolean, extra?: string) =>
       [
@@ -750,22 +751,25 @@ const PresetSplitMenuItem = memo(
           role="menuitem"
           tabIndex={0}
           className={className(active)}
-          title={gt.pgettext('query menu', '只列出还没练到的')}
+          title={title ?? gt.pgettext('query menu', '只列出还没练到的')}
           onClick={onClick}
           onKeyDown={menuItemKeyDown}
         >
           <div className="bp6-text-overflow-ellipsis bp6-fill">{text}</div>
         </a>
-        <a
-          role="menuitem"
-          tabIndex={0}
-          className={className(allActive, 'cpp-split-menu-item-all')}
-          title={gt.pgettext('query menu', '不论持有和练度，列出全部')}
-          onClick={onAllClick}
-          onKeyDown={menuItemKeyDown}
-        >
-          {gt.pgettext('query menu', '全部')}
-        </a>
+        {segments.map((s) => (
+          <a
+            key={s.key}
+            role="menuitem"
+            tabIndex={0}
+            className={className(s.active, 'cpp-split-menu-item-segment')}
+            title={s.title}
+            onClick={s.onClick}
+            onKeyDown={menuItemKeyDown}
+          >
+            {s.label}
+          </a>
+        ))}
       </li>
     )
   },
@@ -773,12 +777,10 @@ const PresetSplitMenuItem = memo(
 
 const QueryBuilderRight = memo(() => {
   const cpp = useCpp()
-  const pgq = useMemo(() => cpp.gameAdapter.getPredefinedQueries(), [cpp])
-  // 作为别的预设的「全部」版出现的，不再单独占一行
-  const presetRows = useMemo(() => {
-    const allKeys = new Set(Object.values(pgq).flatMap((x) => (x.all ? [x.all] : [])))
-    return Object.entries(pgq).filter(([k]) => !allKeys.has(k))
-  }, [pgq])
+  const menu = useMemo(
+    () => presetMenu(cpp.gameAdapter.getPredefinedQueryGroups(), cpp.gameAdapter.getPredefinedQueries()),
+    [cpp],
+  )
   const [param, setParam] = useAtom(useCpp().queryParamAtom)
   const savedQueries = useAtomValue(useAtoms().dataAtom).savedQueries
   const editor = useQueryEditorToggle()
@@ -806,28 +808,39 @@ const QueryBuilderRight = memo(() => {
                 ))}
               </>
             ) : null}
-            <MenuDivider title={gt.pgettext('query menu', '练度统计')} />
-            {presetRows.map(([k, v]) => {
-              const all = v.all && pgq[v.all] ? v.all : undefined
-              return all ? (
-                <PresetSplitMenuItem
-                  key={k}
-                  text={v.name}
-                  active={param.query === PredefinedGameQueryPrefix + k}
-                  allActive={param.query === PredefinedGameQueryPrefix + all}
-                  onClick={() => goTo(PredefinedGameQueryPrefix + k)}
-                  onAllClick={() => goTo(PredefinedGameQueryPrefix + all)}
-                />
-              ) : (
-                <MenuItem
-                  key={k}
-                  active={param.query === PredefinedGameQueryPrefix + k}
-                  intent={param.query === PredefinedGameQueryPrefix + k ? 'primary' : undefined}
-                  text={v.name}
-                  onClick={() => goTo(PredefinedGameQueryPrefix + k)}
-                />
-              )
-            })}
+            {menu.map(({ group, rows }) => (
+              <React.Fragment key={group.id}>
+                <MenuDivider title={group.title.toString()} />
+                {rows.map(({ key, preset, segments }) => {
+                  const ref = PredefinedGameQueryPrefix + key
+                  return segments.length > 0 ? (
+                    <PresetSplitMenuItem
+                      key={key}
+                      text={preset.name}
+                      title={preset.title?.toString()}
+                      active={param.query === ref}
+                      onClick={() => goTo(ref)}
+                      segments={segments.map((s) => ({
+                        key: s.key,
+                        label: s.label.toString(),
+                        title: s.title.toString(),
+                        active: param.query === PredefinedGameQueryPrefix + s.key,
+                        onClick: () => goTo(PredefinedGameQueryPrefix + s.key),
+                      }))}
+                    />
+                  ) : (
+                    <MenuItem
+                      key={key}
+                      active={param.query === ref}
+                      intent={param.query === ref ? 'primary' : undefined}
+                      text={preset.name}
+                      htmlTitle={preset.title?.toString()}
+                      onClick={() => goTo(ref)}
+                    />
+                  )
+                })}
+              </React.Fragment>
+            ))}
           </Menu>
         }
       >

@@ -9,6 +9,8 @@ import {
   IStageCategory,
   IZoneInfo,
   PredefinedQuery,
+  PredefinedQueryGroup,
+  PredefinedQuerySegment,
   QNumber,
   QString,
   QStrings,
@@ -61,6 +63,12 @@ const eliteOptions = () =>
 const masteryOptions = () =>
   range(0, 3).map((x) => ({ value: x, label: gt.pgettext('query value', '专精 %d').replaceAll('%d', `${x}`) }))
 const professionOptions = () => Object.entries(ProfessionNames).map(([value, label]) => ({ value, label }))
+
+const allSegment = (key: string): PredefinedQuerySegment => ({
+  key,
+  label: lpstr(() => gt.pgettext('query menu', '全部')),
+  title: lpstr(() => gt.pgettext('query menu', '不论持有和练度，列出全部')),
+})
 
 export class ArknightsAdapter implements IGameAdapter<Arknights> {
   public readPreference<K extends keyof Arknights['preferences']>(
@@ -371,11 +379,16 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     }
   }
 
+  public getPredefinedQueryGroups(): PredefinedQueryGroup[] {
+    return [{ id: 'stats', title: lpstr(() => gt.pgettext('query menu', '练度统计')) }]
+  }
+
   public getPredefinedQueries(): Record<string, PredefinedQuery> {
     return {
       'skill.mastery3rate.yituliu': {
         name: gt.pgettext('predefined query', '一图流 技能专三率'),
-        all: 'skill.mastery3rate.all.yituliu',
+        group: 'stats',
+        segments: [allSegment('skill.mastery3rate.all.yituliu')],
         query: {
           select: ['skill.mastery3rate.yituliu'],
           join: 'skill',
@@ -398,6 +411,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       'skill.mastery3rate.all.yituliu': {
         name: gt.pgettext('predefined query', '一图流 技能专三率（全部）'),
+        group: 'stats',
         query: {
           select: ['skill.mastery3rate.yituliu'],
           join: 'skill',
@@ -407,7 +421,8 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       'skill.mastery3rate.heybox': {
         name: gt.pgettext('predefined query', '小黑盒 技能专三率'),
-        all: 'skill.mastery3rate.all.heybox',
+        group: 'stats',
+        segments: [allSegment('skill.mastery3rate.all.heybox')],
         query: {
           select: ['skill.mastery3rate.heybox'],
           join: 'skill',
@@ -430,6 +445,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       'skill.mastery3rate.all.heybox': {
         name: gt.pgettext('predefined query', '小黑盒 技能专三率（全部）'),
+        group: 'stats',
         query: {
           select: ['skill.mastery3rate.heybox'],
           join: 'skill',
@@ -439,7 +455,8 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       'elite2rate.yituliu': {
         name: gt.pgettext('predefined query', '一图流 精二率'),
-        all: 'elite2rate.all.yituliu',
+        group: 'stats',
+        segments: [allSegment('elite2rate.all.yituliu')],
         query: {
           select: ['elite2rate.yituliu'],
           where: {
@@ -461,6 +478,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       'elite2rate.all.yituliu': {
         name: gt.pgettext('predefined query', '一图流 精二率（全部）'),
+        group: 'stats',
         query: {
           select: ['elite2rate.yituliu'],
           where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
@@ -469,7 +487,8 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       'elite2rate.heybox': {
         name: gt.pgettext('predefined query', '小黑盒 精二率'),
-        all: 'elite2rate.all.heybox',
+        group: 'stats',
+        segments: [allSegment('elite2rate.all.heybox')],
         query: {
           select: ['elite2rate.heybox'],
           where: {
@@ -491,6 +510,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       'elite2rate.all.heybox': {
         name: gt.pgettext('predefined query', '小黑盒 精二率（全部）'),
+        group: 'stats',
         query: {
           select: ['elite2rate.heybox'],
           where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
@@ -499,7 +519,8 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       'elite2level90rate.heybox': {
         name: gt.pgettext('predefined query', '小黑盒 精二 90 级率'),
-        all: 'elite2level90rate.all.heybox',
+        group: 'stats',
+        segments: [allSegment('elite2level90rate.all.heybox')],
         query: {
           select: ['elite2level90rate.heybox'],
           where: {
@@ -522,6 +543,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       },
       'elite2level90rate.all.heybox': {
         name: gt.pgettext('predefined query', '小黑盒 精二 90 级率（全部）'),
+        group: 'stats',
         query: {
           select: ['elite2level90rate.heybox'],
           where: { _: 'field', field: 'rarity', op: '==', operand: 6 },

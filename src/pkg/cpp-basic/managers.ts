@@ -4,11 +4,31 @@ import { BasicDataManager } from './DataManager'
 import { QueryParam, RootCharacterQuery } from './queries'
 import { ExpItem, Formula, ICharacter, IGame, IItem, IStageInfo, Task } from './types'
 
+/** 「更多视图」菜单里的一组，带分隔标题 */
+export interface PredefinedQueryGroup {
+  id: string
+  title: PSTR
+}
+
+export interface PredefinedQuerySegment {
+  /** 这一段进的那一版预设 */
+  key: string
+  label: PSTR
+  /** 悬停说明 */
+  title: PSTR
+}
+
 export interface PredefinedQuery {
   name: string
+  /** getPredefinedQueryGroups() 里某一组的 id */
+  group: string
+  /** 名字那一段的悬停说明；没有时用「只列出还没练到的」 */
+  title?: PSTR
+  /** 名字后面的各段，按显示顺序；每段进 key 那一版，那一版自己不再单独占一行 */
+  segments?: PredefinedQuerySegment[]
+  /** 这个字段在列表各行上的和，作为价值显示在标题栏的视图名旁边 */
+  totalValue?: string
   query: QueryParam
-  /** 同一指标「全部」版本的 key。菜单里两者合成一行，右边一段进这一版；那一版自己不再单独占一行 */
-  all?: string
 }
 
 export interface IZoneInfo {
@@ -53,6 +73,8 @@ export interface IGameAdapter<G extends IGame> {
   getDefaultCharacterQueryOrder(): QueryParam['order']
   getFavCharacterQueryWhere(): QueryParam['where']
   getPredefinedQueries(): Record<string, PredefinedQuery>
+  /** 「更多视图」菜单里预设的分组，按显示顺序；「我的过滤器」是外壳自己的，不在这里 */
+  getPredefinedQueryGroups(): PredefinedQueryGroup[]
   readPreference<K extends keyof G['preferences']>(key: K, storage: Record<string, any>): G['preferences'][K]
   writePreference<K extends keyof G['preferences']>(
     key: K,

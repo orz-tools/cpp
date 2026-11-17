@@ -654,13 +654,13 @@ body {
   min-width: 0;
 }
 
-.cpp-split-menu-item > .cpp-split-menu-item-all {
+.cpp-split-menu-item > .cpp-split-menu-item-segment {
   position: relative;
   flex: none;
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
-.cpp-split-menu-item > .cpp-split-menu-item-all::before {
+.cpp-split-menu-item > .cpp-split-menu-item-segment::before {
   content: '';
   position: absolute;
   left: -1px;
@@ -669,15 +669,15 @@ body {
   border-left: 1px solid var(--bp-palette-light-gray-1, #d3d8de);
 }
 
-.cpp-split-menu-item > .cpp-split-menu-item-all:hover,
-.cpp-split-menu-item > .cpp-split-menu-item-all.bp6-active {
+.cpp-split-menu-item > .cpp-split-menu-item-segment:hover,
+.cpp-split-menu-item > .cpp-split-menu-item-segment.bp6-active {
   color: inherit;
 }
 
-.cpp-split-menu-item > .cpp-split-menu-item-all:hover::before,
-.cpp-split-menu-item > .cpp-split-menu-item-all.bp6-active::before,
-.cpp-split-menu-item > .bp6-menu-item:first-child:hover + .cpp-split-menu-item-all::before,
-.cpp-split-menu-item > .bp6-menu-item.bp6-active:first-child + .cpp-split-menu-item-all::before {
+.cpp-split-menu-item > .cpp-split-menu-item-segment:hover::before,
+.cpp-split-menu-item > .cpp-split-menu-item-segment.bp6-active::before,
+.cpp-split-menu-item > .bp6-menu-item:hover + .cpp-split-menu-item-segment::before,
+.cpp-split-menu-item > .bp6-menu-item.bp6-active + .cpp-split-menu-item-segment::before {
   border-left-color: transparent;
 }
 
