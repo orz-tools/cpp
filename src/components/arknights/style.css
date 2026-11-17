@@ -1511,9 +1511,49 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-mm-stats-main {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
+  gap: 0 8px;
+}
+
+.cpp-mm-nowrap {
+  white-space: nowrap;
+}
+
+/* 贴在面板底部：负 margin 盖住 .cpp-mm-board 左右和底下的内边距 */
+.cpp-mm-tidy {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 0 -8px -12px;
+  padding: 4px 4px 4px 12px;
+  border-top: 1px solid rgba(17, 20, 24, 0.15);
+  background: #fff;
+  box-shadow: 0 -2px 6px rgba(17, 20, 24, 0.08);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.cpp-mm-tidy > .bp6-button {
+  flex: none;
+}
+
+/* 读屏要先有这个区域，所以空的时候也在，只是不占地方：负 margin 抵掉 .cpp-mm-board 的 gap */
+.cpp-mm-tidy.is-empty {
+  margin: -8px 0 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.cpp-mm-wide-left .cpp-mm-tidy:not(.is-empty) {
+  margin-left: 0;
+  padding-left: 4px;
 }
 
 .cpp-mm-all-done {
@@ -1544,10 +1584,14 @@ section:first-child > .cpp-stages-wide-section {
   box-shadow: 0 0 0 1px var(--bp-palette-blue-3, #2d72d2);
 }
 
-.cpp-mm-ticket:focus-visible,
-.cpp-mm-stub-button:focus-visible {
+/* 存根贴着券的边，自己的焦点框会被券的 overflow 裁掉，所以画在券上 */
+.cpp-mm-ticket:has(.cpp-mm-stub-button:focus-visible) {
   outline: 2px solid var(--bp-palette-blue-4, #4c90f0);
   outline-offset: 1px;
+}
+
+.cpp-mm-stub-button:focus-visible {
+  outline: none;
 }
 
 .cpp-mm-ticket-top {
@@ -1595,7 +1639,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-ticket.is-selected .cpp-mm-stub-line {
-  color: rgba(255, 255, 255, 0.85);
+  color: #fff;
 }
 
 .cpp-mm-crew {
@@ -1723,7 +1767,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-pro.is-barred svg {
-  opacity: 0.3;
+  opacity: 0.45;
 }
 
 .cpp-mm-pro.is-barred::after {
@@ -1762,6 +1806,42 @@ section:first-child > .cpp-stages-wide-section {
   min-width: 0;
 }
 
+.cpp-mm-run-row.is-done .cpp-mm-run-who > .cpp-mm-summary,
+.cpp-mm-piggy.is-done .cpp-mm-summary,
+.cpp-mm-table tr.is-done .cpp-mm-summary {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  text-decoration: line-through;
+}
+
+/* 顺带的任务挂在干员下面 */
+.cpp-mm-piggy {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.cpp-mm-piggy-text {
+  min-width: 0;
+  padding-top: 3px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.cpp-mm-piggy-tag {
+  margin-right: 4px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-piggy.is-off .cpp-mm-summary,
+.cpp-mm-table-piggy.is-off .cpp-mm-summary {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-piggy .cpp-mm-note {
+  margin-top: 1px;
+}
+
 .cpp-mm-run-line {
   display: flex;
   align-items: center;
@@ -1783,11 +1863,13 @@ section:first-child > .cpp-stages-wide-section {
   justify-content: flex-end;
 }
 
-.cpp-mm-ticket.is-used {
+.cpp-mm-ticket.is-used,
+.cpp-mm-ticket.is-all-done:not(.is-selected) {
   opacity: 0.7;
 }
 
-.cpp-mm-ticket.is-used .cpp-mm-stub {
+.cpp-mm-ticket.is-used .cpp-mm-stub,
+.cpp-mm-ticket.is-all-done:not(.is-selected) .cpp-mm-stub {
   background: #fff;
 }
 
@@ -1802,6 +1884,7 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 12px;
   font-weight: 700;
   line-height: 18px;
+  background: rgba(255, 255, 255, 0.85);
   transform: translateY(-50%) rotate(-12deg);
   pointer-events: none;
 }
@@ -1835,8 +1918,8 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-any-row.is-done .cpp-mm-summary,
-.cpp-mm-dossier-mission.is-done .cpp-mm-summary,
-.cpp-mm-dossier-mission.is-done .cpp-mm-muted {
+.cpp-mm-dossier-mission.is-done > .cpp-mm-dossier-row .cpp-mm-summary,
+.cpp-mm-dossier-mission.is-done > .cpp-mm-dossier-row .cpp-mm-muted {
   color: var(--bp-palette-gray-1, #5f6b7c);
   text-decoration: line-through;
 }
@@ -1893,12 +1976,13 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-detail-pros .bp6-tag.is-barred {
-  color: var(--bp-palette-gray-3, #8f99a8);
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  color: var(--bp-palette-gray-1, #5f6b7c);
   text-decoration: line-through;
 }
 
 .cpp-mm-detail-pros .bp6-tag.is-barred .bp6-icon {
-  opacity: 0.4;
+  opacity: 0.6;
 }
 
 .cpp-mm-table {
@@ -1915,6 +1999,16 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-mm-table .cpp-mm-check.bp6-control {
   margin: 0;
+}
+
+/* 不用滚到底就能按 */
+.cpp-mm-wide-right .cpp-mm-run-actions {
+  position: sticky;
+  bottom: 0;
+  margin: 0 -4px -12px;
+  padding: 8px 4px 12px;
+  border-top: 1px solid rgba(17, 20, 24, 0.15);
+  background: #fff;
 }
 
 .cpp-mm-summary-big {
@@ -1959,24 +2053,31 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-together-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   margin-bottom: 4px;
   font-size: 12px;
   font-weight: 600;
   color: var(--bp-palette-blue-2, #215db0);
 }
 
-.cpp-mm-together-body {
-  display: flex;
+/* 左边是人，右边是他这一次那条任务 */
+.cpp-mm-together-list {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 4px 8px;
 }
 
-.cpp-mm-together-crew {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  min-width: 0;
+.cpp-mm-together-list .cpp-mm-summary {
+  color: var(--bp-palette-dark-gray-3, #383e47);
+}
+
+.cpp-mm-together-list .cpp-mm-summary.is-done {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  text-decoration: line-through;
 }
 
 .cpp-mm-task-tag.bp6-tag {

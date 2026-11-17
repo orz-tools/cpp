@@ -1,20 +1,14 @@
 import { Button } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
-import { memo } from 'react'
+import React, { memo } from 'react'
 import { useAtoms, useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter, Character } from '../../pkg/cpp-arknights'
-import {
-  MissionInput,
-  listJoin,
-  missionProgress,
-  missionSummary,
-  parseMission,
-} from '../../pkg/cpp-arknights/moduleMissions'
+import { MissionInput, missionProgress, missionSummary, parseMission } from '../../pkg/cpp-arknights/moduleMissions'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { useShowSidebarPanel } from '../Sidebar'
 import { DossierSection } from '../types'
-import { MissionCheck, OperatorButton, blockText, moduleCode, useSelectTicket } from './ModuleMissionPanel'
+import { MissionCheck, OperatorButton, blockText, moduleCode, summaryOf, useSelectTicket } from './ModuleMissionPanel'
 import { useDoneMissions, useMissionBoard, useMissionNames } from './moduleMissionState'
 
 const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter }) => {
@@ -66,7 +60,7 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
               return (
                 <div key={m.id} className={'cpp-mm-dossier-mission' + (done ? ' is-done' : '')}>
                   <div className="cpp-mm-dossier-row">
-                    <MissionCheck mission={m} done={done} unlocked={false} />
+                    <MissionCheck mission={m} done={done} unlocked={false} label={summary} />
                     <div>
                       <div className="cpp-mm-summary">{summary}</div>
                       {/* 摘要就是原文时不重复 */}
@@ -79,21 +73,11 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
                   {ticket && others.length > 0 && stage ? (
                     <div className="cpp-mm-together">
                       <div className="cpp-mm-together-title">
-                        {gt
-                          .pgettext('module mission', '%s 这一次还能做') /* I10N: %s: stage code */
-                          .replaceAll('%s', stage.code)}
-                        {ticket.total > 1 ? ` (${ticket.index}/${ticket.total})` : null}
-                      </div>
-                      <div className="cpp-mm-together-body">
-                        <span
-                          className="cpp-mm-together-crew"
-                          aria-label={listJoin(others.map((x) => names.character(x.charId)))}
-                        >
-                          {others.map((x) => (
-                            <span key={x.id} className="cpp-mm-chip">
-                              <OperatorButton mission={x} />
-                            </span>
-                          ))}
+                        <span>
+                          {gt
+                            .pgettext('module mission', '%s 这一次还能做') /* I10N: %s: stage code */
+                            .replaceAll('%s', stage.code)}
+                          {ticket.total > 1 ? ` (${ticket.index}/${ticket.total})` : null}
                         </span>
                         <Button
                           variant="minimal"
@@ -106,6 +90,21 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
                             select(ticket)
                           }}
                         />
+                      </div>
+                      <div className="cpp-mm-together-list">
+                        {others.map((x) => {
+                          const otherDone = board.done.has(x.id)
+                          return (
+                            <React.Fragment key={x.id}>
+                              <span className={'cpp-mm-chip' + (otherDone ? ' is-done' : '')}>
+                                <OperatorButton mission={x} />
+                              </span>
+                              <span className={'cpp-mm-summary' + (otherDone ? ' is-done' : '')} title={x.desc}>
+                                {summaryOf(board, x, names)}
+                              </span>
+                            </React.Fragment>
+                          )
+                        })}
                       </div>
                     </div>
                   ) : null}

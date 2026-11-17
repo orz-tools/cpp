@@ -83,7 +83,7 @@ msgstr ""
 msgid "不再需要这里的数据时，可以把它清空，旧版里的数据不受影响。"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:466
+#: src/components/arknights/ModuleMissionPanel.tsx:561
 msgid "不限关卡 · %d 条"
 msgid_plural "不限关卡 · %d 条"
 msgstr[0] ""
@@ -132,7 +132,7 @@ msgstr ""
 msgid "偏好设置（排除关卡、价值类型等）已一并覆盖，「撤销」不会恢复这一项。"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:616
+#: src/components/arknights/ModuleMissionPanel.tsx:722
 msgid "做完 %d 条"
 msgid_plural "做完 %d 条"
 msgstr[0] ""
@@ -170,7 +170,7 @@ msgstr ""
 msgid "关闭"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:621
+#: src/components/arknights/ModuleMissionPanel.tsx:727
 msgid "其中 %d 次有人还不能做"
 msgid_plural "其中 %d 次有人还不能做"
 msgstr[0] ""
@@ -179,6 +179,12 @@ msgstr[1] ""
 #: src/components/AboutList.tsx:82
 msgid "其他资源"
 msgstr ""
+
+#: src/components/arknights/ModuleMissionPanel.tsx:157
+msgid "其余 %d 条也做成了"
+msgid_plural "其余 %d 条也做成了"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/components/SynthesisList.tsx:100
 msgid "最好还是别合成的道具"
@@ -202,6 +208,19 @@ msgstr[1] ""
 #: src/components/Importer.tsx:51
 msgid "剪贴板里没有文本或文件。"
 msgstr ""
+
+#. %1: ticked missions; %2: runs
+#: src/components/arknights/ModuleMissionPanel.tsx:783
+msgid "勾掉的 %1 条还留在券上，整理后还剩 %2 次"
+msgid_plural "勾掉的 %1 条还留在券上，整理后还剩 %2 次"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/arknights/ModuleMissionPanel.tsx:791
+msgid "勾掉的 %d 条还留在券上"
+msgid_plural "勾掉的 %d 条还留在券上"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/Cpp.ts:161
 msgid "区域已切换"
@@ -390,7 +409,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. %1: stage code
-#: src/components/arknights/ModuleMissionPanel.tsx:145
+#: src/components/arknights/ModuleMissionPanel.tsx:184
 msgid "已标为完成：%1 的 %2 条"
 msgid_plural "已标为完成：%1 的 %2 条"
 msgstr[0] ""
@@ -656,7 +675,7 @@ msgstr ""
 msgid "用户数据管理"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:524
+#: src/components/arknights/ModuleMissionPanel.tsx:619
 msgid "用过的 · %d 张"
 msgid_plural "用过的 · %d 张"
 msgstr[0] ""
@@ -748,7 +767,7 @@ msgstr ""
 msgid "返回主页"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:496
+#: src/components/arknights/ModuleMissionPanel.tsx:591
 msgid "还不能做 · %d 条"
 msgid_plural "还不能做 · %d 条"
 msgstr[0] ""
@@ -760,15 +779,15 @@ msgid_plural "还剩 %d 天"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:610
-#: src/components/arknights/ModuleMissionPanel.tsx:858
+#: src/components/arknights/ModuleMissionPanel.tsx:1014
+#: src/components/arknights/ModuleMissionPanel.tsx:713
 msgid "还剩 %d 次作战"
 msgid_plural "还剩 %d 次作战"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:272
-#: src/components/arknights/ModuleMissionPanel.tsx:750
+#: src/components/arknights/ModuleMissionPanel.tsx:315
+#: src/components/arknights/ModuleMissionPanel.tsx:897
 msgid "还能编入 %d 位"
 msgid_plural "还能编入 %d 位"
 msgstr[0] ""
@@ -848,13 +867,6 @@ msgstr ""
 #: src/App.tsx:105
 msgid "重载数据"
 msgstr ""
-
-#. %1: a number; %2: operator names
-#: src/components/arknights/ModuleMissionPanel.tsx:333
-msgid "顺带推进 %1 条不限关卡任务（%2）"
-msgid_plural "顺带推进 %1 条不限关卡任务（%2）"
-msgstr[0] ""
-msgstr[1] ""
 
 #: src/components/AboutList.tsx:92
 msgid "鸣谢"
@@ -2358,7 +2370,7 @@ msgctxt "dossier section"
 msgid "时装"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:140
+#: src/components/arknights/ModuleMissionSection.tsx:139
 msgctxt "dossier section"
 msgid "模组任务"
 msgstr ""
@@ -2556,10 +2568,10 @@ msgstr ""
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
-#: src/components/arknights/ModuleMissionPanel.tsx:259
+#: src/components/arknights/ModuleMissionPanel.tsx:302
 #: src/components/CharacterList.tsx:554
 #: src/components/queryEditor/VisualEditor.tsx:348
-#: src/pkg/cpp-arknights/moduleMissions.ts:815
+#: src/pkg/cpp-arknights/moduleMissions.ts:896
 msgctxt "list separator"
 msgid "、"
 msgstr ""
@@ -2606,137 +2618,146 @@ msgctxt "loading status"
 msgid "马上就好…"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:968
+#: src/pkg/cpp-arknights/moduleMissions.ts:1162
 msgctxt "module mission"
 msgid "；"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:731
+#: src/components/arknights/ModuleMissionPanel.tsx:878
 msgctxt "module mission"
 msgid "。其余几次："
 msgstr ""
 
 #. %1: stage code; %2: a number; %3: the reasons
-#: src/components/arknights/ModuleMissionPanel.tsx:300
+#: src/components/arknights/ModuleMissionPanel.tsx:342
 msgctxt "module mission"
 msgid "%1 要打 %2 次：%3"
 msgstr ""
 
 #. %1: 其他人只能是…; %2: a number
-#: src/pkg/cpp-arknights/moduleMissions.ts:820
+#: src/pkg/cpp-arknights/moduleMissions.ts:920
+msgctxt "module mission"
+msgid "%1，共 %2 场"
+msgstr ""
+
+#. %1: 其他人只能是…; %2: a number
+#: src/pkg/cpp-arknights/moduleMissions.ts:901
 msgctxt "module mission"
 msgid "%1，至多 %2 名"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:947
+#: src/pkg/cpp-arknights/moduleMissions.ts:1128
 msgctxt "module mission"
 msgid "%1不编入%3，%2是%3"
 msgstr ""
 
 #. %1, %2: operators; %3: class
-#: src/pkg/cpp-arknights/moduleMissions.ts:946
+#: src/pkg/cpp-arknights/moduleMissions.ts:1127
 msgctxt "module mission"
 msgid "%1不编入其他%3，%2是%3"
 msgstr ""
 
 #. %1, %2: operators; %3, %4: numbers
-#: src/pkg/cpp-arknights/moduleMissions.ts:957
+#: src/pkg/cpp-arknights/moduleMissions.ts:1138
 msgctxt "module mission"
 msgid "%1的其他人只能是 %3 星，%2是 %4 星"
 msgstr ""
 
 #. %1, %2: operators; %3, %4: 先锋 / 近战位
-#: src/pkg/cpp-arknights/moduleMissions.ts:934
+#: src/pkg/cpp-arknights/moduleMissions.ts:1115
 msgctxt "module mission"
 msgid "%1的其他人只能是%3，%2是%4"
 msgstr ""
 
 #. %1: operator names; %2: enemy name
-#: src/pkg/cpp-arknights/moduleMissions.ts:913
+#: src/pkg/cpp-arknights/moduleMissions.ts:1094
 msgctxt "module mission"
 msgid "%1都要本人歼灭%2"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:219
-#: src/components/arknights/ModuleMissionPanel.tsx:612
-#: src/components/arknights/ModuleMissionPanel.tsx:716
-#: src/components/arknights/ModuleMissionPanel.tsx:860
+#: src/components/arknights/ModuleMissionPanel.tsx:1018
+#: src/components/arknights/ModuleMissionPanel.tsx:256
+#: src/components/arknights/ModuleMissionPanel.tsx:717
+#: src/components/arknights/ModuleMissionPanel.tsx:863
 msgctxt "module mission"
 msgid "%d 理智"
 msgstr ""
 
 #. %s: stage code
-#: src/components/arknights/ModuleMissionSection.tsx:82
+#: src/components/arknights/ModuleMissionSection.tsx:77
 msgctxt "module mission"
 msgid "%s 这一次还能做"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:920
+#: src/pkg/cpp-arknights/moduleMissions.ts:1101
 msgctxt "module mission"
 msgid "%s一次只能带一种形态"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:942
+#: src/pkg/cpp-arknights/moduleMissions.ts:1123
 msgctxt "module mission"
 msgid "%s不编入其他人"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:924
+#: src/pkg/cpp-arknights/moduleMissions.ts:1156
+msgctxt "module mission"
+msgid "%s也要第一个部署"
+msgstr ""
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:1105
 msgctxt "module mission"
 msgid "%s的任务条件我们还不认识"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:922
+#: src/pkg/cpp-arknights/moduleMissions.ts:1103
 msgctxt "module mission"
 msgid "%s都要第一个部署"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:654
+#: src/components/arknights/ModuleMissionPanel.tsx:760
 msgctxt "module mission"
 msgid "不按星级筛"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:837
+#: src/pkg/cpp-arknights/moduleMissions.ts:937
 msgctxt "module mission"
 msgid "不编入%s"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:836
+#: src/pkg/cpp-arknights/moduleMissions.ts:936
 msgctxt "module mission"
 msgid "不编入其他%s"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:840
-#: src/pkg/cpp-arknights/moduleMissions.ts:848
-#: src/pkg/cpp-arknights/moduleMissions.ts:854
+#: src/pkg/cpp-arknights/moduleMissions.ts:940
+#: src/pkg/cpp-arknights/moduleMissions.ts:948
+#: src/pkg/cpp-arknights/moduleMissions.ts:954
 msgctxt "module mission"
 msgid "不编入其他人"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:268
-#: src/components/arknights/ModuleMissionPanel.tsx:748
+#: src/components/arknights/ModuleMissionPanel.tsx:311
+#: src/components/arknights/ModuleMissionPanel.tsx:895
 msgctxt "module mission"
 msgid "不能再编入别人"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:283
-#: src/components/arknights/ModuleMissionPanel.tsx:764
+#: src/components/arknights/ModuleMissionPanel.tsx:294
 msgctxt "module mission"
 msgid "不能编入%s"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:869
+#: src/components/arknights/ModuleMissionPanel.tsx:1028
 msgctxt "module mission"
 msgid "不限关卡任务做完"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:926
+#: src/pkg/cpp-arknights/moduleMissions.ts:1107
 msgctxt "module mission"
 msgid "人数超过限制"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:784
-#: src/components/arknights/ModuleMissionPanel.tsx:820
+#: src/components/arknights/ModuleMissionPanel.tsx:931
 msgctxt "module mission"
 msgid "任务"
 msgstr ""
@@ -2748,286 +2769,358 @@ msgid "任务 %1/%2"
 msgstr ""
 
 #. %1: a number; %2: skill name
-#: src/pkg/cpp-arknights/moduleMissions.ts:899
+#: src/pkg/cpp-arknights/moduleMissions.ts:999
 msgctxt "module mission"
 msgid "使用 %1 次「%2」"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:865
+#: src/components/arknights/ModuleMissionPanel.tsx:1024
 msgctxt "module mission"
 msgid "关卡任务做完"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:607
-#: src/components/arknights/ModuleMissionPanel.tsx:676
+#: src/components/arknights/ModuleMissionPanel.tsx:709
+#: src/components/arknights/ModuleMissionPanel.tsx:819
 msgctxt "module mission"
 msgid "关卡任务都做完了"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:856
+#: src/pkg/cpp-arknights/moduleMissions.ts:1080
+#: src/pkg/cpp-arknights/moduleMissions.ts:956
 msgctxt "module mission"
 msgid "其他人只能是 %d 星"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:842
-#: src/pkg/cpp-arknights/moduleMissions.ts:850
+#: src/pkg/cpp-arknights/moduleMissions.ts:1069
+#: src/pkg/cpp-arknights/moduleMissions.ts:942
+#: src/pkg/cpp-arknights/moduleMissions.ts:950
 msgctxt "module mission"
 msgid "其他人只能是%s"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:860
+#: src/pkg/cpp-arknights/moduleMissions.ts:960
 msgctxt "module mission"
 msgid "其他人至多 %d 名"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:862
+#: src/pkg/cpp-arknights/moduleMissions.ts:962
 msgctxt "module mission"
 msgid "其他人至多部署 %d 位"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:591
+#: src/components/arknights/ModuleMissionPanel.tsx:686
 msgctxt "module mission"
 msgid "只看 %d 星干员的模组"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:258
+#: src/components/arknights/ModuleMissionPanel.tsx:301
 msgctxt "module mission"
 msgid "只能 %d★"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:256
+#: src/components/arknights/ModuleMissionPanel.tsx:299
 msgctxt "module mission"
 msgid "只能近战位"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:257
+#: src/components/arknights/ModuleMissionPanel.tsx:300
 msgctxt "module mission"
 msgid "只能远程位"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:103
+#: src/pkg/cpp-arknights/moduleMissions.ts:1149
+msgctxt "module mission"
+msgid "和%s的顺带任务都要第一个部署，这一次只能推进一条"
+msgstr ""
+
+#: src/components/arknights/ModuleMissionSection.tsx:87
 msgctxt "module mission"
 msgid "在侧栏里看"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:637
+#: src/components/arknights/ModuleMissionPanel.tsx:743
 msgctxt "module mission"
 msgid "在干员的培养目标里把模组设到 1 级以上，它的任务就会列在这里。"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:781
-#: src/components/arknights/ModuleMissionPanel.tsx:818
+#: src/components/arknights/ModuleMissionPanel.tsx:928
 msgctxt "module mission"
 msgid "完成"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:434
+#: src/components/arknights/ModuleMissionPanel.tsx:517
+#: src/components/arknights/ModuleMissionPanel.tsx:528
 msgctxt "module mission"
 msgid "已完成"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:45
+#: src/components/arknights/ModuleMissionSection.tsx:39
 msgctxt "module mission"
 msgid "已解锁，任务已完成"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:782
-#: src/components/arknights/ModuleMissionPanel.tsx:819
+#: src/components/arknights/ModuleMissionPanel.tsx:929
 msgctxt "module mission"
 msgid "干员"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:866
+#: src/pkg/cpp-arknights/moduleMissions.ts:966
 msgctxt "module mission"
 msgid "所有干员不被击倒"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:376
-#: src/components/arknights/ModuleMissionPanel.tsx:843
+#: src/components/arknights/ModuleMissionPanel.tsx:155
 msgctxt "module mission"
 msgid "打完了"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:151
+#: src/components/arknights/ModuleMissionPanel.tsx:188
 msgctxt "module mission"
 msgid "撤销"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:71
+#: src/components/arknights/ModuleMissionPanel.tsx:156
+msgctxt "module mission"
+msgid "放进用过的"
+msgstr ""
+
+#: src/components/arknights/ModuleMissionPanel.tsx:797
+msgctxt "module mission"
+msgid "整理"
+msgstr ""
+
+#: src/components/arknights/ModuleMissionPanel.tsx:76
 msgctxt "module mission"
 msgid "未持有"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:57
+#: src/components/arknights/ModuleMissionSection.tsx:51
 msgctxt "module mission"
 msgid "未解锁"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:56
+#: src/components/arknights/ModuleMissionSection.tsx:50
 msgctxt "module mission"
 msgid "未解锁 · 计划解锁到 %d 级"
 msgstr ""
 
 #. %1: a number; %2: enemy name
-#: src/pkg/cpp-arknights/moduleMissions.ts:873
+#: src/pkg/cpp-arknights/moduleMissions.ts:973
 msgctxt "module mission"
 msgid "本人歼灭 %1 名%2"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:887
+#: src/pkg/cpp-arknights/moduleMissions.ts:987
 msgctxt "module mission"
 msgid "本人歼灭 %1 名敌人，其中 %3 名%2"
 msgstr ""
 
 #. %1: a number; %2: enemy names
-#: src/pkg/cpp-arknights/moduleMissions.ts:886
+#: src/pkg/cpp-arknights/moduleMissions.ts:986
 msgctxt "module mission"
 msgid "本人歼灭 %1 名敌人，其中有%2"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:895
+#: src/pkg/cpp-arknights/moduleMissions.ts:995
 msgctxt "module mission"
 msgid "本人歼灭 %d 名敌人"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:872
+#: src/pkg/cpp-arknights/moduleMissions.ts:972
 msgctxt "module mission"
 msgid "本人歼灭%s"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:783
+#: src/components/arknights/ModuleMissionPanel.tsx:930
 msgctxt "module mission"
 msgid "模组"
 msgstr ""
 
 #. %1: stage code; %2: run number
-#: src/components/arknights/ModuleMissionPanel.tsx:110
+#: src/components/arknights/ModuleMissionPanel.tsx:120
 msgctxt "module mission"
 msgid "模组任务 · %1 第 %2 次"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:114
+#: src/components/arknights/ModuleMissionPanel.tsx:124
 msgctxt "module mission"
 msgid "模组任务 · %s"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:201
+#: src/components/arknights/ModuleMissionPanel.tsx:238
 msgctxt "module mission"
 msgid "模组已解锁"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:874
+#: src/pkg/cpp-arknights/moduleMissions.ts:1047
+msgctxt "module mission"
+msgid "每场第一个部署，共 %d 场"
+msgstr ""
+
+#. %1: kills per battle; %2: battles
+#: src/pkg/cpp-arknights/moduleMissions.ts:1035
+msgctxt "module mission"
+msgid "每场至少歼灭 %1 名敌人，共 %2 场"
+msgstr ""
+
+#. %1: damage per battle; %2: battles
+#: src/pkg/cpp-arknights/moduleMissions.ts:1041
+msgctxt "module mission"
+msgid "每场至少造成 %1 点伤害，共 %2 场"
+msgstr ""
+
+#. %1: deployments per battle; %2: battles
+#: src/pkg/cpp-arknights/moduleMissions.ts:1051
+msgctxt "module mission"
+msgid "每场至少部署 %1 次，共 %2 场"
+msgstr ""
+
+#. %1: deployments per battle; %2: kills per battle; %3: battles
+#: src/pkg/cpp-arknights/moduleMissions.ts:1057
+msgctxt "module mission"
+msgid "每场至少部署 %1 次、歼灭 %2 名敌人，共 %3 场"
+msgstr ""
+
+#. %1: casts per battle; %2: skill name; %3: battles
+#: src/pkg/cpp-arknights/moduleMissions.ts:1024
+msgctxt "module mission"
+msgid "每场至少释放 %1 次「%2」，共 %3 场"
+msgstr ""
+
+#: src/components/arknights/ModuleMissionPanel.tsx:1033
 msgctxt "module mission"
 msgid "点左边的券，看这一次带谁"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:640
+#: src/components/arknights/ModuleMissionPanel.tsx:746
 msgctxt "module mission"
 msgid "看任务已开放的"
 msgstr ""
 
 #. %1, %2: numbers
-#: src/components/arknights/ModuleMissionPanel.tsx:717
+#: src/components/arknights/ModuleMissionPanel.tsx:864
 msgctxt "module mission"
 msgid "第 %1 次，共 %2 次"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:736
+#: src/components/arknights/ModuleMissionPanel.tsx:883
 msgctxt "module mission"
 msgid "第 %d 次"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:864
+#: src/pkg/cpp-arknights/moduleMissions.ts:964
 msgctxt "module mission"
 msgid "第一个部署，全程不撤退"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:72
+#: src/components/arknights/ModuleMissionPanel.tsx:77
 msgctxt "module mission"
 msgid "精二 %d 级后才算"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:579
+#: src/pkg/cpp-arknights/moduleMissions.ts:1020
+msgctxt "module mission"
+msgid "累计歼灭 %d 名敌人"
+msgstr ""
+
+#: src/pkg/cpp-arknights/moduleMissions.ts:1017
+msgctxt "module mission"
+msgid "累计造成 %d 点伤害"
+msgstr ""
+
+#. %1: a number; %2: skill name
+#: src/pkg/cpp-arknights/moduleMissions.ts:1009
+msgctxt "module mission"
+msgid "累计释放 %1 次「%2」"
+msgstr ""
+
+#: src/components/arknights/ModuleMissionPanel.tsx:674
 msgctxt "module mission"
 msgid "范围"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:636
+#: src/components/arknights/ModuleMissionPanel.tsx:742
 msgctxt "module mission"
 msgid "计划里没有要解锁的模组"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:808
+#: src/pkg/cpp-arknights/moduleMissions.ts:889
 msgctxt "module mission"
 msgid "近战位"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:811
+#: src/pkg/cpp-arknights/moduleMissions.ts:892
 msgctxt "module mission"
 msgid "近战位和远程位"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:650
+#: src/components/arknights/ModuleMissionPanel.tsx:756
 msgctxt "module mission"
 msgid "这一档里没有模组"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:777
+#: src/pkg/cpp-arknights/moduleMissions.ts:1157
+msgctxt "module mission"
+msgid "这一次推进不了：%s"
+msgstr ""
+
+#: src/components/arknights/ModuleMissionPanel.tsx:924
 msgctxt "module mission"
 msgid "这一次的任务"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:325
+#: src/components/arknights/ModuleMissionPanel.tsx:367
 msgctxt "module mission"
 msgid "这条任务的条件我们还不认识，只能单独算一次"
 msgstr ""
 
-#: src/pkg/cpp-arknights/moduleMissions.ts:810
+#: src/pkg/cpp-arknights/moduleMissions.ts:891
 msgctxt "module mission"
 msgid "远程位"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:318
+#: src/components/arknights/ModuleMissionPanel.tsx:360
 msgctxt "module mission"
 msgid "都要歼灭%s，数量可能不够分"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:814
+#: src/components/arknights/ModuleMissionPanel.tsx:403
+#: src/components/arknights/ModuleMissionPanel.tsx:980
 msgctxt "module mission"
-msgid "顺带推进（不限关卡）"
+msgid "顺带"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:53
+#: src/components/arknights/ModuleMissionPanel.tsx:58
 msgctxt "module mission scope"
 msgid "任务已开放"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:570
+#: src/components/arknights/ModuleMissionPanel.tsx:665
 msgctxt "module mission scope"
 msgid "含已完成"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:57
+#: src/components/arknights/ModuleMissionPanel.tsx:62
 msgctxt "module mission scope"
 msgid "所有任务"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:55
+#: src/components/arknights/ModuleMissionPanel.tsx:60
 msgctxt "module mission scope"
 msgid "所有已有干员"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:56
+#: src/components/arknights/ModuleMissionPanel.tsx:61
 msgctxt "module mission scope"
 msgid "所有干员"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:54
+#: src/components/arknights/ModuleMissionPanel.tsx:59
 msgctxt "module mission scope"
 msgid "所有精二"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:52
+#: src/components/arknights/ModuleMissionPanel.tsx:57
 msgctxt "module mission scope"
 msgid "计划内"
 msgstr ""
@@ -3992,12 +4085,12 @@ msgctxt "sidebar panel"
 msgid "时装"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:900
+#: src/components/arknights/ModuleMissionPanel.tsx:1059
 msgctxt "sidebar panel"
 msgid "模组"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionPanel.tsx:901
+#: src/components/arknights/ModuleMissionPanel.tsx:1060
 msgctxt "sidebar panel"
 msgid "模组任务"
 msgstr ""

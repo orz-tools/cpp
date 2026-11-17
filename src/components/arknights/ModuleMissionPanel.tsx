@@ -12,7 +12,7 @@ import {
   Tag,
 } from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
-import React, { memo, useEffect } from 'react'
+import React, { memo, useEffect, useLayoutEffect, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useCpp, useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter, DeployableProfession, Profession, ProfessionNames } from '../../pkg/cpp-arknights'
@@ -25,6 +25,7 @@ import {
   MissionScope,
   Ticket,
   deployableProfessions,
+  formatPiggybackConflict,
   formatSplitReasons,
   listJoin,
   missionSummary,
@@ -42,10 +43,14 @@ import {
   markRunDone,
   missionPrefsAtom,
   openGroupsAtom,
+  releaseMissions,
   selectedTicketAtom,
   setMissionsDone,
+  tidyMissions,
+  toggleMission,
   useMissionBoard,
   useMissionNames,
+  useRunsAfterTidy,
 } from './moduleMissionState'
 
 const scopeNames: Record<MissionScope, PSTR> = {
@@ -94,6 +99,11 @@ function uniqueCharIds(missions: readonly MissionInput[]) {
   return [...new Set(missions.map((x) => x.charId))]
 }
 
+export function summaryOf(board: Board, m: MissionInput, names: MissionNames) {
+  const parsed = board.parsed.get(m.id)
+  return parsed ? missionSummary(parsed, names) : m.desc
+}
+
 /** 选中一张券，干员列表随之筛成这一次的干员；null 取消选中 */
 export function useSelectTicket() {
   const cpp = useCpp<Arknights>()
@@ -127,16 +137,45 @@ function useSyncSelection(board: Board) {
   }, [missing, selected, board.tickets, select])
 }
 
-function useFinishRun() {
+/**
+ * 「打完了」以后焦点交给哪张券：新列表里同一个下标上的那张，列表短了就是统计行。按下的那一刻新列表还没画出来，
+ * 所以先记在这里，由画出来的那张券认领
+ */
+let focusAfterFinish: { index: number; wide: boolean } | null = null
+
+function claimFocus(wide: boolean, el: HTMLElement | null, mine: (index: number) => boolean) {
+  if (!el || !focusAfterFinish || focusAfterFinish.wide !== wide || !mine(focusAfterFinish.index)) return
+  focusAfterFinish = null
+  el.focus({ preventScroll: true })
+}
+
+/** 「打完了」「其余 N 条也做成了」「放进用过的」；做完了几条决定是哪一个 */
+function finishText(ticket: Ticket, board: Board) {
+  const left = ticket.missions.filter((x) => !board.done.has(x.id)).length
+  if (left === ticket.missions.length) return gt.pgettext('module mission', '打完了')
+  if (left === 0) return gt.pgettext('module mission', '放进用过的')
+  return gt.ngettext('其余 %d 条也做成了', '其余 %d 条也做成了', left).replaceAll('%d', String(left))
+}
+
+/** index 是这张券在列表里的下标，wide 是按钮在不在大窗口里 */
+function useFinishRun(wide: boolean) {
   const cpp = useCpp<Arknights>()
   const ga = useArknights()
   const select = useSelectTicket()
-  return useEvent((ticket: Ticket) => {
+  return useEvent((ticket: Ticket, index: number) => {
     const added = markRunDone(
       cpp,
       ticket.missions.map((x) => x.id),
     )
+    releaseMissions(
+      cpp,
+      [...ticket.missions, ...ticket.piggyback].map((x) => x.id),
+    )
+    focusAfterFinish = { index, wide }
+    // 认领的那张券这一次没画出来的话，不能等到以后哪次重画再抢焦点
+    setTimeout(() => (focusAfterFinish = null))
     select(null)
+    if (added.length === 0) return
     const code = stageCodeOf(ga, ticket)
     void AppToaster.then((toaster) =>
       toaster.show({
@@ -146,10 +185,7 @@ function useFinishRun() {
           .ngettext('已标为完成：%1 的 %2 条', '已标为完成：%1 的 %2 条', added.length) /* I10N: %1: stage code */
           .replace('%1', code)
           .replace('%2', String(added.length)),
-        action:
-          added.length > 0
-            ? { text: gt.pgettext('module mission', '撤销'), onClick: () => setMissionsDone(cpp, added, false) }
-            : undefined,
+        action: { text: gt.pgettext('module mission', '撤销'), onClick: () => setMissionsDone(cpp, added, false) },
       }),
     )
   })
@@ -190,8 +226,9 @@ export const OperatorButton = memo(
   },
 )
 
+/** label 是读屏读的，用摘要：原文有四十来字 */
 export const MissionCheck = memo(
-  ({ mission, done, unlocked }: { mission: MissionInput; done: boolean; unlocked: boolean }) => {
+  ({ mission, done, unlocked, label }: { mission: MissionInput; done: boolean; unlocked: boolean; label: string }) => {
     const cpp = useCpp<Arknights>()
     return (
       <Checkbox
@@ -199,8 +236,8 @@ export const MissionCheck = memo(
         checked={done}
         disabled={unlocked}
         title={unlocked ? gt.pgettext('module mission', '模组已解锁') : undefined}
-        aria-label={mission.desc}
-        onChange={() => setMissionsDone(cpp, [mission.id], !done)}
+        aria-label={label}
+        onChange={() => toggleMission(cpp, mission.id, !done)}
       />
     )
   },
@@ -222,8 +259,8 @@ const Stub = memo(({ ticket, used }: { ticket: Ticket; used?: boolean }) => {
   )
 })
 
-/** 收起的券上要带的人：头像加名字，排成一行，放不下就换行 */
-const Crew = memo(({ ticket, board, struck }: { ticket: Ticket; board: Board; struck: boolean }) => {
+/** 收起的券上要带的人：头像加名字，排成一行，放不下就换行。这张券上的任务都做完了的人，名字划掉 */
+const Crew = memo(({ ticket, board }: { ticket: Ticket; board: Board }) => {
   const ga = useArknights()
   const seen = new Set<string>()
   return (
@@ -233,7 +270,9 @@ const Crew = memo(({ ticket, board, struck }: { ticket: Ticket; board: Board; st
         if (seen.has(key)) return null
         seen.add(key)
         const block = ticket.blocked.find((x) => x.charId === m.charId)
-        const done = struck && board.done.has(m.id)
+        const done = ticket.missions.every(
+          (x) => x.charId !== m.charId || x.formId !== m.formId || board.done.has(x.id),
+        )
         return (
           <span
             key={key}
@@ -250,6 +289,10 @@ const Crew = memo(({ ticket, board, struck }: { ticket: Ticket; board: Board; st
 })
 
 const professionName = (p: Profession) => String(ProfessionNames[p as DeployableProfession])
+
+function barredLabel(p: Profession, barred: boolean) {
+  return barred ? gt.pgettext('module mission', '不能编入%s').replaceAll('%s', professionName(p)) : professionName(p)
+}
 
 function capacityNote(cap: Capacity) {
   const notes: string[] = []
@@ -274,15 +317,14 @@ const CapacityStrip = memo(({ cap }: { cap: Capacity }) => {
           <span className="cpp-mm-pros">
             {deployableProfessions.map((p) => {
               const barred = !cap.professions.includes(p)
+              const label = barredLabel(p, barred)
               return (
                 <span
                   key={p}
                   className={'cpp-mm-pro' + (barred ? ' is-barred' : '')}
-                  title={
-                    barred
-                      ? gt.pgettext('module mission', '不能编入%s').replaceAll('%s', professionName(p))
-                      : professionName(p)
-                  }
+                  role="img"
+                  aria-label={label}
+                  title={label}
                 >
                   <ProfessionIcon profession={p} />
                 </span>
@@ -329,53 +371,87 @@ const RunNotes = memo(({ ticket, withReason }: { ticket: Ticket; withReason: boo
   )
 })
 
-function piggybackText(names: MissionNames, ticket: Ticket) {
-  return gt
-    .ngettext(
-      '顺带推进 %1 条不限关卡任务（%2）',
-      '顺带推进 %1 条不限关卡任务（%2）',
-      ticket.piggyback.length,
-    ) /* I10N: %1: a number; %2: operator names */
-    .replace('%1', String(ticket.piggyback.length))
-    .replace('%2', listJoin(uniqueCharIds(ticket.piggyback).map((x) => names.character(x))))
+/** 每个人最后一条关卡任务的 id → 他的顺带任务 */
+function piggybackAfter(ticket: Ticket) {
+  const last = new Map<string, string>()
+  for (const m of ticket.missions) last.set(m.charId, m.id)
+  const after = new Map<string, MissionInput[]>()
+  for (const m of ticket.piggyback) {
+    const id = last.get(m.charId)
+    if (!id) continue
+    let list = after.get(id)
+    if (!list) after.set(id, (list = []))
+    list.push(m)
+  }
+  return after
 }
 
+/** 挂在干员下面的顺带任务：打一次只是推进，所以「打完了」不标它们 */
+const PiggybackRows = memo(
+  ({ ticket, board, missions }: { ticket: Ticket; board: Board; missions: MissionInput[] }) => {
+    const names = useMissionNames()
+    return (
+      <>
+        {missions.map((m) => {
+          const done = board.done.has(m.id)
+          const c = ticket.piggybackConflicts.get(m.id)
+          const summary = summaryOf(board, m, names)
+          return (
+            <div key={m.id} className={'cpp-mm-piggy' + (done ? ' is-done' : '') + (c ? ' is-off' : '')}>
+              <MissionCheck mission={m} done={done} unlocked={board.unlocked.has(m.equipId)} label={summary} />
+              <div className="cpp-mm-piggy-text">
+                <span className="cpp-mm-piggy-tag">{gt.pgettext('module mission', '顺带')}</span>
+                <span className="cpp-mm-summary" title={m.desc}>
+                  {summary}
+                </span>
+                {c ? <div className="cpp-mm-note is-warning">{formatPiggybackConflict(c, names)}</div> : null}
+              </div>
+            </div>
+          )
+        })}
+      </>
+    )
+  },
+)
+
 /** 选中的券在面板里展开 */
-const ExpandedRun = memo(({ ticket, board }: { ticket: Ticket; board: Board }) => {
+const ExpandedRun = memo(({ ticket, board, index }: { ticket: Ticket; board: Board; index: number }) => {
   const ga = useArknights()
   const names = useMissionNames()
-  const finish = useFinishRun()
+  const finish = useFinishRun(false)
+  const piggyback = piggybackAfter(ticket)
   return (
     <div className="cpp-mm-run">
       {ticket.missions.map((m) => {
         const block = ticket.blocked.find((x) => x.charId === m.charId)
-        const parsed = board.parsed.get(m.id)
+        const done = board.done.has(m.id)
+        const summary = summaryOf(board, m, names)
+        const piggies = piggyback.get(m.id)
         return (
-          <div key={m.id} className="cpp-mm-run-row">
-            <MissionCheck mission={m} done={board.done.has(m.id)} unlocked={board.unlocked.has(m.equipId)} />
+          <div key={m.id} className={'cpp-mm-run-row' + (done ? ' is-done' : '')}>
+            <MissionCheck mission={m} done={done} unlocked={board.unlocked.has(m.equipId)} label={summary} />
             <div className={'cpp-mm-run-who' + (block ? ' is-blocked' : '')}>
               <div className="cpp-mm-run-line">
                 <OperatorButton mission={m} size={24} />
                 <span className="cpp-mm-equip">{moduleCode(ga, m.equipId)}</span>
               </div>
               <div className="cpp-mm-summary" title={m.desc}>
-                {parsed ? missionSummary(parsed, names) : m.desc}
+                {summary}
               </div>
               {block ? <div className="cpp-mm-muted">{blockText(ga, m.charId, block.reason)}</div> : null}
+              {piggies ? <PiggybackRows ticket={ticket} board={board} missions={piggies} /> : null}
             </div>
           </div>
         )
       })}
       <RunNotes ticket={ticket} withReason={true} />
-      {ticket.piggyback.length > 0 ? <div className="cpp-mm-muted">{piggybackText(names, ticket)}</div> : null}
       <div className="cpp-mm-run-actions">
         <Button
           size="small"
           intent="primary"
           icon="tick"
-          text={gt.pgettext('module mission', '打完了')}
-          disabled={ticket.missions.every((x) => board.done.has(x.id))}
-          onClick={() => finish(ticket)}
+          text={finishText(ticket, board)}
+          onClick={() => finish(ticket, index)}
         />
       </div>
     </div>
@@ -388,49 +464,67 @@ const onButtonKey = (e: React.KeyboardEvent<HTMLElement>) => {
   e.currentTarget.click()
 }
 
-/** 一张券是打一次；收起时整张是选中的点击目标，展开后点存根收起 */
-const TicketCard = memo(({ ticket, board, expandable }: { ticket: Ticket; board: Board; expandable: boolean }) => {
-  const selected = useAtomValue(selectedTicketAtom) === ticket.key
-  const select = useSelectTicket()
-  const expanded = expandable && selected
-  const struck = useAtomValue(missionPrefsAtom).scope === 'everything'
-  const toggle = () => select(selected ? null : ticket)
-  const button = {
-    role: 'button',
-    tabIndex: 0,
-    'aria-pressed': selected,
-    onClick: toggle,
-    onKeyDown: onButtonKey,
-  } as const
-  return (
-    <div
-      className={'cpp-mm-ticket' + (selected ? ' is-selected' : '') + (expanded ? '' : ' is-clickable')}
-      {...(expanded ? {} : button)}
-    >
-      <div className="cpp-mm-ticket-top">
-        {expanded ? (
-          <div className="cpp-mm-stub-button" {...button} aria-expanded={true}>
+/**
+ * 一张券是打一次。键盘操作的是存根，选中、收起前后是同一个节点，焦点不会丢；收起时整张也能用鼠标点。
+ * index 是它在列表里的下标，「打完了」以后用来交接焦点
+ */
+const TicketCard = memo(
+  ({ ticket, board, expandable, index }: { ticket: Ticket; board: Board; expandable: boolean; index: number }) => {
+    const selected = useAtomValue(selectedTicketAtom) === ticket.key
+    const select = useSelectTicket()
+    const stub = useRef<HTMLDivElement>(null)
+    const expanded = expandable && selected
+    const allDone = ticket.allDone && !expanded
+    const toggle = () => select(selected ? null : ticket)
+    useLayoutEffect(() => claimFocus(!expandable, stub.current, (i) => i === index))
+    return (
+      <div
+        className={
+          'cpp-mm-ticket' +
+          (selected ? ' is-selected' : '') +
+          (expanded ? '' : ' is-clickable') +
+          (allDone ? ' is-all-done' : '')
+        }
+        onClick={
+          expanded
+            ? undefined
+            : (e) => {
+                // 存根自己会切换
+                if (!stub.current?.contains(e.target as Node)) toggle()
+              }
+        }
+      >
+        <div className="cpp-mm-ticket-top">
+          <div
+            ref={stub}
+            className="cpp-mm-stub-button"
+            role="button"
+            tabIndex={0}
+            aria-pressed={selected}
+            aria-expanded={expandable ? expanded : undefined}
+            onClick={toggle}
+            onKeyDown={onButtonKey}
+          >
             <Stub ticket={ticket} />
           </div>
-        ) : (
-          <Stub ticket={ticket} />
-        )}
-        {expanded ? (
-          <ExpandedRun ticket={ticket} board={board} />
-        ) : (
-          <Crew ticket={ticket} board={board} struck={struck} />
-        )}
+          {expanded ? (
+            <ExpandedRun ticket={ticket} board={board} index={index} />
+          ) : (
+            <Crew ticket={ticket} board={board} />
+          )}
+        </div>
+        <CapacityStrip cap={ticket.capacity} />
+        {allDone ? <span className="cpp-mm-stamp">{gt.pgettext('module mission', '已完成')}</span> : null}
       </div>
-      <CapacityStrip cap={ticket.capacity} />
-    </div>
-  )
-})
+    )
+  },
+)
 
 const UsedCard = memo(({ ticket, board }: { ticket: Ticket; board: Board }) => (
   <div className="cpp-mm-ticket is-used">
     <div className="cpp-mm-ticket-top">
       <Stub ticket={ticket} used={true} />
-      <Crew ticket={ticket} board={board} struck={false} />
+      <Crew ticket={ticket} board={board} />
       <span className="cpp-mm-stamp">{gt.pgettext('module mission', '已完成')}</span>
     </div>
   </div>
@@ -457,6 +551,7 @@ const Group = memo(({ id, title, children }: React.PropsWithChildren<{ id: Missi
 })
 
 const AnyStageGroup = memo(({ board }: { board: Board }) => {
+  const ga = useArknights()
   const names = useMissionNames()
   if (board.anyStage.length === 0) return null
   const undone = board.anyStage.reduce((n, g) => n + g.missions.filter((m) => !board.done.has(m.id)).length, 0)
@@ -470,12 +565,12 @@ const AnyStageGroup = memo(({ board }: { board: Board }) => {
           <OperatorButton mission={g.missions[0]} />
           {g.missions.map((m) => {
             const done = board.done.has(m.id)
-            const parsed = board.parsed.get(m.id)
+            const summary = summaryOf(board, m, names)
             return (
               <div key={m.id} className={'cpp-mm-any-row' + (done ? ' is-done' : '')}>
-                <MissionCheck mission={m} done={done} unlocked={board.unlocked.has(m.equipId)} />
+                <MissionCheck mission={m} done={done} unlocked={board.unlocked.has(m.equipId)} label={summary} />
                 <span className="cpp-mm-summary" title={m.desc}>
-                  {parsed ? missionSummary(parsed, names) : m.desc}
+                  <span className="cpp-mm-equip">{moduleCode(ga, m.equipId)}</span> {summary}
                 </span>
               </div>
             )
@@ -498,7 +593,7 @@ const BlockedGroup = memo(({ board }: { board: Board }) => {
         .replaceAll('%d', String(board.blocked.length))}
     >
       {board.blocked.map(({ mission: m, reason }) => {
-        const parsed = board.parsed.get(m.id)
+        const summary = summaryOf(board, m, names)
         return (
           <div key={m.id} className="cpp-mm-blocked-row">
             <div className="cpp-mm-run-line">
@@ -506,7 +601,7 @@ const BlockedGroup = memo(({ board }: { board: Board }) => {
               <span className="cpp-mm-equip">{moduleCode(ga, m.equipId)}</span>
             </div>
             <div className="cpp-mm-summary" title={m.desc}>
-              {parsed ? missionSummary(parsed, names) : m.desc}
+              {m.stageId ? `${ga.getMissionCatalog().stage(m.stageId).code} · ${summary}` : summary}
             </div>
             <div className="cpp-mm-muted">{blockText(ga, m.charId, reason)}</div>
           </div>
@@ -598,21 +693,32 @@ const ScopeRow = memo(() => {
   )
 })
 
-const StatsRow = memo(({ board }: { board: Board }) => {
+/** 数字和单位不拆开，放不下时整组换行 */
+const Nowrap = ({ children }: React.PropsWithChildren) => <span className="cpp-mm-nowrap">{children}</span>
+
+/** 「打完了」以后列表比原来短，焦点交给这里 */
+const StatsRow = memo(({ board, wide }: { board: Board; wide: boolean }) => {
   const { stats } = board
+  const self = useRef<HTMLDivElement>(null)
+  const count = board.tickets.length
+  useLayoutEffect(() => claimFocus(wide, self.current, (i) => i >= count))
   return (
-    <div className="cpp-mm-stats">
+    <div className="cpp-mm-stats" ref={self} tabIndex={-1}>
       <div className="cpp-mm-stats-main">
         {board.tickets.length === 0 ? (
           <span>{gt.pgettext('module mission', '关卡任务都做完了')}</span>
         ) : (
           <span>
-            <Num text={gt.ngettext('还剩 %d 次作战', '还剩 %d 次作战', stats.runs)} value={stats.runs} />
+            <Nowrap>
+              <Num text={gt.ngettext('还剩 %d 次作战', '还剩 %d 次作战', stats.runs)} value={stats.runs} />
+            </Nowrap>
             {' · '}
-            <Num text={gt.pgettext('module mission', '%d 理智')} value={stats.ap} />
+            <Nowrap>
+              <Num text={gt.pgettext('module mission', '%d 理智')} value={stats.ap} />
+            </Nowrap>
           </span>
         )}
-        <span className="cpp-mm-muted">
+        <span className="cpp-mm-muted cpp-mm-nowrap">
           {gt.ngettext('做完 %d 条', '做完 %d 条', stats.done).replaceAll('%d', String(stats.done))}
         </span>
       </div>
@@ -660,6 +766,43 @@ const EmptyBoard = memo(() => {
   )
 })
 
+/**
+ * 勾掉的还留在券上时贴在底部：出现、消失都不推动上面的东西。读屏要先有这个区域，内容变了才会读，
+ * 所以没有要整理的时候也留着一个空的
+ */
+const TidyBar = memo(({ board }: { board: Board }) => {
+  const cpp = useCpp<Arknights>()
+  const after = useRunsAfterTidy(board)
+  const n = board.stale
+  return (
+    <div className={'cpp-mm-tidy' + (n > 0 ? '' : ' is-empty')} role="status">
+      {n > 0 ? (
+        <>
+          <span>
+            {after != null && after < board.stats.runs
+              ? gt
+                  .ngettext(
+                    '勾掉的 %1 条还留在券上，整理后还剩 %2 次',
+                    '勾掉的 %1 条还留在券上，整理后还剩 %2 次',
+                    n,
+                  ) /* I10N: %1: ticked missions; %2: runs */
+                  .replace('%1', String(n))
+                  .replace('%2', String(after))
+              : gt.ngettext('勾掉的 %d 条还留在券上', '勾掉的 %d 条还留在券上', n).replaceAll('%d', String(n))}
+          </span>
+          <Button
+            variant="minimal"
+            size="small"
+            intent="primary"
+            text={gt.pgettext('module mission', '整理')}
+            onClick={() => tidyMissions(cpp)}
+          />
+        </>
+      ) : null}
+    </div>
+  )
+})
+
 /** 面板和大窗口左栏共用：范围、统计、券和三个分组。大窗口里选中的券不展开 */
 const BoardView = memo(({ wide }: { wide: boolean }) => {
   const board = useMissionBoard()
@@ -671,17 +814,20 @@ const BoardView = memo(({ wide }: { wide: boolean }) => {
         <EmptyBoard />
       ) : (
         <>
-          <StatsRow board={board} />
+          <StatsRow board={board} wide={wide} />
           {board.tickets.length === 0 ? (
             <div className="cpp-mm-all-done">{gt.pgettext('module mission', '关卡任务都做完了')}</div>
           ) : (
-            board.tickets.map((t) => <TicketCard key={t.key} ticket={t} board={board} expandable={!wide} />)
+            board.tickets.map((t, i) => (
+              <TicketCard key={t.key} ticket={t} board={board} expandable={!wide} index={i} />
+            ))
           )}
           <AnyStageGroup board={board} />
           <BlockedGroup board={board} />
           <UsedGroup board={board} />
         </>
       )}
+      <TidyBar board={board} />
     </div>
   )
 })
@@ -699,7 +845,8 @@ const TicketDetail = memo(({ ticket, board }: { ticket: Ticket; board: Board }) 
   const ga = useArknights()
   const names = useMissionNames()
   const select = useSelectTicket()
-  const finish = useFinishRun()
+  const finish = useFinishRun(true)
+  const piggyback = piggybackAfter(ticket)
   const stage = ga.getMissionCatalog().stage(ticket.stageId)
   const siblings = board.tickets
     .filter((t) => t.stageId === ticket.stageId && t !== ticket)
@@ -709,7 +856,7 @@ const TicketDetail = memo(({ ticket, board }: { ticket: Ticket; board: Board }) 
   return (
     <div className="cpp-mm-detail">
       <div>
-        <h4 className="cpp-mm-detail-title">{[stage.code, stage.name].filter(Boolean).join(' ')}</h4>
+        <h3 className="cpp-mm-detail-title">{[stage.code, stage.name].filter(Boolean).join(' ')}</h3>
         <div className="cpp-mm-muted">
           {[
             stage.zoneName,
@@ -760,9 +907,9 @@ const TicketDetail = memo(({ ticket, board }: { ticket: Ticket; board: Board }) 
                   minimal={true}
                   className={barred ? 'is-barred' : undefined}
                   icon={<ProfessionIcon profession={p} />}
-                  title={
-                    barred ? gt.pgettext('module mission', '不能编入%s').replaceAll('%s', professionName(p)) : undefined
-                  }
+                  role="img"
+                  aria-label={barredLabel(p, barred)}
+                  title={barred ? barredLabel(p, barred) : undefined}
                 >
                   {professionName(p)}
                 </Tag>
@@ -787,62 +934,70 @@ const TicketDetail = memo(({ ticket, board }: { ticket: Ticket; board: Board }) 
           <tbody>
             {ticket.missions.map((m) => {
               const block = ticket.blocked.find((x) => x.charId === m.charId)
+              const done = board.done.has(m.id)
+              const summary = summaryOf(board, m, names)
               return (
-                <tr key={m.id}>
-                  <td>
-                    <MissionCheck mission={m} done={board.done.has(m.id)} unlocked={board.unlocked.has(m.equipId)} />
-                  </td>
-                  <td
-                    className={block ? 'is-blocked' : undefined}
-                    title={block ? blockText(ga, m.charId, block.reason) : undefined}
-                  >
-                    <OperatorButton mission={m} />
-                  </td>
-                  <td>
-                    <span className="cpp-mm-equip">{moduleCode(ga, m.equipId)}</span>{' '}
-                    {ga.getDataManager().data.uniEquips[m.equipId]?.name}
-                  </td>
-                  <td>{m.desc}</td>
-                </tr>
+                <React.Fragment key={m.id}>
+                  <tr className={done ? 'is-done' : undefined}>
+                    <td>
+                      <MissionCheck mission={m} done={done} unlocked={board.unlocked.has(m.equipId)} label={summary} />
+                    </td>
+                    <td
+                      className={block ? 'is-blocked' : undefined}
+                      title={block ? blockText(ga, m.charId, block.reason) : undefined}
+                    >
+                      <OperatorButton mission={m} />
+                    </td>
+                    <td>
+                      <span className="cpp-mm-equip">{moduleCode(ga, m.equipId)}</span>{' '}
+                      {ga.getDataManager().data.uniEquips[m.equipId]?.name}
+                    </td>
+                    <td>
+                      <div className="cpp-mm-summary">{summary}</div>
+                      {summary !== m.desc ? <div className="cpp-mm-muted">{m.desc}</div> : null}
+                    </td>
+                  </tr>
+                  {piggyback.get(m.id)?.map((x) => {
+                    const done = board.done.has(x.id)
+                    const c = ticket.piggybackConflicts.get(x.id)
+                    const summary = summaryOf(board, x, names)
+                    return (
+                      <tr key={x.id} className={'cpp-mm-table-piggy' + (done ? ' is-done' : '') + (c ? ' is-off' : '')}>
+                        <td>
+                          <MissionCheck
+                            mission={x}
+                            done={done}
+                            unlocked={board.unlocked.has(x.equipId)}
+                            label={summary}
+                          />
+                        </td>
+                        <td />
+                        <td>
+                          <span className="cpp-mm-equip">{moduleCode(ga, x.equipId)}</span>
+                        </td>
+                        <td>
+                          <div>
+                            <span className="cpp-mm-piggy-tag">{gt.pgettext('module mission', '顺带')}</span>
+                            <span className="cpp-mm-summary">{summary}</span>
+                          </div>
+                          {summary !== x.desc ? <div className="cpp-mm-muted">{x.desc}</div> : null}
+                          {c ? <div className="cpp-mm-note is-warning">{formatPiggybackConflict(c, names)}</div> : null}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </React.Fragment>
               )
             })}
           </tbody>
         </HTMLTable>
       </div>
-      {ticket.piggyback.length > 0 ? (
-        <div>
-          <div className="cpp-mm-detail-label">{gt.pgettext('module mission', '顺带推进（不限关卡）')}</div>
-          <HTMLTable compact={true} className="cpp-mm-table">
-            <thead>
-              <tr>
-                <th>{gt.pgettext('module mission', '完成')}</th>
-                <th>{gt.pgettext('module mission', '干员')}</th>
-                <th>{gt.pgettext('module mission', '任务')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ticket.piggyback.map((m) => (
-                <tr key={m.id}>
-                  <td>
-                    <MissionCheck mission={m} done={board.done.has(m.id)} unlocked={board.unlocked.has(m.equipId)} />
-                  </td>
-                  <td>
-                    <OperatorButton mission={m} />
-                  </td>
-                  <td>{m.desc}</td>
-                </tr>
-              ))}
-            </tbody>
-          </HTMLTable>
-        </div>
-      ) : null}
       <div className="cpp-mm-run-actions">
         <Button
           intent="primary"
           icon="tick"
-          text={gt.pgettext('module mission', '打完了')}
-          disabled={ticket.missions.every((x) => board.done.has(x.id))}
-          onClick={() => finish(ticket)}
+          text={finishText(ticket, board)}
+          onClick={() => finish(ticket, board.tickets.indexOf(ticket))}
         />
       </div>
     </div>
@@ -855,9 +1010,13 @@ const BoardSummary = memo(({ board }: { board: Board }) => {
   return (
     <div className="cpp-mm-detail">
       <div className="cpp-mm-summary-big">
-        <Num text={gt.ngettext('还剩 %d 次作战', '还剩 %d 次作战', stats.runs)} value={stats.runs} />
+        <Nowrap>
+          <Num text={gt.ngettext('还剩 %d 次作战', '还剩 %d 次作战', stats.runs)} value={stats.runs} />
+        </Nowrap>
         {' · '}
-        <Num text={gt.pgettext('module mission', '%d 理智')} value={stats.ap} />
+        <Nowrap>
+          <Num text={gt.pgettext('module mission', '%d 理智')} value={stats.ap} />
+        </Nowrap>
       </div>
       <HTMLTable compact={true} className="cpp-mm-table">
         <tbody>
