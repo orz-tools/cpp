@@ -58,7 +58,14 @@ export const SurveyStat = memo(
     if (target) cls.push('cpp-charstat-stat-target')
     if (isFewSamples(samples)) cls.push('cpp-charstat-stat-few')
     return (
-      <Tooltip content={tooltip} compact placement="top" className="cpp-charstat-stat-wrap" hoverOpenDelay={150}>
+      <Tooltip
+        content={tooltip}
+        compact
+        openOnTargetFocus={false}
+        placement="top"
+        className="cpp-charstat-stat-wrap"
+        hoverOpenDelay={150}
+      >
         <span
           className={cls.join(' ')}
           style={{ '--p': `${Math.min(Math.max(share, 0), 1) * 100}%` } as React.CSSProperties}

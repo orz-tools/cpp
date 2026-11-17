@@ -20,9 +20,15 @@ import { changesText, prerequisiteText } from './text'
 
 const LEVELS = [0, 1, 2, 3]
 
-/** X, Y, D…: what the summary calls a module */
-function modCode(equip: UniEquip) {
-  return equip.raw.typeName2 || equip.raw.typeName1
+/**
+ * What the summary calls a module: X, Y, D…, or the full code when two share a letter, as the forms of 阿米娅 do.
+ */
+function modCoder(equips: UniEquip[]) {
+  const letter = (equip: UniEquip) => equip.raw.typeName2 || equip.raw.typeName1
+  const letters = equips.map(letter)
+  const unique = new Set(letters).size === letters.length
+  return (equip: UniEquip) =>
+    unique || !equip.raw.typeName2 ? letter(equip) : `${equip.raw.typeName1}-${equip.raw.typeName2}`
 }
 
 function modLevelName(level: number) {
@@ -40,6 +46,7 @@ export const ModSection = memo(() => {
   const mods = editableUniEquips(character)
   if (!mods.length) return null
 
+  const modCode = modCoder(mods.map((m) => m.equip))
   let summary: React.ReactNode = mods.map((m) => `${modCode(m.equip)} ${status.modLevel[m.equipId] || 0}`).join(' · ')
   if (current) {
     const changes = modChanges(character, current, status)

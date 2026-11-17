@@ -36,6 +36,7 @@ export const SurveyBar = memo(
             {own && Number.isFinite(own.percent) ? (
               <Tooltip
                 compact
+                openOnTargetFocus={false}
                 placement="top"
                 hoverOpenDelay={150}
                 content={statTooltip(

@@ -27,6 +27,8 @@ import { eliteLevelText, eliteName } from './text'
 const eliteIcons = [elite0, elite1, elite2]
 
 export const RAIL_WIDTH = 236
+/** The phases end short of the rail's column, so the knob's ring clears the level box at the top level. */
+const TRACK_WIDTH = RAIL_WIDTH - 4
 /** A share label under the E2 level distribution, px; labels that would overlap move right, under the level box. */
 const BUCKET_LABEL_WIDTH = 26
 
@@ -87,13 +89,13 @@ const LevelRail = memo(
     // Where the pointer would set the level; below the current status, a goal cannot go
     const [hover, setHover] = useState<{ at: CharacterLevel; blocked: boolean } | null>(null)
 
-    const segments = railLayout(character, RAIL_WIDTH)
+    const segments = railLayout(character, TRACK_WIDTH)
     const top = topLevel(character)
-    const x = (at: CharacterLevel) => levelToRail(character, at, RAIL_WIDTH)
+    const x = (at: CharacterLevel) => levelToRail(character, at, TRACK_WIDTH)
     const clamp = (at: CharacterLevel) => (compareLevel(at, floor) < 0 ? floor : at)
     const levelAt = (clientX: number) => {
       const r = trackRef.current!.getBoundingClientRect()
-      return railToLevel(character, ((clientX - r.left) * RAIL_WIDTH) / r.width, RAIL_WIDTH)
+      return railToLevel(character, ((clientX - r.left) * TRACK_WIDTH) / r.width, TRACK_WIDTH)
     }
 
     const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -153,8 +155,8 @@ const LevelRail = memo(
             ([1, 70, 90] as const).map((r) => survey.e2level(character, r)?.percent),
           )
         : []
-    const bucketTop = hasMods ? 52 : 34
-    const height = buckets.length ? bucketTop + 18 : hasMods ? 50 : 34
+    const bucketTop = hasMods ? 57 : 34
+    const height = buckets.length ? bucketTop + 18 : hasMods ? 54 : 34
 
     // Each label sits centred under its line, pushed right of the one before it so that none overlap.
     let nextFree = -Infinity
@@ -162,7 +164,7 @@ const LevelRail = memo(
       const x0 = x({ elite: 2, level: b.from - 1 })
       const x1 = x({ elite: 2, level: b.to })
       const left = Math.max((x0 + x1) / 2 - BUCKET_LABEL_WIDTH / 2, nextFree)
-      nextFree = left + BUCKET_LABEL_WIDTH + 2
+      nextFree = left + BUCKET_LABEL_WIDTH + 6
       return { ...b, x0, x1, left }
     })
 
@@ -184,6 +186,7 @@ const LevelRail = memo(
               {share ? (
                 <Tooltip
                   compact
+                  openOnTargetFocus={false}
                   placement="top"
                   hoverOpenDelay={150}
                   content={statTooltip(eliteName(seg.elite), share.percent, share.samples, 'owned', surveyName)}
@@ -199,6 +202,7 @@ const LevelRail = memo(
         <div
           ref={trackRef}
           className={'cpp-charstat-rail-track' + (hover?.blocked ? ' cpp-charstat-rail-blocked' : '')}
+          style={{ width: TRACK_WIDTH }}
           role="slider"
           tabIndex={0}
           aria-labelledby={labelledBy}
@@ -280,6 +284,7 @@ const LevelRail = memo(
               />
               <Tooltip
                 compact
+                openOnTargetFocus={false}
                 placement="bottom"
                 hoverOpenDelay={150}
                 className="cpp-charstat-bucket-wrap"

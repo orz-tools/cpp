@@ -92,9 +92,12 @@
 /* Without the avatar and name, the mode reads as the editor's heading, on the left */
 .cpp-charstat-hd-embedded .cpp-charstat-mode {
   flex: 1;
-  flex-direction: row-reverse;
-  justify-content: space-between;
   margin-left: 0;
+}
+
+.cpp-charstat-hd-embedded .cpp-charstat-mode > b {
+  order: -1;
+  margin-right: auto;
 }
 
 .cpp-charstat-avatar {
@@ -162,7 +165,7 @@
 .cpp-charstat-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   padding: 5px 14px;
   background: var(--bp-palette-light-gray-5, #f6f7f9);
   box-shadow:
@@ -272,7 +275,6 @@
   position: absolute;
   top: 12px;
   left: 0;
-  right: 0;
   height: 20px;
   cursor: pointer;
   touch-action: none;
@@ -382,7 +384,7 @@
 
 .cpp-charstat-rail-mod-label {
   position: absolute;
-  top: 38px;
+  top: 41px;
   font-size: 10.5px;
   line-height: 12px;
   color: var(--bp-palette-blue-2, #215db0);
