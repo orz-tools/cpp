@@ -63,9 +63,829 @@
   filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);
 }
 
-.cpp-potential-button-icon {
+/* Character status editor: the list's popovers and the dossier's 练度 section */
+
+/* The editor pads its own sections; the shell's popover padding would double it. */
+.cpp-popover .bp6-popover-content:has(> .cpp-charstat) {
+  padding: 0;
+}
+
+.cpp-charstat {
+  width: 360px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+  font-variant-numeric: tabular-nums;
+}
+
+.cpp-charstat-hd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px 10px;
+}
+
+.cpp-charstat-hd-embedded {
+  padding-top: 4px;
+}
+
+/* Without the avatar and name, the mode reads as the editor's heading, on the left */
+.cpp-charstat-hd-embedded .cpp-charstat-mode {
+  flex: 1;
+  margin-left: 0;
+}
+
+.cpp-charstat-hd-embedded .cpp-charstat-mode > b {
+  order: -1;
+  margin-right: auto;
+}
+
+.cpp-charstat-avatar {
+  position: relative;
+  z-index: 0;
+  flex: none;
+  width: 36px;
+  height: 36px;
+}
+
+.cpp-charstat-avatar .cpp-char-avatar,
+.cpp-charstat-avatar .cpp-char-avatar > img {
+  display: block;
+  width: 36px;
+  height: 36px;
+}
+
+/* The rarity backdrop is drawn at a fixed 40px for the list */
+.cpp-charstat-avatar .cpp-char-avatar::before {
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+}
+
+.cpp-charstat-heading {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cpp-charstat-heading > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cpp-charstat-heading .cpp-charstat-name {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.cpp-charstat-appellation {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-mode {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.cpp-charstat-mode > b {
+  font-weight: 600;
+}
+
+.cpp-charstat .bp6-control.cpp-charstat-owned {
+  margin: 0;
+}
+
+.cpp-charstat-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  box-shadow:
+    inset 0 1px 0 var(--bp-palette-light-gray-3, #e5e8eb),
+    inset 0 -1px 0 var(--bp-palette-light-gray-3, #e5e8eb);
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-bar-source {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cpp-charstat-own {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.cpp-charstat-own-value {
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-charstat-empty {
+  padding: 14px;
+  font-size: 13px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-sec {
+  padding: 10px 14px 12px;
+  box-shadow: inset 0 -1px 0 var(--bp-palette-light-gray-4, #edeff2);
+}
+
+.cpp-charstat-sec:last-child {
+  box-shadow: none;
+}
+
+.cpp-charstat-sh {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cpp-charstat-sh > h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.cpp-charstat-sh + * {
+  margin-top: 8px;
+}
+
+.cpp-charstat-delta {
+  font-size: 12.5px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  white-space: nowrap;
+}
+
+.cpp-charstat-delta b {
+  font-weight: 600;
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-charstat-legend {
+  margin: -2px 0 6px;
+  font-size: 11px;
+  color: var(--bp-palette-gray-3, #8f99a8);
+  text-align: right;
+}
+
+/* Elite and level: the rail and the box */
+
+.cpp-charstat-lv {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cpp-charstat-rail {
+  position: relative;
+  flex: none;
+  user-select: none;
+}
+
+.cpp-charstat-rail-label-wrap {
+  position: absolute;
+  top: 0;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  white-space: nowrap;
+}
+
+.cpp-charstat-few {
+  opacity: 0.55;
+}
+
+.cpp-charstat-rail-track {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  height: 20px;
+  cursor: pointer;
+  touch-action: none;
+  border-radius: 3px;
+}
+
+.cpp-charstat-rail-track.cpp-charstat-rail-blocked {
+  cursor: not-allowed;
+}
+
+.cpp-charstat-rail-track:focus {
+  outline: none;
+}
+
+.cpp-charstat-rail-track:focus-visible {
+  outline: 2px solid rgba(45, 114, 210, 0.6);
+  outline-offset: 2px;
+}
+
+.cpp-charstat-rail-seg {
+  position: absolute;
+  top: 5px;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 3px;
+  background-color: var(--bp-palette-light-gray-5, #f6f7f9);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 calc(var(--t) - 1px),
+    rgba(17, 20, 24, 0.12) calc(var(--t) - 1px) var(--t)
+  );
+  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.18);
+}
+
+.cpp-charstat-rail-seg > i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.cpp-charstat-rail-have {
+  background: var(--bp-palette-light-gray-1, #d3d8de);
+  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.12);
+}
+
+.cpp-charstat-rail-on {
+  background: var(--bp-intent-primary-rest, #2d72d2);
+}
+
+.cpp-charstat-rail-current {
+  position: absolute;
+  top: 1px;
+  width: 3px;
+  height: 18px;
+  margin-left: -1.5px;
+  border-radius: 1px;
+  background: var(--bp-palette-dark-gray-5, #404854);
+  box-shadow: 0 0 0 1px #fff;
+  pointer-events: none;
+}
+
+.cpp-charstat-rail-knob {
+  position: absolute;
+  top: 1px;
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow:
+    0 0 0 2px var(--bp-intent-primary-rest, #2d72d2),
+    0 1px 3px rgba(17, 20, 24, 0.3);
+  pointer-events: none;
+}
+
+.cpp-charstat-rail-track:active .cpp-charstat-rail-knob {
+  box-shadow:
+    0 0 0 3px var(--bp-intent-primary-rest, #2d72d2),
+    0 1px 3px rgba(17, 20, 24, 0.3);
+}
+
+.cpp-charstat-rail-hint {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  z-index: 1;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-palette-light-gray-5, #f6f7f9);
+  font-size: 11px;
+  line-height: 14px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.cpp-charstat-rail-mod {
+  position: absolute;
+  top: 33px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  background: var(--bp-palette-blue-2, #215db0);
+  transform: rotate(45deg);
+}
+
+.cpp-charstat-rail-mod-label {
+  position: absolute;
+  top: 41px;
+  font-size: 10.5px;
+  line-height: 12px;
+  color: var(--bp-palette-blue-2, #215db0);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.cpp-charstat-bucket-line {
+  position: absolute;
+  height: 1px;
+  background: var(--bp-palette-gray-3, #8f99a8);
+}
+
+.cpp-charstat-rail > .cpp-charstat-bucket-wrap {
+  display: contents;
+}
+
+.cpp-charstat-bucket {
+  position: absolute;
+  font-size: 10.5px;
+  line-height: 13px;
+  text-align: center;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-bucket.cpp-charstat-bucket-max {
+  font-weight: 600;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-charstat-bucket-line.cpp-charstat-bucket-max {
+  height: 2px;
+  background: var(--bp-palette-dark-gray-5, #404854);
+}
+
+.bp6-input-group.cpp-charstat-lvbox {
+  flex: none;
+  width: 88px;
+  margin-top: 9px;
+}
+
+.cpp-charstat-lvbox > .bp6-input {
+  height: 30px;
+  padding-left: 32px !important;
+  padding-right: 26px !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cpp-charstat-lvbox-elite {
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  z-index: 1;
   width: 20px;
   height: 20px;
+  object-fit: contain;
+  filter: brightness(0);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.cpp-charstat-lvbox > .bp6-input-action {
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.cpp-charstat-lvbox-steps {
+  display: flex;
+  flex-direction: column;
+  width: 22px;
+  height: 30px;
+  box-shadow: inset 1px 0 0 rgba(17, 20, 24, 0.15);
+}
+
+.cpp-charstat-lvbox-steps > .bp6-button {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 15px;
+  padding: 0;
+  margin: 0 !important;
+  border-radius: 0;
+}
+
+.cpp-charstat-lvbox-steps > .bp6-button + .bp6-button {
+  box-shadow: inset 0 1px 0 rgba(17, 20, 24, 0.15);
+}
+
+.cpp-charstat-lvbox-steps .bp6-icon > svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* Rows of cells */
+
+.cpp-charstat-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 10px;
+  align-items: start;
+}
+
+.cpp-charstat-row + .cpp-charstat-row,
+.cpp-charstat-row + .cpp-charstat-det,
+.cpp-charstat-det + .cpp-charstat-row {
+  margin-top: 6px;
+}
+
+.cpp-charstat-lbl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 28px;
+  font-size: 13px;
+}
+
+.cpp-charstat-lbl-muted {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-lbl > .bp6-icon {
+  flex: none;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-lbl .cpp-charstat-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.cpp-charstat-icon {
+  flex: none;
+  border-radius: 2px;
+}
+
+.cpp-charstat-modicon,
+.cpp-charstat-potential {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  background: #30363d;
+}
+
+.cpp-charstat-potential > img {
+  width: 18px;
+  height: 18px;
+}
+
+.cpp-charstat-code {
+  flex: none;
+  font-family: var(--bp-typography-family-mono, monospace);
+  font-size: 12px;
+}
+
+.cpp-charstat-info {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0 0 0 -2px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--bp-palette-gray-3, #8f99a8);
+  cursor: pointer;
+}
+
+.cpp-charstat-info:hover {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  background: rgba(143, 153, 168, 0.15);
+}
+
+.cpp-charstat-info.cpp-charstat-info-open {
+  color: var(--bp-intent-primary-rest, #2d72d2);
+}
+
+.cpp-charstat-info:focus-visible {
+  outline: 2px solid rgba(45, 114, 210, 0.6);
+  outline-offset: 0;
+}
+
+.cpp-charstat-steps {
+  display: inline-flex;
+  width: 144px;
+  vertical-align: top;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 0 0 1px rgba(17, 20, 24, 0.22),
+    0 1px 2px rgba(17, 20, 24, 0.08);
+}
+
+.cpp-charstat-steps > .cpp-charstat-cell-wrap {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.cpp-charstat-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  /* index.css still carries Vite's starter rules for every button */
+  border-radius: 0;
+  transition: none;
+  background: #fff;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cpp-charstat-steps-slim .cpp-charstat-cell {
+  font-size: 12px;
+}
+
+.cpp-charstat-steps > :first-child,
+.cpp-charstat-steps > :first-child > .cpp-charstat-cell {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.cpp-charstat-steps > :last-child,
+.cpp-charstat-steps > :last-child > .cpp-charstat-cell {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.cpp-charstat-steps > * + *,
+.cpp-charstat-steps > * + * > .cpp-charstat-cell {
+  box-shadow: inset 1px 0 0 rgba(17, 20, 24, 0.14);
+}
+
+.cpp-charstat-cell:hover {
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+}
+
+.cpp-charstat-cell:active {
+  background: var(--bp-palette-light-gray-3, #e5e8eb);
+}
+
+.cpp-charstat-cell:focus {
+  outline: none;
+}
+
+.cpp-charstat-cell:focus-visible {
+  z-index: 1;
+  outline: 2px solid rgba(45, 114, 210, 0.6);
+  outline-offset: -2px;
+}
+
+.cpp-charstat-cell-have,
+.cpp-charstat-cell-have:hover {
+  background: var(--bp-palette-light-gray-3, #e5e8eb);
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-cell-have:not(:disabled):hover {
+  background: var(--bp-palette-light-gray-2, #dce0e5);
+}
+
+.cpp-charstat .cpp-charstat-cell-on {
+  background: var(--bp-intent-primary-rest, #2d72d2);
+  color: #fff;
+  box-shadow: inset 1px 0 0 var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-charstat .cpp-charstat-cell-on:hover {
+  background: var(--bp-intent-primary-hover, #215db0);
+}
+
+.cpp-charstat .cpp-charstat-cell-on:active {
+  background: var(--bp-intent-primary-active, #184a90);
+}
+
+.cpp-charstat-cell:disabled {
+  cursor: not-allowed;
+}
+
+.cpp-charstat-cell-raise {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  color: var(--bp-palette-orange-3, #c87619);
+}
+
+.cpp-charstat-cell-on .cpp-charstat-cell-raise {
+  color: var(--bp-palette-orange-5, #fbb360);
+}
+
+.cpp-charstat-mastery {
+  width: 18px;
+  height: 17px;
+}
+
+/* Community statistics under the cells */
+
+.cpp-charstat-stats {
+  display: flex;
+  width: 144px;
+}
+
+.cpp-charstat-stats > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.cpp-charstat-stats > .cpp-charstat-stat-wrap {
+  display: block;
+}
+
+.cpp-charstat-stat {
+  display: block;
+  padding-top: 2px;
+  font-size: 10.5px;
+  line-height: 13px;
+  text-align: center;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-stat-bar {
+  display: block;
+  height: 2px;
+  margin: 1px 3px 0;
+  background: linear-gradient(
+    90deg,
+    var(--bp-palette-gray-3, #8f99a8) var(--p),
+    var(--bp-palette-light-gray-3, #e5e8eb) var(--p)
+  );
+}
+
+.cpp-charstat-stat.cpp-charstat-stat-target {
+  font-weight: 600;
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-charstat-stat-target .cpp-charstat-stat-bar {
+  background: linear-gradient(
+    90deg,
+    var(--bp-intent-primary-rest, #2d72d2) var(--p),
+    var(--bp-palette-light-gray-3, #e5e8eb) var(--p)
+  );
+}
+
+.cpp-charstat-stat.cpp-charstat-stat-few {
+  opacity: 0.55;
+}
+
+/* (i) panels */
+
+.cpp-charstat-det {
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  box-shadow: inset 0 0 0 1px var(--bp-palette-light-gray-3, #e5e8eb);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.cpp-charstat-det-meta {
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-det-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.cpp-charstat-det-table th {
+  padding: 1px 0;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: left;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-det-table thead th {
+  font-size: 11.5px;
+  text-align: right;
+}
+
+.cpp-charstat-det-table td {
+  padding: 1px 0 1px 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cpp-charstat-det .cpp-charstat-det-to {
+  font-weight: 600;
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-charstat-det .cpp-charstat-det-dim {
+  color: var(--bp-palette-gray-3, #8f99a8);
+}
+
+.cpp-charstat-det-table .cpp-charstat-det-arrow {
+  padding-left: 6px;
+  color: var(--bp-palette-gray-3, #8f99a8);
+}
+
+.cpp-charstat-det p {
+  margin: 6px 0 0;
+}
+
+.cpp-charstat-det-part {
+  margin-top: 8px;
+}
+
+.cpp-charstat-det-part > p {
+  margin-top: 2px;
+}
+
+.cpp-charstat-det-tag,
+.cpp-charstat-det-level {
+  font-size: 11.5px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+p > .cpp-charstat-det-tag,
+.cpp-charstat-det-level {
+  margin-right: 6px;
+}
+
+.cpp-charstat-det-skeleton {
+  height: 12px;
+  margin: 4px 0;
+}
+
+.cpp-charstat-det-skeleton + .cpp-charstat-det-skeleton {
+  width: 70%;
+}
+
+.cpp-charstat-det-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-det-missing {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-rt-vup,
+.cpp-charstat-rt-kw {
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-charstat-rt-vdown {
+  color: var(--bp-palette-red-2, #ac2f33);
+}
+
+.cpp-charstat-rt-rem,
+.cpp-charstat-rt-from {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-charstat-rt-to {
+  font-weight: 600;
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-charstat-det .cpp-charstat-term-wrap {
+  display: inline;
+}
+
+.cpp-charstat-term {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+.cpp-charstat-term-tip {
+  max-width: 260px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.cpp-charstat-term-tip > b {
+  display: block;
+  margin-bottom: 2px;
 }
 
 /* 关卡 sidebar panel */

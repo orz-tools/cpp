@@ -87,11 +87,6 @@ msgstr ""
 msgid "%s（有新内容）"
 msgstr "%s (new)"
 
-#. %s: stat source name
-#: src/components/arknights/CharacterStatusPopover.tsx:539
-msgid "%s持有率"
-msgstr "Own Rate (%s)"
-
 #: src/components/arknights/AboutList.tsx:37
 msgid "ArknightsAssets 解析的游戏数据"
 msgstr "Data Mining by ArknightsAssets"
@@ -221,11 +216,6 @@ msgstr "Other Resources"
 msgid "最好还是别合成的道具"
 msgstr "Better Not Synthesizing"
 
-#. %s: stat source name
-#: src/components/arknights/CharacterStatusPopover.tsx:500
-msgid "切换至%s"
-msgstr "Switch to %s"
-
 #: src/locales.tsx:57
 msgid "切换语言失败"
 msgstr "Failed to switch the UI language"
@@ -298,7 +288,7 @@ msgstr ""
 "It is at %1 and opens in a new tab. The old version will ask whether to "
 "create profile %2; choose OK."
 
-#: src/components/arknights/CharacterStatusPopover.tsx:527
+#: src/components/arknights/statusEditor/Header.tsx:47
 #: src/components/CharacterStatusPopover.tsx:56
 msgid "培养目标"
 msgstr "Target"
@@ -384,7 +374,7 @@ msgstr "Import Skland Data"
 msgid "导出为文件"
 msgstr "Export as File"
 
-#: src/pkg/cpp-arknights/survey.ts:188
+#: src/pkg/cpp-arknights/survey.ts:219
 msgid "小黑盒 app 干员统计数据"
 msgstr "Operator Statistics from Heybox"
 
@@ -488,7 +478,7 @@ msgstr "Open in a window"
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:527
+#: src/components/arknights/statusEditor/Header.tsx:47
 #: src/components/CharacterStatusPopover.tsx:56
 msgid "当前状态"
 msgstr "Current"
@@ -514,7 +504,7 @@ msgstr "As of %s"
 msgid "打开旧版"
 msgstr "Open the old version"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:524
+#: src/components/arknights/statusEditor/Header.tsx:40
 msgid "持有"
 msgstr "Own"
 
@@ -593,14 +583,9 @@ msgstr ""
 msgid "明日方舟一图流"
 msgstr "Arknights-yituliu"
 
-#: src/pkg/cpp-arknights/survey.ts:23
+#: src/pkg/cpp-arknights/survey.ts:54
 msgid "明日方舟一图流 干员练度统计数据"
 msgstr "Operator Statistics from Arknights-yituliu"
-
-#. %s: stat source name
-#: src/components/arknights/CharacterStatusPopover.tsx:499
-msgid "显示%s"
-msgstr "Show %s"
 
 #: src/components/InventorySyncer.tsx:308
 msgid "显示全部"
@@ -749,6 +734,7 @@ msgstr "Assets from Game"
 
 #. %d: potential, 1-6
 #: src/components/arknights/Icons.tsx:93
+#: src/components/arknights/statusEditor/PotentialSection.tsx:12
 msgid "潜能 %d"
 msgstr "Potential %d"
 
@@ -787,10 +773,6 @@ msgstr "Goals"
 #: src/components/MessageBox.tsx:74
 msgid "确定"
 msgstr "OK"
-
-#: src/components/arknights/CharacterStatusPopover.tsx:557
-msgid "社区练度统计数据"
-msgstr "Stats from Community"
 
 #: src/components/FarmList.tsx:284
 msgid "线性规划失败"
@@ -993,10 +975,6 @@ msgstr "E-mail"
 msgid "重载数据"
 msgstr "Reset Data"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:603
-msgid "隐藏"
-msgstr "Hide"
-
 #. %1: a number; %2: operator names
 #: src/components/arknights/ModuleMissionPanel.tsx:333
 msgid "顺带推进 %1 条不限关卡任务（%2）"
@@ -1029,62 +1007,107 @@ msgctxt "arknights arkntools step"
 msgid "点击「导出」→「导出培养方案至 MAA」"
 msgstr "Click «Export» → «Export training plan to MAA»"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:550
+#: src/components/arknights/statusEditor/Detail.tsx:299
+msgctxt "arknights attribute"
+msgid "再部署时间"
+msgstr "Redeploy Time"
+
+#: src/components/arknights/statusEditor/Detail.tsx:294
+msgctxt "arknights attribute"
+msgid "攻击"
+msgstr "ATK"
+
+#: src/components/arknights/statusEditor/Detail.tsx:297
+msgctxt "arknights attribute"
+msgid "攻击速度"
+msgstr "ASPD"
+
+#: src/components/arknights/statusEditor/Detail.tsx:301
+msgctxt "arknights attribute"
+msgid "攻击间隔"
+msgstr "Attack Interval"
+
+#: src/components/arknights/statusEditor/Detail.tsx:296
+msgctxt "arknights attribute"
+msgid "法术抗性"
+msgstr "RES"
+
+#: src/components/arknights/statusEditor/Detail.tsx:293
+msgctxt "arknights attribute"
+msgid "生命"
+msgstr "HP"
+
+#: src/components/arknights/statusEditor/Detail.tsx:298
+msgctxt "arknights attribute"
+msgid "部署费用"
+msgstr "DP Cost"
+
+#: src/components/arknights/statusEditor/Detail.tsx:295
+msgctxt "arknights attribute"
+msgid "防御"
+msgstr "DEF"
+
+#: src/components/arknights/statusEditor/Detail.tsx:300
+msgctxt "arknights attribute"
+msgid "阻挡数"
+msgstr "Block"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:548
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr "Growth Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:972
+#: src/pkg/cpp-arknights/GameAdapter.ts:970
 msgctxt "arknights item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:969
+#: src/pkg/cpp-arknights/GameAdapter.ts:967
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr "Dualchips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:968
+#: src/pkg/cpp-arknights/GameAdapter.ts:966
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr "Skill, Module & Catalysts"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:967
+#: src/pkg/cpp-arknights/GameAdapter.ts:965
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr "T1 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:964
+#: src/pkg/cpp-arknights/GameAdapter.ts:962
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:966
+#: src/pkg/cpp-arknights/GameAdapter.ts:964
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:971
+#: src/pkg/cpp-arknights/GameAdapter.ts:969
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:970
+#: src/pkg/cpp-arknights/GameAdapter.ts:968
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr "Chip Packs"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:965
+#: src/pkg/cpp-arknights/GameAdapter.ts:963
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:963
+#: src/pkg/cpp-arknights/GameAdapter.ts:961
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:962
+#: src/pkg/cpp-arknights/GameAdapter.ts:960
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
@@ -1210,32 +1233,62 @@ msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr "S2"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:785
+#: src/components/arknights/statusEditor/Detail.tsx:159
+msgctxt "arknights skill sp"
+msgid "受击回复"
+msgstr "Defensive Recovery"
+
+#: src/components/arknights/statusEditor/Detail.tsx:158
+msgctxt "arknights skill sp"
+msgid "攻击回复"
+msgstr "Offensive Recovery"
+
+#: src/components/arknights/statusEditor/Detail.tsx:157
+msgctxt "arknights skill sp"
+msgid "自动回复"
+msgstr "Auto Recovery"
+
+#: src/components/arknights/statusEditor/Detail.tsx:163
+msgctxt "arknights skill trigger"
+msgid "手动触发"
+msgstr "Manual Trigger"
+
+#: src/components/arknights/statusEditor/Detail.tsx:164
+msgctxt "arknights skill trigger"
+msgid "自动触发"
+msgstr "Auto Trigger"
+
+#: src/components/arknights/statusEditor/Detail.tsx:165
+msgctxt "arknights skill trigger"
+msgid "被动"
+msgstr "Passive"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:783
 msgctxt "arknights stage category"
 msgid "主线"
 msgstr "Main Story"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:790
+#: src/pkg/cpp-arknights/GameAdapter.ts:788
 msgctxt "arknights stage category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:787
+#: src/pkg/cpp-arknights/GameAdapter.ts:785
 msgctxt "arknights stage category"
 msgid "别传"
 msgstr "Side Stories"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:788
+#: src/pkg/cpp-arknights/GameAdapter.ts:786
 msgctxt "arknights stage category"
 msgid "插曲"
 msgstr "Intermezzi"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:786
+#: src/pkg/cpp-arknights/GameAdapter.ts:784
 msgctxt "arknights stage category"
 msgid "活动"
 msgstr "Events"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:789
+#: src/pkg/cpp-arknights/GameAdapter.ts:787
 msgctxt "arknights stage category"
 msgid "资源收集"
 msgstr "Supplies"
@@ -1255,48 +1308,335 @@ msgctxt "arknights stage category short"
 msgid "资源"
 msgstr "Resources"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:888
+#: src/pkg/cpp-arknights/GameAdapter.ts:886
 msgctxt "arknights stage difficulty"
 msgid "剧情"
 msgstr "Easy "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:886
+#: src/pkg/cpp-arknights/GameAdapter.ts:884
 msgctxt "arknights stage difficulty"
 msgid "标准"
 msgstr "Standard "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:887
+#: src/pkg/cpp-arknights/GameAdapter.ts:885
 msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr "Tough "
 
-#: src/components/arknights/CharacterStatusPopover.tsx:458
+#: src/components/arknights/statusEditor/Detail.tsx:366
+#: src/components/arknights/statusEditor/text.ts:68
+msgctxt "arknights status editor"
+msgid "，"
+msgstr ", "
+
+#. %1: what, e.g. 锈枝 · 2 级; %2: share; %3: sample detail; %4: source
+#: src/components/arknights/statusEditor/SurveyStat.tsx:35
+msgctxt "arknights status editor"
+msgid "%1 %2，%3（%4）"
+msgstr "%1 %2, %3 (%4)"
+
+#. %1: players surveyed; %2: of them owning it
+#: src/components/arknights/statusEditor/SurveyStat.tsx:25
+msgctxt "arknights status editor"
+msgid "%1 人里有 %2 人"
+msgstr "%2 of %1 players"
+
+#. %1: the value at the first level; %2: later levels where it changes, e.g. 3 级 60%
+#: src/components/arknights/statusEditor/Detail.tsx:365
+msgctxt "arknights status editor"
+msgid "%1（%2）"
+msgstr "%1 (%2)"
+
+#. %d: skill number, 1-3
+#: src/components/arknights/statusEditor/text.ts:21
+msgctxt "arknights status editor"
+msgid "%d 技能"
+msgstr "S%d"
+
+#. %d: skill or module level
+#: src/components/arknights/statusEditor/Detail.tsx:357
+#: src/components/arknights/statusEditor/ModSection.tsx:37
+#: src/components/arknights/statusEditor/text.ts:32
+msgctxt "arknights status editor"
+msgid "%d 级"
+msgstr "Lv. %d"
+
+#. %d: module level
+#: src/components/arknights/statusEditor/Detail.tsx:425
+msgctxt "arknights status editor"
+msgid "%d 级起"
+msgstr "from Lv. %d"
+
+#. %d: how many skills or modules a goal raises
+#: src/components/arknights/statusEditor/text.ts:38
+msgctxt "arknights status editor"
+msgid "%d 项要练"
+msgstr "%d to raise"
+
+#. %s: 精二; %1–%2: level range
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:270
+msgctxt "arknights status editor"
+msgid "%s %1–%2 级"
+msgstr "%s Lv. %1–%2"
+
+#. %s: elite phase, e.g. 精二; %d: level
+#: src/components/arknights/statusEditor/text.ts:14
+msgctxt "arknights status editor"
+msgid "%s %d"
+msgstr "%s %d"
+
+#. %s: 精二; %d: level
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:275
+msgctxt "arknights status editor"
+msgid "%s %d 级以上"
+msgstr "%s Lv. %d+"
+
+#. %s: skill or module name
+#: src/components/arknights/statusEditor/Detail.tsx:38
+msgctxt "arknights status editor"
+msgid "%s 的说明"
+msgstr "About %s"
+
+#. %s: seconds
+#: src/components/arknights/statusEditor/Detail.tsx:181
+msgctxt "arknights status editor"
+msgid "%s 秒"
+msgstr "%ss"
+
+#: src/components/arknights/statusEditor/SurveyBar.tsx:26
+msgctxt "arknights status editor"
+msgid "不显示"
+msgstr "Off"
+
+#. %d: mastery, 1-3
+#: src/components/arknights/statusEditor/text.ts:28
+msgctxt "arknights status editor"
+msgid "专精 %d"
+msgstr "M%d"
+
+#: src/components/arknights/statusEditor/Detail.tsx:212
+msgctxt "arknights status editor"
+msgid "初始技力"
+msgstr "Initial SP"
+
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:353
+msgctxt "arknights status editor"
+msgid "升一级"
+msgstr "Level up"
+
+#: src/components/arknights/statusEditor/Detail.tsx:423
+msgctxt "arknights status editor"
+msgid "召唤物"
+msgstr "Summon"
+
+#: src/components/arknights/statusEditor/Detail.tsx:422
+msgctxt "arknights status editor"
+msgid "天赋"
+msgstr "Talent"
+
+#: src/components/arknights/statusEditor/ModSection.tsx:81
+msgctxt "arknights status editor"
+msgid "小黑盒：解锁者中各级的占比"
+msgstr "Heybox: share of those who unlocked it"
+
+#: src/components/arknights/statusEditor/SectionHeader.tsx:34
+msgctxt "arknights status editor"
+msgid "已满"
+msgstr "Maxed"
+
+#: src/components/arknights/statusEditor/Detail.tsx:274
+msgctxt "arknights status editor"
+msgid "当前"
+msgstr "Current"
+
+#. %s: skill level, e.g. 7 级
+#: src/components/arknights/statusEditor/Detail.tsx:234
+msgctxt "arknights status editor"
+msgid "当前 %s"
+msgstr "Current %s"
+
+#: src/components/arknights/statusEditor/CharacterStatusEditor.tsx:63
+msgctxt "arknights status editor"
+msgid "打开「持有」后设置练度"
+msgstr "Turn on Own to set the training"
+
+#: src/components/arknights/statusEditor/Detail.tsx:207
+msgctxt "arknights status editor"
+msgid "技力消耗"
+msgstr "SP Cost"
+
+#: src/components/arknights/statusEditor/SkillSection.tsx:75
+msgctxt "arknights status editor"
+msgid "技能等级"
+msgstr "Skill Level"
+
+#. follows 还会把等级提到 …; %d: skill level
+#: src/components/arknights/statusEditor/text.ts:57
+msgctxt "arknights status editor"
+msgid "技能等级提到 %d"
+msgstr "skill level to %d"
+
+#: src/components/arknights/statusEditor/SurveyBar.tsx:35
+#: src/components/arknights/statusEditor/SurveyBar.tsx:43
+msgctxt "arknights status editor"
+msgid "持有率"
+msgstr "Owned"
+
+#. %1: owners; %2: of them at this tier
+#: src/components/arknights/statusEditor/SurveyStat.tsx:27
+msgctxt "arknights status editor"
+msgid "持有的 %1 人里有 %2 人"
+msgstr "%2 of %1 owners"
+
+#: src/components/arknights/statusEditor/Detail.tsx:217
+msgctxt "arknights status editor"
+msgid "持续时间"
+msgstr "Duration"
+
+#: src/components/arknights/statusEditor/Detail.tsx:180
+msgctxt "arknights status editor"
+msgid "无限"
+msgstr "Infinite"
+
+#: src/components/arknights/statusEditor/SkillSection.tsx:27
+msgctxt "arknights status editor"
+msgid "未专精"
+msgstr "No mastery"
+
+#: src/components/arknights/statusEditor/ModSection.tsx:36
+msgctxt "arknights status editor"
+msgid "未解锁"
+msgstr "Locked"
+
+#: src/components/arknights/statusEditor/SurveyStat.tsx:22
+msgctxt "arknights status editor"
+msgid "样本数未知"
+msgstr "sample size unknown"
+
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:261
+#: src/components/arknights/statusEditor/ModSection.tsx:74
+msgctxt "arknights status editor"
+msgid "模组"
+msgstr "Module"
+
+#: src/components/arknights/statusEditor/Detail.tsx:421
+msgctxt "arknights status editor"
+msgid "特性"
+msgstr "Trait"
+
+#: src/components/arknights/statusEditor/Detail.tsx:279
+msgctxt "arknights status editor"
+msgid "目标"
+msgstr "Target"
+
+#. %s: skill level, e.g. 专精 3
+#: src/components/arknights/statusEditor/Detail.tsx:243
+msgctxt "arknights status editor"
+msgid "目标 %s"
+msgstr "Target %s"
+
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:341
+msgctxt "arknights status editor"
+msgid "等级"
+msgstr "Level"
+
+#. %d: skill level
+#: src/components/arknights/statusEditor/SkillSection.tsx:31
+msgctxt "arknights status editor"
+msgid "等级 %d"
+msgstr "Level %d"
+
+#: src/components/arknights/statusEditor/ModSection.tsx:82
+#: src/components/arknights/statusEditor/SkillSection.tsx:70
+msgctxt "arknights status editor"
+msgid "精二干员中练到这一档的占比"
+msgstr "Share of E2 owners at each tier"
+
+#. %1: E2 owners; %2: of them at this tier
+#: src/components/arknights/statusEditor/SurveyStat.tsx:29
+msgctxt "arknights status editor"
+msgid "精二的 %1 人里有 %2 人"
+msgstr "%2 of %1 E2 owners"
+
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:60
+msgctxt "arknights status editor"
+msgid "精英化与等级"
+msgstr "Elite & Level"
+
+#: src/components/arknights/statusEditor/SurveyBar.tsx:20
+msgctxt "arknights status editor"
+msgid "统计"
+msgstr "Stats"
+
+#: src/components/arknights/statusEditor/SurveyStat.tsx:20
+msgctxt "arknights status editor"
+msgid "解锁者中的占比"
+msgstr "of those who unlocked it"
+
+#: src/components/arknights/statusEditor/Detail.tsx:96
+msgctxt "arknights status editor"
+msgid "说明载入失败"
+msgstr "Couldn't load the details"
+
+#. %d: skill level
+#: src/components/arknights/statusEditor/text.ts:59
+msgctxt "arknights status editor"
+msgid "还会把技能等级提到 %d"
+msgstr "Also raises the skill level to %d"
+
+#. %s: elite and level, e.g. 精二 1
+#: src/components/arknights/statusEditor/text.ts:55
+msgctxt "arknights status editor"
+msgid "还会把等级提到 %s"
+msgstr "Also raises the level to %s"
+
+#. %s: elite and level, e.g. 精二 50
+#: src/components/arknights/statusEditor/text.ts:53
+msgctxt "arknights status editor"
+msgid "还会把等级提到 %s（模组解锁）"
+msgstr "Also raises the level to %s (module unlock)"
+
+#: src/components/arknights/statusEditor/Detail.tsx:197
+msgctxt "arknights status editor"
+msgid "这个技能还没有说明数据"
+msgstr "No details for this skill yet"
+
+#: src/components/arknights/statusEditor/Detail.tsx:378
+msgctxt "arknights status editor"
+msgid "这个模组还没有说明数据"
+msgstr "No details for this module yet"
+
+#: src/components/arknights/statusEditor/Detail.tsx:98
+msgctxt "arknights status editor"
+msgid "重试"
+msgstr "Retry"
+
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:362
+msgctxt "arknights status editor"
+msgid "降一级"
+msgstr "Level down"
+
+#: src/components/arknights/statusEditor/SkillSection.tsx:64
 msgctxt "arknights status group"
 msgid "技能"
 msgstr "Skill"
 
-#. %d: skill number
-#: src/components/arknights/CharacterStatusPopover.tsx:344
-msgctxt "arknights status group"
-msgid "技能 %d"
-msgstr "S%d"
-
-#: src/components/arknights/CharacterStatusPopover.tsx:253
+#: src/components/arknights/statusEditor/PotentialSection.tsx:24
 msgctxt "arknights status group"
 msgid "潜能"
 msgstr "Potential"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:122
+#: src/components/arknights/statusEditor/text.ts:8
 msgctxt "arknights status group"
 msgid "精一"
 msgstr "E1"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:144
+#: src/components/arknights/statusEditor/text.ts:9
 msgctxt "arknights status group"
 msgid "精二"
 msgstr "E2"
 
-#: src/components/arknights/CharacterStatusPopover.tsx:100
+#: src/components/arknights/statusEditor/text.ts:7
 msgctxt "arknights status group"
 msgid "精零"
 msgstr "E0"
@@ -1381,8 +1721,8 @@ msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:771
-#: src/pkg/cpp-arknights/GameAdapter.ts:774
+#: src/pkg/cpp-arknights/GameAdapter.ts:769
+#: src/pkg/cpp-arknights/GameAdapter.ts:772
 msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
@@ -2184,52 +2524,52 @@ msgctxt "module mission scope"
 msgid "计划内"
 msgstr "In plan"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:379
+#: src/pkg/cpp-arknights/GameAdapter.ts:377
 msgctxt "predefined query"
 msgid "一图流 技能专三率"
 msgstr "yituliu: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:402
+#: src/pkg/cpp-arknights/GameAdapter.ts:400
 msgctxt "predefined query"
 msgid "一图流 技能专三率（全部）"
 msgstr "yituliu: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:443
+#: src/pkg/cpp-arknights/GameAdapter.ts:441
 msgctxt "predefined query"
 msgid "一图流 精二率"
 msgstr "yituliu: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:465
+#: src/pkg/cpp-arknights/GameAdapter.ts:463
 msgctxt "predefined query"
 msgid "一图流 精二率（全部）"
 msgstr "yituliu: E2 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:411
+#: src/pkg/cpp-arknights/GameAdapter.ts:409
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率"
 msgstr "Heybox: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:434
+#: src/pkg/cpp-arknights/GameAdapter.ts:432
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率（全部）"
 msgstr "Heybox: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:503
+#: src/pkg/cpp-arknights/GameAdapter.ts:501
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率"
 msgstr "Heybox: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:526
+#: src/pkg/cpp-arknights/GameAdapter.ts:524
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率（全部）"
 msgstr "Heybox: E2 Lv 90 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:473
+#: src/pkg/cpp-arknights/GameAdapter.ts:471
 msgctxt "predefined query"
 msgid "小黑盒 精二率"
 msgstr "Heybox: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:495
+#: src/pkg/cpp-arknights/GameAdapter.ts:493
 msgctxt "predefined query"
 msgid "小黑盒 精二率（全部）"
 msgstr "Heybox: E2 rate (all)"
@@ -2638,7 +2978,7 @@ msgctxt "query field"
 msgid "内部代号"
 msgstr "Internal ID"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:339
+#: src/pkg/cpp-arknights/GameAdapter.ts:338
 msgctxt "query field"
 msgid "小黑盒干员统计 技能专三率"
 msgstr "Heybox survey: skill M3 rate"
@@ -2861,7 +3201,7 @@ msgctxt "query value"
 msgid "精英 %d"
 msgstr "E%d"
 
-#: src/pkg/cpp-arknights/survey.ts:24
+#: src/pkg/cpp-arknights/survey.ts:55
 msgctxt "short name"
 msgid "一图流练度统计"
 msgstr "Stats from Arknights-yituliu"
@@ -2876,7 +3216,7 @@ msgctxt "short name"
 msgid "仅计划"
 msgstr "Planned"
 
-#: src/pkg/cpp-arknights/survey.ts:189
+#: src/pkg/cpp-arknights/survey.ts:220
 msgctxt "short name"
 msgid "小黑盒干员统计"
 msgstr "Stats from Heybox"
@@ -3335,15 +3675,34 @@ msgctxt "value type"
 msgid "源石"
 msgstr "Originium"
 
-#: src/pkg/cpp-arknights/survey.ts:25
+#: src/pkg/cpp-arknights/survey.ts:56
 msgctxt "very short name"
 msgid "一图流"
 msgstr "yituliu"
 
-#: src/pkg/cpp-arknights/survey.ts:190
+#: src/pkg/cpp-arknights/survey.ts:221
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgid "%s持有率"
+#~ msgstr "Own Rate (%s)"
+
+#~ msgid "切换至%s"
+#~ msgstr "Switch to %s"
+
+#~ msgid "显示%s"
+#~ msgstr "Show %s"
+
+#~ msgid "社区练度统计数据"
+#~ msgstr "Stats from Community"
+
+#~ msgid "隐藏"
+#~ msgstr "Hide"
+
+#~ msgctxt "arknights status group"
+#~ msgid "技能 %d"
+#~ msgstr "S%d"
 
 #~ msgctxt "value config"
 #~ msgid "应用并刷新"

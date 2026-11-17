@@ -59,6 +59,7 @@ Games are code-split via dynamic imports. The URL path (`/{game}/{profile}`) det
 ### Data layer
 
 - `DataManager` (per-game, in `src/pkg/cpp-{game}/`) handles region-aware data fetching and caching (`dccache` / localforage)
+- A container outside a region's `required` sources is fetched on demand: Arknights' skill and module texts (`arknights-kengxxiao-details-<lang>`) load through `ArknightsDataManager.loadDetails()` the first time the status editor's (i) panel opens
 - `UserData` lives in localStorage, managed by `UserDataAtomHolder` with immer-based undo/redo
 - Per-profile extras that are not user data (`src/pkg/cpp-core/profileExtras.ts`) live in IndexedDB (`cpp_extras`), one record per profile; today only the 森空岛 snapshot (`skland`). They are outside undo/redo, travel in the `@orz/cpp/dump` export as `extras`, and are deleted with the profile's data
 - Data schemas in `src/pkg/cpp-data-schemas/` define external data source structures

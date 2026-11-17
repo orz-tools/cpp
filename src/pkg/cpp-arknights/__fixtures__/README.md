@@ -1,6 +1,6 @@
 # 测试数据
 
-`itemValue.acceptance.test.ts` 用 `yituliu-acceptance.json` 和 `arknights-game-inputs.zh_CN.json` 离线运行价值计算，并与明日方舟一图流的结果比较；`moduleMissions.test.ts` 用 `module-missions.zh_CN.json`。
+`itemValue.acceptance.test.ts` 用 `yituliu-acceptance.json` 和 `arknights-game-inputs.zh_CN.json` 离线运行价值计算，并与明日方舟一图流的结果比较；`moduleMissions.test.ts` 用 `module-missions.zh_CN.json`；`details.test.ts`、`richText.test.ts` 用 `details-quercus.json`。
 
 ## `yituliu-acceptance.json`
 
@@ -27,3 +27,10 @@
 - 关卡：`main_03-08`、`main_04-02`、`main_04-03`、`main_04-06`、`sub_02-03`、`main_02-04`、`main_07-06`、`main_03-04`、`main_11-02`、`main_02-10`。
 
 重新生成：取得 schema 4 以上的 `arknights-kengxxiao-zh_CN.json`（cpp-data 的 `files/` 下，或本地跑 cpp-data-worker 的 `arknights-kengxxiao-zh_CN` 任务生成），执行 `node scripts/extract-module-mission-fixture.js <arknights-kengxxiao-zh_CN.json>`，覆盖本文件。游戏数据更新后任务的数量和分法可能变化，测试里的期望值要随之核对。
+
+## `details-quercus.json`
+
+- 来源：cpp-data-worker 的 `arknights-kengxxiao-details-zh_CN`，由 [Kengxxiao/ArknightsGameData](https://github.com/Kengxxiao/ArknightsGameData) 生成，版本见文件中的 `version`。
+- 内容：`data` 里只留夏栎的两个技能（`skchr_quercu_1`、`skchr_quercu_2`）、模组 `uniequip_002_quercu` 和术语 `ba.protect`，结构和完整文件相同。`details.test.ts`、`richText.test.ts` 用它。
+
+重新生成：在 cpp-data-worker 里跑 `arknights-kengxxiao-details-zh_CN`，从 `files/arknights-kengxxiao-details-zh_CN.json` 按上面的键截出。紧凑格式，无缩进。

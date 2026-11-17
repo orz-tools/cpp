@@ -29,7 +29,7 @@ import {
   normalizeItemValueConfig,
 } from './itemValue'
 import { EnemyLevel, MissionCatalog, MissionModule, MissionStageInfo } from './moduleMissions'
-import { HeyboxSurveySource, YituliuSurveySource } from './survey'
+import { HeyboxSurveySource, YituliuSurveySource, toTierShares } from './survey'
 import {
   AK_FIXED_DROP_STAGES,
   AK_ITEM_GOLD,
@@ -329,8 +329,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
             character.skills[index].rawCharId,
             character.skills[index].charSkillIndex,
           )
-          if (s?.[0]?.percent == null || s?.[3]?.percent == null) return NaN
-          return s?.[0]?.percent * s?.[3]?.percent
+          return toTierShares(s)?.shares[3] ?? NaN
         },
       ).withFormat('percent')
 
@@ -345,8 +344,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
             character.skills[index].rawCharId,
             character.skills[index].charSkillIndex,
           )
-          if (s?.[0]?.percent == null || s?.[3]?.percent == null) return NaN
-          return s?.[0]?.percent * s?.[3]?.percent
+          return toTierShares(s)?.shares[3] ?? NaN
         },
       ).withFormat('percent')
     })

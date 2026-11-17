@@ -1,4 +1,8 @@
 import { CppData_ArknightsHeyboxOperatorsurvey } from '../cpp-data-schemas/arknights-heybox-operatorsurvey'
+import { CppData_ArknightsKengxxiaoDetailsEnUs } from '../cpp-data-schemas/arknights-kengxxiao-details-en_US'
+import { CppData_ArknightsKengxxiaoDetailsJaJp } from '../cpp-data-schemas/arknights-kengxxiao-details-ja_JP'
+import { CppData_ArknightsKengxxiaoDetailsKoKr } from '../cpp-data-schemas/arknights-kengxxiao-details-ko_KR'
+import { CppData_ArknightsKengxxiaoDetailsZhCn } from '../cpp-data-schemas/arknights-kengxxiao-details-zh_CN'
 import { CppData_ArknightsKengxxiaoEnUs } from '../cpp-data-schemas/arknights-kengxxiao-en_US'
 import { CppData_ArknightsKengxxiaoJaJp } from '../cpp-data-schemas/arknights-kengxxiao-ja_JP'
 import { CppData_ArknightsKengxxiaoKoKr } from '../cpp-data-schemas/arknights-kengxxiao-ko_KR'
@@ -17,6 +21,20 @@ export class ArknightsKengxxiaoObject extends CppRepoObject<
 
   public constructor(public readonly lang: 'en_US' | 'zh_CN' | 'ja_JP' | 'ko_KR') {
     super(`arknights-kengxxiao-${lang}`)
+  }
+}
+
+/** Not one of the required sources: neither a page load nor 检查数据更新 downloads it, only the first opened (i) panel. */
+export class ArknightsKengxxiaoDetailsObject extends CppRepoObject<
+  | CppData_ArknightsKengxxiaoDetailsZhCn
+  | CppData_ArknightsKengxxiaoDetailsEnUs
+  | CppData_ArknightsKengxxiaoDetailsJaJp
+  | CppData_ArknightsKengxxiaoDetailsKoKr
+> {
+  public requiredSchema = 1
+
+  public constructor(public readonly lang: ArknightsKengxxiaoObject['lang']) {
+    super(`arknights-kengxxiao-details-${lang}`)
   }
 }
 
