@@ -14,7 +14,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { memo } from 'react'
 import { ValueType, useCpp } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
-import { gt } from '../pkg/gt'
+import { PSTR, gt, lpstr } from '../pkg/gt'
 
 const ValueIcon = {
   [ValueType.Ap]: 'predictive-analysis',
@@ -28,18 +28,18 @@ const ValueIcon = {
 } satisfies Record<ValueType, IconName | MaybeElement>
 
 const ValueName = {
-  [ValueType.Ap]: 'AP',
-  [ValueType.Diamond]: '源石',
-  [ValueType.Yuan]: '人民币',
-  [ValueType.Time]: '时间',
-} satisfies Record<ValueType, string>
+  [ValueType.Ap]: lpstr(() => 'AP'),
+  [ValueType.Diamond]: lpstr(() => gt.pgettext('value type', '源石')),
+  [ValueType.Yuan]: lpstr(() => gt.pgettext('value type', '人民币')),
+  [ValueType.Time]: lpstr(() => gt.pgettext('value type', '时间')),
+} satisfies Record<ValueType, PSTR>
 
 const ValueDescription = {
   [ValueType.Ap]: null,
-  [ValueType.Diamond]: '(按 1 源石 = 135 AP)',
-  [ValueType.Yuan]: '(按 648 元 = 185 源石)',
-  [ValueType.Time]: '(按每小时回复 10 AP)',
-} satisfies Record<ValueType, React.ReactNode>
+  [ValueType.Diamond]: lpstr(() => gt.pgettext('value type', '(按 1 源石 = 135 AP)')),
+  [ValueType.Yuan]: lpstr(() => gt.pgettext('value type', '(按 648 元 = 185 源石)')),
+  [ValueType.Time]: lpstr(() => gt.pgettext('value type', '(按每小时回复 10 AP)')),
+} satisfies Record<ValueType, PSTR | null>
 
 function throwBad(p: never): never {
   throw new Error(`Missing switch coverage: ${p}`)
@@ -90,7 +90,7 @@ function formatTime(seconds: number): string {
 }
 
 function formatAll(value: number | null | undefined) {
-  if (!hasValue(value)) return '暂无价值'
+  if (!hasValue(value)) return gt.pgettext('value type', '暂无价值')
 
   return Object.values(ValueType)
     .map((x) => {
@@ -160,7 +160,7 @@ export const SampleTag = memo(
           paddingRight: 4,
           ...style,
         }}
-        title={'样本数'}
+        title={gt.gettext('样本数')}
       >
         {sample}
       </Tag>
@@ -241,7 +241,8 @@ export const SetValueOptionMenuItem = memo(({ type }: { type: ValueType }) => {
       icon={ValueIcon[type]}
       text={
         <>
-          {ValueName[type]} <span style={{ opacity: 0.75, fontWeight: 'normal' }}>{ValueDescription[type]}</span>
+          {ValueName[type].toString()}{' '}
+          <span style={{ opacity: 0.75, fontWeight: 'normal' }}>{ValueDescription[type]?.toString()}</span>
         </>
       }
       active={ctype === type}
@@ -275,7 +276,7 @@ export const ValueOptionButton = memo(() => {
       position="bottom-left"
     >
       <Button icon={ValueIcon[type]} variant="minimal" endIcon={'chevron-down'}>
-        {<span className={'cpp-very-compact'}>{ValueName[type]}</span>}
+        {<span className={'cpp-very-compact'}>{ValueName[type].toString()}</span>}
       </Button>
     </Popover>
   )

@@ -105,7 +105,7 @@ function countChecked(stageIds: string[], isChecked: (stageId: string) => boolea
   return on
 }
 
-const TriStateCheckbox = ({
+export const TriStateCheckbox = ({
   stageIds,
   isChecked,
   onSetChecked,
@@ -129,7 +129,7 @@ const TriStateCheckbox = ({
   )
 }
 
-const CountTag = ({ stageIds, isChecked }: { stageIds: string[]; isChecked: (stageId: string) => boolean }) => (
+export const CountTag = ({ stageIds, isChecked }: { stageIds: string[]; isChecked: (stageId: string) => boolean }) => (
   <Tag minimal>
     {countChecked(stageIds, isChecked)}/{stageIds.length}
   </Tag>
@@ -236,47 +236,6 @@ export const StagePopover = memo(
     )
   },
 )
-
-export const StageButton = memo(() => {
-  const ga = useGameAdapter()
-  const cpp = useCpp()
-  const stageInfo = ga.getStageInfos()
-  const [forbiddenStageIds, setForbiddenStageIds] = useAtom(cpp.preferenceAtoms.forbiddenStageIdsAtom)
-  const allStageIds = Object.keys(stageInfo)
-  const now = without(forbiddenStageIds, allStageIds).length
-  const all = allStageIds.length
-
-  return (
-    <Popover
-      usePortal={true}
-      minimal={true}
-      content={
-        <StagePopover
-          isChecked={(stageId) => !forbiddenStageIds.includes(stageId)}
-          onSetChecked={(ids, checked) =>
-            setForbiddenStageIds((t) => (checked ? without(ids, t) : [...t, ...without(t, ids)]))
-          }
-        />
-      }
-      position="bottom-left"
-    >
-      <Button
-        icon={'layers'}
-        variant="minimal"
-        endIcon={
-          <>
-            <Tag minimal className="cpp-very-compact">
-              {now}/{all}
-            </Tag>
-            <Icon icon={'chevron-down'} />
-          </>
-        }
-      >
-        <span className="cpp-very-compact">{gt.gettext('关卡')}</span>
-      </Button>
-    </Popover>
-  )
-})
 
 export const SoulButton = memo(() => {
   const cpp = useCpp()

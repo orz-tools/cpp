@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { arknightsZoneCategory, arknightsZoneSortKey } from './zones'
+import { arknightsChapterLabel, arknightsZoneCategory, arknightsZoneSortKey } from './zones'
 
 describe('arknightsZoneCategory', () => {
   it('maps every zone type to its category', () => {
@@ -55,5 +55,29 @@ describe('arknightsZoneSortKey', () => {
     const fallback = arknightsZoneSortKey('act9mainss_zone1', 'MAINLINE_ACTIVITY', ['ST-1'])
     expect(fallback).toBe(arknightsZoneSortKey('act9mainss_zone1', 'MAINLINE_RETRO', []))
     expect(fallback > arknightsZoneSortKey('main_14', 'MAINLINE', ['14-1'])).toBe(true)
+  })
+})
+
+describe('arknightsChapterLabel', () => {
+  it("writes a later chapter number in the template's numerals", () => {
+    expect(arknightsChapterLabel('第十四章', 14, 15)).toBe('第十五章')
+    expect(arknightsChapterLabel('第十四章', 14, 21)).toBe('第二十一章')
+    expect(arknightsChapterLabel('第十四章', 14, 10)).toBe('第十章')
+    expect(arknightsChapterLabel('Episode 14', 14, 15)).toBe('Episode 15')
+    expect(arknightsChapterLabel('에피소드 14', 14, 15)).toBe('에피소드 15')
+  })
+
+  it('matches only the whole template number', () => {
+    expect(arknightsChapterLabel('第二十四章', 14, 15)).toBeUndefined()
+    expect(arknightsChapterLabel('Episode 140', 14, 15)).toBeUndefined()
+  })
+
+  it('gives up on a template without its chapter number', () => {
+    expect(arknightsChapterLabel('Prologue', 14, 15)).toBeUndefined()
+  })
+
+  it('gives up outside 1 to 99', () => {
+    expect(arknightsChapterLabel('第十四章', 14, 0)).toBeUndefined()
+    expect(arknightsChapterLabel('第十四章', 14, 100)).toBeUndefined()
   })
 })

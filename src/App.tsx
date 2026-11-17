@@ -25,7 +25,7 @@ import { HelpButton } from './components/AboutList'
 import { Chamber, ChamberPortal } from './components/Chamber'
 import { CharacterDossier } from './components/CharacterDossier'
 import { CharacterList } from './components/CharacterList'
-import { ConfigButton, MaybeSoulButton, RegionButton, StageButton } from './components/ConfigUi'
+import { ConfigButton, MaybeSoulButton, RegionButton } from './components/ConfigUi'
 import { Err, ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { ImportPasteBox } from './components/ImportPasteBox'
@@ -181,7 +181,6 @@ const App = memo(() => {
           <UndoButtons />
           <Navbar.Divider />
           <ValueOptionButton />
-          <StageButton />
           <ConfigButton />
           <MaybeSoulButton />
         </Navbar.Group>
