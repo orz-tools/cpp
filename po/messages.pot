@@ -552,6 +552,10 @@ msgstr ""
 msgid "查询失败"
 msgstr ""
 
+#: src/components/Value.tsx:163
+msgid "样本数"
+msgstr ""
+
 #: src/components/RetiredGame.tsx:93
 msgid "档案 %1 的数据可以存成文件留作备份，也可以直接复制，到旧版里粘贴。"
 msgstr ""
@@ -2390,7 +2394,7 @@ msgctxt "value config"
 msgid "价值"
 msgstr ""
 
-#: src/components/Value.tsx:269
+#: src/components/Value.tsx:270
 msgctxt "value config"
 msgid "价值计算"
 msgstr ""
@@ -2611,6 +2615,41 @@ msgstr ""
 #: src/components/arknights/ValueConfigMenu.tsx:250
 msgctxt "value config"
 msgid "龙门币系数"
+msgstr ""
+
+#: src/components/Value.tsx:39
+msgctxt "value type"
+msgid "(按 1 源石 = 135 AP)"
+msgstr ""
+
+#: src/components/Value.tsx:40
+msgctxt "value type"
+msgid "(按 648 元 = 185 源石)"
+msgstr ""
+
+#: src/components/Value.tsx:41
+msgctxt "value type"
+msgid "(按每小时回复 10 AP)"
+msgstr ""
+
+#: src/components/Value.tsx:33
+msgctxt "value type"
+msgid "人民币"
+msgstr ""
+
+#: src/components/Value.tsx:34
+msgctxt "value type"
+msgid "时间"
+msgstr ""
+
+#: src/components/Value.tsx:93
+msgctxt "value type"
+msgid "暂无价值"
+msgstr ""
+
+#: src/components/Value.tsx:32
+msgctxt "value type"
+msgid "源石"
 msgstr ""
 
 #: src/pkg/cpp-arknights/survey.ts:25
