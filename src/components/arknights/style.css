@@ -3102,10 +3102,12 @@ section:first-child > .cpp-stages-wide-section {
   height: min(82vh, 780px);
 }
 
+/* 放不下时（英文界面）右边的按钮整组换到第二行，靠右 */
 .cpp-skins-wide-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px 8px;
   flex: none;
   padding-bottom: 8px;
   white-space: nowrap;
@@ -3124,7 +3126,14 @@ section:first-child > .cpp-stages-wide-section {
   flex: 1 1 auto;
 }
 
-.cpp-skins-wide-bar > .cpp-skins-muted {
+.cpp-skins-wide-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.cpp-skins-wide-actions > .cpp-skins-muted {
   font-size: 12px;
 }
 

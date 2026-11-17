@@ -3299,62 +3299,62 @@ msgctxt "module mission scope"
 msgid "计划内"
 msgstr "In plan"
 
-#: src/components/arknights/SkinTimeline.tsx:218
+#: src/components/arknights/SkinTimeline.tsx:216
 msgctxt "month"
 msgid "1 月"
 msgstr "Jan"
 
-#: src/components/arknights/SkinTimeline.tsx:227
+#: src/components/arknights/SkinTimeline.tsx:225
 msgctxt "month"
 msgid "10 月"
 msgstr "Oct"
 
-#: src/components/arknights/SkinTimeline.tsx:228
+#: src/components/arknights/SkinTimeline.tsx:226
 msgctxt "month"
 msgid "11 月"
 msgstr "Nov"
 
-#: src/components/arknights/SkinTimeline.tsx:229
+#: src/components/arknights/SkinTimeline.tsx:227
 msgctxt "month"
 msgid "12 月"
 msgstr "Dec"
 
-#: src/components/arknights/SkinTimeline.tsx:219
+#: src/components/arknights/SkinTimeline.tsx:217
 msgctxt "month"
 msgid "2 月"
 msgstr "Feb"
 
-#: src/components/arknights/SkinTimeline.tsx:220
+#: src/components/arknights/SkinTimeline.tsx:218
 msgctxt "month"
 msgid "3 月"
 msgstr "Mar"
 
-#: src/components/arknights/SkinTimeline.tsx:221
+#: src/components/arknights/SkinTimeline.tsx:219
 msgctxt "month"
 msgid "4 月"
 msgstr "Apr"
 
-#: src/components/arknights/SkinTimeline.tsx:222
+#: src/components/arknights/SkinTimeline.tsx:220
 msgctxt "month"
 msgid "5 月"
 msgstr "May"
 
-#: src/components/arknights/SkinTimeline.tsx:223
+#: src/components/arknights/SkinTimeline.tsx:221
 msgctxt "month"
 msgid "6 月"
 msgstr "Jun"
 
-#: src/components/arknights/SkinTimeline.tsx:224
+#: src/components/arknights/SkinTimeline.tsx:222
 msgctxt "month"
 msgid "7 月"
 msgstr "Jul"
 
-#: src/components/arknights/SkinTimeline.tsx:225
+#: src/components/arknights/SkinTimeline.tsx:223
 msgctxt "month"
 msgid "8 月"
 msgstr "Aug"
 
-#: src/components/arknights/SkinTimeline.tsx:226
+#: src/components/arknights/SkinTimeline.tsx:224
 msgctxt "month"
 msgid "9 月"
 msgstr "Sep"
@@ -4379,13 +4379,13 @@ msgctxt "skins"
 msgid "不知道获得时间"
 msgstr "Acquired at an unknown time"
 
-#: src/components/arknights/SkinTimeline.tsx:354
+#: src/components/arknights/SkinTimeline.tsx:352
 msgctxt "skins"
 msgid "今天"
 msgstr "Today"
 
 #. %s: date
-#: src/components/arknights/SkinTimeline.tsx:94
+#: src/components/arknights/SkinTimeline.tsx:93
 msgctxt "skins"
 msgid "今天 %s"
 msgstr "Today %s"
@@ -4402,7 +4402,7 @@ msgctxt "skins"
 msgid "任务奖励"
 msgstr "Mission reward"
 
-#: src/components/arknights/SkinTimeline.tsx:310
+#: src/components/arknights/SkinTimeline.tsx:308
 msgctxt "skins"
 msgid "你的获得"
 msgstr "Acquired"
@@ -4480,7 +4480,7 @@ msgid "回到全部"
 msgstr "Back to all"
 
 #: src/components/arknights/SkinImages.tsx:45
-#: src/components/arknights/SkinTimeline.tsx:212
+#: src/components/arknights/SkinTimeline.tsx:210
 msgctxt "skins"
 msgid "复刻"
 msgstr "Rerun"
@@ -4555,7 +4555,7 @@ msgid "排序"
 msgstr "Sort"
 
 #: src/components/arknights/SkinImages.tsx:44
-#: src/components/arknights/SkinTimeline.tsx:211
+#: src/components/arknights/SkinTimeline.tsx:209
 msgctxt "skins"
 msgid "新装"
 msgstr "New"
@@ -4621,7 +4621,7 @@ msgctxt "skins"
 msgid "点半身像切换已有 / 缺"
 msgstr "Click a portrait to switch owned / missing"
 
-#: src/components/arknights/SkinTimeline.tsx:126
+#: src/components/arknights/SkinTimeline.tsx:124
 msgctxt "skins"
 msgid "现在没有在卖的时装"
 msgstr "No outfits on sale now"

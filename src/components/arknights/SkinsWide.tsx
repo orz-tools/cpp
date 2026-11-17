@@ -343,42 +343,43 @@ export const SkinsWide = memo(() => {
             { value: 'acquired', label: gt.pgettext('skins', '按获得时间') },
           ]}
         />
-        <span className="cpp-skins-spacer" />
-        {model.prts.status === 'error' ? (
-          <span className="cpp-skins-wide-error">
-            <Icon icon="warning-sign" size={12} />
-            {gt.pgettext('skins', 'PRTS 数据载入失败')}
-            <Button variant="minimal" size="small" text={gt.pgettext('skins', '重试')} onClick={model.prts.retry} />
-          </span>
-        ) : null}
-        {model.canImportSkland ? (
-          <Button
-            variant="minimal"
-            size="small"
-            icon="import"
-            text={gt.pgettext('skins', '从森空岛导入')}
-            onClick={openSkland}
-          />
-        ) : null}
-        {marking ? (
-          <>
-            <span className="cpp-skins-muted">{gt.pgettext('skins', '点半身像切换已有 / 缺')}</span>
+        <span className="cpp-skins-wide-actions">
+          {model.prts.status === 'error' ? (
+            <span className="cpp-skins-wide-error">
+              <Icon icon="warning-sign" size={12} />
+              {gt.pgettext('skins', 'PRTS 数据载入失败')}
+              <Button variant="minimal" size="small" text={gt.pgettext('skins', '重试')} onClick={model.prts.retry} />
+            </span>
+          ) : null}
+          {model.canImportSkland ? (
             <Button
+              variant="minimal"
               size="small"
-              intent="primary"
-              text={gt.pgettext('skins', '完成')}
-              onClick={() => setMarking(false)}
+              icon="import"
+              text={gt.pgettext('skins', '从森空岛导入')}
+              onClick={openSkland}
             />
-          </>
-        ) : (
-          <Button
-            variant="minimal"
-            size="small"
-            icon="edit"
-            text={gt.pgettext('skins', '手动标记')}
-            onClick={() => setMarking(true)}
-          />
-        )}
+          ) : null}
+          {marking ? (
+            <>
+              <span className="cpp-skins-muted">{gt.pgettext('skins', '点半身像切换已有 / 缺')}</span>
+              <Button
+                size="small"
+                intent="primary"
+                text={gt.pgettext('skins', '完成')}
+                onClick={() => setMarking(false)}
+              />
+            </>
+          ) : (
+            <Button
+              variant="minimal"
+              size="small"
+              icon="edit"
+              text={gt.pgettext('skins', '手动标记')}
+              onClick={() => setMarking(true)}
+            />
+          )}
+        </span>
       </div>
       <WideTimeline model={model} />
       <div className="cpp-skins-wide-main">
