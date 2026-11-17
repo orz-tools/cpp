@@ -32,12 +32,13 @@ import {
   stateText,
   untilText,
 } from './SkinImages'
-import { WideGantt } from './SkinTimeline'
+import { TimelineHead, TimelineToggle, WideGantt } from './SkinTimeline'
 import {
   SkinModel,
   SkinState,
   WideSort,
   selectedPeriodAtom,
+  skinPrefsAtom,
   useSelectedPeriod,
   useSkinFilter,
   useSkinModel,
@@ -282,6 +283,22 @@ const BrandSteps = memo(
   },
 )
 
+/** 甘特图可以收起，和面板的档期各记各的；收起时选中的一期照旧 */
+const WideTimeline = memo(({ model }: { model: SkinModel }) => {
+  const [prefs, setPrefs] = useAtom(skinPrefsAtom)
+  const open = !prefs.wideTimelineCollapsed
+  const onToggle = () => setPrefs({ ...prefs, wideTimelineCollapsed: open })
+  return (
+    <div className={'cpp-skins-wide-chart' + (open ? '' : ' is-collapsed')}>
+      {open ? (
+        <WideGantt model={model} corner={<TimelineToggle open onToggle={onToggle} />} />
+      ) : (
+        <TimelineHead open={false} onToggle={onToggle} now={model.now} />
+      )}
+    </div>
+  )
+})
+
 export const SkinsWide = memo(() => {
   const model = useSkinModel()
   const period = useSelectedPeriod(model)
@@ -363,9 +380,7 @@ export const SkinsWide = memo(() => {
           />
         )}
       </div>
-      <div className="cpp-skins-wide-chart">
-        <WideGantt model={model} />
-      </div>
+      <WideTimeline model={model} />
       <div className="cpp-skins-wide-main">
         <BrandSteps model={model} period={period} onPick={pickBrand} />
         <div className="cpp-skins-wide-content" ref={contentRef} key={period?.key ?? sort}>

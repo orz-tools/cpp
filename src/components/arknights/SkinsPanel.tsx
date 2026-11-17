@@ -24,7 +24,6 @@ import {
   SkinTile,
   VoucherMark,
   acquiredText,
-  formatMonthDay,
   onButtonKey,
   periodName,
   periodTimeText,
@@ -32,7 +31,7 @@ import {
   skinSubtitle,
   untilText,
 } from './SkinImages'
-import { PanelTimeline } from './SkinTimeline'
+import { PanelTimeline, TimelineHead } from './SkinTimeline'
 import { SkinsWide } from './SkinsWide'
 import {
   SkinModel,
@@ -87,22 +86,7 @@ const TimelineBlock = memo(({ model }: { model: SkinModel }) => {
   const open = !prefs.timelineCollapsed
   return (
     <div className="cpp-skins-time">
-      <div className="cpp-skins-time-head">
-        <button
-          type="button"
-          className="cpp-skins-time-toggle"
-          aria-expanded={open}
-          onClick={() => setPrefs({ ...prefs, timelineCollapsed: open })}
-        >
-          <Icon icon={open ? 'chevron-down' : 'chevron-right'} size={12} />
-          {gt.pgettext('skins', '档期')}
-        </button>
-        <span className="cpp-skins-today-text">
-          {gt
-            .pgettext('skins', '今天 %s') /* I10N: %s: date */
-            .replaceAll('%s', formatMonthDay(model.now))}
-        </span>
-      </div>
+      <TimelineHead open={open} onToggle={() => setPrefs({ ...prefs, timelineCollapsed: open })} now={model.now} />
       {open ? <PanelTimeline model={model} /> : null}
     </div>
   )

@@ -36,17 +36,23 @@ export function setSkinOwned(cpp: UserDataHost, ids: readonly string[], owned: b
 }
 
 export interface SkinPrefs {
-  /** 档期那一块收起来了 */
+  /** 面板的档期那一块收起来了 */
   timelineCollapsed: boolean
+  /** 大窗口的甘特图收起来了；和面板各记各的，面板上收起是因为侧栏窄 */
+  wideTimelineCollapsed: boolean
 }
 
-const defaultPrefs: SkinPrefs = { timelineCollapsed: false }
+const defaultPrefs: SkinPrefs = { timelineCollapsed: false, wideTimelineCollapsed: false }
 
+/** 逐个字段读：旧版本只存了 timelineCollapsed，一个字段坏了也不连累另一个 */
 export function readSkinPrefs(stored: unknown): SkinPrefs {
   if (typeof stored !== 'object' || stored == null) return defaultPrefs
-  const { timelineCollapsed } = stored as Partial<Record<keyof SkinPrefs, unknown>>
-  if (typeof timelineCollapsed !== 'boolean') return defaultPrefs
-  return { timelineCollapsed }
+  const { timelineCollapsed, wideTimelineCollapsed } = stored as Partial<Record<keyof SkinPrefs, unknown>>
+  return {
+    timelineCollapsed: typeof timelineCollapsed === 'boolean' ? timelineCollapsed : defaultPrefs.timelineCollapsed,
+    wideTimelineCollapsed:
+      typeof wideTimelineCollapsed === 'boolean' ? wideTimelineCollapsed : defaultPrefs.wideTimelineCollapsed,
+  }
 }
 
 // 和 cpp_sidebar 一样记在本机、不分档案

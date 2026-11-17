@@ -3144,6 +3144,27 @@ section:first-child > .cpp-stages-wide-section {
     inset 0 -1px 0 rgba(17, 20, 24, 0.15);
 }
 
+.cpp-skins-wide-chart.is-collapsed {
+  padding: 0 0 4px;
+}
+
+.cpp-skins-wide-chart .cpp-skins-time-head {
+  padding: 4px 6px 2px;
+}
+
+/* 收起按钮放进月份那一行，和泳道名对齐 */
+.cpp-skins-gantt-corner {
+  position: absolute;
+  left: 6px;
+  top: -2px;
+  font-size: 12px;
+  color: var(--bp-palette-dark-gray-5, #404854);
+}
+
+.cpp-skins-gantt-corner .cpp-skins-time-toggle {
+  padding: 0 2px;
+}
+
 .cpp-skins-gantt-band {
   fill: var(--bp-palette-light-gray-5, #f6f7f9);
 }
