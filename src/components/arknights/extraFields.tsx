@@ -1,7 +1,11 @@
+import { Classes } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
-import { memo } from 'react'
+import React, { memo } from 'react'
 import { useAtoms, useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter, ArknightsCharacterStatus, Character } from '../../pkg/cpp-arknights'
+import { BaseSkillState, baseSkillState, reached, unlockCost, unlockFrom } from '../../pkg/cpp-arknights/baseSkills'
+import { getBuildingBuffDetail } from '../../pkg/cpp-arknights/details'
+import { parseRichText } from '../../pkg/cpp-arknights/richText'
 import { TrainingCost } from '../../pkg/cpp-arknights/trainingCost'
 import { FieldContext, Querier } from '../../pkg/cpp-basic'
 import { gt } from '../../pkg/gt'
@@ -9,6 +13,10 @@ import { CharacterListColumn, createSimpleExtraField, percentageColumnWidth } fr
 import { CachedImg } from '../Icons'
 import { ValueTag } from '../Value'
 import { IGameComponent } from '../types'
+import { BaseSkillEffect } from './BaseSkillEffect'
+import { unlockShort } from './baseSkillText'
+import { RichText } from './statusEditor/Detail'
+import { useDetails } from './useDetails'
 
 const percentageFormatter = (value: number) => {
   return Number.isFinite(value) ? `${(value * 100).toFixed(2)}%` : '???'
@@ -82,7 +90,108 @@ function createCostField(field: string, read: CostReader) {
   }
 }
 
+type BaseSkillContext = FieldContext<Arknights, Character, [number, number]>
+
+/**
+ * The row's skill, read with the store's current level and plan rather than the query's: a goal changed at the end of
+ * the row changes the cells at once. The plan comes from goalCharacters, since goalCharacter(key) falls back to the
+ * current level when there is none.
+ */
+function useBaseSkillRow(context: BaseSkillContext) {
+  const ga = useGameAdapter<Arknights>() as ArknightsAdapter
+  const atoms = useAtoms<Arknights>()
+  const key = context.character.key
+  const current = useAtomValue(atoms.currentCharacter(key))
+  const goal = useAtomValue(atoms.goalCharacters)[key]
+  const [slot, index] = context.args
+  const skill = context.character.baseSkills[slot]?.[index]
+  const { state, owned } = baseSkillState(ga, context.character, current, goal, slot, index)
+  return { ga, current, skill, state, owned }
+}
+
+const isHave = (state: BaseSkillState) => state === 'unlocked' || state === 'replaced'
+
+/** Two gray bars where the text and the summary go, so the row keeps its height while the details download */
+const Skeleton = () => (
+  <span className="cpp-bskill-skeleton">
+    <span className={Classes.SKELETON} />
+    <span className={Classes.SKELETON} />
+  </span>
+)
+
+const BaseSkillCell = memo(({ context, width }: { context: BaseSkillContext; width: number }) => {
+  const { ga, skill, state, owned } = useBaseSkillRow(context)
+  const [loaded] = useDetails(ga.getDataManager())
+  if (!skill) return <CharacterListColumn width={width} />
+  const { buff } = skill
+
+  let text: React.ReactNode
+  let title = buff.name
+  if (!loaded) {
+    text = <Skeleton />
+  } else if ('error' in loaded) {
+    text = <span className="cpp-bskill-missing">{gt.pgettext('arknights base skill', '原文没有加载出来')}</span>
+  } else {
+    const detail = getBuildingBuffDetail(loaded.details, buff.id)
+    if (!detail) {
+      text = <span className="cpp-bskill-missing">{gt.pgettext('arknights base skill', '没有这条技能的原文')}</span>
+    } else {
+      const segments = parseRichText(detail.text)
+      text = <RichText segments={segments} details={loaded.details} />
+      title = gt
+        .pgettext('arknights base skill', '%s$name：%s$text') /* I10N: hover text of a base skill: its name and text */
+        .replaceAll('%s$name', buff.name)
+        .replaceAll('%s$text', segments.map((x) => (x.br ? '\n' : x.text)).join(''))
+    }
+  }
+
+  return (
+    <CharacterListColumn width={width} className="cpp-bskill-cell">
+      <CachedImg src={buff.icon} width={28} height={28} className="cpp-bskill-icon" alt="" />
+      <div className="cpp-bskill-text" title={title}>
+        <span className="cpp-bskill-name">{buff.name}</span>
+        {text}
+      </div>
+      <span className="cpp-bskill-state">
+        <span className={'cpp-bskill-chip' + (isHave(state) ? ' is-have' : state === 'planned' ? ' is-plan' : '')}>
+          {unlockShort(skill)}
+        </span>
+        {owned ? null : <span className="cpp-bskill-note">{gt.pgettext('arknights base skill', '未持有')}</span>}
+      </span>
+    </CharacterListColumn>
+  )
+})
+
+const BaseSkillEffectCell = memo(({ context, width }: { context: BaseSkillContext; width: number }) => {
+  const { ga, skill } = useBaseSkillRow(context)
+  const [loaded] = useDetails(ga.getDataManager())
+  const detail = loaded && 'details' in loaded && skill ? getBuildingBuffDetail(loaded.details, skill.buff.id) : null
+  return (
+    <CharacterListColumn width={width} className="cpp-bskill-effect-cell">
+      {!skill ? null : !loaded ? (
+        <Skeleton />
+      ) : detail ? (
+        <BaseSkillEffect buff={skill.buff} detail={detail} variant="cell" />
+      ) : null}
+    </CharacterListColumn>
+  )
+})
+
+const UnlockCostCell = memo(({ context, width }: { context: BaseSkillContext; width: number }) => {
+  const { ga, current, skill, state } = useBaseSkillRow(context)
+  // Nothing to pay for a skill unlocked, or one an operator not owned has from elite 0 level 1
+  const free = !skill || isHave(state) || reached(unlockFrom(ga, context.character, current), skill)
+  return (
+    <CharacterListColumn width={width} className="cpp-bskill-cost-cell">
+      {free ? null : <ValueTag value={unlockCost(ga, context.character, current, skill)} minimal />}
+    </CharacterListColumn>
+  )
+})
+
 export const extraFields: IGameComponent['extraFields'] = {
+  building: { width: 380, C: BaseSkillCell },
+  'building.efficiency': { width: 170, C: BaseSkillEffectCell },
+  'building.unlockCost': { width: 76, C: UnlockCostCell },
   skill: {
     width: 150,
     C: memo(({ context, width }: { context: FieldContext<Arknights, Character, [number]>; width: number }) => {

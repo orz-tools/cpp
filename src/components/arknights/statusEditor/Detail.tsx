@@ -1,6 +1,5 @@
 import { Button, Classes, Icon, Tooltip } from '@blueprintjs/core'
-import React, { memo, useEffect, useState } from 'react'
-import { useGameDataGeneration } from '../../../Cpp'
+import React, { memo } from 'react'
 import {
   Details,
   getEquipDetail,
@@ -22,6 +21,7 @@ import {
   resolvePlaceholders,
 } from '../../../pkg/cpp-arknights/richText'
 import { gt } from '../../../pkg/gt'
+import { useDetails } from '../useDetails'
 import { useEditor } from './context'
 import { skillLevelText } from './text'
 
@@ -45,31 +45,6 @@ export const DetailToggle = memo(({ id, panelId, name }: { id: string; panelId: 
   )
 })
 
-type Loaded = { details: Details } | { error: true } | null
-
-function useDetails() {
-  const { dm } = useEditor()
-  const generation = useGameDataGeneration()
-  const [attempt, setAttempt] = useState(0)
-  // A result answers one request; until the one for newer game data or a retry arrives, the panel is loading.
-  const request = `${generation}:${attempt}`
-  const [result, setResult] = useState<{ request: string; loaded: Loaded } | null>(null)
-  useEffect(() => {
-    let alive = true
-    void dm.loadDetails().then(
-      (details) => alive && setResult({ request, loaded: { details } }),
-      (e) => {
-        console.error('Failed to load the details', e)
-        if (alive) setResult({ request, loaded: { error: true } })
-      },
-    )
-    return () => {
-      alive = false
-    }
-  }, [dm, request])
-  return [result?.request === request ? result.loaded : null, () => setAttempt((x) => x + 1)] as const
-}
-
 /** Loading, failed, or missing the entry: the panel says so; otherwise it renders what it is given. */
 const DetailPanel = memo(
   ({
@@ -81,7 +56,7 @@ const DetailPanel = memo(
     missing: string
     children: (details: Details) => React.ReactNode | null
   }) => {
-    const [loaded, retry] = useDetails()
+    const [loaded, retry] = useDetails(useEditor().dm)
     let body: React.ReactNode
     if (!loaded) {
       body = (
