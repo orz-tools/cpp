@@ -103,7 +103,7 @@ export function parseRichText(template: string, bb?: Blackboard, bbTarget?: Blac
         const ctx = context()
         const prev = out[out.length - 1]
         let sign = ''
-        if (prev && !prev.br && prev.to === undefined && sameContext(prev, ctx) && /[+\-]$/.test(prev.text)) {
+        if (prev && !prev.br && prev.to === undefined && sameContext(prev, ctx) && /[+-]$/.test(prev.text)) {
           sign = prev.text.slice(-1)
           prev.text = prev.text.slice(0, -1)
           if (!prev.text) out.pop()

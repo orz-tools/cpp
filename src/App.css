@@ -692,25 +692,6 @@ body .bp6-navbar-group {
   height: 40px;
 }
 
-.cpp-charstat-group {
-  white-space: nowrap;
-}
-
-.cpp-charstat-group > .bp6-tag {
-  height: 26px;
-}
-
-/* Blueprint 6 turned tags in a dark group dark; these groups sit on the light popover, as in Blueprint 5. */
-.cpp-charstat-group .bp6-dark > .bp6-tag {
-  background-color: #c5cbd3;
-  color: #1c2127;
-}
-
-/* Blueprint 6 centres a tag's only child; the tags here align their text themselves. */
-body .bp6-tag:not(.bp6-fill) > .bp6-fill:only-child {
-  text-align: inherit;
-}
-
 .cpp-quick-filter > .bp6-navbar-divider {
   margin: 0 5px;
 }
