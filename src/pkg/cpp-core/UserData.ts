@@ -560,6 +560,11 @@ export interface UserData<G extends IGame> {
   savedQueries: SavedQuery[]
   /** 「常看」的自定义版本，缺省时用游戏给出的默认 */
   favQuery?: QueryParam
+  /**
+   * 「更多视图」里游戏预设改过的列宽：菜单那一行的 key → 列 → px，一行的几段共用。
+   * 只记改过的列，没改的跟着预设走
+   */
+  presetWidths?: Record<string, Record<string, number>>
 }
 
 export interface SavedQuery {

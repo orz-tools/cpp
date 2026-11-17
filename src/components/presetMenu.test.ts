@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { ArknightsAdapter } from '../pkg/cpp-arknights/GameAdapter'
 import { PredefinedQuery, PredefinedQueryGroup } from '../pkg/cpp-basic'
-import { presetMenu } from './presetMenu'
+import { presetMenu, presetRowKey } from './presetMenu'
 
 // 预设取自 ArknightsAdapter；导入它会顺带初始化 localforage，测试环境里没有存储后端
 vi.mock('localforage', () => {
@@ -96,5 +96,19 @@ describe('presetMenu', () => {
     it('leaves the base skills out until the data has them', () => {
       expect(presetMenu(groups, presetsWith(false)).map((x) => x.group.id)).toEqual(['stats', 'cost'])
     })
+  })
+})
+
+describe('presetRowKey', () => {
+  it('gives a segment the key of its row, and any other preset its own key', () => {
+    const presets = {
+      x: preset('x', 'a', ['x.all']),
+      'x.all': preset('x all', 'a'),
+      y: preset('y', 'a'),
+    }
+    expect(presetRowKey(presets, 'x')).toBe('x')
+    expect(presetRowKey(presets, 'x.all')).toBe('x')
+    expect(presetRowKey(presets, 'y')).toBe('y')
+    expect(presetRowKey(presets, 'gone')).toBe('gone')
   })
 })

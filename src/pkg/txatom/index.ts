@@ -20,9 +20,12 @@ type TxStorageAction<T extends object> =
   | [action: 'commit']
   | [action: 'undo']
   | [action: 'redo']
+  | [action: 'amend', draft: (draft: Draft<T>) => void]
 
 export type TxDataAction<T extends object> =
   | [action: 'modify', draft: (draft: Draft<T>) => void]
+  /** 改了不记进撤销/重做，已有的记录照旧可用 */
+  | [action: 'modifyWithoutUndo', draft: (draft: Draft<T>) => void]
   | [action: 'transact', task: () => any]
   | [action: 'undo']
   | [action: 'redo']
@@ -160,6 +163,28 @@ export function txatom<T extends object>(baseAtom: PrimitiveAtom<T>, history = 1
             )
           }
           break
+        case 'amend':
+          {
+            if (storage.level !== 0) throw new Error('Cannot amend in transaction!')
+            const base = get(baseAtom)
+            const amended = produce(base, action[1])
+            if (amended === base) break
+            set(baseAtom, amended)
+            if ('head' in storage) {
+              set(
+                txStorageAtom,
+                (storage = produce(storage, (draft) => {
+                  // 和 begin 一样：base 在外面被换过时，旧记录已经对不上它了
+                  if (storage.head !== base) {
+                    draft.undos = []
+                    draft.redos = []
+                  }
+                  draft.head = get(baseAtom) as Draft<T>
+                })),
+              )
+            }
+          }
+          break
       }
       return get(txStorageAtom)
     },
@@ -187,6 +212,11 @@ export function txatom<T extends object>(baseAtom: PrimitiveAtom<T>, history = 1
               set(txAtom, 'commit')
             }
           }
+          break
+        }
+
+        case 'modifyWithoutUndo': {
+          set(txAtom, 'amend', action[1])
           break
         }
 

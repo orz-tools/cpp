@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Cpp } from '../Cpp'
-import { QueryParam, RootCharacterQuery } from '../pkg/cpp-basic'
+import { PredefinedQuery, QueryParam, RootCharacterQuery } from '../pkg/cpp-basic'
 import {
   HoldingAbsent,
   HoldingTrainable,
@@ -10,7 +10,7 @@ import {
   defaultFavQuery,
   holdingAssertion,
 } from './characterQuery'
-import { remove, saveAs, setFavQuery } from './queryEditor/savedQueries'
+import { remove, saveAs, setFavQuery, setViewColumnWidth } from './queryEditor/savedQueries'
 
 // cpp-basic 导入时会初始化 localforage，测试环境里没有存储后端
 vi.mock('localforage', () => {
@@ -22,6 +22,17 @@ vi.mock('localforage', () => {
 vi.mock('./Toaster', () => ({ AppToaster: new Promise(() => {}) }))
 
 const order: QueryParam['order'] = [['rarity', 'DESC']]
+
+const presets: Record<string, PredefinedQuery> = {
+  cost: {
+    name: '成本',
+    group: 'cost',
+    segments: [{ key: 'cost.all', label: '全部', title: '全部' }],
+    query: { select: ['a', 'b'], widths: { b: 60 } },
+  },
+  'cost.all': { name: '成本（全部）', group: 'cost', query: { select: ['a', 'b'], widths: { b: 60 } } },
+  other: { name: '别的', group: 'cost', query: { select: ['a'] } },
+}
 
 class StubAdapter {
   public static getRegions() {
@@ -37,7 +48,7 @@ class StubAdapter {
     return { _: 'field', field: 'elite', op: '<', operand: 2 }
   }
   public getPredefinedQueries() {
-    return {}
+    return presets
   }
   public getPredefinedQueryGroups() {
     return []
@@ -109,6 +120,58 @@ describe('compileQuery', () => {
     expect(compileQuery('#*' + id, cpp)).toEqual(query)
     remove(cpp, id)
     expect(() => compileQuery('#*' + id, cpp)).toThrow('Saved query not found')
+  })
+})
+
+describe('setViewColumnWidth', () => {
+  it('lays a resized preset column over the preset, on every version of its row', () => {
+    const cpp = createCpp()
+    setViewColumnWidth(cpp, '#?cost.all', 'a', 120)
+    expect(cpp.store.get(cpp.atoms.atoms.dataAtom).presetWidths).toEqual({ cost: { a: 120 } })
+    expect(compileQuery('#?cost', cpp)).toEqual({ select: ['a', 'b'], widths: { a: 120, b: 60 } })
+    expect(compileQuery('#?cost.all', cpp).widths).toEqual({ a: 120, b: 60 })
+    expect(compileQuery('#?other', cpp)).toBe(presets.other.query)
+  })
+
+  it('forgets a preset once its last resized column is reset', () => {
+    const cpp = createCpp()
+    setViewColumnWidth(cpp, '#?cost', 'a', 120)
+    setViewColumnWidth(cpp, '#?other', 'a', 80)
+    setViewColumnWidth(cpp, '#?cost', 'a', undefined)
+    expect(cpp.store.get(cpp.atoms.atoms.dataAtom).presetWidths).toEqual({ other: { a: 80 } })
+    expect(compileQuery('#?cost', cpp)).toBe(presets.cost.query)
+    setViewColumnWidth(cpp, '#?other', 'a', undefined)
+    expect(cpp.store.get(cpp.atoms.atoms.dataAtom)).not.toHaveProperty('presetWidths')
+  })
+
+  it('writes a saved view back into its own query', () => {
+    const cpp = createCpp()
+    const id = saveAs(cpp, '六星', { select: ['a'] })
+    setViewColumnWidth(cpp, '#*' + id, 'a', 90)
+    expect(compileQuery('#*' + id, cpp)).toEqual({ select: ['a'], widths: { a: 90 }, order })
+    setViewColumnWidth(cpp, '#*' + id, 'a', undefined)
+    expect(cpp.store.get(cpp.atoms.atoms.dataAtom).savedQueries[0].query).toEqual({ select: ['a'] })
+  })
+
+  it('leaves the undo history alone', () => {
+    const cpp = createCpp()
+    const { dataAtom, undoCounterAtom } = cpp.atoms.atoms
+    const id = saveAs(cpp, '六星', { select: ['a'] })
+    setViewColumnWidth(cpp, '#*' + id, 'a', 90)
+    setViewColumnWidth(cpp, '#?cost', 'a', 120)
+    expect(cpp.store.get(undoCounterAtom)).toBe(1)
+    cpp.store.set(dataAtom, 'undo')
+    expect(cpp.store.get(dataAtom).savedQueries).toEqual([])
+    expect(cpp.store.get(dataAtom).presetWidths).toEqual({ cost: { a: 120 } })
+  })
+
+  it('writes the customized 常看 back, and leaves the built-in one as it is', () => {
+    const cpp = createCpp()
+    setViewColumnWidth(cpp, ListModeFav, 'a', 90)
+    expect(cpp.store.get(cpp.atoms.atoms.dataAtom).favQuery).toBeUndefined()
+    setFavQuery(cpp, { select: ['a'] })
+    setViewColumnWidth(cpp, ListModeFav, 'a', 90)
+    expect(cpp.store.get(cpp.atoms.atoms.dataAtom).favQuery).toEqual({ select: ['a'], widths: { a: 90 } })
   })
 })
 

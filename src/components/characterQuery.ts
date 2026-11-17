@@ -12,6 +12,7 @@ import {
   QueryParam,
 } from '../pkg/cpp-basic'
 import { gt, lpstr } from '../pkg/gt'
+import { presetRowKey } from './presetMenu'
 
 export { SavedQueryPrefix }
 
@@ -158,7 +159,10 @@ export function compileQuery(query: string, cpp: Cpp<any>): QueryParam {
   if (query.startsWith(PredefinedGameQueryPrefix)) {
     const pgq = cpp.gameAdapter.getPredefinedQueries()
     const k = query.slice(PredefinedGameQueryPrefix.length)
-    if (pgq[k]) return pgq[k].query
+    if (pgq[k]) {
+      const widths = cpp.store.get(cpp.atoms.atoms.dataAtom).presetWidths?.[presetRowKey(pgq, k)]
+      return widths ? { ...pgq[k].query, widths: { ...pgq[k].query.widths, ...widths } } : pgq[k].query
+    }
     throw new Error('Invalid predefined game query')
   }
 

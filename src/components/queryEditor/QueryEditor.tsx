@@ -108,7 +108,7 @@ function describeSource(cpp: Cpp<any>, ref: string | undefined, data: UserData<a
     if (view) return { kind: 'view', ref, name: view, query: compileQuery(ref, cpp) }
     if (ref.startsWith(PredefinedGameQueryPrefix)) {
       const pgq = cpp.gameAdapter.getPredefinedQueries()[ref.slice(PredefinedGameQueryPrefix.length)]
-      if (pgq) return { kind: 'view', ref, name: String(pgq.name), query: pgq.query }
+      if (pgq) return { kind: 'view', ref, name: String(pgq.name), query: compileQuery(ref, cpp) }
     }
   } catch {
     // 来源失效时当作没有来源

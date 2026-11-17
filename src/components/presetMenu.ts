@@ -30,3 +30,11 @@ export function presetMenu(
     return inGroup.length > 0 ? [{ group, rows: inGroup }] : []
   })
 }
+
+/** 预设所在那一行的 key：一行的各段是同一个视图的几版，按行存的东西（如列宽）各段共用 */
+export function presetRowKey(presets: Readonly<Record<string, PredefinedQuery>>, key: string): string {
+  for (const [k, preset] of Object.entries(presets)) {
+    if (preset.segments?.some((s) => s.key === key)) return k
+  }
+  return key
+}

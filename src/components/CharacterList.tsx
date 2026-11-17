@@ -990,6 +990,8 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   )
 
   const editing = isCustomQuery(param.query)
+  // 编辑时一直在，免得加上第一列时整个列表往下一跳
+  const wantHeader = editing || extraColumns.length > 0
   const columnWidths = useColumnWidths(param.query)
   const [preview, setPreview] = useState<{ id: string; width: number }>()
   const widths = useMemo(
@@ -1014,7 +1016,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   )
 
   const columnHeads = useMemo(() => {
-    if (!editing || !query) return []
+    if (!query) return []
     const entries = listQueryFields(query)
     return extraColumns.map(({ id, field }, i) => ({
       id,
@@ -1022,7 +1024,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
       width: widths[i],
       defaultWidth: field.width,
     }))
-  }, [editing, query, extraColumns, widths])
+  }, [query, extraColumns, widths])
 
   const onPreview = useCallback(
     (id: string, width: number | undefined) => setPreview(width == null ? undefined : { id, width }),
@@ -1043,12 +1045,12 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   const [statusWidths, setStatusWidths] = useState<readonly number[]>([])
   const hasRows = rowVirtualizer.getVirtualItems().length > 0
   useLayoutEffect(() => {
-    if (!editing || !hasRows) return
+    if (!wantHeader || !hasRows) return
     const row = parentRef.current?.querySelector('.cpp-char-menu-master')
     if (!row) return
     const measured = [...row.children].slice(-2).map((x) => x.getBoundingClientRect().width)
     setStatusWidths((x) => (deepEqual(x, measured) ? x : measured))
-  }, [editing, hasRows, response])
+  }, [wantHeader, hasRows, response])
 
   const remeasure = useEvent(() => {
     rowVirtualizer.measure()
@@ -1103,7 +1105,8 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
           style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}
           ulRef={parentRef}
         >
-          {editing ? (
+          {/* 一行都还没出现过时量不到状态格，画出来对不齐 */}
+          {wantHeader && statusWidths.length > 0 ? (
             <ColumnHeader
               columns={columnHeads}
               statusWidths={statusWidths}

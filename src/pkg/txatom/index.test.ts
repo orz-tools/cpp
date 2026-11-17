@@ -262,6 +262,84 @@ describe('user data test', () => {
     },
   )
 
+  const amiya = (level: number): CharacterStatus => ({
+    elite: 0,
+    level,
+    skillLevel: 1,
+    skillMaster: {},
+    modLevel: {},
+  })
+
+  myit(
+    'can modify without undo, keeping the history',
+    ({ base, dataAtom, redoCounterAtom, undoCounterAtom, store }) => {
+      store.set(dataAtom, 'modify', (x) => {
+        x.status.amiya = amiya(1)
+      })
+      store.set(dataAtom, 'modify', (x) => {
+        x.status.amiya.level = 2
+      })
+      store.set(dataAtom, 'undo')
+      assert.equal(store.get(undoCounterAtom), 1)
+      assert.equal(store.get(redoCounterAtom), 1)
+
+      store.set(dataAtom, 'modifyWithoutUndo', (x) => {
+        x.status.amiya.modLevel.x = 3
+      })
+      assert.deepEqual(store.get(base), { status: { amiya: { ...amiya(1), modLevel: { x: 3 } } } })
+      assert.strictEqual(store.get(dataAtom), store.get(base))
+      assert.equal(store.get(undoCounterAtom), 1)
+      assert.equal(store.get(redoCounterAtom), 1)
+
+      store.set(dataAtom, 'redo')
+      assert.deepEqual(store.get(base), { status: { amiya: { ...amiya(2), modLevel: { x: 3 } } } })
+      store.set(dataAtom, 'undo')
+      store.set(dataAtom, 'undo')
+      assert.deepEqual(store.get(base), newUserData())
+    },
+  )
+
+  myit('records nothing when modifying without undo first', ({ base, dataAtom, undoCounterAtom, store }) => {
+    store.set(dataAtom, 'modifyWithoutUndo', (x) => {
+      x.status.amiya = amiya(1)
+    })
+    assert.deepEqual(store.get(base), { status: { amiya: amiya(1) } })
+    assert.strictEqual(store.get(dataAtom), store.get(base))
+    assert.equal(store.get(undoCounterAtom), 0)
+  })
+
+  myit(
+    'drops a history the base has left behind when modifying without undo',
+    ({ base, dataAtom, redoCounterAtom, undoCounterAtom, store }) => {
+      store.set(dataAtom, 'modify', (x) => {
+        x.status.amiya = amiya(1)
+      })
+      store.set(base, newUserData())
+      store.set(dataAtom, 'modifyWithoutUndo', (x) => {
+        x.status.texas = amiya(5)
+      })
+      assert.deepEqual(store.get(base), { status: { texas: amiya(5) } })
+      assert.strictEqual(store.get(dataAtom), store.get(base))
+      assert.equal(store.get(undoCounterAtom), 0)
+      assert.equal(store.get(redoCounterAtom), 0)
+
+      store.set(dataAtom, 'modify', (x) => {
+        x.status.texas.level = 6
+      })
+      assert.equal(store.get(undoCounterAtom), 1)
+    },
+  )
+
+  myit('refuses to modify without undo inside a transaction', ({ dataAtom, store }) => {
+    expect(() =>
+      store.set(dataAtom, 'transact', () => {
+        store.set(dataAtom, 'modifyWithoutUndo', (x) => {
+          x.status.amiya = amiya(1)
+        })
+      }),
+    ).toThrowError()
+  })
+
   myit('can compress transaction', ({ base, dataAtom, redoCounterAtom, undoCounterAtom, store }) => {
     assert.deepEqual(store.get(base), newUserData())
 
@@ -326,6 +404,23 @@ describe('user data test with mounted derived base', () => {
     assert.strictEqual(store.get(dataAtom), store.get(base))
     assert.equal(store.get(undoCounterAtom), 2)
     assert.equal(store.get(redoCounterAtom), 0)
+  })
+
+  it('keeps data and base in step when modifying without undo', () => {
+    const { base, dataAtom, undoCounterAtom, store } = env()
+    store.set(dataAtom, 'modify', (x) => {
+      x.status.amiya = { elite: 0, level: 1, skillLevel: 1, skillMaster: {}, modLevel: {} }
+    })
+    store.set(dataAtom, 'modifyWithoutUndo', (x) => {
+      x.status.amiya.modLevel.x = 3
+    })
+    assert.equal(store.get(dataAtom).status.amiya.modLevel.x, 3)
+    assert.strictEqual(store.get(dataAtom), store.get(base))
+    assert.equal(store.get(undoCounterAtom), 1)
+
+    store.set(dataAtom, 'undo')
+    assert.deepEqual(store.get(base), newUserData())
+    assert.strictEqual(store.get(dataAtom), store.get(base))
   })
 
   it('sees earlier modifications inside a transaction', () => {

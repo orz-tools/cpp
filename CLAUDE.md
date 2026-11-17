@@ -60,7 +60,7 @@ Games are code-split via dynamic imports. The URL path (`/{game}/{profile}`) det
 
 - `DataManager` (per-game, in `src/pkg/cpp-{game}/`) handles region-aware data fetching and caching (`dccache` / localforage)
 - A container outside a region's `required` sources is fetched on demand: Arknights' skill, module and base skill texts (`arknights-kengxxiao-details-<lang>`) load through `ArknightsDataManager.loadDetails()` the first time the status editor's (i) panel opens, a base skill view lists or a dossier's 基建技能 page shows, and zh_CN's skin sale windows from PRTS (`arknights-prts-skins`) through `loadPrtsSkins()` the first time the skins panel or a dossier's 时装 page shows
-- `UserData` lives in localStorage, managed by `UserDataAtomHolder` with immer-based undo/redo
+- `UserData` lives in localStorage, managed by `UserDataAtomHolder` with immer-based undo/redo that keeps 10 steps. Display settings stored there are written with `modifyWithoutUndo` instead of `modify`, so they take no steps: today the list's column widths changed outside the query editor, which go into a saved view's own query or, for a game preset, into `presetWidths` under its 「更多视图」 row
 - Per-profile extras that are not user data (`src/pkg/cpp-core/profileExtras.ts`) live in IndexedDB (`cpp_extras`), one record per profile; today only the 森空岛 snapshot (`skland`). They are outside undo/redo, travel in the `@orz/cpp/dump` export as `extras`, and are deleted with the profile's data
 - Data schemas in `src/pkg/cpp-data-schemas/` define external data source structures
 

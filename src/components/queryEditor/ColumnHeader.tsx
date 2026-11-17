@@ -1,11 +1,20 @@
-import { useSetAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { memo, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useCpp } from '../../Cpp'
 import { QueryParam } from '../../pkg/cpp-basic'
+import { UserData } from '../../pkg/cpp-core/UserData'
 import { gt } from '../../pkg/gt'
-import { compileQuery, isCustomQuery, stringifyQuery } from '../characterQuery'
+import {
+  ListModeFav,
+  PredefinedGameQueryPrefix,
+  SavedQueryPrefix,
+  compileQuery,
+  isCustomQuery,
+  stringifyQuery,
+} from '../characterQuery'
 import { cleanQuery } from './VisualEditor'
+import { setViewColumnWidth } from './savedQueries'
 
 export const minColumnWidth = 40
 export const maxColumnWidth = 480
@@ -15,22 +24,41 @@ export function clampColumnWidth(width: number) {
   return Math.min(maxColumnWidth, Math.max(minColumnWidth, Math.round(width)))
 }
 
+/** 用户数据里存着视图 ref 列宽的那一处，没有就是 undefined */
+function storedWidthsOf(data: UserData<any>, ref: string): unknown {
+  if (ref.startsWith(SavedQueryPrefix)) return data.savedQueries
+  if (ref === ListModeFav) return data.favQuery
+  if (ref.startsWith(PredefinedGameQueryPrefix)) return data.presetWidths
+  return undefined
+}
+
 /**
- * 当前查询里改过的列宽。只有编辑中的自定义查询能改：改动写进查询，
- * 编辑器的草稿随之更新，保存后才进入过滤器。
+ * 当前视图改过的列宽。编辑中的自定义查询把改动写进查询，编辑器的草稿随之更新，保存后才进入过滤器；
+ * 别的视图直接存下（setViewColumnWidth）。
  */
 export function useColumnWidths(query: string) {
   const cpp = useCpp()
   const setParam = useSetAtom(cpp.queryParamAtom)
-  const widths = useMemo((): Record<string, number> => {
-    try {
-      return compileQuery(query, cpp).widths ?? {}
-    } catch {
-      return {}
-    }
-  }, [cpp, query])
+  const { dataAtom } = cpp.atoms.atoms
+  // compileQuery 自己读 store，订阅不到；这里只订阅存列宽的那一处，它变了才重算，别的用户数据变了列表不重画
+  const stored = useAtomValue(useMemo(() => atom((get) => storedWidthsOf(get(dataAtom), query)), [dataAtom, query]))
+  const widths = useMemo(
+    (): Record<string, number> => {
+      try {
+        return compileQuery(query, cpp).widths ?? {}
+      } catch {
+        return {}
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cpp, query, stored],
+  )
 
   const setWidth = useEvent((id: string, width: number | undefined) => {
+    if (!isCustomQuery(query)) {
+      setViewColumnWidth(cpp, query, id, width)
+      return
+    }
     setParam((x) => {
       if (!isCustomQuery(x.query)) return x
       let q: QueryParam
@@ -67,7 +95,7 @@ interface Props {
   onResize: (id: string, width: number | undefined) => void
 }
 
-/** 编辑过滤条件时列表上方的列头，附加列右边缘可拖动改宽度 */
+/** 列表上方的列头，附加列右边缘可拖动改宽度 */
 export const ColumnHeader = memo(({ columns, statusWidths, disabled, onPreview, onResize }: Props) => {
   return (
     <li role="none" className="cpp-qe-colhead">
