@@ -2834,23 +2834,6 @@ section:first-child > .cpp-stages-wide-section {
   line-height: 16px;
 }
 
-/* 缺的：灰度、半透明，虚线框 */
-.is-missing .cpp-skins-pic img {
-  filter: grayscale(1);
-  opacity: 0.38;
-}
-
-.cpp-skins-tile.is-missing::after,
-.is-missing > .cpp-skins-card-pic::after,
-.is-missing > .cpp-skins-dcard-pic::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1px dashed var(--bp-palette-gray-4, #abb3bf);
-  border-radius: inherit;
-  pointer-events: none;
-}
-
 .cpp-skins-badge {
   position: absolute;
   right: -3px;
@@ -3010,8 +2993,9 @@ section:first-child > .cpp-stages-wide-section {
   border-radius: 3px;
 }
 
-.cpp-skins-row.is-owned .cpp-skins-row-pic img {
-  opacity: 0.4;
+.cpp-skins-row-pic .cpp-skins-check {
+  width: 14px;
+  height: 14px;
 }
 
 .cpp-skins-row-text {
@@ -3371,7 +3355,8 @@ section:first-child > .cpp-stages-wide-section {
   box-shadow: none;
 }
 
-.cpp-skins-card-pic .cpp-skins-check {
+.cpp-skins-card-pic .cpp-skins-check,
+.cpp-skins-dcard-pic .cpp-skins-check {
   right: 6px;
   top: 6px;
 }

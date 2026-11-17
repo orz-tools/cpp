@@ -64,7 +64,7 @@ const SkinCard = memo(({ state, marking, now }: { state: SkinState; marking: boo
       aria-pressed={marking ? state.owned : undefined}
       aria-label={readLabel(state.skin.name, sub, status)}
       title={`${state.skin.name}\n${sub}\n${status}`}
-      className={'cpp-skins-card' + (state.owned ? '' : ' is-missing')}
+      className="cpp-skins-card"
       onClick={() => activate(state)}
       onKeyDown={onButtonKey}
     >

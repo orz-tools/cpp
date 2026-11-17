@@ -230,10 +230,9 @@ export const MarkCheck = memo(({ owned }: { owned: boolean }) => (
   </span>
 ))
 
-/** 缺的灰、带虚线框；标记中画圆勾，不画渠道圆标和「券」 */
+/** 图照原样画，已有的打勾；缺的只画「现在能拿」的渠道圆标和「券」，标记中换成空心圆 */
 export const SkinMarks = memo(({ state, marking }: { state: SkinState; marking: boolean }) => {
-  if (marking) return <MarkCheck owned={state.owned} />
-  if (state.owned) return null
+  if (state.owned || marking) return <MarkCheck owned={state.owned} />
   const w = state.available[0]
   return (
     <>
@@ -305,7 +304,7 @@ export const SkinTile = memo(
         tabIndex={0}
         aria-pressed={marking ? state.owned : undefined}
         aria-label={readLabel(state.skin.name, skinSubtitle(state, character), stateText(state, now))}
-        className={'cpp-skins-tile' + (state.owned ? '' : ' is-missing')}
+        className="cpp-skins-tile"
         onClick={() => onActivate(state)}
         onKeyDown={onButtonKey}
       >

@@ -19,7 +19,7 @@ import {
   useOpenSkland,
 } from './SkinControls'
 import {
-  SkinMarks,
+  MarkCheck,
   SkinPicture,
   SkinTile,
   VoucherMark,
@@ -215,7 +215,8 @@ const PeriodRow = memo(({ period, state, marking }: { period: SkinPeriod; state:
     >
       <span className="cpp-skins-row-pic">
         <SkinPicture id={state.skin.id} kind="avatar" name={state.skin.name} />
-        {marking ? <SkinMarks state={state} marking /> : null}
+        {/* 渠道就是这一期，右边写着「券」和价格，头像上只打勾 */}
+        {state.owned || marking ? <MarkCheck owned={state.owned} /> : null}
       </span>
       <span className="cpp-skins-row-text">
         <span className="cpp-skins-row-name">{state.skin.name}</span>
