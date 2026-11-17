@@ -2320,81 +2320,81 @@ msgid "精零"
 msgstr "E0"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:255
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:259
 msgctxt "arknights task"
 msgid "%d$number 技能专一: %s$name"
 msgstr "Skill %d$number M1: %s$name"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:263
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:267
 msgctxt "arknights task"
 msgid "%d$number 技能专三: %s$name"
 msgstr "Skill %d$number M3: %s$name"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:259
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:263
 msgctxt "arknights task"
 msgid "%d$number 技能专二: %s$name"
 msgstr "Skill %d$number M2: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:274
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:278
 msgctxt "arknights task"
 msgid "%s$code 模组 1 级: %s$name"
 msgstr "Module-%s$code L1: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:278
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:282
 msgctxt "arknights task"
 msgid "%s$code 模组 2 级: %s$name"
 msgstr "Module-%s$code L2: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:282
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:286
 msgctxt "arknights task"
 msgid "%s$code 模组 3 级: %s$name"
 msgstr "Module-%s$code L3: %s$name"
 
 #. %d: number
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:235
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:239
 msgctxt "arknights task"
 msgid "技能 %d 级"
 msgstr "Skill Level %d"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:233
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:237
 msgctxt "arknights task"
 msgid "招募"
 msgstr "Recruit"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:241
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:245
 msgctxt "arknights task"
 msgid "精一"
 msgstr "Promote to Elite 1"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:247
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:251
 msgctxt "arknights task"
 msgid "精一等级 %d$from -> %d$to"
 msgstr "E1 Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:242
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:246
 msgctxt "arknights task"
 msgid "精二"
 msgstr "Promote to Elite 2"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:248
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:252
 msgctxt "arknights task"
 msgid "精二等级 %d$from -> %d$to"
 msgstr "E2 Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:240
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:244
 msgctxt "arknights task"
 msgid "精零"
 msgstr "Promote to Non-Elite"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:246
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:250
 msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
@@ -4100,7 +4100,9 @@ msgstr "Training costs"
 msgctxt "query menu"
 msgid ""
 "只列出还没练到三级的。小黑盒没有模组的解锁率，按解锁者里练到三级的占比排"
-msgstr "Only those not at Lv. 3 yet. Heybox has no unlock rate for modules, so this sorts by how many of those who unlocked it reached Lv. 3"
+msgstr ""
+"Only those not at Lv. 3 yet. Heybox has no unlock rate for modules, so this "
+"sorts by how many of those who unlocked it reached Lv. 3"
 
 #: src/components/CharacterList.tsx:802
 msgctxt "query menu"
