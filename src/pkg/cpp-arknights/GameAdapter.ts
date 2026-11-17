@@ -878,6 +878,11 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     return Object.keys((raw.local ?? raw).exSkin?.charSkins ?? {}).length > 0
   }
 
+  /** 数据 worker 发布基建技能之前的缓存数据里没有 */
+  public hasBaseSkills(): boolean {
+    return Object.keys(this.dataManager.raw.exBuilding.chars ?? {}).length > 0
+  }
+
   private skinCatalog?: SkinCatalog
   public getSkinCatalog(): SkinCatalog {
     const raw = this.dataManager.raw

@@ -91,6 +91,13 @@ function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter) {
     buildinPatchMap: {},
     ...(k.data.exSkin as Partial<ArknightsKengxxiao['exSkin']> | undefined),
   }
+  // Nor rooms, buffs and chars, before it published base skills
+  const exBuilding: ArknightsKengxxiao['exBuilding'] = {
+    ...k.data.exBuilding,
+    rooms: k.data.exBuilding.rooms ?? {},
+    buffs: k.data.exBuilding.buffs ?? {},
+    chars: k.data.exBuilding.chars ?? {},
+  }
 
   return {
     exCharacters: k.data.exCharacters,
@@ -98,7 +105,7 @@ function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter) {
     exSkills: k.data.exSkills,
     exUniEquips: k.data.exUniEquips,
     exItems: k.data.exItems,
-    exBuilding: k.data.exBuilding,
+    exBuilding,
     exStage: k.data.exStage,
     exRetro: k.data.exRetro,
     exZone: k.data.exZone,
@@ -188,6 +195,7 @@ function transform(s: ArknightsSnapshot) {
     uniEquips: generateUniEquips(s),
     constants: generateConstants(),
     items: generateItems(s),
+    baseBuffs: generateBaseBuffs(s),
     formulas: generateFormulas(s),
     yituliuSurvey: generateYituliuSurvey(s),
     heyboxSurvey: generateHeyboxSurvey(s),
@@ -268,6 +276,50 @@ function generateItems(s: ArknightsSnapshot) {
   items[AK_ITEM_UNKNOWN_SHIT] = new UnknownShitItem(AK_ITEM_UNKNOWN_SHIT, s)
 
   return items
+}
+
+/** A base skill, in the region's language where it has one */
+export interface BaseBuff {
+  id: string
+  name: string
+  roomType: string
+  skillIcon: string
+  /** The game's own number for the skill alone, which the station screen sorts by; 0 for one that depends on others */
+  efficiency: number
+  sortId: number
+  icon: BlobImages
+}
+
+/** One unlock in a character's base skill slot */
+export interface BaseSkill {
+  buff: BaseBuff
+  /** Among the slots that have a skill: 0 or 1 */
+  slot: number
+  /** Within the slot, from the first skill to unlock */
+  index: number
+  elite: number
+  level: number
+}
+
+export function generateBaseBuffs(s: ArknightsSnapshot) {
+  const local = s.raw.local?.exBuilding.buffs ?? {}
+  const buffs: Record<string, BaseBuff> = {}
+  for (const [id, raw] of Object.entries({ ...s.raw.exBuilding.buffs, ...local })) {
+    const src = `https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/building_skill/${encodeURIComponent(
+      raw.skillIcon,
+    )}.png`
+    buffs[id] = {
+      id,
+      name: raw.buffName || s.raw.exBuilding.buffs[id]?.buffName || id,
+      roomType: raw.roomType,
+      skillIcon: raw.skillIcon,
+      efficiency: raw.efficiency,
+      sortId: raw.sortId,
+      // The game's CDN does not serve these; the bot resources mirror them, as they do the avatars
+      icon: { normal: blobImage([src], src) },
+    }
+  }
+  return buffs
 }
 
 function generateConstants() {
@@ -578,6 +630,36 @@ export class Character implements ICharacter {
     return this.snapshot.data.constants.modUnlockLevel[this.rarity]
   }
 
+  private _baseSkills?: BaseSkill[][]
+  /** Each base skill slot with its skills in unlock order. The region's own list when it has this character, as the
+   * regions update apart; empty slots are left out. */
+  public get baseSkills(): BaseSkill[][] {
+    return (this._baseSkills ||= this.generateBaseSkills())
+  }
+
+  private generateBaseSkills() {
+    const local = this.snapshot.raw.local?.exBuilding.chars ?? {}
+    const chars = Object.hasOwn(local, this.key) ? local : this.snapshot.raw.exBuilding.chars
+    const buffs = this.snapshot.data.baseBuffs
+    const slots: BaseSkill[][] = []
+    for (const { buffData } of chars[this.key]?.buffChar ?? []) {
+      const skills: BaseSkill[] = []
+      for (const { buffId, cond } of buffData) {
+        const buff = buffs[buffId]
+        if (!buff) continue
+        skills.push({
+          buff,
+          slot: slots.length,
+          index: skills.length,
+          elite: phaseNumber(cond.phase),
+          level: cond.level,
+        })
+      }
+      if (skills.length > 0) slots.push(skills)
+    }
+    return slots
+  }
+
   public get allSkillLvlup() {
     if (this.raw?.allSkillLvlup) {
       return this.raw.allSkillLvlup
@@ -594,6 +676,10 @@ export class Character implements ICharacter {
     }
     return [cost, cost, cost, cost, cost, cost, cost]
   }
+}
+
+function phaseNumber(phase: string) {
+  return Number(phase.replace('PHASE_', '')) || 0
 }
 
 export class Skill {

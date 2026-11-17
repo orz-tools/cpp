@@ -239,6 +239,33 @@ export type CppData_ArknightsKengxxiaoJaJp = {
                 formulaType: "F_EXP" | "F_ASC" | "F_GOLD" | "F_DIAMOND";
             };
         };
+        rooms: {
+            [x: string]: {
+                name: string;
+            };
+        };
+        buffs: {
+            [x: string]: {
+                buffName: string;
+                roomType: string;
+                skillIcon: string;
+                efficiency: number;
+                sortId: number;
+            };
+        };
+        chars: {
+            [x: string]: {
+                buffChar: {
+                    buffData: {
+                        buffId: string;
+                        cond: {
+                            phase: "PHASE_0" | "PHASE_1" | "PHASE_2";
+                            level: number;
+                        };
+                    }[];
+                }[];
+            };
+        };
     };
     exStage: {
         stages: {
