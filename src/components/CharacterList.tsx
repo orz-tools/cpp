@@ -23,6 +23,7 @@ import { CachedImg } from '../components/Icons'
 import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
+import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
 import { IGameComponent } from './types'
 import {
@@ -55,6 +56,7 @@ import {
   holdingAssertion,
   isCustomQuery,
 } from './characterQuery'
+import { presetMenu } from './presetMenu'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
 import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
 import { RosterPin, clearRosterPin, useActiveRosterPin } from './rosterPin'
@@ -497,7 +499,7 @@ async function listCharactersQuery<G extends IGame>(
     query.result.sort((a, b) => rank.get(a.character.key)! - rank.get(b.character.key)!)
   }
 
-  return { query: query, result: query.result }
+  return { query: query, result: query.result, param, pin }
 }
 
 type ExtraField = NonNullable<IGameComponent['extraFields']>[string]
@@ -643,7 +645,13 @@ export function useCustomQueryActive() {
   return isCustomQuery(param.query)
 }
 
-const QueryBuilder = memo(() => {
+/** 当前视图的 totalValue 字段在列表各行上的和 */
+interface ViewTotal {
+  querier: Querier<any, any>
+  field: string
+}
+
+const QueryBuilder = memo(({ total }: { total?: ViewTotal }) => {
   const cpp = useCpp()
   const [pgq, pgqKeys] = useMemo(() => {
     const pgq = cpp.gameAdapter.getPredefinedQueries()
@@ -665,6 +673,22 @@ const QueryBuilder = memo(() => {
   const goTo = (query: string) => setParam((x) => ({ ...x, query, source: undefined }))
   const pin = useActiveRosterPin()
   const viewActive = (query: string) => !pin && param.query === query
+  // 每行用 store 里现在的练度重新取值，所以在行尾改了练度，总数和格子一样马上跟着变
+  const { current: currents, goal: goals } = data
+  const totalValue = useMemo(() => {
+    if (!total) return undefined
+    const empty = cpp.gameAdapter.getUserDataAdapter().getFrozenEmptyCharacterStatus()
+    let sum = 0
+    let known = false
+    for (const item of total.querier.result) {
+      const key = item.character.key
+      const v = total.querier.getFieldValue(total.field, { ...item, current: currents[key] || empty, goal: goals[key] })
+      if (!Number.isFinite(v)) continue
+      sum += v
+      known = true
+    }
+    return known || total.querier.result.length === 0 ? sum : NaN
+  }, [cpp, total, currents, goals])
 
   return (
     <>
@@ -697,6 +721,15 @@ const QueryBuilder = memo(() => {
           active={!pin}
           text={activeName}
           title={activeName}
+          endIcon={
+            totalValue === undefined ? undefined : (
+              <ValueTag
+                value={totalValue}
+                minimal={true}
+                title={gt.pgettext('training cost', '列表里这些干员一共花了多少')}
+              />
+            )
+          }
           onClick={() => {}}
           style={{ flexShrink: 42 }}
           className="cpp-overflow-button"
@@ -722,20 +755,20 @@ export const menuItemKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
   e.currentTarget.click()
 }
 
-/** 一个指标的两版合成一行：左边进这一版，右边进「全部」版，两段各自可点、各自高亮 */
+/** 一个指标的几版合成一行：名字进这一版，后面每段进各自那一版，各段各自可点、各自高亮 */
 const PresetSplitMenuItem = memo(
   ({
     text,
+    title,
     active,
-    allActive,
     onClick,
-    onAllClick,
+    segments,
   }: {
     text: string
+    title?: string
     active: boolean
-    allActive: boolean
     onClick: () => void
-    onAllClick: () => void
+    segments: { key: string; label: string; title: string; active: boolean; onClick: () => void }[]
   }) => {
     const className = (on: boolean, extra?: string) =>
       [
@@ -750,22 +783,25 @@ const PresetSplitMenuItem = memo(
           role="menuitem"
           tabIndex={0}
           className={className(active)}
-          title={gt.pgettext('query menu', '只列出还没练到的')}
+          title={title ?? gt.pgettext('query menu', '只列出还没练到的')}
           onClick={onClick}
           onKeyDown={menuItemKeyDown}
         >
           <div className="bp6-text-overflow-ellipsis bp6-fill">{text}</div>
         </a>
-        <a
-          role="menuitem"
-          tabIndex={0}
-          className={className(allActive, 'cpp-split-menu-item-all')}
-          title={gt.pgettext('query menu', '不论持有和练度，列出全部')}
-          onClick={onAllClick}
-          onKeyDown={menuItemKeyDown}
-        >
-          {gt.pgettext('query menu', '全部')}
-        </a>
+        {segments.map((s) => (
+          <a
+            key={s.key}
+            role="menuitem"
+            tabIndex={0}
+            className={className(s.active, 'cpp-split-menu-item-segment')}
+            title={s.title}
+            onClick={s.onClick}
+            onKeyDown={menuItemKeyDown}
+          >
+            {s.label}
+          </a>
+        ))}
       </li>
     )
   },
@@ -773,12 +809,10 @@ const PresetSplitMenuItem = memo(
 
 const QueryBuilderRight = memo(() => {
   const cpp = useCpp()
-  const pgq = useMemo(() => cpp.gameAdapter.getPredefinedQueries(), [cpp])
-  // 作为别的预设的「全部」版出现的，不再单独占一行
-  const presetRows = useMemo(() => {
-    const allKeys = new Set(Object.values(pgq).flatMap((x) => (x.all ? [x.all] : [])))
-    return Object.entries(pgq).filter(([k]) => !allKeys.has(k))
-  }, [pgq])
+  const menu = useMemo(
+    () => presetMenu(cpp.gameAdapter.getPredefinedQueryGroups(), cpp.gameAdapter.getPredefinedQueries()),
+    [cpp],
+  )
   const [param, setParam] = useAtom(useCpp().queryParamAtom)
   const savedQueries = useAtomValue(useAtoms().dataAtom).savedQueries
   const editor = useQueryEditorToggle()
@@ -806,28 +840,39 @@ const QueryBuilderRight = memo(() => {
                 ))}
               </>
             ) : null}
-            <MenuDivider title={gt.pgettext('query menu', '练度统计')} />
-            {presetRows.map(([k, v]) => {
-              const all = v.all && pgq[v.all] ? v.all : undefined
-              return all ? (
-                <PresetSplitMenuItem
-                  key={k}
-                  text={v.name}
-                  active={param.query === PredefinedGameQueryPrefix + k}
-                  allActive={param.query === PredefinedGameQueryPrefix + all}
-                  onClick={() => goTo(PredefinedGameQueryPrefix + k)}
-                  onAllClick={() => goTo(PredefinedGameQueryPrefix + all)}
-                />
-              ) : (
-                <MenuItem
-                  key={k}
-                  active={param.query === PredefinedGameQueryPrefix + k}
-                  intent={param.query === PredefinedGameQueryPrefix + k ? 'primary' : undefined}
-                  text={v.name}
-                  onClick={() => goTo(PredefinedGameQueryPrefix + k)}
-                />
-              )
-            })}
+            {menu.map(({ group, rows }) => (
+              <React.Fragment key={group.id}>
+                <MenuDivider title={group.title.toString()} />
+                {rows.map(({ key, preset, segments }) => {
+                  const ref = PredefinedGameQueryPrefix + key
+                  return segments.length > 0 ? (
+                    <PresetSplitMenuItem
+                      key={key}
+                      text={preset.name}
+                      title={preset.title?.toString()}
+                      active={param.query === ref}
+                      onClick={() => goTo(ref)}
+                      segments={segments.map((s) => ({
+                        key: s.key,
+                        label: s.label.toString(),
+                        title: s.title.toString(),
+                        active: param.query === PredefinedGameQueryPrefix + s.key,
+                        onClick: () => goTo(PredefinedGameQueryPrefix + s.key),
+                      }))}
+                    />
+                  ) : (
+                    <MenuItem
+                      key={key}
+                      active={param.query === ref}
+                      intent={param.query === ref ? 'primary' : undefined}
+                      text={preset.name}
+                      htmlTitle={preset.title?.toString()}
+                      onClick={() => goTo(ref)}
+                    />
+                  )
+                })}
+              </React.Fragment>
+            ))}
           </Menu>
         }
       >
@@ -899,6 +944,13 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
 
   const query = response?.query
   const result = response?.result || []
+  // 查询中、或者结果还是上一个视图的时候不给，免得显示过时的总数
+  const total = useMemo(() => {
+    if (loading || !response || response.param !== param || response.pin !== pin || pin) return undefined
+    if (!param.query.startsWith(PredefinedGameQueryPrefix)) return undefined
+    const preset = cpp.gameAdapter.getPredefinedQueries()[param.query.slice(PredefinedGameQueryPrefix.length)]
+    return preset?.totalValue ? { querier: response.query, field: preset.totalValue } : undefined
+  }, [cpp, loading, response, param, pin])
   const list = (response?.result || []).map((x) => x.character)
   const extraColumns = useMemo(
     () =>
@@ -1001,7 +1053,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
         }}
       >
         <Navbar.Group style={{ flexShrink: 1 }}>
-          <QueryBuilder />
+          <QueryBuilder total={total} />
         </Navbar.Group>
         <Navbar.Group style={{ flexShrink: 0 }}>
           <QueryBuilderRight />

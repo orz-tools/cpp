@@ -1948,3 +1948,295 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-task-tag.bp6-tag {
   margin-right: 4px;
 }
+
+/* 养成成本的列表格子：一根条一个数，全列同一个比例 */
+.cpp-cost-cell.bp6-menu-item {
+  align-items: center;
+  gap: 6px;
+}
+
+.cpp-cost-bar {
+  flex: 1;
+  min-width: 0;
+  height: 8px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--bp-palette-light-gray-4, #edeff2);
+}
+
+.cpp-cost-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--bp-intent-primary-rest, #2d72d2);
+}
+
+.cpp-cost-none {
+  flex: 1;
+  text-align: right;
+  color: var(--bp-palette-gray-3, #8f99a8);
+}
+
+/* 档案的「养成成本」一节 */
+.cpp-cost {
+  font-variant-numeric: tabular-nums;
+}
+
+.cpp-cost-warning {
+  margin-bottom: 12px;
+}
+
+.cpp-cost-subtitle {
+  margin: 16px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-cost-muted {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  font-size: 12px;
+}
+
+.cpp-cost-track {
+  position: relative;
+  margin: 2px 0 12px;
+}
+
+.cpp-cost-track-segments,
+.cpp-cost-track-points {
+  position: relative;
+  height: 18px;
+}
+
+.cpp-cost-track-segment-label,
+.cpp-cost-track-point-label {
+  position: absolute;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.cpp-cost-track-segment-label {
+  bottom: 3px;
+  font-size: 11px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-cost-track-point-label {
+  top: 5px;
+  font-size: 12px;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-cost-track-point-label.is-first {
+  transform: none;
+}
+
+.cpp-cost-track-point-label.is-last {
+  transform: translateX(-100%);
+}
+
+.cpp-cost-track-segment-label.is-hidden,
+.cpp-cost-track-point-label.is-hidden {
+  visibility: hidden;
+}
+
+.cpp-cost-track-bar {
+  position: relative;
+  display: flex;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.cpp-cost-track-bar > span:not(.cpp-cost-track-tick) {
+  display: block;
+  height: 100%;
+}
+
+.cpp-cost-track-invested {
+  background: var(--bp-palette-gray-2, #738091);
+}
+
+.cpp-cost-track-remaining {
+  background: var(--bp-intent-primary-rest, #2d72d2);
+}
+
+.cpp-cost-track-rest {
+  background: var(--bp-palette-gray-5, #c5cbd3);
+}
+
+.cpp-cost-track-tick {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-cost-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 3px;
+}
+
+.cpp-cost-table th {
+  padding: 2px 4px;
+  font-size: 12px;
+  font-weight: normal;
+  white-space: nowrap;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-cost-table thead th {
+  text-align: right;
+}
+
+.cpp-cost-table thead th:first-child {
+  text-align: left;
+}
+
+.cpp-cost-table tbody th {
+  text-align: left;
+}
+
+.cpp-cost-table td {
+  padding: 0;
+}
+
+.cpp-cost-table-cell {
+  display: block;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  color: inherit;
+  font: inherit;
+  text-align: right;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cpp-cost-table-cell:hover {
+  background: var(--bp-palette-light-gray-4, #edeff2);
+}
+
+.cpp-cost-table-cell:focus-visible {
+  outline: 2px solid var(--bp-intent-primary-rest, #2d72d2);
+  outline-offset: 1px;
+}
+
+.cpp-cost-table-cell.is-selected {
+  background: rgba(45, 114, 210, 0.12);
+  box-shadow: inset 0 0 0 1px var(--bp-intent-primary-rest, #2d72d2);
+  color: var(--bp-palette-blue-2, #215db0);
+  font-weight: 600;
+}
+
+.cpp-cost-materials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cpp-cost-material {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 3px;
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.08);
+}
+
+.cpp-cost-material-quantity {
+  position: absolute;
+  right: 1px;
+  bottom: 0;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: 600;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+  text-shadow:
+    0 0 2px #fff,
+    0 0 2px #fff,
+    0 0 2px #fff;
+}
+
+.cpp-cost-unvalued {
+  margin-top: 6px;
+}
+
+.cpp-cost-vouchers {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cpp-cost-vouchers th,
+.cpp-cost-vouchers td {
+  padding: 5px 4px;
+  border-bottom: 1px solid var(--bp-palette-light-gray-4, #edeff2);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.cpp-cost-vouchers thead th {
+  font-size: 11px;
+  font-weight: normal;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-cost-vouchers tbody th {
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.cpp-cost-vouchers .cpp-cost-vouchers-saving {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cpp-cost-voucher {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cpp-cost-strip {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+  shape-rendering: crispEdges;
+}
+
+.cpp-cost-strip-base {
+  stroke: var(--bp-palette-gray-5, #c5cbd3);
+  stroke-width: 1;
+}
+
+.cpp-cost-strip-peers {
+  stroke: rgba(95, 107, 124, 0.45);
+  stroke-width: 1;
+}
+
+.cpp-cost-strip-self {
+  fill: var(--bp-intent-primary-rest, #2d72d2);
+}
+
+.cpp-cost-rank {
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.cpp-cost-rank b {
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+  font-weight: 600;
+}
+
+.cpp-cost-rank .cpp-cost-muted {
+  color: var(--bp-palette-gray-3, #8f99a8);
+}

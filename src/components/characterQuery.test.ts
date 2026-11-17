@@ -39,6 +39,9 @@ class StubAdapter {
   public getPredefinedQueries() {
     return {}
   }
+  public getPredefinedQueryGroups() {
+    return []
+  }
   public getRootCharacterQuery() {
     return new RootCharacterQuery()
   }

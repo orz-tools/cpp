@@ -325,7 +325,7 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制数据"
 msgstr "Copy Data"
 
-#: src/components/CharacterList.tsx:196
+#: src/components/CharacterList.tsx:198
 msgid "复制角色名"
 msgstr "Copy Name"
 
@@ -416,7 +416,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
-#: src/components/CharacterList.tsx:203
+#: src/components/CharacterList.tsx:205
 msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
@@ -548,7 +548,7 @@ msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:38
 #: src/components/arknights/ExporterMenuItems.tsx:98
-#: src/components/CharacterList.tsx:209
+#: src/components/CharacterList.tsx:211
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
@@ -670,11 +670,11 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:1019
+#: src/components/CharacterList.tsx:1071
 msgid "查询失败"
 msgstr "Query Failed"
 
-#: src/components/Value.tsx:163
+#: src/components/Value.tsx:182
 msgid "样本数"
 msgstr "Samples"
 
@@ -789,7 +789,7 @@ msgstr ""
 msgid "角色"
 msgstr "Characters"
 
-#: src/components/CharacterList.tsx:135
+#: src/components/CharacterList.tsx:137
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -1052,62 +1052,62 @@ msgctxt "arknights attribute"
 msgid "阻挡数"
 msgstr "Block"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:548
+#: src/pkg/cpp-arknights/GameAdapter.ts:738
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr "Growth Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:970
+#: src/pkg/cpp-arknights/GameAdapter.ts:1166
 msgctxt "arknights item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:967
+#: src/pkg/cpp-arknights/GameAdapter.ts:1163
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr "Dualchips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:966
+#: src/pkg/cpp-arknights/GameAdapter.ts:1162
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr "Skill, Module & Catalysts"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:965
+#: src/pkg/cpp-arknights/GameAdapter.ts:1161
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr "T1 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:962
+#: src/pkg/cpp-arknights/GameAdapter.ts:1158
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:964
+#: src/pkg/cpp-arknights/GameAdapter.ts:1160
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:969
+#: src/pkg/cpp-arknights/GameAdapter.ts:1165
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:968
+#: src/pkg/cpp-arknights/GameAdapter.ts:1164
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr "Chip Packs"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:963
+#: src/pkg/cpp-arknights/GameAdapter.ts:1159
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:961
+#: src/pkg/cpp-arknights/GameAdapter.ts:1157
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:960
+#: src/pkg/cpp-arknights/GameAdapter.ts:1156
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
@@ -1218,17 +1218,20 @@ msgctxt "arknights quick filter"
 msgid "精英 %d"
 msgstr "Elite %d"
 
-#: src/components/arknights/extraFields.tsx:26
+#: src/components/arknights/CostSection.tsx:319
+#: src/components/arknights/extraFields.tsx:93
 msgctxt "arknights skill ref"
 msgid "一技能"
 msgstr "S1"
 
-#: src/components/arknights/extraFields.tsx:28
+#: src/components/arknights/CostSection.tsx:321
+#: src/components/arknights/extraFields.tsx:95
 msgctxt "arknights skill ref"
 msgid "三技能"
 msgstr "S3"
 
-#: src/components/arknights/extraFields.tsx:27
+#: src/components/arknights/CostSection.tsx:320
+#: src/components/arknights/extraFields.tsx:94
 msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr "S2"
@@ -1263,32 +1266,32 @@ msgctxt "arknights skill trigger"
 msgid "被动"
 msgstr "Passive"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:783
+#: src/pkg/cpp-arknights/GameAdapter.ts:979
 msgctxt "arknights stage category"
 msgid "主线"
 msgstr "Main Story"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:788
+#: src/pkg/cpp-arknights/GameAdapter.ts:984
 msgctxt "arknights stage category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:785
+#: src/pkg/cpp-arknights/GameAdapter.ts:981
 msgctxt "arknights stage category"
 msgid "别传"
 msgstr "Side Stories"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:786
+#: src/pkg/cpp-arknights/GameAdapter.ts:982
 msgctxt "arknights stage category"
 msgid "插曲"
 msgstr "Intermezzi"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:784
+#: src/pkg/cpp-arknights/GameAdapter.ts:980
 msgctxt "arknights stage category"
 msgid "活动"
 msgstr "Events"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:787
+#: src/pkg/cpp-arknights/GameAdapter.ts:983
 msgctxt "arknights stage category"
 msgid "资源收集"
 msgstr "Supplies"
@@ -1308,17 +1311,17 @@ msgctxt "arknights stage category short"
 msgid "资源"
 msgstr "Resources"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:886
+#: src/pkg/cpp-arknights/GameAdapter.ts:1082
 msgctxt "arknights stage difficulty"
 msgid "剧情"
 msgstr "Easy "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:884
+#: src/pkg/cpp-arknights/GameAdapter.ts:1080
 msgctxt "arknights stage difficulty"
 msgid "标准"
 msgstr "Standard "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:885
+#: src/pkg/cpp-arknights/GameAdapter.ts:1081
 msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr "Tough "
@@ -1721,8 +1724,8 @@ msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:769
-#: src/pkg/cpp-arknights/GameAdapter.ts:772
+#: src/pkg/cpp-arknights/GameAdapter.ts:965
+#: src/pkg/cpp-arknights/GameAdapter.ts:968
 msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
@@ -1850,6 +1853,11 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr "assets vectorizing"
 
+#: src/components/arknights/CostSection.tsx:422
+msgctxt "dossier section"
+msgid "养成成本"
+msgstr "Training costs"
+
 #: src/components/arknights/ModuleMissionSection.tsx:124
 msgctxt "dossier section"
 msgid "模组任务"
@@ -1945,22 +1953,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:441
+#: src/components/CharacterList.tsx:443
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:442
+#: src/components/CharacterList.tsx:444
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:450
+#: src/components/CharacterList.tsx:452
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:451
+#: src/components/CharacterList.tsx:453
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -2041,12 +2049,13 @@ msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
 
+#: src/components/arknights/CostSection.tsx:223
 #: src/components/arknights/importHooks.ts:110
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:259
-#: src/components/CharacterList.tsx:537
+#: src/components/CharacterList.tsx:539
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:803
 msgctxt "list separator"
@@ -2524,69 +2533,104 @@ msgctxt "module mission scope"
 msgid "计划内"
 msgstr "In plan"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:377
+#: src/pkg/cpp-arknights/GameAdapter.ts:439
 msgctxt "predefined query"
 msgid "一图流 技能专三率"
 msgstr "yituliu: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:400
+#: src/pkg/cpp-arknights/GameAdapter.ts:463
 msgctxt "predefined query"
 msgid "一图流 技能专三率（全部）"
 msgstr "yituliu: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:441
+#: src/pkg/cpp-arknights/GameAdapter.ts:507
 msgctxt "predefined query"
 msgid "一图流 精二率"
 msgstr "yituliu: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:463
+#: src/pkg/cpp-arknights/GameAdapter.ts:530
 msgctxt "predefined query"
 msgid "一图流 精二率（全部）"
 msgstr "yituliu: E2 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:409
+#: src/pkg/cpp-arknights/GameAdapter.ts:652
+msgctxt "predefined query"
+msgid "专三价值"
+msgstr "Mastery 3 value"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:701
+msgctxt "predefined query"
+msgid "专三价值（全部）"
+msgstr "Mastery 3 value (all)"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:681
+msgctxt "predefined query"
+msgid "专三价值（能用）"
+msgstr "Mastery 3 value (usable)"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:473
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率"
 msgstr "Heybox: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:432
+#: src/pkg/cpp-arknights/GameAdapter.ts:497
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率（全部）"
 msgstr "Heybox: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:501
+#: src/pkg/cpp-arknights/GameAdapter.ts:571
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率"
 msgstr "Heybox: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:524
+#: src/pkg/cpp-arknights/GameAdapter.ts:595
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率（全部）"
 msgstr "Heybox: E2 Lv 90 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:471
+#: src/pkg/cpp-arknights/GameAdapter.ts:539
 msgctxt "predefined query"
 msgid "小黑盒 精二率"
 msgstr "Heybox: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:493
+#: src/pkg/cpp-arknights/GameAdapter.ts:562
 msgctxt "predefined query"
 msgid "小黑盒 精二率（全部）"
 msgstr "Heybox: E2 rate (all)"
 
-#: src/components/CharacterList.tsx:682
+#: src/pkg/cpp-arknights/GameAdapter.ts:711
+msgctxt "predefined query"
+msgid "已投入"
+msgstr "Invested"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:604
+msgctxt "predefined query"
+msgid "精二直升价值"
+msgstr "E2 voucher value"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:643
+msgctxt "predefined query"
+msgid "精二直升价值（全部）"
+msgstr "E2 voucher value (all)"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:631
+msgctxt "predefined query"
+msgid "精二直升价值（能用）"
+msgstr "E2 voucher value (usable)"
+
+#: src/components/CharacterList.tsx:706
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:675
+#: src/components/CharacterList.tsx:699
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:689
+#: src/components/CharacterList.tsx:713
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -2948,27 +2992,32 @@ msgctxt "query field"
 msgid "%s（目标）"
 msgstr "%s (goal)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:323
+#: src/pkg/cpp-arknights/GameAdapter.ts:353
 msgctxt "query field"
 msgid "一图流练度统计 技能专三率"
 msgstr "yituliu survey: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:272
+#: src/pkg/cpp-arknights/GameAdapter.ts:288
 msgctxt "query field"
 msgid "一图流练度统计 精二率"
 msgstr "yituliu survey: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:314
+#: src/pkg/cpp-arknights/GameAdapter.ts:383
+msgctxt "query field"
+msgid "专三价值"
+msgstr "Mastery 3 value"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:344
 msgctxt "query field"
 msgid "专精等级"
 msgstr "Mastery"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:225
+#: src/pkg/cpp-arknights/GameAdapter.ts:241
 msgctxt "query field"
 msgid "主职业"
 msgstr "Main class"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:203
+#: src/pkg/cpp-arknights/GameAdapter.ts:219
 msgctxt "query field"
 msgid "代号"
 msgstr "Name"
@@ -2978,17 +3027,17 @@ msgctxt "query field"
 msgid "内部代号"
 msgstr "Internal ID"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:338
+#: src/pkg/cpp-arknights/GameAdapter.ts:368
 msgctxt "query field"
 msgid "小黑盒干员统计 技能专三率"
 msgstr "Heybox survey: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:290
+#: src/pkg/cpp-arknights/GameAdapter.ts:306
 msgctxt "query field"
 msgid "小黑盒干员统计 精二 90 级率"
 msgstr "Heybox survey: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:281
+#: src/pkg/cpp-arknights/GameAdapter.ts:297
 msgctxt "query field"
 msgid "小黑盒干员统计 精二率"
 msgstr "Heybox survey: E2 rate"
@@ -2998,12 +3047,17 @@ msgctxt "query field"
 msgid "已全面养成"
 msgstr "Fully trained"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:307
+#: src/pkg/cpp-arknights/GameAdapter.ts:322
+msgctxt "query field"
+msgid "已投入"
+msgstr "Invested"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:337
 msgctxt "query field"
 msgid "技能名"
 msgstr "Skill name"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:256
+#: src/pkg/cpp-arknights/GameAdapter.ts:272
 msgctxt "query field"
 msgid "技能等级"
 msgstr "Skill level"
@@ -3018,37 +3072,42 @@ msgctxt "query field"
 msgid "有计划"
 msgstr "Has plan"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:262
+#: src/pkg/cpp-arknights/GameAdapter.ts:278
 msgctxt "query field"
 msgid "潜能"
 msgstr "Potential"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:217
+#: src/pkg/cpp-arknights/GameAdapter.ts:233
 msgctxt "query field"
 msgid "稀有度"
 msgstr "Rarity"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:244
+#: src/pkg/cpp-arknights/GameAdapter.ts:260
 msgctxt "query field"
 msgid "等级"
 msgstr "Level"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:238
+#: src/pkg/cpp-arknights/GameAdapter.ts:315
+msgctxt "query field"
+msgid "精二直升价值"
+msgstr "E2 voucher value"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:254
 msgctxt "query field"
 msgid "精英化"
 msgstr "Elite"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:250
+#: src/pkg/cpp-arknights/GameAdapter.ts:266
 msgctxt "query field"
 msgid "精英化 × 100 + 等级"
 msgstr "Elite × 100 + Level"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:231
+#: src/pkg/cpp-arknights/GameAdapter.ts:247
 msgctxt "query field"
 msgid "职业"
 msgstr "Class"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:209
+#: src/pkg/cpp-arknights/GameAdapter.ts:225
 msgctxt "query field"
 msgid "西文代号"
 msgstr "Western name"
@@ -3093,45 +3152,90 @@ msgctxt "query group mode"
 msgid "都不满足"
 msgstr "none"
 
-#: src/components/CharacterList.tsx:763
+#: src/pkg/cpp-arknights/GameAdapter.ts:71
 msgctxt "query menu"
 msgid "不论持有和练度，列出全部"
 msgstr "Everyone, owned or not, maxed or not"
 
-#: src/components/CharacterList.tsx:767
+#: src/pkg/cpp-arknights/GameAdapter.ts:72
 msgctxt "query menu"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:845 src/components/CharacterList.tsx:846
+#: src/pkg/cpp-arknights/GameAdapter.ts:614
+msgctxt "query menu"
+msgid "全部 4–6 星干员"
+msgstr "Every 4–6★ operator"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:662
+msgctxt "query menu"
+msgid "全部 4–6 星干员的技能"
+msgstr "Every skill of the 4–6★ operators"
+
+#: src/components/CharacterList.tsx:890 src/components/CharacterList.tsx:891
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
 
-#: src/components/CharacterList.tsx:753
+#: src/pkg/cpp-arknights/GameAdapter.ts:419
+msgctxt "query menu"
+msgid "养成成本"
+msgstr "Training costs"
+
+#: src/components/CharacterList.tsx:786
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
 
-#: src/components/CharacterList.tsx:797
+#: src/pkg/cpp-arknights/GameAdapter.ts:658
+msgctxt "query menu"
+msgid "已持有、精二、技能 7 级，还没专三的技能，不看计划"
+msgstr "Skills not M3 yet of owned E2 operators at skill level 7, whatever the plan"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:610
+msgctxt "query menu"
+msgid "已持有、还没精二的，不看计划"
+msgstr "Owned, not E2 yet, whatever the plan"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:713
+msgctxt "query menu"
+msgid "已持有的干员，从精零 1 级练到现在花了多少"
+msgstr "What each owned operator has cost from E0 level 1 to now"
+
+#: src/components/CharacterList.tsx:831
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
 
-#: src/components/CharacterList.tsx:837 src/components/CharacterList.tsx:838
+#: src/components/CharacterList.tsx:882 src/components/CharacterList.tsx:883
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
 
-#: src/components/CharacterList.tsx:809
+#: src/pkg/cpp-arknights/GameAdapter.ts:418
 msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:845 src/components/CharacterList.tsx:846
+#: src/components/CharacterList.tsx:890 src/components/CharacterList.tsx:891
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:76
+msgctxt "query menu"
+msgid "能用"
+msgstr "Usable"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:654
+msgctxt "query menu"
+msgid "计划专三、现在还没专三的技能"
+msgstr "Skills planned to M3, not M3 yet"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:606
+msgctxt "query menu"
+msgid "计划练到精二、现在还没精二的"
+msgstr "Planned to reach E2, not E2 yet"
 
 #: src/pkg/cpp-basic/queryEditorModel.ts:126
 msgctxt "query operator"
@@ -3174,29 +3278,29 @@ msgctxt "query operator"
 msgid "结尾是"
 msgstr "ends with"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:299
+#: src/pkg/cpp-arknights/GameAdapter.ts:329
 msgctxt "query sub query"
 msgid "技能"
 msgstr "Skill"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:62
+#: src/pkg/cpp-arknights/GameAdapter.ts:66
 msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:534
+#: src/components/CharacterList.tsx:536
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:534
+#: src/components/CharacterList.tsx:536
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
 msgstr "Yes"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:60
+#: src/pkg/cpp-arknights/GameAdapter.ts:64
 msgctxt "query value"
 msgid "精英 %d"
 msgstr "E%d"
@@ -3392,6 +3496,163 @@ msgctxt "stage panel"
 msgid "章节"
 msgstr "Chapter"
 
+#. %s: 一技能, 二技能 or 三技能
+#: src/components/arknights/CostSection.tsx:329
+msgctxt "training cost"
+msgid "%s专三"
+msgstr "%s M3"
+
+#. %s: item names
+#: src/components/arknights/CostSection.tsx:244
+msgctxt "training cost"
+msgid "%s没有价值，没算进上面的数"
+msgstr "%s have no value and are not counted above"
+
+#: src/components/arknights/CostSection.tsx:374
+msgctxt "training cost"
+msgid "不分干员，只看等级"
+msgstr "The same for every operator, by level only"
+
+#: src/components/arknights/CostSection.tsx:159
+msgctxt "training cost"
+msgid "从现在"
+msgstr "From now"
+
+#: src/components/arknights/CostSection.tsx:160
+msgctxt "training cost"
+msgid "从目标"
+msgstr "From goal"
+
+#: src/components/arknights/CostSection.tsx:158
+msgctxt "training cost"
+msgid "从零"
+msgstr "From zero"
+
+#: src/components/arknights/CostSection.tsx:18
+msgctxt "training cost"
+msgid "从零到满的材料"
+msgstr "Materials from zero to max"
+
+#: src/components/arknights/CostSection.tsx:16
+msgctxt "training cost"
+msgid "从零到现在的材料"
+msgstr "Materials from zero to now"
+
+#: src/components/arknights/CostSection.tsx:17
+msgctxt "training cost"
+msgid "从零到目标的材料"
+msgstr "Materials from zero to the goal"
+
+#: src/components/CharacterList.tsx:729
+msgctxt "training cost"
+msgid "列表里这些干员一共花了多少"
+msgstr "What the operators in the list have cost in total"
+
+#: src/components/arknights/CostSection.tsx:155
+msgctxt "training cost"
+msgid "到满"
+msgstr "To max"
+
+#: src/components/arknights/CostSection.tsx:153
+msgctxt "training cost"
+msgid "到现在"
+msgstr "To now"
+
+#: src/components/arknights/CostSection.tsx:154
+msgctxt "training cost"
+msgid "到目标"
+msgstr "To goal"
+
+#: src/components/arknights/CostSection.tsx:355
+msgctxt "training cost"
+msgid "在 %d 星里排第几"
+msgstr "Rank among %d★"
+
+#: src/components/arknights/CostSection.tsx:40
+msgctxt "training cost"
+msgid "已投入"
+msgstr "Invested"
+
+#: src/components/arknights/CostSection.tsx:44
+msgctxt "training cost"
+msgid "拉满"
+msgstr "To max"
+
+#: src/components/arknights/CostSection.tsx:59
+msgctxt "training cost"
+msgid "满"
+msgstr "Max"
+
+#: src/components/arknights/CostSection.tsx:410
+msgctxt "training cost"
+msgid "物品价值计算失败，暂时算不出价值；材料明细不受影响"
+msgstr "Item values could not be computed, so costs are unavailable. The materials are still listed."
+
+#: src/components/arknights/CostSection.tsx:57
+msgctxt "training cost"
+msgid "现在"
+msgstr "Now"
+
+#: src/components/arknights/CostSection.tsx:20
+msgctxt "training cost"
+msgid "现在到满的材料"
+msgstr "Materials from now to max"
+
+#: src/components/arknights/CostSection.tsx:19
+msgctxt "training cost"
+msgid "现在到目标的材料"
+msgstr "Materials from now to the goal"
+
+#: src/components/arknights/CostSection.tsx:58
+msgctxt "training cost"
+msgid "目标"
+msgstr "Goal"
+
+#: src/components/arknights/CostSection.tsx:21
+msgctxt "training cost"
+msgid "目标到满的材料"
+msgstr "Materials from the goal to max"
+
+#: src/components/arknights/CostSection.tsx:350
+msgctxt "training cost"
+msgid "直升道具"
+msgstr "Vouchers"
+
+#: src/components/arknights/CostSection.tsx:273
+msgctxt "training cost"
+msgid "第 %d$rank / %d$count"
+msgstr "#%d$rank of %d$count"
+
+#: src/components/arknights/CostSection.tsx:313
+msgctxt "training cost"
+msgid "精二"
+msgstr "E2"
+
+#: src/components/arknights/CostSection.tsx:341
+msgctxt "training cost"
+msgid "精二满级"
+msgstr "E2 max level"
+
+#: src/components/arknights/CostSection.tsx:356
+msgctxt "training cost"
+msgid "能省"
+msgstr "Saves"
+
+#: src/components/arknights/CostSection.tsx:44
+msgctxt "training cost"
+msgid "计划之后"
+msgstr "After the goal"
+
+#: src/components/arknights/CostSection.tsx:41
+msgctxt "training cost"
+msgid "还差"
+msgstr "To go"
+
+#: src/components/arknights/CostSection.tsx:56
+msgctxt "training cost"
+msgid "零"
+msgstr "Zero"
+
 #: src/components/arknights/ValueConfigMenu.tsx:251
 msgctxt "value config"
 msgid "1 表示按 CE-6 的理智折算"
@@ -3417,7 +3678,7 @@ msgctxt "value config"
 msgid "价值"
 msgstr "Value"
 
-#: src/components/Value.tsx:270
+#: src/components/Value.tsx:289
 msgctxt "value config"
 msgid "价值计算"
 msgstr "Value Calculation"
