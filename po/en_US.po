@@ -14,7 +14,7 @@ msgstr ""
 "X-Source-Language: zh_CN\n"
 
 #. %d: number
-#: src/components/arknights/StagePanel.tsx:194
+#: src/components/arknights/StagePanel.tsx:201
 msgid "%d 关 · 按效率排序"
 msgid_plural "%d 关 · 按效率排序"
 msgstr[0] "%d stage · by efficiency"
@@ -187,12 +187,12 @@ msgstr[1] "%d done"
 msgid "免责声明"
 msgstr "Disclaimer"
 
-#: src/components/arknights/StagePanelWide.tsx:382
+#: src/components/arknights/StagePanelWide.tsx:370
 #: src/components/ConfigUi.tsx:199
 msgid "全部启用"
 msgstr "Enable all"
 
-#: src/components/arknights/StagePanelWide.tsx:387
+#: src/components/arknights/StagePanelWide.tsx:375
 #: src/components/ConfigUi.tsx:204
 msgid "全部禁用"
 msgstr "Disable all"
@@ -201,8 +201,8 @@ msgstr "Disable all"
 msgid "关于"
 msgstr "About"
 
-#: src/components/arknights/StagePanel.tsx:264
-#: src/components/arknights/StagePanel.tsx:265
+#: src/components/arknights/StagePanel.tsx:272
+#: src/components/arknights/StagePanel.tsx:273
 #: src/components/arknights/StagePanelWide.tsx:104
 msgid "关卡"
 msgstr "Stages"
@@ -275,7 +275,7 @@ msgid "取消"
 msgstr "Cancel"
 
 #. %d: number
-#: src/components/arknights/StageRows.tsx:166
+#: src/components/arknights/StageRows.tsx:234
 msgid "另外 %d 关"
 msgid_plural "另外 %d 关"
 msgstr[0] "%d more"
@@ -577,10 +577,10 @@ msgstr ""
 msgid "数据源"
 msgstr "Data Sources"
 
-#: src/components/arknights/StagePanel.tsx:127
-#: src/components/arknights/StagePanel.tsx:200
+#: src/components/arknights/StagePanel.tsx:129
+#: src/components/arknights/StagePanel.tsx:208
 #: src/components/arknights/StagePanelWide.tsx:191
-#: src/components/arknights/StagePanelWide.tsx:311
+#: src/components/arknights/StagePanelWide.tsx:297
 #: src/components/ConfigUi.tsx:175
 msgid "无匹配关卡"
 msgstr "No matching stages"
@@ -1971,17 +1971,17 @@ msgctxt "arknights stage category"
 msgid "资源收集"
 msgstr "Supplies"
 
-#: src/components/arknights/stagePanelModel.ts:168
+#: src/components/arknights/stagePanelModel.ts:175
 msgctxt "arknights stage category short"
 msgid "主线"
 msgstr "Main"
 
-#: src/components/arknights/stagePanelModel.ts:170
+#: src/components/arknights/stagePanelModel.ts:177
 msgctxt "arknights stage category short"
 msgid "别传"
 msgstr "Side"
 
-#: src/components/arknights/stagePanelModel.ts:172
+#: src/components/arknights/stagePanelModel.ts:179
 msgctxt "arknights stage category short"
 msgid "资源"
 msgstr "Resources"
@@ -2714,16 +2714,19 @@ msgctxt "item list counter label"
 msgid "间接需求"
 msgstr "Indirect"
 
+#: src/components/arknights/stagePanelModel.ts:218
 #: src/components/ItemList.tsx:482
 msgctxt "item list view label"
 msgid "星标"
 msgstr "Starred"
 
+#: src/components/arknights/stagePanelModel.ts:222
 #: src/components/ItemList.tsx:480
 msgctxt "item list view label"
 msgid "毕业"
 msgstr "Maxed"
 
+#: src/components/arknights/stagePanelModel.ts:220
 #: src/components/ItemList.tsx:481
 msgctxt "item list view label"
 msgid "计划"
@@ -4702,55 +4705,93 @@ msgctxt "stage panel"
 msgid "主要掉落（每次）"
 msgstr "Main drops (per run)"
 
-#: src/components/arknights/stagePanelModel.ts:179
+#: src/components/arknights/stagePanelModel.ts:186
 msgctxt "stage panel"
 msgid "作战记录"
 msgstr "Battle Records"
 
-#: src/components/arknights/StagePanel.tsx:246
+#: src/components/arknights/StagePanel.tsx:254
 msgctxt "stage panel"
 msgid "全部"
 msgstr "All"
 
-#: src/components/arknights/StagePanel.tsx:189
-#: src/components/arknights/StagePanelWide.tsx:306
+#: src/components/arknights/StagePanel.tsx:196
+#: src/components/arknights/StagePanelWide.tsx:291
 msgctxt "stage panel"
 msgid "全部材料"
 msgstr "All materials"
 
-#: src/components/arknights/StagePanel.tsx:234
-#: src/components/arknights/StagePanelWide.tsx:364
+#: src/components/arknights/StagePanel.tsx:242
+#: src/components/arknights/StagePanelWide.tsx:351
 msgctxt "stage panel"
 msgid "关卡代号或名称"
 msgstr "Stage code or name"
 
-#: src/components/arknights/StagePanelWide.tsx:223
+#: src/components/arknights/stagePanelModel.ts:278
 msgctxt "stage panel"
 msgid "其他"
 msgstr "Other"
 
+#: src/components/arknights/StagePanelWide.tsx:340
+msgctxt "stage panel"
+msgid "图标角上是库存，「需」是需求；点材料看它的全部关卡"
+msgstr ""
+"Icon corner: stock. “Need”: what goals require. Click a material for its "
+"stages."
+
+#: src/components/arknights/StageRows.tsx:171
+msgctxt "stage panel"
+msgid "够了"
+msgstr "Enough"
+
 #. %s: enabled stages / all stages, e.g. 534/571
-#: src/components/arknights/StagePanelWide.tsx:375
+#: src/components/arknights/StagePanelWide.tsx:363
 msgctxt "stage panel"
 msgid "已启用 %s"
 msgstr "Enabled %s"
 
-#: src/components/arknights/StagePanel.tsx:39
+#: src/components/arknights/StagePanel.tsx:41
 msgctxt "stage panel"
 msgid "已启用的关卡"
 msgstr "Enabled stages"
 
-#: src/components/arknights/StageRows.tsx:187
+#: src/components/arknights/StageRows.tsx:164
+msgctxt "stage panel"
+msgid "库存"
+msgstr "Stock"
+
+#: src/components/arknights/StageRows.tsx:203
+msgctxt "stage panel"
+msgid "库存 %s"
+msgstr "Stock %s"
+
+#. %s$level: 星标, 计划 or 毕业
+#: src/components/arknights/StageRows.tsx:143
+msgctxt "stage panel"
+msgid "按%s$level目标：直接需求 %s$direct，间接需求 %s$indirect"
+msgstr "%s$level goals: %s$direct direct, %s$indirect indirect"
+
+#. %s$level: 星标, 计划 or 毕业
+#: src/components/arknights/StageRows.tsx:139
+msgctxt "stage panel"
+msgid ""
+"按%s$level目标：直接需求 %s$direct，间接需求 %s$indirect；数字都是经验，库存"
+"是作战记录折成的经验"
+msgstr ""
+"%s$level goals: %s$direct direct, %s$indirect indirect. All figures are EXP; "
+"the stock is your battle records counted as EXP"
+
+#: src/components/arknights/StageRows.tsx:255
 msgctxt "stage panel"
 msgid "按材料"
 msgstr "By material"
 
-#: src/components/arknights/StageRows.tsx:186
+#: src/components/arknights/StageRows.tsx:254
 msgctxt "stage panel"
 msgid "按章节"
 msgstr "By chapter"
 
-#: src/components/arknights/StagePanelWide.tsx:284
+#: src/components/arknights/StagePanelWide.tsx:269
 msgctxt "stage panel"
 msgid "换一种材料 · 数字是它最高的关卡效率"
 msgstr "Switch material · the number is its best stage efficiency"
@@ -4760,7 +4801,7 @@ msgctxt "stage panel"
 msgid "效率"
 msgstr "Efficiency"
 
-#: src/components/arknights/StagePanelWide.tsx:399
+#: src/components/arknights/StagePanelWide.tsx:387
 msgctxt "stage panel"
 msgid ""
 "效率 = 每次掉落价值 ÷ 理智。物品价值按「价值计算」的设置算出；活动代币没有价"
@@ -4769,18 +4810,23 @@ msgstr ""
 "Efficiency = value per run ÷ sanity. Item values follow the Value "
 "Calculation settings; event tokens have no value and are left out."
 
-#: src/components/arknights/StageRows.tsx:202
+#: src/components/arknights/stagePanelModel.ts:272
+msgctxt "stage panel"
+msgid "效率超过 100%"
+msgstr "Above 100%"
+
+#: src/components/arknights/StageRows.tsx:270
 msgctxt "stage panel"
 msgid "无匹配材料"
 msgstr "No matching materials"
 
-#: src/components/arknights/StagePanelWide.tsx:219
+#: src/components/arknights/stagePanelModel.ts:274
 msgctxt "stage panel"
 msgid "材料"
 msgstr "Materials"
 
-#: src/components/arknights/StagePanel.tsx:234
-#: src/components/arknights/StagePanelWide.tsx:364
+#: src/components/arknights/StagePanel.tsx:242
+#: src/components/arknights/StagePanelWide.tsx:351
 msgctxt "stage panel"
 msgid "材料名称"
 msgstr "Material name"
@@ -4795,23 +4841,17 @@ msgctxt "stage panel"
 msgid "每次掉落价值"
 msgstr "Value per run"
 
-#: src/components/arknights/StagePanelWide.tsx:370
-msgctxt "stage panel"
-msgid "每种材料一组，按最高效率排序；点材料看它的全部关卡"
-msgstr ""
-"One group per material, best first. Click a material to see all its stages."
-
-#: src/components/arknights/StageRows.tsx:74
+#: src/components/arknights/StageRows.tsx:81
 msgctxt "stage panel"
 msgid "活动"
 msgstr "Event"
 
-#: src/components/arknights/StageRows.tsx:201
+#: src/components/arknights/StageRows.tsx:269
 msgctxt "stage panel"
 msgid "物品价值计算失败"
 msgstr "Item values could not be computed"
 
-#: src/components/arknights/StageRows.tsx:195
+#: src/components/arknights/StageRows.tsx:263
 msgctxt "stage panel"
 msgid "物品价值计算失败，暂时无法显示效率；关卡的启用、禁用不受影响"
 msgstr ""
@@ -4823,10 +4863,30 @@ msgctxt "stage panel"
 msgid "理智"
 msgstr "Sanity"
 
-#: src/components/arknights/StagePanelWide.tsx:221
+#: src/components/arknights/stagePanelModel.ts:276
 msgctxt "stage panel"
 msgid "芯片"
 msgstr "Chips"
+
+#: src/components/arknights/StageRows.tsx:168
+msgctxt "stage panel"
+msgid "还缺"
+msgstr "Short"
+
+#: src/components/arknights/StageRows.tsx:217
+msgctxt "stage panel"
+msgid "需 %s"
+msgstr "Need %s"
+
+#: src/components/arknights/StageRows.tsx:161
+msgctxt "stage panel"
+msgid "需求"
+msgstr "Need"
+
+#: src/components/arknights/StageRows.tsx:212
+msgctxt "stage panel"
+msgid "需求 %s"
+msgstr "Need %s"
 
 #: src/components/arknights/StagePanelWide.tsx:105
 msgctxt "stage panel"
@@ -5289,6 +5349,12 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgctxt "stage panel"
+#~ msgid "每种材料一组，按最高效率排序；点材料看它的全部关卡"
+#~ msgstr ""
+#~ "One group per material, best first. Click a material to see all its "
+#~ "stages."
 
 #~ msgctxt "predefined query"
 #~ msgid "专三价值（能用）"
