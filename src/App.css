@@ -168,59 +168,45 @@ body {
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
-/* Outside the scrolling body, so it stays at the top */
-.cpp-dossier-toc {
+/* The tab list stays at the top; only the page under it scrolls */
+.cpp-dossier-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 6px 16px;
-  box-shadow: 0 1px 0 rgba(17, 20, 24, 0.15);
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Long titles (en_US) scroll the tabs sideways rather than wrapping them */
+.cpp-dossier-tabs > .bp6-tab-list {
   flex: none;
+  padding: 0 20px;
+  column-gap: 22px;
+  box-shadow: inset 0 -1px 0 rgba(17, 20, 24, 0.15);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cpp-dossier-tabs > .bp6-tab-list::-webkit-scrollbar {
+  display: none;
+}
+
+.cpp-dossier-tabs .bp6-tab {
+  line-height: 38px;
+}
+
+.cpp-dossier-tabs > .bp6-tab-panel {
+  margin-top: 0;
 }
 
 .cpp-dossier-body {
   flex: 1 1 auto;
+  min-height: 0;
   overflow: auto;
   padding: 16px 20px 20px;
 }
 
-.cpp-dossier-section + .cpp-dossier-section {
-  margin-top: 22px;
-}
-
-.cpp-dossier-section-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 4px 0 10px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--bp-palette-gray-1, #5f6b7c);
-}
-
-.cpp-dossier-section-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: rgba(17, 20, 24, 0.12);
-}
-
-/*
- * The community statistics widen the Arknights editor past the body; only the editor scrolls. The max-content track
- * lays it out at the width its popover gives it: in a plain block its button groups would shrink and clip their labels.
- */
-.cpp-dossier-editor {
-  display: grid;
-  grid-template-columns: max-content;
-  overflow-x: auto;
-  max-width: 100%;
-}
-
-.cpp-dossier-editor-sep {
-  height: 1px;
-  margin: 16px 0;
-  background: rgba(17, 20, 24, 0.15);
+.cpp-dossier-body-flush {
+  padding: 0 0 20px;
 }
 
 .bp6-menu-item.cpp-dossier-open {
@@ -368,8 +354,34 @@ body {
   margin-right: 4px !important;
 }
 
+/* While a cell's popover is open its row reads as selected, the same as while the dossier shows it */
+.cpp-char-menu-master:has(> .bp6-popover-open > .cpp-char-menu-status) .cpp-char-menu-char {
+  background-color: rgba(45, 114, 210, 0.2);
+  color: #184a90;
+  box-shadow: inset 3px 0 0 var(--bp-palette-blue-3, #2d72d2);
+}
+
+/* The dark cell is drawn by ::after, so the outline goes there too */
+.cpp-char-menu-master > .bp6-popover-open > .cpp-char-menu-status::after {
+  box-shadow:
+    0 0 0 2px var(--bp-palette-blue-3, #2d72d2),
+    #313131 0px 3px 6px;
+}
+
 .cpp-popover .bp6-popover-content {
   padding: 15px;
+}
+
+/* 40px of navbar and 8px above and below: taller content scrolls inside rather than leaving the screen */
+.cpp-status-popover .bp6-popover-content {
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Popper flags a row scrolled out of the list; Blueprint has no style for it */
+.cpp-status-popover.bp6-popover-reference-hidden {
+  visibility: hidden;
 }
 
 .cpp-stage-popover {

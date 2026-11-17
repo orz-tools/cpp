@@ -14,10 +14,20 @@ import { EditorContext, EditorContextValue } from './context'
 
 /**
  * One operator's current status or goal: elite and level, skills, modules and, in the current status, potential.
- * The list's popovers and the dossier's 练度 section both render it; the dossier passes embedded.
+ * The list's popovers and the dossier's 练度 page both render it; the dossier passes embedded.
  */
 export const CharacterStatusEditor = memo(
-  ({ character, isGoal, embedded = false }: { character: Character; isGoal: boolean; embedded?: boolean }) => {
+  ({
+    character,
+    isGoal,
+    embedded = false,
+    onModeChange,
+  }: {
+    character: Character
+    isGoal: boolean
+    embedded?: boolean
+    onModeChange?: (isGoal: boolean) => void
+  }) => {
     const atoms = useAtoms<Arknights>()
     const dm = useGameAdapter().getDataManager() as ArknightsDataManager
     const charId = character.key
@@ -50,7 +60,7 @@ export const CharacterStatusEditor = memo(
     return (
       <EditorContext.Provider value={ctx}>
         <div className={'cpp-charstat' + (embedded ? ' cpp-charstat-embedded' : '')}>
-          <Header isGoal={isGoal} embedded={embedded} />
+          <Header isGoal={isGoal} embedded={embedded} onModeChange={onModeChange} />
           <SurveyBar source={source} setSource={setSource} />
           {status.level > 0 ? (
             <>

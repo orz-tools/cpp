@@ -3,7 +3,13 @@ import { useAtomValue } from 'jotai'
 import { memo } from 'react'
 import { useAtoms, useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter, Character } from '../../pkg/cpp-arknights'
-import { MissionInput, listJoin, missionSummary, parseMission } from '../../pkg/cpp-arknights/moduleMissions'
+import {
+  MissionInput,
+  listJoin,
+  missionProgress,
+  missionSummary,
+  parseMission,
+} from '../../pkg/cpp-arknights/moduleMissions'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { useShowSidebarPanel } from '../Sidebar'
@@ -119,10 +125,21 @@ function otherCrew(missions: readonly MissionInput[], self: MissionInput) {
   return missions.filter((x) => !seen.has(x.charId) && seen.add(x.charId))
 }
 
+/** 页签上的「已完成/全部」：只算还没解锁的模组，全部解锁了就不写 */
+function useMissionTag(character: ICharacter): string | null {
+  const ga = useGameAdapter<Arknights>() as ArknightsAdapter
+  const current = useAtomValue(useAtoms<Arknights>().currentCharacter(character.key))
+  const done = useDoneMissions()
+  const modules = ga.getMissionCatalog().modules.filter((m) => m.charId === character.key)
+  const progress = missionProgress(modules, current, done)
+  return progress ? `${progress.done}/${progress.total}` : null
+}
+
 export const moduleMissionsSection: DossierSection = {
   id: 'moduleMissions',
   title: lpstr(() => gt.pgettext('dossier section', '模组任务')),
   Body: ModuleMissionSectionBody,
+  useTag: useMissionTag,
   isAvailable: (ga, character) => {
     const aga = ga as ArknightsAdapter
     return aga.hasModuleMissions() && aga.getMissionCatalog().modules.some((m) => m.charId === character.key)

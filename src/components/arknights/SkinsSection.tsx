@@ -108,7 +108,7 @@ const SkinsSectionBody = memo(({ character }: { character: ICharacter }) => {
   const owned = skins.filter((s) => s.owned).length
   const absent = ga.getUserDataAdapter().isAbsentCharacter(c, current)
 
-  // 从侧栏点了这名干员的一件时装：滚过来、框出来。档案换干员时先把滚动归零（DossierSections 的 layout
+  // 从侧栏点了这名干员的一件时装：滚过来、框出来。档案换干员、换页时先把滚动归零（DossierTabs 的 layout
   // effect），这里是普通 effect，在它之后跑
   useEffect(() => {
     if (!focusedSkin || model.catalog.byId.get(focusedSkin.skinId)?.charId !== c.key) return
