@@ -32,6 +32,7 @@ import {
   normalizeItemValueConfig,
 } from './itemValue'
 import { EnemyLevel, MissionCatalog, MissionModule, MissionStageInfo } from './moduleMissions'
+import { SkinCatalog, buildSkinCatalog } from './skins'
 import { HeyboxSurveySource, YituliuSurveySource, toTierShares } from './survey'
 import { TrainingCost } from './trainingCost'
 import {
@@ -185,6 +186,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     this.zoneInfos = undefined
     this.missionCatalog = undefined
     this.trainingCost = undefined
+    this.skinCatalog = undefined
     this.cacheExpiresAt = Infinity
     this.getStageInfos()
     return Number.isFinite(this.cacheExpiresAt) ? this.cacheExpiresAt : undefined
@@ -868,6 +870,18 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   private trainingCost?: TrainingCost
   public getTrainingCost(): TrainingCost {
     return (this.trainingCost ||= new TrainingCost(this))
+  }
+
+  /** 数据 worker 发布时装之前的缓存数据里没有；国际服看自己区服的表 */
+  public hasSkins(): boolean {
+    const raw = this.dataManager.raw
+    return Object.keys((raw.local ?? raw).exSkin?.charSkins ?? {}).length > 0
+  }
+
+  private skinCatalog?: SkinCatalog
+  public getSkinCatalog(): SkinCatalog {
+    const raw = this.dataManager.raw
+    return (this.skinCatalog ||= buildSkinCatalog({ base: raw.exSkin, local: raw.local?.exSkin ?? null }))
   }
 
   public getFormulas() {

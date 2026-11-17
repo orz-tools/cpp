@@ -61,6 +61,16 @@ export const AboutDataSources = memo(() => {
         dataObj={dm.$surveyHeybox}
         copyright={gt.gettext('数据整理自小黑盒 app 明日方舟干员统计功能。')}
       />
+      {/* 不在启动时必须下载的那几份里，所以不用 DataObjectStatus（它要求容器已经载入） */}
+      {dm.sources.prtsSkins ? (
+        <DescriptionMenuItem
+          icon={'database'}
+          text={gt.gettext('PRTS 时装回廊')}
+          href={'https://prts.wiki/w/时装回廊'}
+          {...externalLinkProps}
+          description={gt.gettext('时装的售卖时间和获得渠道来自 PRTS 时装回廊，采用 CC BY-NC-SA 4.0 许可。')}
+        />
+      ) : null}
     </>
   )
 })

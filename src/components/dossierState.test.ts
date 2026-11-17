@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DossierState, clickCharacter, visibleSections } from './dossierState'
+import { DossierState, clickCharacter, showCharacter, visibleSections } from './dossierState'
 
 const outside = (epoch: number) => ({ epoch, inWindow: false })
 const inWindow = (epoch: number) => ({ epoch, inWindow: true })
@@ -33,6 +33,21 @@ describe('clickCharacter', () => {
 
   it('opens from a window when closed', () => {
     expect(clickCharacter(null, 'a', inWindow(4))).toEqual({ charId: 'a', generation: 0, epoch: 4 })
+  })
+})
+
+describe('showCharacter', () => {
+  it('keeps the dossier open on the character it already shows', () => {
+    const state: DossierState = { charId: 'a', generation: 1, epoch: 2 }
+    expect(showCharacter(state, 'a', outside(2))).toBe(state)
+    expect(showCharacter(state, 'b', outside(2))).toEqual({ charId: 'b', generation: 1, epoch: 2 })
+    expect(showCharacter(null, 'a', outside(2))).toEqual({ charId: 'a', generation: 0, epoch: 2 })
+  })
+
+  it('reopens above a window that covers it', () => {
+    const state: DossierState = { charId: 'a', generation: 1, epoch: 2 }
+    expect(showCharacter(state, 'a', inWindow(3))).toEqual({ charId: 'a', generation: 2, epoch: 3 })
+    expect(showCharacter(state, 'a', inWindow(2))).toBe(state)
   })
 })
 

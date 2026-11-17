@@ -14,11 +14,13 @@ import {
   ArknightsKengxxiaoDetailsObject,
   ArknightsKengxxiaoObject,
   ArknightsPenguinObject,
+  ArknightsPrtsSkinsObject,
   ArknightsYituliuOperatorSurveyObject,
 } from './DataObjects'
 import { Category, myCategories } from './GameAdapter'
 import { Details, DetailsLoader } from './details'
 import type { ItemValueResult } from './itemValue'
+import { PrtsSkinsData, PrtsSkinsLoader } from './prtsSkins'
 import {
   AK_ITEM_GOLD,
   AK_ITEM_UNKNOWN_SHIT,
@@ -49,12 +51,15 @@ export class ArknightsSources implements DataSources {
   public readonly surveyHeybox = new ArknightsHeyboxOperatorSurveyObject()
   public readonly kengxxiaoDetails = new ArknightsKengxxiaoDetailsObject('zh_CN')
   public readonly kengxxiaoDetailsLocal: ArknightsKengxxiaoDetailsObject | null
+  /** PRTS only covers zh_CN */
+  public readonly prtsSkins: ArknightsPrtsSkinsObject | null
 
   public constructor(public readonly region: ArknightsRegion) {
     const { local, penguin } = regionSources[region]
     this.kengxxiaoLocal = local ? new ArknightsKengxxiaoObject(local) : null
     this.kengxxiaoDetailsLocal = local ? new ArknightsKengxxiaoDetailsObject(local) : null
     this.penguin = new ArknightsPenguinObject(penguin)
+    this.prtsSkins = local ? null : new ArknightsPrtsSkinsObject()
   }
 
   public get required(): DataContainerObject<any>[] {
@@ -78,6 +83,14 @@ function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter) {
   const yituliuSurvey = getContainer(sources.surveyYituliu)
   const heyboxSurvey = getContainer(sources.surveyHeybox)
   const kLocal = sources.kengxxiaoLocal ? getContainer(sources.kengxxiaoLocal) : null
+  // Containers stored before the worker published skins lack charSkins, brandList and exShop
+  const exSkin: ArknightsKengxxiao['exSkin'] = {
+    charSkins: {},
+    brandList: {},
+    buildinEvolveMap: {},
+    buildinPatchMap: {},
+    ...(k.data.exSkin as Partial<ArknightsKengxxiao['exSkin']> | undefined),
+  }
 
   return {
     exCharacters: k.data.exCharacters,
@@ -89,11 +102,9 @@ function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter) {
     exStage: k.data.exStage,
     exRetro: k.data.exRetro,
     exZone: k.data.exZone,
-    exSkin: k.data.exSkin || {
-      buildinEvolveMap: {},
-      buildinPatchMap: {},
-    },
+    exSkin,
     exEnemies: k.data.exEnemies || { enemyData: {} },
+    exShop: k.data.exShop || { recommendList: [], carousels: [] },
     penguinMatrix: penguin.data,
     yituliuSurvey: yituliuSurvey.data,
     heyboxSurvey: heyboxSurvey.data,
@@ -152,6 +163,14 @@ export class ArknightsDataManager extends BasicDataManager<Arknights, ArknightsS
         ? { obj: sources.kengxxiaoDetailsLocal, versionId: this.get(sources.kengxxiaoLocal).version.id }
         : null,
     )
+  }
+
+  private readonly prtsSkinsLoader = new PrtsSkinsLoader()
+
+  /** Skin sale windows from PRTS, downloaded the first time the skins panel or a 时装 section shows; null outside zh_CN */
+  public loadPrtsSkins(): Promise<PrtsSkinsData> | null {
+    const obj = this.sources.prtsSkins
+    return obj ? this.prtsSkinsLoader.get(obj) : null
   }
 
   public itemValueProvider?: () => ItemValueResult

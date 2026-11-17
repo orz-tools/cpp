@@ -55,6 +55,7 @@ function buildAtoms<G extends IGame>(
         if (!value.goalOrder) value.goalOrder = Object.keys(value.goal)
         if (!value.starredTasks) value.starredTasks = []
         if (!value.doneMissions) value.doneMissions = []
+        if (!value.skins) value.skins = {}
         if (!value.savedQueries) value.savedQueries = []
         return value
       },
@@ -554,6 +555,8 @@ export interface UserData<G extends IGame> {
   starredTasks: string[]
   /** 做完的明日方舟模组任务的 id（如 uniequip_002_mgllan_2）；模组解锁以后也不删，等级改回 0 时勾选还在 */
   doneMissions: string[]
+  /** 已有的明日方舟时装 id → 获得时间（Unix 秒，不知道时为 0） */
+  skins: Record<string, number>
   savedQueries: SavedQuery[]
   /** 「常看」的自定义版本，缺省时用游戏给出的默认 */
   favQuery?: QueryParam
@@ -573,6 +576,7 @@ export function newUserData<G extends IGame>(): UserData<G> {
     goalOrder: [],
     starredTasks: [],
     doneMissions: [],
+    skins: {},
     savedQueries: [],
   }
 }

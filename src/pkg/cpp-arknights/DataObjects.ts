@@ -7,6 +7,7 @@ import { CppData_ArknightsKengxxiaoEnUs } from '../cpp-data-schemas/arknights-ke
 import { CppData_ArknightsKengxxiaoJaJp } from '../cpp-data-schemas/arknights-kengxxiao-ja_JP'
 import { CppData_ArknightsKengxxiaoKoKr } from '../cpp-data-schemas/arknights-kengxxiao-ko_KR'
 import { CppData_ArknightsKengxxiaoZhCn } from '../cpp-data-schemas/arknights-kengxxiao-zh_CN'
+import { CppData_ArknightsPrtsSkins } from '../cpp-data-schemas/arknights-prts-skins'
 import { CppData_ArknightsYituliuOperatorsurvey } from '../cpp-data-schemas/arknights-yituliu-operatorsurvey'
 import { CONTAINER_TYPE, CONTAINER_VERSION, CppRepoObject, DataContainerObject, IDataContainer } from '../dccache'
 import { PenguinMatrix } from './sources/penguinTypes'
@@ -35,6 +36,15 @@ export class ArknightsKengxxiaoDetailsObject extends CppRepoObject<
 
   public constructor(public readonly lang: ArknightsKengxxiaoObject['lang']) {
     super(`arknights-kengxxiao-details-${lang}`)
+  }
+}
+
+/** zh_CN only, and not required either: the skins panel or the dossier's 时装 section downloads it when first shown. */
+export class ArknightsPrtsSkinsObject extends CppRepoObject<CppData_ArknightsPrtsSkins> {
+  public requiredSchema = 1
+
+  public constructor() {
+    super('arknights-prts-skins')
   }
 }
 

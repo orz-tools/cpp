@@ -244,6 +244,17 @@ export function useSklandImport() {
                 result.trainingError,
             )
           }
+          if (result.skins && (result.skins.added > 0 || result.skins.removed > 0)) {
+            ctx.addNote(
+              gt
+                .pgettext(
+                  'skins',
+                  '时装：多了 %d$added 件，少了 %d$removed 件',
+                ) /* I10N: %d$added: skins Skland lists that were not recorded before, %d$removed: recorded skins it does not list */
+                .replaceAll('%d$added', String(result.skins.added))
+                .replaceAll('%d$removed', String(result.skins.removed)),
+            )
+          }
           if (uid && previous?.uid && uid !== previous.uid) {
             ctx.addWarning(
               gt

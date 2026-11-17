@@ -10,6 +10,8 @@ import { ImporterMenuItems } from './ImporterMenuItems'
 import { moduleMissionsPanel } from './ModuleMissionPanel'
 import { moduleMissionsSection } from './ModuleMissionSection'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
+import { skinsPanel } from './SkinsPanel'
+import { skinsSection } from './SkinsSection'
 import { stagesPanel } from './StagePanel'
 import { TaskDisplay } from './TaskDisplay'
 import { ValueConfigMenu } from './ValueConfigMenu'
@@ -45,6 +47,6 @@ export const ArknightsComponents: IGameComponent = {
     rarity: '==',
     elite: '==',
   },
-  sidebarPanels: [stagesPanel, moduleMissionsPanel],
-  dossierSections: [costSection, moduleMissionsSection],
+  sidebarPanels: [stagesPanel, moduleMissionsPanel, skinsPanel],
+  dossierSections: [costSection, skinsSection, moduleMissionsSection],
 }

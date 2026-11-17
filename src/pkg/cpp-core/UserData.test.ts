@@ -109,4 +109,24 @@ describe('UserDataAtomHolder', () => {
     store.set(atoms.dataAtom, 'redo')
     expect(store.get(atoms.dataAtom).doneMissions).toEqual(['uniequip_002_test_2'])
   })
+
+  it('reads owned skins from data saved before them as none', () => {
+    const store = createStore()
+    const holder = new UserDataAtomHolder(ga)
+    const { skins: _, ...old } = newUserData()
+    holder.setAtom(atom<UserData<IGame> | undefined>(old as UserData<IGame>), atom<string[]>([]), atom(0))
+    expect(store.get(holder.atoms.dataAtom).skins).toEqual({})
+  })
+
+  it('undoes and redoes changing owned skins', () => {
+    const { store, atoms } = setup()
+    store.set(atoms.dataAtom, 'modify', (d) => {
+      d.skins['char_002_amiya@winter#1'] = 1700000000
+    })
+    expect(store.get(atoms.dataAtom).skins).toEqual({ 'char_002_amiya@winter#1': 1700000000 })
+    store.set(atoms.dataAtom, 'undo')
+    expect(store.get(atoms.dataAtom).skins).toEqual({})
+    store.set(atoms.dataAtom, 'redo')
+    expect(store.get(atoms.dataAtom).skins).toEqual({ 'char_002_amiya@winter#1': 1700000000 })
+  })
 })
