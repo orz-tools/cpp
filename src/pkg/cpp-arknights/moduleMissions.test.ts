@@ -13,6 +13,7 @@ import {
   conflict,
   fits,
   formatSplitReasons,
+  missionProgress,
   missionSummary,
   parseMission,
   partitionStage,
@@ -455,5 +456,41 @@ describe('buildBoard', () => {
     const input: BoardInput = { catalog, current, goal, doneMissions: [], goalOrder: [], scope: 'plan', rarities: [] }
     expect(buildBoard(input)).toBe(buildBoard({ ...input }))
     expect(buildBoard(input)).not.toBe(buildBoard({ ...input, doneMissions: [] }))
+  })
+})
+
+describe('missionProgress', () => {
+  const mod = (equipId: string): MissionModule => ({
+    equipId,
+    charId: 'char_x',
+    stars: 6,
+    unlockLevel: 60,
+    missions: [made(`${equipId}_1`, { equipId }), made(`${equipId}_2`, { equipId })],
+  })
+  const modules = [mod('uniequip_x'), mod('uniequip_y')]
+  const st = (modLevel: Record<string, number>): ArknightsCharacterStatus => ({
+    elite: 2,
+    level: 60,
+    skillLevel: 7,
+    skillMaster: {},
+    modLevel,
+  })
+
+  it('counts the done missions of the locked modules', () => {
+    expect(missionProgress(modules, st({}), new Set(['uniequip_y_1']))).toEqual({ done: 1, total: 4 })
+  })
+
+  it('leaves out a module that is unlocked', () => {
+    const progress = missionProgress(modules, st({ uniequip_x: 1, uniequip_y: 0 }), new Set(['uniequip_x_1']))
+    expect(progress).toEqual({ done: 0, total: 2 })
+  })
+
+  it('has nothing to show once every module is unlocked, or when there is none', () => {
+    expect(missionProgress(modules, st({ uniequip_x: 1, uniequip_y: 2 }), new Set())).toBeNull()
+    expect(missionProgress([], st({}), new Set())).toBeNull()
+  })
+
+  it('counts every module of an operator not owned', () => {
+    expect(missionProgress(modules, undefined, new Set(['uniequip_x_2']))).toEqual({ done: 1, total: 4 })
   })
 })

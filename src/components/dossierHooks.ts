@@ -1,11 +1,28 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { selectAtom } from 'jotai/utils'
-import { createContext, useContext, useMemo } from 'react'
+import { atomWithStorage, selectAtom } from 'jotai/utils'
+import { SetStateAction, createContext, useContext, useMemo } from 'react'
 import useEvent from 'react-use-event-hook'
-import { DossierState, clickCharacter, showCharacter } from './dossierState'
+import { DossierPrefs, DossierState, clickCharacter, readDossierPrefs, showCharacter } from './dossierState'
 
 // 每个 Cpp 实例有自己的 store，所以档案开着没有是按 profile 分开的，刷新后是关着的
 export const dossierAtom = atom<DossierState | null>(null)
+
+// 和 cpp_sidebar 一样记在本机、不分档案
+const dossierPrefsStorageAtom = atomWithStorage<unknown>('cpp_dossier', null, undefined, { getOnInit: true })
+
+export const dossierPrefsAtom = atom(
+  (get) => readDossierPrefs(get(dossierPrefsStorageAtom)),
+  (get, set, update: SetStateAction<DossierPrefs>) =>
+    set(
+      dossierPrefsStorageAtom,
+      typeof update === 'function' ? update(readDossierPrefs(get(dossierPrefsStorageAtom))) : update,
+    ),
+)
+
+export interface OpenDossierOptions {
+  /** 打开到这一页：先改本机记录的 section，再按原来的规则打开或切换档案 */
+  section?: string
+}
 
 let windowCount = 0
 
@@ -21,31 +38,37 @@ export function currentWindowEpoch() {
 export const PopOutWindowContext = createContext<number | null>(null)
 
 /** 和点列表里的干员一样：打开、切换或关上档案；在大窗口里调用时，档案排到窗口上面 */
-export function useOpenCharacterDossier(): (charId: string) => void {
+export function useOpenCharacterDossier(): (charId: string, options?: OpenDossierOptions) => void {
   const windowEpoch = useContext(PopOutWindowContext)
+  const setPrefs = useSetAtom(dossierPrefsAtom)
   const setState = useSetAtom(dossierAtom)
-  return useEvent((charId: string) =>
+  return useEvent((charId: string, options?: OpenDossierOptions) => {
+    const section = options?.section
+    if (section) setPrefs((p) => ({ ...p, section }))
     setState((state) =>
       clickCharacter(state, charId, {
         epoch: windowEpoch ?? currentWindowEpoch(),
         inWindow: windowEpoch != null,
       }),
-    ),
-  )
+    )
+  })
 }
 
 /** 打开这名干员的档案；已经开着时不关上，被窗口盖住时重新打开 */
-export function useShowCharacterDossier(): (charId: string) => void {
+export function useShowCharacterDossier(): (charId: string, options?: OpenDossierOptions) => void {
   const windowEpoch = useContext(PopOutWindowContext)
+  const setPrefs = useSetAtom(dossierPrefsAtom)
   const setState = useSetAtom(dossierAtom)
-  return useEvent((charId: string) =>
+  return useEvent((charId: string, options?: OpenDossierOptions) => {
+    const section = options?.section
+    if (section) setPrefs((p) => ({ ...p, section }))
     setState((state) =>
       showCharacter(state, charId, {
         epoch: windowEpoch ?? currentWindowEpoch(),
         inWindow: windowEpoch != null,
       }),
-    ),
-  )
+    )
+  })
 }
 
 export function useCloseCharacterDossier(): () => void {

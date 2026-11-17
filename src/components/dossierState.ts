@@ -36,3 +36,29 @@ export function showCharacter(
 export function visibleSections<S>(sections: readonly S[], isAvailable: (s: S) => boolean): S[] {
   return sections.filter(isAvailable)
 }
+
+export type StatusMode = 'current' | 'goal'
+
+export interface DossierPrefs {
+  /** 选中的页签，是 DossierSection 的 id；这名干员没有这一页时显示第一页，记录不改 */
+  section: string
+  /** 「练度」页显示哪一边 */
+  statusMode: StatusMode
+}
+
+export const defaultDossierPrefs: DossierPrefs = { section: 'status', statusMode: 'goal' }
+
+/** 一个字段坏了只换这一个字段 */
+export function readDossierPrefs(stored: unknown): DossierPrefs {
+  if (typeof stored !== 'object' || stored == null || Array.isArray(stored)) return defaultDossierPrefs
+  const { section, statusMode } = stored as Partial<Record<keyof DossierPrefs, unknown>>
+  return {
+    section: typeof section === 'string' && section !== '' ? section : defaultDossierPrefs.section,
+    statusMode: statusMode === 'current' || statusMode === 'goal' ? statusMode : defaultDossierPrefs.statusMode,
+  }
+}
+
+/** 记住的页这名干员没有时显示第一页，也就是外壳的「练度」 */
+export function shownSection(section: string, availableIds: readonly string[]): string {
+  return availableIds.includes(section) ? section : availableIds[0]
+}

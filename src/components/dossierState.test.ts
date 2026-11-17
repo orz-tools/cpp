@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { DossierState, clickCharacter, showCharacter, visibleSections } from './dossierState'
+import {
+  DossierState,
+  clickCharacter,
+  defaultDossierPrefs,
+  readDossierPrefs,
+  showCharacter,
+  shownSection,
+  visibleSections,
+} from './dossierState'
 
 const outside = (epoch: number) => ({ epoch, inWindow: false })
 const inWindow = (epoch: number) => ({ epoch, inWindow: true })
@@ -55,5 +63,47 @@ describe('visibleSections', () => {
   it('keeps the registration order and drops the unavailable ones', () => {
     const sections = ['status', 'cost', 'building', 'skins', 'modules']
     expect(visibleSections(sections, (s) => s !== 'building' && s !== 'skins')).toEqual(['status', 'cost', 'modules'])
+  })
+})
+
+describe('readDossierPrefs', () => {
+  it('returns a complete record as it is', () => {
+    expect(readDossierPrefs({ section: 'skins', statusMode: 'current' })).toEqual({
+      section: 'skins',
+      statusMode: 'current',
+    })
+  })
+
+  it('falls back to the 练度 page and the goal when nothing readable is stored', () => {
+    expect(defaultDossierPrefs).toEqual({ section: 'status', statusMode: 'goal' })
+    for (const stored of [null, undefined, 'skins', ['skins', 'current'], 42]) {
+      expect(readDossierPrefs(stored)).toEqual(defaultDossierPrefs)
+    }
+  })
+
+  it('replaces only the field that is broken', () => {
+    expect(readDossierPrefs({ section: '', statusMode: 'current' })).toEqual({
+      section: 'status',
+      statusMode: 'current',
+    })
+    expect(readDossierPrefs({ section: 3, statusMode: 'current' })).toEqual({
+      section: 'status',
+      statusMode: 'current',
+    })
+    expect(readDossierPrefs({ section: 'skins', statusMode: 'both' })).toEqual({ section: 'skins', statusMode: 'goal' })
+    expect(readDossierPrefs({ section: 'skins' })).toEqual({ section: 'skins', statusMode: 'goal' })
+  })
+})
+
+describe('shownSection', () => {
+  const ids = ['status', 'cost', 'skins', 'moduleMissions']
+
+  it('shows the remembered page when this character has it', () => {
+    expect(shownSection('skins', ids)).toBe('skins')
+  })
+
+  it('shows the first page when this character lacks the remembered one', () => {
+    expect(shownSection('moduleMissions', ['status', 'cost', 'skins'])).toBe('status')
+    expect(shownSection('gone', ids)).toBe('status')
   })
 })
