@@ -68,9 +68,11 @@ const notes: Record<string, (what: string, v: string) => string> = {
       .replaceAll('%s$v', v),
   noMoodCost: () => gt.pgettext('arknights base skill effect', '自身不掉心情'),
   noMoodCostFor: (what) =>
-    gt
-      .pgettext('arknights base skill effect', '站内%s$what不掉心情') /* I10N: %s$what: faction, or nothing */
-      .replaceAll('%s$what', what),
+    what
+      ? gt
+          .pgettext('arknights base skill effect', '站内%s$what不掉心情') /* I10N: %s$what: faction */
+          .replaceAll('%s$what', what)
+      : gt.pgettext('arknights base skill effect', '站内不掉心情'),
   byproductIs: (what) =>
     gt
       .pgettext('arknights base skill effect', '副产品必为%s$what') /* I10N: %s$what: material */
