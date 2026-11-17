@@ -7,6 +7,7 @@ import { ConfigMenuItems } from './ConfigMenuItems'
 import { ExporterMenuItems } from './ExporterMenuItems'
 import { ImporterMenuItems } from './ImporterMenuItems'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
+import { stagesPanel } from './StagePanel'
 import { TaskDisplay } from './TaskDisplay'
 import { ValueConfigMenu } from './ValueConfigMenu'
 import { extraFields } from './extraFields'
@@ -36,6 +37,7 @@ export const ArknightsComponents: IGameComponent = {
   TaskDisplay,
   QuickFilterBuilder,
   ValueConfigMenu,
+  sidebarPanels: [stagesPanel],
   quickFilters: {
     professions: 'contains',
     rarity: '==',

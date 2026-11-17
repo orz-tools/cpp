@@ -14,6 +14,13 @@ msgstr ""
 "X-Source-Language: zh_CN\n"
 
 #. %d: number
+#: src/components/arknights/StagePanel.tsx:194
+msgid "%d 关 · 按效率排序"
+msgid_plural "%d 关 · 按效率排序"
+msgstr[0] "%d stage · by efficiency"
+msgstr[1] "%d stages · by efficiency"
+
+#. %d: number
 #: src/components/arknights/ExporterMenuItems.tsx:124
 msgid "%d 名一、二星干员在明日方舟工具箱中没有养成数据，没有导出。"
 msgid_plural "%d 名一、二星干员在明日方舟工具箱中没有养成数据，没有导出。"
@@ -159,14 +166,16 @@ msgstr ""
 "Preferences (excluded stages, value type and so on) were replaced as well; "
 "«Undo» does not restore them."
 
-#: src/components/ConfigUi.tsx:345
+#: src/components/ConfigUi.tsx:304
 msgid "免责声明"
 msgstr "Disclaimer"
 
+#: src/components/arknights/StagePanelWide.tsx:382
 #: src/components/ConfigUi.tsx:199
 msgid "全部启用"
 msgstr "Enable all"
 
+#: src/components/arknights/StagePanelWide.tsx:387
 #: src/components/ConfigUi.tsx:204
 msgid "全部禁用"
 msgstr "Disable all"
@@ -175,11 +184,13 @@ msgstr "Disable all"
 msgid "关于"
 msgstr "About"
 
-#: src/components/ConfigUi.tsx:275
+#: src/components/arknights/StagePanel.tsx:264
+#: src/components/arknights/StagePanel.tsx:265
+#: src/components/arknights/StagePanelWide.tsx:104
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:479 src/components/CharacterDossier.tsx:126
+#: src/App.tsx:478 src/components/CharacterDossier.tsx:126
 #: src/components/CharacterDossier.tsx:127 src/components/Importer.tsx:160
 msgid "关闭"
 msgstr "Close"
@@ -223,6 +234,13 @@ msgstr "Region switched"
 #: src/components/MessageBox.tsx:75
 msgid "取消"
 msgstr "Cancel"
+
+#. %d: number
+#: src/components/arknights/StageRows.tsx:166
+msgid "另外 %d 关"
+msgid_plural "另外 %d 关"
+msgstr[0] "%d more"
+msgstr[1] "%d more"
 
 #: src/components/UserDataManager.tsx:291
 msgid "可将导出的文件拖入此处，或直接粘贴文件导入。"
@@ -326,7 +344,7 @@ msgstr "Import MAA «Operator Progression» Plan"
 msgid "导入 MAA「干员识别」数据"
 msgstr "Import MAA «Operator» Data"
 
-#: src/App.tsx:285 src/components/RetiredGame.tsx:193
+#: src/App.tsx:284 src/components/RetiredGame.tsx:193
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -458,7 +476,7 @@ msgstr "Morale"
 msgid "总价值"
 msgstr "Total Value"
 
-#: src/App.tsx:429
+#: src/App.tsx:428
 msgid "您不妨试试"
 msgstr "You may try"
 
@@ -505,6 +523,10 @@ msgstr ""
 msgid "数据源"
 msgstr "Data Sources"
 
+#: src/components/arknights/StagePanel.tsx:127
+#: src/components/arknights/StagePanel.tsx:200
+#: src/components/arknights/StagePanelWide.tsx:191
+#: src/components/arknights/StagePanelWide.tsx:311
 #: src/components/ConfigUi.tsx:175
 msgid "无匹配关卡"
 msgstr "No matching stages"
@@ -688,7 +710,7 @@ msgstr "Clear"
 msgid "游戏数据已更新"
 msgstr "Game data updated"
 
-#: src/components/ConfigUi.tsx:323
+#: src/components/ConfigUi.tsx:282
 msgid "游戏服务器"
 msgstr "Game Region"
 
@@ -820,7 +842,7 @@ msgstr ""
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/App.tsx:422
+#: src/App.tsx:421
 msgid "返回主页"
 msgstr "Back to Home"
 
@@ -945,62 +967,62 @@ msgctxt "arknights arkntools step"
 msgid "点击「导出」→「导出培养方案至 MAA」"
 msgstr "Click «Export» → «Export training plan to MAA»"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:542
+#: src/pkg/cpp-arknights/GameAdapter.ts:548
 msgctxt "arknights inventory page"
 msgid "养成材料"
 msgstr "Growth Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:857
+#: src/pkg/cpp-arknights/GameAdapter.ts:891
 msgctxt "arknights item category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:854
+#: src/pkg/cpp-arknights/GameAdapter.ts:888
 msgctxt "arknights item category"
 msgid "双芯片"
 msgstr "Dualchips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:853
+#: src/pkg/cpp-arknights/GameAdapter.ts:887
 msgctxt "arknights item category"
 msgid "技能、模组和胶水"
 msgstr "Skill, Module & Catalysts"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:852
+#: src/pkg/cpp-arknights/GameAdapter.ts:886
 msgctxt "arknights item category"
 msgid "灰材料"
 msgstr "T1 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:849
+#: src/pkg/cpp-arknights/GameAdapter.ts:883
 msgctxt "arknights item category"
 msgid "紫材料"
 msgstr "T4 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:851
+#: src/pkg/cpp-arknights/GameAdapter.ts:885
 msgctxt "arknights item category"
 msgid "绿材料"
 msgstr "T2 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:856
+#: src/pkg/cpp-arknights/GameAdapter.ts:890
 msgctxt "arknights item category"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:855
+#: src/pkg/cpp-arknights/GameAdapter.ts:889
 msgctxt "arknights item category"
 msgid "芯片组"
 msgstr "Chip Packs"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:850
+#: src/pkg/cpp-arknights/GameAdapter.ts:884
 msgctxt "arknights item category"
 msgid "蓝材料"
 msgstr "T3 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:848
+#: src/pkg/cpp-arknights/GameAdapter.ts:882
 msgctxt "arknights item category"
 msgid "金材料"
 msgstr "T5 Materials"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:847
+#: src/pkg/cpp-arknights/GameAdapter.ts:881
 msgctxt "arknights item category"
 msgid "钱和经验"
 msgstr "LMD & EXP"
@@ -1126,47 +1148,62 @@ msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr "S2"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:670
+#: src/pkg/cpp-arknights/GameAdapter.ts:704
 msgctxt "arknights stage category"
 msgid "主线"
 msgstr "Main Story"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:675
+#: src/pkg/cpp-arknights/GameAdapter.ts:709
 msgctxt "arknights stage category"
 msgid "其他"
 msgstr "Other"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:672
+#: src/pkg/cpp-arknights/GameAdapter.ts:706
 msgctxt "arknights stage category"
 msgid "别传"
 msgstr "Side Stories"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:673
+#: src/pkg/cpp-arknights/GameAdapter.ts:707
 msgctxt "arknights stage category"
 msgid "插曲"
 msgstr "Intermezzi"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:671
+#: src/pkg/cpp-arknights/GameAdapter.ts:705
 msgctxt "arknights stage category"
 msgid "活动"
 msgstr "Events"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:674
+#: src/pkg/cpp-arknights/GameAdapter.ts:708
 msgctxt "arknights stage category"
 msgid "资源收集"
 msgstr "Supplies"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:773
+#: src/components/arknights/stagePanelModel.ts:168
+msgctxt "arknights stage category short"
+msgid "主线"
+msgstr "Main"
+
+#: src/components/arknights/stagePanelModel.ts:170
+msgctxt "arknights stage category short"
+msgid "别传"
+msgstr "Side"
+
+#: src/components/arknights/stagePanelModel.ts:172
+msgctxt "arknights stage category short"
+msgid "资源"
+msgstr "Resources"
+
+#: src/pkg/cpp-arknights/GameAdapter.ts:807
 msgctxt "arknights stage difficulty"
 msgid "剧情"
 msgstr "Easy "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:771
+#: src/pkg/cpp-arknights/GameAdapter.ts:805
 msgctxt "arknights stage difficulty"
 msgid "标准"
 msgstr "Standard "
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:772
+#: src/pkg/cpp-arknights/GameAdapter.ts:806
 msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr "Tough "
@@ -1282,7 +1319,8 @@ msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:659
+#: src/pkg/cpp-arknights/GameAdapter.ts:690
+#: src/pkg/cpp-arknights/GameAdapter.ts:693
 msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
@@ -1460,7 +1498,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr "Error During Reading File"
 
-#: src/App.tsx:409
+#: src/App.tsx:408
 msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
@@ -1602,93 +1640,93 @@ msgid "、"
 msgstr ", "
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:311
+#: src/App.tsx:310
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr "Setting up %s…"
 
 #. initial
-#: src/App.tsx:319
+#: src/App.tsx:318
 msgctxt "loading status"
 msgid "别急…"
 msgstr "Don't hurry…"
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:346
+#: src/App.tsx:345
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr "We're setting things up for you"
 
 #. loaded data objects
-#: src/App.tsx:318
+#: src/App.tsx:317
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr "Almost there…"
 
 #. joke text
-#: src/App.tsx:344
+#: src/App.tsx:343
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr "Installing Macindows X"
 
 #. loading hero line 2
-#: src/App.tsx:353
+#: src/App.tsx:352
 msgctxt "loading status"
 msgid "请稍候"
 msgstr "This won't take long"
 
 #. done
-#: src/App.tsx:309
+#: src/App.tsx:308
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:371
+#: src/pkg/cpp-arknights/GameAdapter.ts:377
 msgctxt "predefined query"
 msgid "一图流 技能专三率"
 msgstr "yituliu: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:394
+#: src/pkg/cpp-arknights/GameAdapter.ts:400
 msgctxt "predefined query"
 msgid "一图流 技能专三率（全部）"
 msgstr "yituliu: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:435
+#: src/pkg/cpp-arknights/GameAdapter.ts:441
 msgctxt "predefined query"
 msgid "一图流 精二率"
 msgstr "yituliu: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:457
+#: src/pkg/cpp-arknights/GameAdapter.ts:463
 msgctxt "predefined query"
 msgid "一图流 精二率（全部）"
 msgstr "yituliu: E2 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:403
+#: src/pkg/cpp-arknights/GameAdapter.ts:409
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率"
 msgstr "Heybox: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:426
+#: src/pkg/cpp-arknights/GameAdapter.ts:432
 msgctxt "predefined query"
 msgid "小黑盒 技能专三率（全部）"
 msgstr "Heybox: skill M3 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:495
+#: src/pkg/cpp-arknights/GameAdapter.ts:501
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率"
 msgstr "Heybox: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:518
+#: src/pkg/cpp-arknights/GameAdapter.ts:524
 msgctxt "predefined query"
 msgid "小黑盒 精二 90 级率（全部）"
 msgstr "Heybox: E2 Lv 90 rate (all)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:465
+#: src/pkg/cpp-arknights/GameAdapter.ts:471
 msgctxt "predefined query"
 msgid "小黑盒 精二率"
 msgstr "Heybox: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:487
+#: src/pkg/cpp-arknights/GameAdapter.ts:493
 msgctxt "predefined query"
 msgid "小黑盒 精二率（全部）"
 msgstr "Heybox: E2 rate (all)"
@@ -2067,27 +2105,27 @@ msgctxt "query field"
 msgid "%s（目标）"
 msgstr "%s (goal)"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:315
+#: src/pkg/cpp-arknights/GameAdapter.ts:321
 msgctxt "query field"
 msgid "一图流练度统计 技能专三率"
 msgstr "yituliu survey: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:264
+#: src/pkg/cpp-arknights/GameAdapter.ts:270
 msgctxt "query field"
 msgid "一图流练度统计 精二率"
 msgstr "yituliu survey: E2 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:306
+#: src/pkg/cpp-arknights/GameAdapter.ts:312
 msgctxt "query field"
 msgid "专精等级"
 msgstr "Mastery"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:217
+#: src/pkg/cpp-arknights/GameAdapter.ts:223
 msgctxt "query field"
 msgid "主职业"
 msgstr "Main class"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:195
+#: src/pkg/cpp-arknights/GameAdapter.ts:201
 msgctxt "query field"
 msgid "代号"
 msgstr "Name"
@@ -2097,17 +2135,17 @@ msgctxt "query field"
 msgid "内部代号"
 msgstr "Internal ID"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:331
+#: src/pkg/cpp-arknights/GameAdapter.ts:337
 msgctxt "query field"
 msgid "小黑盒干员统计 技能专三率"
 msgstr "Heybox survey: skill M3 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:282
+#: src/pkg/cpp-arknights/GameAdapter.ts:288
 msgctxt "query field"
 msgid "小黑盒干员统计 精二 90 级率"
 msgstr "Heybox survey: E2 Lv 90 rate"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:273
+#: src/pkg/cpp-arknights/GameAdapter.ts:279
 msgctxt "query field"
 msgid "小黑盒干员统计 精二率"
 msgstr "Heybox survey: E2 rate"
@@ -2117,12 +2155,12 @@ msgctxt "query field"
 msgid "已全面养成"
 msgstr "Fully trained"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:299
+#: src/pkg/cpp-arknights/GameAdapter.ts:305
 msgctxt "query field"
 msgid "技能名"
 msgstr "Skill name"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:248
+#: src/pkg/cpp-arknights/GameAdapter.ts:254
 msgctxt "query field"
 msgid "技能等级"
 msgstr "Skill level"
@@ -2137,37 +2175,37 @@ msgctxt "query field"
 msgid "有计划"
 msgstr "Has plan"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:254
+#: src/pkg/cpp-arknights/GameAdapter.ts:260
 msgctxt "query field"
 msgid "潜能"
 msgstr "Potential"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:209
+#: src/pkg/cpp-arknights/GameAdapter.ts:215
 msgctxt "query field"
 msgid "稀有度"
 msgstr "Rarity"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:236
+#: src/pkg/cpp-arknights/GameAdapter.ts:242
 msgctxt "query field"
 msgid "等级"
 msgstr "Level"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:230
+#: src/pkg/cpp-arknights/GameAdapter.ts:236
 msgctxt "query field"
 msgid "精英化"
 msgstr "Elite"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:242
+#: src/pkg/cpp-arknights/GameAdapter.ts:248
 msgctxt "query field"
 msgid "精英化 × 100 + 等级"
 msgstr "Elite × 100 + Level"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:223
+#: src/pkg/cpp-arknights/GameAdapter.ts:229
 msgctxt "query field"
 msgid "职业"
 msgstr "Class"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:201
+#: src/pkg/cpp-arknights/GameAdapter.ts:207
 msgctxt "query field"
 msgid "西文代号"
 msgstr "Western name"
@@ -2293,12 +2331,12 @@ msgctxt "query operator"
 msgid "结尾是"
 msgstr "ends with"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:291
+#: src/pkg/cpp-arknights/GameAdapter.ts:297
 msgctxt "query sub query"
 msgid "技能"
 msgstr "Skill"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:55
+#: src/pkg/cpp-arknights/GameAdapter.ts:61
 msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
@@ -2315,7 +2353,7 @@ msgctxt "query value"
 msgid "是"
 msgstr "Yes"
 
-#: src/pkg/cpp-arknights/GameAdapter.ts:53
+#: src/pkg/cpp-arknights/GameAdapter.ts:59
 msgctxt "query value"
 msgid "精英 %d"
 msgstr "E%d"
@@ -2364,6 +2402,142 @@ msgstr "Planned t/Maxed"
 msgctxt "stage category"
 msgid "其他"
 msgstr "Other"
+
+#: src/components/arknights/StagePanelWide.tsx:109
+msgctxt "stage panel"
+msgid "主要掉落（每次）"
+msgstr "Main drops (per run)"
+
+#: src/components/arknights/stagePanelModel.ts:179
+msgctxt "stage panel"
+msgid "作战记录"
+msgstr "Battle Records"
+
+#: src/components/arknights/StagePanel.tsx:246
+msgctxt "stage panel"
+msgid "全部"
+msgstr "All"
+
+#: src/components/arknights/StagePanel.tsx:189
+#: src/components/arknights/StagePanelWide.tsx:306
+msgctxt "stage panel"
+msgid "全部材料"
+msgstr "All materials"
+
+#: src/components/arknights/StagePanel.tsx:234
+#: src/components/arknights/StagePanelWide.tsx:364
+msgctxt "stage panel"
+msgid "关卡代号或名称"
+msgstr "Stage code or name"
+
+#: src/components/arknights/StagePanelWide.tsx:223
+msgctxt "stage panel"
+msgid "其他"
+msgstr "Other"
+
+#. %s: enabled stages / all stages, e.g. 534/571
+#: src/components/arknights/StagePanelWide.tsx:375
+msgctxt "stage panel"
+msgid "已启用 %s"
+msgstr "Enabled %s"
+
+#: src/components/arknights/StagePanel.tsx:39
+msgctxt "stage panel"
+msgid "已启用的关卡"
+msgstr "Enabled stages"
+
+#: src/components/arknights/StageRows.tsx:187
+msgctxt "stage panel"
+msgid "按材料"
+msgstr "By material"
+
+#: src/components/arknights/StageRows.tsx:186
+msgctxt "stage panel"
+msgid "按章节"
+msgstr "By chapter"
+
+#: src/components/arknights/StagePanelWide.tsx:284
+msgctxt "stage panel"
+msgid "换一种材料 · 数字是它最高的关卡效率"
+msgstr "Switch material · the number is its best stage efficiency"
+
+#: src/components/arknights/StagePanelWide.tsx:107
+msgctxt "stage panel"
+msgid "效率"
+msgstr "Efficiency"
+
+#: src/components/arknights/StagePanelWide.tsx:399
+msgctxt "stage panel"
+msgid ""
+"效率 = 每次掉落价值 ÷ 理智。物品价值按「价值计算」的设置算出；活动代币没有价"
+"值，不计入。"
+msgstr ""
+"Efficiency = value per run ÷ sanity. Item values follow the Value "
+"Calculation settings; event tokens have no value and are left out."
+
+#: src/components/arknights/StageRows.tsx:202
+msgctxt "stage panel"
+msgid "无匹配材料"
+msgstr "No matching materials"
+
+#: src/components/arknights/StagePanelWide.tsx:219
+msgctxt "stage panel"
+msgid "材料"
+msgstr "Materials"
+
+#: src/components/arknights/StagePanel.tsx:234
+#: src/components/arknights/StagePanelWide.tsx:364
+msgctxt "stage panel"
+msgid "材料名称"
+msgstr "Material name"
+
+#: src/components/arknights/StagePanelWide.tsx:110
+msgctxt "stage panel"
+msgid "样本"
+msgstr "Samples"
+
+#: src/components/arknights/StagePanelWide.tsx:108
+msgctxt "stage panel"
+msgid "每次掉落价值"
+msgstr "Value per run"
+
+#: src/components/arknights/StagePanelWide.tsx:370
+msgctxt "stage panel"
+msgid "每种材料一组，按最高效率排序；点材料看它的全部关卡"
+msgstr ""
+"One group per material, best first. Click a material to see all its stages."
+
+#: src/components/arknights/StageRows.tsx:74
+msgctxt "stage panel"
+msgid "活动"
+msgstr "Event"
+
+#: src/components/arknights/StageRows.tsx:201
+msgctxt "stage panel"
+msgid "物品价值计算失败"
+msgstr "Item values could not be computed"
+
+#: src/components/arknights/StageRows.tsx:195
+msgctxt "stage panel"
+msgid "物品价值计算失败，暂时无法显示效率；关卡的启用、禁用不受影响"
+msgstr ""
+"Item values could not be computed, so efficiency is unavailable. Enabling "
+"and disabling stages still works."
+
+#: src/components/arknights/StagePanelWide.tsx:106
+msgctxt "stage panel"
+msgid "理智"
+msgstr "Sanity"
+
+#: src/components/arknights/StagePanelWide.tsx:221
+msgctxt "stage panel"
+msgid "芯片"
+msgstr "Chips"
+
+#: src/components/arknights/StagePanelWide.tsx:105
+msgctxt "stage panel"
+msgid "章节"
+msgstr "Chapter"
 
 #: src/components/arknights/ValueConfigMenu.tsx:251
 msgctxt "value config"

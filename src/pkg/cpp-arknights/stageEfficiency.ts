@@ -52,8 +52,7 @@ export function eliteSeries(itemId: string): string {
   return /^3[01]\d\d[1-4]$/.test(itemId) ? itemId.slice(0, 4) + '3' : itemId
 }
 
-// Ranked as displayed, to 0.1%: the LP leaves the best permanent stages a rounding error apart around 100%, and those
-// should fall back to the stage or warehouse order rather than to the noise
+// 按显示的一位小数比较：LP 算出的各个常驻最优关都在 100% 附近，彼此只差舍入误差，应该按关卡或仓库的顺序排，而不是按误差排
 const shown = (efficiency: number | undefined) => (efficiency === undefined ? -Infinity : Math.round(efficiency * 1000))
 
 const compareStrings = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
