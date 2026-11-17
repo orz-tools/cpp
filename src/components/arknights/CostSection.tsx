@@ -81,13 +81,13 @@ const CostTrack = memo(({ matrix }: { matrix: CostMatrix }) => {
       if (placed.every((p) => box.right + LABEL_GAP <= p.left || p.right + LABEL_GAP <= box.left)) placed.push(box)
     }
     const pointsHidden = points.map((_, i) => !placed.some((p) => p.i === i))
-    setHidden((prev) =>
-      prev && prev.segments.join() === segmentsHidden.join() && prev.points.join() === pointsHidden.join()
-        ? prev
-        : { segments: segmentsHidden, points: pointsHidden },
-    )
+    // 和画着的一样就不能调 setHidden：哪怕给回原来的值，React 也会把这一节再画一次，
+    // 下面每次画完都量，就成了画不停（CPP-69）
+    if (hidden && hidden.segments.join() === segmentsHidden.join() && hidden.points.join() === pointsHidden.join())
+      return
+    setHidden({ segments: segmentsHidden, points: pointsHidden })
   })
-  // 每次画完都量：标签的字随数和单位变；setHidden 没变化时不会再画
+  // 每次画完都量：标签的字随数和单位变
   useLayoutEffect(() => measure())
   useLayoutEffect(() => {
     const el = ref.current
