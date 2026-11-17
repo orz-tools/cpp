@@ -18,6 +18,37 @@ export interface SurveySource {
   e2level(character: Character, range: 1 | 70 | 90): SurveyProps | null | undefined
 }
 
+export interface TierShares {
+  /** Mastery or module levels 0–3. A null level has no number: Heybox gives no unlock rate for modules. */
+  shares: (number | null)[]
+  /** NaN when the source does not say */
+  samples: number
+  /** elite2: of the operator's E2 owners, adding up to 1. unlocked: of those who unlocked the module, levels 1–3 only. */
+  base: 'elite2' | 'unlocked'
+}
+
+/**
+ * The tiers of skill() or mod() as shares of E2 owners. Those give the mastered (or unlocked) rate first and the rest
+ * as shares of that group, which makes a skill few people master read as high as one everybody does.
+ */
+export function toTierShares(raw: (SurveyProps | null | undefined)[] | null | undefined): TierShares | null {
+  if (!raw) return null
+  const tiers = [1, 2, 3].map((k) => raw[k]?.percent)
+  if (tiers.some((x) => x == null)) return null
+
+  const unlocked = raw[0]
+  if (!unlocked) {
+    return { shares: [null, ...(tiers as number[])], samples: raw[1]!.samples, base: 'unlocked' }
+  }
+  const m = unlocked.percent
+  // When nobody has any, the shares of that empty group are 0 / 0.
+  return {
+    shares: [1 - m, ...tiers.map((r) => (m === 0 ? 0 : m * r!))],
+    samples: unlocked.samples,
+    base: 'elite2',
+  }
+}
+
 export class YituliuSurveySource implements SurveySource {
   public static URL = 'https://ark.yituliu.cn/survey/operators'
   public static Name = lpstr(() => gt.gettext('明日方舟一图流 干员练度统计数据'))
