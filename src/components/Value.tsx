@@ -107,6 +107,7 @@ export const ValueTag = memo(
     style,
     textStyle,
     intent,
+    title,
   }: {
     value: number | null | undefined
     minimal?: boolean
@@ -114,6 +115,8 @@ export const ValueTag = memo(
     style?: React.CSSProperties
     textStyle?: React.CSSProperties
     intent?: Intent
+    /** 悬停说明的第一行，下面接各种单位的数 */
+    title?: string
   }) => {
     const cpp = useCpp()
     const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
@@ -130,7 +133,7 @@ export const ValueTag = memo(
           whiteSpace: 'nowrap',
           ...style,
         }}
-        title={formatAll(value)}
+        title={title ? `${title}\n${formatAll(value)}` : formatAll(value)}
         intent={intent}
       >
         {/* {intent ? undefined : '约 '} */}
@@ -139,6 +142,22 @@ export const ValueTag = memo(
     )
   },
 )
+
+/** 按用户选的价值单位写的数，不带图标；悬停是各种单位的数 */
+export const ValueText = memo(({ value }: { value: number | null | undefined }) => {
+  const type = useAtomValue(useCpp().preferenceAtoms.valueTypeAtom)
+  return <span title={formatAll(value)}>{format(value, type)}</span>
+})
+
+/** 用户选的价值单位的图标，悬停是单位名 */
+export const ValueUnitIcon = memo(() => {
+  const type = useAtomValue(useCpp().preferenceAtoms.valueTypeAtom)
+  return (
+    <span title={ValueName[type].toString()} style={{ display: 'inline-flex', verticalAlign: 'middle' }}>
+      <Icon icon={ValueIcon[type]} />
+    </span>
+  )
+})
 
 export const SampleTag = memo(
   ({

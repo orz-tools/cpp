@@ -23,6 +23,7 @@ import { CachedImg } from '../components/Icons'
 import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
+import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
 import { IGameComponent } from './types'
 import {
@@ -498,7 +499,7 @@ async function listCharactersQuery<G extends IGame>(
     query.result.sort((a, b) => rank.get(a.character.key)! - rank.get(b.character.key)!)
   }
 
-  return { query: query, result: query.result }
+  return { query: query, result: query.result, param, pin }
 }
 
 type ExtraField = NonNullable<IGameComponent['extraFields']>[string]
@@ -644,7 +645,13 @@ export function useCustomQueryActive() {
   return isCustomQuery(param.query)
 }
 
-const QueryBuilder = memo(() => {
+/** 当前视图的 totalValue 字段在列表各行上的和 */
+interface ViewTotal {
+  querier: Querier<any, any>
+  field: string
+}
+
+const QueryBuilder = memo(({ total }: { total?: ViewTotal }) => {
   const cpp = useCpp()
   const [pgq, pgqKeys] = useMemo(() => {
     const pgq = cpp.gameAdapter.getPredefinedQueries()
@@ -666,6 +673,22 @@ const QueryBuilder = memo(() => {
   const goTo = (query: string) => setParam((x) => ({ ...x, query, source: undefined }))
   const pin = useActiveRosterPin()
   const viewActive = (query: string) => !pin && param.query === query
+  // 每行用 store 里现在的练度重新取值，所以在行尾改了练度，总数和格子一样马上跟着变
+  const { current: currents, goal: goals } = data
+  const totalValue = useMemo(() => {
+    if (!total) return undefined
+    const empty = cpp.gameAdapter.getUserDataAdapter().getFrozenEmptyCharacterStatus()
+    let sum = 0
+    let known = false
+    for (const item of total.querier.result) {
+      const key = item.character.key
+      const v = total.querier.getFieldValue(total.field, { ...item, current: currents[key] || empty, goal: goals[key] })
+      if (!Number.isFinite(v)) continue
+      sum += v
+      known = true
+    }
+    return known || total.querier.result.length === 0 ? sum : NaN
+  }, [cpp, total, currents, goals])
 
   return (
     <>
@@ -698,6 +721,15 @@ const QueryBuilder = memo(() => {
           active={!pin}
           text={activeName}
           title={activeName}
+          endIcon={
+            totalValue === undefined ? undefined : (
+              <ValueTag
+                value={totalValue}
+                minimal={true}
+                title={gt.pgettext('training cost', '列表里这些干员一共花了多少')}
+              />
+            )
+          }
           onClick={() => {}}
           style={{ flexShrink: 42 }}
           className="cpp-overflow-button"
@@ -912,6 +944,13 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
 
   const query = response?.query
   const result = response?.result || []
+  // 查询中、或者结果还是上一个视图的时候不给，免得显示过时的总数
+  const total = useMemo(() => {
+    if (loading || !response || response.param !== param || response.pin !== pin || pin) return undefined
+    if (!param.query.startsWith(PredefinedGameQueryPrefix)) return undefined
+    const preset = cpp.gameAdapter.getPredefinedQueries()[param.query.slice(PredefinedGameQueryPrefix.length)]
+    return preset?.totalValue ? { querier: response.query, field: preset.totalValue } : undefined
+  }, [cpp, loading, response, param, pin])
   const list = (response?.result || []).map((x) => x.character)
   const extraColumns = useMemo(
     () =>
@@ -1014,7 +1053,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
         }}
       >
         <Navbar.Group style={{ flexShrink: 1 }}>
-          <QueryBuilder />
+          <QueryBuilder total={total} />
         </Navbar.Group>
         <Navbar.Group style={{ flexShrink: 0 }}>
           <QueryBuilderRight />

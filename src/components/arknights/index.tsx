@@ -3,6 +3,7 @@ import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from 
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
 import { CharacterDossierMeta } from './CharacterDossierMeta'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
+import { costSection } from './CostSection'
 import { ConfigMenuItems } from './ConfigMenuItems'
 import { ExporterMenuItems } from './ExporterMenuItems'
 import { ImporterMenuItems } from './ImporterMenuItems'
@@ -45,5 +46,5 @@ export const ArknightsComponents: IGameComponent = {
     elite: '==',
   },
   sidebarPanels: [stagesPanel, moduleMissionsPanel],
-  dossierSections: [moduleMissionsSection],
+  dossierSections: [costSection, moduleMissionsSection],
 }
