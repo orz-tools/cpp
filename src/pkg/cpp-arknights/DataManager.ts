@@ -11,11 +11,13 @@ import {
 import { DataContainerObject } from '../dccache'
 import {
   ArknightsHeyboxOperatorSurveyObject,
+  ArknightsKengxxiaoDetailsObject,
   ArknightsKengxxiaoObject,
   ArknightsPenguinObject,
   ArknightsYituliuOperatorSurveyObject,
 } from './DataObjects'
 import { Category, myCategories } from './GameAdapter'
+import { Details, DetailsLoader } from './details'
 import type { ItemValueResult } from './itemValue'
 import {
   AK_ITEM_GOLD,
@@ -45,10 +47,13 @@ export class ArknightsSources implements DataSources {
   public readonly penguin: ArknightsPenguinObject
   public readonly surveyYituliu = new ArknightsYituliuOperatorSurveyObject()
   public readonly surveyHeybox = new ArknightsHeyboxOperatorSurveyObject()
+  public readonly kengxxiaoDetails = new ArknightsKengxxiaoDetailsObject('zh_CN')
+  public readonly kengxxiaoDetailsLocal: ArknightsKengxxiaoDetailsObject | null
 
   public constructor(public readonly region: ArknightsRegion) {
     const { local, penguin } = regionSources[region]
     this.kengxxiaoLocal = local ? new ArknightsKengxxiaoObject(local) : null
+    this.kengxxiaoDetailsLocal = local ? new ArknightsKengxxiaoDetailsObject(local) : null
     this.penguin = new ArknightsPenguinObject(penguin)
   }
 
@@ -134,6 +139,19 @@ export class ArknightsDataManager extends BasicDataManager<Arknights, ArknightsS
     } as ArknightsSnapshot
     s.data = transform(s)
     return s
+  }
+
+  private readonly detailsLoader = new DetailsLoader()
+
+  /** The texts behind the status editor's (i) panels, downloaded the first time one opens. */
+  public loadDetails(): Promise<Details> {
+    const sources = this.sources
+    return this.detailsLoader.get(
+      { obj: sources.kengxxiaoDetails, versionId: this.get(sources.kengxxiao).version.id },
+      sources.kengxxiaoLocal && sources.kengxxiaoDetailsLocal
+        ? { obj: sources.kengxxiaoDetailsLocal, versionId: this.get(sources.kengxxiaoLocal).version.id }
+        : null,
+    )
   }
 
   public itemValueProvider?: () => ItemValueResult
