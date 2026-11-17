@@ -21,6 +21,18 @@ export function clickCharacter(
   return { ...state, charId }
 }
 
+/** 和 clickCharacter 不同，档案已经开着这名干员时不关上：从侧栏点一件时装，是要看这名干员的档案 */
+export function showCharacter(
+  state: DossierState | null,
+  charId: string,
+  at: { epoch: number; inWindow: boolean },
+): DossierState {
+  if (!state) return { charId, generation: 0, epoch: at.epoch }
+  if (at.inWindow && state.epoch < at.epoch) return { charId, generation: state.generation + 1, epoch: at.epoch }
+  if (state.charId === charId) return state
+  return { ...state, charId }
+}
+
 export function visibleSections<S>(sections: readonly S[], isAvailable: (s: S) => boolean): S[] {
   return sections.filter(isAvailable)
 }
