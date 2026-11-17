@@ -27,6 +27,8 @@
               pkgs.pnpm_12
               # scripts/update-messages.sh（pnpm gt）要用 msgmerge。
               pkgs.gettext
+              # pnpm 生成的 node_modules/.bin/* shim 要用 sed，CI 的 nixos/nix 镜像里没有。
+              pkgs.gnused
             ];
           }];
         };
