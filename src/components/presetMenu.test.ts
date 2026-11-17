@@ -45,13 +45,15 @@ describe('presetMenu', () => {
 
   describe('with the Arknights presets', () => {
     const groups = ArknightsAdapter.prototype.getPredefinedQueryGroups.call(undefined)
-    const presets = ArknightsAdapter.prototype.getPredefinedQueries.call(undefined)
+    const presetsWith = (hasBaseSkills: boolean) =>
+      ArknightsAdapter.prototype.getPredefinedQueries.call({ hasBaseSkills: () => hasBaseSkills } as any)
+    const presets = presetsWith(true)
     const menu = presetMenu(groups, presets)
 
     it('puts every preset in a group the adapter names', () => {
       const ids = new Set(groups.map((x) => x.id))
       for (const [k, v] of Object.entries(presets)) expect(ids.has(v.group), k).toBe(true)
-      expect(menu.map((x) => String(x.group.title))).toEqual(['练度统计', '养成成本'])
+      expect(menu.map((x) => String(x.group.title))).toEqual(['练度统计', '养成成本', '基建技能'])
     })
 
     it('keeps the survey presets as before, each with 「全部」', () => {
@@ -80,6 +82,15 @@ describe('presetMenu', () => {
       for (const row of menu[1].rows.slice(0, 2)) {
         expect(row.segments.map((s) => String(s.label))).toEqual(['能用', '全部'])
       }
+    })
+
+    it('lists the base skills last, on one row of three', () => {
+      expect(shape(menu)[2]).toEqual(['building', [['building.locked', 'building.owned', 'building.all']]])
+      expect(menu[2].rows[0].segments.map((s) => String(s.label))).toEqual(['已持有', '全部'])
+    })
+
+    it('leaves the base skills out until the data has them', () => {
+      expect(presetMenu(groups, presetsWith(false)).map((x) => x.group.id)).toEqual(['stats', 'cost'])
     })
   })
 })

@@ -3,6 +3,7 @@ import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from 
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
 import { CharacterDossierMeta } from './CharacterDossierMeta'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
+import { baseSkillsSection } from './BaseSkillSection'
 import { costSection } from './CostSection'
 import { ConfigMenuItems } from './ConfigMenuItems'
 import { ExporterMenuItems } from './ExporterMenuItems'
@@ -47,6 +48,10 @@ export const ArknightsComponents: IGameComponent = {
     rarity: '==',
     elite: '==',
   },
+  // 十个房间按钮放不下职业和精英化
+  quickFiltersByJoin: {
+    building: { 'building.room': '==', rarity: '==' },
+  },
   sidebarPanels: [stagesPanel, moduleMissionsPanel, skinsPanel],
-  dossierSections: [costSection, skinsSection, moduleMissionsSection],
+  dossierSections: [costSection, baseSkillsSection, skinsSection, moduleMissionsSection],
 }

@@ -11,6 +11,14 @@ export type EquipPhaseDetail = EquipDetail['phases'][0]
 export type EquipPartDetail = EquipPhaseDetail['parts'][0]
 export type TermDetail = DetailsData['terms']['']
 export type Blackboard = SkillLevelDetail['bb']
+export type BuildingBuffDetail = DetailsData['buildingBuffs']['']
+export type BaseSkillEffect = NonNullable<BuildingBuffDetail['effects']>[0]
+export type Leaf = Exclude<BaseSkillEffect, { k: 'if' }>
+export type Cond = Extract<BaseSkillEffect, { k: 'if' }>['when']
+export type Noun = Extract<Leaf, { k: 'res' }>['what']
+
+/** Base skill texts and effects came with schema 2; an older copy has none. */
+const BASE_SKILLS_SCHEMA = 2
 
 /** The region's own language where it has one, and zh_CN to fall back on, as for skill names. */
 export interface Details {
@@ -39,6 +47,11 @@ export function getEquipDetail(details: Details, equipId: string): EquipDetail |
 
 export function getTermDetail(details: Details, termId: string): TermDetail | null {
   return pick(details.local?.terms, details.base.terms, termId)
+}
+
+/** The region's text and effects together when it has the skill, otherwise zh_CN's: the two are never mixed. */
+export function getBuildingBuffDetail(details: Details, buffId: string): BuildingBuffDetail | null {
+  return pick(details.local?.buildingBuffs, details.base.buildingBuffs ?? {}, buffId)
 }
 
 /** The level's data, or null for a level the skill does not have (one without masteries has only 7). */
@@ -99,8 +112,11 @@ export class DetailsLoader {
   private async loadOne({ obj, versionId }: DetailsTarget) {
     let container = await this.load(obj)
     // The stored copy predates the game data: ask the repo once. If the worker has not caught up yet either, the copy
-    // in hand still covers everything but the newest skills and modules.
-    if (container.version.id !== versionId) container = await this.load(obj, true)
+    // in hand still covers everything but the newest skills and modules. A copy from before base skills is asked about
+    // too, or it would stay until the next game update.
+    if (container.version.id !== versionId || container.version.schema < BASE_SKILLS_SCHEMA) {
+      container = await this.load(obj, true)
+    }
     return container.data
   }
 }

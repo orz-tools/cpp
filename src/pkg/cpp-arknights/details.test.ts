@@ -6,6 +6,7 @@ import {
   Details,
   DetailsData,
   DetailsLoader,
+  getBuildingBuffDetail,
   getEquipDetail,
   getSkillDetail,
   getSkillLevel,
@@ -51,6 +52,7 @@ describe('reading details', () => {
       skills: { skchr_quercu_2: { ...zh.skills.skchr_quercu_2, texts: ['ASPD +{attack_speed}'] } },
       equips: {},
       terms: {},
+      buildingBuffs: {},
     }
     const details: Details = { local, base: zh }
     expect(getSkillDetail(details, 'skchr_quercu_2')!.texts).toEqual(['ASPD +{attack_speed}'])
@@ -64,6 +66,29 @@ describe('reading details', () => {
     expect(getSkillDetail(details, 'skchr_nobody_1')).toBeNull()
     expect(getEquipDetail(details, 'uniequip_002_nobody')).toBeNull()
     expect(getSkillDetail(details, 'toString')).toBeNull()
+  })
+})
+
+describe('getBuildingBuffDetail', () => {
+  const zhBuff = {
+    text: '进驻制造站时，生产力<@cc.vup>+15%</>',
+    effects: [{ k: 'flat' as const, m: 'prod' as const, v: 15 }],
+  }
+  const base: DetailsData = { ...zh, buildingBuffs: { 'manu_prod_spd[000]': zhBuff, 'manu_prod_spd[010]': zhBuff } }
+
+  it("takes the region's text and effects together when it has the skill", () => {
+    // en_US has its own text but no effects: zh_CN's are not borrowed
+    const enBuff = { text: 'When this Operator is assigned to a Factory, productivity <@cc.vup>+15%</>' }
+    const local: DetailsData = { skills: {}, equips: {}, terms: {}, buildingBuffs: { 'manu_prod_spd[000]': enBuff } }
+    const details: Details = { local, base }
+    expect(getBuildingBuffDetail(details, 'manu_prod_spd[000]')).toBe(enBuff)
+    expect(getBuildingBuffDetail(details, 'manu_prod_spd[010]')).toBe(zhBuff)
+    expect(getBuildingBuffDetail(details, 'manu_nobody[000]')).toBeNull()
+  })
+
+  it('reads a copy from before base skills as having none', () => {
+    const old = { skills: {}, equips: {}, terms: {} } as unknown as DetailsData
+    expect(getBuildingBuffDetail({ local: null, base: old }, 'manu_prod_spd[000]')).toBeNull()
   })
 })
 
@@ -92,13 +117,15 @@ describe('DetailsLoader', () => {
   const base = new ArknightsKengxxiaoDetailsObject('zh_CN')
   const local = new ArknightsKengxxiaoDetailsObject('en_US')
 
-  function container(obj: DataContainerObject<any>, id: string): IDataContainer<DetailsData> {
+  // 'v2@1' is version v2 of schema 1; without @ the schema is 2
+  function container(obj: DataContainerObject<any>, version: string): IDataContainer<DetailsData> {
+    const [id, schema = '2'] = version.split('@')
     return {
       '@type': '@orz/cpp/data-container',
       '@version': 1,
       name: obj.name,
-      version: { id, text: id, timestamp: 1, sources: [], schema: 1 },
-      data: obj === base ? zh : { skills: {}, equips: {}, terms: {} },
+      version: { id, text: id, timestamp: 1, sources: [], schema: Number(schema) },
+      data: obj === base ? zh : { skills: {}, equips: {}, terms: {}, buildingBuffs: {} },
     }
   }
 
@@ -134,11 +161,21 @@ describe('DetailsLoader', () => {
     ])
   })
 
+  it('refreshes once a stored copy from before base skills, even of the same version', async () => {
+    const { load, calls } = fakeLoad({ [base.name]: ['v2@1', 'v2'] })
+    const loader = new DetailsLoader(load)
+    await loader.get({ obj: base, versionId: 'v2' }, null)
+    expect(calls).toEqual([
+      [base.name, undefined],
+      [base.name, true],
+    ])
+  })
+
   it('loads the local language beside zh_CN', async () => {
     const { load, calls } = fakeLoad({ [base.name]: ['v2'], [local.name]: ['l2'] })
     const loader = new DetailsLoader(load)
     const d = await loader.get({ obj: base, versionId: 'v2' }, { obj: local, versionId: 'l2' })
-    expect(d.local).toEqual({ skills: {}, equips: {}, terms: {} })
+    expect(d.local).toEqual({ skills: {}, equips: {}, terms: {}, buildingBuffs: {} })
     expect(calls).toHaveLength(2)
   })
 
