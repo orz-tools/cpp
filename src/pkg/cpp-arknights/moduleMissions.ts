@@ -154,6 +154,23 @@ export function parseMission(m: MissionInput, world: MissionWorld): ParsedMissio
     case 'EquipmentDeployOneNoEvac':
       firstDeploy = true
       break
+    // 下面三种不绑关卡，不参与分法，只用来检查顺带的任务这一次能不能推进
+    case 'EquipmentDeployCharOrder':
+      if (p[1] === '1') firstDeploy = true
+      else known = false
+      break
+    case 'EquipmentSquadProStage': {
+      const values = parseCountedValues(p[2], (v) => professionSet.has(v), squad)
+      if (values) squad.allowed = new Set(values as Profession[])
+      else known = false
+      break
+    }
+    case 'EquipmentSquadStarStage': {
+      const values = parseCountedValues(p[2], (v) => /^[1-6]$/.test(v), squad)
+      if (values?.length === 1) squad.stars = Number(values[0])
+      else known = false
+      break
+    }
     default:
       if (m.stageId != null && !plainStageTemplates.has(m.template)) known = false
   }
@@ -223,6 +240,34 @@ export function fits(missions: readonly ParsedMission[]): boolean {
     }
   }
   return countFits(missions)
+}
+
+/** 顺带的不限关卡任务这一次推进不了的原因 */
+export type PiggybackConflict =
+  | { kind: 'squad'; rule: SquadConflictRule; by: MissionInput; squad: SquadRule; other: MissionInput }
+  /** 同一次里别人的关卡任务也要第一个部署 */
+  | { kind: 'firstDeploy'; with: MissionInput }
+  /** 同一次里别人的顺带任务也要第一个部署 */
+  | { kind: 'firstDeployPiggyback'; with: MissionInput }
+
+/** run 是这一次的关卡任务，piggies 是这一次所有顺带的任务；能推进时返回 null */
+export function piggybackConflict(
+  piggy: ParsedMission,
+  run: readonly ParsedMission[],
+  piggies: readonly ParsedMission[],
+): PiggybackConflict | null {
+  for (const s of run) {
+    const c = conflict(piggy, s)
+    if (c?.kind === 'squad') {
+      return { kind: 'squad', rule: c.rule, by: c.by.mission, squad: c.by.squad, other: c.other.mission }
+    }
+    if (c?.kind === 'firstDeploy') return { kind: 'firstDeploy', with: s.mission }
+  }
+  if (piggy.known && piggy.firstDeploy) {
+    const rival = piggies.find((q) => q.known && q.firstDeploy && q.mission.charId !== piggy.mission.charId)
+    if (rival) return { kind: 'firstDeployPiggyback', with: rival.mission }
+  }
+  return null
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -498,7 +543,12 @@ export interface BoardInput {
   scope: MissionScope
   /** 空的时候不按星级筛 */
   rarities: readonly number[]
+  /** 留在原处的任务：这一轮勾过或取消过，做没做完都照旧分组，直到整理 */
+  held: ReadonlySet<string>
 }
+
+/** 引用不变，buildBoard 的缓存才认得 */
+export const EMPTY_HELD: ReadonlySet<string> = new Set()
 
 export type BlockReason = 'level' | 'absent'
 
@@ -519,14 +569,18 @@ export interface Ticket {
   /** 有认不出条件的任务 */
   unknown: boolean
   blocked: { charId: string; reason: BlockReason }[]
-  /** 这几名干员还没做完的不限关卡任务 */
+  /** 这几名干员的不限关卡任务：没做完的，加上留在原处的 */
   piggyback: MissionInput[]
+  /** 任务 id → 这一次推进不了的原因；能推进的不在里面 */
+  piggybackConflicts: ReadonlyMap<string, PiggybackConflict>
+  /** 任务都做完了。只有留在原处的券会这样，不算进次数和理智 */
+  allDone: boolean
 }
 
 export interface BoardStats {
   /** 范围内的模组 */
   modules: number
-  /** 券的张数，不算「用过的」 */
+  /** 券的张数，不算「用过的」和整张做完的 */
   runs: number
   ap: number
   /** 范围内模组的任务里做完的，两类都算 */
@@ -541,7 +595,7 @@ export interface BoardStats {
 export interface Board {
   tickets: Ticket[]
   used: Ticket[]
-  /** 不限关卡的任务，按干员分组，每组没做完的在前 */
+  /** 不限关卡的任务，按干员分组，每组没做完的和留在原处的在前 */
   anyStage: { charId: string; missions: MissionInput[] }[]
   /** 只在「计划内」：还不能做的任务 */
   blocked: { mission: MissionInput; reason: BlockReason }[]
@@ -553,6 +607,8 @@ export interface Board {
   /** 任务 id → 它所在的券（包括「用过的」） */
   ticketOf: ReadonlyMap<string, Ticket>
   parsed: ReadonlyMap<string, ParsedMission>
+  /** 留在原处、已做完、整理时会收走的任务条数，包括顺带的 */
+  stale: number
 }
 
 function inScope(
@@ -621,19 +677,19 @@ export function missionProgress(
   return { done: missions.filter((x) => done.has(x.id)).length, total: missions.length }
 }
 
-let last: { input: BoardInput; board: Board } | undefined
+/** 留两份：面板要的，和算「整理后还剩几次」时不带留在原处的那份，交替着算也不会互相挤掉 */
+const recent: { input: BoardInput; board: Board }[] = []
 
-/** 同样的输入（各项按引用比较）直接返回上一次的结果，面板、大窗口、档案同时开着时只算一次 */
+/** 同样的输入（各项按引用比较）直接返回算过的结果，面板、大窗口、档案同时开着时只算一次 */
 export function buildBoard(input: BoardInput): Board {
-  if (last && (Object.keys(input) as (keyof BoardInput)[]).every((k) => last!.input[k] === input[k])) {
-    return last.board
-  }
-  const board = computeBoard(input)
-  last = { input, board }
-  return board
+  const i = recent.findIndex((r) => (Object.keys(input) as (keyof BoardInput)[]).every((k) => r.input[k] === input[k]))
+  const hit = i < 0 ? { input, board: computeBoard(input) } : recent.splice(i, 1)[0]
+  recent.unshift(hit)
+  recent.length = Math.min(recent.length, 2)
+  return hit.board
 }
 
-function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, rarities }: BoardInput): Board {
+function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, rarities, held }: BoardInput): Board {
   const doneSet = new Set(doneMissions)
   const done = new Set<string>()
   const unlocked = new Set<string>()
@@ -693,7 +749,11 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
         let list = anyStageByChar.get(m.charId)
         if (!list) anyStageByChar.set(m.charId, (list = []))
         list.push(m)
-      } else if (isDone && scope !== 'everything') {
+      } else if (
+        // 「计划内」里还不能做的任务没做完时不分组，所以勾了也不留：不给还不能做的干员凭空分出一张券
+        (isDone && scope === 'plan' && block) ||
+        (isDone && !held.has(m.id) && scope !== 'everything')
+      ) {
         let list = usedByStage.get(m.stageId)
         if (!list) usedByStage.set(m.stageId, (list = []))
         list.push(m)
@@ -721,6 +781,15 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
         }
       }
       const charIds = [...new Set(ms.map((x) => x.charId))]
+      const piggyback = charIds.flatMap((charId) =>
+        (anyStageByChar.get(charId) ?? []).filter((m) => !done.has(m.id) || held.has(m.id)),
+      )
+      const piggies = piggyback.map((m) => parsed.get(m.id)!)
+      const piggybackConflicts = new Map<string, PiggybackConflict>()
+      for (const pp of piggies) {
+        const c = piggybackConflict(pp, run, piggies)
+        if (c) piggybackConflicts.set(pp.mission.id, c)
+      }
       const ticket: Ticket = {
         key: ms
           .map((x) => x.id)
@@ -738,9 +807,11 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
           const reason = blockOf.get(charId)
           return reason ? [{ charId, reason }] : []
         }),
-        piggyback: charIds.flatMap((charId) => (anyStageByChar.get(charId) ?? []).filter((m) => !done.has(m.id))),
+        piggyback,
+        piggybackConflicts,
+        allDone: ms.every((x) => done.has(x.id)),
       }
-      if (scope === 'everything' && ms.every((x) => done.has(x.id))) used.push(ticket)
+      if (scope === 'everything' && ticket.allDone && !ms.some((x) => held.has(x.id))) used.push(ticket)
       else tickets.push(ticket)
     })
   }
@@ -760,12 +831,21 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
       unknown: false,
       blocked: [],
       piggyback: [],
+      piggybackConflicts: new Map(),
+      allDone: true,
     })
   }
   tickets.sort(compareTickets)
   used.sort(compareTickets)
 
+  const stale = new Set<string>()
   for (const t of tickets) {
+    // 「所有任务」档本来就把做完的分进去，整理只会收走整张做完的券
+    if (scope !== 'everything' || t.allDone) {
+      for (const m of t.missions) if (done.has(m.id) && held.has(m.id)) stale.add(m.id)
+    }
+    for (const m of t.piggyback) if (done.has(m.id) && held.has(m.id)) stale.add(m.id)
+    if (t.allDone) continue
     stats.runs++
     stats.ap += catalog.stage(t.stageId).apCost
     if (t.blocked.length > 0) stats.runsWithBlocked++
@@ -779,15 +859,16 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
     return i < 0 ? Infinity : i
   }
   const byChar = (a: string, b: string) => charRank(a) - charRank(b) || compareId(a, b)
+  const settled = (id: string) => Number(done.has(id) && !held.has(id))
   const anyStage = [...anyStageByChar]
     .sort(([a], [b]) => byChar(a, b))
     .map(([charId, missions]) => ({
       charId,
-      missions: [...missions].sort((a, b) => Number(done.has(a.id)) - Number(done.has(b.id))),
+      missions: [...missions].sort((a, b) => settled(a.id) - settled(b.id)),
     }))
   blocked.sort((a, b) => byChar(a.mission.charId, b.mission.charId))
 
-  return { tickets, used, anyStage, blocked, stats, done, unlocked, ticketOf, parsed }
+  return { tickets, used, anyStage, blocked, stats, done, unlocked, ticketOf, parsed, stale: stale.size }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -821,6 +902,25 @@ function withLimit(text: string, maxOthers: number | undefined) {
     .pgettext('module mission', '%1，至多 %2 名') /* I10N: %1: 其他人只能是…; %2: a number */
     .replace('%1', text)
     .replace('%2', String(maxOthers))
+}
+
+const isCount = (x: string | undefined) => /^\d+$/.test(x ?? '')
+
+const quotePairs: Record<string, string> = { '“': '”', '"': '"', '「': '」' }
+
+/** 有的技能名在数据里自带引号（`“大拉里”`），摘要还要再套一层「」 */
+function skillName(names: MissionNames, skillId: string | undefined) {
+  const name = names.skill(skillId ?? '')
+  if (!name) return undefined
+  const close = quotePairs[name[0]]
+  return close && name.length > 2 && name.endsWith(close) ? name.slice(1, -1) : name
+}
+
+function withBattles(text: string, battles: string) {
+  return gt
+    .pgettext('module mission', '%1，共 %2 场') /* I10N: %1: 其他人只能是…; %2: a number */
+    .replace('%1', text)
+    .replace('%2', battles)
 }
 
 /** 面板和档案的第一行：由模板和参数生成；解析不出来时是游戏原文 */
@@ -894,13 +994,94 @@ export function missionSummary(parsed: ParsedMission, names: MissionNames): stri
       if (!/^\d+$/.test(p[3] ?? '')) return m.desc
       return gt.pgettext('module mission', '本人歼灭 %d 名敌人').replaceAll('%d', p[3])
     case 'EquipmentSkillCastStage': {
-      const skill = names.skill(p[2] ?? '')
+      const skill = skillName(names, p[2])
       if (!skill || !/^\d+$/.test(p[3] ?? '')) return m.desc
       return gt
         .pgettext('module mission', '使用 %1 次「%2」') /* I10N: %1: a number; %2: skill name */
         .replace('%1', p[3])
         .replace('%2', skill)
     }
+
+    // 不限关卡：干员写在摘要上面，所以不再说「由非助战某某」
+    case 'EquipmentSkillCast': {
+      const skill = skillName(names, p[1])
+      if (!skill || !isCount(p[2])) return m.desc
+      return gt
+        .pgettext('module mission', '累计释放 %1 次「%2」') /* I10N: %1: a number; %2: skill name */
+        .replace('%1', p[2])
+        .replace('%2', skill)
+    }
+    case 'EquipmentDamageTotal':
+    case 'EquipmentDamageTotalWithToken':
+      if (!isCount(p[1])) return m.desc
+      return gt.pgettext('module mission', '累计造成 %d 点伤害').replaceAll('%d', p[1])
+    case 'EquipmentCharKilled':
+      if (!isCount(p[1])) return m.desc
+      return gt.pgettext('module mission', '累计歼灭 %d 名敌人').replaceAll('%d', p[1])
+    case 'EquipmentSkillCastBattle': {
+      const skill = skillName(names, p[1])
+      if (!skill || !isCount(p[0]) || !isCount(p[2])) return m.desc
+      return gt
+        .pgettext(
+          'module mission',
+          '每场至少释放 %1 次「%2」，共 %3 场',
+        ) /* I10N: %1: casts per battle; %2: skill name; %3: battles */
+        .replace('%1', p[2])
+        .replace('%3', p[0])
+        .replace('%2', skill)
+    }
+    case 'EquipmentBattleCharKilled':
+      if (!isCount(p[0]) || !isCount(p[2])) return m.desc
+      return gt
+        .pgettext('module mission', '每场至少歼灭 %1 名敌人，共 %2 场') /* I10N: %1: kills per battle; %2: battles */
+        .replace('%1', p[2])
+        .replace('%2', p[0])
+    case 'EquipmentBattleCharDamage':
+      if (!isCount(p[0]) || !isCount(p[2])) return m.desc
+      return gt
+        .pgettext('module mission', '每场至少造成 %1 点伤害，共 %2 场') /* I10N: %1: damage per battle; %2: battles */
+        .replace('%1', p[2])
+        .replace('%2', p[0])
+    case 'EquipmentDeployCharOrder':
+      if (!isCount(p[0])) return m.desc
+      return gt.pgettext('module mission', '每场第一个部署，共 %d 场').replaceAll('%d', p[0])
+    case 'EquipmentDeployStage':
+      // 部署召唤物的那几条，摘要里少了召唤物的名字，用原文
+      if (!isCount(p[0]) || !isCount(p[1]) || !p[2]?.startsWith('char_')) return m.desc
+      return gt
+        .pgettext('module mission', '每场至少部署 %1 次，共 %2 场') /* I10N: %1: deployments per battle; %2: battles */
+        .replace('%1', p[1])
+        .replace('%2', p[0])
+    case 'EquipmentDeployCharAndKillCnt':
+      if (!isCount(p[0]) || !isCount(p[1]) || !isCount(p[4])) return m.desc
+      return gt
+        .pgettext(
+          'module mission',
+          '每场至少部署 %1 次、歼灭 %2 名敌人，共 %3 场',
+        ) /* I10N: %1: deployments per battle; %2: kills per battle; %3: battles */
+        .replace('%1', p[1])
+        .replace('%2', p[4])
+        .replace('%3', p[0])
+    case 'EquipmentSquadProStage':
+      if (!isCount(p[0])) return m.desc
+      return withBattles(
+        withLimit(
+          gt
+            .pgettext('module mission', '其他人只能是%s')
+            .replaceAll('%s', listJoin([...squad.allowed!].map(professionName))),
+          squad.maxOthers,
+        ),
+        p[0],
+      )
+    case 'EquipmentSquadStarStage':
+      if (!isCount(p[0])) return m.desc
+      return withBattles(
+        withLimit(
+          gt.pgettext('module mission', '其他人只能是 %d 星').replaceAll('%d', String(squad.stars)),
+          squad.maxOthers,
+        ),
+        p[0],
+      )
     default:
       return m.desc
   }
@@ -961,6 +1142,19 @@ function squadReason(reason: Extract<SplitReason, { kind: 'squad' }>, names: Mis
         .replace('%3', String(reason.squad.stars))
         .replace('%4', String(other.stars))
   }
+}
+
+export function formatPiggybackConflict(c: PiggybackConflict, names: MissionNames): string {
+  if (c.kind === 'firstDeployPiggyback') {
+    return gt
+      .pgettext('module mission', '和%s的顺带任务都要第一个部署，这一次只能推进一条')
+      .replaceAll('%s', names.character(c.with.charId))
+  }
+  const reason =
+    c.kind === 'squad'
+      ? formatSplitReason({ kind: 'squad', rule: c.rule, by: c.by, squad: c.squad, others: [c.other] }, names)
+      : gt.pgettext('module mission', '%s也要第一个部署').replaceAll('%s', names.character(c.with.charId))
+  return gt.pgettext('module mission', '这一次推进不了：%s').replaceAll('%s', reason)
 }
 
 /** 至多三条，用「；」连起来 */

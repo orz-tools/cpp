@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
   BoardInput,
+  EMPTY_HELD,
   MissionCatalog,
   MissionInput,
   MissionModule,
@@ -12,11 +13,13 @@ import {
   capacity,
   conflict,
   fits,
+  formatPiggybackConflict,
   formatSplitReasons,
   missionProgress,
   missionSummary,
   parseMission,
   partitionStage,
+  piggybackConflict,
   splitReasons,
   successorTicket,
 } from './moduleMissions'
@@ -102,6 +105,11 @@ const rosesa = 'uniequip_002_rosesa_2'
 // S2-3
 const swire = 'uniequip_002_swire_2'
 const tachak = 'uniequip_002_tachak_2'
+const vulpis = 'uniequip_002_vulpis_2'
+// 不限关卡
+const swireAny = 'uniequip_002_swire_1'
+const fang2Any = 'uniequip_002_fang2_1'
+const sunbrAny = 'uniequip_002_sunbr_1'
 
 describe('parseMission and missionSummary', () => {
   it('read the squad conditions', () => {
@@ -159,10 +167,62 @@ describe('parseMission and missionSummary', () => {
     expect(summary(alga)).toBe('使用 2 次「只为我的答案」')
   })
 
+  it('sum up the missions on any stage', () => {
+    expect(summary('uniequip_002_sunbr_1')).toBe('累计释放 6 次「食粮烹制」')
+    expect(summary('uniequip_003_demkni_1')).toBe('每场至少释放 3 次「药物配置」，共 5 场')
+    expect(summary('uniequip_002_alga_1')).toBe('累计歼灭 20 名敌人')
+    expect(summary('uniequip_002_aurora_1')).toBe('累计造成 40000 点伤害')
+    expect(summary('uniequip_002_fang2_1')).toBe('每场第一个部署，共 5 场')
+    expect(summary('uniequip_002_meteo_1')).toBe('每场至少歼灭 10 名敌人，共 5 场')
+    expect(summary('uniequip_002_peacok_1')).toBe('每场至少造成 15000 点伤害，共 5 场')
+    expect(summary('uniequip_001_flower_15')).toBe('每场至少部署 1 次，共 5 场')
+    expect(summary(swireAny)).toBe('其他人只能是近卫，共 5 场')
+
+    const anyStage = (id: string, over: Partial<MissionInput>) =>
+      parseMission(made(id, { stageId: null, ...over }), world)
+    const token = anyStage('token', { template: 'EquipmentDamageTotalWithToken', paramList: ['c', '120000', '0'] })
+    expect(missionSummary(token, names)).toBe('累计造成 120000 点伤害')
+    const deployKill = anyStage('deployKill', {
+      template: 'EquipmentDeployCharAndKillCnt',
+      paramList: ['5', '2', 'char_deployKill', 'DEATHDETAIL', '4'],
+    })
+    expect(missionSummary(deployKill, names)).toBe('每场至少部署 2 次、歼灭 4 名敌人，共 5 场')
+    const star = anyStage('star', { template: 'EquipmentSquadStarStage', paramList: ['5', 'char_star', '999,3'] })
+    expect(star.squad).toEqual({ stars: 3 })
+    expect(missionSummary(star, names)).toBe('其他人只能是 3 星，共 5 场')
+  })
+
+  it('drop the quotes a skill name comes with', () => {
+    expect(names.skill('skchr_bubble_2')).toBe('“挨打”')
+    expect(summary('uniequip_002_bubble_1')).toBe('每场至少释放 1 次「挨打」，共 5 场')
+    expect(summary('uniequip_002_tinman_1')).toBe('累计释放 8 次「大拉里」')
+    const stage = made('cast', {
+      template: 'EquipmentSkillCastStage',
+      paramList: ['3', 'main_x', 'skchr_tinman_2', '2'],
+    })
+    expect(missionSummary(parseMission(stage, world), names)).toBe('使用 2 次「大拉里」')
+  })
+
   it('fall back to the original text', () => {
-    const anyStage = fx.exUniEquips.equipDict['uniequip_002_sunbr'].missionList[0]
-    expect(parse(anyStage).known).toBe(true)
-    expect(summary(anyStage)).toBe(fx.exUniEquips.missionList[anyStage].desc)
+    for (const id of ['uniequip_002_amiya_1', 'uniequip_002_bgsnow_1', 'uniequip_002_deepcl_1']) {
+      expect(parse(id).known).toBe(true)
+      expect(summary(id)).toBe(fx.exUniEquips.missionList[id].desc)
+    }
+    const anyStage = (id: string, over: Partial<MissionInput>) =>
+      missionSummary(parseMission(made(id, { stageId: null, ...over }), world), names)
+    // 部署的是召唤物
+    expect(
+      anyStage('summon', { template: 'EquipmentDeployStage', paramList: ['5', '1', 'token_10026_x', 'char_summon'] }),
+    ).toBe('原文 summon')
+    expect(anyStage('garbled', { template: 'EquipmentBattleCharKilled', paramList: ['5', 'char_garbled', 'x7'] })).toBe(
+      '原文 garbled',
+    )
+    expect(anyStage('noSkill', { template: 'EquipmentSkillCast', paramList: ['c', 'skchr_missing', '3'] })).toBe(
+      '原文 noSkill',
+    )
+    expect(anyStage('order', { template: 'EquipmentDeployCharOrder', paramList: ['5', '2', 'char_order'] })).toBe(
+      '原文 order',
+    )
 
     const strange = parseMission(made('strange', { template: 'EquipmentSomethingNew' }), world)
     expect(strange.known).toBe(false)
@@ -213,6 +273,40 @@ describe('conflict and fits', () => {
     expect(fits([toddi, ...others(7)])).toBe(false)
     expect(fits(others(12))).toBe(true)
     expect(fits(others(13))).toBe(false)
+  })
+})
+
+describe('piggybackConflict', () => {
+  const anyStage = (id: string, over: Partial<MissionInput>) =>
+    parseMission(made(id, { stageId: null, ...over }), world)
+  const firstDeploy = (id: string) =>
+    anyStage(id, { template: 'EquipmentDeployCharOrder', paramList: ['5', '1', 'char_' + id] })
+
+  it('lets one first deployment through a run', () => {
+    const a = firstDeploy('a')
+    const b = firstDeploy('b')
+    const run = [parseMission(made('a', { id: 'a_stage' }), world), parseMission(made('b', { id: 'b_stage' }), world)]
+    expect(piggybackConflict(a, run, [a, b])).toEqual({ kind: 'firstDeployPiggyback', with: b.mission })
+    expect(piggybackConflict(b, run, [a, b])).toEqual({ kind: 'firstDeployPiggyback', with: a.mission })
+    expect(formatPiggybackConflict(piggybackConflict(a, run, [a, b])!, names)).toBe(
+      '和char_b的顺带任务都要第一个部署，这一次只能推进一条',
+    )
+  })
+
+  it('gives way to a stage mission that also deploys first', () => {
+    const order = firstDeploy('order')
+    const siege = parse('uniequip_003_siege_2')
+    const c = piggybackConflict(order, [parseMission(made('order', { id: 'order_stage' }), world), siege], [order])
+    expect(c).toEqual({ kind: 'firstDeploy', with: siege.mission })
+    expect(formatPiggybackConflict(c!, names)).toBe('这一次推进不了：推进之王也要第一个部署')
+  })
+
+  it('checks a squad rule against everyone else in the run', () => {
+    const star = anyStage('star', { template: 'EquipmentSquadStarStage', paramList: ['5', 'char_star', '999,3'] })
+    const six = parseMission(made('six', { stars: 6 }), world)
+    const c = piggybackConflict(star, [parseMission(made('star', { id: 'star_stage' }), world), six], [star])
+    expect(c).toMatchObject({ kind: 'squad', rule: 'stars' })
+    expect(formatPiggybackConflict(c!, names)).toBe('这一次推进不了：char_star的其他人只能是 3 星，char_six是 6 星')
   })
 })
 
@@ -337,7 +431,17 @@ describe('buildBoard', () => {
     char_350_surtr: st(2, 60, { uniequip_002_surtr: 1 }), // 史尔特尔：计划内，未持有
   }
   const board = (scope: MissionScope, over: Partial<BoardInput> = {}) =>
-    buildBoard({ catalog, current, goal, doneMissions: [], goalOrder: [], scope, rarities: [], ...over })
+    buildBoard({
+      catalog,
+      current,
+      goal,
+      doneMissions: [],
+      goalOrder: [],
+      scope,
+      rarities: [],
+      held: EMPTY_HELD,
+      ...over,
+    })
   const equipsOf = (b: ReturnType<typeof board>) =>
     [...new Set([...b.tickets, ...b.used].flatMap((t) => t.missions.map((x) => x.equipId)))].sort()
 
@@ -435,6 +539,7 @@ describe('buildBoard', () => {
       goalOrder: [],
       scope: 'all',
       rarities: [],
+      held: EMPTY_HELD,
     })
     expect(b.tickets.map((t) => [t.missions.map((x) => x.id), t.unknown])).toEqual([
       [['plain'], false],
@@ -452,10 +557,105 @@ describe('buildBoard', () => {
     expect(successorTicket(tickets, surtr)).toBeUndefined()
   })
 
+  it('keeps a ticked mission where it was until it is tidied', () => {
+    const before = board('open')
+    const t42 = before.tickets.find((t) => t.stageId === 'main_04-02')!
+    expect(before.stale).toBe(0)
+
+    const held = board('open', { doneMissions: [sunbr], held: new Set([sunbr]) })
+    expect(held.tickets.map((t) => t.key)).toEqual(before.tickets.map((t) => t.key))
+    expect(held.tickets.find((t) => t.stageId === 'main_04-02')).toMatchObject({ key: t42.key, allDone: false })
+    expect(held.used).toEqual([])
+    expect(held.stale).toBe(1)
+    expect(held.stats).toMatchObject({ runs: 2, done: 1 })
+
+    const tidied = board('open', { doneMissions: [sunbr] })
+    expect(tidied.used.map((t) => t.key)).toEqual([sunbr])
+    expect(tidied.tickets.find((t) => t.stageId === 'main_04-02')?.key).toBe(fang2)
+    expect(tidied.stale).toBe(0)
+  })
+
+  it('does not split a stage again while a ticked mission is kept', () => {
+    const runs = (b: ReturnType<typeof board>) => b.tickets.filter((t) => t.stageId === 'main_03-08').length
+    expect(runs(board('all'))).toBe(9)
+    expect(runs(board('all', { doneMissions: [surtr], held: new Set([surtr]) }))).toBe(9)
+    expect(runs(board('all', { doneMissions: [surtr] }))).toBe(8)
+  })
+
+  it('keeps a ticket whose missions are all ticked, without counting it', () => {
+    const open = board('open')
+    const t42 = open.tickets.find((t) => t.stageId === 'main_04-02')!
+    const done = { doneMissions: [fang2, sunbr], held: new Set([fang2, sunbr]) }
+    const kept = board('open', done)
+    expect(kept.tickets.find((t) => t.stageId === 'main_04-02')).toMatchObject({ key: t42.key, allDone: true })
+    expect(kept.stats).toMatchObject({ runs: open.stats.runs - 1, ap: open.stats.ap - 18 })
+    expect(kept.stale).toBe(2)
+
+    const everything = board('everything')
+    const all = [sunbr, frostl, fang2, caper]
+    const keptAll = board('everything', { doneMissions: all, held: new Set(all) })
+    expect(keptAll.tickets.find((t) => t.stageId === 'main_04-02')).toMatchObject({ allDone: true })
+    expect(keptAll.stats).toMatchObject({ runs: everything.stats.runs - 1, ap: everything.stats.ap - 18 })
+    expect(keptAll.stale).toBe(4)
+    const tidied = board('everything', { doneMissions: all })
+    expect(tidied.tickets.some((t) => t.stageId === 'main_04-02')).toBe(false)
+    expect(tidied.used.map((t) => t.key)).toEqual([[caper, fang2, frostl, sunbr].sort().join(',')])
+    // 「所有任务」档本来就把做完的分进去，只勾一部分时整理不改什么
+    expect(board('everything', { doneMissions: [sunbr], held: new Set([sunbr]) }).stale).toBe(0)
+  })
+
+  it('keeps a ticked mission on any stage in the piggyback and in its place', () => {
+    const b = board('open', { doneMissions: [fang2Any], held: new Set([fang2Any]) })
+    const t42 = b.tickets.find((t) => t.stageId === 'main_04-02')!
+    expect(t42.piggyback.map((x) => x.id)).toContain(fang2Any)
+    expect(b.anyStage.find((g) => g.charId === 'char_1036_fang2')?.missions[0].id).toBe(fang2Any)
+    expect(b.stale).toBe(1)
+
+    const tidied = board('open', { doneMissions: [fang2Any] })
+    expect(tidied.tickets.find((t) => t.stageId === 'main_04-02')!.piggyback.map((x) => x.id)).not.toContain(fang2Any)
+    expect(tidied.stale).toBe(0)
+  })
+
+  it('does not keep a ticket for someone who cannot count yet', () => {
+    const plan = board('plan', { doneMissions: [frostl], held: new Set([frostl]) })
+    expect(plan.used.map((t) => t.key)).toEqual([frostl])
+    expect(plan.tickets.some((t) => t.missions.some((x) => x.id === frostl))).toBe(false)
+    expect(plan.stale).toBe(0)
+  })
+
+  it('says which piggyback cannot move in its run', () => {
+    const s23 = board('all').tickets.find((t) => t.missions.some((x) => x.id === swire))!
+    expect(s23.missions.map((x) => x.id).sort()).toEqual([swire, vulpis].sort())
+    expect([...s23.piggybackConflicts.keys()]).toEqual([swireAny])
+    expect(formatPiggybackConflict(s23.piggybackConflicts.get(swireAny)!, names)).toBe(
+      '这一次推进不了：诗怀雅的其他人只能是近卫，忍冬是先锋',
+    )
+
+    const t42 = board('open').tickets.find((t) => t.stageId === 'main_04-02')!
+    expect(t42.piggyback.map((x) => x.id).sort()).toEqual([fang2Any, sunbrAny].sort())
+    expect(t42.piggybackConflicts.size).toBe(0)
+  })
+
   it('returns the last board for the same input', () => {
-    const input: BoardInput = { catalog, current, goal, doneMissions: [], goalOrder: [], scope: 'plan', rarities: [] }
+    const input: BoardInput = {
+      catalog,
+      current,
+      goal,
+      doneMissions: [],
+      goalOrder: [],
+      scope: 'plan',
+      rarities: [],
+      held: EMPTY_HELD,
+    }
     expect(buildBoard(input)).toBe(buildBoard({ ...input }))
     expect(buildBoard(input)).not.toBe(buildBoard({ ...input, doneMissions: [] }))
+
+    // 带 held 的和不带的交替着算，两份都留着
+    const held = { ...input, held: new Set([sunbr]) }
+    const plain = buildBoard(input)
+    const kept = buildBoard(held)
+    expect(buildBoard(input)).toBe(plain)
+    expect(buildBoard(held)).toBe(kept)
   })
 })
 

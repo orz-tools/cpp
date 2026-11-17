@@ -2,7 +2,15 @@ import { Atom, atom, createStore, useAtomValue } from 'jotai'
 import { atomWithStorage, selectAtom } from 'jotai/utils'
 import { useAtoms, useGameAdapter, useGameDataMemo } from '../../Cpp'
 import type { ArknightsAdapter } from '../../pkg/cpp-arknights/GameAdapter'
-import { Board, MissionNames, MissionScope, buildBoard, missionScopes } from '../../pkg/cpp-arknights/moduleMissions'
+import {
+  Board,
+  BoardInput,
+  EMPTY_HELD,
+  MissionNames,
+  MissionScope,
+  buildBoard,
+  missionScopes,
+} from '../../pkg/cpp-arknights/moduleMissions'
 import type { Arknights } from '../../pkg/cpp-arknights/types'
 import type { UserData, UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 
@@ -21,6 +29,24 @@ export function setMissionsDone(cpp: UserDataHost, ids: readonly string[], done:
       d.doneMissions = d.doneMissions.filter((x) => !ids.includes(x))
     }
   })
+}
+
+/** 任务勾选框：改这一条，并让它留在原处，券不因此重新分组 */
+export function toggleMission(cpp: UserDataHost, id: string, done: boolean) {
+  setMissionsDone(cpp, [id], done)
+  const held = cpp.store.get(heldMissionsAtom)
+  if (!held.has(id)) cpp.store.set(heldMissionsAtom, new Set([...held, id]))
+}
+
+/** 「打完了」那几个按钮：这张券上的不再留在原处 */
+export function releaseMissions(cpp: UserDataHost, ids: readonly string[]) {
+  const held = cpp.store.get(heldMissionsAtom)
+  if (ids.some((x) => held.has(x))) cpp.store.set(heldMissionsAtom, new Set([...held].filter((x) => !ids.includes(x))))
+}
+
+/** 「整理」：都不再留在原处，重新分组 */
+export function tidyMissions(cpp: UserDataHost) {
+  cpp.store.set(heldMissionsAtom, EMPTY_HELD)
 }
 
 /**
@@ -53,12 +79,19 @@ export function readMissionPrefs(stored: unknown): MissionPrefs {
 // 和 cpp_sidebar 一样记在本机、不分档案
 const missionPrefsStorageAtom = atomWithStorage<unknown>('cpp_module_missions', null, undefined, { getOnInit: true })
 
+// 每个档案有自己的 store，所以下面几个按档案分开；面板、大窗口和档案共用
+/** 留在原处的任务，见 BoardInput.held。不存盘：刷新、换档案都会整理 */
+export const heldMissionsAtom = atom<ReadonlySet<string>>(EMPTY_HELD)
+
+/** 换范围、按星级按钮都会整理 */
 export const missionPrefsAtom = atom(
   (get) => readMissionPrefs(get(missionPrefsStorageAtom)),
-  (_get, set, prefs: MissionPrefs) => set(missionPrefsStorageAtom, prefs),
+  (_get, set, prefs: MissionPrefs) => {
+    set(missionPrefsStorageAtom, prefs)
+    set(heldMissionsAtom, EMPTY_HELD)
+  },
 )
 
-// 每个档案有自己的 store，所以下面两个按档案分开；面板和大窗口共用
 /** 选中的券的 key */
 export const selectedTicketAtom = atom<string | null>(null)
 
@@ -79,11 +112,12 @@ export function useDoneMissions(): ReadonlySet<string> {
   return set
 }
 
-export function useMissionBoard(): Board {
+export function useBoardInput(): BoardInput {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
   const data = useAtomValue(useAtoms<Arknights>().dataAtom)
   const prefs = useAtomValue(missionPrefsAtom)
-  return buildBoard({
+  const held = useAtomValue(heldMissionsAtom)
+  return {
     catalog: ga.getMissionCatalog(),
     current: data.current,
     goal: data.goal,
@@ -91,7 +125,18 @@ export function useMissionBoard(): Board {
     goalOrder: data.goalOrder,
     scope: prefs.scope,
     rarities: prefs.rarities,
-  })
+    held,
+  }
+}
+
+export function useMissionBoard(): Board {
+  return buildBoard(useBoardInput())
+}
+
+/** 整理以后还剩几次；没有要整理的时候是 null，不去算 */
+export function useRunsAfterTidy(board: Board): number | null {
+  const input = useBoardInput()
+  return board.stale > 0 ? buildBoard({ ...input, held: EMPTY_HELD }).stats.runs : null
 }
 
 export function useMissionNames(): MissionNames {
