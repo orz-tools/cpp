@@ -200,12 +200,10 @@ const CostTable = memo(
   },
 )
 
+// 用默认的取舍（「9.3万」「24万」「238K」）：固定留一位小数时，英文的「238.3K」挤出了 40px 的格子
 function formatQuantity(n: number) {
   if (n < 10000) return `${n}`
-  return new Intl.NumberFormat(getLocale().replace('_', '-'), {
-    notation: 'compact',
-    maximumFractionDigits: 1,
-  }).format(n)
+  return new Intl.NumberFormat(getLocale().replace('_', '-'), { notation: 'compact' }).format(n)
 }
 
 const CostMaterials = memo(({ ga, title, cost }: { ga: ArknightsAdapter; title: string; cost: CostBreakdown }) => {
