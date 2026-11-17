@@ -85,7 +85,7 @@ describe('where ⇄ tree', () => {
 
   it('round-trips every predefined game query', () => {
     const presets = ArknightsAdapter.prototype.getPredefinedQueries.call({ hasBaseSkills: () => true } as any)
-    expect(Object.keys(presets).length).toBe(20)
+    expect(Object.keys(presets).length).toBe(18)
     for (const [k, v] of Object.entries(presets)) {
       expect(deepEqual(roundTrip(v.query.where ?? undefined), v.query.where, { strict: true }), k).toBe(true)
     }

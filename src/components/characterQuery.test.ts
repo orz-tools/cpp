@@ -42,6 +42,9 @@ class StubAdapter {
   public getPredefinedQueryGroups() {
     return []
   }
+  public getReplacedPredefinedQueries() {
+    return { 'cost.usable': 'cost' }
+  }
   public getRootCharacterQuery() {
     return new RootCharacterQuery()
   }
@@ -129,6 +132,17 @@ describe('queryParamAtom', () => {
     expect(param.query).toBe(ListModeAll)
     expect(param.quick).toEqual({ rarity: 6, holding: [HoldingAbsent] })
     expect(param.source).toBeUndefined()
+  })
+
+  it('opens the preset that replaced a stored one, keeping the search and quick filters', () => {
+    localStorage.setItem(
+      'cpp[stub]query_param',
+      JSON.stringify({ v: 1, query: '#?cost.usable', search: '能天使', quick: { rarity: 6 } }),
+    )
+    const cpp = createCpp()
+    expect(cpp.store.get(cpp.queryParamAtom)).toMatchObject({ query: '#?cost', search: '能天使', quick: { rarity: 6 } })
+    cpp.store.set(cpp.queryParamAtom, (x) => ({ ...x, query: '#?cost.all' }))
+    expect(cpp.store.get(cpp.queryParamAtom).query).toBe('#?cost.all')
   })
 })
 

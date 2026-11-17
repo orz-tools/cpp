@@ -73,6 +73,8 @@ export interface IGameAdapter<G extends IGame> {
   getDefaultCharacterQueryOrder(): QueryParam['order']
   getFavCharacterQueryWhere(): QueryParam['where']
   getPredefinedQueries(): Record<string, PredefinedQuery>
+  /** 去掉了的预设 → 顶替它的预设；存着的视图停在去掉的预设上时，读出来换成顶替的那个 */
+  getReplacedPredefinedQueries?(): Readonly<Record<string, string>>
   /** 「更多视图」菜单里预设的分组，按显示顺序；「我的过滤器」是外壳自己的，不在这里 */
   getPredefinedQueryGroups(): PredefinedQueryGroup[]
   readPreference<K extends keyof G['preferences']>(key: K, storage: Record<string, any>): G['preferences'][K]

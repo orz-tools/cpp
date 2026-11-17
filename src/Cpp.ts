@@ -207,6 +207,9 @@ export class Cpp<G extends IGame> {
         value.quick = { ...value.quick, holding: ['absent'] }
       }
       if (value.source === '#!absent') value.source = undefined
+      const replaced = this.gameAdapter.getReplacedPredefinedQueries?.() ?? {}
+      const preset = value.query.startsWith('#?') ? value.query.slice(2) : undefined
+      if (preset != null && Object.hasOwn(replaced, preset)) value.query = '#?' + replaced[preset]
       return value
     })
 

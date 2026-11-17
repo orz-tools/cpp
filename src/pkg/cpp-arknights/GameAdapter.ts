@@ -76,12 +76,6 @@ const allSegment = (
   title: PSTR = lpstr(() => gt.pgettext('query menu', '不论持有和练度，列出全部')),
 ): PredefinedQuerySegment => ({ key, label: lpstr(() => gt.pgettext('query menu', '全部')), title })
 
-const usableSegment = (key: string, title: PSTR): PredefinedQuerySegment => ({
-  key,
-  label: lpstr(() => gt.pgettext('query menu', '能用')),
-  title,
-})
-
 const ownedSegment = (key: string, title: PSTR): PredefinedQuerySegment => ({
   key,
   label: lpstr(() => gt.pgettext('query menu', '已持有')),
@@ -737,12 +731,8 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       'cost.elite2': {
         name: gt.pgettext('predefined query', '精二直升价值'),
         group: 'cost',
-        title: lpstr(() => gt.pgettext('query menu', '计划练到精二、现在还没精二的')),
+        title: lpstr(() => gt.pgettext('query menu', '已持有和计划精二的干员，还没精二的')),
         segments: [
-          usableSegment(
-            'cost.elite2.usable',
-            lpstr(() => gt.pgettext('query menu', '已持有、还没精二的，不看计划')),
-          ),
           allSegment(
             'cost.elite2.all',
             lpstr(() => gt.pgettext('query menu', '全部 4–6 星干员')),
@@ -754,21 +744,9 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
             _: '&&',
             operand: [
               voucherRarity,
-              { _: 'field', field: 'goal.elite', op: '==', operand: 2 },
+              { _: '||', operand: [own, { _: 'field', field: 'goal.elite', op: '==', operand: 2 }] },
               { _: 'field', field: 'elite', op: '<', operand: 2 },
             ],
-          },
-          order: elite2Order,
-        },
-      },
-      'cost.elite2.usable': {
-        name: gt.pgettext('predefined query', '精二直升价值（能用）'),
-        group: 'cost',
-        query: {
-          select: ['cost.elite2'],
-          where: {
-            _: '&&',
-            operand: [voucherRarity, own, { _: 'field', field: 'elite', op: '<', operand: 2 }],
           },
           order: elite2Order,
         },
@@ -785,12 +763,8 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       'skill.cost.mastery3': {
         name: gt.pgettext('predefined query', '专三价值'),
         group: 'cost',
-        title: lpstr(() => gt.pgettext('query menu', '计划专三、现在还没专三的技能')),
+        title: lpstr(() => gt.pgettext('query menu', '已持有的干员和计划专三的技能，还没专三的')),
         segments: [
-          usableSegment(
-            'skill.cost.mastery3.usable',
-            lpstr(() => gt.pgettext('query menu', '已持有、精二、技能 7 级，还没专三的技能，不看计划')),
-          ),
           allSegment(
             'skill.cost.mastery3.all',
             lpstr(() => gt.pgettext('query menu', '全部 4–6 星干员的技能')),
@@ -803,27 +777,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
             _: '&&',
             operand: [
               voucherRarity,
-              { _: 'field', field: 'skill.goal.mastery', op: '==', operand: 3 },
-              { _: 'field', field: 'skill.mastery', op: '<', operand: 3 },
-              costsMaterials,
-            ],
-          },
-          order: mastery3Order,
-        },
-      },
-      'skill.cost.mastery3.usable': {
-        name: gt.pgettext('predefined query', '专三价值（能用）'),
-        group: 'cost',
-        query: {
-          select: ['skill.cost.mastery3'],
-          join: 'skill',
-          where: {
-            _: '&&',
-            operand: [
-              voucherRarity,
-              own,
-              { _: 'field', field: 'elite', op: '==', operand: 2 },
-              { _: 'field', field: 'skillLevel', op: '==', operand: 7 },
+              { _: '||', operand: [own, { _: 'field', field: 'skill.goal.mastery', op: '==', operand: 3 }] },
               { _: 'field', field: 'skill.mastery', op: '<', operand: 3 },
               costsMaterials,
             ],
@@ -856,6 +810,14 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
     // 数据 worker 发布基建技能之前，这一组不出现
     if (this.hasBaseSkills()) Object.assign(presets, baseSkillQueries(own))
     return presets
+  }
+
+  public getReplacedPredefinedQueries() {
+    // 「能用」那一段并进了名字那一段
+    return {
+      'cost.elite2.usable': 'cost.elite2',
+      'skill.cost.mastery3.usable': 'skill.cost.mastery3',
+    }
   }
 
   public getFormulaTagNames() {

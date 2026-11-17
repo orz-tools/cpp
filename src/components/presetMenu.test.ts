@@ -70,17 +70,21 @@ describe('presetMenu', () => {
       for (const row of menu[0].rows) expect(row.segments.map((s) => String(s.label))).toEqual(['全部'])
     })
 
-    it('lists the training costs after them', () => {
+    it('lists the training costs after them, each with 「全部」', () => {
       expect(shape(menu)[1]).toEqual([
         'cost',
-        [
-          ['cost.elite2', 'cost.elite2.usable', 'cost.elite2.all'],
-          ['skill.cost.mastery3', 'skill.cost.mastery3.usable', 'skill.cost.mastery3.all'],
-          ['cost.invested'],
-        ],
+        [['cost.elite2', 'cost.elite2.all'], ['skill.cost.mastery3', 'skill.cost.mastery3.all'], ['cost.invested']],
       ])
       for (const row of menu[1].rows.slice(0, 2)) {
-        expect(row.segments.map((s) => String(s.label))).toEqual(['能用', '全部'])
+        expect(row.segments.map((s) => String(s.label))).toEqual(['全部'])
+      }
+    })
+
+    it('replaces only presets that are gone, with ones that exist', () => {
+      const replaced = ArknightsAdapter.prototype.getReplacedPredefinedQueries.call(undefined)
+      for (const [from, to] of Object.entries(replaced)) {
+        expect(Object.hasOwn(presets, from), from).toBe(false)
+        expect(Object.hasOwn(presets, to), to).toBe(true)
       }
     })
 
