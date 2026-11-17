@@ -5,7 +5,7 @@ import useResizeObserver from 'use-resize-observer'
 import { DAY, PeriodLane, SkinPeriod, packLanes } from '../../pkg/cpp-arknights/skins'
 import { gt } from '../../pkg/gt'
 import { missingCount, periodSummary } from './SkinControls'
-import { channelName, formatDay, formatMinute, formatMonthDay, onButtonKey, periodName } from './SkinImages'
+import { channelName, formatDay, formatMinute, formatMonthDay, onButtonKey, periodName, readLabel } from './SkinImages'
 import { SkinModel, selectedPeriodAtom } from './skinsModel'
 
 /** 读屏读的：「风尚回顾，10-24 至 11-21，缺 11 件」 */
@@ -19,7 +19,7 @@ function periodLabel(model: SkinModel, period: SkinPeriod) {
           .pgettext('skins', '%1 至 %2') /* I10N: %1: start date, %2: end date */
           .replace('%1', formatMonthDay(period.start))
           .replace('%2', formatMonthDay(period.end))
-  return [periodName(period), when, missing].join(gt.pgettext('skins', '，'))
+  return readLabel(periodName(period), when, missing)
 }
 
 /** 一期在档期图上的文字：「风尚回顾 缺11」 */

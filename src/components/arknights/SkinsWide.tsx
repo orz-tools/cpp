@@ -27,6 +27,7 @@ import {
   periodName,
   periodTimeText,
   priceText,
+  readLabel,
   skinSubtitle,
   stateText,
   untilText,
@@ -61,7 +62,7 @@ const SkinCard = memo(({ state, marking, now }: { state: SkinState; marking: boo
       role="button"
       tabIndex={0}
       aria-pressed={marking ? state.owned : undefined}
-      aria-label={`${state.skin.name}，${sub}，${status}`}
+      aria-label={readLabel(state.skin.name, sub, status)}
       title={`${state.skin.name}\n${sub}\n${status}`}
       className={'cpp-skins-card' + (state.owned ? '' : ' is-missing')}
       onClick={() => activate(state)}

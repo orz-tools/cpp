@@ -115,6 +115,11 @@ export function stateText(state: SkinState, now: number) {
   return w ? wayText(w, now) : gt.pgettext('skins', '暂时拿不到')
 }
 
+/** 读屏读的一句：几段用逗号连起来 */
+export function readLabel(...parts: string[]) {
+  return parts.filter(Boolean).join(gt.pgettext('skins', '，'))
+}
+
 /** 「干员 · 系列」；阿米娅另外几个形态的时装，系列前面加上形态的职业名 */
 export function skinSubtitle(state: SkinState, character: Character | undefined) {
   const { skin } = state
@@ -299,7 +304,7 @@ export const SkinTile = memo(
         role="button"
         tabIndex={0}
         aria-pressed={marking ? state.owned : undefined}
-        aria-label={`${state.skin.name}，${skinSubtitle(state, character)}，${stateText(state, now)}`}
+        aria-label={readLabel(state.skin.name, skinSubtitle(state, character), stateText(state, now))}
         className={'cpp-skins-tile' + (state.owned ? '' : ' is-missing')}
         onClick={() => onActivate(state)}
         onKeyDown={onButtonKey}
