@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["eslint", "typescript", "react", "oxc", "unicorn", "import"],
+  "jsPlugins": ["./scripts/oxlint-plugin.js"],
   "categories": { "correctness": "error" },
   "env": { "browser": true, "serviceworker": true, "es2024": true },
   "rules": {
@@ -22,7 +23,8 @@
     "typescript/no-unsafe-member-access": "off",
     "typescript/no-unsafe-return": "off",
     // 只对 React Compiler 有意义，构建里没有启用 React Compiler
-    "react/incompatible-library": "off"
+    "react/incompatible-library": "off",
+    "cpp/bundled-icon": "error"
   },
   "overrides": [
     {

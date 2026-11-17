@@ -4,6 +4,7 @@ import * as Paths20 from '@blueprintjs/icons/lib/esm/generated/20px/paths'
 import { AppToaster } from './components/Toaster'
 import { DedupPool } from './pkg/dedup'
 
+// cpp/bundled-icon (scripts/oxlint-plugin.js) reads the entries below as text, so keep them `[IconNames.X, PathsNN.X]`
 const map = new Map<IconSize, Map<IconName, string[]>>([
   [
     IconSize.STANDARD,
@@ -95,6 +96,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.FLAG, Paths20.Flag],
       [IconNames.IMPORT, Paths20.Import],
       [IconNames.MUGSHOT, Paths20.Mugshot],
+      [IconNames.SEARCH, Paths20.Search],
       [IconNames.WARNING_SIGN, Paths20.WarningSign],
     ]),
   ],

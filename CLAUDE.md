@@ -21,7 +21,7 @@ pnpm dev          # Start dev server (builds messages first, then vite)
 pnpm build        # Production build (tsc + vite)
 pnpm preview      # Preview production build
 pnpm gt           # Extract + update + build i18n message files
-pnpm lint         # oxlint with type-aware rules (.oxlintrc.json)
+pnpm lint         # oxlint with type-aware rules (.oxlintrc.json) and the repo's own (scripts/oxlint-plugin.js)
 pnpm fmt          # Format with oxfmt (.oxfmtrc.json)
 pnpm vitest run   # Unit tests
 ```
@@ -78,3 +78,7 @@ Games are code-split via dynamic imports. The URL path (`/{game}/{profile}`) det
 ### State management
 
 Jotai atoms are the primary state mechanism. `Cpp.ts` creates the store with preference atoms (value type, farm goals, forbidden stages). Game adapters extend this with game-specific atoms. Undo/redo is built into the `dataAtom` via immer patches.
+
+### Icons
+
+Blueprint's own icon loader is patched out (`patches/`), so an icon renders only if `src/icons.ts` bundles its paths, and at the size it is drawn: Blueprint takes the 20px paths for an icon drawn at 20px or more, which `NonIdealState`, `Alert` (so `showAlert` / `showConfirm`), `Drawer` and `<Icon size={20}>` always are. A missing one renders blank and toasts "missing icon". `pnpm lint` reports it (`cpp/bundled-icon`) wherever the name is written out: icon props, `{ icon: … }` objects, and values typed `IconName`.
