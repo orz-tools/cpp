@@ -1,7 +1,7 @@
 import { IconName } from '@blueprintjs/core'
 import React from 'react'
 import { BlobFlavour } from '../pkg/blobcache'
-import { FieldContext, ICharacter, IGameAdapter, Querier } from '../pkg/cpp-basic'
+import { FieldContext, ICharacter, IGameAdapter, Querier, Task } from '../pkg/cpp-basic'
 import { PSTR } from '../pkg/gt'
 import type { ImportFormat } from './Importer'
 import type { PeekKind } from './peek'
@@ -41,6 +41,18 @@ export interface DossierSection {
   isAvailable?: (ga: IGameAdapter<any>, character: ICharacter) => boolean
   /** hook：页签标题后面的小标记，例如「0/4」；返回 null 时不画 */
   useTag?: (character: ICharacter) => string | null
+}
+
+/** 任务列表里任务名下面的一行 */
+export interface TaskNote {
+  /** 同一条任务里唯一 */
+  key: string
+  icon: IconName
+  text: string
+  /** 悬停显示 */
+  title?: string
+  /** 点了打开这名干员的档案，翻到 section 这一页，并请求框选 frame（focusFrame.ts 的 target） */
+  dossier?: { section: string; frame: string }
 }
 
 export interface IGameComponent {
@@ -94,4 +106,6 @@ export interface IGameComponent {
   dossierSections?: DossierSection[]
   /** 点了弹出的卡片，按 PeekRef 的 kind；通用部分自带 item，没登记的种类原样画、不能点 */
   peekKinds?: Record<string, PeekKind>
+  /** 任务列表在任务名下面、材料前面加的说明行；没有时返回空数组。纯函数，任务列表算行高时也调用 */
+  taskNotes?: (ga: IGameAdapter<any>, task: Task<any>) => TaskNote[]
 }

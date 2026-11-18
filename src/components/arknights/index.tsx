@@ -21,6 +21,7 @@ import { modulePeekKind, skillPeekKind, stagePeekKind } from './peekKinds'
 import { useArknightsImportFormats } from './importFormats'
 import { renderCharacterAvatarBadge, renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
+import { taskNotes } from './taskNotes'
 
 export const ArknightsComponents: IGameComponent = {
   email: 'cppa@ouomail.com',
@@ -56,4 +57,5 @@ export const ArknightsComponents: IGameComponent = {
   sidebarPanels: [stagesPanel, moduleMissionsPanel, skinsPanel],
   dossierSections: [costSection, baseSkillsSection, skinsSection, moduleMissionsSection],
   peekKinds: { skill: skillPeekKind, module: modulePeekKind, stage: stagePeekKind },
+  taskNotes,
 }
