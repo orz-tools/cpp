@@ -1,4 +1,6 @@
 import type { ArknightsCharacterStatus } from '../../pkg/cpp-arknights/types'
+import type { IStageInfo } from '../../pkg/cpp-basic'
+import type { StageEfficiency } from '../../pkg/cpp-arknights/stageEfficiency'
 import type { SkillAt } from './statusEditor/Detail'
 
 /**
@@ -34,4 +36,22 @@ export function modCompare(
   const from = current.modLevel[equipId] || 0
   const to = goal?.modLevel[equipId] ?? from
   return { from, to, planned: to > from }
+}
+
+/**
+ * 关卡卡的掉落表，一行一个 dropInfo 的物品。每次的数量是 drops ÷ samples；样本数不是有限数的是手写掉落，数量就是
+ * drops，标成固定、排最后。物品价值算出来时按每次的价值从高到低排，和关卡面板一样；没算出来时按数量排
+ */
+export function stageDropRows(
+  stage: Pick<IStageInfo, 'dropInfo'>,
+  efficiency: Pick<StageEfficiency, 'drops'> | undefined,
+  valuesOk: boolean,
+): { itemId: string; quantity: number; fixed: boolean }[] {
+  const values = valuesOk && efficiency ? new Map(efficiency.drops.map((x) => [x.itemId, x.value])) : null
+  const rows = Object.entries(stage.dropInfo).map(([itemId, [drops, samples]]) => {
+    const fixed = !Number.isFinite(samples)
+    return { itemId, quantity: fixed ? drops : drops / samples, fixed }
+  })
+  const rank = (row: (typeof rows)[number]) => (values ? (values.get(row.itemId) ?? 0) : row.quantity)
+  return rows.sort((a, b) => Number(a.fixed) - Number(b.fixed) || rank(b) - rank(a))
 }

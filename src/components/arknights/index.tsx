@@ -17,7 +17,7 @@ import { stagesPanel } from './StagePanel'
 import { TaskDisplay } from './TaskDisplay'
 import { ValueConfigMenu } from './ValueConfigMenu'
 import { extraFields } from './extraFields'
-import { modulePeekKind, skillPeekKind } from './peekKinds'
+import { modulePeekKind, skillPeekKind, stagePeekKind } from './peekKinds'
 import { useArknightsImportFormats } from './importFormats'
 import { renderCharacterAvatarBadge, renderCharacterStatus } from './renderCharacterStatus'
 import style from './style.css?inline'
@@ -55,5 +55,5 @@ export const ArknightsComponents: IGameComponent = {
   },
   sidebarPanels: [stagesPanel, moduleMissionsPanel, skinsPanel],
   dossierSections: [costSection, baseSkillsSection, skinsSection, moduleMissionsSection],
-  peekKinds: { skill: skillPeekKind, module: modulePeekKind },
+  peekKinds: { skill: skillPeekKind, module: modulePeekKind, stage: stagePeekKind },
 }

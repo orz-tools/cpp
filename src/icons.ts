@@ -11,6 +11,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
     new Map([
       [IconNames.ADD, Paths16.Add],
       [IconNames.ARROW_DOWN, Paths16.ArrowDown],
+      [IconNames.ARROW_RIGHT, Paths16.ArrowRight],
       [IconNames.ARROW_UP, Paths16.ArrowUp],
       [IconNames.BLANK, Paths16.Blank],
       [IconNames.BUILD, Paths16.Build],

@@ -1113,6 +1113,12 @@ p > .cpp-charstat-det-tag,
   padding: 1px 8px 1px 30px;
 }
 
+/* 从关卡卡跳过来框出的一行：行贴着滚动区域的两边，框往里收才不被切掉 */
+.cpp-stages-crow.cpp-framed,
+.cpp-stages-table tr.cpp-framed {
+  outline-offset: -2px;
+}
+
 .cpp-stages-crow > .cpp-stages-check.bp6-control.bp6-checkbox {
   min-width: 84px;
   max-width: 50%;

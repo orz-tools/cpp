@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ArknightsCharacterStatus } from '../../pkg/cpp-arknights/types'
-import { modCompare, skillCompare } from './peekCompare'
+import { modCompare, skillCompare, stageDropRows } from './peekCompare'
 
 const status = (s: Partial<ArknightsCharacterStatus>): ArknightsCharacterStatus => ({
   elite: 2,
@@ -89,5 +89,37 @@ describe('modCompare', () => {
       to: 2,
       planned: false,
     })
+  })
+})
+
+describe('stageDropRows', () => {
+  // 1-7: 固源岩 by samples, 龙门币 written in by hand
+  const stage = {
+    dropInfo: {
+      '30012': [1245, 1000],
+      '2001': [1240, 1000],
+      '30011': [119, 1000],
+      '4001': [72, null as unknown as number],
+    } as Record<string, [number, number]>,
+  }
+  const drops = (values: Record<string, number>) => ({
+    drops: Object.entries(values).map(([itemId, value]) => ({ itemId, quantity: 0, value })),
+  })
+
+  it('divides the drops by the samples and puts the hand-written drops last, fixed', () => {
+    const rows = stageDropRows(stage, undefined, false)
+    expect(rows.at(-1)).toEqual({ itemId: '4001', quantity: 72, fixed: true })
+    expect(rows[0]).toEqual({ itemId: '30012', quantity: 1.245, fixed: false })
+  })
+
+  it('orders by value when the values are worked out', () => {
+    const e = drops({ '30012': 2.1, '2001': 1.0, '30011': 2.6, '4001': 0.3 })
+    expect(stageDropRows(stage, e, true).map((x) => x.itemId)).toEqual(['30011', '30012', '2001', '4001'])
+  })
+
+  it('orders by quantity when the values failed, or there is no efficiency', () => {
+    const e = drops({ '30012': 2.1, '2001': 1.0, '30011': 2.6, '4001': 0.3 })
+    expect(stageDropRows(stage, e, false).map((x) => x.itemId)).toEqual(['30012', '2001', '30011', '4001'])
+    expect(stageDropRows(stage, undefined, true).map((x) => x.itemId)).toEqual(['30012', '2001', '30011', '4001'])
   })
 })

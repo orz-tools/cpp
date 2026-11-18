@@ -752,6 +752,15 @@ body {
   gap: 10px;
 }
 
+.cpp-peek-row > .bp6-control {
+  margin: 0;
+}
+
+/* 一行里这一项和它后面的靠右 */
+.cpp-peek-push {
+  margin-left: auto;
+}
+
 /* 物品卡的合成：和库存隔一条细线 */
 .cpp-peek-sec {
   margin: 10px -10px 0;

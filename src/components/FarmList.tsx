@@ -302,29 +302,37 @@ export const StageLine = memo(({ run }: { run: StageRun }) => {
 
   return (
     <>
-      <MenuItem
-        title={run.stageId}
-        text={
-          <>
-            <div>
-              <span style={{ float: 'right', display: 'inline-flex' }}>
-                <ValueTag value={run.apCost} minimal={true} intent={'primary'} />
-              </span>
-              <span style={{ display: 'inline-flex' }}>
-                <Tag>
-                  <code style={{ fontSize: '110%' }}>{run.stage.code}</code>
-                </Tag>
-                {`×${run.count}`}
-              </span>
-            </div>
-            <div style={{ marginTop: '0.5em' }}>
-              <span style={{ display: 'inline-flex' }}>
-                <ValueTag value={run.stage.ap} minimal={true} intent={'primary'} />
-                {Number.isFinite(samples) ? <SampleTag minimal sample={samples} /> : ''}
-              </span>
-            </div>
-          </>
-        }
+      <PeekTrigger
+        peek={{ kind: 'stage', id: run.stageId }}
+        renderTarget={(peek) => (
+          <MenuItem
+            {...peek}
+            className={peek ? peek.className : 'cpp-menu-not-interactive'}
+            tabIndex={peek ? 0 : -1}
+            title={run.stageId}
+            text={
+              <>
+                <div>
+                  <span style={{ float: 'right', display: 'inline-flex' }}>
+                    <ValueTag value={run.apCost} minimal={true} intent={'primary'} />
+                  </span>
+                  <span style={{ display: 'inline-flex' }}>
+                    <Tag>
+                      <code style={{ fontSize: '110%' }}>{run.stage.code}</code>
+                    </Tag>
+                    {`×${run.count}`}
+                  </span>
+                </div>
+                <div style={{ marginTop: '0.5em' }}>
+                  <span style={{ display: 'inline-flex' }}>
+                    <ValueTag value={run.stage.ap} minimal={true} intent={'primary'} />
+                    {Number.isFinite(samples) ? <SampleTag minimal sample={samples} /> : ''}
+                  </span>
+                </div>
+              </>
+            }
+          />
+        )}
       />
       {/* The plan's own stage: an event may have ended in the newer data, and the plan is redone only a second later */}
       {run.stage.sortedDropInfo.map(([k, v, z]) => {
