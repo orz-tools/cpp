@@ -145,3 +145,17 @@ describe('base skills', () => {
     expect(hasBaseSkills(s.raw.exBuilding)).toBe(true)
   })
 })
+
+describe('special operators', () => {
+  const s = snapshot('A')
+  const isSpecial = (raw: object) => new Character('char_test', raw as any, null, s).isSpecialOperator
+
+  it('are the ones with a mode to be trained in', () => {
+    expect(isSpecial({ spTargetType: 'ROGUE' })).toBe(true)
+    expect(isSpecial({ spTargetType: 'NONE' })).toBe(false)
+  })
+
+  it('read as none in data published before them', () => {
+    expect(isSpecial({})).toBe(false)
+  })
+})

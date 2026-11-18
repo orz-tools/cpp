@@ -493,6 +493,14 @@ export class Character implements ICharacter {
     return patch[1].position ?? 'NONE'
   }
 
+  /**
+   * 特殊干员（电弧、机械师）的等级、精英化、技能、专精、模组都靠集成战略的任务解锁，不花材料；
+   * 游戏数据给机械师列的材料并不消耗。数据 worker 发布 spTargetType 之前存下的数据里没有这一项
+   */
+  public get isSpecialOperator(): boolean {
+    return (this.raw.spTargetType ?? 'NONE') !== 'NONE'
+  }
+
   public get defaultSkinId(): string {
     return this.snapshot.raw.exSkin.buildinEvolveMap[this.key]?.['0'] || ''
   }
