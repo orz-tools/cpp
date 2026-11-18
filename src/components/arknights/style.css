@@ -2438,6 +2438,55 @@ section:first-child > .cpp-stages-wide-section {
   color: var(--bp-palette-gray-3, #8f99a8);
 }
 
+/* CharacterListColumn 写死了横排，两行要包在这一层里 */
+.cpp-voucher-cell {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.cpp-voucher-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cpp-voucher-bar {
+  display: flex;
+}
+
+.cpp-voucher-bar > span {
+  flex: none;
+}
+
+.cpp-voucher-bar > span:not(:last-child) {
+  border-radius: 2px 0 0 2px;
+}
+
+.cpp-voucher-bar > .cpp-voucher-used {
+  border-radius: 0 2px 2px 0;
+  background: rgba(45, 114, 210, 0.28);
+}
+
+.cpp-voucher-caption {
+  overflow: hidden;
+  padding-right: 4px;
+  font-size: 11px;
+  line-height: 13px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  text-align: right;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cpp-voucher-caption b {
+  font-weight: 600;
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
 /* 档案的「养成成本」一节 */
 .cpp-cost {
   font-variant-numeric: tabular-nums;
