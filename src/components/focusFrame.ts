@@ -39,31 +39,38 @@ function scrollToMiddle(el: HTMLElement, area: HTMLElement) {
   area.scrollTop += r.top - top - (area.clientHeight - r.height) / 2
 }
 
+/** 最近一次被接住的请求的 nonce：同一时间只框一项，框出新的一项时，之前框着的去掉框 */
+const framedNonceAtom = atom(0)
+
 /**
- * 元素对上请求时：滚到所在滚动区域的中间、返回 true，并把请求清掉；所在滚动区域有滚轮、触摸滑动或按键时变回 false。
- * 滚动用的是普通 effect：档案换干员、换页时先在 DossierTabs 的 layout effect 里把滚动归零，这里在它之后跑
+ * 元素对上请求时：滚到所在滚动区域的中间、返回 true，并把请求清掉；所在滚动区域有滚轮、触摸滑动或按键时，或者别处框出了
+ * 另一项时变回 false。滚动用的是普通 effect：档案换干员、换页时先在 DossierTabs 的 layout effect 里把滚动归零，这里在它之后跑
  */
 export function useFocusFrame(target: string, ref: RefObject<HTMLElement | null>): boolean {
   // 每个元素只订阅自己的 target，别的请求来了不重画
   const mineAtom = useMemo(() => selectAtom(focusFrameAtom, (r) => (r?.target === target ? r : null)), [target])
   const mine = useAtomValue(mineAtom)
   const setRequest = useSetAtom(focusFrameAtom)
-  const [framed, setFramed] = useState(false)
+  const [consumed, setConsumed] = useState<number | null>(null)
+  const framedAtom = useMemo(() => selectAtom(framedNonceAtom, (n) => consumed != null && n === consumed), [consumed])
+  const framed = useAtomValue(framedAtom)
+  const setFramedNonce = useSetAtom(framedNonceAtom)
 
   useEffect(() => {
     const el = ref.current
     if (!mine || !el) return
     setRequest((r) => (r === mine ? null : r))
-    setFramed(true)
+    setConsumed(mine.nonce)
+    setFramedNonce(mine.nonce)
     scrollToMiddle(el, scrollParent(el))
-  }, [mine, ref, setRequest])
+  }, [mine, ref, setRequest, setFramedNonce])
 
   // 用户自己滚动或按键以后，外框就去掉
   useEffect(() => {
     const el = ref.current
     if (!framed || !el) return
     const area = scrollParent(el)
-    const clear = () => setFramed(false)
+    const clear = () => setConsumed(null)
     area.addEventListener('wheel', clear, { passive: true })
     area.addEventListener('touchmove', clear, { passive: true })
     area.addEventListener('keydown', clear)
