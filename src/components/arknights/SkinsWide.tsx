@@ -239,9 +239,13 @@ const PeriodCards = memo(({ model, period, marking }: { model: SkinModel; period
   )
 })
 
-/** 左边的品牌格子：高度按件数，浅蓝底是已有的比例，橙色斜纹是缺但现在能拿的比例 */
+/**
+ * 左边的品牌格子：高度按件数，浅蓝底是已有的比例，橙色斜纹是缺但现在能拿的比例。
+ * 和右边按品牌排的墙一样，筛掉一件不剩的品牌不列，列出的仍按整个品牌计数
+ */
 const BrandSteps = memo(
   ({ model, period, onPick }: { model: SkinModel; period: SkinPeriod | null; onPick: (brandId: string) => void }) => {
+    const filter = useSkinFilter()
     const inPeriod = period ? new Set(period.skinIds) : null
     return (
       <div className="cpp-skins-steps">
@@ -250,6 +254,8 @@ const BrandSteps = memo(
           <span>{gt.pgettext('skins', '已有 / 全部')}</span>
         </div>
         {model.catalog.brands.map((brand) => {
+          const shown = brand.skins.filter((skin) => filter(model.states.get(skin.id)!))
+          if (shown.length === 0) return null
           let owned = 0
           let obtainable = 0
           for (const skin of brand.skins) {
@@ -259,7 +265,8 @@ const BrandSteps = memo(
           }
           const total = brand.skins.length
           const name = brand.name || gt.pgettext('skins', '其他')
-          const dim = inPeriod != null && !brand.skins.some((s) => inPeriod.has(s.id))
+          // 右边那一期的清单也筛过：筛剩的这几件都不在这一期时变暗
+          const dim = inPeriod != null && !shown.some((s) => inPeriod.has(s.id))
           return (
             <button
               key={brand.id}
