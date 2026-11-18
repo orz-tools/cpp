@@ -2,6 +2,7 @@ import {
   Alignment,
   Button,
   ButtonGroup,
+  Callout,
   Dialog,
   Icon,
   Menu,
@@ -18,10 +19,12 @@ import React, { SetStateAction, memo, useEffect, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { Level, useAtoms, useGameAdapter, useGameDataMemo } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
+import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { useChamber } from './Chamber'
 import { ItemIcon } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
+import { ItemCounterCells, itemCounterCells, itemCounterSlots } from './itemCounters'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
 const formatter = (q: number) => q.toFixed(0)
@@ -173,25 +176,61 @@ export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { 
   )
 })
 
+function levelAtoms<G extends IGame>(atoms: UserDataAtomHolder<G>['atoms'], level: Level) {
+  switch (level) {
+    case Level.Star:
+      return {
+        requirements: atoms.allStarredTaskRequirements,
+        indirects: atoms.allStarredIndirects,
+        indirectsDetails: atoms.allStarredIndirectsDetails,
+      }
+    case Level.Goal:
+      return {
+        requirements: atoms.allGoalTaskRequirements,
+        indirects: atoms.allGoalIndirects,
+        indirectsDetails: atoms.allGoalIndirectsDetails,
+      }
+    case Level.Finished:
+      return {
+        requirements: atoms.allFinishedTaskRequirements,
+        indirects: atoms.allFinishedIndirects,
+        indirectsDetails: atoms.allFinishedIndirectsDetails,
+      }
+  }
+}
+
 export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IItem }) => {
   const ga = useGameAdapter<G>()
   const formula = useGameDataMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
   const atoms = useAtoms<G>()
   const quantities = useAtomValue(atoms.itemQuantities)
   const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
-  const goal = useAtomValue(atoms.allGoalTaskRequirements)[item.key] || 0
-  const finished = useAtomValue(atoms.allFinishedTaskRequirements)[item.key] || 0
-  const goalIndirects = useAtomValue(atoms.allGoalIndirects)[item.key] || 0
-  const finishedIndirects = useAtomValue(atoms.allFinishedIndirects)[item.key] || 0
   const itemListParam = useAtomValue(itemListParamAtom)
+  const slots = itemCounterSlots(itemListParam.level)
+  const upper = levelAtoms(atoms, slots[0].level)
+  const lower = levelAtoms(atoms, slots[1].level)
+  const upperDirect = useAtomValue(upper.requirements)[item.key] || 0
+  const upperIndirect = useAtomValue(upper.indirects)[item.key] || 0
+  const lowerDirect = useAtomValue(lower.requirements)[item.key] || 0
+  const lowerIndirect = useAtomValue(lower.indirects)[item.key] || 0
   const forbiddenFormulaTags = useAtomValue(atoms.forbiddenFormulaTagsAtom)
 
   const synableReal = formula
     ? Math.max(0, Math.min(...formula.costs.map((x) => Math.floor((quantities[x.itemId] || 0) / x.quantity)))) *
       formula.quantity
     : 0
-  const canSyn = formula && intersection(forbiddenFormulaTags, formula.tags).length === 0
+  const canSyn = !!formula && intersection(forbiddenFormulaTags, formula.tags).length === 0
   const synable = canSyn ? synableReal : 0
+  const cells = [
+    itemCounterCells(upperDirect, upperIndirect, quantity, synableReal, canSyn),
+    itemCounterCells(lowerDirect, lowerIndirect, quantity, synableReal, canSyn),
+  ]
+  const rows = (cell: keyof ItemCounterCells) =>
+    slots.map((slot, i) => (
+      <div key={i} style={{ textAlign: 'right', opacity: slot.shown ? (cells[i][cell].strong ? 1 : 0.4) : 0 }}>
+        <span>{cells[i][cell].value}</span>
+      </div>
+    ))
 
   return (
     <>
@@ -200,32 +239,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
         style={{ width: '6em', visibility: !formula || synable === 0 ? 'hidden' : undefined }}
         data-label={gt.pgettext('item list counter label', '合成后')}
       >
-        <div
-          style={{
-            textAlign: 'right',
-            opacity:
-              itemListParam.level == null || itemListParam.level === Level.Goal
-                ? goal + goalIndirects - quantity - Math.min(synable, goal + goalIndirects) > 0
-                  ? 1
-                  : 0.4
-                : 0,
-          }}
-        >
-          <span>{goal + goalIndirects - quantity - Math.min(synable, goal + goalIndirects)}</span>
-        </div>
-        <div
-          style={{
-            textAlign: 'right',
-            opacity:
-              itemListParam.level == null || itemListParam.level === Level.Finished
-                ? finished + finishedIndirects - quantity - Math.min(synable, finished + finishedIndirects) > 0
-                  ? 1
-                  : 0.4
-                : 0,
-          }}
-        >
-          <span>{finished + finishedIndirects - quantity - Math.min(synable, finished + finishedIndirects)}</span>
-        </div>
+        {rows('afterSynthesis')}
       </div>
       <a
         role="menuitem"
@@ -247,32 +261,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
             style={{ width: '6em' }}
             data-label={gt.pgettext('item list counter label', '可合成')}
           >
-            <div
-              style={{
-                textAlign: 'right',
-                opacity:
-                  itemListParam.level == null || itemListParam.level === Level.Goal
-                    ? canSyn && Math.min(synableReal, goal + goalIndirects) > 0
-                      ? 1
-                      : 0.4
-                    : 0,
-              }}
-            >
-              <span>{Math.min(synableReal, goal + goalIndirects)}</span>
-            </div>
-            <div
-              style={{
-                textAlign: 'right',
-                opacity:
-                  itemListParam.level == null || itemListParam.level === Level.Finished
-                    ? canSyn && Math.min(synableReal, finished + finishedIndirects) > 0
-                      ? 1
-                      : 0.4
-                    : 0,
-              }}
-            >
-              <span>{Math.min(synableReal, finished + finishedIndirects)}</span>
-            </div>
+            {rows('synthesizable')}
           </div>
         </Popover>
       </a>
@@ -281,96 +270,21 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
         style={{ width: '6em' }}
         data-label={gt.pgettext('item list counter label', '还需')}
       >
-        <div
-          style={{
-            textAlign: 'right',
-            opacity:
-              itemListParam.level == null || itemListParam.level === Level.Goal
-                ? goal + goalIndirects - quantity > 0
-                  ? 1
-                  : 0.4
-                : 0,
-          }}
-        >
-          <span>{goal + goalIndirects - quantity}</span>
-        </div>
-        <div
-          style={{
-            textAlign: 'right',
-            opacity:
-              itemListParam.level == null || itemListParam.level === Level.Finished
-                ? finished + finishedIndirects - quantity > 0
-                  ? 1
-                  : 0.4
-                : 0,
-          }}
-        >
-          <span>{finished + finishedIndirects - quantity}</span>
-        </div>
+        {rows('remaining')}
       </div>
       <div
         className="cpp-goal-counter"
         style={{ width: '6em' }}
         data-label={gt.pgettext('item list counter label', '直接需求')}
       >
-        <div
-          style={{
-            textAlign: 'right',
-            opacity:
-              itemListParam.level == null || itemListParam.level === Level.Goal
-                ? goal > 0 && goal - quantity > 0
-                  ? 1
-                  : 0.4
-                : 0,
-          }}
-        >
-          <span>{goal}</span>
-        </div>
-        <div
-          style={{
-            textAlign: 'right',
-            opacity:
-              itemListParam.level == null || itemListParam.level === Level.Finished
-                ? finished > 0 && finished - quantity > 0
-                  ? 1
-                  : 0.4
-                : 0,
-          }}
-        >
-          <span>{finished}</span>
-        </div>
+        {rows('direct')}
       </div>
       <div
         className="cpp-goal-counter"
         style={{ width: '6em' }}
         data-label={gt.pgettext('item list counter label', '间接需求')}
       >
-        <div
-          style={{
-            textAlign: 'right',
-            opacity:
-              itemListParam.level == null || itemListParam.level === Level.Goal
-                ? goalIndirects > 0 && goal + goalIndirects - quantity > 0
-                  ? 1
-                  : 0.4
-                : 0,
-          }}
-        >
-          <span>{goalIndirects}</span>
-        </div>
-        <div
-          style={{
-            textAlign: 'right',
-            opacity:
-              itemListParam.level == null || itemListParam.level === Level.Finished
-                ? finishedIndirects > 0 && finished + finishedIndirects - quantity > 0
-                  ? 1
-                  : 0.4
-                : 0,
-          }}
-        >
-          <span>{finishedIndirects}</span>
-        </div>
+        {rows('indirect')}
       </div>
     </>
   )
@@ -436,24 +350,13 @@ const AllValue = memo(<G extends IGame>() => {
   return <ValueTag value={valid ? a : null} minimal={true} />
 })
 
-const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level; disabled?: boolean }) => {
+const AllGoalValue = memo(<G extends IGame>({ level }: { level: Level }) => {
   const ga = useGameAdapter<G>()
   const atoms = useAtoms<G>()
   const quantites = useAtomValue(atoms.itemQuantities)
-  const allGoals = useAtomValue(
-    {
-      [Level.Finished]: atoms.allFinishedTaskRequirements,
-      [Level.Goal]: atoms.allGoalTaskRequirements,
-      [Level.Star]: atoms.allStarredTaskRequirements,
-    }[level],
-  )
-  const allGoalsIndirectsDetails = useAtomValue(
-    {
-      [Level.Finished]: atoms.allFinishedIndirectsDetails,
-      [Level.Goal]: atoms.allGoalIndirectsDetails,
-      [Level.Star]: atoms.allStarredIndirectsDetails,
-    }[level],
-  )
+  const levelAtom = levelAtoms(atoms, level)
+  const allGoals = useAtomValue(levelAtom.requirements)
+  const allGoalsIndirectsDetails = useAtomValue(levelAtom.indirectsDetails)
   const [param, setParam] = useAtom(itemListParamAtom)
 
   const data = uniq([...Object.keys(allGoals), ...Object.keys(allGoalsIndirectsDetails.indirects)]).map((k) => {
@@ -474,7 +377,6 @@ const AllGoalValue = memo(<G extends IGame>({ level, disabled }: { level: Level;
   return (
     <Button
       variant="minimal"
-      disabled={disabled}
       text={
         {
           [Level.Finished]: gt.pgettext('item list view label', '毕业'),
@@ -554,18 +456,30 @@ export const SyncButton = memo(() => {
   )
 })
 
+const NoStarsCallout = memo(<G extends IGame>() => {
+  const param = useAtomValue(itemListParamAtom)
+  const atoms = useAtoms<G>()
+  const starredTasks = useAtomValue(atoms.allStarredTasks)
+  if (param.level !== Level.Star || starredTasks.length > 0) return null
+
+  return (
+    <Callout intent="primary" icon="star" compact style={{ borderRadius: 0, flexShrink: 0 }}>
+      {gt.gettext(
+        '还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出它和它前置任务要用的材料。',
+      )}
+    </Callout>
+  )
+})
+
 export const ItemList = memo(<G extends IGame>() => {
   const param = useAtomValue(itemListParamAtom)
   const ga = useGameAdapter<G>()
   const itemGroups = useGameDataMemo(() => buildItemList(ga), [ga])
   const atoms = useAtoms<G>()
   const store = useStore()
-  const stars = useAtomValue(atoms.allStarredTaskRequirements)
-  const goals = useAtomValue(atoms.allGoalTaskRequirements)
-  const finished = useAtomValue(atoms.allFinishedTaskRequirements)
-  const starIndirects = useAtomValue(atoms.allStarredIndirects)
-  const goalIndirects = useAtomValue(atoms.allGoalIndirects)
-  const finishedIndirects = useAtomValue(atoms.allFinishedIndirects)
+  const filterAtoms = levelAtoms(atoms, param.level ?? Level.Finished)
+  const requirements = useAtomValue(filterAtoms.requirements)
+  const indirects = useAtomValue(filterAtoms.indirects)
   const categoryNames = ga.getInventoryCategories()
 
   return (
@@ -586,23 +500,18 @@ export const ItemList = memo(<G extends IGame>() => {
         </Navbar.Group>
       </Navbar>
       <Navbar style={{ height: 'auto', marginTop: '1px', padding: 0 }}>
-        <AllGoalValue level={Level.Star} disabled />
+        <AllGoalValue level={Level.Star} />
         <AllGoalValue level={Level.Goal} />
         <AllGoalValue level={Level.Finished} />
       </Navbar>
+      <NoStarsCallout />
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} className="cpp-item-menu-master">
         {itemGroups.map(([key, allItems]) => {
-          const items = allItems!.filter((x) => {
-            if (!param.hideCompleted) return true
-            switch (param.level) {
-              case Level.Star:
-                return store.get(atoms.itemQuantity(x.key)) < (stars[x.key] || 0) + (starIndirects[x.key] || 0)
-              case Level.Goal:
-                return store.get(atoms.itemQuantity(x.key)) < (goals[x.key] || 0) + (goalIndirects[x.key] || 0)
-              default:
-                return store.get(atoms.itemQuantity(x.key)) < (finished[x.key] || 0) + (finishedIndirects[x.key] || 0)
-            }
-          })
+          const items = allItems!.filter(
+            (x) =>
+              !param.hideCompleted ||
+              store.get(atoms.itemQuantity(x.key)) < (requirements[x.key] || 0) + (indirects[x.key] || 0),
+          )
           if (!items.length) return null
 
           return (
