@@ -4253,8 +4253,16 @@ section:first-child > .cpp-stages-wide-section {
   color: var(--bp-palette-dark-gray-1, #1c2127);
 }
 
+/* 每组一张网格，行用 subgrid 跟着它分列：目标列按这一组最长的（「技能 7 级」「Skill Level 7」）对齐 */
 .cpp-so-group {
+  display: grid;
+  grid-template-columns: max-content minmax(72px, max-content) minmax(0, 1fr) auto;
+  column-gap: 6px;
   margin-bottom: 14px;
+}
+
+.cpp-so-group > * {
+  grid-column: 1 / -1;
 }
 
 .cpp-so-title {
@@ -4286,23 +4294,28 @@ section:first-child > .cpp-stages-wide-section {
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
-/* 状态图标 / 目标 / 文字；目标列给到最长的「技能 7 级」，各行才对得齐 */
+/* 状态图标 / 目标 / 文字（经验行多一列数）。不认 subgrid 的浏览器用前一行，各行自己分列 */
 .cpp-so-row,
 .cpp-so-exp {
   display: grid;
-  grid-template-columns: 16px minmax(72px, max-content) minmax(0, 1fr);
-  gap: 6px;
+  grid-template-columns: 16px minmax(72px, max-content) minmax(0, 1fr) auto;
+  grid-template-columns: subgrid;
+  column-gap: 6px;
   align-items: start;
   padding: 4px;
   border-radius: 3px;
 }
 
+.cpp-so-row > .cpp-so-text {
+  grid-column: 3 / -1;
+}
+
 .cpp-so-exp {
-  grid-template-columns: 16px minmax(72px, max-content) minmax(0, 1fr) auto;
   padding: 3px 4px;
 }
 
 .cpp-so-st {
+  width: 16px;
   height: 18px;
   display: flex;
   align-items: center;
