@@ -17,6 +17,8 @@ export interface MaaOperProgressExport {
   partial: number
   // 整个没有导出的干员：尚未持有，或是 MAA 屏蔽的阿米娅
   excluded: number
+  // 特殊干员的养成靠集成战略的任务，MAA 做不了，整个没有导出
+  special: number
 }
 
 // MAA 的 OperatorRole 枚举名，GUI 用区分大小写的 Enum.TryParse 解析
@@ -31,7 +33,7 @@ const roles: Partial<Record<Profession, string>> = {
   [Profession.SPECIAL]: 'Special',
 }
 
-export type MaaOperProgressCharacter = Pick<Character, 'key' | 'hasPatches'> & {
+export type MaaOperProgressCharacter = Pick<Character, 'key' | 'hasPatches' | 'isSpecialOperator'> & {
   raw: Pick<Character['raw'], 'name' | 'profession'>
   skills: readonly Pick<Character['skills'][number], 'skillId' | 'rawCharId' | 'charSkillIndex'>[]
 }
@@ -42,12 +44,16 @@ export function buildMaaOperProgressPlans(
   goal: Record<string, ArknightsCharacterStatus | undefined>,
   getCharacter: (key: string) => MaaOperProgressCharacter | undefined,
 ): MaaOperProgressExport {
-  const result: MaaOperProgressExport = { plans: [], partial: 0, excluded: 0 }
+  const result: MaaOperProgressExport = { plans: [], partial: 0, excluded: 0, special: 0 }
 
   for (const key of goalOrder) {
     const g = goal[key]
     const character = getCharacter(key)
     if (!g || !character) continue
+    if (character.isSpecialOperator) {
+      result.special++
+      continue
+    }
     const c = current[key]
 
     const role = roles[character.raw.profession as Profession]

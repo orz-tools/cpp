@@ -272,7 +272,11 @@ export const extraFields: IGameComponent['extraFields'] = {
     percentageFormatter,
     percentageStyle,
   ),
-  'cost.elite2': createCostField('cost.elite2', (tc, c, current) => tc.elite2Saving(c, current)?.value ?? null),
+  'cost.elite2': createCostField('cost.elite2', (tc, c, current) => {
+    const saving = tc.elite2Saving(c, current)
+    if (!saving) return null
+    return saving.items.size === 0 ? 0 : saving.value
+  }),
   'cost.invested': createCostField('cost.invested', (tc, c, current) => tc.invested(c, current)?.value ?? null),
   'skill.cost.mastery3': createCostField('skill.cost.mastery3', (tc, c, current, [index]) => {
     const saving = tc.mastery3Saving(c, current, index)

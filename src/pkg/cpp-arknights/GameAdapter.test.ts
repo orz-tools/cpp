@@ -307,4 +307,61 @@ describe('ArknightsAdapter', () => {
       }
     })
   })
+
+  describe('elite 2 voucher rows', () => {
+    const operator = (name: string, spTargetType: string) => ({
+      name,
+      appellation: name,
+      displayNumber: name,
+      rarity: 'TIER_6',
+      profession: 'TANK',
+      position: 'MELEE',
+      spTargetType,
+      skills: [],
+      allSkillLvlup: [],
+      phases: [
+        { maxLevel: 50, evolveCost: null },
+        { maxLevel: 80, evolveCost: [{ id: '30011', count: 5, type: 'MATERIAL' }] },
+        { maxLevel: 90, evolveCost: [{ id: '30012', count: 4, type: 'MATERIAL' }] },
+      ],
+    })
+
+    beforeEach(() => {
+      const k = remote.get('arknights-kengxxiao-zh_CN') as any
+      // 机械师 has its elite phase materials in the game data, which are never paid
+      k.exCharacters.char_4230_mcnist = operator('机械师', 'ROGUE')
+      k.exCharacters.char_test_tank = operator('重装', 'NONE')
+    })
+
+    it('leave out a special operator, whose elite 2 is worth 0', async () => {
+      const ga = new ArknightsAdapter()
+      await ga.getDataManager().init('zh_CN')
+      const current = { ...ga.getUserDataAdapter().getFrozenEmptyCharacterStatus(), elite: 1, level: 1 }
+      const run = (param: QueryParam) => {
+        const querier = new Querier<Arknights, any>(ga.getRootCharacterQuery(), param)
+        querier.execute(
+          (function* () {
+            for (const key of ['char_4230_mcnist', 'char_test_tank']) {
+              yield { character: ga.getCharacter(key), current, goal: undefined }
+            }
+          })(),
+        )
+        return querier
+      }
+      const all = run({})
+      const value = (key: string) =>
+        all.getFieldValue(
+          'cost.elite2',
+          all.result.find((x) => x.character.key === key)!,
+        )
+      expect(value('char_4230_mcnist')).toBe(0)
+      expect(value('char_test_tank')).not.toBe(0)
+
+      const presets = ga.getPredefinedQueries()
+      expect(run(presets['cost.elite2.all'].query).result.map((x) => x.character.key)).toEqual(['char_test_tank'])
+      // The default segment also asks for `own`, a field of the shell's, so it is only checked to drop the zeros too
+      const where = { _: 'field' as const, field: 'cost.elite2', op: '!=', operand: 0 }
+      expect(presets['cost.elite2'].query.where).toMatchObject({ operand: expect.arrayContaining([where]) })
+    })
+  })
 })

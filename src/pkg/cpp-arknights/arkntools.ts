@@ -271,6 +271,8 @@ export interface ArkntoolsExport {
   partial: number
   // arkntools 没有养成数据的一、二星干员，整个没有导出
   excluded: number
+  // 特殊干员在集成战略里养成，不消耗材料，整个没有导出
+  special: number
 }
 
 export function buildArkntoolsBackup(
@@ -281,7 +283,9 @@ export function buildArkntoolsBackup(
     items: Record<string, number>
   },
   empty: ArknightsCharacterStatus,
-  getCharacter: (key: string) => (ArkntoolsCharacter & { charIds: readonly string[] }) | undefined,
+  getCharacter: (
+    key: string,
+  ) => (ArkntoolsCharacter & { charIds: readonly string[]; isSpecialOperator: boolean }) | undefined,
   // 一名干员从 current 到 goal 的材料需求，arkntools 恢复时不重算，直接显示备份里的需求数
   getRequirements: (
     key: string,
@@ -294,6 +298,7 @@ export function buildArkntoolsBackup(
   const need: Record<string, number> = {}
   let partial = 0
   let excluded = 0
+  let special = 0
 
   for (const key of data.goalOrder) {
     const g = data.goal[key]
@@ -301,6 +306,10 @@ export function buildArkntoolsBackup(
     if (!g || !character) continue
     if (character.rarity < 2) {
       excluded++
+      continue
+    }
+    if (character.isSpecialOperator) {
+      special++
       continue
     }
     const c = data.current[key] || empty
@@ -352,6 +361,7 @@ export function buildArkntoolsBackup(
     presets: presets.length,
     partial,
     excluded,
+    special,
   }
 }
 

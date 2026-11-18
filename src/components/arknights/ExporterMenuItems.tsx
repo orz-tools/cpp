@@ -19,7 +19,7 @@ export const ExporterMenuItems = memo(() => {
 
   const copyMaaPlan = useEvent(async () => {
     const data = store.get(atoms.allDataAtom)
-    const { plans, partial, excluded } = buildMaaOperProgressPlans(
+    const { plans, partial, excluded, special } = buildMaaOperProgressPlans(
       data.goalOrder,
       data.current,
       data.goal,
@@ -70,6 +70,17 @@ export const ExporterMenuItems = memo(() => {
           .replaceAll('%d', String(excluded)),
       )
     }
+    if (special > 0) {
+      notes.push(
+        gt
+          .ngettext(
+            '%d 名特殊干员靠集成战略的任务养成，MAA 不能执行，没有导出。',
+            '%d 名特殊干员靠集成战略的任务养成，MAA 不能执行，没有导出。',
+            special,
+          ) /* I10N: %d: number */
+          .replaceAll('%d', String(special)),
+      )
+    }
     toaster.show({
       icon: notes.length > 1 ? 'warning-sign' : 'tick',
       intent: notes.length > 1 ? 'warning' : 'success',
@@ -83,7 +94,7 @@ export const ExporterMenuItems = memo(() => {
     const aga = ga as ArknightsAdapter
     const uda = aga.getUserDataAdapter()
     const stageCodes = Object.fromEntries(Object.values(aga.getStageInfos()).map((x) => [x.id, x.rawCode] as const))
-    const { backup, presets, partial, excluded } = buildArkntoolsBackup(
+    const { backup, presets, partial, excluded, special } = buildArkntoolsBackup(
       store.get(atoms.allDataAtom),
       uda.getFrozenEmptyCharacterStatus(),
       (key) => aga.getCharacter(key) as Character | undefined,
@@ -128,6 +139,17 @@ export const ExporterMenuItems = memo(() => {
             excluded,
           ) /* I10N: %d: number */
           .replaceAll('%d', String(excluded)),
+      )
+    }
+    if (special > 0) {
+      notes.push(
+        gt
+          .ngettext(
+            '%d 名特殊干员靠集成战略的任务养成，不消耗材料，没有导出。',
+            '%d 名特殊干员靠集成战略的任务养成，不消耗材料，没有导出。',
+            special,
+          ) /* I10N: %d: number */
+          .replaceAll('%d', String(special)),
       )
     }
     toaster.show({

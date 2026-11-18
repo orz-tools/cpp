@@ -382,7 +382,12 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       'cost.elite2',
       lpstr(() => gt.pgettext('query field', '精二直升价值')),
       QNumber,
-      ({ character, current }) => this.getTrainingCost().elite2Saving(character, current)?.value ?? NaN,
+      ({ character, current }) => {
+        const saving = this.getTrainingCost().elite2Saving(character, current)
+        if (!saving) return NaN
+        // Like 专三价值: a special operator's elite phases cost nothing, and the presets drop it with `!= 0`
+        return saving.items.size === 0 ? 0 : saving.value
+      },
     )
 
     aa.addField(
@@ -612,7 +617,8 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       ['rarity', 'DESC'],
       ['skill.cost.mastery3', 'DESC'],
     ]
-    const costsMaterials: Assertion = { _: 'field', field: 'skill.cost.mastery3', op: '!=', operand: 0 }
+    const elite2CostsMaterials: Assertion = { _: 'field', field: 'cost.elite2', op: '!=', operand: 0 }
+    const mastery3CostsMaterials: Assertion = { _: 'field', field: 'skill.cost.mastery3', op: '!=', operand: 0 }
 
     const presets: Record<string, PredefinedQuery> = {
       'skill.mastery3rate.yituliu': {
@@ -826,6 +832,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
               voucherRarity,
               { _: '||', operand: [own, { _: 'field', field: 'goal.elite', op: '==', operand: 2 }] },
               { _: 'field', field: 'elite', op: '<', operand: 2 },
+              elite2CostsMaterials,
             ],
           },
           order: elite2Order,
@@ -836,7 +843,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         group: 'cost',
         query: {
           select: ['cost.elite2'],
-          where: voucherRarity,
+          where: { _: '&&', operand: [voucherRarity, elite2CostsMaterials] },
           order: elite2Order,
         },
       },
@@ -859,7 +866,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
               voucherRarity,
               { _: '||', operand: [own, { _: 'field', field: 'skill.goal.mastery', op: '==', operand: 3 }] },
               { _: 'field', field: 'skill.mastery', op: '<', operand: 3 },
-              costsMaterials,
+              mastery3CostsMaterials,
             ],
           },
           order: mastery3Order,
@@ -871,7 +878,7 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         query: {
           select: ['skill.cost.mastery3'],
           join: 'skill',
-          where: { _: '&&', operand: [voucherRarity, costsMaterials] },
+          where: { _: '&&', operand: [voucherRarity, mastery3CostsMaterials] },
           order: mastery3Order,
         },
       },

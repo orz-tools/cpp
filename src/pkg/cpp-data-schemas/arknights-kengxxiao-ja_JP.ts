@@ -9,6 +9,7 @@ export type CppData_ArknightsKengxxiaoJaJp = {
             profession: "CASTER" | "MEDIC" | "PIONEER" | "SNIPER" | "SPECIAL" | "SUPPORT" | "TANK" | "WARRIOR" | "TRAP" | "TOKEN";
             position: "MELEE" | "RANGED" | "ALL" | "NONE";
             rarity: "TIER_1" | "TIER_2" | "TIER_3" | "TIER_4" | "TIER_5" | "TIER_6";
+            spTargetType: string;
             skills: {
                 skillId: string | null;
                 levelUpCostCond?: {
@@ -61,6 +62,7 @@ export type CppData_ArknightsKengxxiaoJaJp = {
                 profession: "CASTER" | "MEDIC" | "PIONEER" | "SNIPER" | "SPECIAL" | "SUPPORT" | "TANK" | "WARRIOR" | "TRAP" | "TOKEN";
                 position: "MELEE" | "RANGED" | "ALL" | "NONE";
                 rarity: "TIER_1" | "TIER_2" | "TIER_3" | "TIER_4" | "TIER_5" | "TIER_6";
+                spTargetType: string;
                 skills: {
                     skillId: string | null;
                     levelUpCostCond?: {

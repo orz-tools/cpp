@@ -419,4 +419,6 @@ export const costSection: DossierSection = {
   id: 'cost',
   title: lpstr(() => gt.pgettext('dossier section', '养成成本')),
   Body: CostSectionBody,
+  // 特殊干员的每一格都是 0
+  isAvailable: (_ga, character) => !(character as Character).isSpecialOperator,
 }
