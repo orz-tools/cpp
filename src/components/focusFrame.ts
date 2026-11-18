@@ -32,11 +32,22 @@ export function scrollParent(el: HTMLElement): HTMLElement {
   return (document.scrollingElement ?? document.documentElement) as HTMLElement
 }
 
+/**
+ * el 的上边离 area 的上边多远、el 多高，按布局上的像素。从另一个大窗口里打开的大窗口，挂载时还在从半大放大，
+ * getBoundingClientRect 量到的距离跟着缩小，直接拿去滚只滚到一半
+ */
+export function measureIn(el: HTMLElement, area: HTMLElement): { top: number; height: number } {
+  const r = el.getBoundingClientRect()
+  if (area === document.scrollingElement) return { top: r.top, height: r.height }
+  const box = area.getBoundingClientRect()
+  const scale = box.height / area.offsetHeight || 1
+  return { top: (r.top - box.top) / scale, height: r.height / scale }
+}
+
 /** 只滚这一层：scrollIntoView 还会滚动外面的祖先，档案滑进来时连抽屉一起挪 */
 function scrollToMiddle(el: HTMLElement, area: HTMLElement) {
-  const top = area === document.scrollingElement ? 0 : area.getBoundingClientRect().top
-  const r = el.getBoundingClientRect()
-  area.scrollTop += r.top - top - (area.clientHeight - r.height) / 2
+  const { top, height } = measureIn(el, area)
+  area.scrollTop += top - (area.clientHeight - height) / 2
 }
 
 /** 最近一次被接住的请求的 nonce：同一时间只框一项，框出新的一项时，之前框着的去掉框 */
