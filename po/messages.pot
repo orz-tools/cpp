@@ -199,7 +199,7 @@ msgid "到旧版去"
 msgstr ""
 
 #. %d: number
-#: src/components/ItemList.tsx:151
+#: src/components/ItemList.tsx:154
 msgid "制作 %d 次所需"
 msgid_plural "制作 %d 次所需"
 msgstr[0] ""
@@ -441,11 +441,11 @@ msgstr ""
 msgid "当前状态"
 msgstr ""
 
-#: src/components/ItemList.tsx:105
+#: src/components/ItemList.tsx:108
 msgid "心情"
 msgstr ""
 
-#: src/components/ItemList.tsx:580
+#: src/components/ItemList.tsx:494
 msgid "总价值"
 msgstr ""
 
@@ -470,7 +470,7 @@ msgstr ""
 msgid "按关卡代号或名称筛选"
 msgstr ""
 
-#: src/components/ItemList.tsx:549
+#: src/components/ItemList.tsx:451
 msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
@@ -785,6 +785,10 @@ msgid "还剩 %d 次作战"
 msgid_plural "还剩 %d 次作战"
 msgstr[0] ""
 msgstr[1] ""
+
+#: src/components/ItemList.tsx:467
+msgid "还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出它和它前置任务要用的材料。"
+msgstr ""
 
 #: src/components/arknights/ModuleMissionPanel.tsx:315
 #: src/components/arknights/ModuleMissionPanel.tsx:897
@@ -2522,45 +2526,45 @@ msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr ""
 
-#: src/components/ItemList.tsx:248
+#: src/components/ItemList.tsx:262
 msgctxt "item list counter label"
 msgid "可合成"
 msgstr ""
 
-#: src/components/ItemList.tsx:201
+#: src/components/ItemList.tsx:240
 msgctxt "item list counter label"
 msgid "合成后"
 msgstr ""
 
-#: src/components/ItemList.tsx:314
+#: src/components/ItemList.tsx:278
 msgctxt "item list counter label"
 msgid "直接需求"
 msgstr ""
 
-#: src/components/ItemList.tsx:282
+#: src/components/ItemList.tsx:271
 msgctxt "item list counter label"
 msgid "还需"
 msgstr ""
 
-#: src/components/ItemList.tsx:346
+#: src/components/ItemList.tsx:285
 msgctxt "item list counter label"
 msgid "间接需求"
 msgstr ""
 
 #: src/components/arknights/stagePanelModel.ts:218
-#: src/components/ItemList.tsx:482
+#: src/components/ItemList.tsx:384
 msgctxt "item list view label"
 msgid "星标"
 msgstr ""
 
 #: src/components/arknights/stagePanelModel.ts:222
-#: src/components/ItemList.tsx:480
+#: src/components/ItemList.tsx:382
 msgctxt "item list view label"
 msgid "毕业"
 msgstr ""
 
 #: src/components/arknights/stagePanelModel.ts:220
-#: src/components/ItemList.tsx:481
+#: src/components/ItemList.tsx:383
 msgctxt "item list view label"
 msgid "计划"
 msgstr ""

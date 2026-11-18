@@ -241,7 +241,7 @@ msgid "到旧版去"
 msgstr "Head to the old version"
 
 #. %d: number
-#: src/components/ItemList.tsx:151
+#: src/components/ItemList.tsx:154
 msgid "制作 %d 次所需"
 msgid_plural "制作 %d 次所需"
 msgstr[0] "Ingredients for Synthesizing Once"
@@ -522,11 +522,11 @@ msgstr "Mark as Completed (without consuming items)"
 msgid "当前状态"
 msgstr "Current"
 
-#: src/components/ItemList.tsx:105
+#: src/components/ItemList.tsx:108
 msgid "心情"
 msgstr "Morale"
 
-#: src/components/ItemList.tsx:580
+#: src/components/ItemList.tsx:494
 msgid "总价值"
 msgstr "Total Value"
 
@@ -551,7 +551,7 @@ msgstr "Own"
 msgid "按关卡代号或名称筛选"
 msgstr "Filter by stage code or name"
 
-#: src/components/ItemList.tsx:549
+#: src/components/ItemList.tsx:451
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
@@ -932,6 +932,15 @@ msgid "还剩 %d 次作战"
 msgid_plural "还剩 %d 次作战"
 msgstr[0] "%d run left"
 msgstr[1] "%d runs left"
+
+#: src/components/ItemList.tsx:467
+msgid ""
+"还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出"
+"它和它前置任务要用的材料。"
+msgstr ""
+"No starred tasks yet. Right-click a task in the task list and choose "
+"«Prioritize (mark as starred)»; the materials it and the tasks it depends on "
+"need will be listed here."
 
 #: src/components/arknights/ModuleMissionPanel.tsx:315
 #: src/components/arknights/ModuleMissionPanel.tsx:897
@@ -2689,45 +2698,45 @@ msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr "Import Result · %s"
 
-#: src/components/ItemList.tsx:248
+#: src/components/ItemList.tsx:262
 msgctxt "item list counter label"
 msgid "可合成"
 msgstr "Syn.-able"
 
-#: src/components/ItemList.tsx:201
+#: src/components/ItemList.tsx:240
 msgctxt "item list counter label"
 msgid "合成后"
 msgstr "Post Syn."
 
-#: src/components/ItemList.tsx:314
+#: src/components/ItemList.tsx:278
 msgctxt "item list counter label"
 msgid "直接需求"
 msgstr "Direct"
 
-#: src/components/ItemList.tsx:282
+#: src/components/ItemList.tsx:271
 msgctxt "item list counter label"
 msgid "还需"
 msgstr "Gap"
 
-#: src/components/ItemList.tsx:346
+#: src/components/ItemList.tsx:285
 msgctxt "item list counter label"
 msgid "间接需求"
 msgstr "Indirect"
 
 #: src/components/arknights/stagePanelModel.ts:218
-#: src/components/ItemList.tsx:482
+#: src/components/ItemList.tsx:384
 msgctxt "item list view label"
 msgid "星标"
 msgstr "Starred"
 
 #: src/components/arknights/stagePanelModel.ts:222
-#: src/components/ItemList.tsx:480
+#: src/components/ItemList.tsx:382
 msgctxt "item list view label"
 msgid "毕业"
 msgstr "Maxed"
 
 #: src/components/arknights/stagePanelModel.ts:220
-#: src/components/ItemList.tsx:481
+#: src/components/ItemList.tsx:383
 msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
@@ -5365,6 +5374,7 @@ msgstr "Heybox"
 #~ msgstr ""
 #~ "One group per material, best first. Click a material to see all its "
 #~ "stages."
+
 #~ msgctxt "skins"
 #~ msgid "能拿 %d"
 #~ msgstr "%d to get"
