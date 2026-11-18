@@ -946,6 +946,10 @@ p > .cpp-charstat-det-tag,
   margin-bottom: 2px;
 }
 
+.cpp-charstat-term-tip > div + div {
+  margin-top: 4px;
+}
+
 /* 关卡 sidebar panel */
 
 .cpp-stages-body {
@@ -2705,6 +2709,26 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-cost-vouchers .cpp-cost-vouchers-saving {
   text-align: right;
+  white-space: nowrap;
+}
+
+.cpp-cost-vouchers .cpp-cost-vouchers-eff {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 只给格子：列头照旧是 thead th 的 11px */
+.cpp-cost-vouchers td.cpp-cost-vouchers-eff {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cpp-cost-vouchers-most {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 13px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
   white-space: nowrap;
 }
 
