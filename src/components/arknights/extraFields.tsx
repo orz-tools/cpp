@@ -1,6 +1,7 @@
 import { Classes } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
 import React, { memo } from 'react'
+import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter, ArknightsCharacterStatus, Character } from '../../pkg/cpp-arknights'
 import { BaseSkillState, baseSkillState, reached, unlockCost, unlockFrom } from '../../pkg/cpp-arknights/baseSkills'
@@ -11,6 +12,8 @@ import { FieldContext, Querier } from '../../pkg/cpp-basic'
 import { gt } from '../../pkg/gt'
 import { CharacterListColumn, createSimpleExtraField, percentageColumnWidth } from '../CharacterList'
 import { CachedImg } from '../Icons'
+import { useShowCharacterDossier } from '../dossierHooks'
+import { useRequestFrame } from '../focusFrame'
 import { PeekTrigger } from '../Peek'
 import { ValueTag } from '../Value'
 import { IGameComponent } from '../types'
@@ -124,6 +127,14 @@ const Skeleton = () => (
 const BaseSkillCell = memo(({ context, width }: { context: BaseSkillContext; width: number }) => {
   const { ga, skill, state, owned } = useBaseSkillRow(context)
   const [loaded] = useDetails(ga.getDataManager())
+  const showDossier = useShowCharacterDossier()
+  const frame = useRequestFrame()
+  // 档案「基建技能」页按技能位排着每一条，比卡片能放的多：打开到那一页，框出这一条
+  const onClick = useEvent(() => {
+    if (!skill) return
+    showDossier(context.character.key, { section: 'baseSkills' })
+    frame(`baseSkill:${context.character.key}:${skill.buff.id}`)
+  })
   if (!skill) return <CharacterListColumn width={width} />
   const { buff } = skill
 
@@ -148,7 +159,14 @@ const BaseSkillCell = memo(({ context, width }: { context: BaseSkillContext; wid
   }
 
   return (
-    <CharacterListColumn width={width} className="cpp-bskill-cell">
+    <CharacterListColumn
+      width={width}
+      className="cpp-bskill-cell"
+      onClick={onClick}
+      aria-label={gt
+        .pgettext('arknights base skill', '在档案里看 %s') /* I10N: %s: base skill name */
+        .replaceAll('%s', buff.name)}
+    >
       <CachedImg src={buff.icon} width={28} height={28} className="cpp-bskill-icon" alt="" />
       <div className="cpp-bskill-text" title={title}>
         <span className="cpp-bskill-name">{buff.name}</span>

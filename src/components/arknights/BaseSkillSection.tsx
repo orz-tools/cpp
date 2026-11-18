@@ -18,6 +18,7 @@ import { parseRichText } from '../../pkg/cpp-arknights/richText'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { CachedImg } from '../Icons'
+import { useFocusFrame } from '../focusFrame'
 import { ValueTag } from '../Value'
 import { DossierSection } from '../types'
 import { BaseSkillEffect } from './BaseSkillEffect'
@@ -232,37 +233,60 @@ function textOf(loaded: LoadedDetails, buffId: string): { text: React.ReactNode;
   return { text: <RichText segments={parseRichText(detail.text)} details={loaded.details} />, details: loaded.details }
 }
 
-const SkillCard = memo(({ placed, roomName, loaded }: { placed: Placed; roomName: string; loaded: LoadedDetails }) => {
-  const { skill, state, owned } = placed
-  const have = isHave(state)
-  const { text, details } = textOf(loaded, skill.buff.id)
-  const detail = details ? getBuildingBuffDetail(details, skill.buff.id) : null
-  return (
-    <div className={'cpp-bskill-card' + (have ? '' : ' is-locked') + (state === 'replaced' ? ' is-replaced' : '')}>
-      <div className="cpp-bskill-card-head">
-        <SkillIcon placed={placed} size={36} />
-        <div className="cpp-bskill-card-title">
-          <div className="cpp-bskill-card-name">{skill.buff.name}</div>
-          <div className="cpp-bskill-card-room">{roomName}</div>
+const SkillCard = memo(
+  ({
+    charId,
+    placed,
+    roomName,
+    loaded,
+  }: {
+    charId: string
+    placed: Placed
+    roomName: string
+    loaded: LoadedDetails
+  }) => {
+    const { skill, state, owned } = placed
+    const have = isHave(state)
+    const { text, details } = textOf(loaded, skill.buff.id)
+    const detail = details ? getBuildingBuffDetail(details, skill.buff.id) : null
+    // 从列表里点了这一条：滚过来、框出来
+    const ref = useRef<HTMLDivElement>(null)
+    const framed = useFocusFrame(`baseSkill:${charId}:${skill.buff.id}`, ref)
+    return (
+      <div
+        ref={ref}
+        className={
+          'cpp-bskill-card' +
+          (have ? '' : ' is-locked') +
+          (state === 'replaced' ? ' is-replaced' : '') +
+          (framed ? ' cpp-framed' : '')
+        }
+      >
+        <div className="cpp-bskill-card-head">
+          <SkillIcon placed={placed} size={36} />
+          <div className="cpp-bskill-card-title">
+            <div className="cpp-bskill-card-name">{skill.buff.name}</div>
+            <div className="cpp-bskill-card-room">{roomName}</div>
+          </div>
+        </div>
+        {detail ? <BaseSkillEffect buff={skill.buff} detail={detail} variant="card" /> : null}
+        <p className="cpp-bskill-desc">{text}</p>
+        <div className="cpp-bskill-card-foot">
+          {state === 'replaced' ? (
+            <span className="cpp-bskill-lock is-have">{gt.pgettext('arknights base skill', '已升级')}</span>
+          ) : have ? (
+            <span className="cpp-bskill-lock is-have">{gt.pgettext('arknights base skill', '已解锁')}</span>
+          ) : unlockSentence(skill) ? (
+            <span className={'cpp-bskill-lock' + (state === 'planned' ? ' is-plan' : '')}>{unlockSentence(skill)}</span>
+          ) : null}
+          {owned ? null : (
+            <span className="cpp-bskill-lock is-have">{gt.pgettext('arknights base skill', '未持有')}</span>
+          )}
         </div>
       </div>
-      {detail ? <BaseSkillEffect buff={skill.buff} detail={detail} variant="card" /> : null}
-      <p className="cpp-bskill-desc">{text}</p>
-      <div className="cpp-bskill-card-foot">
-        {state === 'replaced' ? (
-          <span className="cpp-bskill-lock is-have">{gt.pgettext('arknights base skill', '已升级')}</span>
-        ) : have ? (
-          <span className="cpp-bskill-lock is-have">{gt.pgettext('arknights base skill', '已解锁')}</span>
-        ) : unlockSentence(skill) ? (
-          <span className={'cpp-bskill-lock' + (state === 'planned' ? ' is-plan' : '')}>{unlockSentence(skill)}</span>
-        ) : null}
-        {owned ? null : (
-          <span className="cpp-bskill-lock is-have">{gt.pgettext('arknights base skill', '未持有')}</span>
-        )}
-      </div>
-    </div>
-  )
-})
+    )
+  },
+)
 
 const BaseSkillSectionBody = memo(({ character }: { character: ICharacter }) => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
@@ -295,6 +319,7 @@ const BaseSkillSectionBody = memo(({ character }: { character: ICharacter }) => 
                   </div>
                 ) : null}
                 <SkillCard
+                  charId={c.key}
                   placed={p}
                   roomName={baseRoomName(p.skill.buff.roomType, rooms[p.skill.buff.roomType]?.name).full}
                   loaded={loaded}
