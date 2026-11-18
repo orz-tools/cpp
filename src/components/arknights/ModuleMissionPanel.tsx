@@ -39,11 +39,13 @@ import {
 } from '../../pkg/cpp-arknights/moduleMissions'
 import { PSTR, gt, lpstr } from '../../pkg/gt'
 import { CachedImg } from '../Icons'
+import { PeekTrigger } from '../Peek'
 import { AppToaster } from '../Toaster'
 import { useOpenCharacterDossier } from '../dossierHooks'
 import { clearRosterPin, setRosterPin } from '../rosterPin'
 import { SidebarPanel } from '../types'
 import { ProfessionIcon } from './Icons'
+import { modulePeek, stagePeek } from './peekKinds'
 import {
   MissionGroup,
   addTagAlong,
@@ -82,6 +84,42 @@ export function moduleCode(ga: ArknightsAdapter, equipId: string) {
   const raw = ga.getDataManager().data.uniEquips[equipId]?.raw
   return raw ? [raw.typeName1, raw.typeName2].filter(Boolean).join('-') : equipId
 }
+
+/** 模组代号，点了弹出模组卡 */
+export const ModuleCode = memo(({ charId, equipId }: { charId: string; equipId: string }) => {
+  const ga = useArknights()
+  return (
+    <PeekTrigger
+      peek={modulePeek(charId, equipId)}
+      inline={true}
+      renderTarget={(peek) => (
+        <span
+          {...peek}
+          role={peek ? 'button' : undefined}
+          className={'cpp-mm-equip' + (peek ? ' ' + peek.className : '')}
+        >
+          {moduleCode(ga, equipId)}
+        </span>
+      )}
+    />
+  )
+})
+
+/** 单独写出来的关卡号，点了弹出关卡卡。存根上的不用它：那是选中整张券的一部分 */
+const StageCode = memo(({ stageId }: { stageId: string }) => {
+  const ga = useArknights()
+  return (
+    <PeekTrigger
+      peek={stagePeek(stageId)}
+      inline={true}
+      renderTarget={(peek) => (
+        <span {...peek} role={peek ? 'button' : undefined}>
+          {ga.getMissionCatalog().stage(stageId).code}
+        </span>
+      )}
+    />
+  )
+})
 
 export function blockText(ga: ArknightsAdapter, charId: string, reason: BlockReason) {
   return reason === 'absent'
@@ -386,18 +424,13 @@ const Crew = memo(({ ticket, board }: { ticket: Ticket; board: Board }) => {
 })
 
 /** 几条任务所属模组的代号，每个模组一个 */
-const ModuleCodes = memo(({ missions }: { missions: readonly MissionInput[] }) => {
-  const ga = useArknights()
-  return (
-    <>
-      {[...new Set(missions.map((m) => m.equipId))].map((id) => (
-        <span key={id} className="cpp-mm-equip">
-          {moduleCode(ga, id)}
-        </span>
-      ))}
-    </>
-  )
-})
+const ModuleCodes = memo(({ missions }: { missions: readonly MissionInput[] }) => (
+  <>
+    {[...new Map(missions.map((m) => [m.equipId, m.charId]))].map(([equipId, charId]) => (
+      <ModuleCode key={equipId} charId={charId} equipId={equipId} />
+    ))}
+  </>
+))
 
 const professionName = (p: Profession) => String(ProfessionNames[p as DeployableProfession])
 
@@ -924,7 +957,7 @@ const ExpandedRun = memo(
               <div className={'cpp-mm-run-who' + (block ? ' is-blocked' : '')}>
                 <div className="cpp-mm-run-line">
                   <OperatorButton mission={m} size={24} />
-                  <span className="cpp-mm-equip">{moduleCode(ga, m.equipId)}</span>
+                  <ModuleCode charId={m.charId} equipId={m.equipId} />
                 </div>
                 <div className="cpp-mm-summary" title={m.desc}>
                   {summary}
@@ -1059,7 +1092,6 @@ const Group = memo(({ id, title, children }: React.PropsWithChildren<{ id: Missi
 })
 
 const AnyStageGroup = memo(({ board }: { board: Board }) => {
-  const ga = useArknights()
   const names = useMissionNames()
   if (board.anyStage.length === 0) return null
   const undone = board.anyStage.reduce((n, g) => n + g.missions.filter((m) => !board.done.has(m.id)).length, 0)
@@ -1078,7 +1110,7 @@ const AnyStageGroup = memo(({ board }: { board: Board }) => {
               <div key={m.id} className={'cpp-mm-any-row' + (done ? ' is-done' : '')}>
                 <MissionCheck mission={m} done={done} unlocked={board.unlocked.has(m.equipId)} label={summary} />
                 <span className="cpp-mm-summary" title={m.desc}>
-                  <span className="cpp-mm-equip">{moduleCode(ga, m.equipId)}</span> {summary}
+                  <ModuleCode charId={m.charId} equipId={m.equipId} /> {summary}
                 </span>
               </div>
             )
@@ -1106,10 +1138,18 @@ const BlockedGroup = memo(({ board }: { board: Board }) => {
           <div key={m.id} className="cpp-mm-blocked-row">
             <div className="cpp-mm-run-line">
               <OperatorButton mission={m} />
-              <span className="cpp-mm-equip">{moduleCode(ga, m.equipId)}</span>
+              <ModuleCode charId={m.charId} equipId={m.equipId} />
             </div>
             <div className="cpp-mm-summary" title={m.desc}>
-              {m.stageId ? `${ga.getMissionCatalog().stage(m.stageId).code} · ${summary}` : summary}
+              {m.stageId ? (
+                <>
+                  <StageCode stageId={m.stageId} />
+                  {' · '}
+                  {summary}
+                </>
+              ) : (
+                summary
+              )}
             </div>
             <div className="cpp-mm-muted">{blockText(ga, m.charId, reason)}</div>
           </div>
@@ -1361,7 +1401,6 @@ const TablePiggyRow = ({
   tagAlong?: boolean
   who?: React.ReactNode
 }) => {
-  const ga = useArknights()
   const names = useMissionNames()
   const done = board.done.has(x.id)
   const summary = summaryOf(board, x, names)
@@ -1372,7 +1411,7 @@ const TablePiggyRow = ({
       </td>
       <td>{who}</td>
       <td>
-        <span className="cpp-mm-equip">{moduleCode(ga, x.equipId)}</span>
+        <ModuleCode charId={x.charId} equipId={x.equipId} />
       </td>
       <td>
         <div>
@@ -1431,7 +1470,8 @@ const TicketDetail = memo(({ ticket, board }: { ticket: Ticket; board: Board }) 
     <div className="cpp-mm-detail" ref={self}>
       <div>
         <h3 className="cpp-mm-detail-title" ref={title} tabIndex={-1}>
-          {[stage.code, stage.name].filter(Boolean).join(' ')}
+          <StageCode stageId={ticket.stageId} />
+          {stage.name ? ' ' + stage.name : null}
         </h3>
         <div className="cpp-mm-muted">
           {[
@@ -1518,7 +1558,7 @@ const TicketDetail = memo(({ ticket, board }: { ticket: Ticket; board: Board }) 
                       <OperatorButton mission={m} />
                     </td>
                     <td>
-                      <span className="cpp-mm-equip">{moduleCode(ga, m.equipId)}</span>{' '}
+                      <ModuleCode charId={m.charId} equipId={m.equipId} />{' '}
                       {ga.getDataManager().data.uniEquips[m.equipId]?.name}
                     </td>
                     <td>
