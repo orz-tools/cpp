@@ -23,6 +23,7 @@ import {
 import type { Arknights, ArknightsCharacterStatus } from '../../pkg/cpp-arknights/types'
 import type { UserData, UserDataAtomHolder } from '../../pkg/cpp-core/UserData'
 import { useShowCharacterDossier } from '../dossierHooks'
+import { useRequestFrame } from '../focusFrame'
 
 /** 只要用户数据：测试里不用整个 Cpp */
 interface UserDataHost {
@@ -80,8 +81,6 @@ export const openBrandsAtom = atom<Partial<Record<string, boolean>>>({})
 export const markingAtom = atom(false)
 export type WideSort = 'brand' | 'release' | 'acquired'
 export const wideSortAtom = atom<WideSort>('brand')
-/** 从侧栏点了一件时装：档案一节把它框出来；nonce 让同一件再点一次也重新滚过去 */
-export const focusedSkinAtom = atom<{ skinId: string; nonce: number } | null>(null)
 
 const ownedSkinsAtoms = new WeakMap<object, Atom<Record<string, number>>>()
 const currentAtoms = new WeakMap<object, Atom<Record<string, ArknightsCharacterStatus>>>()
@@ -289,15 +288,13 @@ export function useSelectedPeriod(model: SkinModel): SkinPeriod | null {
   return (key && model.periods.find((p) => p.key === key)) || null
 }
 
-let focusNonce = 0
-
 /** 点一件时装：打开这名干员的档案，切到「时装」页，框出那一件 */
 export function useShowSkin(): (skin: Skin) => void {
-  const cpp = useCpp<Arknights>()
   const show = useShowCharacterDossier()
+  const frame = useRequestFrame()
   return useEvent((skin: Skin) => {
     show(skin.charId, { section: 'skins' })
-    cpp.store.set(focusedSkinAtom, { skinId: skin.id, nonce: ++focusNonce })
+    frame('skin:' + skin.id)
   })
 }
 

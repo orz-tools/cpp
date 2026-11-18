@@ -604,6 +604,12 @@ body {
   margin-left: 22px !important;
 }
 
+/* 从别处点过来、框出的那一项（focusFrame.ts）；和时装卡片图上的框一样 */
+.cpp-framed {
+  outline: 2px solid var(--bp-palette-blue-3, #2d72d2);
+  outline-offset: 2px;
+}
+
 /* .App {
   transform: rotateX(180deg);
 }
