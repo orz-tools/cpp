@@ -7,6 +7,7 @@ type Status = ArknightsCharacterStatus
 export type EditedCharacter = Pick<Character, 'maxLevels' | 'modUnlockLevel' | 'rarity'> & {
   skills: readonly { skillId: string }[]
   uniEquips: readonly { equipId: string; equip: { raw: { unlockEvolvePhase: string } } }[]
+  specialOperator?: { skillLevels: readonly { level: number }[] }
 }
 
 export function maxEliteOf(character: EditedCharacter) {
@@ -16,6 +17,14 @@ export function maxEliteOf(character: EditedCharacter) {
 /** Skills reach 7 from E1; an operator that stays at E0 stops at 4, which rewriteCharacter enforces. */
 export function maxSkillLevel(character: EditedCharacter) {
   return maxEliteOf(character) >= 1 ? 7 : 4
+}
+
+/** The skill levels the editor offers. A special operator's skill only takes the levels its missions unlock. */
+export function skillLevelSteps(character: EditedCharacter): number[] {
+  const max = maxSkillLevel(character)
+  const so = character.specialOperator
+  const steps = so ? [1, ...so.skillLevels.map((n) => n.level)] : Array.from({ length: max }, (_, i) => i + 1)
+  return steps.filter((level) => level <= max)
 }
 
 export function hasMasteries(character: EditedCharacter) {

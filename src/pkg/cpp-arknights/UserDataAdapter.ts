@@ -165,20 +165,26 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     let skillLevel = current.skillLevel
     let skillDep: typeof dep = undefined
     {
+      // 特殊干员的技能等级只有游戏里的那几档（1、4、7），存下的 2、3、5、6 级从下一档接着走
+      const steps = character.specialOperator?.skillLevels.map((n) => n.level)
       while (skillLevel < goal.skillLevel && skillLevel <= character.allSkillLvlup.length) {
-        if (skillLevel === 4) {
+        const to = Math.min(goal.skillLevel, steps?.find((l) => l > skillLevel) ?? skillLevel + 1)
+        if (skillLevel < 5 && to >= 5) {
           meetEliteLevel(1, 1)
         }
         skillDep = add(
-          { _: 'skill', to: skillLevel + 1 },
-          (character.allSkillLvlup[skillLevel - 1].lvlUpCost || []).map((x) => ({
-            itemId: x.id,
-            quantity: x.count,
-          })),
+          { _: 'skill', to },
+          character.allSkillLvlup
+            .slice(skillLevel - 1, to - 1)
+            .flatMap((x) => x.lvlUpCost || [])
+            .map((x) => ({
+              itemId: x.id,
+              quantity: x.count,
+            })),
           dep,
           skillDep,
         )
-        skillLevel++
+        skillLevel = to
       }
     }
 

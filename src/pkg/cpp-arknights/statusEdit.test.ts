@@ -17,6 +17,7 @@ import {
   setOwned,
   setSkillLevel,
   skillChanges,
+  skillLevelSteps,
   snapLevels,
   stepLevel,
 } from './statusEdit'
@@ -199,6 +200,14 @@ describe('sections', () => {
   it('stops skill levels at 4 for an operator that stays at E0', () => {
     expect(maxSkillLevel(quercus)).toBe(7)
     expect(maxSkillLevel({ ...three, maxLevels: [30] })).toBe(4)
+  })
+
+  it("offers a special operator only its missions' skill levels", () => {
+    const special = { ...six, specialOperator: { skillLevels: [{ level: 4 }, { level: 7 }] } }
+    expect(skillLevelSteps(special)).toEqual([1, 4, 7])
+    expect(skillLevelSteps({ ...special, maxLevels: [50] })).toEqual([1, 4])
+    expect(skillLevelSteps(six)).toEqual([1, 2, 3, 4, 5, 6, 7])
+    expect(skillLevelSteps({ ...three, maxLevels: [30] })).toEqual([1, 2, 3, 4])
   })
 })
 
