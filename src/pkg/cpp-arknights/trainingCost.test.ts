@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { ArknightsDataManager, Character } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
-import { CostBreakdown, TrainingCost } from './trainingCost'
+import { CostBreakdown, TrainingCost, VoucherSaving, efficiencyPercent, showsMost } from './trainingCost'
 import { AK_ITEM_GOLD, AK_ITEM_VIRTUAL_EXP, ArknightsCharacterStatus } from './types'
 
 const cost = (id: string, count: number) => ({ id, count })
@@ -71,11 +71,12 @@ const values: Record<string, number | undefined> = {
   s: 0.5,
 }
 
-function setup(valuesOk = true) {
-  const dm = { data: { characters, constants } } as unknown as ArknightsDataManager
+function setup(valuesOk = true, extra: Record<string, Character> = {}) {
+  const all = { ...characters, ...extra }
+  const dm = { data: { characters: all, constants } } as unknown as ArknightsDataManager
   const uda = new ArknightsUserDataAdapter(dm)
   const tc = new TrainingCost({
-    getCharacter: (key) => characters[key],
+    getCharacter: (key) => all[key],
     getItem: (key) => ({ valueAsAp: values[key] }),
     getItemValues: () =>
       valuesOk
@@ -309,5 +310,122 @@ describe('rarityRank', () => {
     expect(calls).toBeGreaterThan(0)
     tc.rarityRank('mastery3', characters.c6b, 2, currents)
     expect(spy.mock.calls.length).toBe(calls)
+  })
+})
+
+describe('voucher', () => {
+  it('saves less now than from E0 level 1 once the character is levelled', () => {
+    const { tc, empty } = setup()
+    const current = status(1, 40)
+    const v = tc.voucher('elite2', characters.c6, current)!
+    expect(v.now).toBe(tc.elite2Saving(characters.c6, current))
+    expect(v.most).toBe(tc.elite2Saving(characters.c6, empty))
+    expect(v.now.value).toBeLessThan(v.most.value)
+    // 几个 6 星一样贵
+    expect(v.rarityMax).toBe(v.most.value)
+    expect(v.efficiency).toBeCloseTo(v.now.value / v.most.value)
+  })
+
+  it('saves the most for a character not held', () => {
+    const { tc, empty } = setup()
+    for (const current of [empty, { ...empty, level: 0, potentialRank: 3 }]) {
+      const v = tc.voucher('elite2', characters.c6b, current)!
+      expect(v.now.value).toBe(v.most.value)
+      expect(efficiencyPercent(v.efficiency)).toBe(100)
+    }
+  })
+
+  it('counts the most for M3 from M0', () => {
+    const { tc, empty } = setup()
+    const v = tc.voucher('mastery3', characters.c6, status(2, 40, { skillMaster: { c6_s1: 1 } }), 0)!
+    expect(v.most).toBe(tc.mastery3Saving(characters.c6, empty, 0))
+    expect(v.now.value).toBeLessThan(v.most.value)
+  })
+
+  it('counts the most for the max level from E2 level 1', () => {
+    const { tc, empty } = setup()
+    expect(tc.rarityMax('levelMax', 5)).toBe(tc.levelMaxSaving(characters.c6, empty)!.value)
+    // 每级的经验和龙门币一样贵：50 → 90 是 40 级，1 → 90 是 89 级
+    expect(tc.voucher('levelMax', characters.c6, status(2, 50))!.efficiency).toBeCloseTo(40 / 89)
+  })
+
+  it('divides by the most of the dearest character of the rarity', () => {
+    const pricey = [[cost('m3', 2)], [cost('m3', 2)], [cost('m3', 2)]]
+    const c6x = character('c6x', 5, [60, 80, 90], [pricey, pricey, pricey])
+    const { tc, empty } = setup(true, { c6x })
+    expect(tc.rarityMax('elite2', 5)).toBe(tc.elite2Saving(c6x, empty)!.value)
+    expect(tc.rarityMax('mastery3', 5)).toBe(tc.mastery3Saving(c6x, empty, 0)!.value)
+    const v = tc.voucher('elite2', characters.c6b, empty)!
+    expect(v.rarityMax).toBe(tc.elite2Saving(c6x, empty)!.value)
+    expect(v.efficiency).toBeLessThan(1)
+  })
+
+  it('has no efficiency where the voucher saves no materials', () => {
+    const { tc, empty } = setup()
+    for (const v of [tc.voucher('elite2', characters.sp, empty), tc.voucher('mastery3', characters.c5, empty, 1)]) {
+      expect(v!.now.items.size).toBe(0)
+      expect(v!.efficiency).toBeNaN()
+    }
+    // c5 的二技能专精不花材料，不算进去
+    expect(tc.rarityMax('mastery3', 4)).toBe(tc.mastery3Saving(characters.c5, empty, 0)!.value)
+  })
+
+  it('has nothing where the voucher has nothing to save', () => {
+    const { tc, empty } = setup()
+    expect(tc.voucher('elite2', characters.c6, status(2, 1))).toBeNull()
+    expect(tc.voucher('elite2', characters.c3, empty)).toBeNull()
+    expect(tc.voucher('mastery3', characters.c3, empty, 0)).toBeNull()
+    expect(tc.voucher('levelMax', characters.c3, empty)).toBeNull()
+  })
+
+  it('keeps the materials but has no maximum or efficiency while the item values cannot be computed', () => {
+    const { tc } = setup(false)
+    const v = tc.voucher('elite2', characters.c6, status(1, 40))!
+    expect(v.now.items.size).toBeGreaterThan(0)
+    expect(v.most.items.size).toBeGreaterThan(0)
+    expect(v.rarityMax).toBeNaN()
+    expect(v.efficiency).toBeNaN()
+    expect(tc.rarityMax('elite2', 5)).toBeNaN()
+  })
+})
+
+describe('rarityMax', () => {
+  it('is 0 for a rarity where no voucher saves materials', () => {
+    const { tc } = setup()
+    expect(tc.rarityMax('elite2', 3)).toBe(0)
+  })
+
+  it('goes through the characters once per instance', () => {
+    const { tc, uda } = setup()
+    const spy = vi.spyOn(uda, 'getAllCharacterIds')
+    tc.rarityMax('mastery3', 5)
+    expect(spy).toHaveBeenCalledTimes(1)
+    tc.rarityMax('mastery3', 5)
+    tc.voucher('mastery3', characters.c6b, uda.getFrozenEmptyCharacterStatus(), 1)
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('efficiencyPercent', () => {
+  it('rounds down to a whole percentage', () => {
+    expect(efficiencyPercent(0.29)).toBe(29)
+    expect(efficiencyPercent(0.999)).toBe(99)
+    expect(efficiencyPercent(1)).toBe(100)
+    expect(efficiencyPercent(NaN)).toBeNaN()
+  })
+})
+
+describe('showsMost', () => {
+  const saving = (now: number, most: number): VoucherSaving => ({
+    now: { value: now, items: new Map(), unvalued: [] },
+    most: { value: most, items: new Map(), unvalued: [] },
+    rarityMax: most,
+    efficiency: now / most,
+  })
+
+  it('shows the most only when it is at least 1 AP more', () => {
+    expect(showsMost(saving(100, 100.5))).toBe(false)
+    expect(showsMost(saving(100, 101.5))).toBe(true)
+    expect(showsMost(saving(NaN, NaN))).toBe(false)
   })
 })
