@@ -833,6 +833,12 @@
   color: var(--bp-palette-gray-3, #8f99a8);
 }
 
+/* 技能卡对比满级时：满级不在计划内，只加粗、不用蓝色 */
+.cpp-charstat-det-vs-max .cpp-charstat-det-to,
+.cpp-charstat-det-vs-max .cpp-charstat-rt-to {
+  color: inherit;
+}
+
 .cpp-charstat-det-table .cpp-charstat-det-arrow {
   padding-left: 6px;
   color: var(--bp-palette-gray-3, #8f99a8);

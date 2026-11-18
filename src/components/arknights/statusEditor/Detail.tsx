@@ -20,6 +20,7 @@ import {
   parseRichText,
   resolvePlaceholders,
 } from '../../../pkg/cpp-arknights/richText'
+import type { ArknightsDataManager } from '../../../pkg/cpp-arknights'
 import { gt } from '../../../pkg/gt'
 import { useDetails } from '../useDetails'
 import { useEditor } from './context'
@@ -48,15 +49,19 @@ export const DetailToggle = memo(({ id, panelId, name }: { id: string; panelId: 
 /** Loading, failed, or missing the entry: the panel says so; otherwise it renders what it is given. */
 const DetailPanel = memo(
   ({
+    dm,
     id,
+    className,
     missing,
     children,
   }: {
+    dm: ArknightsDataManager
     id: string
+    className?: string
     missing: string
     children: (details: Details) => React.ReactNode | null
   }) => {
-    const [loaded, retry] = useDetails(useEditor().dm)
+    const [loaded, retry] = useDetails(dm)
     let body: React.ReactNode
     if (!loaded) {
       body = (
@@ -78,7 +83,7 @@ const DetailPanel = memo(
       body = children(loaded.details) ?? <div className="cpp-charstat-det-missing">{missing}</div>
     }
     return (
-      <div className="cpp-charstat-det" id={id} aria-busy={!loaded}>
+      <div className={'cpp-charstat-det' + (className ? ' ' + className : '')} id={id} aria-busy={!loaded}>
         {body}
       </div>
     )
@@ -140,7 +145,7 @@ const skillTypes: Record<string, () => string> = {
   PASSIVE: () => gt.pgettext('arknights skill trigger', '被动'),
 }
 
-interface SkillAt {
+export interface SkillAt {
   skillLevel: number
   mastery: number
 }
@@ -158,110 +163,141 @@ function durationText(d: number) {
     .replaceAll('%s', formatValue(d, undefined))
 }
 
-/** Skill: SP and trigger, the numbers that change, then the description, at the current level and, in a goal, the target. */
+/**
+ * Skill: SP and trigger, the numbers that change, then the description, at `from` and, when it differs, at `to`. A
+ * goal's column is blue as everything planned is; the top level a peek card compares against is only bold.
+ */
+export const SkillDetailContent = memo(
+  ({
+    dm,
+    panelId,
+    skillId,
+    from,
+    to,
+    target,
+  }: {
+    dm: ArknightsDataManager
+    panelId: string
+    skillId: string
+    from: SkillAt
+    to: SkillAt | null
+    target: 'goal' | 'max'
+  }) => {
+    const changed = !!to && (to.skillLevel !== from.skillLevel || to.mastery !== from.mastery)
+    const toText = (at: SkillAt) =>
+      target === 'goal'
+        ? gt
+            .pgettext('arknights status editor', '目标 %s') /* I10N: %s: skill level, e.g. 专精 3 */
+            .replaceAll('%s', skillLevelText(at.skillLevel, at.mastery))
+        : skillLevelText(at.skillLevel, at.mastery)
+
+    return (
+      <DetailPanel
+        dm={dm}
+        id={panelId}
+        className={target === 'max' ? 'cpp-charstat-det-vs-max' : undefined}
+        missing={gt.pgettext('arknights status editor', '这个技能还没有说明数据')}
+      >
+        {(details) => {
+          const skill = getSkillDetail(details, skillId)
+          if (!skill || !skill.levels.length) return null
+          const a = skillLevelOf(skill, from)
+          const b = changed ? skillLevelOf(skill, to!) : null
+          const meta = [spTypes[skill.spType]?.(), skillTypes[skill.skillType]?.()].filter(Boolean)
+          // A passive skill has no SP, and many skills no duration: rows that are 0 throughout are left out.
+          const rows = [
+            {
+              label: gt.pgettext('arknights status editor', '技力消耗'),
+              pick: (x: SkillLevel) => x.spCost,
+              text: String,
+            },
+            {
+              label: gt.pgettext('arknights status editor', '初始技力'),
+              pick: (x: SkillLevel) => x.initSp,
+              text: String,
+            },
+            {
+              label: gt.pgettext('arknights status editor', '持续时间'),
+              pick: (x: SkillLevel) => x.duration,
+              text: durationText,
+            },
+          ]
+            .filter((r) => r.pick(a.level) !== 0 || (b && r.pick(b.level) !== 0))
+            .map((r) => ({ label: r.label, a: r.text(r.pick(a.level)), b: b ? r.text(r.pick(b.level)) : null }))
+          return (
+            <>
+              {meta.length ? <div className="cpp-charstat-det-meta">{meta.join(' · ')}</div> : null}
+              {rows.length ? (
+                <table className="cpp-charstat-det-table">
+                  <thead>
+                    <tr>
+                      <th />
+                      <th>
+                        {b
+                          ? gt
+                              .pgettext('arknights status editor', '当前 %s') /* I10N: %s: skill level, e.g. 7 级 */
+                              .replaceAll('%s', skillLevelText(from.skillLevel, from.mastery))
+                          : skillLevelText(from.skillLevel, from.mastery)}
+                      </th>
+                      {b ? (
+                        <>
+                          <th />
+                          <th className="cpp-charstat-det-to">{toText(to!)}</th>
+                        </>
+                      ) : null}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((r) => (
+                      <tr key={r.label}>
+                        <th>{r.label}</th>
+                        <td>{r.a}</td>
+                        {r.b !== null ? (
+                          <>
+                            <td className="cpp-charstat-det-arrow">{r.a === r.b ? '' : '→'}</td>
+                            <td className={r.a === r.b ? '' : 'cpp-charstat-det-to'}>{r.b}</td>
+                          </>
+                        ) : null}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : null}
+              {!b || a.template === b.template ? (
+                <p>
+                  <RichText segments={parseRichText(a.template, a.level.bb, b?.level.bb)} details={details} />
+                </p>
+              ) : (
+                <>
+                  <p>
+                    <span className="cpp-charstat-det-tag">{gt.pgettext('arknights status editor', '当前')}</span>
+                    <RichText segments={parseRichText(a.template, a.level.bb)} details={details} />
+                  </p>
+                  <p>
+                    <span className="cpp-charstat-det-tag cpp-charstat-det-to">
+                      {target === 'goal' ? gt.pgettext('arknights status editor', '目标') : toText(to!)}
+                    </span>
+                    <RichText segments={parseRichText(b.template, b.level.bb)} details={details} />
+                  </p>
+                </>
+              )}
+            </>
+          )
+        }}
+      </DetailPanel>
+    )
+  },
+)
+
+/** The editor's (i): the current level against the goal being edited */
 export const SkillDetail = memo(({ panelId, skillId }: { panelId: string; skillId: string }) => {
-  const { status, current } = useEditor()
+  const { status, current, dm } = useEditor()
   const base = current ?? status
   const from: SkillAt = { skillLevel: base.skillLevel, mastery: base.skillMaster[skillId] || 0 }
   const to: SkillAt | null = current
     ? { skillLevel: status.skillLevel, mastery: status.skillMaster[skillId] || 0 }
     : null
-  const changed = !!to && (to.skillLevel !== from.skillLevel || to.mastery !== from.mastery)
-
-  return (
-    <DetailPanel id={panelId} missing={gt.pgettext('arknights status editor', '这个技能还没有说明数据')}>
-      {(details) => {
-        const skill = getSkillDetail(details, skillId)
-        if (!skill || !skill.levels.length) return null
-        const a = skillLevelOf(skill, from)
-        const b = changed ? skillLevelOf(skill, to!) : null
-        const meta = [spTypes[skill.spType]?.(), skillTypes[skill.skillType]?.()].filter(Boolean)
-        // A passive skill has no SP, and many skills no duration: rows that are 0 throughout are left out.
-        const rows = [
-          {
-            label: gt.pgettext('arknights status editor', '技力消耗'),
-            pick: (x: SkillLevel) => x.spCost,
-            text: String,
-          },
-          {
-            label: gt.pgettext('arknights status editor', '初始技力'),
-            pick: (x: SkillLevel) => x.initSp,
-            text: String,
-          },
-          {
-            label: gt.pgettext('arknights status editor', '持续时间'),
-            pick: (x: SkillLevel) => x.duration,
-            text: durationText,
-          },
-        ]
-          .filter((r) => r.pick(a.level) !== 0 || (b && r.pick(b.level) !== 0))
-          .map((r) => ({ label: r.label, a: r.text(r.pick(a.level)), b: b ? r.text(r.pick(b.level)) : null }))
-        return (
-          <>
-            {meta.length ? <div className="cpp-charstat-det-meta">{meta.join(' · ')}</div> : null}
-            {rows.length ? (
-              <table className="cpp-charstat-det-table">
-                <thead>
-                  <tr>
-                    <th />
-                    <th>
-                      {b
-                        ? gt
-                            .pgettext('arknights status editor', '当前 %s') /* I10N: %s: skill level, e.g. 7 级 */
-                            .replaceAll('%s', skillLevelText(from.skillLevel, from.mastery))
-                        : skillLevelText(from.skillLevel, from.mastery)}
-                    </th>
-                    {b ? (
-                      <>
-                        <th />
-                        <th className="cpp-charstat-det-to">
-                          {gt
-                            .pgettext('arknights status editor', '目标 %s') /* I10N: %s: skill level, e.g. 专精 3 */
-                            .replaceAll('%s', skillLevelText(to!.skillLevel, to!.mastery))}
-                        </th>
-                      </>
-                    ) : null}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((r) => (
-                    <tr key={r.label}>
-                      <th>{r.label}</th>
-                      <td>{r.a}</td>
-                      {r.b !== null ? (
-                        <>
-                          <td className="cpp-charstat-det-arrow">{r.a === r.b ? '' : '→'}</td>
-                          <td className={r.a === r.b ? '' : 'cpp-charstat-det-to'}>{r.b}</td>
-                        </>
-                      ) : null}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : null}
-            {!b || a.template === b.template ? (
-              <p>
-                <RichText segments={parseRichText(a.template, a.level.bb, b?.level.bb)} details={details} />
-              </p>
-            ) : (
-              <>
-                <p>
-                  <span className="cpp-charstat-det-tag">{gt.pgettext('arknights status editor', '当前')}</span>
-                  <RichText segments={parseRichText(a.template, a.level.bb)} details={details} />
-                </p>
-                <p>
-                  <span className="cpp-charstat-det-tag cpp-charstat-det-to">
-                    {gt.pgettext('arknights status editor', '目标')}
-                  </span>
-                  <RichText segments={parseRichText(b.template, b.level.bb)} details={details} />
-                </p>
-              </>
-            )}
-          </>
-        )
-      }}
-    </DetailPanel>
-  )
+  return <SkillDetailContent dm={dm} panelId={panelId} skillId={skillId} from={from} to={to} target="goal" />
 })
 
 const attributeNames: Record<string, () => string> = {
@@ -342,94 +378,134 @@ function levelChangesText(first: string, changes: string[]) {
 }
 
 /** Module: the attribute bonuses of levels 1–3, then its trait and talent, from the level each starts at. */
+export const ModDetailContent = memo(
+  ({
+    dm,
+    panelId,
+    equipId,
+    potentialRank,
+    from,
+    to,
+    planned,
+    dimAbove,
+  }: {
+    dm: ArknightsDataManager
+    panelId: string
+    equipId: string
+    potentialRank: number | undefined
+    from: number
+    to: number
+    /** The levels from `from` to `to` are blue */
+    planned: boolean
+    /** The levels above `to` are gray */
+    dimAbove: boolean
+  }) => {
+    return (
+      <DetailPanel dm={dm} id={panelId} missing={gt.pgettext('arknights status editor', '这个模组还没有说明数据')}>
+        {(details) => {
+          const equip = getEquipDetail(details, equipId)
+          if (!equip || !equip.phases.length) return null
+          const keys: string[] = []
+          for (const phase of equip.phases) for (const [k] of phase.attr) if (!keys.includes(k)) keys.push(k)
+          const column = (level: number) =>
+            planned && level > from && level <= to
+              ? 'cpp-charstat-det-to'
+              : dimAbove && level > to
+                ? 'cpp-charstat-det-dim'
+                : ''
+          const groups = partGroups(equip.phases, potentialRank)
+          return (
+            <>
+              {keys.length ? (
+                <table className="cpp-charstat-det-table cpp-charstat-det-attr">
+                  <thead>
+                    <tr>
+                      <th />
+                      {equip.phases.map((_, i) => (
+                        <th key={i} className={column(i + 1)}>
+                          {levelText(i + 1)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {keys.map((k) => (
+                      <tr key={k}>
+                        <th>{attributeNames[k]?.() ?? k}</th>
+                        {equip.phases.map((phase, i) => {
+                          const v = phase.attr.find(([key]) => key === k)?.[1]
+                          return (
+                            <td key={i} className={column(i + 1)}>
+                              {v === undefined ? '' : (v > 0 ? '+' : '') + formatValue(v, undefined)}
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : null}
+              {groups.map((g, gi) => {
+                const tag = [
+                  g.kind === 'trait'
+                    ? gt.pgettext('arknights status editor', '特性')
+                    : gt.pgettext('arknights status editor', '天赋'),
+                  g.isToken ? gt.pgettext('arknights status editor', '召唤物') : null,
+                  g.entries[0].level > 1
+                    ? gt
+                        .pgettext('arknights status editor', '%d 级起') /* I10N: %d: module level */
+                        .replaceAll('%d', `${g.entries[0].level}`)
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')
+                const merged = mergeLevelTexts(
+                  g.entries,
+                  (level, value) => `${levelText(level)} ${value}`,
+                  levelChangesText,
+                )
+                return (
+                  <div key={gi} className="cpp-charstat-det-part">
+                    <span className="cpp-charstat-det-tag">{tag}</span>
+                    {merged.merged ? (
+                      <p>
+                        <RichText segments={parseRichText(merged.text)} details={details} />
+                      </p>
+                    ) : (
+                      merged.texts.map((x) => (
+                        <p key={x.level}>
+                          <span className="cpp-charstat-det-level">{levelText(x.level)}</span>
+                          <RichText segments={parseRichText(x.text)} details={details} />
+                        </p>
+                      ))
+                    )}
+                  </div>
+                )
+              })}
+            </>
+          )
+        }}
+      </DetailPanel>
+    )
+  },
+)
+
+/** The editor's (i): in a goal the levels it raises are blue; the levels above the goal, or above now, are gray */
 export const ModDetail = memo(({ panelId, equipId }: { panelId: string; equipId: string }) => {
-  const { status, current } = useEditor()
+  const { status, current, dm } = useEditor()
   const base = current ?? status
   const from = base.modLevel[equipId] || 0
   const to = current ? status.modLevel[equipId] || 0 : from
-  const potentialRank = base.potentialRank
-
   return (
-    <DetailPanel id={panelId} missing={gt.pgettext('arknights status editor', '这个模组还没有说明数据')}>
-      {(details) => {
-        const equip = getEquipDetail(details, equipId)
-        if (!equip || !equip.phases.length) return null
-        const keys: string[] = []
-        for (const phase of equip.phases) for (const [k] of phase.attr) if (!keys.includes(k)) keys.push(k)
-        const column = (level: number) =>
-          current && level > from && level <= to ? 'cpp-charstat-det-to' : level > to ? 'cpp-charstat-det-dim' : ''
-        const groups = partGroups(equip.phases, potentialRank)
-        return (
-          <>
-            {keys.length ? (
-              <table className="cpp-charstat-det-table cpp-charstat-det-attr">
-                <thead>
-                  <tr>
-                    <th />
-                    {equip.phases.map((_, i) => (
-                      <th key={i} className={column(i + 1)}>
-                        {levelText(i + 1)}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {keys.map((k) => (
-                    <tr key={k}>
-                      <th>{attributeNames[k]?.() ?? k}</th>
-                      {equip.phases.map((phase, i) => {
-                        const v = phase.attr.find(([key]) => key === k)?.[1]
-                        return (
-                          <td key={i} className={column(i + 1)}>
-                            {v === undefined ? '' : (v > 0 ? '+' : '') + formatValue(v, undefined)}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : null}
-            {groups.map((g, gi) => {
-              const tag = [
-                g.kind === 'trait'
-                  ? gt.pgettext('arknights status editor', '特性')
-                  : gt.pgettext('arknights status editor', '天赋'),
-                g.isToken ? gt.pgettext('arknights status editor', '召唤物') : null,
-                g.entries[0].level > 1
-                  ? gt
-                      .pgettext('arknights status editor', '%d 级起') /* I10N: %d: module level */
-                      .replaceAll('%d', `${g.entries[0].level}`)
-                  : null,
-              ]
-                .filter(Boolean)
-                .join(' · ')
-              const merged = mergeLevelTexts(
-                g.entries,
-                (level, value) => `${levelText(level)} ${value}`,
-                levelChangesText,
-              )
-              return (
-                <div key={gi} className="cpp-charstat-det-part">
-                  <span className="cpp-charstat-det-tag">{tag}</span>
-                  {merged.merged ? (
-                    <p>
-                      <RichText segments={parseRichText(merged.text)} details={details} />
-                    </p>
-                  ) : (
-                    merged.texts.map((x) => (
-                      <p key={x.level}>
-                        <span className="cpp-charstat-det-level">{levelText(x.level)}</span>
-                        <RichText segments={parseRichText(x.text)} details={details} />
-                      </p>
-                    ))
-                  )}
-                </div>
-              )
-            })}
-          </>
-        )
-      }}
-    </DetailPanel>
+    <ModDetailContent
+      dm={dm}
+      panelId={panelId}
+      equipId={equipId}
+      potentialRank={base.potentialRank}
+      from={from}
+      to={to}
+      planned={current != null}
+      dimAbove
+    />
   )
 })
