@@ -633,8 +633,9 @@ body {
   margin-right: 0;
 }
 
+/* Reaches exactly to the menu's edges: Blueprint 6 pads a menu by 4px, and a wider bleed scrolls the menu sideways */
 .bp6-menu > .bp6-callout {
-  margin: -5px;
+  margin: -4px;
   width: auto;
   padding: 12px;
   margin-bottom: 7px;
