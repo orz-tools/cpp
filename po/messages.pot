@@ -615,7 +615,7 @@ msgstr ""
 msgid "查看源码"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1099
+#: src/components/CharacterList.tsx:1100
 msgid "查询失败"
 msgstr ""
 
@@ -1091,19 +1091,19 @@ msgid "%s$cond后升级为"
 msgstr ""
 
 #. hover text of a base skill: its name and text
-#: src/components/arknights/extraFields.tsx:154
+#: src/components/arknights/extraFields.tsx:255
 msgctxt "arknights base skill"
 msgid "%s$name：%s$text"
 msgstr ""
 
 #: src/components/arknights/BaseSkillSection.tsx:222
-#: src/components/arknights/extraFields.tsx:146
+#: src/components/arknights/extraFields.tsx:247
 msgctxt "arknights base skill"
 msgid "原文没有加载出来"
 msgstr ""
 
 #. %s: base skill name
-#: src/components/arknights/extraFields.tsx:166
+#: src/components/arknights/extraFields.tsx:267
 msgctxt "arknights base skill"
 msgid "在档案里看 %s"
 msgstr ""
@@ -1119,13 +1119,13 @@ msgid "已解锁"
 msgstr ""
 
 #: src/components/arknights/BaseSkillSection.tsx:283
-#: src/components/arknights/extraFields.tsx:179
+#: src/components/arknights/extraFields.tsx:280
 msgctxt "arknights base skill"
 msgid "未持有"
 msgstr ""
 
 #: src/components/arknights/BaseSkillSection.tsx:229
-#: src/components/arknights/extraFields.tsx:150
+#: src/components/arknights/extraFields.tsx:251
 msgctxt "arknights base skill"
 msgid "没有这条技能的原文"
 msgstr ""
@@ -1773,19 +1773,19 @@ msgctxt "arknights quick filter"
 msgid "精英 %d"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:329
+#: src/components/arknights/CostSection.tsx:388
 #: src/components/arknights/peekKinds.tsx:31
 msgctxt "arknights skill ref"
 msgid "一技能"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:331
+#: src/components/arknights/CostSection.tsx:390
 #: src/components/arknights/peekKinds.tsx:33
 msgctxt "arknights skill ref"
 msgid "三技能"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:330
+#: src/components/arknights/CostSection.tsx:389
 #: src/components/arknights/peekKinds.tsx:32
 msgctxt "arknights skill ref"
 msgid "二技能"
@@ -2361,27 +2361,27 @@ msgctxt "character dossier"
 msgid "%s 的档案"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:154
+#: src/components/queryEditor/ColumnHeader.tsx:177
 msgctxt "character list column"
 msgid "「%s」的列宽"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:103
+#: src/components/queryEditor/ColumnHeader.tsx:106
 msgctxt "character list column"
 msgid "干员"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:109
+#: src/components/queryEditor/ColumnHeader.tsx:112
 msgctxt "character list column"
 msgid "当前状态"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:163
+#: src/components/queryEditor/ColumnHeader.tsx:186
 msgctxt "character list column"
 msgid "拖动调整列宽，双击恢复默认（%d px）"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:112
+#: src/components/queryEditor/ColumnHeader.tsx:115
 msgctxt "character list column"
 msgid "目标状态"
 msgstr ""
@@ -2401,7 +2401,7 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:432
+#: src/components/arknights/CostSection.tsx:507
 msgctxt "dossier section"
 msgid "养成成本"
 msgstr ""
@@ -2612,12 +2612,13 @@ msgid "计划"
 msgstr ""
 
 #: src/components/arknights/baseSkillText.ts:110
-#: src/components/arknights/CostSection.tsx:222
+#: src/components/arknights/CostSection.tsx:232
 #: src/components/arknights/importHooks.ts:110
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:446
+#: src/components/arknights/voucherText.tsx:31
 #: src/components/CharacterList.tsx:554
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
@@ -4810,51 +4811,78 @@ msgctxt "status editor"
 msgid "要改的练度"
 msgstr ""
 
+#. %d: 4, 5 or 6; %s: a value
+#: src/components/arknights/voucherText.tsx:37
+msgctxt "training cost"
+msgid "%d 星 %s"
+msgstr ""
+
 #. %s: 一技能, 二技能 or 三技能
-#: src/components/arknights/CostSection.tsx:339
+#: src/components/arknights/CostSection.tsx:398
 msgctxt "training cost"
 msgid "%s专三"
 msgstr ""
 
 #. %s: item names
-#: src/components/arknights/CostSection.tsx:254
+#: src/components/arknights/CostSection.tsx:264
 msgctxt "training cost"
 msgid "%s没有价值，没算进上面的数"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:384
+#: src/components/arknights/CostSection.tsx:363
+msgctxt "training cost"
+msgid "下面的「最多」是从能用这张道具的最早那一点用时能省的：精二从精零 1 级，专三从专零，满级从精二 1 级。"
+msgstr ""
+
+#: src/components/arknights/CostSection.tsx:451
 msgctxt "training cost"
 msgid "不分干员，只看等级"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:160
+#: src/components/arknights/CostSection.tsx:170
 msgctxt "training cost"
 msgid "从现在"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:161
+#: src/components/arknights/CostSection.tsx:171
 msgctxt "training cost"
 msgid "从目标"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:159
+#: src/components/arknights/CostSection.tsx:169
 msgctxt "training cost"
 msgid "从零"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:19
+#: src/components/arknights/CostSection.tsx:29
 msgctxt "training cost"
 msgid "从零到满的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:17
+#: src/components/arknights/CostSection.tsx:27
 msgctxt "training cost"
 msgid "从零到现在的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:18
+#: src/components/arknights/CostSection.tsx:28
 msgctxt "training cost"
 msgid "从零到目标的材料"
+msgstr ""
+
+#. %s: a value like 5571
+#: src/components/arknights/voucherText.tsx:22
+msgctxt "training cost"
+msgid "最多 %s"
+msgstr ""
+
+#: src/components/arknights/extraFields.tsx:186
+msgctxt "training cost"
+msgid "最多：从专零用时能省的；条上浅蓝的那段是已经练掉的。"
+msgstr ""
+
+#: src/components/arknights/extraFields.tsx:165
+msgctxt "training cost"
+msgid "最多：从精零 1 级用时能省的；条上浅蓝的那段是已经练掉的。"
 msgstr ""
 
 #: src/components/CharacterList.tsx:745
@@ -4862,107 +4890,151 @@ msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:156
+#: src/components/arknights/CostSection.tsx:166
 msgctxt "training cost"
 msgid "到满"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:154
+#: src/components/arknights/CostSection.tsx:164
 msgctxt "training cost"
 msgid "到现在"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:155
+#: src/components/arknights/CostSection.tsx:165
 msgctxt "training cost"
 msgid "到目标"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:365
+#: src/components/arknights/CostSection.tsx:424
 msgctxt "training cost"
 msgid "在 %d 星里排第几"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:41
+#: src/components/arknights/CostSection.tsx:51
 msgctxt "training cost"
 msgid "已投入"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:45
+#: src/components/arknights/CostSection.tsx:55
 msgctxt "training cost"
 msgid "拉满"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:60
+#: src/components/arknights/CostSection.tsx:427
+msgctxt "training cost"
+msgid "效率"
+msgstr ""
+
+#. %s: a percentage like 54%
+#: src/components/arknights/extraFields.tsx:139
+msgctxt "training cost"
+msgid "效率 %s"
+msgstr ""
+
+#. %s: a list like 4★ 2022, 5★ 3765, 6★ 5735
+#: src/components/arknights/extraFields.tsx:168
+msgctxt "training cost"
+msgid "效率：现在能省的，占同星级最多能省的几成；条的全长就是同星级最多（%s）。"
+msgstr ""
+
+#. %s: a list like 4★ 1472, 5★ 2909, 6★ 4272
+#: src/components/arknights/extraFields.tsx:189
+msgctxt "training cost"
+msgid "效率：现在能省的，占同星级所有技能里最多能省的几成；条的全长就是同星级最多（%s）。"
+msgstr ""
+
+#: src/components/arknights/CostSection.tsx:70
 msgctxt "training cost"
 msgid "满"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:420
+#: src/components/arknights/CostSection.tsx:495
 msgctxt "training cost"
 msgid "物品价值计算失败，暂时算不出价值；材料明细不受影响"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:58
+#: src/components/arknights/CostSection.tsx:68
 msgctxt "training cost"
 msgid "现在"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:21
+#: src/components/arknights/CostSection.tsx:31
 msgctxt "training cost"
 msgid "现在到满的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:20
+#: src/components/arknights/CostSection.tsx:30
 msgctxt "training cost"
 msgid "现在到目标的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:59
+#: src/components/arknights/extraFields.tsx:181
 msgctxt "training cost"
-msgid "目标"
+msgid "现在用技巧集能省多少：这个技能从现在的专精到专三的材料价值。已经专精过的那几级省不回来。"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:22
+#: src/components/arknights/extraFields.tsx:160
 msgctxt "training cost"
-msgid "目标到满的材料"
+msgid "现在用特训邀请函能省多少：从现在的练度到精二 1 级的材料价值。已经练过的那一段省不回来，所以练得越多，数越小。"
+msgstr ""
+
+#: src/components/arknights/CostSection.tsx:432
+msgctxt "training cost"
+msgid "现在用能省"
 msgstr ""
 
 #: src/components/arknights/CostSection.tsx:360
 msgctxt "training cost"
+msgid "现在用这张道具能省多少，从这名干员现在的练度算起；已经练过的那一段省不回来。"
+msgstr ""
+
+#. %d: 4, 5 or 6; %s$…: the most each voucher saves on an operator of that rarity
+#: src/components/arknights/CostSection.tsx:343
+msgctxt "training cost"
+msgid "现在能省的，占这张道具在 %d 星干员身上最多能省的几成：精二 %s$elite2（从精零 1 级用），专三 %s$mastery3（从专零用），精二满级 %s$levelMax（从精二 1 级用）。"
+msgstr ""
+
+#: src/components/arknights/CostSection.tsx:69
+msgctxt "training cost"
+msgid "目标"
+msgstr ""
+
+#: src/components/arknights/CostSection.tsx:32
+msgctxt "training cost"
+msgid "目标到满的材料"
+msgstr ""
+
+#: src/components/arknights/CostSection.tsx:419
+msgctxt "training cost"
 msgid "直升道具"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:283
+#: src/components/arknights/CostSection.tsx:293
 msgctxt "training cost"
 msgid "第 %d$rank / %d$count"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:323
+#: src/components/arknights/CostSection.tsx:382
 msgctxt "training cost"
 msgid "精二"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:351
+#: src/components/arknights/CostSection.tsx:410
 msgctxt "training cost"
 msgid "精二满级"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:366
-msgctxt "training cost"
-msgid "能省"
-msgstr ""
-
-#: src/components/arknights/CostSection.tsx:45
+#: src/components/arknights/CostSection.tsx:55
 msgctxt "training cost"
 msgid "计划之后"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:42
+#: src/components/arknights/CostSection.tsx:52
 msgctxt "training cost"
 msgid "还差"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:57
+#: src/components/arknights/CostSection.tsx:67
 msgctxt "training cost"
 msgid "零"
 msgstr ""
