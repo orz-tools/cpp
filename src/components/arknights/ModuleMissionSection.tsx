@@ -8,7 +8,7 @@ import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { useShowSidebarPanel } from '../Sidebar'
 import { DossierSection } from '../types'
-import { MissionCheck, OperatorButton, blockText, moduleCode, summaryOf, useSelectTicket } from './ModuleMissionPanel'
+import { MissionCheck, ModuleCode, OperatorButton, blockText, summaryOf, useSelectTicket } from './ModuleMissionPanel'
 import { useDoneMissions, useMissionBoard, useMissionNames } from './moduleMissionState'
 
 const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter }) => {
@@ -31,12 +31,11 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
   return (
     <div className="cpp-mm-dossier">
       {modules.map((mod) => {
-        const code = moduleCode(ga, mod.equipId)
         const name = ga.getDataManager().data.uniEquips[mod.equipId]?.name ?? ''
         if ((current.modLevel[mod.equipId] ?? 0) >= 1) {
           return (
             <div key={mod.equipId} className="cpp-mm-dossier-module">
-              <span className="cpp-mm-equip">{code}</span> {gt.pgettext('module mission', '已解锁，任务已完成')}
+              <ModuleCode charId={c.key} equipId={mod.equipId} /> {gt.pgettext('module mission', '已解锁，任务已完成')}
             </div>
           )
         }
@@ -44,7 +43,7 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
         return (
           <div key={mod.equipId} className="cpp-mm-dossier-module">
             <div className="cpp-mm-dossier-title">
-              <span className="cpp-mm-equip">{code}</span> {name}{' '}
+              <ModuleCode charId={c.key} equipId={mod.equipId} /> {name}{' '}
               <span className="cpp-mm-muted">
                 {planned >= 1
                   ? gt.pgettext('module mission', '未解锁 · 计划解锁到 %d 级').replaceAll('%d', String(planned))

@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
+  Board,
   BoardInput,
+  Candidate,
   EMPTY_HELD,
   MissionCatalog,
   MissionInput,
@@ -9,19 +11,18 @@ import {
   MissionNames,
   MissionScope,
   MissionWorld,
+  Ticket,
   buildBoard,
   capacity,
   conflict,
   fits,
-  formatPiggybackConflict,
-  formatSplitReasons,
   missionProgress,
   missionSummary,
   parseMission,
   partitionStage,
-  piggybackConflict,
-  splitReasons,
+  sortCandidates,
   successorTicket,
+  tagAlongCandidates,
 } from './moduleMissions'
 import { ArknightsCharacterStatus, Profession } from './types'
 
@@ -276,40 +277,6 @@ describe('conflict and fits', () => {
   })
 })
 
-describe('piggybackConflict', () => {
-  const anyStage = (id: string, over: Partial<MissionInput>) =>
-    parseMission(made(id, { stageId: null, ...over }), world)
-  const firstDeploy = (id: string) =>
-    anyStage(id, { template: 'EquipmentDeployCharOrder', paramList: ['5', '1', 'char_' + id] })
-
-  it('lets one first deployment through a run', () => {
-    const a = firstDeploy('a')
-    const b = firstDeploy('b')
-    const run = [parseMission(made('a', { id: 'a_stage' }), world), parseMission(made('b', { id: 'b_stage' }), world)]
-    expect(piggybackConflict(a, run, [a, b])).toEqual({ kind: 'firstDeployPiggyback', with: b.mission })
-    expect(piggybackConflict(b, run, [a, b])).toEqual({ kind: 'firstDeployPiggyback', with: a.mission })
-    expect(formatPiggybackConflict(piggybackConflict(a, run, [a, b])!, names)).toBe(
-      '和char_b的顺带任务都要第一个部署，这一次只能推进一条',
-    )
-  })
-
-  it('gives way to a stage mission that also deploys first', () => {
-    const order = firstDeploy('order')
-    const siege = parse('uniequip_003_siege_2')
-    const c = piggybackConflict(order, [parseMission(made('order', { id: 'order_stage' }), world), siege], [order])
-    expect(c).toEqual({ kind: 'firstDeploy', with: siege.mission })
-    expect(formatPiggybackConflict(c!, names)).toBe('这一次推进不了：推进之王也要第一个部署')
-  })
-
-  it('checks a squad rule against everyone else in the run', () => {
-    const star = anyStage('star', { template: 'EquipmentSquadStarStage', paramList: ['5', 'char_star', '999,3'] })
-    const six = parseMission(made('six', { stars: 6 }), world)
-    const c = piggybackConflict(star, [parseMission(made('star', { id: 'star_stage' }), world), six], [star])
-    expect(c).toMatchObject({ kind: 'squad', rule: 'stars' })
-    expect(formatPiggybackConflict(c!, names)).toBe('这一次推进不了：char_star的其他人只能是 3 星，char_six是 6 星')
-  })
-})
-
 describe('partitionStage', () => {
   it('splits 3-8 into nine runs, the first with the most', () => {
     const runs = partitionStage(onStage('main_03-08').map(parse), [])
@@ -336,32 +303,6 @@ describe('partitionStage', () => {
     const runs = partitionStage(missions, [])
     expect(performance.now() - start).toBeLessThan(1000)
     expect(runs.map((r) => r.length)).toEqual([12, 8])
-  })
-})
-
-describe('splitReasons', () => {
-  it('names the boss that splits 3-8', () => {
-    const text = formatSplitReasons(splitReasons(partitionStage(onStage('main_03-08').map(parse), [])), names)
-    const [first, ...rest] = text.split('；')
-    expect(first).toMatch(/^(.+、){8}.+都要本人歼灭碎骨$/)
-    expect(first).toContain('史尔特尔')
-    expect(rest).toContain('阿米娅一次只能带一种形态')
-  })
-
-  it('gives each class clash its own sentence', () => {
-    const runs = partitionStage([liskam, demkni, rosesa].map(parse), [])
-    expect(ids(runs)).toEqual([[liskam, rosesa], [demkni]])
-    expect(formatSplitReasons(splitReasons(runs), names)).toBe(
-      '雷蛇不编入其他重装，塞雷娅是重装；塞雷娅不编入医疗，瑰盐是医疗',
-    )
-  })
-
-  it('blames the squad size when nothing else clashes', () => {
-    const toddi = parse('uniequip_002_toddi_2')
-    const others = Array.from({ length: 7 }, (_, i) => parseMission(made('o' + i, {}), world))
-    const runs = partitionStage([toddi, ...others], [])
-    expect(runs).toHaveLength(2)
-    expect(formatSplitReasons(splitReasons(runs), names)).toBe('人数超过限制')
   })
 })
 
@@ -409,6 +350,7 @@ describe('buildBoard', () => {
       zoneName: '',
     }),
     isOwned: (_, st) => !!st && st.level > 0,
+    skillIds: (_, formId) => [formId + '_s1', formId + '_s2', formId + '_s3'],
   }
   const st = (elite: number, level: number, modLevel: Record<string, number> = {}): ArknightsCharacterStatus => ({
     elite,
@@ -440,6 +382,7 @@ describe('buildBoard', () => {
       scope,
       rarities: [],
       held: EMPTY_HELD,
+      tagAlongs: null,
       ...over,
     })
   const equipsOf = (b: ReturnType<typeof board>) =>
@@ -540,6 +483,7 @@ describe('buildBoard', () => {
       scope: 'all',
       rarities: [],
       held: EMPTY_HELD,
+      tagAlongs: null,
     })
     expect(b.tickets.map((t) => [t.missions.map((x) => x.id), t.unknown])).toEqual([
       [['plain'], false],
@@ -623,17 +567,360 @@ describe('buildBoard', () => {
     expect(plan.stale).toBe(0)
   })
 
-  it('says which piggyback cannot move in its run', () => {
-    const s23 = board('all').tickets.find((t) => t.missions.some((x) => x.id === swire))!
-    expect(s23.missions.map((x) => x.id).sort()).toEqual([swire, vulpis].sort())
-    expect([...s23.piggybackConflicts.keys()]).toEqual([swireAny])
-    expect(formatPiggybackConflict(s23.piggybackConflicts.get(swireAny)!, names)).toBe(
-      '这一次推进不了：诗怀雅的其他人只能是近卫，忍冬是先锋',
-    )
+  const plainAny: Partial<MissionInput> = { template: 'EquipmentDamageTotal', paramList: ['c', '80000', '0'] }
+  const firstAny: Partial<MissionInput> = { template: 'EquipmentDeployCharOrder', paramList: ['5', '1', 'c'] }
+  const siegeFirst: Partial<MissionInput> = {
+    template: 'EquipmentDeployOneNoEvac',
+    paramList: fx.exUniEquips.missionList['uniequip_003_siege_2'].paramList,
+  }
+  /** 手写的模组：给了 stage 时有一条 main_x 的关卡任务，另外几条不限关卡任务 */
+  const hand = (
+    name: string,
+    {
+      stage,
+      anyStage = [plainAny],
+      ...over
+    }: Partial<MissionInput> & { stage?: Partial<MissionInput>; anyStage?: Partial<MissionInput>[] } = {},
+  ): MissionModule => {
+    const base = { charId: 'char_' + name, formId: 'char_' + name, equipId: 'uniequip_' + name, ...over }
+    return {
+      equipId: base.equipId,
+      charId: base.charId,
+      stars: base.stars ?? 5,
+      unlockLevel: 50,
+      missions: [
+        ...(stage ? [made(name + '_stage', { ...base, ...stage })] : []),
+        ...anyStage.map((x, i) => made(`${name}_${i + 1}`, { ...base, stageId: null, ...x })),
+      ],
+    }
+  }
+  /** 手写的干员都精二 90 级 */
+  const handBoard = (modules: MissionModule[], over: Partial<BoardInput> = {}) =>
+    buildBoard({
+      catalog: { ...catalog, modules },
+      current: Object.fromEntries(modules.map((m) => [m.charId, st(2, 90)])),
+      goal: {},
+      doneMissions: [],
+      goalOrder: [],
+      scope: 'open',
+      rarities: [],
+      held: EMPTY_HELD,
+      tagAlongs: null,
+      ...over,
+    })
+  const ticketWith = (b: Board, id: string) => b.tickets.find((t) => t.missions.some((x) => x.id === id))!
+  const forms = (b: Board, t: Ticket) => {
+    const { planned, others } = tagAlongCandidates(b, t)
+    return [...planned, ...others].map((c) => c.formId)
+  }
 
-    const t42 = board('open').tickets.find((t) => t.stageId === 'main_04-02')!
+  it('hangs only what the run can advance, for the form it brings', () => {
+    const all = board('all')
+    const s23 = ticketWith(all, swire)
+    expect(s23.missions.map((x) => x.id).sort()).toEqual([swire, vulpis].sort())
+    // 诗怀雅那条要其他人都是近卫，忍冬是先锋
+    expect(s23.piggyback.map((x) => x.id)).toEqual(['uniequip_002_vulpis_1'])
+
+    const t42 = ticketWith(board('open'), sunbr)
     expect(t42.piggyback.map((x) => x.id).sort()).toEqual([fang2Any, sunbrAny].sort())
-    expect(t42.piggybackConflicts.size).toBe(0)
+
+    const amiyaPiggyback = (stageMission: string) =>
+      ticketWith(all, stageMission)
+        .piggyback.filter((x) => x.charId === 'char_002_amiya')
+        .map((x) => x.id)
+    expect(amiyaPiggyback(amiyaMedic)).toEqual(['uniequip_002_amiya3_1'])
+    expect(amiyaPiggyback(amiyaCaster)).toEqual(['uniequip_002_amiya_1'])
+  })
+
+  it('lets one first deployment through a run, in the order of the run', () => {
+    const modules = [hand('a', { stage: {}, anyStage: [firstAny] }), hand('b', { stage: {}, anyStage: [firstAny] })]
+    const piggyback = (goalOrder: string[]) => handBoard(modules, { goalOrder }).tickets[0].piggyback.map((x) => x.id)
+    expect(piggyback([])).toEqual(['a_1'])
+    expect(piggyback(['char_b'])).toEqual(['b_1'])
+  })
+
+  it('does not hang a first deployment where a stage mission deploys first', () => {
+    const b = handBoard([hand('order', { stage: {}, anyStage: [firstAny] }), hand('lead', { stage: siegeFirst })])
+    expect(b.tickets).toHaveLength(1)
+    expect(b.tickets[0].piggyback.map((x) => x.id)).toEqual(['lead_1'])
+  })
+
+  /** 在现有的基础上，几人精二 90 级 */
+  const trained = {
+    ...current,
+    char_002_amiya: { ...st(2, 90), skillLevel: 7, skillMaster: { char_1001_amiya2_s2: 3 } },
+    char_308_swire: st(2, 90),
+    char_249_mlyss: st(2, 90),
+    char_4026_vulpis: st(2, 90),
+  }
+  const amiya2 = { charId: 'char_002_amiya', formId: 'char_1001_amiya2' }
+  const amiya2Any = 'uniequip_002_amiya2_1'
+
+  it('collects the forms whose missions count, whatever the scope', () => {
+    const b = board('open', { current: trained })
+    // 霜叶没到等级，跃跃没精二，雷蛇的模组已解锁
+    expect([...b.openForms.keys()].sort()).toEqual([
+      'char_002_amiya',
+      'char_1001_amiya2',
+      'char_1036_fang2',
+      'char_1037_amiya3',
+      'char_112_siege',
+      'char_196_sunbr',
+      'char_249_mlyss',
+      'char_308_swire',
+      'char_4026_vulpis',
+    ])
+    expect(b.openForms.get('char_1001_amiya2')).toEqual({
+      charId: 'char_002_amiya',
+      formId: 'char_1001_amiya2',
+      profession: 'WARRIOR',
+      position: 'MELEE',
+      stars: 5,
+      training: { level: 90, skillLevel: 7, masters: [0, 3, 0] },
+      goalRank: Infinity,
+      missions: [input(amiya2Any)],
+    })
+    expect(b.openForms.get('char_1037_amiya3')!.missions.map((x) => x.id)).toEqual(['uniequip_002_amiya3_1'])
+    expect(b.openForms.get('char_002_amiya')!.missions.map((x) => x.id)).toEqual(['uniequip_002_amiya_1'])
+    expect(board('plan', { current: trained, rarities: [6] }).openForms).toEqual(b.openForms)
+  })
+
+  it('knows which modules are planned', () => {
+    expect([...board('open').plannedModules].sort()).toEqual([
+      'uniequip_002_frostl',
+      'uniequip_002_sunbr',
+      'uniequip_002_surtr',
+    ])
+  })
+
+  it('knows what is done outside the scope, without counting it', () => {
+    const before = board('plan', { current: trained })
+    const after = board('plan', { current: trained, doneMissions: [swireAny] })
+    expect(before.done.has(swireAny)).toBe(false)
+    expect(after.done.has(swireAny)).toBe(true)
+    expect(after.stats).toEqual(before.stats)
+  })
+
+  describe('tagAlongCandidates', () => {
+    it('leaves out who is on the ticket in any form, who cannot count yet and whose module is unlocked', () => {
+      const b = board('open', { current: trained })
+      // 诗怀雅那条要其他人都是近卫，医疗阿米娅不是
+      expect(forms(b, ticketWith(b, amiyaMedic)).sort()).toEqual([
+        'char_1036_fang2',
+        'char_112_siege',
+        'char_196_sunbr',
+        'char_249_mlyss',
+        'char_4026_vulpis',
+      ])
+    })
+
+    it('takes anyone open, whatever the scope and rarities', () => {
+      const b = board('plan', { current: trained, rarities: [4] })
+      expect(forms(b, ticketWith(b, sunbr))).toEqual(
+        expect.arrayContaining(['char_1036_fang2', 'char_112_siege', 'char_1001_amiya2']),
+      )
+    })
+
+    it('takes someone with a ticket of their own', () => {
+      const b = board('open', { current: trained })
+      expect(b.runsOf.get('char_196_sunbr')).toBe(1)
+      expect(forms(b, ticketWith(b, 'uniequip_003_siege_2'))).toContain('char_196_sunbr')
+    })
+
+    it('takes only the classes, position and rarity left, and nobody once the squad is full', () => {
+      const b = board('open', { current: trained })
+      // 4-2 不编入重装、先锋，诗怀雅那条容不下古米和芬：只剩阿米娅的三个形态，各占一行
+      expect(forms(b, ticketWith(b, sunbr)).sort()).toEqual(['char_002_amiya', 'char_1001_amiya2', 'char_1037_amiya3'])
+      const s23 = ticketWith(b, swire)
+      expect(s23.capacity.count).toBe(0)
+      expect(tagAlongCandidates(b, s23)).toEqual({ planned: [], others: [] })
+
+      const melee = hand('melee', { profession: Profession.WARRIOR, position: 'MELEE' })
+      const ranged = hand('ranged', { profession: Profession.WARRIOR, position: 'RANGED' })
+      const both = hand('both', { profession: Profession.WARRIOR, position: 'ALL' })
+      const three = hand('three', { profession: Profession.WARRIOR, position: 'MELEE', stars: 3 })
+      const pos = handBoard([
+        hand('pos', {
+          stage: { template: 'EquipmentSquadPos', paramList: ['3', 'main_x', 'c', '13,MELEE'] },
+          anyStage: [],
+        }),
+        melee,
+        ranged,
+        both,
+        three,
+      ])
+      expect(forms(pos, pos.tickets[0]).sort()).toEqual(['char_both', 'char_melee', 'char_three'])
+      const star = handBoard([
+        hand('star', {
+          stage: { template: 'EquipmentSquadStar', paramList: ['3', 'main_x', 'c', '13,3'] },
+          anyStage: [],
+        }),
+        melee,
+        three,
+      ])
+      expect(forms(star, star.tickets[0])).toEqual(['char_three'])
+    })
+
+    it('leaves out a mission the run cannot advance, and who has nothing else', () => {
+      const b = board('open', { current: trained })
+      // 11-2 要推进之王第一个部署，芬和缪尔赛思只有「每场第一个部署」
+      const list = forms(b, ticketWith(b, 'uniequip_003_siege_2'))
+      expect(list).not.toContain('char_1036_fang2')
+      expect(list).not.toContain('char_249_mlyss')
+
+      const h = handBoard([
+        hand('lead', { stage: siegeFirst, anyStage: [] }),
+        hand('two', { anyStage: [firstAny, plainAny] }),
+      ])
+      const { others } = tagAlongCandidates(h, h.tickets[0])
+      expect(others.map((c) => [c.formId, c.missions.map((x) => x.id)])).toEqual([['char_two', ['two_2']]])
+    })
+
+    it('follows the squad rule of a piggyback on the ticket', () => {
+      const h = handBoard([
+        hand('lead', {
+          stage: {},
+          anyStage: [{ template: 'EquipmentSquadProStage', paramList: ['5', 'c', '999,WARRIOR'] }],
+        }),
+        hand('guard', { profession: Profession.WARRIOR, position: 'MELEE' }),
+        hand('sniper'),
+      ])
+      const t = h.tickets[0]
+      expect(t.piggyback.map((x) => x.id)).toEqual(['lead_1'])
+      expect(forms(h, t)).toEqual(['char_guard'])
+    })
+
+    it('puts the planned modules first, in the order of the plan', () => {
+      const goalOf = (equipId?: string) => ({ ...st(2, 90), modLevel: equipId ? { [equipId]: 1 } : {} })
+      const b = handBoard(
+        [hand('host', { stage: {}, anyStage: [] }), hand('p1'), hand('p2'), hand('p3'), hand('elite'), hand('other')],
+        {
+          goal: {
+            char_p1: goalOf('uniequip_p1'),
+            char_p2: goalOf('uniequip_p2'),
+            char_p3: goalOf('uniequip_p3'),
+            char_elite: goalOf(),
+          },
+          goalOrder: ['char_elite', 'char_p2', 'char_p1'],
+        },
+      )
+      const { planned, others } = tagAlongCandidates(b, b.tickets[0])
+      // 不在计划顺序里的排在组尾
+      expect(planned.map((c) => [c.formId, c.planned])).toEqual([
+        ['char_p2', true],
+        ['char_p1', true],
+        ['char_p3', true],
+      ])
+      // 只计划了精二，没计划模组
+      expect(others.map((c) => [c.formId, c.planned])).toEqual([
+        ['char_elite', false],
+        ['char_other', false],
+      ])
+    })
+
+    it('puts the missions of a planned module first', () => {
+      const mix = { charId: 'char_mix', formId: 'char_mix' }
+      const b = handBoard([hand('host', { stage: {}, anyStage: [] }), hand('mixA', mix), hand('mixB', mix)], {
+        goal: { char_mix: { ...st(2, 90), modLevel: { uniequip_mixB: 1 } } },
+      })
+      const { planned } = tagAlongCandidates(b, b.tickets[0])
+      expect(planned.map((c) => c.missions.map((x) => x.id))).toEqual([['mixB_1', 'mixA_1']])
+    })
+
+    it('recommends fewer tickets of their own, then missions a battle at a time, more missions, higher rarity', () => {
+      const order = (...modules: MissionModule[]) => {
+        const b = handBoard([hand('host', { stage: {}, anyStage: [] }), ...modules])
+        return tagAlongCandidates(b, ticketWith(b, 'host_stage')).others.map((c) => c.formId)
+      }
+      const perBattle = { template: 'EquipmentBattleCharKilled', paramList: ['5', 'c', '10'] }
+      const busy = (over: Parameters<typeof hand>[1] = {}) => hand('busy', { stage: { stageId: 'main_y' }, ...over })
+      expect(order(busy(), hand('free'))).toEqual(['char_free', 'char_busy'])
+      expect(order(busy({ anyStage: [perBattle, plainAny], stars: 6 }), hand('free'))).toEqual([
+        'char_free',
+        'char_busy',
+      ])
+      expect(order(hand('a'), hand('b', { anyStage: [perBattle] }))).toEqual(['char_b', 'char_a'])
+      expect(
+        order(hand('a', { anyStage: [plainAny, plainAny], stars: 6 }), hand('b', { anyStage: [perBattle] })),
+      ).toEqual(['char_b', 'char_a'])
+      expect(order(hand('a'), hand('b', { anyStage: [plainAny, plainAny] }))).toEqual(['char_b', 'char_a'])
+      expect(order(hand('a', { stars: 6 }), hand('b', { anyStage: [plainAny, plainAny] }))).toEqual([
+        'char_b',
+        'char_a',
+      ])
+      expect(order(hand('a'), hand('b', { stars: 6 }))).toEqual(['char_b', 'char_a'])
+      expect(order(hand('b'), hand('a'))).toEqual(['char_a', 'char_b'])
+    })
+  })
+
+  describe('tag-alongs', () => {
+    const tagged = (
+      scope: MissionScope,
+      stageMission: string,
+      chars: { charId: string; formId: string }[],
+      over = {},
+    ) => {
+      const key = ticketWith(board(scope, { current: trained, ...over }), stageMission).key
+      const b = board(scope, { current: trained, ...over, tagAlongs: { ticket: key, chars } })
+      return { b, host: ticketWith(b, stageMission) }
+    }
+
+    it('go on the selected ticket only, or on the one that takes its place', () => {
+      const t42 = ticketWith(board('open', { current: trained }), sunbr)
+      for (const key of [t42.key, [caper, fang2, sunbr].join(',')]) {
+        const b = board('open', { current: trained, tagAlongs: { ticket: key, chars: [amiya2] } })
+        const host = ticketWith(b, sunbr)
+        expect(host.key).toBe(t42.key)
+        expect(host.tagAlongs).toEqual([{ ...amiya2, profession: 'WARRIOR', missions: [input(amiya2Any)] }])
+        expect(b.tickets.filter((t) => t.tagAlongs.length > 0).map((t) => t.key)).toEqual([t42.key])
+        // 带上一个形态以后，其他形态也不再是候选
+        expect(forms(b, host)).toEqual([])
+      }
+    })
+
+    it('take a place each, under the squad rules of their missions', () => {
+      const before = ticketWith(board('open', { current: trained }), sunbr).capacity
+      expect(tagged('open', sunbr, [amiya2]).host.capacity).toEqual({ ...before, count: before.count - 1 })
+      // 诗怀雅那条要其他人都是近卫
+      const { host } = tagged('open', 'uniequip_002_amiya2_2', [{ charId: 'char_308_swire', formId: 'char_308_swire' }])
+      expect(host.capacity).toEqual({ count: 10, professions: ['WARRIOR'] })
+    })
+
+    it('keep their ticked missions until tidied', () => {
+      const ticked = { doneMissions: [amiya2Any], held: new Set([amiya2Any]) }
+      const { b, host } = tagged('plan', sunbr, [amiya2], ticked)
+      expect(host.tagAlongs[0].missions.map((x) => x.id)).toEqual([amiya2Any])
+      expect(b.done.has(amiya2Any)).toBe(true)
+      expect(b.stale).toBe(1)
+      expect(tagged('plan', sunbr, [amiya2], { doneMissions: [amiya2Any] }).host.tagAlongs).toEqual([])
+    })
+
+    it('come from outside the scope without being counted', () => {
+      const plain = board('plan', { current: trained })
+      const { b, host } = tagged('plan', sunbr, [amiya2])
+      expect(host.tagAlongs.map((x) => x.formId)).toEqual(['char_1001_amiya2'])
+      expect(b.stats).toEqual(plain.stats)
+      expect(b.anyStage).toEqual(plain.anyStage)
+    })
+
+    it('leave out who is not there, on the ticket already, barred, or has nothing to advance', () => {
+      const { host } = tagged('open', sunbr, [
+        { charId: 'char_x', formId: 'char_x' },
+        { charId: 'char_308_swire', formId: 'char_1001_amiya2' },
+        { charId: 'char_196_sunbr', formId: 'char_196_sunbr' },
+        // 4-2 不编入先锋
+        { charId: 'char_112_siege', formId: 'char_112_siege' },
+        amiya2,
+      ])
+      expect(host.tagAlongs.map((x) => x.formId)).toEqual(['char_1001_amiya2'])
+      // 11-2 要推进之王第一个部署，芬只有「每场第一个部署」
+      const fang = { charId: 'char_1036_fang2', formId: 'char_1036_fang2' }
+      expect(tagged('open', 'uniequip_003_siege_2', [fang]).host.tagAlongs).toEqual([])
+      // 两人都只有「每场第一个部署」时，后带的那个被略去
+      const mlyss = { charId: 'char_249_mlyss', formId: 'char_249_mlyss' }
+      const both = tagged('open', 'uniequip_002_amiya2_2', [mlyss, fang]).host
+      expect(both.tagAlongs.map((x) => x.formId)).toEqual(['char_249_mlyss'])
+    })
   })
 
   it('returns the last board for the same input', () => {
@@ -646,6 +933,7 @@ describe('buildBoard', () => {
       scope: 'plan',
       rarities: [],
       held: EMPTY_HELD,
+      tagAlongs: null,
     }
     expect(buildBoard(input)).toBe(buildBoard({ ...input }))
     expect(buildBoard(input)).not.toBe(buildBoard({ ...input, doneMissions: [] }))
@@ -656,6 +944,35 @@ describe('buildBoard', () => {
     const kept = buildBoard(held)
     expect(buildBoard(input)).toBe(plain)
     expect(buildBoard(held)).toBe(kept)
+  })
+})
+
+describe('sortCandidates', () => {
+  const cand = (formId: string, level: number, masters: number[], skillLevel = 7): Candidate => ({
+    charId: formId,
+    formId,
+    profession: Profession.SNIPER,
+    position: 'RANGED',
+    stars: 5,
+    training: { level, skillLevel, masters },
+    goalRank: Infinity,
+    missions: [],
+    planned: false,
+  })
+  const list = [
+    cand('a', 80, [0, 0, 0]),
+    cand('b', 90, [1, 1, 0]),
+    cand('c', 90, [3, 0, 0]),
+    cand('d', 90, [2, 0, 0], 4),
+    cand('e', 90, [0, 0, 2]),
+    cand('f', 70, [0, 0, 0]),
+  ]
+  const order = (sort: Parameters<typeof sortCandidates>[1]) => sortCandidates(list, sort).map((c) => c.formId)
+
+  it('compares the level, then the masteries, then the skill level, keeping the order of ties', () => {
+    expect(order('recommended')).toEqual(['a', 'b', 'c', 'd', 'e', 'f'])
+    expect(order('trainingHigh')).toEqual(['c', 'b', 'e', 'd', 'a', 'f'])
+    expect(order('trainingLow')).toEqual(['f', 'a', 'd', 'b', 'e', 'c'])
   })
 })
 

@@ -1050,6 +1050,10 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         return info
       },
       isOwned: (charId, status) => !uda.isAbsentCharacter(this.getCharacter(charId), status ?? empty),
+      skillIds: (charId, formId) =>
+        this.getCharacter(charId)
+          .skills.filter((x) => x.rawCharId === formId)
+          .map((x) => x.skillId),
     }
   }
 

@@ -7,7 +7,7 @@ import { MaterialGroup } from '../../pkg/cpp-arknights/stageEfficiency'
 import { gt } from '../../pkg/gt'
 import { CountTag, StageToggleProps, TriStateCheckbox } from '../ConfigUi'
 import { ItemIcon } from '../Icons'
-import { focusFrameAtom, useFocusFrame } from '../focusFrame'
+import { focusFrameAtom, measureIn, useFocusFrame } from '../focusFrame'
 import { StageCategoryGroup, groupStages } from '../stageGroups'
 import { ValueTag } from '../Value'
 import {
@@ -173,9 +173,9 @@ const ChapterWide = memo(
     useEffect(() => {
       const zoneId = request && model.stages[request.target.slice('stage:'.length)]?.zoneId
       const scroll = zonesRef.current
-      const zone = zoneId && scroll?.querySelector(`[data-stage-zone="${CSS.escape(zoneId)}"]`)
+      const zone = zoneId && scroll?.querySelector<HTMLElement>(`[data-stage-zone="${CSS.escape(zoneId)}"]`)
       if (!scroll || !zone) return
-      scroll.scrollTop += zone.getBoundingClientRect().top - scroll.getBoundingClientRect().top
+      scroll.scrollTop += measureIn(zone, scroll).top
     }, [request, model])
     return (
       <div className="cpp-stages-wide-chapter">

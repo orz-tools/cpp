@@ -5,9 +5,12 @@ import type { ArknightsAdapter } from '../../pkg/cpp-arknights/GameAdapter'
 import {
   Board,
   BoardInput,
+  CandidateSort,
   EMPTY_HELD,
   MissionNames,
   MissionScope,
+  TagAlongRef,
+  TagAlongs,
   buildBoard,
   missionScopes,
 } from '../../pkg/cpp-arknights/moduleMissions'
@@ -95,6 +98,41 @@ export const missionPrefsAtom = atom(
 /** 选中的券的 key */
 export const selectedTicketAtom = atom<string | null>(null)
 
+/** 选中的券上带上的人，见 BoardInput.tagAlongs。不存盘，选别的券就清空 */
+export const tagAlongsAtom = atom<TagAlongs | null>(null)
+
+/** 候选弹窗的排序，记到刷新为止 */
+export const candidateSortAtom = atom<CandidateSort>('recommended')
+
+type StoreHost = Pick<UserDataHost, 'store'>
+
+/** 记的是别的券时，换成这张券的；同一名干员（任何形态）已经带上时不加 */
+export function addTagAlong(cpp: StoreHost, ticket: string, ref: TagAlongRef) {
+  const cur = cpp.store.get(tagAlongsAtom)
+  const chars = cur?.ticket === ticket ? cur.chars : []
+  if (chars.some((x) => x.charId === ref.charId)) return
+  cpp.store.set(tagAlongsAtom, { ticket, chars: [...chars, ref] })
+}
+
+/** 拿空了是 null */
+export function dropTagAlong(cpp: StoreHost, ticket: string, charId: string) {
+  const cur = cpp.store.get(tagAlongsAtom)
+  if (cur?.ticket !== ticket || !cur.chars.some((x) => x.charId === charId)) return
+  const chars = cur.chars.filter((x) => x.charId !== charId)
+  cpp.store.set(tagAlongsAtom, chars.length > 0 ? { ticket, chars } : null)
+}
+
+/** 选了 key 这张券（null 是取消选中）：不是带人的那张就清空 */
+export function keepTagAlongsFor(cpp: StoreHost, key: string | null) {
+  const cur = cpp.store.get(tagAlongsAtom)
+  if (cur && cur.ticket !== key) cpp.store.set(tagAlongsAtom, null)
+}
+
+/** 改记到 key 上，只留 refs；refs 空了就清空 */
+export function moveTagAlongs(cpp: StoreHost, key: string, refs: readonly TagAlongRef[]) {
+  cpp.store.set(tagAlongsAtom, refs.length > 0 ? { ticket: key, chars: refs } : null)
+}
+
 export type MissionGroup = 'anyStage' | 'blocked' | 'used'
 export const openGroupsAtom = atom<Partial<Record<MissionGroup, boolean>>>({})
 
@@ -117,6 +155,7 @@ export function useBoardInput(): BoardInput {
   const data = useAtomValue(useAtoms<Arknights>().dataAtom)
   const prefs = useAtomValue(missionPrefsAtom)
   const held = useAtomValue(heldMissionsAtom)
+  const tagAlongs = useAtomValue(tagAlongsAtom)
   return {
     catalog: ga.getMissionCatalog(),
     current: data.current,
@@ -126,6 +165,7 @@ export function useBoardInput(): BoardInput {
     scope: prefs.scope,
     rarities: prefs.rarities,
     held,
+    tagAlongs,
   }
 }
 

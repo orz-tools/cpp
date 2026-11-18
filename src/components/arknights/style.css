@@ -1771,6 +1771,18 @@ section:first-child > .cpp-stages-wide-section {
   text-decoration: line-through;
 }
 
+/* 带上的人：虚线框，名字前一个灰色的「+」 */
+.cpp-mm-chip.is-tag-along {
+  border-style: dashed;
+  border-color: rgba(17, 20, 24, 0.3);
+}
+
+.cpp-mm-tag-plus {
+  margin-left: 2px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  font-weight: 600;
+}
+
 .cpp-mm-name {
   display: inline-flex;
   align-items: center;
@@ -1840,6 +1852,42 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-mm-cap-note {
   flex-basis: 100%;
+}
+
+/* 选中的券上「还能编入」那一行打开候选弹窗；券的 overflow 会裁掉外面的焦点框，所以画在里面 */
+.cpp-mm-cap.is-button,
+.cpp-mm-cap-button {
+  cursor: pointer;
+}
+
+.cpp-mm-cap.is-button:hover,
+.cpp-mm-cap.is-button.is-open,
+.cpp-mm-cap-button:hover,
+.cpp-mm-cap-button.is-open {
+  background: rgba(143, 153, 168, 0.15);
+}
+
+.cpp-mm-cap.is-button:focus-visible,
+.cpp-mm-cap-button:focus-visible {
+  outline: 2px solid var(--bp-palette-blue-4, #4c90f0);
+  outline-offset: -2px;
+}
+
+.cpp-mm-cap.is-button .cpp-mm-pros {
+  margin-left: auto;
+}
+
+.cpp-mm-cap-caret {
+  margin-left: 2px;
+  vertical-align: -1px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-cap-button {
+  display: inline-block;
+  margin-left: -6px;
+  padding: 2px 6px;
+  border-radius: 3px;
 }
 
 .cpp-mm-pros {
@@ -1928,13 +1976,24 @@ section:first-child > .cpp-stages-wide-section {
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
-.cpp-mm-piggy.is-off .cpp-mm-summary,
-.cpp-mm-table-piggy.is-off .cpp-mm-summary {
+/* 带上的人：左栏没有勾选框，是灰色的「+」，和勾选框一样宽；「×」在第一行最右边 */
+.cpp-mm-tag-mark {
+  flex: none;
+  width: 16px;
+  margin: 3px 8px 0 0;
   color: var(--bp-palette-gray-1, #5f6b7c);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
 }
 
-.cpp-mm-piggy .cpp-mm-note {
-  margin-top: 1px;
+.cpp-mm-run-row.is-tag-along > .cpp-mm-run-who {
+  flex: 1 1 auto;
+}
+
+.cpp-mm-run-line > .cpp-mm-tag-drop {
+  margin-left: auto;
 }
 
 .cpp-mm-run-line {
@@ -2025,14 +2084,14 @@ section:first-child > .cpp-stages-wide-section {
   gap: 2px;
 }
 
-/* 大窗口：和「关于」的大窗口一样大，两栏各自滚动 */
+/* 大窗口：和「关卡」的大窗口一样大，两栏各自滚动 */
 .cpp-mm-wide {
   display: grid;
   grid-template-columns: 360px minmax(0, 1fr);
   column-gap: 15px;
-  width: 860px;
+  width: 1110px;
   max-width: calc(80vw - 40px);
-  height: min(70vh, 720px);
+  height: min(78vh, 720px);
 }
 
 .cpp-mm-wide-left,
@@ -2055,6 +2114,27 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-detail-title {
   margin: 0 0 2px;
   font-size: 18px;
+}
+
+/* 编满了，弹窗关掉以后焦点在这里 */
+.cpp-mm-detail-title:focus {
+  outline: none;
+}
+
+/* 「这一关还有 1 次：第 2 次 华法琳」：链接和句子同色 */
+.cpp-mm-siblings {
+  font-size: 13px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-siblings a,
+.cpp-mm-siblings a:hover {
+  color: inherit;
+  cursor: pointer;
+}
+
+.cpp-mm-siblings a:hover {
+  text-decoration: underline;
 }
 
 .cpp-mm-detail-label {
@@ -2096,6 +2176,10 @@ section:first-child > .cpp-stages-wide-section {
   margin: 0;
 }
 
+.cpp-mm-table-piggy.is-tag-along .cpp-mm-run-line {
+  gap: 2px;
+}
+
 /* 不用滚到底就能按 */
 .cpp-mm-wide-right .cpp-mm-run-actions {
   position: sticky;
@@ -2112,6 +2196,145 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-mm-summary-big .cpp-mm-num {
   font-size: 22px;
+}
+
+/* 候选弹窗：上半截固定，候选列表自己滚动 */
+.cpp-mm-picker {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  max-width: calc(100vw - 20px);
+  max-height: min(70vh, 620px);
+  font-size: 13px;
+}
+
+.cpp-mm-picker-head {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px 6px;
+  border-bottom: 1px solid rgba(17, 20, 24, 0.1);
+}
+
+.cpp-mm-picker-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 8px;
+}
+
+.cpp-mm-picker-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.cpp-mm-picker-label {
+  margin-right: 2px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-picker-row .bp6-button {
+  min-height: 22px;
+  padding: 0 6px;
+  font-size: 12px;
+}
+
+.cpp-mm-picker-row .cpp-mm-chip .bp6-button {
+  min-width: 18px;
+  min-height: 18px;
+  margin-right: -4px;
+  padding: 0;
+}
+
+/* 职业筛选：灰底小签，选中的深一些 */
+.cpp-mm-picker-row .bp6-button.cpp-mm-picker-pro {
+  min-height: 20px;
+  padding: 0 4px;
+  background: rgba(143, 153, 168, 0.12);
+}
+
+.cpp-mm-picker-pro.bp6-button > * {
+  margin-right: 2px;
+}
+
+.cpp-mm-picker-pro.bp6-button > :last-child {
+  margin-right: 0;
+}
+
+.cpp-mm-picker-row .bp6-button.cpp-mm-picker-pro:hover {
+  background: rgba(143, 153, 168, 0.25);
+}
+
+.cpp-mm-picker-row .bp6-button.cpp-mm-picker-pro.bp6-active {
+  background: rgba(143, 153, 168, 0.45);
+}
+
+.cpp-mm-picker-pro .bp6-icon,
+.cpp-mm-picker-pro svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cpp-mm-picker-row > .cpp-mm-pro.is-barred {
+  margin: 0 4px;
+}
+
+.cpp-mm-picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  padding: 6px 10px 10px;
+  overflow: auto;
+}
+
+.cpp-mm-picker-group {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-cand {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.cpp-mm-cand > .cpp-mm-picker-add.bp6-button {
+  flex: none;
+  min-width: 20px;
+  min-height: 20px;
+  margin-top: 1px;
+  padding: 0;
+  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.25);
+}
+
+.cpp-mm-cand-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cpp-mm-cand-training {
+  flex: none;
+  margin-left: auto;
+  padding-left: 8px;
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  white-space: nowrap;
+}
+
+.cpp-mm-cand-summary {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-mm-cand-more {
+  color: var(--bp-palette-gray-3, #8f99a8);
 }
 
 /* 档案一节 */

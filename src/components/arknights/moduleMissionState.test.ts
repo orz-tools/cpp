@@ -4,12 +4,18 @@ import type { IGameAdapter } from '../../pkg/cpp-basic'
 import type { Arknights } from '../../pkg/cpp-arknights/types'
 import { UserData, UserDataAtomHolder, newUserData } from '../../pkg/cpp-core/UserData'
 import {
+  addTagAlong,
+  candidateSortAtom,
+  dropTagAlong,
   heldMissionsAtom,
+  keepTagAlongsFor,
   markRunDone,
   missionPrefsAtom,
+  moveTagAlongs,
   readMissionPrefs,
   releaseMissions,
   setMissionsDone,
+  tagAlongsAtom,
   tidyMissions,
   toggleMission,
 } from './moduleMissionState'
@@ -33,8 +39,12 @@ function setup(doneMissions: string[]) {
     atoms,
     done: () => store.get(atoms.atoms.dataAtom).doneMissions,
     held: () => [...store.get(heldMissionsAtom)].sort(),
+    tagAlongs: () => store.get(tagAlongsAtom),
   }
 }
+
+const a = { charId: 'char_a', formId: 'char_a' }
+const b = { charId: 'char_b', formId: 'char_b' }
 
 describe('module mission state', () => {
   it('marks a run done and reports only the ids it added', () => {
@@ -85,6 +95,63 @@ describe('module mission state', () => {
     toggleMission(cpp, 'b', true)
     cpp.store.set(missionPrefsAtom, { scope: 'owned', rarities: [6] })
     expect(cpp.held()).toEqual([])
+  })
+
+  it('adds tag-alongs to one ticket, in the order they come', () => {
+    const cpp = setup([])
+    addTagAlong(cpp, 't1', a)
+    addTagAlong(cpp, 't1', b)
+    expect(cpp.tagAlongs()).toEqual({ ticket: 't1', chars: [a, b] })
+    // 同一人的另一个形态
+    addTagAlong(cpp, 't1', { charId: 'char_a', formId: 'char_a2' })
+    expect(cpp.tagAlongs()).toEqual({ ticket: 't1', chars: [a, b] })
+    addTagAlong(cpp, 't2', b)
+    expect(cpp.tagAlongs()).toEqual({ ticket: 't2', chars: [b] })
+  })
+
+  it('drops a tag-along from its own ticket only', () => {
+    const cpp = setup([])
+    addTagAlong(cpp, 't1', a)
+    addTagAlong(cpp, 't1', b)
+    dropTagAlong(cpp, 't2', 'char_a')
+    expect(cpp.tagAlongs()).toEqual({ ticket: 't1', chars: [a, b] })
+    dropTagAlong(cpp, 't1', 'char_a')
+    expect(cpp.tagAlongs()).toEqual({ ticket: 't1', chars: [b] })
+    dropTagAlong(cpp, 't1', 'char_b')
+    expect(cpp.tagAlongs()).toBeNull()
+  })
+
+  it('clears the tag-alongs when another ticket is selected, or none', () => {
+    const cpp = setup([])
+    cpp.store.set(candidateSortAtom, 'trainingHigh')
+    addTagAlong(cpp, 't1', a)
+    keepTagAlongsFor(cpp, 't1')
+    expect(cpp.tagAlongs()).toEqual({ ticket: 't1', chars: [a] })
+    keepTagAlongsFor(cpp, 't2')
+    expect(cpp.tagAlongs()).toBeNull()
+    addTagAlong(cpp, 't1', a)
+    keepTagAlongsFor(cpp, null)
+    expect(cpp.tagAlongs()).toBeNull()
+    // 排序记到刷新为止
+    expect(cpp.store.get(candidateSortAtom)).toBe('trainingHigh')
+  })
+
+  it('moves the tag-alongs to the ticket that takes the place of theirs', () => {
+    const cpp = setup([])
+    addTagAlong(cpp, 't1', a)
+    addTagAlong(cpp, 't1', b)
+    moveTagAlongs(cpp, 't3', [b])
+    expect(cpp.tagAlongs()).toEqual({ ticket: 't3', chars: [b] })
+    moveTagAlongs(cpp, 't4', [])
+    expect(cpp.tagAlongs()).toBeNull()
+  })
+
+  it('keeps the tag-alongs when the scope changes, and recommends by default', () => {
+    const cpp = setup([])
+    expect(cpp.store.get(candidateSortAtom)).toBe('recommended')
+    addTagAlong(cpp, 't1', a)
+    cpp.store.set(missionPrefsAtom, { scope: 'owned', rarities: [6] })
+    expect(cpp.tagAlongs()).toEqual({ ticket: 't1', chars: [a] })
   })
 
   it('reads the stored scope and rarities, or the defaults', () => {
