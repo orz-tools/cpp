@@ -2772,11 +2772,12 @@ section:first-child > .cpp-stages-wide-section {
   background: var(--bp-palette-blue-3, #2d72d2);
 }
 
+/* 墙宽是面板的 300px 减去列表的竖滚动条：滚动条宽过 17px 时六个 40px 头像放不下，头像就略缩小，免得列表横着滚；右边 4px 留给伸出头像的勾 */
 .cpp-skins-wall {
   display: grid;
-  grid-template-columns: repeat(6, 40px);
+  grid-template-columns: repeat(6, minmax(0, 40px));
   gap: 5px;
-  padding: 6px 8px 10px 14px;
+  padding: 6px 4px 10px 14px;
 }
 
 .cpp-skins-tile-wrap.bp6-popover-target {
@@ -2786,8 +2787,8 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-skins-tile {
   position: relative;
   display: block;
-  width: 40px;
-  height: 40px;
+  width: 100%;
+  aspect-ratio: 1;
   border-radius: 3px;
   cursor: pointer;
 }
