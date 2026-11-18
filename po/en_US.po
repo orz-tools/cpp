@@ -175,7 +175,7 @@ msgstr "Value Delta"
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr "Drop Rate Data from Penguin Statistics"
 
-#: src/components/TaskList.tsx:139
+#: src/components/TaskList.tsx:141
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
@@ -388,7 +388,7 @@ msgstr "Copy Name"
 msgid "如今"
 msgstr "Current"
 
-#: src/components/TaskList.tsx:121
+#: src/components/TaskList.tsx:123
 msgid "完成"
 msgstr "Complete"
 
@@ -535,7 +535,7 @@ msgstr "Documentation"
 msgid "弹出成大窗口"
 msgstr "Open in a window"
 
-#: src/components/TaskList.tsx:132
+#: src/components/TaskList.tsx:134
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
 
@@ -2378,81 +2378,82 @@ msgid "精零"
 msgstr "E0"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:260
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:266
 msgctxt "arknights task"
 msgid "%d$number 技能专一: %s$name"
 msgstr "Skill %d$number M1: %s$name"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:268
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:274
 msgctxt "arknights task"
 msgid "%d$number 技能专三: %s$name"
 msgstr "Skill %d$number M3: %s$name"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:264
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:270
 msgctxt "arknights task"
 msgid "%d$number 技能专二: %s$name"
 msgstr "Skill %d$number M2: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:279
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:285
 msgctxt "arknights task"
 msgid "%s$code 模组 1 级: %s$name"
 msgstr "Module-%s$code L1: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:283
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:289
 msgctxt "arknights task"
 msgid "%s$code 模组 2 级: %s$name"
 msgstr "Module-%s$code L2: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:287
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:293
 msgctxt "arknights task"
 msgid "%s$code 模组 3 级: %s$name"
 msgstr "Module-%s$code L3: %s$name"
 
 #. %d: number
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:240
+#: src/components/arknights/SpecialOperatorSection.tsx:59
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:246
 msgctxt "arknights task"
 msgid "技能 %d 级"
 msgstr "Skill Level %d"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:238
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:244
 msgctxt "arknights task"
 msgid "招募"
 msgstr "Recruit"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:246
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:252
 msgctxt "arknights task"
 msgid "精一"
 msgstr "Promote to Elite 1"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:252
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:258
 msgctxt "arknights task"
 msgid "精一等级 %d$from -> %d$to"
 msgstr "E1 Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:247
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:253
 msgctxt "arknights task"
 msgid "精二"
 msgstr "Promote to Elite 2"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:253
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:259
 msgctxt "arknights task"
 msgid "精二等级 %d$from -> %d$to"
 msgstr "E2 Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:245
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:251
 msgctxt "arknights task"
 msgid "精零"
 msgstr "Promote to Non-Elite"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:251
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:257
 msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
@@ -2600,6 +2601,11 @@ msgstr "Outfits"
 msgctxt "dossier section"
 msgid "模组任务"
 msgstr "Module missions"
+
+#: src/components/arknights/SpecialOperatorSection.tsx:284
+msgctxt "dossier section"
+msgid "特勤任务"
+msgstr "Special Operator"
 
 #: src/components/CharacterDossier.tsx:36
 msgctxt "dossier section"
@@ -4800,6 +4806,106 @@ msgctxt "skins"
 msgid "默认"
 msgstr "Default"
 
+#. %s: experience from level 1 to the top level
+#: src/components/arknights/SpecialOperatorSection.tsx:119
+msgctxt "special operator"
+msgid "（整段共 %s）"
+msgstr " (%s for the whole phase)"
+
+#. %1: game mode, e.g. 集成战略; %2: its topic, e.g. 沉沦者的黑流树海
+#: src/components/arknights/taskNotes.ts:19
+msgctxt "special operator"
+msgid "%1：%2"
+msgstr "%1: %2"
+
+#. %s: elite phase, e.g. 精二
+#: src/components/arknights/SpecialOperatorSection.tsx:150
+msgctxt "special operator"
+msgid "%s时自动解锁"
+msgstr "Unlocks at %s"
+
+#. %s: elite phase, e.g. 精一
+#: src/components/arknights/SpecialOperatorSection.tsx:102
+msgctxt "special operator"
+msgid "%s等级"
+msgstr "%s level"
+
+#. %s: game mode and topic, e.g. 集成战略：沉沦者的黑流树海
+#: src/components/arknights/SpecialOperatorSection.tsx:173
+msgctxt "special operator"
+msgid "只在%s里生效；Closure++ 不记录精通，这里不标是否解锁"
+msgstr "Only in effect in %s. Closure++ does not record proficiencies, so they are not marked as unlocked here"
+
+#: src/components/arknights/SpecialOperatorSection.tsx:35
+msgctxt "special operator"
+msgid "在计划里"
+msgstr "Planned"
+
+#: src/components/arknights/SpecialOperatorSection.tsx:33
+msgctxt "special operator"
+msgid "已解锁"
+msgstr "Unlocked"
+
+#: src/components/arknights/SpecialOperatorSection.tsx:195
+msgctxt "special operator"
+msgid "技能"
+msgstr "Skill"
+
+#: src/components/arknights/SpecialOperatorSection.tsx:231
+msgctxt "special operator"
+msgid "模组"
+msgstr "Module"
+
+#: src/components/arknights/SpecialOperatorSection.tsx:37
+msgctxt "special operator"
+msgid "没计划"
+msgstr "Not planned"
+
+#. %s: special operator experience a level task takes
+#: src/components/arknights/taskNotes.ts:35
+msgctxt "special operator"
+msgid "特勤经验 %s"
+msgstr "SO EXP %s"
+
+#. %s: game mode and topic, e.g. 集成战略：沉沦者的黑流树海
+#: src/components/arknights/taskNotes.ts:30
+msgctxt "special operator"
+msgid "特殊干员的等级靠%s里的探索得分按比例换成的特勤经验"
+msgstr "A special operator levels up with SO EXP, converted in proportion from the exploration score in %s"
+
+#: src/components/arknights/SpecialOperatorSection.tsx:178
+msgctxt "special operator"
+msgid "等级靠探索得分按比例换成的特勤经验"
+msgstr "Levels come from SO EXP, converted in proportion from the exploration score"
+
+#: src/components/arknights/SpecialOperatorSection.tsx:183
+msgctxt "special operator"
+msgid "精英化"
+msgstr "Elite"
+
+#: src/components/arknights/SpecialOperatorSection.tsx:262
+msgctxt "special operator"
+msgid "精通"
+msgstr "Proficiencies"
+
+#. %d: the master's number, for a master without a name
+#: src/components/arknights/SpecialOperatorSection.tsx:132
+msgctxt "special operator"
+msgid "精通 %d"
+msgstr "Proficiency %d"
+
+#. %s: elite phase, e.g. 精二
+#: src/components/arknights/SpecialOperatorSection.tsx:44
+msgctxt "special operator"
+msgid "需要%s"
+msgstr "Needs %s"
+
+#. %s: elite phase, e.g. 精一; %d: level
+#: src/components/arknights/SpecialOperatorSection.tsx:48
+msgctxt "special operator"
+msgid "需要%s %d 级"
+msgstr "Needs %s Lv. %d"
+
 #: src/components/stageGroups.ts:34
 msgctxt "stage category"
 msgid "其他"
@@ -5032,7 +5138,9 @@ msgctxt "training cost"
 msgid ""
 "下面的「最多」是从能用这张道具的最早那一点用时能省的：精二从精零 1 级，专三从"
 "专零，满级从精二 1 级。"
-msgstr "“Max” below is what it saves if used at the earliest point it can be: E2 from E0 level 1, M3 from M0, max level from E2 level 1."
+msgstr ""
+"“Max” below is what it saves if used at the earliest point it can be: E2 "
+"from E0 level 1, M3 from M0, max level from E2 level 1."
 
 #: src/components/arknights/CostSection.tsx:451
 msgctxt "training cost"
@@ -5078,12 +5186,16 @@ msgstr "Max %s"
 #: src/components/arknights/extraFields.tsx:186
 msgctxt "training cost"
 msgid "最多：从专零用时能省的；条上浅蓝的那段是已经练掉的。"
-msgstr "Max: what it saves if used from M0; the light blue part of the bar is already trained."
+msgstr ""
+"Max: what it saves if used from M0; the light blue part of the bar is "
+"already trained."
 
 #: src/components/arknights/extraFields.tsx:165
 msgctxt "training cost"
 msgid "最多：从精零 1 级用时能省的；条上浅蓝的那段是已经练掉的。"
-msgstr "Max: what it saves if used from E0 level 1; the light blue part of the bar is already trained."
+msgstr ""
+"Max: what it saves if used from E0 level 1; the light blue part of the bar "
+"is already trained."
 
 #: src/components/CharacterList.tsx:745
 msgctxt "training cost"
@@ -5136,7 +5248,9 @@ msgstr "Eff. %s"
 msgctxt "training cost"
 msgid ""
 "效率：现在能省的，占同星级最多能省的几成；条的全长就是同星级最多（%s）。"
-msgstr "Efficiency: what it saves now, as a share of the most it saves on any operator of the same rarity; the full bar is that most (%s)."
+msgstr ""
+"Efficiency: what it saves now, as a share of the most it saves on any "
+"operator of the same rarity; the full bar is that most (%s)."
 
 #. %s: a list like 4★ 1472, 5★ 2909, 6★ 4272
 #: src/components/arknights/extraFields.tsx:189
@@ -5144,7 +5258,9 @@ msgctxt "training cost"
 msgid ""
 "效率：现在能省的，占同星级所有技能里最多能省的几成；条的全长就是同星级最多"
 "（%s）。"
-msgstr "Efficiency: what it saves now, as a share of the most it saves on any skill of the same rarity; the full bar is that most (%s)."
+msgstr ""
+"Efficiency: what it saves now, as a share of the most it saves on any skill "
+"of the same rarity; the full bar is that most (%s)."
 
 #: src/components/arknights/CostSection.tsx:70
 msgctxt "training cost"
@@ -5178,14 +5294,19 @@ msgctxt "training cost"
 msgid ""
 "现在用技巧集能省多少：这个技能从现在的专精到专三的材料价值。已经专精过的那几"
 "级省不回来。"
-msgstr "What an M3 voucher saves now: the materials for this skill from its current mastery to M3. Mastery levels already trained can no longer be saved."
+msgstr ""
+"What an M3 voucher saves now: the materials for this skill from its current "
+"mastery to M3. Mastery levels already trained can no longer be saved."
 
 #: src/components/arknights/extraFields.tsx:160
 msgctxt "training cost"
 msgid ""
 "现在用特训邀请函能省多少：从现在的练度到精二 1 级的材料价值。已经练过的那一段"
 "省不回来，所以练得越多，数越小。"
-msgstr "What an E2 voucher saves now: the materials from the current training to E2 level 1. What is already trained can no longer be saved, so the more trained, the lower the number."
+msgstr ""
+"What an E2 voucher saves now: the materials from the current training to E2 "
+"level 1. What is already trained can no longer be saved, so the more "
+"trained, the lower the number."
 
 #: src/components/arknights/CostSection.tsx:432
 msgctxt "training cost"
@@ -5196,7 +5317,9 @@ msgstr "Saves now"
 msgctxt "training cost"
 msgid ""
 "现在用这张道具能省多少，从这名干员现在的练度算起；已经练过的那一段省不回来。"
-msgstr "What this voucher saves if used now, counted from the operator’s current training; what is already trained can no longer be saved."
+msgstr ""
+"What this voucher saves if used now, counted from the operator’s current "
+"training; what is already trained can no longer be saved."
 
 #. %d: 4, 5 or 6; %s$…: the most each voucher saves on an operator of that rarity
 #: src/components/arknights/CostSection.tsx:343
@@ -5205,7 +5328,10 @@ msgid ""
 "现在能省的，占这张道具在 %d 星干员身上最多能省的几成：精二 %s$elite2（从精零 "
 "1 级用），专三 %s$mastery3（从专零用），精二满级 %s$levelMax（从精二 1 级"
 "用）。"
-msgstr "What it saves now, as a share of the most this voucher saves on any %d★ operator: E2 %s$elite2 (used from E0 level 1), M3 %s$mastery3 (used from M0), E2 max level %s$levelMax (used from E2 level 1)."
+msgstr ""
+"What it saves now, as a share of the most this voucher saves on any %d★ "
+"operator: E2 %s$elite2 (used from E0 level 1), M3 %s$mastery3 (used from "
+"M0), E2 max level %s$levelMax (used from E2 level 1)."
 
 #: src/components/arknights/CostSection.tsx:69
 msgctxt "training cost"

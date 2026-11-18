@@ -2,12 +2,12 @@ import React, { memo, useId } from 'react'
 import { Character } from '../../../pkg/cpp-arknights'
 import {
   hasMasteries,
-  maxSkillLevel,
   raisesPrerequisite,
   sectionCollapsed,
   setMastery,
   setSkillLevel,
   skillChanges,
+  skillLevelSteps,
 } from '../../../pkg/cpp-arknights/statusEdit'
 import { toTierShares } from '../../../pkg/cpp-arknights/survey'
 import { gt } from '../../../pkg/gt'
@@ -33,7 +33,7 @@ function levelSummary(level: number) {
     .replaceAll('%d', `${level}`)
 }
 
-/** 技能: skill level 1–7 first, then each skill's masteries with their statistics, and its (i). */
+/** 技能: skill level 1–7 (1, 4, 7 for a special operator) first, then each skill's masteries with their statistics, and its (i). */
 export const SkillSection = memo(() => {
   const { character, status, current, setStatus, survey } = useEditor()
   const titleId = useId()
@@ -56,7 +56,7 @@ export const SkillSection = memo(() => {
       }
     }
   }
-  const levels = Array.from({ length: maxSkillLevel(character) }, (_, i) => i + 1)
+  const levels = skillLevelSteps(character)
 
   return (
     <Section

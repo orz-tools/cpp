@@ -14,7 +14,9 @@ import { gt } from '../pkg/gt'
 import { CharacterContextMenu, menuItemKeyDown } from './CharacterList'
 import { CachedImg, ItemIcon } from './Icons'
 import { PeekTrigger } from './Peek'
-import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
+import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
+import { useRequestFrame } from './focusFrame'
+import { TaskNote } from './types'
 import { ValueTagProgressBar } from './Value'
 
 interface TaskListQueryParam {
@@ -153,6 +155,7 @@ export const TaskMenu = memo(
     same,
     nextSame,
     hideCosts,
+    notes,
   }: {
     task: Task<G>
     extra: TaskExtra
@@ -160,6 +163,7 @@ export const TaskMenu = memo(
     same?: boolean
     nextSame?: boolean
     hideCosts: boolean
+    notes: readonly TaskNote[]
   }) => {
     const ga = useGameAdapter<G>()
     const character = ga.getCharacter(task.charId)
@@ -188,7 +192,16 @@ export const TaskMenu = memo(
       />
     ))
 
-    const submenu = hideCosts && renderedCosts.length > 0
+    const renderedNotes = notes.map((note) => (
+      <TaskNoteRow
+        key={`note:${note.key}`}
+        charId={character.key}
+        note={note}
+        style={hideCosts ? {} : { marginLeft: 22 }}
+      />
+    ))
+
+    const submenu = hideCosts && (renderedNotes.length > 0 || renderedCosts.length > 0)
 
     const starred = details.directStars.has(task)
       ? StarStatus.Starred
@@ -285,9 +298,10 @@ export const TaskMenu = memo(
               }
               popoverProps={{ usePortal: true, matchTargetWidth: true }}
             >
-              {submenu ? renderedCosts : null}
+              {submenu ? [...renderedNotes, ...renderedCosts] : null}
             </MenuItem>
           </ContextMenu>
+          {hideCosts ? null : renderedNotes}
           {hideCosts ? null : renderedCosts}
           {nextSame && !hideCosts ? <MenuDivider /> : null}
         </Menu>
@@ -371,6 +385,30 @@ const ItemStack = memo(
   },
 )
 
+const TaskNoteRow = memo(({ charId, note, style }: { charId: string; note: TaskNote; style?: React.CSSProperties }) => {
+  const showDossier = useShowCharacterDossier()
+  const frame = useRequestFrame()
+  const { dossier } = note
+  const onClick = useEvent(() => {
+    if (!dossier) return
+    showDossier(charId, { section: dossier.section })
+    frame(dossier.frame)
+  })
+  return (
+    <MenuItem
+      className={dossier ? undefined : 'cpp-menu-not-interactive'}
+      icon={note.icon}
+      text={note.text}
+      htmlTitle={note.title}
+      onClick={dossier ? onClick : undefined}
+      onContextMenu={preventDefault}
+      style={{ fontWeight: 'normal', ...style }}
+    />
+  )
+})
+
+const NO_NOTES: readonly TaskNote[] = []
+
 const HideCostsButton = memo(() => {
   const [param, setParam] = useAtom(queryParamAtom)
   return (
@@ -393,15 +431,18 @@ export const TaskList = memo(<G extends IGame>() => {
 
   const hideCosts = param.hideCosts || false
   const list = useAtomValue(atoms.goalTasksWithExtra)
+  const ga = useGameAdapter<G>()
+  const taskNotes = useComponents().taskNotes
+  const notes = useMemo(() => list.map(([task]) => (taskNotes ? taskNotes(ga, task) : NO_NOTES)), [list, ga, taskNotes])
   const itemSize = useCallback<(index: number) => number>(
     (index) => {
       const same = list[index - 1]?.[0].charId === list[index][0].charId
       const nextSame = list[index + 1]?.[0].charId === list[index][0].charId
-      const costs = hideCosts ? 0 : list[index][0].requires.length * 30
+      const costs = hideCosts ? 0 : (list[index][0].requires.length + notes[index].length) * 30
       const base = costs + (same ? 0 : 30) + 30 + (hideCosts && nextSame ? 0 : 11)
       return base
     },
-    [list, hideCosts],
+    [list, notes, hideCosts],
   )
 
   const parentRef = useRef<HTMLUListElement>(null)
@@ -456,6 +497,7 @@ export const TaskList = memo(<G extends IGame>() => {
                 same={list[index - 1]?.[0].charId === list[index][0].charId}
                 nextSame={list[index + 1]?.[0].charId === list[index][0].charId}
                 hideCosts={param.hideCosts}
+                notes={notes[index]}
               />
             )
           })}

@@ -36,6 +36,11 @@ const characters: Record<string, Character> = {
   six: character('six', 5, [50, 80, 90], 3),
   // 像机械师：游戏数据照样列了材料
   special: Object.assign(character('special', 5, [50, 80, 90], 3), { isSpecialOperator: true }),
+  // 带上特勤数据的特殊干员：技能等级只有 1、4、7
+  nodes: Object.assign(character('nodes', 5, [50, 80, 90], 3), {
+    isSpecialOperator: true,
+    specialOperator: { skillLevels: [{ level: 4 }, { level: 7 }] },
+  }),
   // 两星，像黑角：只到精零 30 级，没有技能
   two: character('two', 1, [30], 0),
 }
@@ -97,6 +102,47 @@ describe('generateTasksForCharacter', () => {
     expect(special.flatMap((x) => x.requires)).toEqual([])
     expect(special.every((x) => uda.isManuallyTask(x))).toBe(true)
     expect(six.some((x) => uda.isManuallyTask(x))).toBe(false)
+  })
+
+  describe("steps a special operator's skill level through its missions' levels", () => {
+    const skillTasks = (charId: string, from: ArknightsCharacterStatus, to: ArknightsCharacterStatus) =>
+      setup()
+        .generateTasksForCharacter(charId, from, to)
+        .filter((x) => x.type._ === 'skill')
+
+    it('takes 1 to 7 in two steps, the second after E1', () => {
+      const tasks = setup().generateTasksForCharacter('nodes', status(0, 1), status(1, 1, { skillLevel: 7 }))
+      const skills = tasks.filter((x) => x.type._ === 'skill')
+      expect(skills.map((x) => x.type)).toEqual([
+        { _: 'skill', to: 4 },
+        { _: 'skill', to: 7 },
+      ])
+      const elite = tasks.find((x) => x.type._ === 'elite')!
+      expect(skills[1].depends).toContain(elite)
+      expect(skills[0].depends).not.toContain(elite)
+    })
+
+    it('goes on from a stored level between the steps, and stops at a planned one', () => {
+      const e1 = status(1, 1)
+      expect(skillTasks('nodes', { ...e1, skillLevel: 5 }, { ...e1, skillLevel: 7 }).map((x) => x.type)).toEqual([
+        { _: 'skill', to: 7 },
+      ])
+      expect(skillTasks('nodes', e1, { ...e1, skillLevel: 5 }).map((x) => x.type)).toEqual([
+        { _: 'skill', to: 4 },
+        { _: 'skill', to: 5 },
+      ])
+    })
+
+    it('leaves the other operators level by level', () => {
+      const from = status(0, 1)
+      const to = status(1, 1, { skillLevel: 7 })
+      const levels = [2, 3, 4, 5, 6, 7].map((l) => ({ _: 'skill', to: l }))
+      expect(skillTasks('six', from, to).map((x) => x.type)).toEqual(levels)
+      expect(skillTasks('six', from, to).map((x) => x.requires)).toEqual(
+        levels.map(() => [{ itemId: 's', quantity: 1 }]),
+      )
+      expect(skillTasks('special', from, to).map((x) => x.type)).toEqual(levels)
+    })
   })
 })
 

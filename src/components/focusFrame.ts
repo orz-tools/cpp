@@ -4,7 +4,7 @@ import { RefObject, useEffect, useMemo, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 
 export interface FrameRequest {
-  /** skin:<skinId>、baseSkill:<charId>:<buffId>、stage:<stageId>、peek:<peekKey> */
+  /** skin:<skinId>、baseSkill:<charId>:<buffId>、stage:<stageId>、peek:<peekKey>、so:<charId>:<key>（特勤任务页的一行） */
   target: string
   nonce: number
 }
