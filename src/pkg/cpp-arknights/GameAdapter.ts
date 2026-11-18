@@ -500,14 +500,6 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
         QNumber,
         ({ character, args: [index] }) => tiers(yss, character, index)?.shares[3] ?? NaN,
       ).withFormat('percent')
-
-      // 小黑盒只给解锁了的人里各级的占比，没有解锁率，这个三级率和一图流的不能比
-      sq.addField(
-        'level3rate.heybox',
-        lpstr(() => gt.pgettext('query field', '小黑盒干员统计 模组三级率（解锁者中）')),
-        QNumber,
-        ({ character, args: [index] }) => tiers(hss, character, index)?.shares[3] ?? NaN,
-      ).withFormat('percent')
     })
 
     aa.createSubQuery(
@@ -816,37 +808,6 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
           order: [['mod.unlockrate.yituliu', 'DESC']],
         },
       },
-      'mod.level3rate.heybox': {
-        name: gt.pgettext('predefined query', '小黑盒 模组三级率'),
-        group: 'stats',
-        title: lpstr(() =>
-          gt.pgettext('query menu', '只列出还没练到三级的。小黑盒没有模组的解锁率，按解锁者里练到三级的占比排'),
-        ),
-        segments: [allSegment('mod.level3rate.all.heybox')],
-        query: {
-          select: ['mod.level3rate.heybox'],
-          join: 'mod',
-          where: {
-            _: '&&',
-            operand: [
-              { _: '||', operand: [own, { _: 'field', field: 'goal', op: '==', operand: true }] },
-              { _: 'field', field: 'mod.level', op: '<', operand: 3 },
-              { _: 'field', field: 'rarity', op: '==', operand: 6 },
-            ],
-          },
-          order: [['mod.level3rate.heybox', 'DESC']],
-        },
-      },
-      'mod.level3rate.all.heybox': {
-        name: gt.pgettext('predefined query', '小黑盒 模组三级率（全部）'),
-        group: 'stats',
-        query: {
-          select: ['mod.level3rate.heybox'],
-          join: 'mod',
-          where: { _: 'field', field: 'rarity', op: '==', operand: 6 },
-          order: [['mod.level3rate.heybox', 'DESC']],
-        },
-      },
       'cost.elite2': {
         name: gt.pgettext('predefined query', '精二直升价值'),
         group: 'cost',
@@ -932,10 +893,13 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
   }
 
   public getReplacedPredefinedQueries() {
-    // 「能用」那一段并进了名字那一段
     return {
+      // 「能用」那一段并进了名字那一段
       'cost.elite2.usable': 'cost.elite2',
       'skill.cost.mastery3.usable': 'skill.cost.mastery3',
+      // 小黑盒的模组三级率只算解锁了的人，几个模组之间比不出高低，去掉了
+      'mod.level3rate.heybox': 'mod.unlockrate.yituliu',
+      'mod.level3rate.all.heybox': 'mod.unlockrate.all.yituliu',
     }
   }
 

@@ -258,11 +258,6 @@ describe('ArknightsAdapter', () => {
         ],
         userCount: 1000,
       })
-      remote.set('arknights-heybox-operatorsurvey', {
-        rows: [
-          { i: 'char_4195_radian', e2m1: [0.55, 0.035, 0.415], e2m2: [0.068, 0.049, 0.883], e2m3: [null, null, null] },
-        ],
-      })
     })
 
     async function run(param: QueryParam, modLevel: Record<string, number> = {}) {
@@ -281,7 +276,6 @@ describe('ArknightsAdapter', () => {
         level: querier.getFieldValue('mod.level', x),
         unlock: querier.getFieldValue('mod.unlockrate.yituliu', x),
         yituliu3: querier.getFieldValue('mod.level3rate.yituliu', x),
-        heybox3: querier.getFieldValue('mod.level3rate.heybox', x),
       }))
     }
 
@@ -291,8 +285,6 @@ describe('ArknightsAdapter', () => {
       expect(rows[0].unlock).toBeCloseTo(0.4 / 0.8, 10)
       expect(rows[1].unlock).toBeCloseTo(0.6 / 0.8, 10)
       expect(rows[0].yituliu3).toBeCloseTo(0.3 / 0.8, 10)
-      // Heybox's modules go by the number in the id and count only those who unlocked them
-      expect(rows.map((x) => x.heybox3)).toEqual([0.415, 0.883])
     })
 
     it('sorts by unlock rate and leaves out the unlocked ones, as the yituliu preset does', async () => {
@@ -306,14 +298,12 @@ describe('ArknightsAdapter', () => {
       expect(locked.map((x) => [x.name, x.level])).toEqual([['uniequip_002_radian', 0]])
     })
 
-    it('has no rates for an operator neither survey knows', async () => {
+    it('has no rates for an operator the survey does not know', async () => {
       remote.set('arknights-yituliu-operatorsurvey', { result: [], userCount: 0 })
-      remote.set('arknights-heybox-operatorsurvey', { rows: [] })
       const rows = await run({ join: 'mod' })
       for (const row of rows) {
         expect(row.unlock).toBeNaN()
         expect(row.yituliu3).toBeNaN()
-        expect(row.heybox3).toBeNaN()
       }
     })
   })

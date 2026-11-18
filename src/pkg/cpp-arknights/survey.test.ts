@@ -59,10 +59,17 @@ const radianRow = {
   sampleSize: 120916,
 }
 
+const radianHeyboxRow = {
+  i: 'char_4195_radian',
+  e2m1: [0.55, 0.035, 0.415],
+  e2m2: [0.068, 0.049, 0.883],
+  e2m3: [null, null, null],
+}
+
 const dm = {
   data: {
     yituliuSurvey: { char_492_quercu: yituliuRow, char_4195_radian: radianRow },
-    heyboxSurvey: { char_492_quercu: heyboxRow },
+    heyboxSurvey: { char_492_quercu: heyboxRow, char_4195_radian: radianHeyboxRow },
   },
   raw: { yituliuSurvey: { userCount: 136626 } },
 } as unknown as ArknightsDataManager
@@ -118,6 +125,15 @@ describe('toTierShares', () => {
     const t = toTierShares(new HeyboxSurveySource(dm).mod(quercus, modX, quercus.key))!
     expect(t.base).toBe('unlocked')
     expect(t.shares).toEqual([null, 0.461, 0.108, 0.432])
+  })
+
+  it('finds Heybox modules by the number in their ids', () => {
+    const radian = { key: 'char_4195_radian' } as Character
+    const mod = (key: string) => ({ key, raw: {} }) as UniEquip
+    const level3 = (key: string) =>
+      toTierShares(new HeyboxSurveySource(dm).mod(radian, mod(key), radian.key))!.shares[3]
+    expect(level3('uniequip_002_radian')).toBe(0.415)
+    expect(level3('uniequip_003_radian')).toBe(0.883)
   })
 
   it('gives every tier but 0 nothing when nobody has any', () => {

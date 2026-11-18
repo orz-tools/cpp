@@ -66,7 +66,6 @@ describe('presetMenu', () => {
           ['elite2rate.heybox', 'elite2rate.all.heybox'],
           ['elite2level90rate.heybox', 'elite2level90rate.all.heybox'],
           ['mod.unlockrate.yituliu', 'mod.unlockrate.all.yituliu'],
-          ['mod.level3rate.heybox', 'mod.level3rate.all.heybox'],
         ],
       ])
       for (const row of menu[0].rows) expect(row.segments.map((s) => String(s.label))).toEqual(['全部'])
