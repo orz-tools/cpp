@@ -640,6 +640,12 @@ body {
   outline-offset: 1px;
 }
 
+/* 任务列表里没有子菜单的任务行：只有右键菜单，焦点框留给键盘打开右键菜单用 */
+.cpp-task-row-static {
+  background-color: inherit !important;
+  cursor: auto !important;
+}
+
 /* 干员列表里不能点的附加列：和 .cpp-menu-not-interactive 一样，排版仍靠 bp6-menu-item */
 .cpp-char-col-static {
   background-color: inherit !important;

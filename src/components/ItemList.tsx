@@ -1,18 +1,5 @@
-import {
-  Alignment,
-  Button,
-  ButtonGroup,
-  Callout,
-  Dialog,
-  Icon,
-  Menu,
-  MenuDivider,
-  MenuItem,
-  Navbar,
-  NumericInput,
-  Popover,
-} from '@blueprintjs/core'
-import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
+import { Alignment, Button, Callout, Dialog, Menu, MenuDivider, Navbar, NumericInput } from '@blueprintjs/core'
+import { WritableAtom, atom, useAtom, useAtomValue, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
 import React, { SetStateAction, memo, useEffect, useState } from 'react'
@@ -24,6 +11,7 @@ import { gt } from '../pkg/gt'
 import { useChamber } from './Chamber'
 import { ItemIcon } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
+import { PeekTrigger } from './Peek'
 import { ItemCounterCells, itemCounterCells, itemCounterSlots } from './itemCounters'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
@@ -66,115 +54,6 @@ export const ItemQuantityEditor = memo(
     )
   },
 )
-
-export const ItemSynthesisPopover = memo(<G extends IGame>({ item, refresh }: { item: IItem; refresh?: () => any }) => {
-  const ga = useGameAdapter<G>()
-  const atoms = useAtoms<G>()
-  const quantities = useAtomValue(atoms.itemQuantities)
-  const setData = useSetAtom(atoms.dataAtom)
-  const formula = useGameDataMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
-  const quantity = useAtomValue(atoms.itemQuantity(item.key)) || 0
-  const [times, setTimes] = useState(1)
-
-  if (!formula)
-    return (
-      <>
-        无法合成{item.name}，<i>谁让你来的？</i>
-      </>
-    )
-
-  const synTimes = [24, 12, 6, 3, 1]
-  const maxTimes = Math.max(
-    0,
-    Math.min(...formula.costs.map((x) => Math.floor((quantities[x.itemId] || 0) / x.quantity))),
-  )
-  if (maxTimes > 0) {
-    while (synTimes[0] > maxTimes) {
-      synTimes.shift()
-    }
-    if (synTimes[0] !== maxTimes && ((formula.apCost && maxTimes < 24) || !formula.apCost)) {
-      synTimes.unshift(maxTimes)
-    }
-  } else {
-    synTimes.splice(0, synTimes.length - 1)
-  }
-
-  return (
-    <>
-      <ButtonGroup variant="minimal" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-        {formula.apCost ? (
-          <>
-            <span style={{ marginLeft: 10 }}>
-              {gt.gettext('心情')} {formula.apCost}
-            </span>
-            <div style={{ flex: 1 }} />
-          </>
-        ) : null}
-        {synTimes.map((t) => {
-          return (
-            <Button
-              key={t}
-              disabled={t > maxTimes}
-              text={
-                <span>
-                  <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5, margin: 0 }} />
-                  {t}
-                </span>
-              }
-              style={{ opacity: formula.apCost && t > 24 / formula.apCost ? 0.5 : 1 }}
-              onMouseEnter={() => setTimes(t)}
-              onMouseLeave={() => setTimes(1)}
-              onClick={() => {
-                setData('modify', (d) => {
-                  d.items[item.key] = (d.items[item.key] || 0) + t * formula.quantity
-                  formula.costs.forEach((cost) => {
-                    d.items[cost.itemId] = (d.items[cost.itemId] || 0) - t * cost.quantity
-                  })
-                })
-                refresh?.()
-              }}
-            />
-          )
-        })}
-      </ButtonGroup>
-      <MenuDivider />
-      <MenuItem
-        icon={<ItemIcon item={item} size={20} />}
-        text={
-          <>
-            <span>{item.name}</span>
-            <span style={{ float: 'right' }}>
-              <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5 }} />
-              {times * formula.quantity}/{quantity}
-            </span>
-          </>
-        }
-      />
-      <MenuDivider
-        title={gt
-          .ngettext(`制作 %d 次所需`, `制作 %d 次所需`, times) /* I10N: %d: number */
-          .replaceAll('%d', times.toString())}
-      />
-      {formula.costs.map((cost) => {
-        const citem = ga.getItem(cost.itemId)
-        return (
-          <MenuItem
-            key={cost.itemId}
-            icon={<ItemIcon item={citem} size={20} />}
-            text={
-              <>
-                <span>{citem.name}</span>
-                <span style={{ float: 'right' }}>
-                  {times * cost.quantity}/{quantities[cost.itemId] || 0}
-                </span>
-              </>
-            }
-          />
-        )
-      })}
-    </>
-  )
-})
 
 function levelAtoms<G extends IGame>(atoms: UserDataAtomHolder<G>['atoms'], level: Level) {
   switch (level) {
@@ -241,30 +120,30 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
       >
         {rows('afterSynthesis')}
       </div>
-      <a
-        role="menuitem"
-        tabIndex={0}
-        className="bp6-menu-item cpp-item-menu"
-        style={{ lineHeight: '21px', padding: 0, fontWeight: 'normal', visibility: !formula ? 'hidden' : undefined }}
-      >
-        <Popover
-          content={
-            <Menu style={{ minWidth: '300px' }}>
-              <ItemSynthesisPopover item={item} />
-            </Menu>
-          }
-          usePortal={true}
-          placement={'bottom-end'}
-        >
-          <div
-            className="cpp-goal-counter"
-            style={{ width: '6em' }}
-            data-label={gt.pgettext('item list counter label', '可合成')}
+      <PeekTrigger
+        peek={{ kind: 'item', id: item.key }}
+        renderTarget={(target) => (
+          <a
+            role="menuitem"
+            {...target}
+            className={'bp6-menu-item cpp-item-menu ' + (target?.className ?? 'cpp-menu-not-interactive')}
+            style={{
+              lineHeight: '21px',
+              padding: 0,
+              fontWeight: 'normal',
+              visibility: !formula ? 'hidden' : undefined,
+            }}
           >
-            {rows('synthesizable')}
-          </div>
-        </Popover>
-      </a>
+            <div
+              className="cpp-goal-counter"
+              style={{ width: '6em' }}
+              data-label={gt.pgettext('item list counter label', '可合成')}
+            >
+              {rows('synthesizable')}
+            </div>
+          </a>
+        )}
+      />
       <div
         className="cpp-goal-counter"
         style={{ width: '6em' }}
@@ -293,26 +172,29 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
 export const ItemMenu = memo(({ item }: { item: IItem }) => {
   return (
     <li role="none">
-      <a
-        role="menuitem"
-        tabIndex={0}
-        className="bp6-menu-item cpp-item-menu cpp-menu-not-interactive"
-        style={{ flexShrink: 1, overflow: 'hidden' }}
-      >
-        <>
-          <span className="bp6-menu-item-icon">
-            <ItemIcon item={item} size={40} />
-          </span>
-          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp6-text-overflow-ellipsis" title={item.name}>
-              {item.name}
+      <PeekTrigger
+        peek={{ kind: 'item', id: item.key }}
+        renderTarget={(target) => (
+          <a
+            role="menuitem"
+            {...target}
+            className={'bp6-menu-item cpp-item-menu ' + (target?.className ?? 'cpp-menu-not-interactive')}
+            style={{ flexShrink: 1, overflow: 'hidden' }}
+          >
+            <span className="bp6-menu-item-icon">
+              <ItemIcon item={item} size={40} />
+            </span>
+            <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <div className="bp6-text-overflow-ellipsis" title={item.name}>
+                {item.name}
+              </div>
+              <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
+                <ValueTag value={item.valueAsAp} minimal={true} single={true} />
+              </div>
             </div>
-            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
-              <ValueTag value={item.valueAsAp} minimal={true} single={true} />
-            </div>
-          </div>
-        </>
-      </a>
+          </a>
+        )}
+      />
       <div>
         <ItemQuantityEditor item={item} style={itemQuantityStyle} />
       </div>
