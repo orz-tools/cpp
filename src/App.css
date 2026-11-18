@@ -610,6 +610,272 @@ body {
   outline-offset: 2px;
 }
 
+/* 能点开卡片的东西（Peek.tsx）。悬停是 Blueprint 菜单项的灰底；卡片开着时这一块保持灰底 */
+.cpp-peek-target {
+  cursor: pointer;
+}
+
+.cpp-peek-target:hover,
+.cpp-peek-target.is-open {
+  background-color: rgba(143, 153, 168, 0.15);
+}
+
+.cpp-peek-target:focus-visible {
+  outline: 2px solid rgba(45, 114, 210, 0.6);
+  outline-offset: -2px;
+}
+
+/* 句子里的词：颜色不变，蓝色只表示计划内 */
+.cpp-peek-inline {
+  cursor: pointer;
+}
+
+.cpp-peek-inline:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cpp-peek-inline:focus-visible {
+  outline: 2px solid rgba(45, 114, 210, 0.6);
+  outline-offset: 1px;
+}
+
+/* 干员列表里不能点的附加列：和 .cpp-menu-not-interactive 一样，排版仍靠 bp6-menu-item */
+.cpp-char-col-static {
+  background-color: inherit !important;
+  cursor: auto !important;
+  outline: none !important;
+}
+
+.cpp-peek-card {
+  width: 344px;
+  max-width: calc(100vw - 16px);
+}
+
+.cpp-peek-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 6px 7px 10px;
+  border-bottom: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
+}
+
+/* 「返回」贴着左边 */
+.cpp-peek-head > .bp6-button:first-child {
+  margin-left: -6px;
+}
+
+.cpp-peek-head-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cpp-peek-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 28px;
+  height: 28px;
+}
+
+.cpp-peek-titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.cpp-peek-title {
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cpp-peek-sub {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cpp-peek-body {
+  padding: 8px 10px 10px;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.cpp-peek-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 10px -10px -10px;
+  padding: 4px 6px 4px 10px;
+  border-top: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
+}
+
+.cpp-peek-missing,
+.cpp-peek-label,
+.cpp-peek-note {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-peek-label {
+  min-width: 2.5em;
+  font-size: 12px;
+}
+
+.cpp-peek-note {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.cpp-peek-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 物品卡的合成：和库存隔一条细线 */
+.cpp-peek-sec {
+  margin: 10px -10px 0;
+  padding: 8px 10px 0;
+  border-top: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
+}
+
+.cpp-peek-sec-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cpp-peek-sec-head > .bp6-button-group {
+  margin-left: auto;
+}
+
+.cpp-peek-build {
+  margin-right: 2px;
+  opacity: 0.5;
+}
+
+/* 配方、掉落：字号和颜色同练度编辑器 (i) 里的表 */
+.cpp-peek-list {
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cpp-peek-list-head {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 2px;
+  font-size: 11.5px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-peek-list-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: calc(100% + 8px);
+  margin: 0 -4px;
+  padding: 1px 4px;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.cpp-peek-list-name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cpp-peek-list-value {
+  white-space: nowrap;
+}
+
+.cpp-peek-list-row.is-short .cpp-peek-list-value {
+  color: var(--bp-palette-red-2, #ac2f33);
+}
+
+/* 弹出的卡片比窗口高时，内容在卡片里滚动，标题栏留着 */
+.cpp-peek-popover .cpp-peek-card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 56px);
+}
+
+.cpp-peek-popover .cpp-peek-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Popper flags a target scrolled out of its list; Blueprint has no style for it */
+.cpp-peek-popover.bp6-popover-reference-hidden {
+  visibility: hidden;
+}
+
+/*
+ * 钉板：卡片在导航栏下 8px、右边留 8px。多出来的内边距让框和阴影不被滚动区域切掉；
+ * 空着的地方点穿到下面
+ */
+.cpp-peek-board {
+  position: fixed;
+  top: 40px;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: calc(344px + 24px);
+  max-width: 100vw;
+  padding: 8px 8px 8px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: none;
+}
+
+.cpp-peek-board > * {
+  flex: none;
+  pointer-events: auto;
+}
+
+.cpp-peek-board.is-beside-dossier {
+  right: min(480px, 100vw);
+}
+
+.cpp-peek-board-clear {
+  align-self: flex-end;
+}
+
+.cpp-peek-pinned {
+  border-radius: 4px;
+}
+
+/* 和弹出的卡片同一个阴影 */
+.cpp-peek-pinned > .cpp-peek-card {
+  max-width: 100%;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(17, 20, 24, 0.1),
+    0 2px 4px rgba(17, 20, 24, 0.2),
+    0 8px 24px rgba(17, 20, 24, 0.2);
+}
+
 /* .App {
   transform: rotateX(180deg);
 }

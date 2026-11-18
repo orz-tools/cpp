@@ -64,6 +64,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.MORE, Paths16.More],
       [IconNames.MUGSHOT, Paths16.Mugshot],
       [IconNames.PEOPLE, Paths16.People],
+      [IconNames.PIN, Paths16.Pin],
       [IconNames.PLUS, Paths16.Plus],
       [IconNames.PERSON, Paths16.Person],
       [IconNames.PREDICTIVE_ANALYSIS, Paths16.PredictiveAnalysis],

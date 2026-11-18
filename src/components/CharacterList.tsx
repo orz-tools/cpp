@@ -238,7 +238,7 @@ const statusPopoverModifiers: PopoverProps['modifiers'] = {
  * 浮层按 portal 在 body 里的先后叠放，而弹窗一直用第一次打开时建的 portal，之后打开的档案、大窗口会盖住它；
  * 挂在格子旁边时常常和档案重叠，所以每次打开都挪到最后，后打开的在上面。焦点在下一帧才移进弹窗，挪动不会丢焦点
  */
-function raisePortal(node: HTMLElement) {
+export function raisePortal(node: HTMLElement) {
   const portal = node.closest(`.${Classes.PORTAL}`)
   if (portal?.nextElementSibling) portal.parentElement?.appendChild(portal)
 }
