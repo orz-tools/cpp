@@ -158,4 +158,61 @@ describe('special operators', () => {
   it('read as none in data published before them', () => {
     expect(isSpecial({})).toBe(false)
   })
+
+  const so = (local: object | null) => {
+    const exSpecialOperators = {
+      modeData: [{ type: 'ROGUE', typeName: '集成战略' }],
+      operatorBasicData: { char_test: { soCharId: 'char_test', targetType: 'ROGUE', targetTopicName: '某主题' } },
+      operatorDetailData: {
+        char_test: {
+          specialOperatorExpMap: [[100]],
+          nodeUnlockData: {
+            n_evolve_1: {
+              nodeId: 'n_evolve_1',
+              nodeType: 'EVOLVE',
+              unlockEvolvePhase: 'PHASE_0',
+              unlockLevel: 2,
+              unlockTaskId: 't_evolve_1',
+              frontNodeId: null,
+            },
+          },
+          evolveNodeData: { n_evolve_1: { nodeId: 'n_evolve_1', toEvolvePhase: 'PHASE_1' } },
+          skillNodeData: {},
+          uniEquipNodeData: {},
+          masterNodeData: {},
+        },
+      },
+      nodeUnlockMissionData: { t_evolve_1: { id: 't_evolve_1', description: '到达3层' } },
+      masterNames: {},
+    }
+    const s = { raw: { ...snapshot('A').raw, exSpecialOperators, local } } as unknown as ArknightsSnapshot
+    return new Character('char_test', { skills: [] } as any, null, s).specialOperator
+  }
+
+  it('carry their unlock missions, in the local language where it has them', () => {
+    expect(so(null)?.elites[0].mission.full).toBe('到达3层')
+    const local = {
+      exSpecialOperators: {
+        modeData: [{ type: 'ROGUE', typeName: 'Integrated Strategies' }],
+        operatorBasicData: {},
+        operatorDetailData: {},
+        nodeUnlockMissionData: { t_evolve_1: { id: 't_evolve_1', description: 'Reach floor 3' } },
+        masterNames: {},
+      },
+    }
+    expect(so(local)?.mode).toBe('Integrated Strategies')
+    expect(so(local)?.elites[0].mission.full).toBe('Reach floor 3')
+  })
+
+  it('carry none in data published before their unlock missions', () => {
+    const empty = {
+      modeData: [],
+      operatorBasicData: {},
+      operatorDetailData: {},
+      nodeUnlockMissionData: {},
+      masterNames: {},
+    }
+    const s = { raw: { ...snapshot('A').raw, exSpecialOperators: empty, local: {} } } as unknown as ArknightsSnapshot
+    expect(new Character('char_test', { skills: [] } as any, null, s).specialOperator).toBeUndefined()
+  })
 })

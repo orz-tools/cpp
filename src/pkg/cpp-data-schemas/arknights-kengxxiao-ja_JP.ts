@@ -340,4 +340,69 @@ export type CppData_ArknightsKengxxiaoJaJp = {
             endTime: number;
         }[];
     };
+    exSpecialOperators: {
+        modeData: {
+            type: string;
+            typeName: string;
+        }[];
+        operatorBasicData: {
+            [x: string]: {
+                soCharId: string;
+                targetType: string;
+                targetTopicName: string;
+            };
+        };
+        operatorDetailData: {
+            [x: string]: {
+                specialOperatorExpMap: number[][];
+                nodeUnlockData: {
+                    [x: string]: {
+                        nodeId: string;
+                        nodeType: "EVOLVE" | "SKILL" | "UNIEQUIP" | "MASTER";
+                        unlockEvolvePhase: "PHASE_0" | "PHASE_1" | "PHASE_2";
+                        unlockLevel: number;
+                        unlockTaskId: string | null;
+                        frontNodeId: string | null;
+                    };
+                };
+                evolveNodeData: {
+                    [x: string]: {
+                        nodeId: string;
+                        toEvolvePhase: "PHASE_0" | "PHASE_1" | "PHASE_2";
+                    };
+                };
+                skillNodeData: {
+                    [x: string]: {
+                        nodeId: string;
+                        skillKey: string;
+                        skillLevel: number;
+                        skillSpLevel: number;
+                    };
+                };
+                uniEquipNodeData: {
+                    [x: string]: {
+                        nodeId: string;
+                        uniEquipId: string;
+                        equipLevel: number;
+                    };
+                };
+                masterNodeData: {
+                    [x: string]: {
+                        nodeId: string;
+                        masterId: string;
+                        level: number;
+                    };
+                };
+            };
+        };
+        nodeUnlockMissionData: {
+            [x: string]: {
+                id: string;
+                description: string;
+            };
+        };
+        masterNames: {
+            [x: string]: string;
+        };
+    };
 }

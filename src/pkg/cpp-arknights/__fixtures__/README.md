@@ -1,6 +1,6 @@
 # 测试数据
 
-`itemValue.acceptance.test.ts` 用 `yituliu-acceptance.json` 和 `arknights-game-inputs.zh_CN.json` 离线运行价值计算，并与明日方舟一图流的结果比较；`moduleMissions.test.ts` 用 `module-missions.zh_CN.json`；`details.test.ts`、`richText.test.ts` 用 `details-quercus.json`。
+`itemValue.acceptance.test.ts` 用 `yituliu-acceptance.json` 和 `arknights-game-inputs.zh_CN.json` 离线运行价值计算，并与明日方舟一图流的结果比较；`moduleMissions.test.ts` 用 `module-missions.zh_CN.json`；`details.test.ts`、`richText.test.ts` 用 `details-quercus.json`；`specialOperators.test.ts` 用 `special-operators.json`。
 
 ## `yituliu-acceptance.json`
 
@@ -34,3 +34,10 @@
 - 内容：`data` 里只留夏栎的两个技能（`skchr_quercu_1`、`skchr_quercu_2`）、模组 `uniequip_002_quercu` 和术语 `ba.protect`，结构和完整文件相同。`details.test.ts`、`richText.test.ts` 用它。
 
 重新生成：在 cpp-data-worker 里跑 `arknights-kengxxiao-details-zh_CN`，从 `files/arknights-kengxxiao-details-zh_CN.json` 按上面的键截出。紧凑格式，无缩进。
+
+## `special-operators.json`
+
+- 来源：[Kengxxiao/ArknightsGameData](https://github.com/Kengxxiao/ArknightsGameData)（国服）和 [ArknightsAssets/ArknightsGamedata](https://github.com/ArknightsAssets/ArknightsGamedata)（美、日、韩服）经 cpp-data 发布的 `arknights-kengxxiao-<lang>.json`（schema 8，带特殊干员的解锁任务），各区服的版本见文件中的 `version`。
+- 内容：四个区服的 `exSpecialOperators`，原样不裁剪，键名是区服（`zh_CN`、`en_US`、`ja_JP`、`ko_KR`）。国服有电弧、机械师，其余三个区服只有电弧。紧凑格式。
+
+重新生成：取得四个区服 schema 8 以上的 `arknights-kengxxiao-<lang>.json`（cpp-data 的 `files/` 下，或本地跑 cpp-data-worker 的四个 `arknights-kengxxiao-<lang>` 任务生成），执行 `node scripts/extract-special-operator-fixture.js <zh_CN.json> <en_US.json> <ja_JP.json> <ko_KR.json>`，覆盖本文件。游戏数据更新后节点、任务和精通可能变化，测试里的期望值要随之核对。

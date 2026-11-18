@@ -21,6 +21,7 @@ import { Category, myCategories } from './GameAdapter'
 import { Details, DetailsLoader } from './details'
 import type { ItemValueResult } from './itemValue'
 import { PrtsSkinsData, PrtsSkinsLoader } from './prtsSkins'
+import { SpecialOperator, buildSpecialOperator } from './specialOperators'
 import {
   AK_ITEM_GOLD,
   AK_ITEM_UNKNOWN_SHIT,
@@ -112,6 +113,14 @@ function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter) {
     exSkin,
     exEnemies: k.data.exEnemies || { enemyData: {} },
     exShop: k.data.exShop || { recommendList: [], carousels: [] },
+    // Nor exSpecialOperators, before it published special operators' unlock missions
+    exSpecialOperators: k.data.exSpecialOperators || {
+      modeData: [],
+      operatorBasicData: {},
+      operatorDetailData: {},
+      nodeUnlockMissionData: {},
+      masterNames: {},
+    },
     penguinMatrix: penguin.data,
     yituliuSurvey: yituliuSurvey.data,
     heyboxSurvey: heyboxSurvey.data,
@@ -499,6 +508,19 @@ export class Character implements ICharacter {
    */
   public get isSpecialOperator(): boolean {
     return (this.raw.spTargetType ?? 'NONE') !== 'NONE'
+  }
+
+  private _specialOperator?: [SpecialOperator | undefined]
+  /** 特殊干员在模式里的解锁条件；没有特勤数据（不是特殊干员，或数据 worker 发布之前存下的数据）时 undefined */
+  public get specialOperator(): SpecialOperator | undefined {
+    return (this._specialOperator ||= [
+      buildSpecialOperator(
+        this.key,
+        (this.raw.skills ?? []).flatMap((s) => (s.skillId ? [s.skillId] : [])),
+        this.snapshot.raw.exSpecialOperators,
+        this.snapshot.raw.local?.exSpecialOperators,
+      ),
+    ])[0]
   }
 
   public get defaultSkinId(): string {
