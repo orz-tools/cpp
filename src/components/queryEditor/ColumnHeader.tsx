@@ -1,5 +1,6 @@
+import { Tooltip } from '@blueprintjs/core'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { memo, useMemo, useRef, useState } from 'react'
+import React, { memo, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useCpp } from '../../Cpp'
 import { QueryParam } from '../../pkg/cpp-basic'
@@ -82,6 +83,8 @@ export interface ColumnHead {
   label: string
   width: number
   defaultWidth: number
+  /** 同 extraFields 的 Tip */
+  Tip?: React.ComponentType
 }
 
 interface Props {
@@ -143,10 +146,30 @@ const ColumnHeadCell = memo(
 
     const label = column.label
     const custom = column.width !== column.defaultWidth
+    const text = dragging == null ? label : `${dragging} px`
 
     return (
       <div className={`cpp-qe-colhead-cell${custom ? ' cpp-qe-colhead-custom' : ''}`} style={{ width: column.width }}>
-        <span title={label}>{dragging == null ? label : `${dragging} px`}</span>
+        {column.Tip ? (
+          // 有说明时不写 title，免得原生提示和说明一起出来
+          <Tooltip
+            content={
+              <div className="cpp-qe-colhead-tip">
+                <b>{label}</b>
+                <column.Tip />
+              </div>
+            }
+            placement="bottom-start"
+            hoverOpenDelay={150}
+            disabled={dragging != null}
+          >
+            <span className="cpp-qe-colhead-term" tabIndex={0}>
+              {text}
+            </span>
+          </Tooltip>
+        ) : (
+          <span title={label}>{text}</span>
+        )}
         <div
           className={`cpp-qe-colhead-handle${dragging == null ? '' : ' cpp-qe-colhead-dragging'}`}
           role="separator"

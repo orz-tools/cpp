@@ -331,6 +331,27 @@ select.cpp-qe-invalid {
   font-weight: 600;
 }
 
+.cpp-qe-colhead-term {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+.cpp-qe-colhead-tip {
+  max-width: 300px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.cpp-qe-colhead-tip > b {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.cpp-qe-colhead-tip > div + div {
+  margin-top: 4px;
+}
+
 /* 比分隔线宽，好抓；骑在两列之间 */
 .cpp-qe-colhead-handle {
   position: absolute;

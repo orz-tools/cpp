@@ -76,6 +76,8 @@ export interface IGameComponent {
       /** 默认宽度；过滤器可以改，所以 C 按传入的 width 画 */
       width: number
       C: React.FC<{ query: Querier<any, any>; context: FieldContext<any, any, any>; width: number }>
+      /** 列头说明的正文，标题是列名；给了时列名画成虚线下划线，悬停或聚焦时出说明 */
+      Tip?: React.ComponentType
     }
   >
   TaskDisplay?: React.FC<{ type: any; charId: string; formattedString: string }>
