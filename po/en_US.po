@@ -4350,7 +4350,7 @@ msgid "%s 获得"
 msgstr "acquired %s"
 
 #: src/components/arknights/SkinsPanel.tsx:263
-#: src/components/arknights/SkinsWide.tsx:350
+#: src/components/arknights/SkinsWide.tsx:357
 msgctxt "skins"
 msgid "PRTS 数据载入失败"
 msgstr "Failed to load PRTS data"
@@ -4378,7 +4378,7 @@ msgstr "Today %s"
 
 #: src/components/arknights/SkinsPanel.tsx:283
 #: src/components/arknights/SkinsPanel.tsx:73
-#: src/components/arknights/SkinsWide.tsx:359
+#: src/components/arknights/SkinsWide.tsx:366
 msgctxt "skins"
 msgid "从森空岛导入"
 msgstr "Import from Skland"
@@ -4400,7 +4400,7 @@ msgstr "All"
 
 #: src/components/arknights/SkinsPanel.tsx:120
 #: src/components/arknights/SkinsWide.tsx:133
-#: src/components/arknights/SkinsWide.tsx:261
+#: src/components/arknights/SkinsWide.tsx:267
 msgctxt "skins"
 msgid "其他"
 msgstr "Other"
@@ -4455,7 +4455,7 @@ msgctxt "skins"
 msgid "可获得 %d"
 msgstr "%d obtainable"
 
-#: src/components/arknights/SkinsWide.tsx:249
+#: src/components/arknights/SkinsWide.tsx:253
 msgctxt "skins"
 msgid "品牌"
 msgstr "Brand"
@@ -4472,7 +4472,7 @@ msgid "复刻"
 msgstr "Rerun"
 
 #: src/components/arknights/SkinsPanel.tsx:271
-#: src/components/arknights/SkinsWide.tsx:369
+#: src/components/arknights/SkinsWide.tsx:376
 msgctxt "skins"
 msgid "完成"
 msgstr "Done"
@@ -4486,7 +4486,7 @@ msgstr "Owned"
 
 #: src/components/arknights/SkinsPanel.tsx:138
 #: src/components/arknights/SkinsPanel.tsx:55
-#: src/components/arknights/SkinsWide.tsx:250
+#: src/components/arknights/SkinsWide.tsx:254
 msgctxt "skins"
 msgid "已有 / 全部"
 msgstr "Owned / all"
@@ -4510,7 +4510,7 @@ msgstr "Operator or outfit"
 
 #: src/components/arknights/SkinsPanel.tsx:292
 #: src/components/arknights/SkinsPanel.tsx:77
-#: src/components/arknights/SkinsWide.tsx:378
+#: src/components/arknights/SkinsWide.tsx:385
 msgctxt "skins"
 msgid "手动标记"
 msgstr "Mark by hand"
@@ -4520,22 +4520,22 @@ msgctxt "skins"
 msgid "拥有情况"
 msgstr "Ownership"
 
-#: src/components/arknights/SkinsWide.tsx:342
+#: src/components/arknights/SkinsWide.tsx:349
 msgctxt "skins"
 msgid "按上线时间"
 msgstr "By release"
 
-#: src/components/arknights/SkinsWide.tsx:341
+#: src/components/arknights/SkinsWide.tsx:348
 msgctxt "skins"
 msgid "按品牌"
 msgstr "By brand"
 
-#: src/components/arknights/SkinsWide.tsx:343
+#: src/components/arknights/SkinsWide.tsx:350
 msgctxt "skins"
 msgid "按获得时间"
 msgstr "By acquisition"
 
-#: src/components/arknights/SkinsWide.tsx:338
+#: src/components/arknights/SkinsWide.tsx:345
 msgctxt "skins"
 msgid "排序"
 msgstr "Sort"
@@ -4602,7 +4602,7 @@ msgctxt "skins"
 msgid "点击打开干员档案"
 msgstr "Click to open the operator dossier"
 
-#: src/components/arknights/SkinsWide.tsx:365
+#: src/components/arknights/SkinsWide.tsx:372
 msgctxt "skins"
 msgid "点半身像切换已有 / 缺"
 msgstr "Click a portrait to switch owned / missing"
@@ -4676,7 +4676,7 @@ msgid "里程碑奖励"
 msgstr "Milestone reward"
 
 #: src/components/arknights/SkinsPanel.tsx:264
-#: src/components/arknights/SkinsWide.tsx:351
+#: src/components/arknights/SkinsWide.tsx:358
 msgctxt "skins"
 msgid "重试"
 msgstr "Retry"
