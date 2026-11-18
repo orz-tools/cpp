@@ -30,6 +30,7 @@ import { Err, ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { ImportPasteBox } from './components/ImportPasteBox'
 import { ItemList } from './components/ItemList'
+import { PeekBoard } from './components/Peek'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
 import { Sidebar } from './components/Sidebar'
 import { TaskList } from './components/TaskList'
@@ -238,6 +239,7 @@ const App = memo(() => {
         </section>
       </div>
       <CharacterDossier />
+      <PeekBoard />
     </>
   )
 })

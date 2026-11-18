@@ -1,10 +1,13 @@
 import { Button, H6, HTMLTable, InputGroup, Menu, MenuItem, NonIdealState, ProgressBar, Tag } from '@blueprintjs/core'
+import { useAtomValue } from 'jotai'
+import { selectAtom } from 'jotai/utils'
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useGameAdapter } from '../../Cpp'
 import { MaterialGroup } from '../../pkg/cpp-arknights/stageEfficiency'
 import { gt } from '../../pkg/gt'
 import { CountTag, StageToggleProps, TriStateCheckbox } from '../ConfigUi'
 import { ItemIcon } from '../Icons'
+import { focusFrameAtom, useFocusFrame } from '../focusFrame'
 import { StageCategoryGroup, groupStages } from '../stageGroups'
 import { ValueTag } from '../Value'
 import {
@@ -43,8 +46,11 @@ const StageTableRow = memo(
     const stage = model.stages[stageId]
     const e = model.efficiencies.get(stageId)
     const efficiency = model.valuesOk ? e?.efficiency : undefined
+    const ref = useRef<HTMLTableRowElement>(null)
+    const framed = useFocusFrame('stage:' + stageId, ref)
+    const className = [isChecked(stageId) ? '' : 'cpp-stages-off', framed ? 'cpp-framed' : ''].filter(Boolean).join(' ')
     return (
-      <tr className={isChecked(stageId) ? undefined : 'cpp-stages-off'}>
+      <tr ref={ref} className={className || undefined}>
         <td>
           <StageCheckbox stage={stage} label={false} isChecked={isChecked} onSetChecked={onSetChecked} />
         </td>
@@ -119,6 +125,8 @@ const StageTable = memo(
   ),
 )
 
+const stageFrameRequestAtom = selectAtom(focusFrameAtom, (r) => (r?.target.startsWith('stage:') ? r : null))
+
 const categoryIds = (group: StageCategoryGroup | undefined) => (group ? group.zones.flatMap((x) => x.stageIds) : [])
 
 // 表头和一行的实际高度：还没画的表格先占住画出来以后的位置，点左边的类别时才能滚到准确的地方
@@ -160,6 +168,15 @@ const ChapterWide = memo(
     toggle: StageToggleProps
   }) => {
     const zonesRef = useRef<HTMLDivElement>(null)
+    // 要框出的一关在没画出来的表格里：先把它的章节滚进来，表格画出来以后，那一行自己接住请求
+    const request = useAtomValue(stageFrameRequestAtom)
+    useEffect(() => {
+      const zoneId = request && model.stages[request.target.slice('stage:'.length)]?.zoneId
+      const scroll = zonesRef.current
+      const zone = zoneId && scroll?.querySelector(`[data-stage-zone="${CSS.escape(zoneId)}"]`)
+      if (!scroll || !zone) return
+      scroll.scrollTop += zone.getBoundingClientRect().top - scroll.getBoundingClientRect().top
+    }, [request, model])
     return (
       <div className="cpp-stages-wide-chapter">
         <Menu className="cpp-stages-wide-categories">
@@ -195,7 +212,7 @@ const ChapterWide = memo(
                 {group.category.name}
               </div>
               {group.zones.map(({ zone, stageIds }) => (
-                <div key={zone.id} className="cpp-stages-wide-zone">
+                <div key={zone.id} className="cpp-stages-wide-zone" data-stage-zone={zone.id}>
                   <div className="cpp-stages-wide-zone-head">
                     <TriStateCheckbox {...toggle} stageIds={stageIds} title={zone.id} label={zone.name || zone.id} />
                     <CountTag stageIds={stageIds} isChecked={toggle.isChecked} />

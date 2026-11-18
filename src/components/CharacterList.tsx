@@ -17,7 +17,7 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { forwardRef, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { search } from 'text-search-engine'
 import {
@@ -238,7 +238,7 @@ const statusPopoverModifiers: PopoverProps['modifiers'] = {
  * 浮层按 portal 在 body 里的先后叠放，而弹窗一直用第一次打开时建的 portal，之后打开的档案、大窗口会盖住它；
  * 挂在格子旁边时常常和档案重叠，所以每次打开都挪到最后，后打开的在上面。焦点在下一帧才移进弹窗，挪动不会丢焦点
  */
-function raisePortal(node: HTMLElement) {
+export function raisePortal(node: HTMLElement) {
   const portal = node.closest(`.${Classes.PORTAL}`)
   if (portal?.nextElementSibling) portal.parentElement?.appendChild(portal)
 }
@@ -1148,20 +1148,26 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   )
 })
 
+/**
+ * 附加列的一格。默认不能点：没有 role、Tab 不到、悬停没有底色；有 onClick 时（PeekTrigger 的目标、基建技能格）才像能点。
+ * bp6-menu-item 留着，排版靠它
+ */
 export const CharacterListColumn = memo(
-  ({
-    children,
-    width,
-    className,
-  }: React.PropsWithChildren<{
-    width: number
-    className?: string
-  }>) => {
+  forwardRef<
+    HTMLDivElement,
+    React.PropsWithChildren<{ width: number; className?: string } & React.HTMLAttributes<HTMLDivElement>>
+  >(({ children, width, className, ...props }, ref) => {
+    const interactive = props.onClick != null
+    const classes = new Set(['bp6-menu-item', interactive ? 'cpp-peek-target' : 'cpp-char-col-static'])
+    for (const x of className?.split(' ') ?? []) if (x) classes.add(x)
     return (
       <div
-        role="menuitem"
-        tabIndex={0}
-        className={`bp6-menu-item ${className || ''}`}
+        role={interactive ? 'button' : undefined}
+        tabIndex={interactive ? 0 : undefined}
+        onKeyDown={interactive ? menuItemKeyDown : undefined}
+        {...props}
+        ref={ref}
+        className={[...classes].join(' ')}
         style={{
           display: 'flex',
           flexDirection: 'row',
@@ -1178,7 +1184,7 @@ export const CharacterListColumn = memo(
         {children}
       </div>
     )
-  },
+  }),
 )
 
 export function createSimpleExtraField<

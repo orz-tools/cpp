@@ -1,6 +1,7 @@
 import { Classes } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
 import React, { memo } from 'react'
+import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter, ArknightsCharacterStatus, Character } from '../../pkg/cpp-arknights'
 import { BaseSkillState, baseSkillState, reached, unlockCost, unlockFrom } from '../../pkg/cpp-arknights/baseSkills'
@@ -11,10 +12,14 @@ import { FieldContext, Querier } from '../../pkg/cpp-basic'
 import { gt } from '../../pkg/gt'
 import { CharacterListColumn, createSimpleExtraField, percentageColumnWidth } from '../CharacterList'
 import { CachedImg } from '../Icons'
+import { useShowCharacterDossier } from '../dossierHooks'
+import { useRequestFrame } from '../focusFrame'
+import { PeekTrigger } from '../Peek'
 import { ValueTag } from '../Value'
 import { IGameComponent } from '../types'
 import { BaseSkillEffect } from './BaseSkillEffect'
 import { unlockShort } from './baseSkillText'
+import { modulePeek, skillPeek, skillRefName } from './peekKinds'
 import { RichText } from './statusEditor/Detail'
 import { useDetails } from './useDetails'
 
@@ -122,6 +127,14 @@ const Skeleton = () => (
 const BaseSkillCell = memo(({ context, width }: { context: BaseSkillContext; width: number }) => {
   const { ga, skill, state, owned } = useBaseSkillRow(context)
   const [loaded] = useDetails(ga.getDataManager())
+  const showDossier = useShowCharacterDossier()
+  const frame = useRequestFrame()
+  // 档案「基建技能」页按技能位排着每一条，比卡片能放的多：打开到那一页，框出这一条
+  const onClick = useEvent(() => {
+    if (!skill) return
+    showDossier(context.character.key, { section: 'baseSkills' })
+    frame(`baseSkill:${context.character.key}:${skill.buff.id}`)
+  })
   if (!skill) return <CharacterListColumn width={width} />
   const { buff } = skill
 
@@ -146,7 +159,14 @@ const BaseSkillCell = memo(({ context, width }: { context: BaseSkillContext; wid
   }
 
   return (
-    <CharacterListColumn width={width} className="cpp-bskill-cell">
+    <CharacterListColumn
+      width={width}
+      className="cpp-bskill-cell"
+      onClick={onClick}
+      aria-label={gt
+        .pgettext('arknights base skill', '在档案里看 %s') /* I10N: %s: base skill name */
+        .replaceAll('%s', buff.name)}
+    >
       <CachedImg src={buff.icon} width={28} height={28} className="cpp-bskill-icon" alt="" />
       <div className="cpp-bskill-text" title={title}>
         <span className="cpp-bskill-name">{buff.name}</span>
@@ -195,50 +215,60 @@ export const extraFields: IGameComponent['extraFields'] = {
   skill: {
     width: 150,
     C: memo(({ context, width }: { context: FieldContext<Arknights, Character, [number]>; width: number }) => {
-      const skillId = context.args[0]
-      const charSkill = context.character.skills[skillId]
+      const charSkill = context.character.skills[context.args[0]]
       const skillName = charSkill.skill.name
-      const skillIndex = [
-        gt.pgettext('arknights skill ref', '一技能'),
-        gt.pgettext('arknights skill ref', '二技能'),
-        gt.pgettext('arknights skill ref', '三技能'),
-      ][charSkill.charSkillIndex]
 
       return (
-        <CharacterListColumn width={width}>
-          <span className="bp6-menu-item-icon">
-            <CachedImg src={charSkill.skill.icon} width={'100%'} height={'100%'} alt={skillName} title={skillName} />
-          </span>
-          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp6-text-overflow-ellipsis" title={skillName}>
-              {skillName}
-            </div>
-            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.25 }}>
-              {skillIndex}
-            </div>
-          </div>
-        </CharacterListColumn>
+        <PeekTrigger
+          peek={skillPeek(context.character.key, charSkill.skillId)}
+          renderTarget={(peek) => (
+            <CharacterListColumn width={width} {...peek}>
+              <span className="bp6-menu-item-icon">
+                <CachedImg
+                  src={charSkill.skill.icon}
+                  width={'100%'}
+                  height={'100%'}
+                  alt={skillName}
+                  title={skillName}
+                />
+              </span>
+              <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div className="bp6-text-overflow-ellipsis" title={skillName}>
+                  {skillName}
+                </div>
+                <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.25 }}>
+                  {skillRefName(charSkill.charSkillIndex)}
+                </div>
+              </div>
+            </CharacterListColumn>
+          )}
+        />
       )
     }),
   },
   mod: {
     width: 150,
     C: memo(({ context, width }: { context: FieldContext<Arknights, Character, [number]>; width: number }) => {
-      const { equip } = context.character.uniEquips[context.args[0]]
+      const { equip, equipId } = context.character.uniEquips[context.args[0]]
       return (
-        <CharacterListColumn width={width}>
-          <span className="bp6-menu-item-icon cpp-mod-icon">
-            <CachedImg src={equip.icon} width={28} height={28} alt="" />
-          </span>
-          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp6-text-overflow-ellipsis" title={equip.name}>
-              {equip.name}
-            </div>
-            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.25 }}>
-              {`${equip.raw.typeName1}-${equip.raw.typeName2}`}
-            </div>
-          </div>
-        </CharacterListColumn>
+        <PeekTrigger
+          peek={modulePeek(context.character.key, equipId)}
+          renderTarget={(peek) => (
+            <CharacterListColumn width={width} {...peek}>
+              <span className="bp6-menu-item-icon cpp-mod-icon">
+                <CachedImg src={equip.icon} width={28} height={28} alt="" />
+              </span>
+              <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div className="bp6-text-overflow-ellipsis" title={equip.name}>
+                  {equip.name}
+                </div>
+                <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.25 }}>
+                  {`${equip.raw.typeName1}-${equip.raw.typeName2}`}
+                </div>
+              </div>
+            </CharacterListColumn>
+          )}
+        />
       )
     }),
   },

@@ -4,6 +4,7 @@ import { BlobFlavour } from '../pkg/blobcache'
 import { FieldContext, ICharacter, IGameAdapter, Querier } from '../pkg/cpp-basic'
 import { PSTR } from '../pkg/gt'
 import type { ImportFormat } from './Importer'
+import type { PeekKind } from './peek'
 
 export interface ItemSimulatedViewConfig {
   limit: number
@@ -89,4 +90,6 @@ export interface IGameComponent {
   sidebarPanels?: SidebarPanel[]
   /** 排在外壳自己的「练度」后面，按数组顺序 */
   dossierSections?: DossierSection[]
+  /** 点了弹出的卡片，按 PeekRef 的 kind；通用部分自带 item，没登记的种类原样画、不能点 */
+  peekKinds?: Record<string, PeekKind>
 }

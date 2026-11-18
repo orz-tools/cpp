@@ -833,6 +833,30 @@
   color: var(--bp-palette-gray-3, #8f99a8);
 }
 
+/* 模组图标是白色的：和列表里一样垫一块深色 */
+.cpp-peek-mod-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 2px;
+  background: #30363d;
+}
+
+/* 技能卡、模组卡里的说明：卡片本身就是框 */
+.cpp-peek-body > .cpp-charstat-det {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* 技能卡对比满级时：满级不在计划内，只加粗、不用蓝色 */
+.cpp-charstat-det-vs-max .cpp-charstat-det-to,
+.cpp-charstat-det-vs-max .cpp-charstat-rt-to {
+  color: inherit;
+}
+
 .cpp-charstat-det-table .cpp-charstat-det-arrow {
   padding-left: 6px;
   color: var(--bp-palette-gray-3, #8f99a8);
@@ -1087,6 +1111,12 @@ p > .cpp-charstat-det-tag,
 
 .cpp-stages-crow {
   padding: 1px 8px 1px 30px;
+}
+
+/* 从关卡卡跳过来框出的一行：行贴着滚动区域的两边，框往里收才不被切掉 */
+.cpp-stages-crow.cpp-framed,
+.cpp-stages-table tr.cpp-framed {
+  outline-offset: -2px;
 }
 
 .cpp-stages-crow > .cpp-stages-check.bp6-control.bp6-checkbox {
@@ -1773,9 +1803,10 @@ section:first-child > .cpp-stages-wide-section {
   cursor: pointer;
 }
 
+/* 和 .cpp-peek-inline 一样是句子里能点的词：只加下划线，颜色不变，蓝色只表示计划内 */
 .cpp-mm-operator:hover .cpp-mm-name {
-  color: var(--bp-palette-blue-2, #215db0);
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .cpp-mm-equip {

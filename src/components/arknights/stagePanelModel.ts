@@ -27,6 +27,8 @@ export const stageCategoryFilterAtom = atom<string | null>(null)
 export const stageMaterialAtom = atom<string | null>(null)
 /** 用户点过的章节；没点过的章节，活动类展开，其余折叠 */
 export const stageZoneOpenAtom = atom<Readonly<Record<string, boolean>>>({})
+/** 加一时两种「关卡」视图都清空搜索框：从关卡卡跳过来，要找的那一关不能被搜索词滤掉 */
+export const stageSearchResetAtom = atom(0)
 
 export type MaterialSection = 'material' | 'chip' | 'other'
 export const MATERIAL_SECTIONS: MaterialSection[] = ['material', 'chip', 'other']
@@ -151,12 +153,13 @@ export function useStageNavigation(model: StageModel): StageNavigation {
   return { view, setView, drill, openMaterial, closeMaterial, scope }
 }
 
-/** 搜索框的文字，scope 一变就清空：切换看法、进入或退出一种材料以后，要搜的东西变了 */
+/** 搜索框的文字，scope 一变就清空：切换看法、进入或退出一种材料以后，要搜的东西变了；stageSearchResetAtom 变了也清空 */
 export function useScopedQuery(scope: string): [string, (text: string) => void] {
-  const [state, setState] = useState({ scope, text: '' })
-  if (state.scope !== scope) setState({ scope, text: '' })
-  const setText = useCallback((text: string) => setState({ scope, text }), [scope])
-  return [state.scope === scope ? state.text : '', setText]
+  const key = `${useAtomValue(stageSearchResetAtom)}:${scope}`
+  const [state, setState] = useState({ key, text: '' })
+  if (state.key !== key) setState({ key, text: '' })
+  const setText = useCallback((text: string) => setState({ key, text }), [key])
+  return [state.key === key ? state.text : '', setText]
 }
 
 /** 有关卡的类别，按 model.categories 的顺序 */

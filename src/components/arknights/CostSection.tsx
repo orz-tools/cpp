@@ -9,6 +9,7 @@ import { CostBreakdown, CostCellId, CostMatrix, RarityRank, TrainingCost } from 
 import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { CachedImg } from '../Icons'
+import { PeekTrigger } from '../Peek'
 import { ValueTag, ValueText, ValueUnitIcon } from '../Value'
 import { DossierSection } from '../types'
 
@@ -227,10 +228,21 @@ const CostMaterials = memo(({ ga, title, cost }: { ga: ArknightsAdapter; title: 
           {items.map(({ id, quantity, item }) => {
             const name = item?.name ?? id
             return (
-              <span key={id} className="cpp-cost-material" title={`${name} × ${quantity}`}>
-                {item ? <CachedImg src={item.icon} width={34} height={34} alt={name} /> : null}
-                <span className="cpp-cost-material-quantity">{formatQuantity(quantity)}</span>
-              </span>
+              <PeekTrigger
+                key={id}
+                peek={{ kind: 'item', id }}
+                renderTarget={(peek) => (
+                  <span
+                    role={peek ? 'button' : undefined}
+                    {...peek}
+                    className={'cpp-cost-material' + (peek ? ' ' + peek.className : '')}
+                    title={`${name} × ${quantity}`}
+                  >
+                    {item ? <CachedImg src={item.icon} width={34} height={34} alt={name} /> : null}
+                    <span className="cpp-cost-material-quantity">{formatQuantity(quantity)}</span>
+                  </span>
+                )}
+              />
             )
           })}
         </div>

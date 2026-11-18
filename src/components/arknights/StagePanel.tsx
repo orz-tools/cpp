@@ -1,11 +1,17 @@
 import { Button, InputGroup, NonIdealState, SegmentedControl, Tag } from '@blueprintjs/core'
-import { useAtom } from 'jotai'
-import { memo, useMemo } from 'react'
+import { useAtom, useSetAtom } from 'jotai'
+import { memo, useContext, useMemo, useRef } from 'react'
+import useEvent from 'react-use-event-hook'
+import { useGameAdapter } from '../../Cpp'
 import type { IZoneInfo } from '../../pkg/cpp-basic'
 import { MaterialGroup } from '../../pkg/cpp-arknights/stageEfficiency'
 import { ArknightsStageCategory } from '../../pkg/cpp-arknights/zones'
 import { gt, lpstr } from '../../pkg/gt'
 import { CountTag, StageToggleProps, TriStateCheckbox } from '../ConfigUi'
+import { useShowSidebarPanel } from '../Sidebar'
+import { useOpenSidebarPanel } from '../SidebarPanelDialog'
+import { PopOutWindowContext } from '../dossierHooks'
+import { useFocusFrame, useRequestFrame } from '../focusFrame'
 import { groupStages } from '../stageGroups'
 import type { SidebarPanel } from '../types'
 import { StagesWide } from './StagePanelWide'
@@ -26,6 +32,8 @@ import {
   matchesStage,
   materialSectionName,
   stageCategoryFilterAtom,
+  stageSearchResetAtom,
+  stageViewAtom,
   stageZoneOpenAtom,
   useChapterCategories,
   useMaterialFilter,
@@ -47,8 +55,14 @@ const StagesToolbar = memo(() => {
 const ChapterStageRow = memo(
   ({ model, stageId, isChecked, onSetChecked }: { model: StageModel; stageId: string } & StageToggleProps) => {
     const e = model.efficiencies.get(stageId)
+    // 从关卡卡的「在『关卡』面板里看」过来：滚到这一行、框出来
+    const ref = useRef<HTMLDivElement>(null)
+    const framed = useFocusFrame('stage:' + stageId, ref)
     return (
-      <div className={'cpp-stages-crow' + (isChecked(stageId) ? '' : ' cpp-stages-off')}>
+      <div
+        ref={ref}
+        className={'cpp-stages-crow' + (isChecked(stageId) ? '' : ' cpp-stages-off') + (framed ? ' cpp-framed' : '')}
+      >
         <StageCheckbox stage={model.stages[stageId]} isChecked={isChecked} onSetChecked={onSetChecked} />
         <span className="cpp-stages-crow-drop cpp-stages-dim">
           {e?.mainDrop && model.valuesOk ? <MaterialLabel itemId={e.mainDrop} /> : null}
@@ -265,6 +279,32 @@ const StagesBody = memo(() => {
     </div>
   )
 })
+
+/**
+ * 在「关卡」面板里找到这一关：按章节、不按类别筛选、清空搜索框，展开它的章节，框出这一行。大窗口里点时侧栏被窗口盖着，
+ * 改为打开「关卡」大窗口
+ */
+export function useShowStageInPanel(): (stageId: string) => void {
+  const ga = useGameAdapter()
+  const inWindow = useContext(PopOutWindowContext) != null
+  const setView = useSetAtom(stageViewAtom)
+  const setCategory = useSetAtom(stageCategoryFilterAtom)
+  const resetSearch = useSetAtom(stageSearchResetAtom)
+  const setZoneOpen = useSetAtom(stageZoneOpenAtom)
+  const frame = useRequestFrame()
+  const showPanel = useShowSidebarPanel()
+  const openPanel = useOpenSidebarPanel()
+  return useEvent((stageId: string) => {
+    const stage = ga.getStageInfos()[stageId]
+    setView('chapter')
+    setCategory(null)
+    resetSearch((x) => x + 1)
+    if (stage) setZoneOpen((x) => ({ ...x, [stage.zoneId]: true }))
+    frame('stage:' + stageId)
+    if (inWindow) openPanel(stagesPanel)
+    else showPanel(stagesPanel.id)
+  })
+}
 
 export const stagesPanel: SidebarPanel = {
   id: 'stages',

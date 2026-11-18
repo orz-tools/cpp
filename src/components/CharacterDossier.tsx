@@ -84,7 +84,7 @@ const DossierTabs = memo(
       sections.map((s) => s.id),
     )
 
-    // A new page, or a new character on the same page, starts at the top. SkinsSection scrolls to the skin it
+    // A new page, or a new character on the same page, starts at the top. useFocusFrame scrolls to the entry it
     // frames in a plain effect, which runs after this one
     useLayoutEffect(() => {
       const frame = frameRef.current

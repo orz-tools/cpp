@@ -13,6 +13,7 @@ import { StarStatus } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { CharacterContextMenu, menuItemKeyDown } from './CharacterList'
 import { CachedImg, ItemIcon } from './Icons'
+import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
 import { ValueTagProgressBar } from './Value'
 
@@ -187,6 +188,8 @@ export const TaskMenu = memo(
       />
     ))
 
+    const submenu = hideCosts && renderedCosts.length > 0
+
     const starred = details.directStars.has(task)
       ? StarStatus.Starred
       : details.indirectStars.has(task)
@@ -253,7 +256,8 @@ export const TaskMenu = memo(
         <Menu style={{ padding: 0 }}>
           <ContextMenu content={<TaskContextMenu task={task} extra={extra} />}>
             <MenuItem
-              className="cpp-menu-nosubmenu"
+              // 没有子菜单时只有右键菜单，悬停不该像能点
+              className={'cpp-menu-nosubmenu' + (submenu ? '' : ' cpp-task-row-static')}
               // title={task.id}
               style={{ fontWeight: 'normal' }}
               icon={StatusIcon[extra.status]}
@@ -281,7 +285,7 @@ export const TaskMenu = memo(
               }
               popoverProps={{ usePortal: true, matchTargetWidth: true }}
             >
-              {hideCosts && renderedCosts.length > 0 ? renderedCosts : null}
+              {submenu ? renderedCosts : null}
             </MenuItem>
           </ContextMenu>
           {hideCosts ? null : renderedCosts}
@@ -327,34 +331,41 @@ const ItemStack = memo(
     const ga = useGameAdapter<G>()
     const item = ga.getItem(stack.itemId)
     return (
-      <MenuItem
-        className="cpp-menu-not-interactive"
-        key={stack.itemId}
-        icon={
-          <div style={{ display: 'flex' }}>
-            <Icon icon={CostStatusIcon[status]} size={16} style={{ padding: 2 }} />
-            <ItemIcon item={item} size={20} />
-          </div>
-        }
-        onContextMenu={preventDefault}
-        text={
-          <div style={{ display: 'flex' }}>
-            <span style={{ flex: 1, flexShrink: 1 }}>{item.name}</span>
-            <span>
-              {consumed > 0 || (consumed <= 0 && synthesised <= 0) ? consumed : undefined}
-              {consumed > 0 && synthesised > 0 ? ' + ' : undefined}
-              {synthesised > 0 ? (
-                <>
-                  <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5 }} />
-                  {synthesised}
-                </>
-              ) : undefined}
-              {' / '}
-              {stack.quantity}
-            </span>
-          </div>
-        }
-        style={{ fontWeight: 'normal', ...style }}
+      <PeekTrigger
+        peek={{ kind: 'item', id: stack.itemId }}
+        renderTarget={(peek) => (
+          <MenuItem
+            {...peek}
+            className={peek ? peek.className : 'cpp-menu-not-interactive'}
+            // 隐藏花费时这些行在任务行的子菜单里：点了不能把子菜单关掉，否则卡片跟着没了
+            shouldDismissPopover={false}
+            icon={
+              <div style={{ display: 'flex' }}>
+                <Icon icon={CostStatusIcon[status]} size={16} style={{ padding: 2 }} />
+                <ItemIcon item={item} size={20} />
+              </div>
+            }
+            onContextMenu={preventDefault}
+            text={
+              <div style={{ display: 'flex' }}>
+                <span style={{ flex: 1, flexShrink: 1 }}>{item.name}</span>
+                <span>
+                  {consumed > 0 || (consumed <= 0 && synthesised <= 0) ? consumed : undefined}
+                  {consumed > 0 && synthesised > 0 ? ' + ' : undefined}
+                  {synthesised > 0 ? (
+                    <>
+                      <Icon icon={'build'} size={10} style={{ padding: 0, paddingBottom: 4, opacity: 0.5 }} />
+                      {synthesised}
+                    </>
+                  ) : undefined}
+                  {' / '}
+                  {stack.quantity}
+                </span>
+              </div>
+            }
+            style={{ fontWeight: 'normal', ...style }}
+          />
+        )}
       />
     )
   },
