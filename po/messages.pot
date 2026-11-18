@@ -124,7 +124,7 @@ msgstr ""
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr ""
 
-#: src/components/TaskList.tsx:139
+#: src/components/TaskList.tsx:141
 msgid "优先培养（星标）"
 msgstr ""
 
@@ -325,7 +325,7 @@ msgstr ""
 msgid "如今"
 msgstr ""
 
-#: src/components/TaskList.tsx:121
+#: src/components/TaskList.tsx:123
 msgid "完成"
 msgstr ""
 
@@ -447,7 +447,7 @@ msgstr ""
 msgid "弹出成大窗口"
 msgstr ""
 
-#: src/components/TaskList.tsx:132
+#: src/components/TaskList.tsx:134
 msgid "强制完成（不消耗材料）"
 msgstr ""
 
@@ -2200,81 +2200,82 @@ msgid "精零"
 msgstr ""
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:260
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:266
 msgctxt "arknights task"
 msgid "%d$number 技能专一: %s$name"
 msgstr ""
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:268
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:274
 msgctxt "arknights task"
 msgid "%d$number 技能专三: %s$name"
 msgstr ""
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:264
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:270
 msgctxt "arknights task"
 msgid "%d$number 技能专二: %s$name"
 msgstr ""
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:279
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:285
 msgctxt "arknights task"
 msgid "%s$code 模组 1 级: %s$name"
 msgstr ""
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:283
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:289
 msgctxt "arknights task"
 msgid "%s$code 模组 2 级: %s$name"
 msgstr ""
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:287
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:293
 msgctxt "arknights task"
 msgid "%s$code 模组 3 级: %s$name"
 msgstr ""
 
 #. %d: number
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:240
+#: src/components/arknights/SpecialOperatorSection.tsx:59
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:246
 msgctxt "arknights task"
 msgid "技能 %d 级"
 msgstr ""
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:238
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:244
 msgctxt "arknights task"
 msgid "招募"
 msgstr ""
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:246
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:252
 msgctxt "arknights task"
 msgid "精一"
 msgstr ""
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:252
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:258
 msgctxt "arknights task"
 msgid "精一等级 %d$from -> %d$to"
 msgstr ""
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:247
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:253
 msgctxt "arknights task"
 msgid "精二"
 msgstr ""
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:253
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:259
 msgctxt "arknights task"
 msgid "精二等级 %d$from -> %d$to"
 msgstr ""
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:245
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:251
 msgctxt "arknights task"
 msgid "精零"
 msgstr ""
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:251
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:257
 msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr ""
@@ -2419,6 +2420,11 @@ msgstr ""
 #: src/components/arknights/ModuleMissionSection.tsx:138
 msgctxt "dossier section"
 msgid "模组任务"
+msgstr ""
+
+#: src/components/arknights/SpecialOperatorSection.tsx:284
+msgctxt "dossier section"
+msgid "特勤任务"
 msgstr ""
 
 #: src/components/CharacterDossier.tsx:36
@@ -4612,6 +4618,106 @@ msgstr ""
 #: src/components/arknights/SkinsSection.tsx:29
 msgctxt "skins"
 msgid "默认"
+msgstr ""
+
+#. %s: experience from level 1 to the top level
+#: src/components/arknights/SpecialOperatorSection.tsx:119
+msgctxt "special operator"
+msgid "（整段共 %s）"
+msgstr ""
+
+#. %1: game mode, e.g. 集成战略; %2: its topic, e.g. 沉沦者的黑流树海
+#: src/components/arknights/taskNotes.ts:19
+msgctxt "special operator"
+msgid "%1：%2"
+msgstr ""
+
+#. %s: elite phase, e.g. 精二
+#: src/components/arknights/SpecialOperatorSection.tsx:150
+msgctxt "special operator"
+msgid "%s时自动解锁"
+msgstr ""
+
+#. %s: elite phase, e.g. 精一
+#: src/components/arknights/SpecialOperatorSection.tsx:102
+msgctxt "special operator"
+msgid "%s等级"
+msgstr ""
+
+#. %s: game mode and topic, e.g. 集成战略：沉沦者的黑流树海
+#: src/components/arknights/SpecialOperatorSection.tsx:173
+msgctxt "special operator"
+msgid "只在%s里生效；Closure++ 不记录精通，这里不标是否解锁"
+msgstr ""
+
+#: src/components/arknights/SpecialOperatorSection.tsx:35
+msgctxt "special operator"
+msgid "在计划里"
+msgstr ""
+
+#: src/components/arknights/SpecialOperatorSection.tsx:33
+msgctxt "special operator"
+msgid "已解锁"
+msgstr ""
+
+#: src/components/arknights/SpecialOperatorSection.tsx:195
+msgctxt "special operator"
+msgid "技能"
+msgstr ""
+
+#: src/components/arknights/SpecialOperatorSection.tsx:231
+msgctxt "special operator"
+msgid "模组"
+msgstr ""
+
+#: src/components/arknights/SpecialOperatorSection.tsx:37
+msgctxt "special operator"
+msgid "没计划"
+msgstr ""
+
+#. %s: special operator experience a level task takes
+#: src/components/arknights/taskNotes.ts:35
+msgctxt "special operator"
+msgid "特勤经验 %s"
+msgstr ""
+
+#. %s: game mode and topic, e.g. 集成战略：沉沦者的黑流树海
+#: src/components/arknights/taskNotes.ts:30
+msgctxt "special operator"
+msgid "特殊干员的等级靠%s里的探索得分按比例换成的特勤经验"
+msgstr ""
+
+#: src/components/arknights/SpecialOperatorSection.tsx:178
+msgctxt "special operator"
+msgid "等级靠探索得分按比例换成的特勤经验"
+msgstr ""
+
+#: src/components/arknights/SpecialOperatorSection.tsx:183
+msgctxt "special operator"
+msgid "精英化"
+msgstr ""
+
+#: src/components/arknights/SpecialOperatorSection.tsx:262
+msgctxt "special operator"
+msgid "精通"
+msgstr ""
+
+#. %d: the master's number, for a master without a name
+#: src/components/arknights/SpecialOperatorSection.tsx:132
+msgctxt "special operator"
+msgid "精通 %d"
+msgstr ""
+
+#. %s: elite phase, e.g. 精二
+#: src/components/arknights/SpecialOperatorSection.tsx:44
+msgctxt "special operator"
+msgid "需要%s"
+msgstr ""
+
+#. %s: elite phase, e.g. 精一; %d: level
+#: src/components/arknights/SpecialOperatorSection.tsx:48
+msgctxt "special operator"
+msgid "需要%s %d 级"
 msgstr ""
 
 #: src/components/stageGroups.ts:34
