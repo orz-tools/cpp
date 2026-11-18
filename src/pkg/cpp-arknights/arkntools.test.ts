@@ -9,12 +9,13 @@ import {
 } from './arkntools'
 import { ArknightsCharacterStatus } from './types'
 
-type Char = ArkntoolsCharacter & { charIds: string[] }
+type Char = ArkntoolsCharacter & { charIds: string[]; isSpecialOperator: boolean }
 
 function char(
   key: string,
   rarity: number,
   forms: Record<string, { skills: (string | [string, false])[]; mods?: string[] }>,
+  isSpecialOperator = false,
 ): Char {
   const entries = Object.entries(forms)
   return {
@@ -22,6 +23,7 @@ function char(
     rarity,
     modUnlockLevel: 60,
     charIds: entries.map(([id]) => id),
+    isSpecialOperator,
     skills: entries.flatMap(([rawCharId, f]) =>
       f.skills.map((s) => {
         const [skillId, masterable] = typeof s === 'string' ? [s, true] : s
@@ -43,6 +45,7 @@ const chars: Record<string, Char> = {
   }),
   char_123_fang: char('char_123_fang', 2, { char_123_fang: { skills: [['f1', false]] } }),
   char_285_medic2: char('char_285_medic2', 0, { char_285_medic2: { skills: [] } }),
+  char_4230_mcnist: char('char_4230_mcnist', 5, { char_4230_mcnist: { skills: ['n1', 'n2', 'n3'] } }, true),
 }
 
 const ga = {
@@ -196,6 +199,7 @@ describe('buildArkntoolsBackup', () => {
     expect(r.presets).toBe(3)
     expect(r.partial).toBe(1)
     expect(r.excluded).toBe(1)
+    expect(r.special).toBe(0)
     expect(r.backup).toEqual({
       inputs: { '30012': [3, 5], '3303': [8, 0] },
       presets: [
@@ -249,6 +253,24 @@ describe('buildArkntoolsBackup', () => {
       ],
       planStageBlacklist: ['1-7', 'S4-1'],
     })
+  })
+
+  it('leaves out special operators, plans and materials alike', () => {
+    const r = buildArkntoolsBackup(
+      {
+        goalOrder: ['char_4230_mcnist'],
+        current: { char_4230_mcnist: st({ elite: 1, level: 40, skillLevel: 4 }) },
+        goal: { char_4230_mcnist: st({ elite: 2, level: 1, skillLevel: 7, skillMaster: { n1: 3 } }) },
+        items: {},
+      },
+      empty,
+      (key) => chars[key],
+      () => [{ itemId: '30012', quantity: 1 }],
+      [],
+    )
+    expect(r.special).toBe(1)
+    expect(r.presets).toBe(0)
+    expect(r.backup.inputs).toEqual({})
   })
 
   it('imports back to the same goals', () => {

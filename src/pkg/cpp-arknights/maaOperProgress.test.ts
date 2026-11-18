@@ -16,10 +16,12 @@ function char(
   profession: MaaOperProgressCharacter['raw']['profession'],
   skillIds: (string | null)[],
   hasPatches = false,
+  isSpecialOperator = false,
 ): MaaOperProgressCharacter {
   return {
     key,
     hasPatches,
+    isSpecialOperator,
     raw: { name, profession },
     skills: skillIds.flatMap((skillId, charSkillIndex) =>
       skillId ? [{ skillId, rawCharId: key, charSkillIndex }] : [],
@@ -36,6 +38,7 @@ const chars: Record<string, MaaOperProgressCharacter> = {
   ptilo: char('ptilo', '白面鸮', 'MEDIC', ['p1', 'p2']),
   amiya: char('amiya', '阿米娅', 'CASTER', ['a1', 'a2', 'a3'], true),
   gap: char('gap', '空格', 'SPECIAL', [null, 'g2']),
+  mcnist: char('mcnist', '机械师', 'TANK', ['n1', 'n2', 'n3'], false, true),
 }
 
 function build(current: Record<string, ArknightsCharacterStatus>, goal: Record<string, ArknightsCharacterStatus>) {
@@ -52,6 +55,7 @@ describe('buildMaaOperProgressPlans', () => {
       plans: [{ role: 'Warrior', name: '陈', elite: 2, skill_mastery: [0, 0, 3] }],
       partial: 0,
       excluded: 0,
+      special: 0,
     })
   })
 
@@ -81,7 +85,7 @@ describe('buildMaaOperProgressPlans', () => {
         gap: st({ elite: 2, level: 60, skillLevel: 7, modLevel: { m: 3 } }),
       },
     )
-    expect(r).toEqual({ plans: [{ role: 'Medic', name: '白面鸮', elite: 2 }], partial: 3, excluded: 0 })
+    expect(r).toEqual({ plans: [{ role: 'Medic', name: '白面鸮', elite: 2 }], partial: 3, excluded: 0, special: 0 })
   })
 
   it('excludes characters not yet owned and Amiya', () => {
@@ -89,7 +93,15 @@ describe('buildMaaOperProgressPlans', () => {
       { amiya: st({ elite: 1, skillLevel: 4 }), chen: st({ level: 0 }) },
       { amiya: st({ elite: 2, skillLevel: 7 }), chen: st({ elite: 2, skillLevel: 7 }), ptilo: st({ elite: 1 }) },
     )
-    expect(r).toEqual({ plans: [], partial: 0, excluded: 3 })
+    expect(r).toEqual({ plans: [], partial: 0, excluded: 3, special: 0 })
+  })
+
+  it('leaves out special operators', () => {
+    const r = build(
+      { mcnist: st({ elite: 1, level: 50, skillLevel: 4 }) },
+      { mcnist: st({ elite: 2, skillLevel: 7, skillMaster: { n1: 3 } }) },
+    )
+    expect(r).toEqual({ plans: [], partial: 0, excluded: 0, special: 1 })
   })
 })
 
