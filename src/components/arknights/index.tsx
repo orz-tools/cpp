@@ -13,6 +13,7 @@ import { moduleMissionsSection } from './ModuleMissionSection'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
 import { skinsPanel } from './SkinsPanel'
 import { skinsSection } from './SkinsSection'
+import { specialOperatorSection } from './SpecialOperatorSection'
 import { stagesPanel } from './StagePanel'
 import { TaskDisplay } from './TaskDisplay'
 import { ValueConfigMenu } from './ValueConfigMenu'
@@ -55,7 +56,8 @@ export const ArknightsComponents: IGameComponent = {
     building: { 'building.room': '==', rarity: '==' },
   },
   sidebarPanels: [stagesPanel, moduleMissionsPanel, skinsPanel],
-  dossierSections: [costSection, baseSkillsSection, skinsSection, moduleMissionsSection],
+  // 特殊干员没有「养成成本」，所以「特勤任务」紧跟「练度」
+  dossierSections: [costSection, specialOperatorSection, baseSkillsSection, skinsSection, moduleMissionsSection],
   peekKinds: { skill: skillPeekKind, module: modulePeekKind, stage: stagePeekKind },
   taskNotes,
 }

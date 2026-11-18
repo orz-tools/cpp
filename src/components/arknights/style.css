@@ -4233,3 +4233,132 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-bskill-retry {
   margin-top: 10px;
 }
+
+/* 档案「特勤任务」页（SpecialOperatorSection.tsx） */
+.cpp-so {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.cpp-so-context {
+  margin-bottom: 14px;
+  padding: 7px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+}
+
+.cpp-so-context strong {
+  color: var(--bp-palette-dark-gray-1, #1c2127);
+}
+
+.cpp-so-group {
+  margin-bottom: 14px;
+}
+
+.cpp-so-title {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-so-note {
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-so-sub {
+  margin: 8px 0 2px;
+}
+
+.cpp-so-sub-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cpp-so-code {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+/* 状态图标 / 目标 / 文字；目标列给到最长的「技能 7 级」，各行才对得齐 */
+.cpp-so-row,
+.cpp-so-exp {
+  display: grid;
+  grid-template-columns: 16px minmax(72px, max-content) minmax(0, 1fr);
+  gap: 6px;
+  align-items: start;
+  padding: 4px;
+  border-radius: 3px;
+}
+
+.cpp-so-exp {
+  grid-template-columns: 16px minmax(72px, max-content) minmax(0, 1fr) auto;
+  padding: 3px 4px;
+}
+
+.cpp-so-st {
+  height: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.cpp-so-target {
+  white-space: nowrap;
+}
+
+.cpp-so-need {
+  display: block;
+  font-size: 12px;
+  color: var(--bp-palette-orange-3, #c87619);
+}
+
+.cpp-so-range {
+  font-size: 12px;
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-so-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.cpp-so-row.is-done,
+.cpp-so-exp.is-done {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-so-row.is-done .cpp-so-mission {
+  text-decoration: line-through;
+  text-decoration-color: rgba(95, 107, 124, 0.5);
+}
+
+.cpp-so-row.is-done .cpp-so-st,
+.cpp-so-exp.is-done .cpp-so-st {
+  color: var(--bp-palette-green-3, #238551);
+}
+
+.cpp-so-row.is-planned .cpp-so-st,
+.cpp-so-exp.is-planned .cpp-so-st {
+  color: var(--bp-intent-primary-rest, #2d72d2);
+}
+
+.cpp-so-row.is-planned .cpp-so-target {
+  font-weight: 600;
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
+.cpp-so-row.is-idle,
+.cpp-so-exp.is-idle {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
+.cpp-so-row.is-idle .cpp-so-st,
+.cpp-so-exp.is-idle .cpp-so-st {
+  color: var(--bp-palette-gray-4, #abb3bf);
+}
