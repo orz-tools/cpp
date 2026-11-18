@@ -242,32 +242,10 @@ export function fits(missions: readonly ParsedMission[]): boolean {
   return countFits(missions)
 }
 
-/** 顺带的不限关卡任务这一次推进不了的原因 */
-export type PiggybackConflict =
-  | { kind: 'squad'; rule: SquadConflictRule; by: MissionInput; squad: SquadRule; other: MissionInput }
-  /** 同一次里别人的关卡任务也要第一个部署 */
-  | { kind: 'firstDeploy'; with: MissionInput }
-  /** 同一次里别人的顺带任务也要第一个部署 */
-  | { kind: 'firstDeployPiggyback'; with: MissionInput }
-
-/** run 是这一次的关卡任务，piggies 是这一次所有顺带的任务；能推进时返回 null */
-export function piggybackConflict(
-  piggy: ParsedMission,
-  run: readonly ParsedMission[],
-  piggies: readonly ParsedMission[],
-): PiggybackConflict | null {
-  for (const s of run) {
-    const c = conflict(piggy, s)
-    if (c?.kind === 'squad') {
-      return { kind: 'squad', rule: c.rule, by: c.by.mission, squad: c.by.squad, other: c.other.mission }
-    }
-    if (c?.kind === 'firstDeploy') return { kind: 'firstDeploy', with: s.mission }
-  }
-  if (piggy.known && piggy.firstDeploy) {
-    const rival = piggies.find((q) => q.known && q.firstDeploy && q.mission.charId !== piggy.mission.charId)
-    if (rival) return { kind: 'firstDeployPiggyback', with: rival.mission }
-  }
-  return null
+/** 推进不了：编队条件把对方排除在外，或者都要第一个部署 */
+function blocks(a: ParsedMission, b: ParsedMission): boolean {
+  const kind = conflict(a, b)?.kind
+  return kind === 'squad' || kind === 'firstDeploy'
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -386,94 +364,6 @@ function isBetterRun(s: number, t: number) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// 为什么分开
-
-export type SplitReason =
-  | { kind: 'boss'; enemyId: string; missions: MissionInput[] }
-  | { kind: 'squad'; rule: SquadConflictRule; by: MissionInput; squad: SquadRule; others: MissionInput[] }
-  | { kind: 'form'; charId: string }
-  | { kind: 'firstDeploy'; missions: MissionInput[] }
-  | { kind: 'unknown'; missions: MissionInput[] }
-  | { kind: 'count' }
-
-/** 分在不同次的任务之间的冲突，按种类合并；解释的冲突多的在前，至多三条。只因为人数分开时是一条 count */
-export function splitReasons(runs: readonly (readonly ParsedMission[])[]): SplitReason[] {
-  if (runs.length < 2) return []
-  const groups = new Map<string, { reason: SplitReason; pairs: number; order: number }>()
-  const add = (key: string, make: () => SplitReason, extend?: (r: SplitReason) => void) => {
-    let g = groups.get(key)
-    if (!g) groups.set(key, (g = { reason: make(), pairs: 0, order: groups.size }))
-    g.pairs++
-    extend?.(g.reason)
-  }
-  const pushUnique = (list: MissionInput[], ...ms: MissionInput[]) => {
-    for (const m of ms) if (!list.includes(m)) list.push(m)
-  }
-
-  for (let i = 0; i < runs.length; i++) {
-    for (let j = i + 1; j < runs.length; j++) {
-      for (const a of runs[i]) {
-        for (const b of runs[j]) {
-          const c = conflict(a, b)
-          if (!c) continue
-          switch (c.kind) {
-            case 'boss':
-              add(
-                'boss:' + c.enemyId,
-                () => ({ kind: 'boss', enemyId: c.enemyId, missions: [] }),
-                (r) => pushUnique((r as { missions: MissionInput[] }).missions, a.mission, b.mission),
-              )
-              break
-            case 'squad': {
-              const value =
-                c.rule === 'banned' || c.rule === 'allowed'
-                  ? c.other.mission.profession
-                  : c.rule === 'position'
-                    ? c.other.mission.position
-                    : c.rule === 'stars'
-                      ? c.other.mission.stars
-                      : ''
-              add(
-                `squad:${c.by.mission.id}:${c.rule}:${value}`,
-                () => ({ kind: 'squad', rule: c.rule, by: c.by.mission, squad: c.by.squad, others: [] }),
-                (r) => pushUnique((r as { others: MissionInput[] }).others, c.other.mission),
-              )
-              break
-            }
-            case 'form':
-              add('form:' + a.mission.charId, () => ({ kind: 'form', charId: a.mission.charId }))
-              break
-            case 'firstDeploy':
-              add(
-                'firstDeploy',
-                () => ({ kind: 'firstDeploy', missions: [] }),
-                (r) => pushUnique((r as { missions: MissionInput[] }).missions, a.mission, b.mission),
-              )
-              break
-            case 'unknown':
-              add(
-                'unknown',
-                () => ({ kind: 'unknown', missions: [] }),
-                (r) =>
-                  pushUnique(
-                    (r as { missions: MissionInput[] }).missions,
-                    ...[a, b].filter((x) => !x.known).map((x) => x.mission),
-                  ),
-              )
-              break
-          }
-        }
-      }
-    }
-  }
-  if (groups.size === 0) return [{ kind: 'count' }]
-  return [...groups.values()]
-    .sort((x, y) => y.pairs - x.pairs || x.order - y.order)
-    .slice(0, 3)
-    .map((x) => x.reason)
-}
-
-// ---------------------------------------------------------------------------------------------------------------------
 // 还能编入几位、哪些职业
 
 export interface Capacity {
@@ -504,6 +394,16 @@ export function capacity(run: readonly ParsedMission[]): Capacity {
   return result
 }
 
+/** 这个形态编得进去：还能编入、职业、位置、星级 */
+function admits(cap: Capacity, form: Pick<OpenForm, 'profession' | 'position' | 'stars'>): boolean {
+  return (
+    cap.count > 0 &&
+    cap.professions.includes(form.profession as DeployableProfession) &&
+    (!cap.position || form.position === cap.position || form.position === 'ALL') &&
+    (!cap.stars || form.stars === cap.stars)
+  )
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // 面板的全部内容
 
@@ -532,6 +432,20 @@ export interface MissionCatalog {
   world: MissionWorld
   stage(stageId: string): MissionStageInfo
   isOwned(charId: string, status: ArknightsCharacterStatus | undefined): boolean
+  /** 这个形态的技能，按游戏里的顺序 */
+  skillIds(charId: string, formId: string): readonly string[]
+}
+
+/** 带上的一个人：干员和他这一次的形态 */
+export interface TagAlongRef {
+  charId: string
+  formId: string
+}
+
+/** 选中的券上带上的人；ticket 是那张券的 key */
+export interface TagAlongs {
+  ticket: string
+  chars: readonly TagAlongRef[]
 }
 
 export interface BoardInput {
@@ -545,6 +459,8 @@ export interface BoardInput {
   rarities: readonly number[]
   /** 留在原处的任务：这一轮勾过或取消过，做没做完都照旧分组，直到整理 */
   held: ReadonlySet<string>
+  /** 没有带上的人时是 null */
+  tagAlongs: TagAlongs | null
 }
 
 /** 引用不变，buildBoard 的缓存才认得 */
@@ -561,21 +477,56 @@ export interface Ticket {
   /** 这一关要打几次 */
   total: number
   missions: MissionInput[]
+  /** 带上的人也算进去 */
   capacity: Capacity
-  /** 这一关不止一次时 */
-  reasons: SplitReason[]
   /** 几条都要歼灭的同一种非首领敌人 */
   sharedEnemies: string[]
   /** 有认不出条件的任务 */
   unknown: boolean
   blocked: { charId: string; reason: BlockReason }[]
-  /** 这几名干员的不限关卡任务：没做完的，加上留在原处的 */
+  /** 这几名干员这一次的形态的不限关卡任务里，这一次推进得了的：没做完的，加上留在原处的 */
   piggyback: MissionInput[]
-  /** 任务 id → 这一次推进不了的原因；能推进的不在里面 */
-  piggybackConflicts: ReadonlyMap<string, PiggybackConflict>
+  /** 带上的人，按带上的先后；只有选中的那张券上有 */
+  tagAlongs: TagAlong[]
   /** 任务都做完了。只有留在原处的券会这样，不算进次数和理智 */
   allDone: boolean
 }
+
+/** 候选要都已精二，所以不记精英化 */
+export interface Training {
+  level: number
+  skillLevel: number
+  /** 按技能的顺序 */
+  masters: number[]
+}
+
+/** 任务已开放的一个形态，不看范围和星级 */
+export interface OpenForm {
+  charId: string
+  formId: string
+  profession: Profession
+  position: Position
+  stars: number
+  training: Training
+  /** 在 goalOrder 里的位置，不在是 Infinity */
+  goalRank: number
+  /** 不限关卡任务：没做完的，加上留在原处的；按 catalog 里模组和任务的顺序 */
+  missions: MissionInput[]
+}
+
+/** 选中的券上检查过的带上的人 */
+export interface TagAlong {
+  charId: string
+  formId: string
+  profession: Profession
+  /** 这一次推进得了的：没做完的，加上留在原处的 */
+  missions: MissionInput[]
+}
+
+/** 候选：missions 只剩这一次推进得了、没做完的，计划里的模组的在前 */
+export type Candidate = Omit<OpenForm, 'missions'> & { missions: MissionInput[]; planned: boolean }
+
+export type CandidateSort = 'recommended' | 'trainingHigh' | 'trainingLow'
 
 export interface BoardStats {
   /** 范围内的模组 */
@@ -600,15 +551,22 @@ export interface Board {
   /** 只在「计划内」：还不能做的任务 */
   blocked: { mission: MissionInput; reason: BlockReason }[]
   stats: BoardStats
-  /** 范围内做完的任务，包括模组已解锁的 */
+  /** 范围内做完的任务，包括模组已解锁的；另外有已开放形态的、做完的不限关卡任务，带上的人靠它显示勾没勾 */
   done: ReadonlySet<string>
   /** 当前 ≥ 1 级的模组 */
   unlocked: ReadonlySet<string>
   /** 任务 id → 它所在的券（包括「用过的」） */
   ticketOf: ReadonlyMap<string, Ticket>
+  /** 范围内的任务，加上已开放形态的不限关卡任务 */
   parsed: ReadonlyMap<string, ParsedMission>
-  /** 留在原处、已做完、整理时会收走的任务条数，包括顺带的 */
+  /** 留在原处、已做完、整理时会收走的任务条数，包括顺带的和带上的人的 */
   stale: number
+  /** 任务已开放的形态，不看范围和星级；键是 formId */
+  openForms: ReadonlyMap<string, OpenForm>
+  /** 目标里至少 1 级的模组，不看范围和星级 */
+  plannedModules: ReadonlySet<string>
+  /** 干员 → 他在几张没做完的券上有关卡任务 */
+  runsOf: ReadonlyMap<string, number>
 }
 
 function inScope(
@@ -689,7 +647,17 @@ export function buildBoard(input: BoardInput): Board {
   return hit.board
 }
 
-function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, rarities, held }: BoardInput): Board {
+function computeBoard({
+  catalog,
+  current,
+  goal,
+  doneMissions,
+  goalOrder,
+  scope,
+  rarities,
+  held,
+  tagAlongs,
+}: BoardInput): Board {
   const doneSet = new Set(doneMissions)
   const done = new Set<string>()
   const unlocked = new Set<string>()
@@ -710,9 +678,15 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
   const anyStageByChar = new Map<string, MissionInput[]>()
   const blocked: Board['blocked'] = []
   const blockOf = new Map<string, BlockReason>()
+  const openForms = new Map<string, OpenForm>()
+  const plannedModules = new Set<string>()
+
+  const charRank = (charId: string) => {
+    const i = goalOrder.indexOf(charId)
+    return i < 0 ? Infinity : i
+  }
 
   for (const mod of catalog.modules) {
-    if (rarities.length > 0 && !rarities.includes(mod.stars)) continue
     const cur = current[mod.charId] as ArknightsCharacterStatus | undefined
     const owned = catalog.isOwned(mod.charId, cur)
     const block: BlockReason | null = !owned
@@ -722,14 +696,49 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
         : null
     const level = cur?.modLevel[mod.equipId] ?? 0
     const goalLevel = goal[mod.charId]?.modLevel[mod.equipId] ?? 0
+
+    // 带人不看范围和星级，所以在两者之前收集
+    if (goalLevel >= 1) plannedModules.add(mod.equipId)
+    if (cur && block == null && level < 1) {
+      for (const m of mod.missions) {
+        if (m.stageId != null) continue
+        let form = openForms.get(m.formId)
+        if (!form) {
+          openForms.set(
+            m.formId,
+            (form = {
+              charId: m.charId,
+              formId: m.formId,
+              profession: m.profession,
+              position: m.position,
+              stars: m.stars,
+              training: {
+                level: cur.level,
+                skillLevel: cur.skillLevel,
+                masters: catalog.skillIds(m.charId, m.formId).map((id) => cur.skillMaster[id] ?? 0),
+              },
+              goalRank: charRank(m.charId),
+              missions: [],
+            }),
+          )
+        }
+        if (doneSet.has(m.id)) done.add(m.id)
+        if (!doneSet.has(m.id) || held.has(m.id)) {
+          parsed.set(m.id, parseMission(m, catalog.world))
+          form.missions.push(m)
+        }
+      }
+    }
+
+    if (rarities.length > 0 && !rarities.includes(mod.stars)) continue
     if (!inScope(scope, level, goalLevel, cur?.elite ?? 0, owned, block)) continue
 
     stats.modules++
     if (level >= 1) unlocked.add(mod.equipId)
     if (block) blockOf.set(mod.charId, block)
     for (const m of mod.missions) {
-      const p = parseMission(m, catalog.world)
-      parsed.set(m.id, p)
+      let p = parsed.get(m.id)
+      if (!p) parsed.set(m.id, (p = parseMission(m, catalog.world)))
       const isDone = level >= 1 || doneSet.has(m.id)
       if (isDone) {
         done.add(m.id)
@@ -767,9 +776,10 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
 
   const tickets: Ticket[] = []
   const used: Ticket[] = []
+  /** 券 → 这一次的关卡任务和挂上的顺带，带人时拿来比冲突 */
+  const placedOf = new Map<Ticket, ParsedMission[]>()
   for (const [stageId, missions] of byStage) {
     const runs = partitionStage(missions, goalOrder)
-    const reasons = splitReasons(runs)
     runs.forEach((run, i) => {
       const ms = run.map((x) => x.mission)
       const enemyCount = new Map<string, Set<string>>()
@@ -781,14 +791,18 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
         }
       }
       const charIds = [...new Set(ms.map((x) => x.charId))]
-      const piggyback = charIds.flatMap((charId) =>
-        (anyStageByChar.get(charId) ?? []).filter((m) => !done.has(m.id) || held.has(m.id)),
-      )
-      const piggies = piggyback.map((m) => parsed.get(m.id)!)
-      const piggybackConflicts = new Map<string, PiggybackConflict>()
-      for (const pp of piggies) {
-        const c = piggybackConflict(pp, run, piggies)
-        if (c) piggybackConflicts.set(pp.mission.id, c)
+      // 按这一次的干员顺序挂：两人的顺带都要第一个部署时，挂排在前面那人的
+      const placed = [...run]
+      const piggyback: MissionInput[] = []
+      for (const charId of charIds) {
+        const formId = ms.find((x) => x.charId === charId)!.formId
+        for (const m of anyStageByChar.get(charId) ?? []) {
+          if (m.formId !== formId || (done.has(m.id) && !held.has(m.id))) continue
+          const p = parsed.get(m.id)!
+          if (placed.some((x) => blocks(p, x))) continue
+          placed.push(p)
+          piggyback.push(m)
+        }
       }
       const ticket: Ticket = {
         key: ms
@@ -800,7 +814,6 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
         total: runs.length,
         missions: ms,
         capacity: capacity(run),
-        reasons,
         sharedEnemies: [...enemyCount].filter(([, s]) => s.size > 1).map(([e]) => e),
         unknown: run.some((x) => !x.known),
         blocked: charIds.flatMap((charId) => {
@@ -808,9 +821,10 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
           return reason ? [{ charId, reason }] : []
         }),
         piggyback,
-        piggybackConflicts,
+        tagAlongs: [],
         allDone: ms.every((x) => done.has(x.id)),
       }
+      placedOf.set(ticket, placed)
       if (scope === 'everything' && ticket.allDone && !ms.some((x) => held.has(x.id))) used.push(ticket)
       else tickets.push(ticket)
     })
@@ -826,38 +840,65 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
       total: 1,
       missions,
       capacity: capacity([]),
-      reasons: [],
       sharedEnemies: [],
       unknown: false,
       blocked: [],
       piggyback: [],
-      piggybackConflicts: new Map(),
+      tagAlongs: [],
       allDone: true,
     })
   }
   tickets.sort(compareTickets)
   used.sort(compareTickets)
 
+  // 整理、导入以后 key 变了，带上的人跟到接替的券上，不闪一下
+  const host = tagAlongs
+    ? (tickets.find((t) => t.key === tagAlongs.ticket) ?? successorTicket(tickets, tagAlongs.ticket))
+    : undefined
+  if (tagAlongs && host) {
+    // 带上的人算进 capacity；挂上的顺带不算，只用来比冲突
+    const committed = host.missions.map((m) => parsed.get(m.id)!)
+    const placed = placedOf.get(host)!
+    const members = new Set(host.missions.map((x) => x.charId))
+    for (const ref of tagAlongs.chars) {
+      const form = openForms.get(ref.formId)
+      if (!form || form.charId !== ref.charId || members.has(ref.charId)) continue
+      if (!admits(capacity(committed), form)) continue
+      const ms = form.missions.map((m) => parsed.get(m.id)!).filter((p) => !placed.some((x) => blocks(p, x)))
+      if (ms.length === 0) continue
+      committed.push(...ms)
+      placed.push(...ms)
+      members.add(ref.charId)
+      host.tagAlongs.push({
+        charId: ref.charId,
+        formId: ref.formId,
+        profession: form.profession,
+        missions: ms.map((x) => x.mission),
+      })
+    }
+    host.capacity = capacity(committed)
+  }
+
   const stale = new Set<string>()
+  const runsOf = new Map<string, number>()
   for (const t of tickets) {
     // 「所有任务」档本来就把做完的分进去，整理只会收走整张做完的券
     if (scope !== 'everything' || t.allDone) {
       for (const m of t.missions) if (done.has(m.id) && held.has(m.id)) stale.add(m.id)
     }
-    for (const m of t.piggyback) if (done.has(m.id) && held.has(m.id)) stale.add(m.id)
+    for (const m of [...t.piggyback, ...t.tagAlongs.flatMap((x) => x.missions)]) {
+      if (done.has(m.id) && held.has(m.id)) stale.add(m.id)
+    }
     if (t.allDone) continue
     stats.runs++
     stats.ap += catalog.stage(t.stageId).apCost
     if (t.blocked.length > 0) stats.runsWithBlocked++
+    for (const charId of new Set(t.missions.map((x) => x.charId))) runsOf.set(charId, (runsOf.get(charId) ?? 0) + 1)
   }
 
   const ticketOf = new Map<string, Ticket>()
   for (const t of [...tickets, ...used]) for (const m of t.missions) ticketOf.set(m.id, t)
 
-  const charRank = (charId: string) => {
-    const i = goalOrder.indexOf(charId)
-    return i < 0 ? Infinity : i
-  }
   const byChar = (a: string, b: string) => charRank(a) - charRank(b) || compareId(a, b)
   const settled = (id: string) => Number(done.has(id) && !held.has(id))
   const anyStage = [...anyStageByChar]
@@ -868,7 +909,85 @@ function computeBoard({ catalog, current, goal, doneMissions, goalOrder, scope, 
     }))
   blocked.sort((a, b) => byChar(a.mission.charId, b.mission.charId))
 
-  return { tickets, used, anyStage, blocked, stats, done, unlocked, ticketOf, parsed, stale: stale.size }
+  return {
+    tickets,
+    used,
+    anyStage,
+    blocked,
+    stats,
+    done,
+    unlocked,
+    ticketOf,
+    parsed,
+    stale: stale.size,
+    openForms,
+    plannedModules,
+    runsOf,
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// 还能带谁
+
+/** 原文以「完成 N 次战斗」开头的九种：一场只推进一格 */
+const PER_BATTLE_TEMPLATES = new Set([
+  'EquipmentSkillCastBattle',
+  'EquipmentBattleCharKilled',
+  'EquipmentBattleCharDamage',
+  'EquipmentDeployCharOrder',
+  'EquipmentDeployStage',
+  'EquipmentDeployCharAndKillCnt',
+  'EquipmentSquadProStage',
+  'EquipmentSquadStarStage',
+  'EquipmentEventBattleMore',
+])
+
+/**
+ * 选中的券的候选，按「推荐」分好组、排好。计划里的一组按计划的顺序；另一组依次是自己的券少的、有每场任务的、
+ * 任务多的、星级高的
+ */
+export function tagAlongCandidates(board: Board, ticket: Ticket): { planned: Candidate[]; others: Candidate[] } {
+  const planned: Candidate[] = []
+  const others: Candidate[] = []
+  if (ticket.capacity.count === 0) return { planned, others }
+  const parsedOf = (m: MissionInput) => board.parsed.get(m.id)!
+  const placed = [...ticket.missions, ...ticket.piggyback, ...ticket.tagAlongs.flatMap((x) => x.missions)].map(parsedOf)
+  const members = new Set([...ticket.missions, ...ticket.tagAlongs].map((x) => x.charId))
+  const inPlan = (m: MissionInput) => board.plannedModules.has(m.equipId)
+  for (const form of board.openForms.values()) {
+    if (members.has(form.charId) || !admits(ticket.capacity, form)) continue
+    const ms = form.missions.filter((m) => !board.done.has(m.id) && !placed.some((x) => blocks(parsedOf(m), x)))
+    if (ms.length === 0) continue
+    const c: Candidate = {
+      ...form,
+      missions: [...ms.filter(inPlan), ...ms.filter((m) => !inPlan(m))],
+      planned: ms.some(inPlan),
+    }
+    ;(c.planned ? planned : others).push(c)
+  }
+  const perBattle = (c: Candidate) => Number(c.missions.some((m) => PER_BATTLE_TEMPLATES.has(m.template)))
+  const recommended = (a: Candidate, b: Candidate) =>
+    (board.runsOf.get(a.charId) ?? 0) - (board.runsOf.get(b.charId) ?? 0) ||
+    perBattle(b) - perBattle(a) ||
+    b.missions.length - a.missions.length ||
+    b.stars - a.stars ||
+    compareId(a.charId, b.charId) ||
+    compareId(a.formId, b.formId)
+  planned.sort((a, b) => a.goalRank - b.goalRank || recommended(a, b))
+  others.sort(recommended)
+  return { planned, others }
+}
+
+/** 「推荐」原样返回；练度两种在 list 的顺序上做稳定排序：等级，专精之和，技能等级 */
+export function sortCandidates(list: readonly Candidate[], sort: CandidateSort): Candidate[] {
+  if (sort === 'recommended') return [...list]
+  const sign = sort === 'trainingHigh' ? -1 : 1
+  const masters = (c: Candidate) => c.training.masters.reduce((n, x) => n + x, 0)
+  return [...list].sort(
+    (a, b) =>
+      sign *
+      (a.training.level - b.training.level || masters(a) - masters(b) || a.training.skillLevel - b.training.skillLevel),
+  )
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1085,79 +1204,4 @@ export function missionSummary(parsed: ParsedMission, names: MissionNames): stri
     default:
       return m.desc
   }
-}
-
-export function formatSplitReason(reason: SplitReason, names: MissionNames): string {
-  const who = (ms: readonly MissionInput[]) => listJoin([...new Set(ms.map((x) => names.character(x.charId)))])
-  switch (reason.kind) {
-    case 'boss':
-      return gt
-        .pgettext('module mission', '%1都要本人歼灭%2') /* I10N: %1: operator names; %2: enemy name */
-        .replace('%1', who(reason.missions))
-        .replace('%2', names.enemy(reason.enemyId) ?? reason.enemyId)
-    case 'squad':
-      return squadReason(reason, names, who(reason.others))
-    case 'form':
-      return gt.pgettext('module mission', '%s一次只能带一种形态').replaceAll('%s', names.character(reason.charId))
-    case 'firstDeploy':
-      return gt.pgettext('module mission', '%s都要第一个部署').replaceAll('%s', who(reason.missions))
-    case 'unknown':
-      return gt.pgettext('module mission', '%s的任务条件我们还不认识').replaceAll('%s', who(reason.missions))
-    case 'count':
-      return gt.pgettext('module mission', '人数超过限制')
-  }
-}
-
-function squadReason(reason: Extract<SplitReason, { kind: 'squad' }>, names: MissionNames, others: string) {
-  const by = names.character(reason.by.charId)
-  const other = reason.others[0]
-  const onlyText = (only: string, is: string) =>
-    gt
-      .pgettext('module mission', '%1的其他人只能是%3，%2是%4') /* I10N: %1, %2: operators; %3, %4: 先锋 / 近战位 */
-      .replace('%1', by)
-      .replace('%2', others)
-      .replace('%3', only)
-      .replace('%4', is)
-  switch (reason.rule) {
-    case 'none':
-      return gt.pgettext('module mission', '%s不编入其他人').replaceAll('%s', by)
-    case 'banned':
-      return (
-        reason.by.profession === other.profession
-          ? gt.pgettext('module mission', '%1不编入其他%3，%2是%3') /* I10N: %1, %2: operators; %3: class */
-          : gt.pgettext('module mission', '%1不编入%3，%2是%3')
-      ) /* I10N: %1, %2: operators; %3: class */
-        .replace('%1', by)
-        .replace('%2', others)
-        .replaceAll('%3', professionName(other.profession))
-    case 'allowed':
-      return onlyText(listJoin([...reason.squad.allowed!].map(professionName)), professionName(other.profession))
-    case 'position':
-      return onlyText(positionName(reason.squad.position!), positionName(other.position))
-    case 'stars':
-      return gt
-        .pgettext('module mission', '%1的其他人只能是 %3 星，%2是 %4 星') /* I10N: %1, %2: operators; %3, %4: numbers */
-        .replace('%1', by)
-        .replace('%2', others)
-        .replace('%3', String(reason.squad.stars))
-        .replace('%4', String(other.stars))
-  }
-}
-
-export function formatPiggybackConflict(c: PiggybackConflict, names: MissionNames): string {
-  if (c.kind === 'firstDeployPiggyback') {
-    return gt
-      .pgettext('module mission', '和%s的顺带任务都要第一个部署，这一次只能推进一条')
-      .replaceAll('%s', names.character(c.with.charId))
-  }
-  const reason =
-    c.kind === 'squad'
-      ? formatSplitReason({ kind: 'squad', rule: c.rule, by: c.by, squad: c.squad, others: [c.other] }, names)
-      : gt.pgettext('module mission', '%s也要第一个部署').replaceAll('%s', names.character(c.with.charId))
-  return gt.pgettext('module mission', '这一次推进不了：%s').replaceAll('%s', reason)
-}
-
-/** 至多三条，用「；」连起来 */
-export function formatSplitReasons(reasons: readonly SplitReason[], names: MissionNames): string {
-  return reasons.map((r) => formatSplitReason(r, names)).join(gt.pgettext('module mission', '；'))
 }
