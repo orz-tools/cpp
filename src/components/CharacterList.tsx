@@ -1023,6 +1023,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
       label: columnLabel(id, query, entries),
       width: widths[i],
       defaultWidth: field.width,
+      Tip: field.Tip,
     }))
   }, [query, extraColumns, widths])
 

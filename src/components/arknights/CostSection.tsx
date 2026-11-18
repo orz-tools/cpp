@@ -1,17 +1,27 @@
-import { Callout } from '@blueprintjs/core'
+import { Callout, Tooltip } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
 import React, { memo, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useCpp, useGameAdapter } from '../../Cpp'
 import { getLocale } from '../../locales'
 import { AK_ITEM_GOLD, AK_ITEM_VIRTUAL_EXP, Arknights, ArknightsAdapter, Character } from '../../pkg/cpp-arknights'
-import { CostBreakdown, CostCellId, CostMatrix, RarityRank, TrainingCost } from '../../pkg/cpp-arknights/trainingCost'
+import {
+  CostBreakdown,
+  CostCellId,
+  CostMatrix,
+  RarityRank,
+  TrainingCost,
+  VoucherSaving,
+  efficiencyPercent,
+  showsMost,
+} from '../../pkg/cpp-arknights/trainingCost'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { CachedImg } from '../Icons'
 import { PeekTrigger } from '../Peek'
 import { ValueTag, ValueText, ValueUnitIcon } from '../Value'
 import { DossierSection } from '../types'
+import { MostText, fillNodes } from './voucherText'
 
 const cellTitles: Record<CostCellId, () => string> = {
   zeroNow: () => gt.pgettext('training cost', '从零到现在的材料'),
@@ -305,9 +315,58 @@ interface VoucherRow {
   key: string
   itemId: string
   label: string
-  saving: CostBreakdown
+  voucher: VoucherSaving
   rank: RarityRank | null | 'level'
 }
+
+/** 列头上的术语，样子和打开方式同状态编辑器里的 */
+const HeadTerm = memo(({ title, tip }: { title: string; tip: React.ReactNode }) => (
+  <Tooltip
+    content={
+      <div className="cpp-charstat-term-tip">
+        <b>{title}</b>
+        {tip}
+      </div>
+    }
+    placement="top"
+    hoverOpenDelay={150}
+  >
+    <span className="cpp-charstat-term" tabIndex={0}>
+      {title}
+    </span>
+  </Tooltip>
+))
+
+const EfficiencyTip = memo(({ tc, character }: { tc: TrainingCost; character: Character }) => (
+  <div>
+    {fillNodes(
+      gt.pgettext(
+        'training cost',
+        '现在能省的，占这张道具在 %d 星干员身上最多能省的几成：精二 %s$elite2（从精零 1 级用），专三 %s$mastery3（从专零用），精二满级 %s$levelMax（从精二 1 级用）。',
+      ) /* I10N: %d: 4, 5 or 6; %s$…: the most each voucher saves on an operator of that rarity */,
+      {
+        '%d': character.rarity + 1,
+        '%s$elite2': <ValueText value={tc.rarityMax('elite2', character.rarity)} />,
+        '%s$mastery3': <ValueText value={tc.rarityMax('mastery3', character.rarity)} />,
+        '%s$levelMax': <ValueText value={tc.rarityMax('levelMax', character.rarity)} />,
+      },
+    )}
+  </div>
+))
+
+const SavingTip = memo(() => (
+  <>
+    <div>
+      {gt.pgettext('training cost', '现在用这张道具能省多少，从这名干员现在的练度算起；已经练过的那一段省不回来。')}
+    </div>
+    <div>
+      {gt.pgettext(
+        'training cost',
+        '下面的「最多」是从能用这张道具的最早那一点用时能省的：精二从精零 1 级，专三从专零，满级从精二 1 级。',
+      )}
+    </div>
+  </>
+))
 
 const VoucherTable = memo(({ ga, tc, character }: { ga: ArknightsAdapter; tc: TrainingCost; character: Character }) => {
   const atoms = useAtoms<Arknights>()
@@ -315,13 +374,13 @@ const VoucherTable = memo(({ ga, tc, character }: { ga: ArknightsAdapter; tc: Tr
   const currents = useAtomValue(atoms.currentCharacters)
   const stars = character.rarity + 1
   const rows: VoucherRow[] = []
-  const elite2 = tc.elite2Saving(character, current)
+  const elite2 = tc.voucher('elite2', character, current)
   if (elite2) {
     rows.push({
       key: 'elite2',
       itemId: `voucher_elite_II_${stars}`,
       label: gt.pgettext('training cost', '精二'),
-      saving: elite2,
+      voucher: elite2,
       rank: tc.rarityRank('elite2', character, undefined, currents),
     })
   }
@@ -331,25 +390,25 @@ const VoucherTable = memo(({ ga, tc, character }: { ga: ArknightsAdapter; tc: Tr
     gt.pgettext('arknights skill ref', '三技能'),
   ]
   character.skills.forEach((skill, i) => {
-    const saving = tc.mastery3Saving(character, current, i)
-    if (!saving || saving.items.size === 0) return
+    const voucher = tc.voucher('mastery3', character, current, i)
+    if (!voucher || voucher.now.items.size === 0) return
     rows.push({
       key: `mastery3:${i}`,
       itemId: `voucher_skill_specialLevelMax_${stars}`,
       label: gt
         .pgettext('training cost', '%s专三') /* I10N: %s: 一技能, 二技能 or 三技能 */
         .replaceAll('%s', skillRefs[skill.charSkillIndex] ?? ''),
-      saving,
+      voucher,
       rank: tc.rarityRank('mastery3', character, i, currents),
     })
   })
-  const levelMax = tc.levelMaxSaving(character, current)
+  const levelMax = tc.voucher('levelMax', character, current)
   if (levelMax) {
     rows.push({
       key: 'levelMax',
       itemId: `voucher_levelmax_${stars}`,
       label: gt.pgettext('training cost', '精二满级'),
-      saving: levelMax,
+      voucher: levelMax,
       rank: 'level',
     })
   }
@@ -363,7 +422,15 @@ const VoucherTable = memo(({ ga, tc, character }: { ga: ArknightsAdapter; tc: Tr
           <tr>
             <th />
             <th>{gt.pgettext('training cost', '在 %d 星里排第几').replaceAll('%d', `${stars}`)}</th>
-            <th className="cpp-cost-vouchers-saving">{gt.pgettext('training cost', '能省')}</th>
+            <th className="cpp-cost-vouchers-eff">
+              <HeadTerm
+                title={gt.pgettext('training cost', '效率')}
+                tip={<EfficiencyTip tc={tc} character={character} />}
+              />
+            </th>
+            <th className="cpp-cost-vouchers-saving">
+              <HeadTerm title={gt.pgettext('training cost', '现在用能省')} tip={<SavingTip />} />
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -383,11 +450,19 @@ const VoucherTable = memo(({ ga, tc, character }: { ga: ArknightsAdapter; tc: Tr
                   {row.rank === 'level' ? (
                     <span className="cpp-cost-muted">{gt.pgettext('training cost', '不分干员，只看等级')}</span>
                   ) : (
-                    <RankCell rank={row.rank} value={row.saving.value} />
+                    <RankCell rank={row.rank} value={row.voucher.now.value} />
                   )}
                 </td>
+                <td className="cpp-cost-vouchers-eff">
+                  {Number.isFinite(row.voucher.efficiency) ? `${efficiencyPercent(row.voucher.efficiency)}%` : null}
+                </td>
                 <td className="cpp-cost-vouchers-saving">
-                  <ValueTag value={row.saving.value} minimal={true} />
+                  <ValueTag value={row.voucher.now.value} minimal={true} />
+                  {showsMost(row.voucher) ? (
+                    <span className="cpp-cost-vouchers-most">
+                      <MostText value={row.voucher.most.value} />
+                    </span>
+                  ) : null}
                 </td>
               </tr>
             )

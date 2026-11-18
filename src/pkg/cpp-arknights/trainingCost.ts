@@ -51,6 +51,32 @@ export interface RarityRank {
 
 export type RankKind = 'elite2' | 'mastery3'
 
+/** 三种直升道具：特训邀请函、技巧集、特训装置 */
+export type VoucherKind = RankKind | 'levelMax'
+
+export interface VoucherSaving {
+  /** 现在用能省的，和 elite2Saving 等给的是同一个对象 */
+  now: CostBreakdown
+  /** 从能用道具的最早那一点用时能省的：精二从精零 1 级，专三从专零，满级从精二 1 级 */
+  most: CostBreakdown
+  /** 同星级的 most 里最大的，至少是自己的 most；物品价值算不出来时是 NaN */
+  rarityMax: number
+  /** now / rarityMax；物品价值算不出来、或者用道具省不下材料（特殊干员、专精不花材料的技能）时是 NaN */
+  efficiency: number
+}
+
+/** 效率写成的整数百分比，向下取整；NaN 照旧是 NaN */
+export function efficiencyPercent(efficiency: number): number {
+  // 0.29 * 100 在浮点里是 28.999…
+  return Math.floor(efficiency * 100 + 1e-9)
+}
+
+/** 最多比现在能省多出 1 AP 及以上时才写「最多」、画浅蓝那段；物品价值算不出来时是 false */
+export function showsMost(v: VoucherSaving): boolean {
+  // 差不到 1 AP 时两个数写出来几乎一样，写了反而像算错了
+  return v.most.value - v.now.value >= 1
+}
+
 // 一直改练度时键只增不减；到这个数就整个清掉，重算比逐条淘汰便宜
 const BETWEEN_CACHE_LIMIT = 50000
 
@@ -58,7 +84,8 @@ const held = (status: ArknightsCharacterStatus) => status.level > 0
 
 /**
  * 两个练度之间要多少材料、值多少，以及三种直升道具能省多少。数都是从能用道具的那一点算起：
- * 没持有的从零算，没精二的专三和满级直升从精二 1 级算。每次游戏数据提交后由适配器重建。
+ * 没持有的从零算，没精二的专三和满级直升从精二 1 级算。一张道具「最多」能省的是把干员当作没持有时能省的，
+ * 「同星级最多」是同星级里最大的那个「最多」。每次游戏数据提交后由适配器重建，物品价值也在那时重算。
  */
 export class TrainingCost {
   public readonly valuesOk: boolean
@@ -66,6 +93,7 @@ export class TrainingCost {
   // store 里的练度对象没改就是同一个，空练度是同一个冻结对象，所以列表排序时反复读字段不用再序列化
   private readonly savings = new WeakMap<ArknightsCharacterStatus, Map<string, CostBreakdown | null>>()
   private readonly peers = new WeakMap<object, Map<string, number[]>>()
+  private readonly maxima = new Map<string, number>()
 
   public constructor(private readonly source: TrainingCostSource) {
     this.valuesOk = source.getItemValues().status === 'ok'
@@ -154,6 +182,59 @@ export class TrainingCost {
       if (from.level >= max) return null
       return this.costBetween(character.key, from, { ...from, level: max })
     })
+  }
+
+  private saving(kind: VoucherKind, character: Character, current: ArknightsCharacterStatus, skillIndex: number) {
+    if (kind === 'elite2') return this.elite2Saving(character, current)
+    if (kind === 'mastery3') return this.mastery3Saving(character, current, skillIndex)
+    return this.levelMaxSaving(character, current)
+  }
+
+  /**
+   * 一张直升道具在这名干员身上的现在能省、最多、同星级最多和效率。
+   * 没有可省的（1–3 星、已经到了那一级）时是 null，和对应的 …Saving 一样。skillIndex 只有专三用。
+   */
+  public voucher(
+    kind: VoucherKind,
+    character: Character,
+    current: ArknightsCharacterStatus,
+    skillIndex = 0,
+  ): VoucherSaving | null {
+    const now = this.saving(kind, character, current, skillIndex)
+    if (!now) return null
+    const empty = this.source.getUserDataAdapter().getFrozenEmptyCharacterStatus()
+    // 空练度是能用道具的最早那一点，现在有可省的，从那里也有
+    const most = this.saving(kind, character, empty, skillIndex)!
+    if (!this.valuesOk) return { now, most, rarityMax: NaN, efficiency: NaN }
+    const rarityMax = Math.max(this.rarityMax(kind, character.rarity), most.items.size > 0 ? most.value : 0)
+    const efficiency = now.items.size > 0 && rarityMax > 0 ? now.value / rarityMax : NaN
+    return { now, most, rarityMax, efficiency }
+  }
+
+  /**
+   * 同星级里每名干员（专三是每个技能）从能用道具的最早那一点用时能省的，取最大的；只算省得下材料的。
+   * 同星级没有一个省得下材料时是 0；物品价值算不出来时是 NaN。每个实例按 kind 和 rarity 各算一次。
+   */
+  public rarityMax(kind: VoucherKind, rarity: number): number {
+    if (!this.valuesOk) return NaN
+    const key = `${kind}:${rarity}`
+    let max = this.maxima.get(key)
+    if (max !== undefined) return max
+
+    max = 0
+    const uda = this.source.getUserDataAdapter()
+    const empty = uda.getFrozenEmptyCharacterStatus()
+    for (const id of uda.getAllCharacterIds()) {
+      const character = this.source.getCharacter(id)
+      if (!character || character.rarity !== rarity) continue
+      const indices = kind === 'mastery3' ? character.skills.map((_, i) => i) : [0]
+      for (const i of indices) {
+        const saving = this.saving(kind, character, empty, i)
+        if (saving && saving.items.size > 0 && saving.value > max) max = saving.value
+      }
+    }
+    this.maxima.set(key, max)
+    return max
   }
 
   /** 从零到现在；没持有的没有 */

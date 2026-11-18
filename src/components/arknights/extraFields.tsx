@@ -7,7 +7,7 @@ import { Arknights, ArknightsAdapter, ArknightsCharacterStatus, Character } from
 import { BaseSkillState, baseSkillState, reached, unlockCost, unlockFrom } from '../../pkg/cpp-arknights/baseSkills'
 import { getBuildingBuffDetail } from '../../pkg/cpp-arknights/details'
 import { parseRichText } from '../../pkg/cpp-arknights/richText'
-import { TrainingCost } from '../../pkg/cpp-arknights/trainingCost'
+import { RankKind, TrainingCost, efficiencyPercent, showsMost } from '../../pkg/cpp-arknights/trainingCost'
 import { FieldContext, Querier } from '../../pkg/cpp-basic'
 import { gt } from '../../pkg/gt'
 import { CharacterListColumn, createSimpleExtraField, percentageColumnWidth } from '../CharacterList'
@@ -22,6 +22,7 @@ import { unlockShort } from './baseSkillText'
 import { modulePeek, skillPeek, skillRefName } from './peekKinds'
 import { RichText } from './statusEditor/Detail'
 import { useDetails } from './useDetails'
+import { MostText, RarityMaxList, fillNodes } from './voucherText'
 
 const percentageFormatter = (value: number) => {
   return Number.isFinite(value) ? `${(value * 100).toFixed(2)}%` : '???'
@@ -32,7 +33,7 @@ const percentageStyle: React.CSSProperties = {
   textAlign: 'right',
 }
 
-/** 一种成本在这名干员现在的练度上的值；null 表示没有可省的（已经到了那一级，或者 1–3 星） */
+/** 「已投入」在这名干员现在的练度上的值；null 表示没持有 */
 type CostReader = (
   tc: TrainingCost,
   character: Character,
@@ -94,6 +95,106 @@ function createCostField(field: string, read: CostReader) {
     ),
   }
 }
+
+const pct = (ratio: number) => `${(Math.min(1, Math.max(0, ratio)) * 100).toFixed(2)}%`
+
+// 条按这一行星级的同星级最多画，不按整列最大的：道具分星级，不同星级的条本来就不放在一起比
+function createVoucherField(kind: RankKind, Tip: React.ComponentType) {
+  return {
+    width: 170,
+    Tip,
+    // 同 createCostField，读 store 里现在的练度
+    C: memo(({ context, width }: { context: FieldContext<Arknights, Character, any[]>; width: number }) => {
+      const ga = useGameAdapter<Arknights>() as ArknightsAdapter
+      const current = useAtomValue(useAtoms<Arknights>().currentCharacter(context.character.key))
+      const v = ga.getTrainingCost().voucher(kind, context.character, current, context.args[0])
+      if (!v) {
+        return (
+          <CharacterListColumn width={width} className="cpp-cost-cell">
+            <span className="cpp-cost-none">—</span>
+          </CharacterListColumn>
+        )
+      }
+      // 特殊干员、专精不花材料的技能：省下的是 0，而不是算不出来
+      const value = v.now.items.size === 0 ? 0 : v.now.value
+      const detail = Number.isFinite(v.efficiency)
+      const most = detail && showsMost(v)
+      return (
+        <CharacterListColumn width={width} className="cpp-cost-cell">
+          <div className="cpp-voucher-cell">
+            <div className="cpp-voucher-line">
+              <span className="cpp-cost-bar cpp-voucher-bar">
+                {detail ? <span style={{ width: pct(v.now.value / v.rarityMax) }} /> : null}
+                {most ? (
+                  <span
+                    className="cpp-voucher-used"
+                    style={{ width: pct((v.most.value - v.now.value) / v.rarityMax) }}
+                  />
+                ) : null}
+              </span>
+              <ValueTag value={value} minimal />
+            </div>
+            {detail ? (
+              <div className="cpp-voucher-caption">
+                {fillNodes(gt.pgettext('training cost', '效率 %s') /* I10N: %s: a percentage like 54% */, {
+                  '%s': <b>{efficiencyPercent(v.efficiency)}%</b>,
+                })}
+                {most ? (
+                  <>
+                    {' · '}
+                    <MostText value={v.most.value} />
+                  </>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </CharacterListColumn>
+      )
+    }),
+  }
+}
+
+const Elite2Tip = memo(() => (
+  <>
+    <div>
+      {gt.pgettext(
+        'training cost',
+        '现在用特训邀请函能省多少：从现在的练度到精二 1 级的材料价值。已经练过的那一段省不回来，所以练得越多，数越小。',
+      )}
+    </div>
+    <div>{gt.pgettext('training cost', '最多：从精零 1 级用时能省的；条上浅蓝的那段是已经练掉的。')}</div>
+    <div>
+      {fillNodes(
+        gt.pgettext(
+          'training cost',
+          '效率：现在能省的，占同星级最多能省的几成；条的全长就是同星级最多（%s）。',
+        ) /* I10N: %s: a list like 4★ 2022, 5★ 3765, 6★ 5735 */,
+        { '%s': <RarityMaxList kind="elite2" /> },
+      )}
+    </div>
+  </>
+))
+
+const Mastery3Tip = memo(() => (
+  <>
+    <div>
+      {gt.pgettext(
+        'training cost',
+        '现在用技巧集能省多少：这个技能从现在的专精到专三的材料价值。已经专精过的那几级省不回来。',
+      )}
+    </div>
+    <div>{gt.pgettext('training cost', '最多：从专零用时能省的；条上浅蓝的那段是已经练掉的。')}</div>
+    <div>
+      {fillNodes(
+        gt.pgettext(
+          'training cost',
+          '效率：现在能省的，占同星级所有技能里最多能省的几成；条的全长就是同星级最多（%s）。',
+        ) /* I10N: %s: a list like 4★ 1472, 5★ 2909, 6★ 4272 */,
+        { '%s': <RarityMaxList kind="mastery3" /> },
+      )}
+    </div>
+  </>
+))
 
 type BaseSkillContext = FieldContext<Arknights, Character, [number, number]>
 
@@ -302,15 +403,7 @@ export const extraFields: IGameComponent['extraFields'] = {
     percentageFormatter,
     percentageStyle,
   ),
-  'cost.elite2': createCostField('cost.elite2', (tc, c, current) => {
-    const saving = tc.elite2Saving(c, current)
-    if (!saving) return null
-    return saving.items.size === 0 ? 0 : saving.value
-  }),
+  'cost.elite2': createVoucherField('elite2', Elite2Tip),
   'cost.invested': createCostField('cost.invested', (tc, c, current) => tc.invested(c, current)?.value ?? null),
-  'skill.cost.mastery3': createCostField('skill.cost.mastery3', (tc, c, current, [index]) => {
-    const saving = tc.mastery3Saving(c, current, index)
-    if (!saving) return null
-    return saving.items.size === 0 ? 0 : saving.value
-  }),
+  'skill.cost.mastery3': createVoucherField('mastery3', Mastery3Tip),
 }
