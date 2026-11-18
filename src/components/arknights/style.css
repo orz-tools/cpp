@@ -1803,9 +1803,10 @@ section:first-child > .cpp-stages-wide-section {
   cursor: pointer;
 }
 
+/* 和 .cpp-peek-inline 一样是句子里能点的词：只加下划线，颜色不变，蓝色只表示计划内 */
 .cpp-mm-operator:hover .cpp-mm-name {
-  color: var(--bp-palette-blue-2, #215db0);
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .cpp-mm-equip {
