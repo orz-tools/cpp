@@ -11,10 +11,12 @@ import { FieldContext, Querier } from '../../pkg/cpp-basic'
 import { gt } from '../../pkg/gt'
 import { CharacterListColumn, createSimpleExtraField, percentageColumnWidth } from '../CharacterList'
 import { CachedImg } from '../Icons'
+import { PeekTrigger } from '../Peek'
 import { ValueTag } from '../Value'
 import { IGameComponent } from '../types'
 import { BaseSkillEffect } from './BaseSkillEffect'
 import { unlockShort } from './baseSkillText'
+import { modulePeek, skillPeek, skillRefName } from './peekKinds'
 import { RichText } from './statusEditor/Detail'
 import { useDetails } from './useDetails'
 
@@ -195,50 +197,60 @@ export const extraFields: IGameComponent['extraFields'] = {
   skill: {
     width: 150,
     C: memo(({ context, width }: { context: FieldContext<Arknights, Character, [number]>; width: number }) => {
-      const skillId = context.args[0]
-      const charSkill = context.character.skills[skillId]
+      const charSkill = context.character.skills[context.args[0]]
       const skillName = charSkill.skill.name
-      const skillIndex = [
-        gt.pgettext('arknights skill ref', '一技能'),
-        gt.pgettext('arknights skill ref', '二技能'),
-        gt.pgettext('arknights skill ref', '三技能'),
-      ][charSkill.charSkillIndex]
 
       return (
-        <CharacterListColumn width={width}>
-          <span className="bp6-menu-item-icon">
-            <CachedImg src={charSkill.skill.icon} width={'100%'} height={'100%'} alt={skillName} title={skillName} />
-          </span>
-          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp6-text-overflow-ellipsis" title={skillName}>
-              {skillName}
-            </div>
-            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.25 }}>
-              {skillIndex}
-            </div>
-          </div>
-        </CharacterListColumn>
+        <PeekTrigger
+          peek={skillPeek(context.character.key, charSkill.skillId)}
+          renderTarget={(peek) => (
+            <CharacterListColumn width={width} {...peek}>
+              <span className="bp6-menu-item-icon">
+                <CachedImg
+                  src={charSkill.skill.icon}
+                  width={'100%'}
+                  height={'100%'}
+                  alt={skillName}
+                  title={skillName}
+                />
+              </span>
+              <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div className="bp6-text-overflow-ellipsis" title={skillName}>
+                  {skillName}
+                </div>
+                <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.25 }}>
+                  {skillRefName(charSkill.charSkillIndex)}
+                </div>
+              </div>
+            </CharacterListColumn>
+          )}
+        />
       )
     }),
   },
   mod: {
     width: 150,
     C: memo(({ context, width }: { context: FieldContext<Arknights, Character, [number]>; width: number }) => {
-      const { equip } = context.character.uniEquips[context.args[0]]
+      const { equip, equipId } = context.character.uniEquips[context.args[0]]
       return (
-        <CharacterListColumn width={width}>
-          <span className="bp6-menu-item-icon cpp-mod-icon">
-            <CachedImg src={equip.icon} width={28} height={28} alt="" />
-          </span>
-          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="bp6-text-overflow-ellipsis" title={equip.name}>
-              {equip.name}
-            </div>
-            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.25 }}>
-              {`${equip.raw.typeName1}-${equip.raw.typeName2}`}
-            </div>
-          </div>
-        </CharacterListColumn>
+        <PeekTrigger
+          peek={modulePeek(context.character.key, equipId)}
+          renderTarget={(peek) => (
+            <CharacterListColumn width={width} {...peek}>
+              <span className="bp6-menu-item-icon cpp-mod-icon">
+                <CachedImg src={equip.icon} width={28} height={28} alt="" />
+              </span>
+              <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div className="bp6-text-overflow-ellipsis" title={equip.name}>
+                  {equip.name}
+                </div>
+                <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.25 }}>
+                  {`${equip.raw.typeName1}-${equip.raw.typeName2}`}
+                </div>
+              </div>
+            </CharacterListColumn>
+          )}
+        />
       )
     }),
   },

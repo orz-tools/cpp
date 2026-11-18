@@ -833,6 +833,24 @@
   color: var(--bp-palette-gray-3, #8f99a8);
 }
 
+/* 模组图标是白色的：和列表里一样垫一块深色 */
+.cpp-peek-mod-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 2px;
+  background: #30363d;
+}
+
+/* 技能卡、模组卡里的说明：卡片本身就是框 */
+.cpp-peek-body > .cpp-charstat-det {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
 /* 技能卡对比满级时：满级不在计划内，只加粗、不用蓝色 */
 .cpp-charstat-det-vs-max .cpp-charstat-det-to,
 .cpp-charstat-det-vs-max .cpp-charstat-rt-to {

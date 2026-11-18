@@ -1,4 +1,4 @@
-import { Button, Overlay2, Popover } from '@blueprintjs/core'
+import { Button, Overlay2, Popover, PopoverProps } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import React, { createContext, memo, useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
@@ -89,7 +89,7 @@ export const PeekCard = memo(
     const backLabel = gt.pgettext('peek card', '返回')
     const pinLabel = gt.pgettext('peek card', '钉住')
     return (
-      <div className="cpp-peek-card" role="dialog" aria-labelledby={titleId}>
+      <div className="cpp-peek-card" role="dialog" aria-labelledby={titleId} tabIndex={-1}>
         <div className="cpp-peek-head">
           {stack.length > 1 ? (
             <Button
@@ -129,6 +129,17 @@ export const PeekCard = memo(
     )
   },
 )
+
+// 纵向放不下时往上挪，顶上让出 40px 的顶栏
+const peekPopoverModifiers: PopoverProps['modifiers'] = {
+  preventOverflow: { options: { padding: { top: 48, right: 8, bottom: 8, left: 8 } } },
+}
+
+/** Blueprint 把焦点放在卡片外面的陷阱元素上，要 Tab 两下才到图钉；直接放在卡片上，下一帧它看到焦点已经在里面就不动 */
+function onOpening(node: HTMLElement) {
+  raisePortal(node)
+  node.querySelector<HTMLElement>('.cpp-peek-card')?.focus({ preventScroll: true })
+}
 
 export interface PeekTargetProps {
   ref: React.Ref<any>
@@ -201,7 +212,8 @@ export const PeekTrigger = ({
       autoFocus
       enforceFocus={false}
       shouldReturnFocusOnClose
-      onOpening={raisePortal}
+      modifiers={peekPopoverModifiers}
+      onOpening={onOpening}
       content={<PeekCard stack={shown} pinned={false} onNavigate={onNavigate} onPin={onPin} onClose={close} />}
       renderTarget={({ ref }) =>
         renderTarget({
