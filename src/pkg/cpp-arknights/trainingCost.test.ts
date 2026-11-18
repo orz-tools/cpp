@@ -55,6 +55,8 @@ const characters: Record<string, Character> = {
   c6b: six('c6b'),
   c6c: six('c6c'),
   c6d: six('c6d'),
+  // 特殊干员，像机械师：游戏数据照样列了材料
+  sp: Object.assign(six('sp'), { isSpecialOperator: true }),
   // 第二个技能专精不花材料
   c5: character('c5', 4, [50, 70, 80], [masteries, null]),
   c3: character('c3', 2, [40, 55], [null]),
@@ -158,6 +160,12 @@ describe('elite2Saving', () => {
     expect(tc.elite2Saving(characters.c6, status(2, 1))).toBeNull()
     expect(tc.elite2Saving(characters.c3, empty)).toBeNull()
   })
+
+  it('has no items for a special operator', () => {
+    const { tc, empty } = setup()
+    expect(tc.elite2Saving(characters.sp, empty)!.items.size).toBe(0)
+    expect(tc.elite2Saving(characters.sp, empty)!.value).toBe(0)
+  })
 })
 
 describe('mastery3Saving', () => {
@@ -245,6 +253,13 @@ describe('costMatrix', () => {
     expect(unplanned.defaultCell).toBe('zeroFull')
     expect(unplanned.track.rest).toBe(unplanned.cells.zeroFull)
   })
+
+  it('has no items anywhere for a special operator', () => {
+    const { tc } = setup()
+    const m = tc.costMatrix(characters.sp, status(1, 50), status(2, 1, { skillMaster: { sp_s1: 3 } }))
+    expect(cells(m)).toEqual(['goalFull', 'nowFull', 'nowGoal', 'zeroFull', 'zeroGoal', 'zeroNow'])
+    expect(Object.values(m.cells).filter((x) => x.items.size > 0)).toEqual([])
+  })
 })
 
 describe('rarityRank', () => {
@@ -255,7 +270,7 @@ describe('rarityRank', () => {
 
   it('compares with the same rarity only, from where each can use the voucher', () => {
     const { tc } = setup()
-    // c6b、c6d 没持有，从零算，并列第一；c6 精一 1 级，省得最少；c6c 已精二，不算
+    // c6b、c6d 没持有，从零算，并列第一；c6 精一 1 级，省得最少；c6c 已精二、sp 是特殊干员，都不算
     const fromZero = tc.elite2Saving(characters.c6b, setup().empty)!.value
     const c6 = tc.elite2Saving(characters.c6, currents.c6)!.value
     expect(tc.rarityRank('elite2', characters.c6b, undefined, currents)).toEqual({
@@ -271,11 +286,12 @@ describe('rarityRank', () => {
 
   it('ranks every skill, leaving out the ones at M3 and the free ones', () => {
     const { tc } = setup()
-    // c6、c6b、c6d 各三个技能都是专零；c6c 一技能已专三，二技能专一
+    // c6、c6b、c6d 各三个技能都是专零；c6c 一技能已专三，二技能专一；sp 是特殊干员，不算
     const r = tc.rarityRank('mastery3', characters.c6c, 1, currents)!
     expect(r.count).toBe(11)
     expect(r.rank).toBe(11)
     expect(tc.rarityRank('mastery3', characters.c6c, 0, currents)).toBeNull()
+    expect(tc.rarityRank('mastery3', characters.sp, 0, currents)).toBeNull()
     expect(tc.rarityRank('mastery3', characters.c5, 0, currents)!.count).toBe(1)
     expect(tc.rarityRank('mastery3', characters.c5, 1, currents)).toBeNull()
   })

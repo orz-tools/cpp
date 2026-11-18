@@ -62,7 +62,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
   }
 
   public isManuallyTask(task: Task<Arknights>) {
-    return task.type._ === 'join'
+    return task.type._ === 'join' || !!this.dataManager.data.characters[task.charId]?.isSpecialOperator
   }
 
   /**
@@ -75,6 +75,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     const character = dataManager.data.characters[charId]
 
     const tasks: Task<Arknights>[] = []
+    const paysMaterials = !character.isSpecialOperator
     const add = (
       type: ArknightsCharacterTaskType,
       requires: Task<Arknights>['requires'],
@@ -84,7 +85,7 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
         id: `${character.key}:${stringify(type)}`,
         charId: character.key,
         type,
-        requires,
+        requires: paysMaterials ? requires : [],
         depends: depends.filter(isTask),
       }
       tasks.push(task)

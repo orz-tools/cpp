@@ -34,6 +34,8 @@ function character(key: string, rarity: number, maxLevels: number[], skillCount:
 
 const characters: Record<string, Character> = {
   six: character('six', 5, [50, 80, 90], 3),
+  // 像机械师：游戏数据照样列了材料
+  special: Object.assign(character('special', 5, [50, 80, 90], 3), { isSpecialOperator: true }),
   // 两星，像黑角：只到精零 30 级，没有技能
   two: character('two', 1, [30], 0),
 }
@@ -83,6 +85,18 @@ describe('generateTasksForCharacter', () => {
     expect(typesOf(uda, 'six', e2, { ...e2, skillMaster: { six_s1: 5 } })).toEqual(
       typesOf(uda, 'six', e2, { ...e2, skillMaster: { six_s1: 3 } }),
     )
+  })
+
+  it("leaves a special operator's steps without materials, to be done by hand", () => {
+    const uda = setup()
+    const from = status(0, 1)
+    const to = (key: string) => status(2, 90, { skillLevel: 7, skillMaster: { [`${key}_s1`]: 3 } })
+    const special = uda.generateTasksForCharacter('special', from, to('special'))
+    const six = uda.generateTasksForCharacter('six', from, to('six'))
+    expect(special.map((x) => x.type._)).toEqual(six.map((x) => x.type._))
+    expect(special.flatMap((x) => x.requires)).toEqual([])
+    expect(special.every((x) => uda.isManuallyTask(x))).toBe(true)
+    expect(six.some((x) => uda.isManuallyTask(x))).toBe(false)
   })
 })
 
