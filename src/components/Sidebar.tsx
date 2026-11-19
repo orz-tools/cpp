@@ -1,7 +1,7 @@
 import { Alignment, Button, Classes, Navbar } from '@blueprintjs/core'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { memo, useRef } from 'react'
+import { memo, useMemo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useGameAdapter } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
@@ -11,7 +11,7 @@ import { useCloseCharacterDossier } from './dossierHooks'
 import { PhoneMore, PhonePageHead } from './PhoneMore'
 import { phoneAreaAtom, phoneMorePageAtom, usePhoneLayout } from './phoneLayout'
 import { useOpenSidebarPanel } from './SidebarPanelDialog'
-import { SidebarState, activePanelId, clickRailItem, defaultSidebarState, readSidebarState } from './sidebarState'
+import { SidebarState, activePanelId, clickRailItem, phonePanelOpen, readSidebarState } from './sidebarState'
 import { SidebarPanel } from './types'
 
 const sidebarStateAtom = atomWithStorage<unknown>('cpp_sidebar', null, undefined, { getOnInit: true })
@@ -45,6 +45,24 @@ export function useShowPhoneMoreList(): () => void {
     setArea('more')
     setPage(null)
   })
+}
+
+/** 手机「更多」里开着的子页或面板页（两者不会同时开着），人在「更多」时返回键把它算作一层（phoneBack.ts） */
+export function usePhoneMoreLayer(): { isOpen: () => boolean; close: () => void } {
+  const store = useStore()
+  return useMemo(
+    () => ({
+      isOpen: () =>
+        store.get(phoneAreaAtom) === 'more' &&
+        (store.get(phoneMorePageAtom) != null || phonePanelOpen(store.get(sidebarStateAtom))),
+      close: () => {
+        if (phonePanelOpen(store.get(sidebarStateAtom)))
+          store.set(sidebarStateAtom, (stored: unknown) => ({ ...readSidebarState(stored), open: false }))
+        else store.set(phoneMorePageAtom, null)
+      },
+    }),
+    [store],
+  )
 }
 
 const noBadge = () => false
@@ -131,8 +149,7 @@ export const Sidebar = memo(() => {
   const panels = useSidebarPanels()
   const [stored, setStored] = useAtom(sidebarStateAtom)
   const phone = usePhoneLayout()
-  // 第一次在手机上打开「更多」先看到列表；桌面上第一次打开时侧栏展开着「关于」
-  const state = phone && stored == null ? { ...defaultSidebarState, open: false } : readSidebarState(stored)
+  const state = phone ? { ...readSidebarState(stored), open: phonePanelOpen(stored) } : readSidebarState(stored)
   // Falls back only while rendering: the remembered panel comes back once its data is published
   const activeId = activePanelId(
     state,

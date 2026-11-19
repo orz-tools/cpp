@@ -15,6 +15,7 @@ import {
   Popover,
   Spinner,
   Tag,
+  useOverlayStack,
 } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, memo, useEffect, useRef, useState } from 'react'
@@ -34,9 +35,10 @@ import { ItemList } from './components/ItemList'
 import { PeekBoard } from './components/Peek'
 import { useReloadGameData } from './components/reloadGameData'
 import { PhoneTabBar } from './components/PhoneTabBar'
+import { BackGuardEvent, closeTopOverlay, initialBackGuard, openOverlays, stepBackGuard } from './components/phoneBack'
 import { PhoneArea, phoneAreaAtom, usePhoneLayout } from './components/phoneLayout'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
-import { Sidebar } from './components/Sidebar'
+import { Sidebar, usePhoneMoreLayer } from './components/Sidebar'
 import { TaskList } from './components/TaskList'
 import { AppToaster } from './components/Toaster'
 import { UserDataManagerButton, UserDataManagerMenuItem } from './components/UserDataManager'
@@ -126,6 +128,57 @@ const ClosureButtonHeading = memo(() => {
       {/* <code>{`Closure++`}</code> */}
     </Navbar.Heading>
   )
+})
+
+// 历史里的守卫跟着页面走，不跟着组件：换游戏数据时 App 重新挂载，守卫还在
+let backGuard = initialBackGuard
+
+/** 手机上的返回键先关掉最上面那层（phoneBack.ts）；只在手机布局下挂监听 */
+const PhoneBack = memo(() => {
+  const phone = usePhoneLayout()
+  const { getLastOpened } = useOverlayStack()
+  const moreLayer = usePhoneMoreLayer()
+  const closeTop = useEvent(() => {
+    if (!closeTopOverlay(getLastOpened())) moreLayer.close()
+  })
+
+  useEffect(() => {
+    if (!phone) return
+    const depth = () => openOverlays().length + (moreLayer.isOpen() ? 1 : 0)
+    const step = (event: BackGuardEvent) => {
+      const r = stepBackGuard(backGuard, event)
+      backGuard = r.state
+      for (const action of r.actions) {
+        if (action.type === 'push') for (let i = 0; i < action.count; i++) history.pushState(history.state, '')
+        else if (action.type === 'go') history.go(action.delta)
+        else if (action.type === 'close') closeTop()
+        else history.back()
+      }
+    }
+    // Blueprint 的浮层在 effect 里才建出 portal，Chamber 的弹窗还要隔一次渲染：点完过一会儿再数，晚到的再数一次
+    let timers: number[] = []
+    const clear = () => timers.forEach((t) => clearTimeout(t))
+    // 代码派发的事件（关最上面那层的 Esc、任务行的右键）不算：那时的层数还没定下来
+    const settle = (e: Event) => {
+      if (!e.isTrusted) return
+      clear()
+      timers = [120, 600].map((ms) => window.setTimeout(() => step({ type: 'settled', depth: depth() }), ms))
+    }
+    const pop = () => step({ type: 'pop', depth: depth() })
+    window.addEventListener('popstate', pop)
+    document.addEventListener('click', settle, true)
+    document.addEventListener('keydown', settle, true)
+    document.addEventListener('paste', settle, true)
+    return () => {
+      clear()
+      window.removeEventListener('popstate', pop)
+      document.removeEventListener('click', settle, true)
+      document.removeEventListener('keydown', settle, true)
+      document.removeEventListener('paste', settle, true)
+    }
+  }, [phone, moreLayer, closeTop])
+
+  return null
 })
 
 const charExtraWidthAtom = atom(0)
@@ -237,6 +290,7 @@ const App = memo(() => {
       <CharacterDossier />
       <PeekBoard />
       {phone ? <PhoneTabBar /> : null}
+      <PhoneBack />
     </>
   )
 })
