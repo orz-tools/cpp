@@ -1091,19 +1091,19 @@ msgid "%s$cond后升级为"
 msgstr ""
 
 #. hover text of a base skill: its name and text
-#: src/components/arknights/extraFields.tsx:255
+#: src/components/arknights/extraFields.tsx:260
 msgctxt "arknights base skill"
 msgid "%s$name：%s$text"
 msgstr ""
 
 #: src/components/arknights/BaseSkillSection.tsx:222
-#: src/components/arknights/extraFields.tsx:247
+#: src/components/arknights/extraFields.tsx:252
 msgctxt "arknights base skill"
 msgid "原文没有加载出来"
 msgstr ""
 
 #. %s: base skill name
-#: src/components/arknights/extraFields.tsx:267
+#: src/components/arknights/extraFields.tsx:272
 msgctxt "arknights base skill"
 msgid "在档案里看 %s"
 msgstr ""
@@ -1119,13 +1119,13 @@ msgid "已解锁"
 msgstr ""
 
 #: src/components/arknights/BaseSkillSection.tsx:283
-#: src/components/arknights/extraFields.tsx:280
+#: src/components/arknights/extraFields.tsx:285
 msgctxt "arknights base skill"
 msgid "未持有"
 msgstr ""
 
 #: src/components/arknights/BaseSkillSection.tsx:229
-#: src/components/arknights/extraFields.tsx:251
+#: src/components/arknights/extraFields.tsx:256
 msgctxt "arknights base skill"
 msgid "没有这条技能的原文"
 msgstr ""
@@ -4981,12 +4981,12 @@ msgctxt "training cost"
 msgid "最多 %s"
 msgstr ""
 
-#: src/components/arknights/extraFields.tsx:186
+#: src/components/arknights/extraFields.tsx:191
 msgctxt "training cost"
 msgid "最多：从专零用时能省的；条上浅蓝的那段是已经练掉的。"
 msgstr ""
 
-#: src/components/arknights/extraFields.tsx:165
+#: src/components/arknights/extraFields.tsx:170
 msgctxt "training cost"
 msgid "最多：从精零 1 级用时能省的；条上浅蓝的那段是已经练掉的。"
 msgstr ""
@@ -5032,19 +5032,19 @@ msgid "效率"
 msgstr ""
 
 #. %s: a percentage like 54%
-#: src/components/arknights/extraFields.tsx:139
+#: src/components/arknights/extraFields.tsx:149
 msgctxt "training cost"
 msgid "效率 %s"
 msgstr ""
 
 #. %s: a list like 4★ 2022, 5★ 3765, 6★ 5735
-#: src/components/arknights/extraFields.tsx:168
+#: src/components/arknights/extraFields.tsx:173
 msgctxt "training cost"
 msgid "效率：现在能省的，占同星级最多能省的几成；条的全长就是同星级最多（%s）。"
 msgstr ""
 
 #. %s: a list like 4★ 1472, 5★ 2909, 6★ 4272
-#: src/components/arknights/extraFields.tsx:189
+#: src/components/arknights/extraFields.tsx:194
 msgctxt "training cost"
 msgid "效率：现在能省的，占同星级所有技能里最多能省的几成；条的全长就是同星级最多（%s）。"
 msgstr ""
@@ -5074,12 +5074,12 @@ msgctxt "training cost"
 msgid "现在到目标的材料"
 msgstr ""
 
-#: src/components/arknights/extraFields.tsx:181
+#: src/components/arknights/extraFields.tsx:186
 msgctxt "training cost"
 msgid "现在用技巧集能省多少：这个技能从现在的专精到专三的材料价值。已经专精过的那几级省不回来。"
 msgstr ""
 
-#: src/components/arknights/extraFields.tsx:160
+#: src/components/arknights/extraFields.tsx:165
 msgctxt "training cost"
 msgid "现在用特训邀请函能省多少：从现在的练度到精二 1 级的材料价值。已经练过的那一段省不回来，所以练得越多，数越小。"
 msgstr ""
