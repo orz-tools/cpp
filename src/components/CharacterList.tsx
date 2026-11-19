@@ -38,6 +38,7 @@ import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import { ListDrag, useListDrag } from './ListDrag'
+import { CharacterPlanMenuItems } from './PlanActions'
 import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
 import { listGaps } from './listDrag'
@@ -166,6 +167,7 @@ export const CharacterContextMenu = memo(
             <MenuDivider />
           </>
         ) : null}
+        <CharacterPlanMenuItems charId={character.key} />
         <MenuItem
           icon={'duplicate'}
           text={gt.gettext('复制角色名')}

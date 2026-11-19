@@ -1,3 +1,4 @@
+import deepEqual from 'deep-equal'
 import { atom, createStore } from 'jotai'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ExpItem, Formula, IGame, IGameAdapter, Task } from '../cpp-basic'
@@ -506,5 +507,105 @@ describe('UserDataAtomHolder', () => {
 
     store.set(atoms.baseAtom, { ...newUserData(), current: { char_1: { elite: 2, level: 90 } } })
     expect(store.get(atoms.isCharacterFinished('char_1'))).toBe(true)
+  })
+})
+
+describe('plan actions', () => {
+  type Status = { lv: number }
+  const zero: Status = Object.freeze({ lv: 0 })
+  // 和明日方舟一样：培养目标和当前状态相同时丢掉培养目标，没持有（lv 0）时丢掉当前状态
+  const leveled = {
+    getUserDataAdapter: () => ({
+      getAllCharacterIds: () => ['a', 'b', 'c'],
+      getFrozenEmptyCharacterStatus: () => zero,
+      rewriteCharacters: (_: string, current?: Status, goal?: Status) => {
+        if (current && goal && deepEqual(current, goal)) goal = undefined
+        if (current && current.lv === 0) current = undefined
+        return [current, goal] as const
+      },
+      finishedCharacterStatus: () => ({ lv: 3 }),
+      generateTasksForCharacter: (charId: string, c: Status, g: Status): Task<IGame>[] =>
+        g.lv > c.lv ? [{ id: `${charId}->${g.lv}`, charId, type: 'lv', requires: [], depends: [] }] : [],
+    }),
+    getFormulas: () => [],
+    getExpItems: () => ({}),
+  } as unknown as IGameAdapter<IGame>
+
+  function setup(data: Partial<UserData<IGame>> = {}) {
+    const store = createStore()
+    const holder = new UserDataAtomHolder(leveled)
+    holder.setAtom(
+      atom<UserData<IGame> | undefined>({
+        ...newUserData(),
+        current: { a: { lv: 1 }, b: { lv: 1 } },
+        goal: { a: { lv: 2 } },
+        goalOrder: ['a'],
+        taskGroupOrder: { a: ['g'] },
+        starredTasks: ['a->2'],
+        ...data,
+      }),
+      atom<string[]>([]),
+      atom(0),
+    )
+    return { store, atoms: holder.atoms }
+  }
+
+  it('maxes an owned operator out of the plan and appends them to the plan order', () => {
+    const { store, atoms } = setup()
+    store.set(atoms.maxGoals, ['b'])
+    const data = store.get(atoms.dataAtom)
+    expect(data.goal.b).toEqual({ lv: 3 })
+    expect(data.goalOrder).toEqual(['a', 'b'])
+  })
+
+  it('maxes an operator without a current status', () => {
+    const { store, atoms } = setup()
+    store.set(atoms.maxGoals, ['c'])
+    const data = store.get(atoms.dataAtom)
+    expect(data.goal.c).toEqual({ lv: 3 })
+    expect('c' in data.current).toBe(false)
+    expect(data.goalOrder.at(-1)).toBe('c')
+  })
+
+  it('maxes several operators in one undo step', () => {
+    const { store, atoms } = setup()
+    const before = store.get(atoms.dataAtom)
+    store.set(atoms.maxGoals, ['a', 'b'])
+    store.set(atoms.dataAtom, 'undo')
+    expect(store.get(atoms.dataAtom)).toEqual(before)
+  })
+
+  it("clears an operator's goal, group order and stars in one undo step", () => {
+    const { store, atoms } = setup({
+      goal: { a: { lv: 2 }, b: { lv: 3 } },
+      goalOrder: ['a', 'b'],
+      starredTasks: ['a->2', 'b->3'],
+    })
+    const before = store.get(atoms.dataAtom)
+    store.set(atoms.clearGoals, ['a'])
+    const data = store.get(atoms.dataAtom)
+    expect('a' in data.goal).toBe(false)
+    expect(data.taskGroupOrder && 'a' in data.taskGroupOrder).toBe(false)
+    expect(data.goalOrder).toEqual(['b'])
+    expect(data.starredTasks).toEqual(['b->3'])
+    store.set(atoms.dataAtom, 'undo')
+    expect(store.get(atoms.dataAtom)).toEqual(before)
+  })
+
+  it('writes nothing when clearing an operator out of the plan', () => {
+    const { store, atoms } = setup()
+    const before = store.get(atoms.dataAtom)
+    store.set(atoms.clearGoals, ['b'])
+    expect(store.get(atoms.dataAtom)).toEqual(before)
+    expect(() => store.set(atoms.dataAtom, 'undo')).toThrow('no undo history')
+  })
+
+  it('tells a maxed goal by its task ids, not their count', () => {
+    const { store, atoms } = setup()
+    // a 的培养目标 a->2 和拉满的 a->3 都是一项任务
+    expect(store.get(atoms.goalMaxed('a'))).toBe(false)
+    expect(store.get(atoms.goalMaxed('b'))).toBe(false)
+    store.set(atoms.maxGoals, ['a'])
+    expect(store.get(atoms.goalMaxed('a'))).toBe(true)
   })
 })

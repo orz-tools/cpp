@@ -3,6 +3,7 @@ import { memo } from 'react'
 import { setOwned } from '../../../pkg/cpp-arknights/statusEdit'
 import { gt } from '../../../pkg/gt'
 import { CachedImg } from '../../Icons'
+import { CharacterPlanButtons } from '../../PlanActions'
 import { StatusModeSwitch } from '../../StatusModeSwitch'
 import { useEditor } from './context'
 
@@ -10,6 +11,7 @@ import { useEditor } from './context'
  * The dossier already shows the avatar and the name above the editor, so embedded keeps only the mode and 持有.
  * 持有 is always there in the current status; in a goal only while the operator is not owned, to plan recruiting.
  * With onModeChange the mode becomes a switch on a row of its own: 360px holds no name, switch and 持有 in one row.
+ * Beside 持有 the goal's 拉满 and 清空 show their icons alone, as the row has no room left for their text.
  */
 export const Header = memo(
   ({
@@ -60,6 +62,7 @@ export const Header = memo(
           <div className="cpp-charstat-modebar">
             <StatusModeSwitch isGoal={isGoal} onChange={onModeChange} />
             {ownedSwitch}
+            {isGoal ? <CharacterPlanButtons charId={character.key} compact={showOwned} /> : null}
           </div>
         </>
       )

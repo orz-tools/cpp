@@ -176,6 +176,15 @@
   margin-left: auto;
 }
 
+.cpp-charstat-modebar > .cpp-plan-buttons {
+  margin-left: auto;
+}
+
+/* 持有 already sits on the right; the buttons follow it */
+.cpp-charstat-modebar > .cpp-charstat-owned + .cpp-plan-buttons {
+  margin-left: 0;
+}
+
 .cpp-charstat-hd:has(+ .cpp-charstat-modebar) {
   padding-bottom: 8px;
 }

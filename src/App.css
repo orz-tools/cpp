@@ -769,6 +769,13 @@ body {
   outline: none;
 }
 
+/* 「拉满」「清空」（PlanActions.tsx）；放在哪一行由游戏的编辑器定 */
+.cpp-plan-buttons {
+  display: flex;
+  flex: none;
+  gap: 2px;
+}
+
 .cpp-peek-head {
   display: flex;
   align-items: center;

@@ -543,6 +543,65 @@ function buildAtoms<G extends IGame>(
     'moveTaskGroup',
   )
 
+  const dropStars = (data: Draft<UserData<G>>, ids: ReadonlySet<string>) => {
+    for (let i = data.starredTasks.length - 1; i >= 0; i--) {
+      if (ids.has(data.starredTasks[i])) data.starredTasks.splice(i, 1)
+    }
+  }
+
+  // An operator without a current status gets an empty one first, as goalCharacter's write does: rewriteCharacters
+  // passes a goal without one through unchecked, and drops the empty status again itself.
+  const maxGoals = withDebugLabel(
+    atom(null, (get, set, charIds: readonly string[]) => {
+      const untouched = get(allStarredTasksDetails).untouched
+      const finished = charIds.map((charId) => [charId, get(characterFinishedStatus(charId))] as const)
+      set(dataAtom, 'modify', (data) => {
+        dropStars(data, untouched)
+        for (const [charId, status] of finished) {
+          if (!data.current[charId]) {
+            data.current[charId] = clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()) as Draft<
+              G['characterStatus']
+            >
+          }
+          data.goal[charId] = clone(status) as Draft<G['characterStatus']>
+          doRewrite(charId, data)
+        }
+      })
+    }),
+    'maxGoals',
+  )
+
+  // The stars go now rather than at the next status change: left behind, they would come back with the same tasks
+  // when the operator is planned again.
+  const clearGoals = withDebugLabel(
+    atom(null, (get, set, charIds: readonly string[]) => {
+      const drop = new Set(get(allStarredTasksDetails).untouched)
+      for (const charId of charIds) for (const task of get(goalTasks(charId))) drop.add(task.id)
+      set(dataAtom, 'modify', (data) => {
+        dropStars(data, drop)
+        for (const charId of charIds) {
+          if (!(charId in data.goal)) continue
+          delete data.goal[charId]
+          doRewrite(charId, data)
+        }
+      })
+    }),
+    'clearGoals',
+  )
+
+  // By id, not by count: elite 2 level 60 and elite 2 level 90 make as many tasks.
+  const goalMaxed = atomFamily(
+    (charId: string) =>
+      withDebugLabel(
+        atom((get) => {
+          const planned = new Set(get(goalTasks(charId)).map((x) => x.id))
+          return get(finishedTasks(charId)).every((x) => planned.has(x.id))
+        }),
+        `goalMaxed(${charId})`,
+      ),
+    (a, b) => a === b,
+  )
+
   return {
     baseAtom,
     forbiddenFormulaTagsAtom,
@@ -552,6 +611,9 @@ function buildAtoms<G extends IGame>(
     goalOrder,
     moveInPlan,
     moveTaskGroup,
+    maxGoals,
+    clearGoals,
+    goalMaxed,
     stars,
     itemQuantities,
     itemQuantity,
