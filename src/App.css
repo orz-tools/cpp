@@ -599,9 +599,10 @@ body {
   outline: none !important;
 }
 
+/* 说明和上面那一项的文字对齐：16px 图标加它右边 8px */
 .cpp-menu-indent {
   padding: 0 !important;
-  margin-left: 22px !important;
+  margin-left: 24px !important;
 }
 
 /* 从别处点过来、框出的那一项（focusFrame.ts）；和时装卡片图上的框一样 */
@@ -1072,12 +1073,16 @@ body {
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
+/* Blueprint 给菜单项的 ::before 留了图标的 16px 高和 3px 上边距，不清掉的话竖线比字低 3px */
 .cpp-split-menu-item > .cpp-split-menu-item-segment::before {
   content: '';
   position: absolute;
   left: -1px;
   top: 6px;
   bottom: 6px;
+  width: 0;
+  height: auto;
+  margin: 0;
   border-left: 1px solid var(--bp-palette-light-gray-1, #d3d8de);
 }
 

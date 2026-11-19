@@ -90,6 +90,8 @@ export interface IGameComponent {
       C: React.FC<{ query: Querier<any, any>; context: FieldContext<any, any, any>; width: number }>
       /** 列头说明的正文，标题是列名；给了时列名画成虚线下划线，悬停或聚焦时出说明 */
       Tip?: React.ComponentType
+      /** 格子里的内容靠右（数字）时写 right，列头也靠右，和数字的右边对齐 */
+      align?: 'right'
     }
   >
   TaskDisplay?: React.FC<{ type: any; charId: string; formattedString: string }>

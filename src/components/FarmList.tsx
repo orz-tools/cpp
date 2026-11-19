@@ -324,7 +324,7 @@ export const StageLine = memo(({ run }: { run: StageRun }) => {
                   </span>
                 </div>
                 <div style={{ marginTop: '0.5em' }}>
-                  <span style={{ display: 'inline-flex' }}>
+                  <span style={{ display: 'inline-flex', gap: 4 }}>
                     <ValueTag value={run.stage.ap} minimal={true} intent={'primary'} />
                     {Number.isFinite(samples) ? <SampleTag minimal sample={samples} /> : ''}
                   </span>

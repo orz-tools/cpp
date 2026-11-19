@@ -377,7 +377,7 @@ const Stub = memo(({ ticket, used }: { ticket: Ticket; used?: boolean }) => {
   const stage = ga.getMissionCatalog().stage(ticket.stageId)
   return (
     <div className="cpp-mm-stub">
-      <div className="cpp-mm-stub-code">{stage.code}</div>
+      <div className={'cpp-mm-stub-code' + (stage.code.length > 6 ? ' is-long' : '')}>{stage.code}</div>
       <div className="cpp-mm-stub-line" title={stage.name}>
         {ticket.total > 1 && !used ? `${ticket.index}/${ticket.total}` : stage.name}
       </div>

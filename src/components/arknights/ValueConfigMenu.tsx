@@ -195,109 +195,111 @@ const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => {
       style={{ width: 640, maxWidth: '95vw' }}
     >
       <DialogBody>
-        <H4>{gt.pgettext('value config', '定价关卡')}</H4>
-        <RadioGroup
-          label={gt.pgettext('value config', '定价范围')}
-          inline={true}
-          selectedValue={draft.stageScope}
-          onChange={(e) => {
-            const value = e.currentTarget.value as StageScope
-            update((d) => void (d.stageScope = value))
-          }}
-        >
-          <Radio value="mainline" label={gt.pgettext('value config', '主线')} />
-          <Radio value="permanent" label={gt.pgettext('value config', '常驻')} />
-          <Radio value="open" label={gt.pgettext('value config', '含开放活动')} />
-        </RadioGroup>
-        <FormGroup label={gt.pgettext('value config', '排除的关卡')} inline={true}>
-          <Popover
-            usePortal={true}
-            minimal={true}
-            position="bottom-left"
-            content={
-              <StagePopover
-                stageIds={Object.keys(stageInfos)}
-                isChecked={(stageId) => !draft.excludedStageIds.includes(stageId)}
-                onSetChecked={setStagesIncluded}
-              />
-            }
+        <div className="cpp-value-config-rows">
+          <H4>{gt.pgettext('value config', '定价关卡')}</H4>
+          <RadioGroup
+            label={gt.pgettext('value config', '定价范围')}
+            inline={true}
+            selectedValue={draft.stageScope}
+            onChange={(e) => {
+              const value = e.currentTarget.value as StageScope
+              update((d) => void (d.stageScope = value))
+            }}
           >
-            <Button icon="layers" endIcon="chevron-down">
-              {excludedCount > 0
-                ? gt
-                    .ngettext('已排除 %d 个关卡', '已排除 %d 个关卡', excludedCount) /* I10N: %d: number */
-                    .replaceAll('%d', String(excludedCount))
-                : gt.pgettext('value config', '无')}
-            </Button>
-          </Popover>
-        </FormGroup>
-        <FormGroup
-          label={gt.pgettext('value config', '样本量阈值')}
-          helperText={gt.pgettext('value config', '掉落样本少于此数的关卡不参与定价')}
-          inline={true}
-        >
-          <NumberField
-            value={draft.minSamples}
-            min={0}
-            step={100}
-            integer
-            onChange={(x) => update((d) => void (d.minSamples = x))}
-          />
-        </FormGroup>
-
-        <H4>{gt.pgettext('value config', '龙门币与经验')}</H4>
-        <FormGroup
-          label={gt.pgettext('value config', '龙门币系数')}
-          helperText={gt.pgettext('value config', '1 表示按 CE-6 的理智折算')}
-          inline={true}
-        >
-          <div style={{ display: 'flex', gap: 8 }}>
-            <NumberField
-              value={draft.lmdCoefficient}
-              min={0}
-              max={1}
-              step={0.1}
-              onChange={(x) => update((d) => void (d.lmdCoefficient = x))}
-            />
-            <ButtonGroup>
-              <Button
-                active={draft.lmdCoefficient === 1}
-                onClick={() => update((d) => void (d.lmdCoefficient = 1))}
-                text={gt.pgettext('value config', '按 CE-6 定价（1）')}
-              />
-              <Button
-                active={draft.lmdCoefficient === 0}
-                onClick={() => update((d) => void (d.lmdCoefficient = 0))}
-                text={gt.pgettext('value config', '不需要（0）')}
-              />
-            </ButtonGroup>
-          </div>
-        </FormGroup>
-        <FormGroup label={gt.pgettext('value config', '经验系数')} inline={true}>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <HTMLSelect
-              value={expPreset?.id || ''}
-              onChange={(e) => {
-                const preset = EXP_COEFFICIENT_PRESETS.find((x) => x.id === e.currentTarget.value)
-                if (preset) update((d) => void (d.expCoefficient = preset.value))
-              }}
+            <Radio value="mainline" label={gt.pgettext('value config', '主线')} />
+            <Radio value="permanent" label={gt.pgettext('value config', '常驻')} />
+            <Radio value="open" label={gt.pgettext('value config', '含开放活动')} />
+          </RadioGroup>
+          <FormGroup label={gt.pgettext('value config', '排除的关卡')} inline={true}>
+            <Popover
+              usePortal={true}
+              minimal={true}
+              position="bottom-left"
+              content={
+                <StagePopover
+                  stageIds={Object.keys(stageInfos)}
+                  isChecked={(stageId) => !draft.excludedStageIds.includes(stageId)}
+                  onSetChecked={setStagesIncluded}
+                />
+              }
             >
-              {expPreset ? null : <option value="">{gt.pgettext('value config', '自定义')}</option>}
-              {EXP_COEFFICIENT_PRESETS.map((x) => (
-                <option key={x.id} value={x.id}>
-                  {expPresetName(x.id)}
-                </option>
-              ))}
-            </HTMLSelect>
+              <Button icon="layers" endIcon="chevron-down">
+                {excludedCount > 0
+                  ? gt
+                      .ngettext('已排除 %d 个关卡', '已排除 %d 个关卡', excludedCount) /* I10N: %d: number */
+                      .replaceAll('%d', String(excludedCount))
+                  : gt.pgettext('value config', '无')}
+              </Button>
+            </Popover>
+          </FormGroup>
+          <FormGroup
+            label={gt.pgettext('value config', '样本量阈值')}
+            helperText={gt.pgettext('value config', '掉落样本少于此数的关卡不参与定价')}
+            inline={true}
+          >
             <NumberField
-              value={draft.expCoefficient}
+              value={draft.minSamples}
               min={0}
-              max={1}
-              step={0.1}
-              onChange={(x) => update((d) => void (d.expCoefficient = x))}
+              step={100}
+              integer
+              onChange={(x) => update((d) => void (d.minSamples = x))}
             />
-          </div>
-        </FormGroup>
+          </FormGroup>
+
+          <H4>{gt.pgettext('value config', '龙门币与经验')}</H4>
+          <FormGroup
+            label={gt.pgettext('value config', '龙门币系数')}
+            helperText={gt.pgettext('value config', '1 表示按 CE-6 的理智折算')}
+            inline={true}
+          >
+            <div style={{ display: 'flex', gap: 8 }}>
+              <NumberField
+                value={draft.lmdCoefficient}
+                min={0}
+                max={1}
+                step={0.1}
+                onChange={(x) => update((d) => void (d.lmdCoefficient = x))}
+              />
+              <ButtonGroup>
+                <Button
+                  active={draft.lmdCoefficient === 1}
+                  onClick={() => update((d) => void (d.lmdCoefficient = 1))}
+                  text={gt.pgettext('value config', '按 CE-6 定价（1）')}
+                />
+                <Button
+                  active={draft.lmdCoefficient === 0}
+                  onClick={() => update((d) => void (d.lmdCoefficient = 0))}
+                  text={gt.pgettext('value config', '不需要（0）')}
+                />
+              </ButtonGroup>
+            </div>
+          </FormGroup>
+          <FormGroup label={gt.pgettext('value config', '经验系数')} inline={true}>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <HTMLSelect
+                value={expPreset?.id || ''}
+                onChange={(e) => {
+                  const preset = EXP_COEFFICIENT_PRESETS.find((x) => x.id === e.currentTarget.value)
+                  if (preset) update((d) => void (d.expCoefficient = preset.value))
+                }}
+              >
+                {expPreset ? null : <option value="">{gt.pgettext('value config', '自定义')}</option>}
+                {EXP_COEFFICIENT_PRESETS.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {expPresetName(x.id)}
+                  </option>
+                ))}
+              </HTMLSelect>
+              <NumberField
+                value={draft.expCoefficient}
+                min={0}
+                max={1}
+                step={0.1}
+                onChange={(x) => update((d) => void (d.expCoefficient = x))}
+              />
+            </div>
+          </FormGroup>
+        </div>
 
         <H4>{gt.pgettext('value config', '加工站副产物提升量')}</H4>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0 16px' }}>
@@ -382,7 +384,10 @@ const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => {
               return (
                 <tr key={itemId}>
                   <td style={{ verticalAlign: 'middle' }}>
-                    {item ? <ItemIcon item={item} size={20} /> : null} {itemName(itemId)}
+                    <span className="cpp-value-config-item">
+                      {item ? <ItemIcon item={item} size={20} /> : null}
+                      {itemName(itemId)}
+                    </span>
                   </td>
                   <td>
                     <NumberField

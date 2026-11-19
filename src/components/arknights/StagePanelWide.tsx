@@ -103,17 +103,17 @@ const StageTable = memo(
     withZone: boolean
     toggle: StageToggleProps
   }) => (
-    <HTMLTable compact className="cpp-stages-table">
+    <HTMLTable compact className={'cpp-stages-table' + (withZone ? '' : ' cpp-stages-table-fixed')}>
       <thead>
         <tr>
           <th />
-          <th>{gt.gettext('关卡')}</th>
+          <th className="cpp-stages-col-code">{gt.gettext('关卡')}</th>
           {withZone ? <th>{gt.pgettext('stage panel', '章节')}</th> : null}
-          <th className="cpp-stages-num">{gt.pgettext('stage panel', '理智')}</th>
-          <th>{gt.pgettext('stage panel', '效率')}</th>
-          <th className="cpp-stages-num">{gt.pgettext('stage panel', '每次掉落价值')}</th>
+          <th className="cpp-stages-num cpp-stages-col-ap">{gt.pgettext('stage panel', '理智')}</th>
+          <th className="cpp-stages-col-eff">{gt.pgettext('stage panel', '效率')}</th>
+          <th className="cpp-stages-num cpp-stages-col-value">{gt.pgettext('stage panel', '每次掉落价值')}</th>
           <th>{gt.pgettext('stage panel', '主要掉落（每次）')}</th>
-          <th className="cpp-stages-num">{gt.pgettext('stage panel', '样本')}</th>
+          <th className="cpp-stages-num cpp-stages-col-samples">{gt.pgettext('stage panel', '样本')}</th>
         </tr>
       </thead>
       <tbody>

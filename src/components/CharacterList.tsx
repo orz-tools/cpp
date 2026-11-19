@@ -1003,6 +1003,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
       width: widths[i],
       defaultWidth: field.width,
       Tip: field.Tip,
+      align: field.align,
     }))
   }, [query, extraColumns, widths])
 
@@ -1204,6 +1205,7 @@ export function createSimpleExtraField<
 ) {
   return {
     width: width,
+    align: style.textAlign === 'right' ? ('right' as const) : undefined,
     C: memo(({ context, query, width }: { query: Querier<G, C>; context: FieldContext<G, C, Args>; width: number }) => {
       const value = query.getFieldValue(field, context)
       const text = formatter(value, query, context)

@@ -970,9 +970,10 @@ p > .cpp-charstat-det-tag,
   white-space: nowrap;
 }
 
+/* 放得下加粗的「115.0%」：比它窄时，前面的「9/9」「需 4」会跟着各行的效率宽度左右错开 */
 .cpp-stages-eff {
   flex: none;
-  min-width: 52px;
+  min-width: 60px;
   text-align: right;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -1426,9 +1427,44 @@ section:first-child > .cpp-stages-wide-section {
   max-width: none;
 }
 
+/* 按章节时每章一张表：列宽定下来（按较长的英文列头留足），各章的列才上下对齐，剩下的宽度归主要掉落。按材料钻进去只有一张表，列宽随内容 */
+.cpp-stages-table-fixed.bp6-html-table {
+  table-layout: fixed;
+  min-width: 760px;
+}
+
+.cpp-stages-table-fixed th:first-child {
+  width: 40px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-code {
+  width: 96px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-ap {
+  width: 64px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-eff {
+  width: 128px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-value {
+  width: 120px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-samples {
+  width: 104px;
+}
+
 .cpp-stages-num {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+/* Blueprint 的 table.bp6-html-table td 更具体，会把数字列拉回左对齐 */
+.cpp-stages-table.bp6-html-table .cpp-stages-num {
+  text-align: right;
 }
 
 .cpp-stages-table td.cpp-stages-dim > .cpp-stages-zone-short {
@@ -1683,6 +1719,12 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 15px;
   font-weight: 700;
   line-height: 20px;
+  white-space: nowrap;
+}
+
+/* 「DM-EX-1」这样七个字的代号 15px 放不进 58px 的票根，会从连字符处折成两行 */
+.cpp-mm-stub-code.is-long {
+  font-size: 13px;
 }
 
 .cpp-mm-stub-line {
@@ -1947,8 +1989,10 @@ section:first-child > .cpp-stages-wide-section {
   line-height: 16px;
 }
 
+/* 和后面的任务摘要一样大；宽视图的表格格子是 14px，不写的话「顺带」比摘要大一号 */
 .cpp-mm-piggy-tag {
   margin-right: 4px;
+  font-size: 12px;
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
@@ -2353,6 +2397,11 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 13px;
 }
 
+/* 勾选框对着摘要第一行的字：通用的 4px 上边距让它低出 3px（中文字形比行框中线还高半像素） */
+.cpp-mm-dossier-row > .cpp-mm-check.bp6-control {
+  margin-top: 1px;
+}
+
 .cpp-mm-together {
   margin: 6px 0 0 24px;
   padding: 6px 8px;
@@ -2588,8 +2637,10 @@ section:first-child > .cpp-stages-wide-section {
   background: var(--bp-palette-dark-gray-1, #1c2127);
 }
 
+/* 负边距抵掉外圈的格间距，表格和上面的进度条、下面的材料一样左右顶边 */
 .cpp-cost-table {
-  width: 100%;
+  width: calc(100% + 6px);
+  margin: 0 -3px;
   border-collapse: separate;
   border-spacing: 3px;
 }
@@ -2602,7 +2653,13 @@ section:first-child > .cpp-stages-wide-section {
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
+.cpp-cost-table th:first-child {
+  padding-left: 0;
+}
+
+/* 右内边距和下面数字格的一样，列头和数字右边对齐 */
 .cpp-cost-table thead th {
+  padding-right: 8px;
   text-align: right;
 }
 
@@ -3022,9 +3079,10 @@ section:first-child > .cpp-stages-wide-section {
   padding-bottom: 8px;
 }
 
+/* 名字、英文名、「可获得」和件数字号各不相同，按基线排；居中的话件数比「可获得」低一截 */
 .cpp-skins-brand-head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 4px;
   width: 100%;
   padding: 5px 8px 3px 4px;
@@ -3034,6 +3092,10 @@ section:first-child > .cpp-stages-wide-section {
   text-align: left;
   color: var(--bp-typography-color-muted, #5f6b7c);
   cursor: pointer;
+}
+
+.cpp-skins-brand-head > .bp6-icon {
+  align-self: center;
 }
 
 .cpp-skins-brand-head:hover {
@@ -3085,9 +3147,10 @@ section:first-child > .cpp-stages-wide-section {
   white-space: nowrap;
 }
 
+/* 左边和上面的品牌名对齐：品牌行左内边距 4px，加 14px 的箭头和 4px 间距 */
 .cpp-skins-progress {
   height: 3px;
-  margin: 0 8px 2px 24px;
+  margin: 0 8px 2px 22px;
   overflow: hidden;
   border-radius: 2px;
   background: var(--bp-palette-light-gray-3, #dce0e5);
@@ -4374,4 +4437,31 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-so-row.is-idle .cpp-so-st,
 .cpp-so-exp.is-idle .cpp-so-st {
   color: var(--bp-palette-gray-4, #abb3bf);
+}
+
+/* 价值计算设置（ValueConfigMenu.tsx） */
+
+/* 一行一项的设置共用一列标签，输入框都从同一条竖线起；标签宽度各语言不同，按最宽的那个 */
+.cpp-value-config-rows {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+}
+
+.cpp-value-config-rows > :not(.bp6-inline) {
+  grid-column: 1 / -1;
+}
+
+.cpp-value-config-rows > .bp6-form-group.bp6-inline {
+  display: contents;
+}
+
+.cpp-value-config-rows > .bp6-form-group.bp6-inline > * {
+  margin-bottom: 15px;
+}
+
+/* 块级的 flex：行内的话它按基线坐在单元格的行框里，比同一行的输入框中线高出几像素 */
+.cpp-value-config-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

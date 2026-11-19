@@ -85,6 +85,8 @@ export interface ColumnHead {
   defaultWidth: number
   /** 同 extraFields 的 Tip */
   Tip?: React.ComponentType
+  /** 同 extraFields 的 align */
+  align?: 'right'
 }
 
 interface Props {
@@ -149,7 +151,10 @@ const ColumnHeadCell = memo(
     const text = dragging == null ? label : `${dragging} px`
 
     return (
-      <div className={`cpp-qe-colhead-cell${custom ? ' cpp-qe-colhead-custom' : ''}`} style={{ width: column.width }}>
+      <div
+        className={`cpp-qe-colhead-cell${custom ? ' cpp-qe-colhead-custom' : ''}${column.align === 'right' ? ' is-right' : ''}`}
+        style={{ width: column.width }}
+      >
         {column.Tip ? (
           // 有说明时不写 title，免得原生提示和说明一起出来
           <Tooltip
