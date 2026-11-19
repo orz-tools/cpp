@@ -17,15 +17,15 @@ import {
 export interface ListSelection {
   /** 和列表现在的 keys 的交集 */
   selected: ReadonlySet<string>
-  toggle(key: string): void
-  clear(): void
+  toggle: (key: string) => void
+  clear: () => void
   /**
    * 开关档案的那一下用；返回 true 表示按了修饰键、已经处理，行不再开档案。
    * range 给出锚点到 key 的连选范围，不给时按 keys 的先后算
    */
-  click(e: React.MouseEvent, key: string, range?: (anchor: string) => readonly string[] | undefined): boolean
+  click: (e: React.MouseEvent, key: string, range?: (anchor: string) => readonly string[] | undefined) => boolean
   /** 按着 Shift 按下时 preventDefault，免得浏览器把两次点击之间的文字选上 */
-  mouseDown(e: React.MouseEvent): void
+  mouseDown: (e: React.MouseEvent) => void
 }
 
 /**

@@ -3,6 +3,7 @@ import {
   ButtonGroup,
   Classes,
   ContextMenu,
+  Icon,
   Menu,
   MenuDivider,
   MenuItem,
@@ -38,6 +39,7 @@ import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import { ListDrag, useListDrag } from './ListDrag'
+import { ListSelectionContext, SelectionBar, useListSelection } from './ListSelection'
 import { CharacterPlanMenuItems } from './PlanActions'
 import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
@@ -226,6 +228,9 @@ const CharacterMenu = memo(
     drag,
     row,
     dimmed,
+    selected,
+    onSelectClick,
+    onSelectMouseDown,
   }: {
     character: ICharacter
     style?: React.CSSProperties
@@ -234,6 +239,10 @@ const CharacterMenu = memo(
     drag?: ListDrag<number>
     row?: number
     dimmed?: boolean
+    selected?: boolean
+    /** 返回 true 时是修饰键点击，已经改了选择，不开档案 */
+    onSelectClick?: (e: React.MouseEvent, key: string) => boolean
+    onSelectMouseDown?: React.MouseEventHandler
   }) => {
     const atoms = useAtoms<G>()
     const ga = useGameAdapter<G>()
@@ -260,6 +269,7 @@ const CharacterMenu = memo(
           `cpp-char-rarity-${character.rarity}`,
           ...(character.characterViewExtraClass || []),
           ...(dimmed ? ['cpp-drag-source'] : []),
+          ...(selected ? ['cpp-list-selected'] : []),
         ].join(' ')}
         style={style}
         {...(drag && row !== undefined ? drag.hoverProps(row) : null)}
@@ -274,7 +284,11 @@ const CharacterMenu = memo(
             }
             aria-haspopup="dialog"
             aria-expanded={dossierOpen}
-            onClick={() => openDossier(charId)}
+            onClick={(e) => {
+              if (onSelectClick?.(e, charId)) return
+              openDossier(charId)
+            }}
+            onMouseDown={onSelectMouseDown}
             onKeyDown={menuItemKeyDown}
             {...(drag && row !== undefined ? drag.pressProps(row) : null)}
           >
@@ -290,6 +304,11 @@ const CharacterMenu = memo(
                 {c.renderCharacterAvatarBadge && !uda.isAbsentCharacter(character, currentCharacter)
                   ? c.renderCharacterAvatarBadge(currentCharacter, character)
                   : null}
+                {selected ? (
+                  <span className="cpp-select-tick">
+                    <Icon icon="small-tick" size={12} />
+                  </span>
+                ) : null}
               </span>
               <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <div className="bp6-text-overflow-ellipsis" title={character.name}>
@@ -925,6 +944,8 @@ export const QuickFilterBuilder = memo(() => {
   )
 })
 
+const NO_KEYS: readonly string[] = []
+
 export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom: PrimitiveAtom<number> }) => {
   const param = useAtomValue(useCpp().queryParamAtom)
   const stale = useAtomValue(queryEditorStaleAtom)
@@ -1029,17 +1050,41 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     estimateSize: () => 50,
   })
 
-  const canDrag =
-    param.query === ListModeWithGoal && !pin && !loading && response?.param === param && response.pin === pin
+  const canSelect = param.query === ListModeWithGoal && !pin
+  const selection = useListSelection(canSelect ? keys : NO_KEYS, [param, pin])
+  const { selected } = selection
+  // 按住选中的行拖，选中的一起挪；按住没选中的只挪这一行，选择不动
+  const moving = (key: string): ReadonlySet<string> => (selected.has(key) ? selected : new Set([key]))
+
+  const canDrag = canSelect && !loading && response?.param === param && response.pin === pin
   const { drag, active, overlay, handle } = useListDrag<number, MoveTarget>({
     enabled: canDrag,
     scrollRef: parentRef,
     contentRef,
     virtualizer: rowVirtualizer,
     handleInset: 4,
-    draggable: () => list.length > 1,
-    begin: (row) => ({ ranges: [[row, row]], gaps: listGaps(keys, new Set([keys[row]])) }),
-    commit: (row, target) => store.set(atoms.moveInPlan, { charIds: [keys[row]], target }),
+    draggable: (row) => (selected.has(keys[row]) ? selected.size < keys.length : keys.length > 1),
+    begin: (row) => {
+      const m = moving(keys[row])
+      return {
+        ranges: keys.flatMap((key, i) => (m.has(key) ? [[i, i] as const] : [])),
+        gaps: listGaps(keys, m),
+        count: m.size,
+      }
+    },
+    commit: (row, target) => store.set(atoms.moveInPlan, { charIds: [...moving(keys[row])], target }),
+    selected: (row) => selected.has(keys[row]),
+    handleTitle: (row) =>
+      selected.has(keys[row])
+        ? gt
+            .ngettext(
+              '拖动：%d 名一起移动 · 点击：取消选中',
+              '拖动：%d 名一起移动 · 点击：取消选中',
+              selected.size,
+            ) /* I10N: %d: number */
+            .replaceAll('%d', selected.size.toString())
+        : gt.gettext('拖动：调整顺序 · 点击：选中'),
+    onHandleClick: (row) => selection.toggle(keys[row]),
   })
 
   // 列头的状态格量自第一行：状态格的宽度由各游戏的渲染结果决定
@@ -1101,55 +1146,61 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
           <pre style={{ margin: 0 }}>{error.message}</pre>
         </NonIdealState>
       ) : (
-        <Menu
-          className={stale ? 'cpp-char-list-stale' : undefined}
-          style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}
-          ulRef={parentRef}
-        >
-          {/* 一行都还没出现过时量不到状态格，画出来对不齐 */}
-          {wantHeader && statusWidths.length > 0 ? (
-            <ColumnHeader
-              columns={columnHeads}
-              statusWidths={statusWidths}
-              disabled={stale}
-              onPreview={onPreview}
-              onResize={columnWidths.setWidth}
-            />
-          ) : null}
-          <div
-            ref={contentRef}
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              width: '100%',
-              position: 'relative',
-            }}
+        <ListSelectionContext.Provider value={canSelect ? selection : undefined}>
+          <Menu
+            className={stale ? 'cpp-char-list-stale' : undefined}
+            style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}
+            ulRef={parentRef}
           >
-            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-              const index = virtualRow.index
-              return (
-                <CharacterMenu
-                  key={rows[index].key}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: `${virtualRow.size}px`,
-                    transform: `translateY(${virtualRow.start}px)`,
-                  }}
-                  character={list[index]}
-                  item={rows[index]}
-                  renderExtraFields={renderExtraFields}
-                  drag={drag}
-                  row={index}
-                  dimmed={active ? inRanges(active.ranges, index) : false}
-                />
-              )
-            })}
-            {overlay}
-          </div>
-        </Menu>
+            {/* 一行都还没出现过时量不到状态格，画出来对不齐 */}
+            {wantHeader && statusWidths.length > 0 ? (
+              <ColumnHeader
+                columns={columnHeads}
+                statusWidths={statusWidths}
+                disabled={stale}
+                onPreview={onPreview}
+                onResize={columnWidths.setWidth}
+              />
+            ) : null}
+            <div
+              ref={contentRef}
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+                width: '100%',
+                position: 'relative',
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const index = virtualRow.index
+                return (
+                  <CharacterMenu
+                    key={rows[index].key}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                    character={list[index]}
+                    item={rows[index]}
+                    renderExtraFields={renderExtraFields}
+                    drag={drag}
+                    row={index}
+                    dimmed={active ? inRanges(active.ranges, index) : false}
+                    selected={selected.has(keys[index])}
+                    onSelectClick={canSelect ? selection.click : undefined}
+                    onSelectMouseDown={canSelect ? selection.mouseDown : undefined}
+                  />
+                )
+              })}
+              {overlay}
+            </div>
+          </Menu>
+        </ListSelectionContext.Provider>
       )}
+      <SelectionBar count={selected.size} onClear={selection.clear} />
       {handle}
     </>
   )

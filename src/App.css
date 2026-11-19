@@ -759,6 +759,50 @@ body {
   flex: none;
 }
 
+/* Operators selected to move together (src/components/ListSelection.tsx). Kept apart from the row whose dossier is
+   open, which has the bar on the left, and can show along with it */
+.cpp-list-selected {
+  background-color: rgba(45, 114, 210, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(45, 114, 210, 0.35);
+  border-radius: 3px;
+}
+
+/* Blueprint's grey hover would muddy the blue */
+.cpp-list-selected .cpp-char-menu-char:hover {
+  background-color: rgba(45, 114, 210, 0.1);
+}
+
+.bp6-menu-item.cpp-list-selected:hover {
+  background-color: rgba(45, 114, 210, 0.18);
+}
+
+/* The game's stylesheet sets this too, but the tick must not depend on it */
+.cpp-char-menu-char .cpp-char-avatar {
+  position: relative;
+}
+
+/* Top left, clear of the potential badge at the bottom right; above the rarity backdrop */
+.cpp-select-tick {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 17px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  background: var(--bp-palette-blue-3, #2d72d2);
+  box-shadow: 0 0 0 0.5px rgba(17, 20, 24, 0.2);
+}
+
+.cpp-select-tick > .bp6-icon {
+  color: #fff;
+}
+
 .cpp-drag-handle.cpp-drag-handle-selected {
   background: var(--bp-palette-blue-3, #2d72d2);
   border-color: var(--bp-palette-blue-2, #215db0);
