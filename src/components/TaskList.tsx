@@ -308,9 +308,9 @@ export const TaskMenu = memo(
           </ContextMenu>
           {hideCosts ? null : renderedNotes}
           {hideCosts ? null : renderedCosts}
-          {nextSame && !hideCosts ? <MenuDivider /> : null}
+          {/* MenuDivider 本身是 <li>，只能放在 <ul> 里；放到这一行的 <li> 下就是 <li> 套 <li> */}
+          {hideCosts && nextSame ? null : <MenuDivider />}
         </Menu>
-        {nextSame ? null : <MenuDivider />}
       </li>
     )
   },
