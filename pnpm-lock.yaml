@@ -163,22 +163,22 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@blueprintjs/icons': 6.16.0
+  '@blueprintjs/icons': 6.17.0
   gettext-extractor>glob: ^14.0.2
 
 patchedDependencies:
-  '@blueprintjs/icons@6.16.0': a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a
+  '@blueprintjs/icons@6.17.0': a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a
 
 importers:
 
   .:
     dependencies:
       '@blueprintjs/core':
-        specifier: ^6.23.0
-        version: 6.23.0(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^6.23.2
+        version: 6.23.2(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@blueprintjs/icons':
-        specifier: 6.16.0
-        version: 6.16.0(patch_hash=a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 6.17.0
+        version: 6.17.0(patch_hash=a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tanstack/react-virtual':
         specifier: ^3.14.26
         version: 3.14.26(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -398,8 +398,8 @@ packages:
   '@blueprintjs/colors@5.1.16':
     resolution: {integrity: sha512-P9uX0Aj2TP9+6aUcori1iPl4snxM/Vgq0LZbhUl1l5bHTgNxxwm/0+IoS/SlQg93HBRl8KTAM1evEqtPbwV10A==}
 
-  '@blueprintjs/core@6.23.0':
-    resolution: {integrity: sha512-tcG7UzSVAMyvQVJegZiRDK3N/2Km/ACJv/wVG6/qJjSjn7+waiJB8B6W4HuZ0w7Xj2G76mImlo2Vcxdtkl+mOg==}
+  '@blueprintjs/core@6.23.2':
+    resolution: {integrity: sha512-lQO3E+1sZU15eaVlKsxpxz5VqfJYxKas/Mh809JWNMntv/9gfm+Pd7cTJXT8SZrYIjKpXOYRc91xw5wKOCYJWg==}
     hasBin: true
     peerDependencies:
       '@types/react': 18 || 19
@@ -409,8 +409,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@blueprintjs/icons@6.16.0':
-    resolution: {integrity: sha512-hwQ5nVGsaUNiR91A2Q2aOcOkBg9RWP4y4YqFlc6j41BQ3oj7wBTydzgug2BHi5EKgyIyrdJcl0qrnBpL+6mjHg==}
+  '@blueprintjs/icons@6.17.0':
+    resolution: {integrity: sha512-ShU4mGOuH1OObvQpcshwh+vUnoMncg6oVrKufUQGTfva3rvUbXGJgopG6cAXDWr9jWx4VoQ+8uQLxFLnnw2yqA==}
     peerDependencies:
       '@types/react': 18 || 19
       react: 18 || 19
@@ -2124,9 +2124,6 @@ packages:
   ts-toolbelt@9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
 
-  tslib@2.5.3:
-    resolution: {integrity: sha512-mSxlJJwl3BMEQCUNnxXBU9jP4JBktcEGhURcPR6VQVlnP0FdDEsIaz0C35dXNGLyRfrATNofF0F5p2KPxQgB+w==}
-
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
@@ -2432,10 +2429,10 @@ snapshots:
     dependencies:
       tslib: 2.6.3
 
-  '@blueprintjs/core@6.23.0(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@blueprintjs/core@6.23.2(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@blueprintjs/colors': 5.1.16
-      '@blueprintjs/icons': 6.16.0(patch_hash=a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@blueprintjs/icons': 6.17.0(patch_hash=a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@floating-ui/react': 0.27.20(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@popperjs/core': 2.11.8
       classnames: 2.3.2
@@ -2448,7 +2445,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.21
 
-  '@blueprintjs/icons@6.16.0(patch_hash=a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@blueprintjs/icons@6.17.0(patch_hash=a7434359cbe37dc618fb56f853d32453dbb4b5c8f8e0df4014e9dc73f41c784a)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       change-case: 4.1.2
       classnames: 2.3.2
@@ -3089,7 +3086,7 @@ snapshots:
   camel-case@4.1.2:
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   camelcase@6.3.0: {}
 
@@ -3098,7 +3095,7 @@ snapshots:
   capital-case@1.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
       upper-case-first: 2.0.2
 
   chai@6.3.0: {}
@@ -3122,7 +3119,7 @@ snapshots:
       path-case: 3.0.4
       sentence-case: 3.0.4
       snake-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   classnames@2.3.2: {}
 
@@ -3141,7 +3138,7 @@ snapshots:
   constant-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
       upper-case: 2.0.2
 
   content-type@1.0.5: {}
@@ -3214,7 +3211,7 @@ snapshots:
   dot-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   electron-to-chromium@1.5.489: {}
 
@@ -3337,7 +3334,7 @@ snapshots:
   header-case@2.0.4:
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   iconv-lite@0.6.3:
     dependencies:
@@ -3534,7 +3531,7 @@ snapshots:
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   lru-cache@11.5.3: {}
 
@@ -3568,7 +3565,7 @@ snapshots:
   no-case@3.0.4:
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   node-gettext@3.0.1:
     dependencies:
@@ -3670,7 +3667,7 @@ snapshots:
   param-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   parent-module@1.0.1:
     dependencies:
@@ -3688,12 +3685,12 @@ snapshots:
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   path-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   path-scurry@3.0.0:
     dependencies:
@@ -3815,7 +3812,7 @@ snapshots:
   sentence-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
       upper-case-first: 2.0.2
 
   side-channel@1.0.4:
@@ -3833,7 +3830,7 @@ snapshots:
   snake-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   source-map-js@1.2.2: {}
 
@@ -3891,8 +3888,6 @@ snapshots:
 
   ts-toolbelt@9.6.0: {}
 
-  tslib@2.5.3: {}
-
   tslib@2.6.3: {}
 
   types-ramda@0.32.0:
@@ -3934,11 +3929,11 @@ snapshots:
 
   upper-case-first@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   upper-case@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.6.3
 
   use-resize-observer@10.0.0(react@18.2.0):
     dependencies:
