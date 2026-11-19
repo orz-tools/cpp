@@ -17,6 +17,8 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual'
 import deepEqual from 'deep-equal'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { selectAtom } from 'jotai/utils'
+import { equals } from 'ramda'
 import React, { forwardRef, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { search } from 'text-search-engine'
@@ -28,14 +30,17 @@ import {
   useGameAdapter,
   useGameDataGeneration,
   useGameDataMemo,
+  useStore,
 } from '../Cpp'
 import { CharacterStatusPopover } from '../components/CharacterStatusPopover'
 import { CachedImg } from '../components/Icons'
 import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
+import { ListDrag, useListDrag } from './ListDrag'
 import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
+import { listGaps } from './listDrag'
 import { IGameComponent } from './types'
 import {
   FieldConfiguration,
@@ -51,6 +56,7 @@ import {
   resolveField,
 } from '../pkg/cpp-basic'
 import { fieldLabel } from '../pkg/cpp-basic/queryEditorModel'
+import { MoveStep, MoveTarget, followOrder, stepTarget } from '../pkg/cpp-core/planOrder'
 import { gt } from '../pkg/gt'
 import {
   HoldingAbsent,
@@ -130,9 +136,12 @@ export const CharacterContextMenu = memo(
   ({ character, alwaysSorting }: { character: ICharacter; alwaysSorting?: boolean }) => {
     const { CharacterContextMenuItems } = useComponents()
     const atoms = useAtoms<IGame>()
-    const setData = useSetAtom(atoms.dataAtom)
-    const [param, setParam] = useAtom(useCpp().queryParamAtom)
-    const shouldRefresh = param.query === ListModeWithGoal
+    const store = useStore()
+    const param = useAtomValue(useCpp().queryParamAtom)
+    const move = (step: MoveStep) => {
+      const target = stepTarget(store.get(atoms.goalOrder), character.key, step)
+      if (target) store.set(atoms.moveInPlan, { charId: character.key, target })
+    }
 
     return (
       <Menu>
@@ -146,58 +155,10 @@ export const CharacterContextMenu = memo(
                 <span style={{ marginLeft: 10 }}>{gt.gettext('角色计划排序')}</span>
                 <div style={{ flex: 1 }} />
               </>
-              <Button
-                icon={'double-chevron-up'}
-                onClick={() => {
-                  setData('modify', (d) => {
-                    const index = d.goalOrder.indexOf(character.key)
-                    if (index >= 0) {
-                      d.goalOrder.splice(index, 1)
-                    }
-                    d.goalOrder.unshift(character.key)
-                  })
-                  if (shouldRefresh) setParam((e) => ({ ...e }))
-                }}
-              />
-              <Button
-                icon={'chevron-up'}
-                onClick={() => {
-                  setData('modify', (d) => {
-                    const index = d.goalOrder.indexOf(character.key)
-                    if (index >= 1) {
-                      d.goalOrder.splice(index, 1)
-                      d.goalOrder.splice(index - 1, 0, character.key)
-                    }
-                  })
-                  if (shouldRefresh) setParam((e) => ({ ...e }))
-                }}
-              />
-              <Button
-                icon={'chevron-down'}
-                onClick={() => {
-                  setData('modify', (d) => {
-                    const index = d.goalOrder.indexOf(character.key)
-                    if (index >= 0 && index < d.goalOrder.length - 1) {
-                      d.goalOrder.splice(index, 1)
-                      d.goalOrder.splice(index + 1, 0, character.key)
-                    }
-                  })
-                  if (shouldRefresh) setParam((e) => ({ ...e }))
-                }}
-              />
-              <Button
-                icon={'double-chevron-down'}
-                onClick={() => {
-                  setData('modify', (d) => {
-                    const index = d.goalOrder.indexOf(character.key)
-                    if (index >= 0) {
-                      d.goalOrder.splice(index, 1)
-                    }
-                    d.goalOrder.push(character.key)
-                  })
-                  if (shouldRefresh) setParam((e) => ({ ...e }))
-                }}
-              />
+              <Button icon={'double-chevron-up'} onClick={() => move('first')} />
+              <Button icon={'chevron-up'} onClick={() => move('up')} />
+              <Button icon={'chevron-down'} onClick={() => move('down')} />
+              <Button icon={'double-chevron-down'} onClick={() => move('last')} />
             </ButtonGroup>
             <MenuDivider />
           </>
@@ -257,11 +218,17 @@ const CharacterMenu = memo(
     style,
     item,
     renderExtraFields,
+    drag,
+    row,
+    dimmed,
   }: {
     character: ICharacter
     style?: React.CSSProperties
     item: FieldContext<G, ICharacter, any>
     renderExtraFields?: (item: FieldContext<G, ICharacter, any>) => React.ReactNode
+    drag?: ListDrag<number>
+    row?: number
+    dimmed?: boolean
   }) => {
     const atoms = useAtoms<G>()
     const ga = useGameAdapter<G>()
@@ -287,8 +254,10 @@ const CharacterMenu = memo(
           'cpp-char-menu-master',
           `cpp-char-rarity-${character.rarity}`,
           ...(character.characterViewExtraClass || []),
+          ...(dimmed ? ['cpp-drag-source'] : []),
         ].join(' ')}
         style={style}
+        {...(drag && row !== undefined ? drag.hoverProps(row) : null)}
       >
         <ContextMenu content={<CharacterContextMenu character={character} />}>
           <a
@@ -302,6 +271,7 @@ const CharacterMenu = memo(
             aria-expanded={dossierOpen}
             onClick={() => openDossier(charId)}
             onKeyDown={menuItemKeyDown}
+            {...(drag && row !== undefined ? drag.pressProps(row) : null)}
           >
             <>
               <span className="bp6-menu-item-icon cpp-char-avatar">
@@ -969,7 +939,16 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   }, [error])
 
   const query = response?.query
-  const result = response?.result || []
+  const atoms = useAtoms<IGame>()
+  const store = useStore()
+  // goalOrder 每次改用户数据都是新数组，只在顺序真的变了时重画列表
+  const planOrder = useAtomValue(useMemo(() => selectAtom(atoms.goalOrder, (x) => x, equals), [atoms]))
+  // 「计划」视图列哪些干员是查询时的快照，但先后每次都按现在的计划顺序排：拖动、右键的按钮、撤销都马上看得到
+  const planView = response?.param.query === ListModeWithGoal && !response.pin
+  const rows = useMemo(() => {
+    const result = response?.result || []
+    return planView ? followOrder(result, (x) => x.character.key, planOrder) : result
+  }, [response, planView, planOrder])
   // 查询中、或者结果还是上一个视图的时候不给，免得显示过时的总数
   const total = useMemo(() => {
     if (loading || !response || response.param !== param || response.pin !== pin || pin) return undefined
@@ -977,7 +956,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     const preset = cpp.gameAdapter.getPredefinedQueries()[param.query.slice(PredefinedGameQueryPrefix.length)]
     return preset?.totalValue ? { querier: response.query, field: preset.totalValue } : undefined
   }, [cpp, loading, response, param, pin])
-  const list = (response?.result || []).map((x) => x.character)
+  const list = rows.map((x) => x.character)
   const extraColumns = useMemo(
     () =>
       response
@@ -1033,6 +1012,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   )
 
   const parentRef = useRef<HTMLUListElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const rowVirtualizer = useVirtualizer({
     count: list.length,
@@ -1040,6 +1020,18 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     getItemKey: (index) => list[index].key,
     overscan: 5,
     estimateSize: () => 50,
+  })
+
+  const canDrag =
+    param.query === ListModeWithGoal && !pin && !loading && response?.param === param && response.pin === pin
+  const { drag, active, overlay, handle } = useListDrag<number, MoveTarget>({
+    enabled: canDrag,
+    scrollRef: parentRef,
+    contentRef,
+    virtualizer: rowVirtualizer,
+    handleInset: 4,
+    begin: (row) => ({ rows: [row, row], gaps: listGaps(list.map((x) => x.key), row) }),
+    commit: (row, target) => store.set(atoms.moveInPlan, { charId: list[row].key, target }),
   })
 
   // 列头的状态格量自第一行：状态格的宽度由各游戏的渲染结果决定
@@ -1117,6 +1109,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
             />
           ) : null}
           <div
+            ref={contentRef}
             style={{
               height: `${rowVirtualizer.getTotalSize()}px`,
               width: '100%',
@@ -1127,7 +1120,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
               const index = virtualRow.index
               return (
                 <CharacterMenu
-                  key={result[index].key}
+                  key={rows[index].key}
                   style={{
                     position: 'absolute',
                     top: 0,
@@ -1137,14 +1130,19 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
                     transform: `translateY(${virtualRow.start}px)`,
                   }}
                   character={list[index]}
-                  item={result[index]}
+                  item={rows[index]}
                   renderExtraFields={renderExtraFields}
+                  drag={drag}
+                  row={index}
+                  dimmed={active?.source === index}
                 />
               )
             })}
+            {overlay}
           </div>
         </Menu>
       )}
+      {handle}
     </>
   )
 })
