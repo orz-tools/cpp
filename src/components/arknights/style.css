@@ -2876,7 +2876,7 @@ section:first-child > .cpp-stages-wide-section {
 /* 时装：侧栏面板、大窗口、档案一节 */
 
 .cpp-skins-muted {
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-skins-total {
@@ -2912,7 +2912,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-skins-n {
   margin-left: 4px;
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -2941,15 +2941,15 @@ section:first-child > .cpp-stages-wide-section {
   flex: none;
   padding: 6px 8px 8px;
   box-shadow:
-    inset 0 1px 0 rgba(17, 20, 24, 0.15),
-    inset 0 -1px 0 rgba(17, 20, 24, 0.15);
+    inset 0 1px 0 rgb(var(--cpp-ink) / 0.15),
+    inset 0 -1px 0 rgb(var(--cpp-ink) / 0.15);
 }
 
 .cpp-skins-time-head {
   display: flex;
   align-items: center;
   font-size: 12px;
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-skins-time-toggle {
@@ -2968,7 +2968,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-skins-time-toggle:hover {
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-skins-today-text {
@@ -3004,7 +3004,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-skins-tick line {
-  stroke: var(--bp-palette-light-gray-3, #dce0e5);
+  stroke: var(--cpp-tint-3);
 }
 
 .cpp-skins-tick text {
@@ -3015,12 +3015,12 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-skins-gantt .cpp-skins-tick text {
   font-size: 11px;
-  fill: var(--bp-palette-gray-1, #5f6b7c);
+  fill: var(--bp-typography-color-muted);
 }
 
 .cpp-skins-bar text {
   font-size: 11px;
-  fill: var(--bp-palette-dark-gray-5, #404854);
+  fill: var(--cpp-strong);
   pointer-events: none;
 }
 
@@ -3066,7 +3066,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-skins-bar.is-selected rect {
   opacity: 1;
-  stroke: var(--bp-palette-dark-gray-1, #1c2127);
+  stroke: var(--bp-typography-color-default-rest);
   stroke-width: 2;
 }
 
@@ -3078,7 +3078,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-skins-today-label {
   font-size: 11px;
-  fill: var(--bp-palette-red-3, #cd4246);
+  fill: var(--bp-typography-color-danger-rest);
 }
 
 /* 每一期一个透明按钮，叠在 SVG 的条上 */
@@ -3092,7 +3092,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-skins-bar-button:hover {
-  background: rgba(17, 20, 24, 0.06);
+  background: rgb(var(--cpp-ink) / 0.06);
 }
 
 .cpp-skins-bar-button:focus-visible {
@@ -3131,7 +3131,7 @@ section:first-child > .cpp-stages-wide-section {
   background: none;
   font: inherit;
   text-align: left;
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   cursor: pointer;
 }
 
@@ -3154,7 +3154,7 @@ section:first-child > .cpp-stages-wide-section {
   overflow: hidden;
   font-size: 13px;
   font-weight: 600;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -3175,7 +3175,7 @@ section:first-child > .cpp-stages-wide-section {
   padding: 0 5px;
   border-radius: 8px;
   background: rgba(200, 118, 25, 0.15);
-  color: var(--bp-palette-orange-2, #935610);
+  color: var(--bp-typography-color-warning-rest);
   font-size: 11px;
   line-height: 16px;
   white-space: nowrap;
@@ -3194,7 +3194,7 @@ section:first-child > .cpp-stages-wide-section {
   margin: 0 8px 2px 22px;
   overflow: hidden;
   border-radius: 2px;
-  background: var(--bp-palette-light-gray-3, #dce0e5);
+  background: var(--cpp-tint-3);
 }
 
 .cpp-skins-progress > i {
@@ -3237,7 +3237,7 @@ section:first-child > .cpp-stages-wide-section {
   height: 100%;
   overflow: hidden;
   border-radius: inherit;
-  background: var(--bp-palette-light-gray-4, #e5e8eb);
+  background: var(--cpp-tint-2);
 }
 
 .cpp-skins-pic img {
@@ -3257,7 +3257,7 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 10px;
   line-height: 12px;
   text-align: center;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   word-break: break-all;
 }
 
@@ -3276,7 +3276,7 @@ section:first-child > .cpp-stages-wide-section {
   width: 16px;
   height: 16px;
   border-radius: 8px;
-  box-shadow: 0 0 0 2px #fff;
+  box-shadow: 0 0 0 2px var(--cpp-surface);
   color: #fff;
 }
 
@@ -3303,7 +3303,7 @@ section:first-child > .cpp-stages-wide-section {
   padding: 0 3px;
   border-radius: 3px;
   background: var(--bp-palette-green-3, #238551);
-  box-shadow: 0 0 0 2px #fff;
+  box-shadow: 0 0 0 2px var(--cpp-surface);
   color: #fff;
   font-size: 10px;
   line-height: 14px;
@@ -3319,13 +3319,13 @@ section:first-child > .cpp-stages-wide-section {
   width: 16px;
   height: 16px;
   border-radius: 8px;
-  background: #fff;
+  background: var(--cpp-surface);
   box-shadow: 0 0 0 1px var(--bp-palette-gray-3, #8f99a8);
 }
 
 .cpp-skins-check.is-on {
   background: var(--bp-palette-blue-3, #2d72d2);
-  box-shadow: 0 0 0 2px #fff;
+  box-shadow: 0 0 0 2px var(--cpp-surface);
   color: #fff;
 }
 
@@ -3334,18 +3334,18 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-skins-tone-shop {
-  color: var(--bp-palette-orange-2, #935610);
+  color: var(--bp-typography-color-warning-rest);
 }
 
 .cpp-skins-tone-cert {
-  color: var(--bp-palette-green-2, #1c6e42);
+  color: var(--bp-typography-color-success-rest);
 }
 
 .cpp-skins-tone-perm {
-  color: var(--bp-palette-dark-gray-5, #404854);
+  color: var(--cpp-strong);
 }
 
-/* 悬停说明：Blueprint 的 Tooltip 是深底 */
+/* 悬停说明：Blueprint 的 Tooltip 和页面反色，橙字、绿字照它的底色挑（--cpp-tip-*） */
 .cpp-skins-tip {
   max-width: 240px;
   font-size: 12px;
@@ -3368,12 +3368,12 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-skins-tip .cpp-skins-tone-shop {
-  color: var(--bp-palette-orange-5, #fbb360);
+  color: var(--cpp-tip-warning);
 }
 
 .cpp-skins-tip .cpp-skins-tone-cert,
 .cpp-skins-tip-voucher {
-  color: var(--bp-palette-green-5, #72ca9b);
+  color: var(--cpp-tip-success);
 }
 
 .cpp-skins-tip .cpp-skins-tone-perm {
@@ -3447,12 +3447,12 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-skins-row-name {
   font-size: 13px;
   line-height: 17px;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-skins-row.is-owned .cpp-skins-row-name,
 .cpp-skins-row-sub {
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-skins-row-sub {
@@ -3491,12 +3491,12 @@ section:first-child > .cpp-stages-wide-section {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  background: var(--cpp-tint-1);
   padding: 8px 10px 4px;
   font-size: 12px;
   font-weight: 600;
   line-height: 16px;
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-skins-import-row {
@@ -3508,7 +3508,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-skins-import-row.is-removed .cpp-skins-row-name {
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-skins-import-row.is-removed .cpp-skins-row-pic {
@@ -3524,9 +3524,9 @@ section:first-child > .cpp-stages-wide-section {
   flex: none;
   min-height: 30px;
   padding: 2px 6px 2px 10px;
-  box-shadow: inset 0 1px 0 rgba(17, 20, 24, 0.15);
+  box-shadow: inset 0 1px 0 rgb(var(--cpp-ink) / 0.15);
   font-size: 12px;
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-skins-foot > span:first-of-type {
@@ -3549,11 +3549,11 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-skins-foot-marking {
   background: rgba(45, 114, 210, 0.12);
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-skins-foot-error {
-  color: var(--bp-palette-red-2, #ac2f33);
+  color: var(--bp-typography-color-danger-rest);
 }
 
 .cpp-skins-foot-marking .bp6-button,
@@ -3611,15 +3611,15 @@ section:first-child > .cpp-stages-wide-section {
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: var(--bp-palette-red-2, #ac2f33);
+  color: var(--bp-typography-color-danger-rest);
 }
 
 .cpp-skins-wide-chart {
   flex: none;
   padding: 2px 0 6px;
   box-shadow:
-    inset 0 1px 0 rgba(17, 20, 24, 0.15),
-    inset 0 -1px 0 rgba(17, 20, 24, 0.15);
+    inset 0 1px 0 rgb(var(--cpp-ink) / 0.15),
+    inset 0 -1px 0 rgb(var(--cpp-ink) / 0.15);
 }
 
 .cpp-skins-wide-chart.is-collapsed {
@@ -3636,7 +3636,7 @@ section:first-child > .cpp-stages-wide-section {
   left: 6px;
   top: -2px;
   font-size: 12px;
-  color: var(--bp-palette-dark-gray-5, #404854);
+  color: var(--cpp-strong);
 }
 
 .cpp-skins-gantt-corner .cpp-skins-time-toggle {
@@ -3644,20 +3644,20 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-skins-gantt-band {
-  fill: var(--bp-palette-light-gray-5, #f6f7f9);
+  fill: var(--cpp-tint-1);
 }
 
 .cpp-skins-gantt-band.is-odd {
-  fill: #fff;
+  fill: var(--cpp-surface);
 }
 
 .cpp-skins-gantt-lane {
   font-size: 12px;
-  fill: var(--bp-palette-dark-gray-5, #404854);
+  fill: var(--cpp-strong);
 }
 
 .cpp-skins-acquired circle {
-  fill: var(--bp-palette-dark-gray-1, #1c2127);
+  fill: var(--bp-typography-color-default-rest);
 }
 
 .cpp-skins-wide-main {
@@ -3671,7 +3671,7 @@ section:first-child > .cpp-stages-wide-section {
   width: 212px;
   overflow: auto;
   padding: 8px 0;
-  box-shadow: inset -1px 0 0 rgba(17, 20, 24, 0.15);
+  box-shadow: inset -1px 0 0 rgb(var(--cpp-ink) / 0.15);
 }
 
 .cpp-skins-steps-head {
@@ -3692,17 +3692,17 @@ section:first-child > .cpp-stages-wide-section {
   overflow: hidden;
   border: 0;
   border-radius: 3px;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  background: var(--cpp-tint-1);
   font: inherit;
   font-size: 12px;
   line-height: 16px;
   text-align: left;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
   cursor: pointer;
 }
 
 .cpp-skins-step:hover {
-  background: var(--bp-palette-light-gray-4, #e5e8eb);
+  background: var(--cpp-tint-2);
 }
 
 .cpp-skins-step:focus-visible {
@@ -3740,7 +3740,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-skins-step-count {
   margin-left: auto;
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -3804,7 +3804,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-skins-days-left {
   font-size: 13px;
   font-weight: 600;
-  color: var(--bp-palette-orange-2, #935610);
+  color: var(--bp-typography-color-warning-rest);
 }
 
 .cpp-skins-cards {
@@ -3878,7 +3878,7 @@ section:first-child > .cpp-stages-wide-section {
   line-height: 16px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: var(--bp-typography-color-muted, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-skins-card-state {
@@ -3895,7 +3895,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-skins-dossier-note {
   margin-bottom: 10px;
   font-size: 13px;
-  color: var(--bp-palette-orange-2, #935610);
+  color: var(--bp-typography-color-warning-rest);
 }
 
 .cpp-skins-dcards {
@@ -3955,7 +3955,7 @@ section:first-child > .cpp-stages-wide-section {
   min-width: 0;
   font-size: 12.5px;
   line-height: 18px;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -3966,7 +3966,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-bskill-name {
   font-size: 12px;
   font-weight: 500;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   margin-right: 6px;
 }
 
@@ -4028,14 +4028,14 @@ section:first-child > .cpp-stages-wide-section {
   line-height: 18px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
-  background: #fff;
-  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.22);
+  color: var(--bp-typography-color-default-rest);
+  background: var(--cpp-surface);
+  box-shadow: inset 0 0 0 1px rgb(var(--cpp-ink) / 0.22);
 }
 
 .cpp-bskill-chip.is-have {
-  color: var(--bp-palette-gray-1, #5f6b7c);
-  background: var(--bp-palette-light-gray-3, #e5e8eb);
+  color: var(--bp-typography-color-muted);
+  background: var(--cpp-tint-3);
   box-shadow: none;
 }
 
@@ -4077,7 +4077,7 @@ section:first-child > .cpp-stages-wide-section {
   line-height: 18px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4090,7 +4090,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-bskill-sum-d {
   font-size: 12px;
   line-height: 16px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4147,12 +4147,12 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-bskill-rail-segment {
   border-radius: 3px;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
-  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.12);
+  background: var(--cpp-tint-1);
+  box-shadow: inset 0 0 0 1px rgb(var(--cpp-ink) / 0.12);
 }
 
 .cpp-bskill-rail-have {
-  background: var(--bp-palette-light-gray-1, #d3d8de);
+  background: var(--cpp-tint-5);
 }
 
 .cpp-bskill-rail-plan {
@@ -4164,7 +4164,7 @@ section:first-child > .cpp-stages-wide-section {
   width: 3px;
   height: 16px;
   border-radius: 1px;
-  background: var(--bp-palette-dark-gray-5, #404854);
+  background: var(--cpp-strong);
 }
 
 .cpp-bskill-rail-goal {
@@ -4172,7 +4172,7 @@ section:first-child > .cpp-stages-wide-section {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--cpp-surface);
   box-shadow:
     0 0 0 2px var(--bp-intent-primary-rest, #2d72d2),
     0 1px 3px rgba(17, 20, 24, 0.3);
@@ -4226,8 +4226,8 @@ section:first-child > .cpp-stages-wide-section {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.22);
+  background: var(--cpp-surface);
+  box-shadow: inset 0 0 0 1px rgb(var(--cpp-ink) / 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4243,7 +4243,7 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 10px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-bskill-badge.is-plan {
@@ -4279,12 +4279,12 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-bskill-card {
   border-radius: 4px;
-  box-shadow: inset 0 0 0 1px var(--bp-palette-light-gray-3, #e5e8eb);
+  box-shadow: inset 0 0 0 1px var(--cpp-tint-3);
   padding: 10px 10px 8px;
 }
 
 .cpp-bskill-card.is-locked {
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  background: var(--cpp-tint-1);
 }
 
 .cpp-bskill-card-head {
@@ -4305,7 +4305,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-bskill-card-room {
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 /* 没解锁的和已升级的，字都是灰的 */
@@ -4314,14 +4314,14 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-bskill-card.is-replaced .cpp-bskill-card-name,
 .cpp-bskill-card.is-replaced .cpp-bskill-desc,
 .cpp-bskill-card.is-replaced .cpp-bskill-sum-h {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-bskill-desc {
   margin: 4px 0 6px;
   font-size: 12.5px;
   line-height: 1.55;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-bskill-card-foot {
@@ -4334,12 +4334,12 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-bskill-lock {
   font-size: 12px;
   white-space: nowrap;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-bskill-lock.is-plan {
   font-weight: 600;
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-bskill-lock.is-have {
@@ -4364,7 +4364,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-bskill-upgrade.is-plan {
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-bskill-upgrade.is-plan::before {
@@ -4386,12 +4386,12 @@ section:first-child > .cpp-stages-wide-section {
   padding: 7px 10px;
   border-radius: 3px;
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  color: var(--bp-typography-color-muted);
+  background: var(--cpp-tint-1);
 }
 
 .cpp-so-context strong {
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 /* 每组一张网格，行用 subgrid 跟着它分列：目标列按这一组最长的（「技能 7 级」「Skill Level 7」）对齐 */
@@ -4410,13 +4410,13 @@ section:first-child > .cpp-stages-wide-section {
   margin-bottom: 4px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-so-note {
   margin-bottom: 4px;
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-so-sub {
@@ -4432,7 +4432,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-so-code {
   font-family: monospace;
   font-size: 11px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 /* 状态图标 / 目标 / 文字（经验行多一列数）。不认 subgrid 的浏览器用前一行，各行自己分列 */
@@ -4469,12 +4469,12 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-so-need {
   display: block;
   font-size: 12px;
-  color: var(--bp-palette-orange-3, #c87619);
+  color: var(--bp-typography-color-warning-rest);
 }
 
 .cpp-so-range {
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-so-num {
@@ -4484,7 +4484,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-so-row.is-done,
 .cpp-so-exp.is-done {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-so-row.is-done .cpp-so-mission {
@@ -4494,7 +4494,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-so-row.is-done .cpp-so-st,
 .cpp-so-exp.is-done .cpp-so-st {
-  color: var(--bp-palette-green-3, #238551);
+  color: var(--bp-typography-color-success-rest);
 }
 
 .cpp-so-row.is-planned .cpp-so-st,
@@ -4504,12 +4504,12 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-so-row.is-planned .cpp-so-target {
   font-weight: 600;
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-so-row.is-idle,
 .cpp-so-exp.is-idle {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-so-row.is-idle .cpp-so-st,

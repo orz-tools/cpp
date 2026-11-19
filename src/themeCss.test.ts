@@ -94,7 +94,7 @@ describe('findNeutralColours', () => {
 
 describe('the stylesheets under src/', () => {
   // Stylesheets whose colours still have to move onto the theme tokens
-  const PENDING = ['src/components/arknights/style.css']
+  const PENDING: string[] = []
 
   it('write no white, grey or gray-1 text that a dark theme would keep', () => {
     const src = fileURLToPath(new URL('.', import.meta.url))
