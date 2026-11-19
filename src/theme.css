@@ -1,0 +1,38 @@
+/* 浅色取值就是改用变量之前写死的颜色，所以浅色模式看起来不变 */
+:root {
+  --cpp-surface: var(--bp-palette-white);
+  --cpp-tint-1: var(--bp-palette-light-gray-5);
+  --cpp-tint-2: var(--bp-palette-light-gray-4);
+  --cpp-tint-3: var(--bp-palette-light-gray-3);
+  --cpp-tint-4: var(--bp-palette-light-gray-2);
+  --cpp-tint-5: var(--bp-palette-light-gray-1);
+  --cpp-tint-6: var(--bp-palette-gray-5);
+  --cpp-strong: var(--bp-palette-dark-gray-5);
+  --cpp-ink: 17 20 24; /* black 的 RGB 分量，写作 rgb(var(--cpp-ink) / a) */
+  --cpp-tip-success: var(--bp-palette-green-5);
+  --cpp-tip-warning: var(--bp-palette-orange-5);
+}
+
+/* 深色的浅灰是半透明的白：放在页面、对话框、气泡上，都比底色亮同样的一点 */
+:root.bp6-dark {
+  --cpp-surface: var(--bp-palette-dark-gray-3);
+  --cpp-tint-1: rgb(255 255 255 / 0.04);
+  --cpp-tint-2: rgb(255 255 255 / 0.07);
+  --cpp-tint-3: rgb(255 255 255 / 0.1);
+  --cpp-tint-4: rgb(255 255 255 / 0.14);
+  --cpp-tint-5: rgb(255 255 255 / 0.18);
+  --cpp-tint-6: rgb(255 255 255 / 0.26);
+  --cpp-strong: var(--bp-palette-light-gray-1);
+  --cpp-ink: 255 255 255;
+  --cpp-tip-success: var(--bp-palette-green-2);
+  --cpp-tip-warning: var(--bp-palette-orange-2);
+}
+
+/* Blueprint 的深色对话框底色是 dark-gray-1，对话框里的菜单仍是 dark-gray-3 */
+:root.bp6-dark .bp6-dialog {
+  --cpp-surface: var(--bp-palette-dark-gray-1);
+}
+
+:root.bp6-dark .bp6-dialog .bp6-menu {
+  --cpp-surface: var(--bp-palette-dark-gray-3);
+}
