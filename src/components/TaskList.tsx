@@ -89,53 +89,6 @@ const TaskContextMenu = memo(
   }) => {
     const store = useStore()
     const atoms = useAtoms<G>()
-    const ga = useGameAdapter<G>()
-
-    const consumeCost = () => {
-      for (const i of task.requires) {
-        const allExpItems = ga.getExpItems()
-        if (Object.prototype.hasOwnProperty.call(allExpItems, i.itemId)) {
-          let exp = i.quantity
-          const thisExpItems = allExpItems[i.itemId]
-          const expItems = Object.entries(thisExpItems.value).sort((a, b) => -a[1] + b[1])
-          const quantities: Record<string, number> = Object.create(null)
-          const cost: Record<string, number> = Object.create(null)
-          for (const expItem of expItems) {
-            quantities[expItem[0]] = store.get(atoms.itemQuantity(expItem[0]))
-            cost[expItem[0]] = 0
-          }
-          for (const expItem of expItems) {
-            if (!quantities[expItem[0]]) continue
-            const need = Math.min(quantities[expItem[0]], Math.floor(exp / expItem[1]))
-            exp -= need * expItem[1]
-            quantities[expItem[0]] = quantities[expItem[0]] - need
-            cost[expItem[0]] += need
-          }
-          const smallestExpItemWithQuantity = expItems.reverse().find((x) => quantities[x[0]] > 0)
-          if (exp === 0) {
-            //
-          } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
-            // exp = 0 —— 之后不再读 exp，留着与上面 exp === 0 的分支对照
-            quantities[smallestExpItemWithQuantity[0]] -= 1
-            cost[smallestExpItemWithQuantity[0]] += 1
-          } else {
-            console.assert(false, 'virtual exp failed')
-          }
-          for (const [itemId, quantity] of Object.entries(cost)) {
-            store.set(atoms.itemQuantity(itemId), (e) => {
-              console.assert(e - quantity > 0, 'exp item failed')
-              return e - quantity
-            })
-          }
-        } else {
-          store.set(atoms.itemQuantity(i.itemId), (e) => {
-            console.assert(e - i.quantity > 0, 'normal item failed')
-            return e - i.quantity
-          })
-        }
-      }
-    }
-
     const stars = useAtomValue(atoms.stars)
 
     // 按这名干员计划里全部的整项算，不只是本段看得到的那几项
@@ -144,12 +97,6 @@ const TaskContextMenu = memo(
     const moveGroup = (step: MoveStep) => {
       const target = task.group ? stepTarget(groups, [task.group], step) : undefined
       if (target) store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
-    }
-
-    const completeTask = () => {
-      store.set(atoms.currentCharacter(task.charId), (d) => {
-        ga.getUserDataAdapter().completeTask(task.type, task.charId, d)
-      })
     }
 
     const starTask = () => {
@@ -181,18 +128,13 @@ const TaskContextMenu = memo(
           text={gt.gettext('完成')}
           icon={'tick-circle'}
           disabled={extra.status !== TaskStatus.Completable || !!task.depends.length}
-          onClick={() => {
-            store.set(atoms.dataAtom, 'transact', () => {
-              consumeCost()
-              completeTask()
-            })
-          }}
+          onClick={() => store.set(atoms.completeTasks, { tasks: [task], consume: true })}
         />
         <MenuItem
           text={gt.gettext('强制完成（不消耗材料）')}
           disabled={!!task.depends.length}
           icon={'cross-circle'}
-          onClick={completeTask}
+          onClick={() => store.set(atoms.completeTasks, { tasks: [task], consume: false })}
         />
         <MenuDivider />
         <MenuItem
