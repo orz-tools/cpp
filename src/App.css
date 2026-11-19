@@ -849,6 +849,18 @@ body {
   border: none;
 }
 
+/* While a list has a selection a plain click toggles the operator, so the unselected rows show where the tick would
+   go. Must follow the -inline rule: same specificity, and the task list's ring needs its border back */
+.cpp-select-tick.cpp-select-tick-empty {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid var(--bp-palette-gray-3, #8f99a8);
+}
+
+.cpp-char-menu-char:hover .cpp-select-tick-empty,
+.cpp-task-menu:hover .cpp-select-tick-empty {
+  border-color: var(--bp-palette-blue-3, #2d72d2);
+}
+
 /* 「选中的 n 名干员」 in place of 「角色计划排序」: the buttons move the whole selection */
 .cpp-sort-label-many {
   color: var(--bp-palette-blue-2, #215db0);
