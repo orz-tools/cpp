@@ -20,7 +20,17 @@ import deepEqual from 'deep-equal'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { equals } from 'ramda'
-import React, { forwardRef, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  forwardRef,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import useEvent from 'react-use-event-hook'
 import { search } from 'text-search-engine'
 import {
@@ -136,9 +146,19 @@ export function renderCharacterStatus<G extends IGame>(
 }
 
 /** 右键菜单最上面那一排：移到最前、上移、下移、移到最后 */
-export const SortButtonGroup = ({ label, onMove }: { label: string; onMove: (step: MoveStep) => void }) => (
+export const SortButtonGroup = ({
+  label,
+  labelClassName,
+  onMove,
+}: {
+  label: string
+  labelClassName?: string
+  onMove: (step: MoveStep) => void
+}) => (
   <ButtonGroup variant="minimal" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-    <span style={{ marginLeft: 10 }}>{label}</span>
+    <span className={labelClassName} style={{ marginLeft: 10 }}>
+      {label}
+    </span>
     <div style={{ flex: 1 }} />
     <Button icon={'double-chevron-up'} onClick={() => onMove('first')} />
     <Button icon={'chevron-up'} onClick={() => onMove('up')} />
@@ -154,18 +174,48 @@ export const CharacterContextMenu = memo(
     const store = useStore()
     const param = useAtomValue(useCpp().queryParamAtom)
     const order = useAtomValue(atoms.goalOrder)
+    const selection = useContext(ListSelectionContext)
+    const isSelected = selection?.selected.has(character.key) ?? false
+    // 右键选中的行，四个按钮挪所有选中的；只选了这一名时和没选一样
+    const group = isSelected && selection && selection.selected.size >= 2 ? [...selection.selected] : undefined
+    const keys = group ?? [character.key]
     const move = (step: MoveStep) => {
-      const target = stepTarget(order, [character.key], step)
-      if (target) store.set(atoms.moveInPlan, { charIds: [character.key], target })
+      const target = stepTarget(order, keys, step)
+      if (target) store.set(atoms.moveInPlan, { charIds: keys, target })
     }
     // 和「角色内排序」一样：计划里没有别的干员可换时，四个按钮哪个都挪不动
-    const movable = order.length > 1 && order.includes(character.key)
+    const movable = group
+      ? order.some((key) => !group.includes(key))
+      : order.length > 1 && order.includes(character.key)
 
     return (
       <Menu>
         {movable && (alwaysSorting || (alwaysSorting !== false && param.query === ListModeWithGoal)) ? (
           <>
-            <SortButtonGroup label={gt.gettext('角色计划排序')} onMove={move} />
+            {group ? (
+              <SortButtonGroup
+                label={gt
+                  .ngettext('选中的 %d 名干员', '选中的 %d 名干员', group.length) /* I10N: %d: number */
+                  .replaceAll('%d', group.length.toString())}
+                labelClassName="cpp-sort-label-many"
+                onMove={move}
+              />
+            ) : (
+              <SortButtonGroup label={gt.gettext('角色计划排序')} onMove={move} />
+            )}
+            <MenuDivider />
+          </>
+        ) : null}
+        {selection ? (
+          <>
+            <MenuItem
+              icon={isSelected ? 'cross' : 'tick'}
+              text={isSelected ? gt.gettext('取消选中') : gt.gettext('选中')}
+              onClick={() => selection.toggle(character.key)}
+            />
+            {selection.selected.size > (isSelected ? 1 : 0) ? (
+              <MenuItem icon={'cross-circle'} text={gt.gettext('清除选择')} onClick={selection.clear} />
+            ) : null}
             <MenuDivider />
           </>
         ) : null}

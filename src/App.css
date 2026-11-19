@@ -818,6 +818,12 @@ body {
   border: none;
 }
 
+/* 「选中的 n 名干员」 in place of 「角色计划排序」: the buttons move the whole selection */
+.cpp-sort-label-many {
+  color: var(--bp-palette-blue-2, #215db0);
+  font-weight: 600;
+}
+
 .cpp-drag-handle.cpp-drag-handle-selected {
   background: var(--bp-palette-blue-3, #2d72d2);
   border-color: var(--bp-palette-blue-2, #215db0);
