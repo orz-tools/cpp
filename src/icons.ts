@@ -69,6 +69,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.MEDIA, Paths16.Media],
       [IconNames.MORE, Paths16.More],
       [IconNames.MUGSHOT, Paths16.Mugshot],
+      [IconNames.MULTI_SELECT, Paths16.MultiSelect],
       [IconNames.PEOPLE, Paths16.People],
       [IconNames.PIN, Paths16.Pin],
       [IconNames.PLUS, Paths16.Plus],

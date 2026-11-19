@@ -28,6 +28,7 @@ import { CharacterContextMenu, SortButtonGroup, menuItemKeyDown } from './Charac
 import { CachedImg, ItemIcon } from './Icons'
 import { ListDrag, useListDrag } from './ListDrag'
 import { ListSelectionContext, SelectionBar, handleTitle, useListSelection } from './ListSelection'
+import { PlanBatchButtons } from './PlanActions'
 import { inRanges } from './listDrag'
 import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
@@ -694,7 +695,15 @@ export const TaskList = memo(<G extends IGame>() => {
           </div>
         </Menu>
       </ListSelectionContext.Provider>
-      <SelectionBar count={selected.size} onClear={selection.clear} />
+      <SelectionBar
+        count={selected.size}
+        compact
+        allSelected={selection.allSelected}
+        onSelectAll={selection.selectAll}
+        onClear={selection.clear}
+      >
+        <PlanBatchButtons charIds={selection.selectedKeys} compact />
+      </SelectionBar>
       {handle}
     </>
   )

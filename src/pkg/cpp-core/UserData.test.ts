@@ -625,6 +625,33 @@ describe('plan actions', () => {
     store.set(atoms.maxGoals, ['a'])
     expect(store.get(atoms.goalMaxed('a'))).toBe(true)
   })
+
+  describe('planTargets', () => {
+    // d 当前已经练满
+    const current = { a: { lv: 1 }, b: { lv: 1 }, d: { lv: 3 } }
+
+    it('maxes the unfinished operators in the order given, owned or not', () => {
+      const { store, atoms } = setup({ current })
+      expect(store.get(atoms.planTargets(['c', 'b', 'a', 'd'])).max).toEqual(['c', 'b', 'a'])
+    })
+
+    it('leaves out an operator whose goal is maxed', () => {
+      const { store, atoms } = setup({ current })
+      store.set(atoms.maxGoals, ['a'])
+      expect(store.get(atoms.planTargets(['a', 'b'])).max).toEqual(['b'])
+    })
+
+    it('clears only the operators in the plan', () => {
+      const { store, atoms } = setup({ current })
+      expect(store.get(atoms.planTargets(['a', 'b', 'c'])).clear).toEqual(['a'])
+    })
+
+    it('tells whether every operator is finished', () => {
+      const { store, atoms } = setup({ current })
+      expect(store.get(atoms.planTargets(['d'])).allFinished).toBe(true)
+      expect(store.get(atoms.planTargets(['d', 'b'])).allFinished).toBe(false)
+    })
+  })
 })
 
 describe('completeTasks', () => {

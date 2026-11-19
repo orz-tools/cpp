@@ -8,6 +8,7 @@ import {
   plainSelection,
   rangeKeys,
   sameScope,
+  selectAllSelection,
   toggleSelection,
   visibleSelection,
 } from './listSelection'
@@ -138,6 +139,20 @@ describe('extendSelection', () => {
       keys: keys('a', 'b', 'c'),
       anchor: 'a',
     })
+  })
+})
+
+describe('selectAllSelection', () => {
+  it('adds every key, keeps the selected ones off the list and the anchor', () => {
+    expect(selectAllSelection({ keys: keys('x', 'b'), anchor: 'b' }, ['a', 'b', 'c'])).toEqual({
+      keys: keys('x', 'b', 'a', 'c'),
+      anchor: 'b',
+    })
+  })
+
+  it('returns the same state when every key is selected already', () => {
+    const s = { keys: keys('a', 'b', 'c'), anchor: 'a' }
+    expect(selectAllSelection(s, ['a', 'b'])).toBe(s)
   })
 })
 
