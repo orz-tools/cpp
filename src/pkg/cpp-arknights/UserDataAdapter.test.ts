@@ -43,6 +43,12 @@ const characters: Record<string, Character> = {
   }),
   // 两星，像黑角：只到精零 30 级，没有技能
   two: character('two', 1, [30], 0),
+  mods: Object.assign(character('mods', 5, [50, 80, 90], 2), {
+    uniEquips: ['y', 'x'].map((m) => ({
+      equipId: `mods_${m}`,
+      equip: { raw: { itemCost: { 1: [cost(m, 1)], 2: [cost(m, 2)], 3: [cost(m, 3)] } } },
+    })),
+  }),
 }
 
 function setup() {
@@ -69,7 +75,8 @@ const typesOf = (
   charId: string,
   from: ArknightsCharacterStatus,
   to: ArknightsCharacterStatus,
-) => uda.generateTasksForCharacter(charId, from, to).map((x) => x.type)
+  groupOrder?: readonly string[],
+) => uda.generateTasksForCharacter(charId, from, to, groupOrder).map((x) => x.type)
 
 describe('generateTasksForCharacter', () => {
   it('has no skill levels to pay for on an operator without skills, whatever the stored skill level', () => {
@@ -142,6 +149,73 @@ describe('generateTasksForCharacter', () => {
         levels.map(() => [{ itemId: 's', quantity: 1 }]),
       )
       expect(skillTasks('special', from, to).map((x) => x.type)).toEqual(levels)
+    })
+  })
+
+  describe('groupOrder', () => {
+    const e1 = status(1, 80, { skillLevel: 7 })
+    const e2 = status(2, 60, { skillLevel: 7 })
+    const mixed = status(2, 1, { skillLevel: 7, skillMaster: { mods_s1: 1 }, modLevel: { mods_y: 1 } })
+    const four = { ...e2, skillMaster: { mods_s2: 1, mods_s1: 1 }, modLevel: { mods_y: 1, mods_x: 2 } }
+
+    it('keeps the default order without one: masteries before modules', () => {
+      const uda = setup()
+      const tasks = uda.generateTasksForCharacter('mods', e2, four)
+      expect(uda.generateTasksForCharacter('mods', e2, four, undefined)).toEqual(tasks)
+      expect(uda.generateTasksForCharacter('mods', e2, four, [])).toEqual(tasks)
+      expect(tasks.map((x) => x.type._)).toEqual(['skillMaster', 'skillMaster', 'mod', 'mod', 'mod'])
+    })
+
+    it('brings E2 and the level a module needs before the module, and the mastery after them', () => {
+      const tasks = setup().generateTasksForCharacter('mods', e1, mixed, ['mod:mods_y', 'skillMaster:mods_s1'])
+      expect(tasks.map((x) => x.type)).toEqual([
+        { _: 'elite', elite: 2 },
+        { _: 'level', elite: 2, from: 1, to: 60 },
+        { _: 'mod', modId: 'mods_y', to: 1 },
+        { _: 'skillMaster', skillId: 'mods_s1', to: 1 },
+      ])
+      expect(tasks[3].depends).toContain(tasks[1])
+    })
+
+    it('is the order today without one', () => {
+      expect(typesOf(setup(), 'mods', e1, mixed)).toEqual([
+        { _: 'elite', elite: 2 },
+        { _: 'skillMaster', skillId: 'mods_s1', to: 1 },
+        { _: 'level', elite: 2, from: 1, to: 60 },
+        { _: 'mod', modId: 'mods_y', to: 1 },
+      ])
+    })
+
+    it('puts the groups it leaves out after the listed one, in default order', () => {
+      expect(typesOf(setup(), 'mods', e2, four, ['mod:mods_x'])).toEqual([
+        { _: 'mod', modId: 'mods_x', to: 1 },
+        { _: 'mod', modId: 'mods_x', to: 2 },
+        { _: 'skillMaster', skillId: 'mods_s2', to: 1 },
+        { _: 'skillMaster', skillId: 'mods_s1', to: 1 },
+        { _: 'mod', modId: 'mods_y', to: 1 },
+      ])
+    })
+
+    it('skips listed groups that are not in the plan', () => {
+      expect(typesOf(setup(), 'mods', e2, four, ['mod:gone', 'skillMaster:mods_s1', 'skillMaster:gone'])).toEqual([
+        { _: 'skillMaster', skillId: 'mods_s1', to: 1 },
+        { _: 'skillMaster', skillId: 'mods_s2', to: 1 },
+        { _: 'mod', modId: 'mods_y', to: 1 },
+        { _: 'mod', modId: 'mods_x', to: 1 },
+        { _: 'mod', modId: 'mods_x', to: 2 },
+      ])
+    })
+
+    it('marks masteries and modules with their group, and nothing else', () => {
+      const tasks = setup().generateTasksForCharacter('mods', status(0, 1), four)
+      const groupOf = (x: (typeof tasks)[number]) =>
+        x.type._ === 'skillMaster' ? `skillMaster:${x.type.skillId}` : x.type._ === 'mod' ? `mod:${x.type.modId}` : null
+      expect(tasks.some((x) => groupOf(x) === null)).toBe(true)
+      for (const task of tasks) {
+        const group = groupOf(task)
+        if (group) expect(task.group).toBe(group)
+        else expect('group' in task).toBe(false)
+      }
     })
   })
 })

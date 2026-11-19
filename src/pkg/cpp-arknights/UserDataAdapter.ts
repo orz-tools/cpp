@@ -3,6 +3,7 @@ import { Draft } from 'immer'
 import stringify from 'json-stringify-deterministic'
 import { sum } from 'ramda'
 import { IUserDataAdapter, Task } from '../cpp-basic'
+import { orderGroups } from '../cpp-basic/groupOrder'
 import { gt } from '../gt'
 import { ArknightsDataManager, Character } from './DataManager'
 import {
@@ -69,7 +70,12 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
    * Levels past the character's tables have nothing to pay for, so the loops stop there: a dump restored in 用户数据管理
    * skips rewriteCharacter and can hold one, such as a skill level for an operator without skills.
    */
-  public generateTasksForCharacter(charId: string, current: ArknightsCharacterStatus, goal: ArknightsCharacterStatus) {
+  public generateTasksForCharacter(
+    charId: string,
+    current: ArknightsCharacterStatus,
+    goal: ArknightsCharacterStatus,
+    groupOrder?: readonly string[],
+  ) {
     if (current === goal) return []
     const dataManager = this.dataManager
     const character = dataManager.data.characters[charId]
@@ -81,12 +87,15 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
       requires: Task<Arknights>['requires'],
       ...depends: (Task<Arknights> | undefined)[]
     ): Task<Arknights> => {
+      const group = taskGroup(type)
       const task: Task<Arknights> = {
         id: `${character.key}:${stringify(type)}`,
         charId: character.key,
         type,
         requires: paysMaterials ? requires : [],
         depends: depends.filter(isTask),
+        // Absent rather than undefined: sortedFinishedTasks dedupes by value against tasks built the same way.
+        ...(group ? { group } : {}),
       }
       tasks.push(task)
       return task
@@ -189,46 +198,49 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
     }
 
     const skillIds = new Set([...Object.keys(current.skillMaster), ...Object.keys(goal.skillMaster)])
-    for (const skillId of skillIds) {
-      let sc = current.skillMaster[skillId] || 0
-      const sg = goal.skillMaster[skillId] || sc
-      let sDep: typeof dep = undefined
-      if (sg > 0) meetEliteLevel(2, 1)
-      const sdata = character.skills.find((x) => x.skillId === skillId)?.charSkill
-      const data = sdata?.levelUpCostCond
-      if (!data) continue
-      while (sc < Math.min(sg, data.length)) {
-        sDep = add(
-          { _: 'skillMaster', skillId: skillId, to: sc + 1 },
-          (data[sc].levelUpCost || []).map((x) => ({
-            itemId: x.id,
-            quantity: x.count,
-          })),
-          dep,
-          skillDep,
-          sDep,
-        )
-        sc++
-      }
-    }
-
     const modIds = new Set([...Object.keys(current.modLevel), ...Object.keys(goal.modLevel)])
-    for (const modId of modIds) {
-      let mc = current.modLevel[modId] || 0
-      const mg = goal.modLevel[modId] || mc
-      let mDep: typeof dep = undefined
-      if (mg > 0) meetEliteLevel(2, character.modUnlockLevel)
-      while (mc < mg) {
-        mDep = add(
-          { _: 'mod', modId: modId, to: mc + 1 },
-          (character.uniEquips.find((x) => x.equipId === modId)?.equip.raw.itemCost?.[mc + 1] || []).map((x) => ({
-            itemId: x.id,
-            quantity: x.count,
-          })),
-          dep,
-          mDep,
-        )
-        mc++
+    const groups = orderGroups([...[...skillIds].map(skillGroup), ...[...modIds].map(modGroup)], groupOrder)
+    for (const group of groups) {
+      if (group.startsWith(skillGroup(''))) {
+        const skillId = group.slice(skillGroup('').length)
+        let sc = current.skillMaster[skillId] || 0
+        const sg = goal.skillMaster[skillId] || sc
+        let sDep: typeof dep = undefined
+        if (sg > 0) meetEliteLevel(2, 1)
+        const sdata = character.skills.find((x) => x.skillId === skillId)?.charSkill
+        const data = sdata?.levelUpCostCond
+        if (!data) continue
+        while (sc < Math.min(sg, data.length)) {
+          sDep = add(
+            { _: 'skillMaster', skillId: skillId, to: sc + 1 },
+            (data[sc].levelUpCost || []).map((x) => ({
+              itemId: x.id,
+              quantity: x.count,
+            })),
+            dep,
+            skillDep,
+            sDep,
+          )
+          sc++
+        }
+      } else {
+        const modId = group.slice(modGroup('').length)
+        let mc = current.modLevel[modId] || 0
+        const mg = goal.modLevel[modId] || mc
+        let mDep: typeof dep = undefined
+        if (mg > 0) meetEliteLevel(2, character.modUnlockLevel)
+        while (mc < mg) {
+          mDep = add(
+            { _: 'mod', modId: modId, to: mc + 1 },
+            (character.uniEquips.find((x) => x.equipId === modId)?.equip.raw.itemCost?.[mc + 1] || []).map((x) => ({
+              itemId: x.id,
+              quantity: x.count,
+            })),
+            dep,
+            mDep,
+          )
+          mc++
+        }
       }
     }
 
@@ -484,6 +496,11 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
 }
 
 const isTask = (i: Task<Arknights> | undefined): i is Task<Arknights> => !!i
+
+const skillGroup = (skillId: string) => `skillMaster:${skillId}`
+const modGroup = (modId: string) => `mod:${modId}`
+const taskGroup = (type: ArknightsCharacterTaskType) =>
+  type._ === 'skillMaster' ? skillGroup(type.skillId) : type._ === 'mod' ? modGroup(type.modId) : undefined
 
 function throwBad(p: never): never {
   throw new Error(`Missing switch coverage: ${p}`)
