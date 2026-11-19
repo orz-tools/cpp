@@ -1427,9 +1427,44 @@ section:first-child > .cpp-stages-wide-section {
   max-width: none;
 }
 
+/* 按章节时每章一张表：列宽定下来（按较长的英文列头留足），各章的列才上下对齐，剩下的宽度归主要掉落。按材料钻进去只有一张表，列宽随内容 */
+.cpp-stages-table-fixed.bp6-html-table {
+  table-layout: fixed;
+  min-width: 760px;
+}
+
+.cpp-stages-table-fixed th:first-child {
+  width: 40px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-code {
+  width: 96px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-ap {
+  width: 64px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-eff {
+  width: 128px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-value {
+  width: 120px;
+}
+
+.cpp-stages-table-fixed .cpp-stages-col-samples {
+  width: 104px;
+}
+
 .cpp-stages-num {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+/* Blueprint 的 table.bp6-html-table td 更具体，会把数字列拉回左对齐 */
+.cpp-stages-table.bp6-html-table .cpp-stages-num {
+  text-align: right;
 }
 
 .cpp-stages-table td.cpp-stages-dim > .cpp-stages-zone-short {
