@@ -28,6 +28,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.CHEVRON_RIGHT, Paths16.ChevronRight],
       [IconNames.CHEVRON_UP, Paths16.ChevronUp],
       [IconNames.CLIPBOARD, Paths16.Clipboard],
+      [IconNames.CONFIRM, Paths16.Confirm],
       [IconNames.CROSS, Paths16.Cross],
       [IconNames.CROSS_CIRCLE, Paths16.CrossCircle],
       [IconNames.CUBE, Paths16.Cube],

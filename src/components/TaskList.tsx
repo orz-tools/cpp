@@ -12,16 +12,16 @@ import {
   PopoverNextProps,
 } from '@blueprintjs/core'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { WritableAtom, atom, useAtom, useAtomValue } from 'jotai'
+import { WritableAtom, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { sortBy, sum, uniq } from 'ramda'
-import React, { SetStateAction, memo, useCallback, useMemo, useRef } from 'react'
+import React, { SetStateAction, memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, Task } from '../pkg/cpp-basic'
 import { MoveStep, MoveTarget, stepTarget } from '../pkg/cpp-core/planOrder'
-import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
+import { TaskCostStatus, TaskExtra, TaskStatus, tasksUpTo } from '../pkg/cpp-core/Task'
 import { StarStatus } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { CharacterContextMenu, SortButtonGroup, menuItemKeyDown } from './CharacterList'
@@ -76,6 +76,9 @@ const TaskDisplay = memo(<G extends IGame>({ type, charId }: { type: G['characte
   return <>{ga.getUserDataAdapter().formatTaskAsString(type, charId)}</>
 })
 
+/** 指针停在「完成至此」上时会被完成的任务 id：TaskContextMenu 写，TaskList 按它给行染色 */
+const completePreviewAtom = atom<ReadonlySet<string> | undefined>(undefined)
+
 const TaskContextMenu = memo(
   <G extends IGame>({
     task,
@@ -90,6 +93,20 @@ const TaskContextMenu = memo(
     const store = useStore()
     const atoms = useAtoms<G>()
     const stars = useAtomValue(atoms.stars)
+
+    const list = useAtomValue(atoms.goalTasksWithExtra)
+    const range = useMemo(() => tasksUpTo(list, task), [list, task])
+    const rangeIds = useMemo<ReadonlySet<string>>(() => new Set(range.map(([t]) => t.id)), [range])
+    const setPreview = useSetAtom(completePreviewAtom)
+    const shown = useRef<ReadonlySet<string> | undefined>(undefined)
+    const showPreview = useEvent(() => {
+      shown.current = rangeIds
+      setPreview(rangeIds)
+    })
+    // 只清自己写的那一组：先开的菜单晚卸载时，不能清掉后开的菜单的
+    const hidePreview = useEvent(() => setPreview((p) => (p === shown.current ? undefined : p)))
+    // 点了以后菜单直接关上，收不到 pointerleave
+    useEffect(() => hidePreview, [hidePreview])
 
     // 按这名干员计划里全部的整项算，不只是本段看得到的那几项
     const goalTasks = useAtomValue(atoms.goalTasks(task.charId))
@@ -136,6 +153,22 @@ const TaskContextMenu = memo(
           icon={'cross-circle'}
           onClick={() => store.set(atoms.completeTasks, { tasks: [task], consume: false })}
         />
+        {range.length >= 2 ? (
+          <MenuItem
+            text={gt.gettext('完成至此')}
+            icon={'confirm'}
+            label={gt
+              .ngettext('%d 项', '%d 项', range.length) /* I10N: %d: number of tasks */
+              .replaceAll('%d', range.length.toString())}
+            disabled={range.some(([, x]) => x.status !== TaskStatus.Completable)}
+            // Blueprint 灰掉菜单项时会去掉 onMouseEnter/onMouseLeave（DISABLED_PROPS），pointer 事件不在里面
+            onPointerEnter={showPreview}
+            onPointerLeave={hidePreview}
+            onFocus={showPreview}
+            onBlur={hidePreview}
+            onClick={() => store.set(atoms.completeTasks, { tasks: range.map(([t]) => t), consume: true })}
+          />
+        ) : null}
         <MenuDivider />
         <MenuItem
           text={gt.gettext('优先培养（星标）')}
@@ -168,6 +201,7 @@ export const TaskMenu = memo(
     drag,
     dim,
     selected,
+    previewed,
     onHeaderClick,
     onHeaderMouseDown,
   }: {
@@ -186,6 +220,8 @@ export const TaskMenu = memo(
     dim?: 'all' | 'task'
     /** 这名干员选中了 */
     selected?: boolean
+    /** 指针停在「完成至此」上时，这一项会被完成 */
+    previewed?: boolean
     /** 返回 true 时是修饰键点击，已经改了选择，不开档案 */
     onHeaderClick?: (e: React.MouseEvent, index: number) => boolean
     onHeaderMouseDown?: React.MouseEventHandler
@@ -324,7 +360,10 @@ export const TaskMenu = memo(
             </a>
           </ContextMenu>
         )}
-        <Menu style={{ padding: 0 }} className={dim === 'task' ? 'cpp-drag-source' : undefined}>
+        <Menu
+          style={{ padding: 0 }}
+          className={[dim === 'task' && 'cpp-drag-source', previewed && 'cpp-task-preview'].filter(Boolean).join(' ')}
+        >
           <ContextMenu content={<TaskContextMenu task={task} extra={extra} details={menuDetails} />}>
             <MenuItem
               {...(task.group ? dragProps('group') : null)}
@@ -522,6 +561,7 @@ const HideCostsButton = memo(() => {
 export const TaskList = memo(<G extends IGame>() => {
   const atoms = useAtoms<G>()
   const param = useAtomValue(queryParamAtom)
+  const preview = useAtomValue(completePreviewAtom)
 
   const hideCosts = param.hideCosts || false
   const list = useAtomValue(atoms.goalTasksWithExtra)
@@ -635,6 +675,7 @@ export const TaskList = memo(<G extends IGame>() => {
                   dim={dragged ? (active.source.kind === 'char' ? 'all' : 'task') : undefined}
                   // 只有标题行画得出选中，别的行不跟着选择重画
                   selected={!same(index) && selected.has(list[index][0].charId)}
+                  previewed={preview?.has(list[index][0].id) ?? false}
                   onHeaderClick={onHeaderClick}
                   onHeaderMouseDown={selection.mouseDown}
                 />
