@@ -733,6 +733,10 @@ msgstr ""
 msgid "角色"
 msgstr ""
 
+#: src/components/TaskList.tsx:135
+msgid "角色内排序"
+msgstr ""
+
 #: src/components/CharacterList.tsx:146
 msgid "角色计划排序"
 msgstr ""
