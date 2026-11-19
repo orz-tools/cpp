@@ -970,9 +970,10 @@ p > .cpp-charstat-det-tag,
   white-space: nowrap;
 }
 
+/* 放得下加粗的「115.0%」：比它窄时，前面的「9/9」「需 4」会跟着各行的效率宽度左右错开 */
 .cpp-stages-eff {
   flex: none;
-  min-width: 52px;
+  min-width: 60px;
   text-align: right;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
