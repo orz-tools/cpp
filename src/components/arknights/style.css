@@ -3058,9 +3058,10 @@ section:first-child > .cpp-stages-wide-section {
   padding-bottom: 8px;
 }
 
+/* 名字、英文名、「可获得」和件数字号各不相同，按基线排；居中的话件数比「可获得」低一截 */
 .cpp-skins-brand-head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 4px;
   width: 100%;
   padding: 5px 8px 3px 4px;
@@ -3070,6 +3071,10 @@ section:first-child > .cpp-stages-wide-section {
   text-align: left;
   color: var(--bp-typography-color-muted, #5f6b7c);
   cursor: pointer;
+}
+
+.cpp-skins-brand-head > .bp6-icon {
+  align-self: center;
 }
 
 .cpp-skins-brand-head:hover {
@@ -3121,9 +3126,10 @@ section:first-child > .cpp-stages-wide-section {
   white-space: nowrap;
 }
 
+/* 左边和上面的品牌名对齐：品牌行左内边距 4px，加 14px 的箭头和 4px 间距 */
 .cpp-skins-progress {
   height: 3px;
-  margin: 0 8px 2px 24px;
+  margin: 0 8px 2px 22px;
   overflow: hidden;
   border-radius: 2px;
   background: var(--bp-palette-light-gray-3, #dce0e5);
