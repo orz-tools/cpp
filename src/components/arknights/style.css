@@ -74,7 +74,7 @@
   width: 360px;
   font-size: 14px;
   line-height: 1.45;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
   font-variant-numeric: tabular-nums;
 }
 
@@ -142,7 +142,7 @@
 .cpp-charstat-appellation {
   font-size: 12px;
   line-height: 1.3;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-mode {
@@ -210,12 +210,12 @@
   align-items: center;
   gap: 8px;
   padding: 5px 14px;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  background: var(--cpp-tint-1);
   box-shadow:
-    inset 0 1px 0 var(--bp-palette-light-gray-3, #e5e8eb),
-    inset 0 -1px 0 var(--bp-palette-light-gray-3, #e5e8eb);
+    inset 0 1px 0 var(--cpp-tint-3),
+    inset 0 -1px 0 var(--cpp-tint-3);
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-bar-source {
@@ -233,22 +233,22 @@
 }
 
 .cpp-charstat-own-value {
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-charstat-own-error {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-empty {
   padding: 14px;
   font-size: 13px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-sec {
   padding: 10px 14px 12px;
-  box-shadow: inset 0 -1px 0 var(--bp-palette-light-gray-4, #edeff2);
+  box-shadow: inset 0 -1px 0 var(--cpp-tint-2);
 }
 
 .cpp-charstat-sec:last-child {
@@ -274,7 +274,7 @@
   top: 0;
   font-size: 11px;
   line-height: 14px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   white-space: nowrap;
 }
 
@@ -311,13 +311,13 @@
   height: 10px;
   overflow: hidden;
   border-radius: 3px;
-  background-color: var(--bp-palette-light-gray-5, #f6f7f9);
+  background-color: var(--cpp-tint-1);
   background-image: repeating-linear-gradient(
     90deg,
     transparent 0 calc(var(--t) - 1px),
-    rgba(17, 20, 24, 0.12) calc(var(--t) - 1px) var(--t)
+    rgb(var(--cpp-ink) / 0.12) calc(var(--t) - 1px) var(--t)
   );
-  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.18);
+  box-shadow: inset 0 0 0 1px rgb(var(--cpp-ink) / 0.18);
 }
 
 .cpp-charstat-rail-seg > i {
@@ -328,8 +328,8 @@
 }
 
 .cpp-charstat-rail-have {
-  background: var(--bp-palette-light-gray-1, #d3d8de);
-  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.12);
+  background: var(--cpp-tint-5);
+  box-shadow: inset 0 0 0 1px rgb(var(--cpp-ink) / 0.12);
 }
 
 .cpp-charstat-rail-on {
@@ -343,8 +343,8 @@
   height: 18px;
   margin-left: -1.5px;
   border-radius: 1px;
-  background: var(--bp-palette-dark-gray-5, #404854);
-  box-shadow: 0 0 0 1px #fff;
+  background: var(--cpp-strong);
+  box-shadow: 0 0 0 1px var(--cpp-surface);
   pointer-events: none;
 }
 
@@ -355,7 +355,7 @@
   height: 18px;
   margin-left: -9px;
   border-radius: 9px;
-  background: #fff;
+  background: var(--cpp-surface);
   box-shadow:
     0 0 0 2px var(--bp-intent-primary-rest, #2d72d2),
     0 1px 3px rgba(17, 20, 24, 0.3);
@@ -374,8 +374,8 @@
   z-index: 1;
   padding: 2px 6px;
   border-radius: 3px;
-  background: var(--bp-palette-dark-gray-1, #1c2127);
-  color: var(--bp-palette-light-gray-5, #f6f7f9);
+  background: var(--bp-typography-color-default-rest);
+  color: var(--cpp-surface);
   font-size: 11px;
   line-height: 14px;
   white-space: nowrap;
@@ -398,7 +398,7 @@
   top: 41px;
   font-size: 10.5px;
   line-height: 12px;
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
   transform: translateX(-50%);
   white-space: nowrap;
 }
@@ -418,17 +418,17 @@
   font-size: 10.5px;
   line-height: 13px;
   text-align: center;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-bucket.cpp-charstat-bucket-max {
   font-weight: 600;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-charstat-bucket-line.cpp-charstat-bucket-max {
   height: 2px;
-  background: var(--bp-palette-dark-gray-5, #404854);
+  background: var(--cpp-strong);
 }
 
 .bp6-input-group.cpp-charstat-lvbox {
@@ -458,6 +458,11 @@
   pointer-events: none;
 }
 
+/* 白色的精英图标在浅色下压成黑字的颜色，深色下压成白的 */
+:root.bp6-dark .cpp-charstat-lvbox-elite {
+  filter: brightness(0) invert(1);
+}
+
 .cpp-charstat-lvbox > .bp6-input-action {
   top: 0;
   bottom: 0;
@@ -469,7 +474,7 @@
   flex-direction: column;
   width: 22px;
   height: 30px;
-  box-shadow: inset 1px 0 0 rgba(17, 20, 24, 0.15);
+  box-shadow: inset 1px 0 0 rgb(var(--cpp-ink) / 0.15);
 }
 
 .cpp-charstat-lvbox-steps > .bp6-button {
@@ -483,7 +488,7 @@
 }
 
 .cpp-charstat-lvbox-steps > .bp6-button + .bp6-button {
-  box-shadow: inset 0 1px 0 rgba(17, 20, 24, 0.15);
+  box-shadow: inset 0 1px 0 rgb(var(--cpp-ink) / 0.15);
 }
 
 .cpp-charstat-lvbox-steps .bp6-icon > svg {
@@ -516,12 +521,12 @@
 }
 
 .cpp-charstat-lbl-muted {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-lbl > .bp6-icon {
   flex: none;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-lbl .cpp-charstat-name {
@@ -574,12 +579,12 @@
 }
 
 .cpp-charstat-info:hover {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   background: rgba(143, 153, 168, 0.15);
 }
 
 .cpp-charstat-info.cpp-charstat-info-open {
-  color: var(--bp-intent-primary-rest, #2d72d2);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-charstat-info:focus-visible {
@@ -593,7 +598,7 @@
   vertical-align: top;
   border-radius: 4px;
   box-shadow:
-    inset 0 0 0 1px rgba(17, 20, 24, 0.22),
+    inset 0 0 0 1px rgb(var(--cpp-ink) / 0.22),
     0 1px 2px rgba(17, 20, 24, 0.08);
 }
 
@@ -615,8 +620,8 @@
   /* index.css still carries Vite's starter rules for every button */
   border-radius: 0;
   transition: none;
-  background: #fff;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  background: var(--cpp-surface);
+  color: var(--bp-typography-color-default-rest);
   font: inherit;
   font-size: 13px;
   font-weight: 500;
@@ -641,15 +646,15 @@
 
 .cpp-charstat-steps > * + *,
 .cpp-charstat-steps > * + * > .cpp-charstat-cell {
-  box-shadow: inset 1px 0 0 rgba(17, 20, 24, 0.14);
+  box-shadow: inset 1px 0 0 rgb(var(--cpp-ink) / 0.14);
 }
 
 .cpp-charstat-cell:hover {
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  background: var(--cpp-tint-1);
 }
 
 .cpp-charstat-cell:active {
-  background: var(--bp-palette-light-gray-3, #e5e8eb);
+  background: var(--cpp-tint-3);
 }
 
 .cpp-charstat-cell:focus {
@@ -664,12 +669,12 @@
 
 .cpp-charstat-cell-have,
 .cpp-charstat-cell-have:hover {
-  background: var(--bp-palette-light-gray-3, #e5e8eb);
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  background: var(--cpp-tint-3);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-cell-have:not(:disabled):hover {
-  background: var(--bp-palette-light-gray-2, #dce0e5);
+  background: var(--cpp-tint-4);
 }
 
 .cpp-charstat .cpp-charstat-cell-on {
@@ -694,7 +699,7 @@
   position: absolute;
   top: 1px;
   right: 1px;
-  color: var(--bp-palette-orange-3, #c87619);
+  color: var(--bp-typography-color-warning-rest);
 }
 
 .cpp-charstat-cell-on .cpp-charstat-cell-raise {
@@ -728,31 +733,23 @@
   font-size: 10.5px;
   line-height: 13px;
   text-align: center;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-stat-bar {
   display: block;
   height: 2px;
   margin: 1px 3px 0;
-  background: linear-gradient(
-    90deg,
-    var(--bp-palette-gray-3, #8f99a8) var(--p),
-    var(--bp-palette-light-gray-3, #e5e8eb) var(--p)
-  );
+  background: linear-gradient(90deg, var(--bp-palette-gray-3, #8f99a8) var(--p), var(--cpp-tint-3) var(--p));
 }
 
 .cpp-charstat-stat.cpp-charstat-stat-target {
   font-weight: 600;
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-charstat-stat-target .cpp-charstat-stat-bar {
-  background: linear-gradient(
-    90deg,
-    var(--bp-intent-primary-rest, #2d72d2) var(--p),
-    var(--bp-palette-light-gray-3, #e5e8eb) var(--p)
-  );
+  background: linear-gradient(90deg, var(--bp-intent-primary-rest, #2d72d2) var(--p), var(--cpp-tint-3) var(--p));
 }
 
 .cpp-charstat-stat.cpp-charstat-stat-few {
@@ -764,8 +761,8 @@
 .cpp-charstat-det {
   padding: 8px 10px;
   border-radius: 4px;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
-  box-shadow: inset 0 0 0 1px var(--bp-palette-light-gray-3, #e5e8eb);
+  background: var(--cpp-tint-1);
+  box-shadow: inset 0 0 0 1px var(--cpp-tint-3);
   font-size: 12.5px;
   line-height: 1.55;
 }
@@ -773,7 +770,7 @@
 .cpp-charstat-det-meta {
   margin-bottom: 6px;
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-det-table {
@@ -787,7 +784,7 @@
   font-size: 12px;
   font-weight: 400;
   text-align: left;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-det-table thead th {
@@ -803,7 +800,7 @@
 
 .cpp-charstat-det .cpp-charstat-det-to {
   font-weight: 600;
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-charstat-det .cpp-charstat-det-dim {
@@ -854,7 +851,7 @@
 .cpp-charstat-det-tag,
 .cpp-charstat-det-level {
   font-size: 11.5px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 p > .cpp-charstat-det-tag,
@@ -876,30 +873,30 @@ p > .cpp-charstat-det-tag,
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-det-missing {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-rt-vup,
 .cpp-charstat-rt-kw {
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-charstat-rt-vdown {
-  color: var(--bp-palette-red-2, #ac2f33);
+  color: var(--bp-typography-color-danger-rest);
 }
 
 .cpp-charstat-rt-rem,
 .cpp-charstat-rt-from {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-charstat-rt-to {
   font-weight: 600;
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-charstat-det .cpp-charstat-term-wrap {
