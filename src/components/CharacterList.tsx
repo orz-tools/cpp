@@ -132,6 +132,18 @@ export function renderCharacterStatus<G extends IGame>(
   )
 }
 
+/** 右键菜单最上面那一排：移到最前、上移、下移、移到最后 */
+export const SortButtonGroup = ({ label, onMove }: { label: string; onMove: (step: MoveStep) => void }) => (
+  <ButtonGroup variant="minimal" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+    <span style={{ marginLeft: 10 }}>{label}</span>
+    <div style={{ flex: 1 }} />
+    <Button icon={'double-chevron-up'} onClick={() => onMove('first')} />
+    <Button icon={'chevron-up'} onClick={() => onMove('up')} />
+    <Button icon={'chevron-down'} onClick={() => onMove('down')} />
+    <Button icon={'double-chevron-down'} onClick={() => onMove('last')} />
+  </ButtonGroup>
+)
+
 export const CharacterContextMenu = memo(
   ({ character, alwaysSorting }: { character: ICharacter; alwaysSorting?: boolean }) => {
     const { CharacterContextMenuItems } = useComponents()
@@ -147,19 +159,7 @@ export const CharacterContextMenu = memo(
       <Menu>
         {alwaysSorting || (alwaysSorting !== false && param.query === ListModeWithGoal) ? (
           <>
-            <ButtonGroup
-              variant="minimal"
-              style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}
-            >
-              <>
-                <span style={{ marginLeft: 10 }}>{gt.gettext('角色计划排序')}</span>
-                <div style={{ flex: 1 }} />
-              </>
-              <Button icon={'double-chevron-up'} onClick={() => move('first')} />
-              <Button icon={'chevron-up'} onClick={() => move('up')} />
-              <Button icon={'chevron-down'} onClick={() => move('down')} />
-              <Button icon={'double-chevron-down'} onClick={() => move('last')} />
-            </ButtonGroup>
+            <SortButtonGroup label={gt.gettext('角色计划排序')} onMove={move} />
             <MenuDivider />
           </>
         ) : null}
@@ -1030,7 +1030,13 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     contentRef,
     virtualizer: rowVirtualizer,
     handleInset: 4,
-    begin: (row) => ({ rows: [row, row], gaps: listGaps(list.map((x) => x.key), row) }),
+    begin: (row) => ({
+      rows: [row, row],
+      gaps: listGaps(
+        list.map((x) => x.key),
+        row,
+      ),
+    }),
     commit: (row, target) => store.set(atoms.moveInPlan, { charId: list[row].key, target }),
   })
 
