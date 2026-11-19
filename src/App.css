@@ -1072,12 +1072,16 @@ body {
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
+/* Blueprint 给菜单项的 ::before 留了图标的 16px 高和 3px 上边距，不清掉的话竖线比字低 3px */
 .cpp-split-menu-item > .cpp-split-menu-item-segment::before {
   content: '';
   position: absolute;
   left: -1px;
   top: 6px;
   bottom: 6px;
+  width: 0;
+  height: auto;
+  margin: 0;
   border-left: 1px solid var(--bp-palette-light-gray-1, #d3d8de);
 }
 
