@@ -21,7 +21,7 @@ import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import './App.css'
-import { useAtoms, useCpp, useGameAdapter } from './Cpp'
+import { useAtoms, useCpp, useGameAdapter, useStore } from './Cpp'
 import { HelpButton } from './components/AboutList'
 import { Chamber, ChamberPortal } from './components/Chamber'
 import { CharacterDossier } from './components/CharacterDossier'
@@ -35,6 +35,7 @@ import { ItemList } from './components/ItemList'
 import { PeekBoard } from './components/Peek'
 import { useReloadGameData } from './components/reloadGameData'
 import { PhoneTabBar } from './components/PhoneTabBar'
+import { requeryList } from './components/planBatch'
 import { BackGuardEvent, closeTopOverlay, initialBackGuard, openOverlays, stepBackGuard } from './components/phoneBack'
 import { PhoneArea, phoneAreaAtom, usePhoneLayout } from './components/phoneLayout'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
@@ -51,6 +52,7 @@ import { formatProfileName } from './profiles'
 
 const UndoButtons = memo(() => {
   const atoms = useAtoms()
+  const store = useStore()
   const setData = useSetAtom(atoms.dataAtom)
   const undoCounter = useAtomValue(atoms.undoCounterAtom)
   const redoCounter = useAtomValue(atoms.redoCounterAtom)
@@ -63,7 +65,10 @@ const UndoButtons = memo(() => {
         aria-label={gt.gettext('撤销')}
         text={<span className={'cpp-very-compact'}>{gt.gettext('撤销')}</span>}
         variant="minimal"
-        onClick={() => setData('undo')}
+        onClick={() => {
+          setData('undo')
+          requeryList(store)
+        }}
         endIcon={undoCounter > 0 ? <Tag round={true}>{undoCounter}</Tag> : undefined}
       />
       <Button
@@ -72,7 +77,10 @@ const UndoButtons = memo(() => {
         aria-label={gt.gettext('重做')}
         text=""
         variant="minimal"
-        onClick={() => setData('redo')}
+        onClick={() => {
+          setData('redo')
+          requeryList(store)
+        }}
         endIcon={redoCounter > 0 ? <Tag round={true}>{redoCounter}</Tag> : undefined}
       />
     </>
