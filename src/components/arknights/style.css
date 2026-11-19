@@ -2624,8 +2624,10 @@ section:first-child > .cpp-stages-wide-section {
   background: var(--bp-palette-dark-gray-1, #1c2127);
 }
 
+/* 负边距抵掉外圈的格间距，表格和上面的进度条、下面的材料一样左右顶边 */
 .cpp-cost-table {
-  width: 100%;
+  width: calc(100% + 6px);
+  margin: 0 -3px;
   border-collapse: separate;
   border-spacing: 3px;
 }
@@ -2638,7 +2640,13 @@ section:first-child > .cpp-stages-wide-section {
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
+.cpp-cost-table th:first-child {
+  padding-left: 0;
+}
+
+/* 右内边距和下面数字格的一样，列头和数字右边对齐 */
 .cpp-cost-table thead th {
+  padding-right: 8px;
   text-align: right;
 }
 
