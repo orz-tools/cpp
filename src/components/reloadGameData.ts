@@ -20,6 +20,12 @@ export function useReloadGameData() {
     )
     try {
       const r = await operation()
+      if (r.failed.length > 0) {
+        // What did load is committed already; the error says what did not.
+        toaster.dismiss(reload)
+        setError({ error: r.failed[0], context: gt.pgettext('error context', '检查数据更新失败') })
+        return
+      }
       // Replaced in place: a dismiss followed by a show with the same key drops both, as the dismiss lands last.
       if (r.applied) {
         toaster.show({ message: gt.gettext('游戏数据已更新'), intent: 'success' }, reload)

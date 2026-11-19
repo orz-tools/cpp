@@ -106,7 +106,7 @@ export class Cpp<G extends IGame> {
 
     const dm = this.gameAdapter.getDataManager()
     const syncDataState = () => {
-      const { status, generation, loading, updating, error } = dm.getState()
+      const { status, generation, loading, updating, error, missing } = dm.getState()
       const previous = this.store.get(this.gameDataGenerationAtom)
       if (previous === 0) {
         this.store.set(this.gameDataGenerationAtom, generation)
@@ -115,7 +115,7 @@ export class Cpp<G extends IGame> {
         // commit: the app mounts from the status atom, and would render once more when the transition lands.
         startTransition(() => this.store.set(this.gameDataGenerationAtom, generation))
       }
-      this.store.set(this.gameDataStatusAtom, { status, loading, updating, error })
+      this.store.set(this.gameDataStatusAtom, { status, loading, updating, error, missing })
     }
     syncDataState()
     dm.subscribe(syncDataState)
@@ -138,6 +138,7 @@ export class Cpp<G extends IGame> {
     status: 'loading',
     loading: [],
     updating: false,
+    missing: [],
   })
 
   /** The region of the committed game data; until the first commit, the stored one the data is loading for. */

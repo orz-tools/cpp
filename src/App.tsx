@@ -199,7 +199,8 @@ const App = memo(() => {
   useEffect(() => {
     const scheduler = new UpdateScheduler({
       check: async () => {
-        const { notify } = await dm.update({})
+        const { notify, failed } = await dm.update({})
+        for (const e of failed) console.warn('Background check could not load', e)
         if (notify) (await AppToaster).show({ message: gt.gettext('游戏数据已更新'), intent: 'success' }, 'auto-update')
       },
       onVisible: () => void dm.checkExpiry().catch((e) => console.error('Failed to rebuild expired game data', e)),
