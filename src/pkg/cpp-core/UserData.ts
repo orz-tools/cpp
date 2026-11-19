@@ -662,6 +662,23 @@ function buildAtoms<G extends IGame>(
     (a, b) => a === b,
   )
 
+  // A new atom per call, as charIds is a list: the caller memoizes it.
+  const planTargets = (charIds: readonly string[]) =>
+    withDebugLabel(
+      atom((get): PlanTargets => {
+        const goals = get(goalCharacters)
+        const max: string[] = []
+        let allFinished = true
+        for (const charId of charIds) {
+          if (get(isCharacterFinished(charId))) continue
+          allFinished = false
+          if (!get(goalMaxed(charId))) max.push(charId)
+        }
+        return { max, clear: charIds.filter((charId) => charId in goals), allFinished }
+      }),
+      'planTargets',
+    )
+
   return {
     baseAtom,
     forbiddenFormulaTagsAtom,
@@ -675,6 +692,7 @@ function buildAtoms<G extends IGame>(
     clearGoals,
     completeTasks,
     goalMaxed,
+    planTargets,
     stars,
     itemQuantities,
     itemQuantity,
@@ -709,6 +727,16 @@ function buildAtoms<G extends IGame>(
     goalTasksWithExtra,
     finishedTasksWithExtra,
   }
+}
+
+/** What maxing or clearing the plans of a batch of operators would change */
+export interface PlanTargets {
+  /** Not finished and not maxed yet, in the order given */
+  max: readonly string[]
+  /** In the plan, in the order given */
+  clear: readonly string[]
+  /** Every operator given is finished; true for none */
+  allFinished: boolean
 }
 
 export interface UserData<G extends IGame> {
