@@ -759,6 +759,12 @@ body {
   flex: none;
 }
 
+.cpp-drag-handle.cpp-drag-handle-selected {
+  background: var(--bp-palette-blue-3, #2d72d2);
+  border-color: var(--bp-palette-blue-2, #215db0);
+  color: #fff;
+}
+
 /* Several operators dragged together: the count takes the ring's place at the line's left end */
 .cpp-drop-line-many::before {
   display: none;
