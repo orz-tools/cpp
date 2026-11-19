@@ -181,8 +181,8 @@ msgstr ""
 #: src/components/CharacterDossier.tsx:226
 #: src/components/CharacterDossier.tsx:227
 #: src/components/Importer.tsx:160
-#: src/components/Peek.tsx:114
-#: src/components/Peek.tsx:115
+#: src/components/Peek.tsx:133
+#: src/components/Peek.tsx:134
 msgid "关闭"
 msgstr ""
 
@@ -215,7 +215,7 @@ msgid "到旧版去"
 msgstr ""
 
 #. %d: number
-#: src/components/ItemPeek.tsx:97
+#: src/components/ItemPeek.tsx:93
 msgid "制作 %d 次所需"
 msgid_plural "制作 %d 次所需"
 msgstr[0] ""
@@ -461,7 +461,7 @@ msgstr ""
 msgid "心情"
 msgstr ""
 
-#: src/components/ItemList.tsx:376
+#: src/components/ItemList.tsx:394
 msgid "总价值"
 msgstr ""
 
@@ -486,7 +486,7 @@ msgstr ""
 msgid "按关卡代号或名称筛选"
 msgstr ""
 
-#: src/components/ItemList.tsx:333
+#: src/components/ItemList.tsx:351
 msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
@@ -808,7 +808,7 @@ msgid_plural "还剩 %d 次作战"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/ItemList.tsx:349
+#: src/components/ItemList.tsx:367
 msgid "还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出它和它前置任务要用的材料。"
 msgstr ""
 
@@ -2551,45 +2551,45 @@ msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr ""
 
-#: src/components/ItemList.tsx:140
+#: src/components/ItemList.tsx:158
 msgctxt "item list counter label"
 msgid "可合成"
 msgstr ""
 
-#: src/components/ItemList.tsx:119
+#: src/components/ItemList.tsx:137
 msgctxt "item list counter label"
 msgid "合成后"
 msgstr ""
 
-#: src/components/ItemList.tsx:157
+#: src/components/ItemList.tsx:175
 msgctxt "item list counter label"
 msgid "直接需求"
 msgstr ""
 
-#: src/components/ItemList.tsx:150
+#: src/components/ItemList.tsx:168
 msgctxt "item list counter label"
 msgid "还需"
 msgstr ""
 
-#: src/components/ItemList.tsx:164
+#: src/components/ItemList.tsx:182
 msgctxt "item list counter label"
 msgid "间接需求"
 msgstr ""
 
 #: src/components/arknights/stagePanelModel.ts:221
-#: src/components/ItemList.tsx:266
+#: src/components/ItemList.tsx:284
 msgctxt "item list view label"
 msgid "星标"
 msgstr ""
 
 #: src/components/arknights/stagePanelModel.ts:225
-#: src/components/ItemList.tsx:264
+#: src/components/ItemList.tsx:282
 msgctxt "item list view label"
 msgid "毕业"
 msgstr ""
 
 #: src/components/arknights/stagePanelModel.ts:223
-#: src/components/ItemList.tsx:265
+#: src/components/ItemList.tsx:283
 msgctxt "item list view label"
 msgid "计划"
 msgstr ""
@@ -3218,7 +3218,7 @@ msgctxt "month"
 msgid "9 月"
 msgstr ""
 
-#: src/components/Peek.tsx:285
+#: src/components/Peek.tsx:313
 msgctxt "peek card"
 msgid "全部关闭"
 msgstr ""
@@ -3243,12 +3243,12 @@ msgctxt "peek card"
 msgid "在「关卡」面板里看"
 msgstr ""
 
-#: src/components/Peek.tsx:125
+#: src/components/Peek.tsx:144
 msgctxt "peek card"
 msgid "已不在现在的数据里"
 msgstr ""
 
-#: src/components/ItemPeek.tsx:141
+#: src/components/ItemPeek.tsx:129
 msgctxt "peek card"
 msgid "库存"
 msgstr ""
@@ -3269,22 +3269,22 @@ msgctxt "peek card"
 msgid "每次"
 msgstr ""
 
-#: src/components/Peek.tsx:89
+#: src/components/Peek.tsx:108
 msgctxt "peek card"
 msgid "返回"
 msgstr ""
 
-#: src/components/Peek.tsx:90
+#: src/components/Peek.tsx:109
 msgctxt "peek card"
 msgid "钉住"
 msgstr ""
 
-#: src/components/Peek.tsx:279
+#: src/components/Peek.tsx:307
 msgctxt "peek card"
 msgid "钉住的卡片"
 msgstr ""
 
-#: src/components/ItemPeek.tsx:101
+#: src/components/ItemPeek.tsx:97
 msgctxt "peek card"
 msgid "需要 / 库存"
 msgstr ""
