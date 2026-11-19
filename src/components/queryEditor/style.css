@@ -337,6 +337,10 @@ select.cpp-qe-invalid {
   color: var(--bp-palette-dark-gray-5, #404854);
 }
 
+.cpp-qe-colhead-cell.is-right {
+  justify-content: flex-end;
+}
+
 .cpp-qe-colhead-custom {
   font-weight: 600;
 }

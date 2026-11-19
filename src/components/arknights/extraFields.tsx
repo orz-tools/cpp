@@ -317,7 +317,7 @@ const UnlockCostCell = memo(({ context, width }: { context: BaseSkillContext; wi
 export const extraFields: IGameComponent['extraFields'] = {
   building: { width: 380, C: BaseSkillCell },
   'building.efficiency': { width: 170, C: BaseSkillEffectCell },
-  'building.unlockCost': { width: 76, C: UnlockCostCell },
+  'building.unlockCost': { width: 76, C: UnlockCostCell, align: 'right' },
   skill: {
     width: 150,
     C: memo(({ context, width }: { context: FieldContext<Arknights, Character, [number]>; width: number }) => {
