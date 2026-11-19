@@ -1727,16 +1727,19 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 12px;
 }
 
-.cpp-mm-chip.is-blocked .cpp-mm-avatar,
-.cpp-mm-run-who.is-blocked .cpp-mm-avatar,
-.cpp-mm-table .is-blocked .cpp-mm-avatar {
-  filter: grayscale(1);
-  opacity: 0.45;
-}
-
 .cpp-mm-chip.is-done .cpp-mm-name {
   color: var(--bp-palette-gray-1, #5f6b7c);
   text-decoration: line-through;
+}
+
+/* 做不了的人：名字后面一把灰锁。放不下时截名字，锁不截 */
+.cpp-mm-chip > .cpp-mm-name {
+  min-width: 0;
+}
+
+.cpp-mm-lock {
+  flex: none;
+  color: var(--bp-palette-gray-3, #8f99a8);
 }
 
 /* 带上的人：虚线框，名字前一个灰色的「+」 */

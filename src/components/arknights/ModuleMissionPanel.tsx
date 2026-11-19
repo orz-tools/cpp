@@ -129,6 +129,13 @@ export function blockText(ga: ArknightsAdapter, charId: string, reason: BlockRea
         .replaceAll('%d', String(ga.getCharacter(charId)?.modUnlockLevel ?? 0))
 }
 
+/** 任务表「干员」一列窄，写短的；「需」是为了和候选行的练度「精二 %d」分开 */
+function blockShort(ga: ArknightsAdapter, charId: string, reason: BlockReason) {
+  return reason === 'absent'
+    ? gt.pgettext('module mission', '未持有')
+    : gt.pgettext('module mission', '需精二 %d').replaceAll('%d', String(ga.getCharacter(charId)?.modUnlockLevel ?? 0))
+}
+
 /** 一个数字放大加粗：按 %d 切开模板 */
 function Num({ text, value }: { text: string; value: number }) {
   const [before, after = ''] = text.split('%d')
@@ -381,7 +388,10 @@ const Stub = memo(({ ticket, used }: { ticket: Ticket; used?: boolean }) => {
   )
 })
 
-/** 收起的券上要带的人，后面是带上的人：头像加名字，排成一行，放不下就换行。这张券上的任务都做完了的人，名字划掉 */
+/**
+ * 收起的券上要带的人，后面是带上的人：头像加名字，排成一行，放不下就换行。这张券上的任务都做完了的人，名字划掉；
+ * 做不了的人名字后面一把锁，悬停是原因
+ */
 const Crew = memo(({ ticket, board }: { ticket: Ticket; board: Board }) => {
   const ga = useArknights()
   const seen = new Set<string>()
@@ -392,17 +402,15 @@ const Crew = memo(({ ticket, board }: { ticket: Ticket; board: Board }) => {
         if (seen.has(key)) return null
         seen.add(key)
         const block = ticket.blocked.find((x) => x.charId === m.charId)
+        const why = block ? blockText(ga, m.charId, block.reason) : undefined
         const done = ticket.missions.every(
           (x) => x.charId !== m.charId || x.formId !== m.formId || board.done.has(x.id),
         )
         return (
-          <span
-            key={key}
-            className={'cpp-mm-chip' + (block ? ' is-blocked' : '') + (done ? ' is-done' : '')}
-            title={block ? blockText(ga, m.charId, block.reason) : undefined}
-          >
+          <span key={key} className={'cpp-mm-chip' + (done ? ' is-done' : '')} title={why}>
             <Avatar charId={m.charId} size={20} />
             <OperatorName mission={m} />
+            {why ? <Icon icon="lock" size={11} className="cpp-mm-lock" title={why} /> : null}
           </span>
         )
       })}
@@ -954,7 +962,7 @@ const ExpandedRun = memo(
           return (
             <div key={m.id} className={'cpp-mm-run-row' + (done ? ' is-done' : '')}>
               <MissionCheck mission={m} done={done} unlocked={board.unlocked.has(m.equipId)} label={summary} />
-              <div className={'cpp-mm-run-who' + (block ? ' is-blocked' : '')}>
+              <div className="cpp-mm-run-who">
                 <div className="cpp-mm-run-line">
                   <OperatorButton mission={m} size={24} />
                   <ModuleCode charId={m.charId} equipId={m.equipId} />
@@ -1551,11 +1559,9 @@ const TicketDetail = memo(({ ticket, board }: { ticket: Ticket; board: Board }) 
                     <td>
                       <MissionCheck mission={m} done={done} unlocked={board.unlocked.has(m.equipId)} label={summary} />
                     </td>
-                    <td
-                      className={block ? 'is-blocked' : undefined}
-                      title={block ? blockText(ga, m.charId, block.reason) : undefined}
-                    >
+                    <td>
                       <OperatorButton mission={m} />
+                      {block ? <div className="cpp-mm-muted">{blockShort(ga, m.charId, block.reason)}</div> : null}
                     </td>
                     <td>
                       <ModuleCode charId={m.charId} equipId={m.equipId} />{' '}
