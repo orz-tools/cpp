@@ -6,6 +6,7 @@ import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { baseSkillsSection } from './BaseSkillSection'
 import { costSection } from './CostSection'
 import { ConfigMenuItems } from './ConfigMenuItems'
+import { useDropDataNotice } from './DropDataMissing'
 import { ExporterMenuItems } from './ExporterMenuItems'
 import { ImporterMenuItems } from './ImporterMenuItems'
 import { moduleMissionsPanel } from './ModuleMissionPanel'
@@ -42,6 +43,7 @@ export const ArknightsComponents: IGameComponent = {
   ExporterMenuItems,
   ConfigMenuItems,
   useImportFormats: useArknightsImportFormats,
+  useFarmNotice: useDropDataNotice,
   useImportDiffTabs: useSkinImportDiffTabs,
   style,
   extraFields: extraFields,

@@ -14,6 +14,7 @@ import { PopOutWindowContext } from '../dossierHooks'
 import { useFocusFrame, useRequestFrame } from '../focusFrame'
 import { groupStages } from '../stageGroups'
 import type { SidebarPanel } from '../types'
+import { useDropDataNotice } from './DropDataMissing'
 import { StagesWide } from './StagePanelWide'
 import {
   EfficiencyText,
@@ -228,7 +229,7 @@ const MaterialDrill = memo(
   },
 )
 
-const StagesBody = memo(() => {
+const StagesBodyContent = memo(() => {
   const model = useStageModel()
   const { isChecked, onSetChecked } = useStageToggle()
   const toggle = useMemo(() => ({ isChecked, onSetChecked }), [isChecked, onSetChecked])
@@ -279,6 +280,8 @@ const StagesBody = memo(() => {
     </div>
   )
 })
+
+const StagesBody = memo(() => useDropDataNotice() ?? <StagesBodyContent />)
 
 /**
  * 在「关卡」面板里找到这一关：按章节、不按类别筛选、清空搜索框，展开它的章节，框出这一行。大窗口里点时侧栏被窗口盖着，

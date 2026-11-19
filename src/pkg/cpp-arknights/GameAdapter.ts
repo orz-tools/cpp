@@ -1279,7 +1279,10 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       stage.addDrop(i.itemId, i.quantity, i.times)
     }
 
-    for (const fixed of AK_FIXED_DROP_STAGES) {
+    // Without the matrix there are no stages at all, as the 刷图 area, the 关卡 panel and the arkntools export say,
+    // rather than the chip stages alone.
+    const fixedStages = this.dataManager.isMissing(this.dataManager.$penguin) ? [] : AK_FIXED_DROP_STAGES
+    for (const fixed of fixedStages) {
       const stageInfo = this.dataManager.raw.exStage.stages[fixed.stageId]
       const stage = new ArknightsStageInfo(this, stageInfo)
       stage.setAp(stageInfo.apCost)

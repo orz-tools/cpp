@@ -5,12 +5,13 @@ import { Arknights, ArknightsDataManager, Character, PreferenceKeys, SurveySourc
 import { editableUniEquips, levelMaxed } from '../../../pkg/cpp-arknights/statusEdit'
 import { HeyboxSurveySource, YituliuSurveySource } from '../../../pkg/cpp-arknights/survey'
 import { gt } from '../../../pkg/gt'
+import { useMissingData } from '../../MissingData'
 import { EliteLevelSection } from './EliteLevelSection'
 import { Header } from './Header'
 import { ModSection } from './ModSection'
 import { PotentialSection } from './PotentialSection'
 import { SkillSection } from './SkillSection'
-import { SurveyBar } from './SurveyBar'
+import { SurveyBar, surveyContainer } from './SurveyBar'
 import { EditorContext, EditorContextValue } from './context'
 
 /**
@@ -38,13 +39,16 @@ export const CharacterStatusEditor = memo(
     const showPotential = WithGame<Arknights>().useGamePreferenceAtomValue(PreferenceKeys.ShowPotential)
     const [openDetail, setOpenDetail] = useState<string | null>(null)
 
+    // Without the statistics there is nothing to draw under the cells; SurveyBar says they did not load.
+    const { missing } = useMissingData(surveyContainer(dm, source))
     const [survey, surveyName] = useGameDataMemo(() => {
+      if (missing) return [null, ''] as const
       if (source === SurveySourceKey.Yituliu)
         return [new YituliuSurveySource(dm), YituliuSurveySource.VeryShortName.toString()] as const
       if (source === SurveySourceKey.Heybox)
         return [new HeyboxSurveySource(dm), HeyboxSurveySource.VeryShortName.toString()] as const
       return [null, ''] as const
-    }, [dm, source])
+    }, [dm, source, missing])
 
     // Maxed skills and modules stay in a goal, all gray, because their (i) still opens the descriptions.
     const showLevel = !isGoal || !levelMaxed(character, currentStatus)

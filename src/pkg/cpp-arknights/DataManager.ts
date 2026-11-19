@@ -6,6 +6,7 @@ import {
   Formula,
   ICharacter,
   IItem,
+  OptionalContainerGetter,
   makeNumericSortable,
 } from '../cpp-basic'
 import { DataContainerObject } from '../dccache'
@@ -76,13 +77,19 @@ export class ArknightsSources implements DataSources {
   public get absolutelyRequired(): DataContainerObject<any>[] {
     return [this.kengxxiao, ...(this.kengxxiaoLocal ? [this.kengxxiaoLocal] : [])]
   }
+
+  public get optional(): DataContainerObject<any>[] {
+    return [this.penguin, this.surveyYituliu, this.surveyHeybox]
+  }
 }
 
-function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter) {
+function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter, getOptional: OptionalContainerGetter) {
   const k = getContainer(sources.kengxxiao)
-  const penguin = getContainer(sources.penguin)
-  const yituliuSurvey = getContainer(sources.surveyYituliu)
-  const heyboxSurvey = getContainer(sources.surveyHeybox)
+  // Penguin Statistics has no second host and the surveys come from other sites. Without the matrix there are no stages,
+  // so no plan and no item values; without a survey its fields are empty. What reads them says so and offers 重试.
+  const penguin = getOptional(sources.penguin)?.data ?? { matrix: [] }
+  const yituliuSurvey = getOptional(sources.surveyYituliu)?.data ?? { result: [], userCount: 0, updateTime: '' }
+  const heyboxSurvey = getOptional(sources.surveyHeybox)?.data ?? { rows: [] }
   const kLocal = sources.kengxxiaoLocal ? getContainer(sources.kengxxiaoLocal) : null
   // Containers stored before the worker published skins lack charSkins, brandList and exShop
   const exSkin: ArknightsKengxxiao['exSkin'] = {
@@ -121,9 +128,9 @@ function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter) {
       nodeUnlockMissionData: {},
       masterNames: {},
     },
-    penguinMatrix: penguin.data,
-    yituliuSurvey: yituliuSurvey.data,
-    heyboxSurvey: heyboxSurvey.data,
+    penguinMatrix: penguin,
+    yituliuSurvey,
+    heyboxSurvey,
     local: kLocal ? kLocal.data : null,
   }
 }
@@ -159,9 +166,13 @@ export class ArknightsDataManager extends BasicDataManager<Arknights, ArknightsS
     return this.sources.surveyHeybox
   }
 
-  protected buildSnapshot(sources: ArknightsSources, getContainer: ContainerGetter): ArknightsSnapshot {
+  protected buildSnapshot(
+    sources: ArknightsSources,
+    getContainer: ContainerGetter,
+    getOptional: OptionalContainerGetter,
+  ): ArknightsSnapshot {
     const s = {
-      raw: extractRaw(sources, getContainer),
+      raw: extractRaw(sources, getContainer, getOptional),
       getItemValue: (key: string) => this.getItemValue(key),
     } as ArknightsSnapshot
     s.data = transform(s)

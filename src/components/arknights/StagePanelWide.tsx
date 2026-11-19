@@ -10,6 +10,7 @@ import { ItemIcon } from '../Icons'
 import { focusFrameAtom, measureIn, useFocusFrame } from '../focusFrame'
 import { StageCategoryGroup, groupStages } from '../stageGroups'
 import { ValueTag } from '../Value'
+import { useDropDataNotice } from './DropDataMissing'
 import {
   DropList,
   EfficiencyText,
@@ -321,7 +322,7 @@ const DrillWide = memo(
   },
 )
 
-export const StagesWide = memo(() => {
+const StagesWideContent = memo(() => {
   const model = useStageModel()
   const { isChecked, onSetChecked, enabled, total } = useStageToggle()
   const toggle = useMemo(() => ({ isChecked, onSetChecked }), [isChecked, onSetChecked])
@@ -409,3 +410,5 @@ export const StagesWide = memo(() => {
     </div>
   )
 })
+
+export const StagesWide = memo(() => useDropDataNotice() ?? <StagesWideContent />)

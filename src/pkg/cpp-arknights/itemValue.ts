@@ -177,6 +177,8 @@ export interface ItemValueGameInputs {
 export type ItemValueResult =
   | { status: 'ok'; values: Map<string, number>; pricedCount: number; droppedStages: string[]; elapsedMs: number }
   | { status: 'error'; reason: string }
+  /** The penguin matrix did not load, so there are no stages to price anything by */
+  | { status: 'unavailable' }
 
 const ELITE_KIND_BY_RARITY: Record<string, ItemValueFormulaKind> = {
   TIER_2: 'elite2',
@@ -396,7 +398,7 @@ export function computeItemValuesFromInputs(
   matrix: readonly PenguinMatrixItem[],
   now: number,
   config: ItemValueConfig,
-): ItemValueResult {
+): Exclude<ItemValueResult, { status: 'unavailable' }> {
   const startedAt = performance.now()
   try {
     const stages = assembleItemValueStages(gameInputs, matrix, now, config)
@@ -479,6 +481,8 @@ export function computeItemValuesFromInputs(
 }
 
 export function computeArknightsItemValues(ga: ArknightsAdapter, config: ItemValueConfig): ItemValueResult {
+  const dm = ga.getDataManager()
+  if (dm.isMissing(dm.$penguin)) return { status: 'unavailable' }
   let gameInputs: ItemValueGameInputs
   try {
     gameInputs = ga.exportItemValueGameInputs()
@@ -486,7 +490,7 @@ export function computeArknightsItemValues(ga: ArknightsAdapter, config: ItemVal
     console.error('[itemValue] failed to export game inputs', e)
     return { status: 'error', reason: e instanceof Error ? e.message : String(e) }
   }
-  return computeItemValuesFromInputs(gameInputs, ga.getDataManager().raw.penguinMatrix.matrix, Date.now(), config)
+  return computeItemValuesFromInputs(gameInputs, dm.raw.penguinMatrix.matrix, Date.now(), config)
 }
 
 /** 开发用：在控制台比较本模块组装的关卡与 getStageInfos()，返回差异；为空即一致。 */
