@@ -16,7 +16,8 @@ const ArkntoolsPreset = z.object({
         normal: Range.default([false, 1, 7]),
         elite: z.array(Range).default([]),
       })
-      .default({}),
+      // default 的值原样返回，不经过内层 schema；prefault 的会，normal 和 elite 才补得上各自的默认值
+      .prefault({}),
     // 早期备份的模组只有一个布尔值，arkntools 读到时当作 [勾选, 0, 3]
     uniequip: z
       .record(z.string(), z.union([Range, z.boolean()]))

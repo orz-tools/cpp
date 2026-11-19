@@ -24,7 +24,7 @@
     "jotai-family": "^1.1.0",
     "json-stringify-deterministic": "^1.0.11",
     "localforage": "^1.10.0",
-    "node-gettext": "^3.0.0",
+    "node-gettext": "^3.0.1",
     "normalize.css": "^8.0.1",
     "p-limit": "^4.0.0",
     "p-props": "^5.0.0",
@@ -34,7 +34,7 @@
     "react-use-event-hook": "^0.9.6",
     "text-search-engine": "^1.4.2",
     "use-resize-observer": "^9.1.0",
-    "zod": "^3.22.2"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/deep-equal": "^1.0.4",
