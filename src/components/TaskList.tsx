@@ -3,7 +3,7 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import { WritableAtom, atom, useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { sortBy, sum } from 'ramda'
-import React, { SetStateAction, memo, useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { SetStateAction, memo, useCallback, useMemo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
@@ -151,6 +151,8 @@ export const TaskMenu = memo(
   <G extends IGame>({
     task,
     extra,
+    index,
+    rowRef,
     style,
     same,
     nextSame,
@@ -159,6 +161,9 @@ export const TaskMenu = memo(
   }: {
     task: Task<G>
     extra: TaskExtra
+    /** 虚拟列表里的序号，和 rowRef 一起让列表量这一行的高度 */
+    index?: number
+    rowRef?: (el: HTMLLIElement | null) => void
     style?: React.CSSProperties
     same?: boolean
     nextSame?: boolean
@@ -226,7 +231,7 @@ export const TaskMenu = memo(
         )[starred]
 
     return (
-      <li role="none" style={style} className="cpp-task-menu-master">
+      <li role="none" ref={rowRef} data-index={index} style={style} className="cpp-task-menu-master">
         {same ? undefined : (
           <ContextMenu content={<CharacterContextMenu character={character} alwaysSorting={true} />}>
             <a
@@ -399,6 +404,7 @@ const TaskNoteRow = memo(({ charId, note, style }: { charId: string; note: TaskN
       className={dossier ? undefined : 'cpp-menu-not-interactive'}
       icon={note.icon}
       text={note.text}
+      multiline={true}
       htmlTitle={note.title}
       onClick={dossier ? onClick : undefined}
       onContextMenu={preventDefault}
@@ -434,12 +440,13 @@ export const TaskList = memo(<G extends IGame>() => {
   const ga = useGameAdapter<G>()
   const taskNotes = useComponents().taskNotes
   const notes = useMemo(() => list.map(([task]) => (taskNotes ? taskNotes(ga, task) : NO_NOTES)), [list, ga, taskNotes])
+  // 说明行会折行，行高以量出来的为准；这里按每条说明一行估，给还没画出来的行占位。分隔线 9px：1px 线加上下各 4px 边距
   const itemSize = useCallback<(index: number) => number>(
     (index) => {
       const same = list[index - 1]?.[0].charId === list[index][0].charId
       const nextSame = list[index + 1]?.[0].charId === list[index][0].charId
       const costs = hideCosts ? 0 : (list[index][0].requires.length + notes[index].length) * 30
-      const base = costs + (same ? 0 : 30) + 30 + (hideCosts && nextSame ? 0 : 11)
+      const base = costs + (same ? 0 : 30) + 30 + (hideCosts && nextSame ? 0 : 9)
       return base
     },
     [list, notes, hideCosts],
@@ -450,18 +457,11 @@ export const TaskList = memo(<G extends IGame>() => {
   const rowVirtualizer = useVirtualizer({
     count: list.length,
     getScrollElement: () => parentRef.current,
-    getItemKey: (index) => list[index][0].id,
+    // 量出的高度按键记。键里带上是否隐藏花费：切换时行重新挂上、重新量，不沿用另一种显示方式量出的高度
+    getItemKey: (index) => `${list[index][0].id}:${hideCosts ? 'h' : 'e'}`,
     estimateSize: itemSize,
     overscan: 5,
   })
-
-  const remeasure = useEvent(() => {
-    rowVirtualizer.measure()
-  })
-
-  useEffect(() => {
-    remeasure()
-  }, [param, remeasure])
 
   return (
     <>
@@ -484,12 +484,13 @@ export const TaskList = memo(<G extends IGame>() => {
             return (
               <TaskMenu
                 key={virtualRow.key}
+                index={index}
+                rowRef={rowVirtualizer.measureElement}
                 style={{
                   position: 'absolute',
                   top: 0,
                   left: 0,
                   width: '100%',
-                  height: `${virtualRow.size}px`,
                   transform: `translateY(${virtualRow.start}px)`,
                 }}
                 task={list[index][0]}
