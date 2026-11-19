@@ -27,7 +27,7 @@
     "localforage": "^1.10.0",
     "node-gettext": "^3.0.1",
     "normalize.css": "^8.0.1",
-    "p-limit": "^4.0.0",
+    "p-limit": "^7.3.3",
     "ramda": "^0.32.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
