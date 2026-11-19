@@ -46,7 +46,10 @@ export interface DossierPrefs {
   statusMode: StatusMode
 }
 
-export const defaultDossierPrefs: DossierPrefs = { section: 'status', statusMode: 'goal' }
+/** 外壳自己的「练度」页，总是第一页 */
+export const STATUS_SECTION_ID = 'status'
+
+export const defaultDossierPrefs: DossierPrefs = { section: STATUS_SECTION_ID, statusMode: 'goal' }
 
 /** 一个字段坏了只换这一个字段 */
 export function readDossierPrefs(stored: unknown): DossierPrefs {

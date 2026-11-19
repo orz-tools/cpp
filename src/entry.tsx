@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { AppWrapper } from './App'
 import { Cpp, CppContext } from './Cpp'
 import { Err, ErrAtom } from './components/Err'
+import { watchPhoneLayoutClass } from './components/phoneLayout'
 import { IGameComponent } from './components/types'
 import './index.css'
 import { LocaleBoundary } from './locales'
@@ -16,6 +17,7 @@ export function runCpp(
   gameComponent: IGameComponent,
 ) {
   const cpp = new Cpp(storagePrefix, instanceName, gameAdapter, gameComponent)
+  watchPhoneLayoutClass()
   void (async () => {
     const result = await environmentCheck()
     if (result)
