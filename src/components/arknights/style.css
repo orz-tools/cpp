@@ -63,6 +63,15 @@
   filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);
 }
 
+/* 快捷过滤的精英图标是白色的：浅色下反成黑字的颜色，深色下照原样 */
+.cpp-qf-elite {
+  filter: invert(1);
+}
+
+:root.bp6-dark .cpp-qf-elite {
+  filter: none;
+}
+
 /* Character status editor: the list's popovers and the dossier's 练度 page */
 
 /* The editor pads its own sections; the shell's popover padding would double it. */
