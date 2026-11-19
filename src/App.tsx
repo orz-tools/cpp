@@ -165,16 +165,14 @@ const PhoneBack = memo(() => {
       timers = [120, 600].map((ms) => window.setTimeout(() => step({ type: 'settled', depth: depth() }), ms))
     }
     const pop = () => step({ type: 'pop', depth: depth() })
+    // 长按出的菜单后面没有 click：松手（touchend）和安卓自己的长按（contextmenu）也对账
+    const triggers = ['click', 'keydown', 'paste', 'touchend', 'contextmenu'] as const
     window.addEventListener('popstate', pop)
-    document.addEventListener('click', settle, true)
-    document.addEventListener('keydown', settle, true)
-    document.addEventListener('paste', settle, true)
+    for (const type of triggers) document.addEventListener(type, settle, true)
     return () => {
       clear()
       window.removeEventListener('popstate', pop)
-      document.removeEventListener('click', settle, true)
-      document.removeEventListener('keydown', settle, true)
-      document.removeEventListener('paste', settle, true)
+      for (const type of triggers) document.removeEventListener(type, settle, true)
     }
   }, [phone, moreLayer, closeTop])
 

@@ -32,6 +32,7 @@ import { inRanges } from './listDrag'
 import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
 import { useRequestFrame } from './focusFrame'
+import { useLongPressContextMenu } from './longPress'
 import { useCoarsePointer } from './phoneLayout'
 import {
   TASK_HEADER_HEIGHT,
@@ -253,6 +254,8 @@ export const TaskMenu = memo(
     const details = useAtomValue(detailsAtom)
     const openDossier = useOpenCharacterDossier()
     const dossierOpen = useDossierOpenFor(character.key)
+    // 触屏上长按干员那一行出右键菜单：iOS 长按不触发 contextmenu
+    const longPress = useLongPressContextMenu()
     const TaskTag = useComponents().TaskTag
     const sortedRequires = useMemo(
       () =>
@@ -338,6 +341,7 @@ export const TaskMenu = memo(
               style={{ flexShrink: 1, overflow: 'hidden' }}
               aria-haspopup="dialog"
               aria-expanded={dossierOpen}
+              {...longPress}
               onClick={(e) => {
                 if (index !== undefined && onHeaderClick?.(e, index)) return
                 openDossier(character.key)

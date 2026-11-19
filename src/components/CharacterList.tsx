@@ -89,6 +89,7 @@ import { quickFiltersFor, wrapQueryWithQuickFilter } from './quickFilters'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
 import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
 import { RosterPin, clearRosterPin, useActiveRosterPin } from './rosterPin'
+import { useLongPressContextMenu } from './longPress'
 import { usePhoneLayout } from './phoneLayout'
 
 export const Hide = memo(
@@ -339,6 +340,8 @@ const CharacterMenu = memo(
       if (onSelectClick?.(e, charId)) return
       openDossier(charId)
     }
+    // 触屏上长按头像出右键菜单：iOS 长按不触发 contextmenu
+    const longPress = useLongPressContextMenu()
     const currentStatus = render(currentCharacter, character)
     const currentStyle = { opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }
     const goalStatus = render(goalCharacter, character, currentCharacter, goalSame)
@@ -371,6 +374,7 @@ const CharacterMenu = memo(
               aria-label={character.name}
               aria-haspopup="dialog"
               aria-expanded={dossierOpen}
+              {...longPress}
               onClick={onCharClick}
               onMouseDown={onSelectMouseDown}
               onKeyDown={menuItemKeyDown}
@@ -440,6 +444,7 @@ const CharacterMenu = memo(
             }
             aria-haspopup="dialog"
             aria-expanded={dossierOpen}
+            {...longPress}
             onClick={onCharClick}
             onMouseDown={onSelectMouseDown}
             onKeyDown={menuItemKeyDown}
