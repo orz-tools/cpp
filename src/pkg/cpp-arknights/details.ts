@@ -86,7 +86,8 @@ export interface DetailsTarget {
 
 /**
  * Loads the details for one region and keeps the promise while the game data stays the same, so every panel opened in
- * a session shares one download. A failed load is forgotten, so that 重试 downloads again.
+ * a session shares one download. A failed load is forgotten, so that 重试 downloads again. When checking a lagging
+ * copy for an update fails, the copy in hand is kept and not checked again in this session.
  */
 export class DetailsLoader {
   private cached?: { key: string; promise: Promise<Details> }
@@ -115,7 +116,11 @@ export class DetailsLoader {
     // in hand still covers everything but the newest skills and modules. A copy from before base skills is asked about
     // too, or it would stay until the next game update.
     if (container.version.id !== versionId || container.version.schema < BASE_SKILLS_SCHEMA) {
-      container = await this.load(obj, true)
+      try {
+        container = await this.load(obj, true)
+      } catch (e) {
+        console.warn(`Failed to check ${obj.name} for an update; keeping the stored copy.`, e)
+      }
     }
     return container.data
   }

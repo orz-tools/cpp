@@ -190,6 +190,21 @@ describe('DetailsLoader', () => {
     ])
   })
 
+  it('keeps the lagging copy when checking it for an update fails, and does not check again', async () => {
+    const { load, calls } = fakeLoad({ [base.name]: ['v1'] })
+    const loader = new DetailsLoader(load)
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const d = await loader.get({ obj: base, versionId: 'v2' }, null)
+    expect(d.base).toBe(zh)
+    expect(await loader.get({ obj: base, versionId: 'v2' }, null)).toBe(d)
+    expect(calls).toEqual([
+      [base.name, undefined],
+      [base.name, true],
+    ])
+    expect(warn).toHaveBeenCalledOnce()
+    warn.mockRestore()
+  })
+
   it('forgets a failed load, so a retry downloads again', async () => {
     const versions = { [base.name]: [] as string[] }
     const { load, calls } = fakeLoad(versions)
