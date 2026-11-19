@@ -27,15 +27,19 @@ import { gt } from '../pkg/gt'
 import { CharacterContextMenu, SortButtonGroup, menuItemKeyDown } from './CharacterList'
 import { CachedImg, ItemIcon } from './Icons'
 import { ListDrag, useListDrag } from './ListDrag'
+import { ListSelectionContext, SelectionBar, handleTitle, useListSelection } from './ListSelection'
+import { inRanges } from './listDrag'
 import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
 import { useRequestFrame } from './focusFrame'
 import {
   TASK_HEADER_HEIGHT,
   charDragGaps,
+  charDragRanges,
   charDraggable,
   groupDragGaps,
   groupDraggable,
+  headerRange,
   layoutTasks,
 } from './taskListLayout'
 import { TaskNote } from './types'
@@ -126,7 +130,7 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
   const goalTasks = useAtomValue(atoms.goalTasks(task.charId))
   const groups = useMemo(() => uniq(goalTasks.flatMap((x) => (x.group ? [x.group] : []))), [goalTasks])
   const moveGroup = (step: MoveStep) => {
-    const target = task.group ? stepTarget(groups, task.group, step) : undefined
+    const target = task.group ? stepTarget(groups, [task.group], step) : undefined
     if (target) store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
   }
 
@@ -202,6 +206,9 @@ export const TaskMenu = memo(
     notes,
     drag,
     dim,
+    selected,
+    onHeaderClick,
+    onHeaderMouseDown,
   }: {
     task: Task<G>
     extra: TaskExtra
@@ -216,6 +223,11 @@ export const TaskMenu = memo(
     drag?: ListDrag<TaskDragSource>
     /** 正在被拖：整组连干员那一行（all），或只是这一项的任务（task） */
     dim?: 'all' | 'task'
+    /** 这名干员选中了 */
+    selected?: boolean
+    /** 返回 true 时是修饰键点击，已经改了选择，不开档案 */
+    onHeaderClick?: (e: React.MouseEvent, index: number) => boolean
+    onHeaderMouseDown?: React.MouseEventHandler
   }) => {
     const ga = useGameAdapter<G>()
     const character = ga.getCharacter(task.charId)
@@ -297,24 +309,37 @@ export const TaskMenu = memo(
               role="menuitem"
               tabIndex={0}
               className={
-                'bp6-menu-item cpp-task-menu' + (dossierOpen ? ' bp6-active bp6-intent-primary cpp-dossier-open' : '')
+                'bp6-menu-item cpp-task-menu' +
+                (dossierOpen ? ' bp6-active bp6-intent-primary cpp-dossier-open' : '') +
+                (selected ? ' cpp-list-selected' : '')
               }
               style={{ flexShrink: 1, overflow: 'hidden' }}
               aria-haspopup="dialog"
               aria-expanded={dossierOpen}
-              onClick={() => openDossier(character.key)}
+              onClick={(e) => {
+                if (index !== undefined && onHeaderClick?.(e, index)) return
+                openDossier(character.key)
+              }}
+              onMouseDown={onHeaderMouseDown}
               onKeyDown={menuItemKeyDown}
               {...dragProps('char')}
             >
               <>
                 <span className="bp6-menu-item-icon">
-                  <CachedImg
-                    src={character.avatar}
-                    width={'16'}
-                    height={'16'}
-                    alt={character.key}
-                    title={character.key}
-                  />
+                  {/* 16px 的头像角上放不下勾，整个换掉 */}
+                  {selected ? (
+                    <span className="cpp-select-tick cpp-select-tick-inline">
+                      <Icon icon="small-tick" size={12} />
+                    </span>
+                  ) : (
+                    <CachedImg
+                      src={character.avatar}
+                      width={'16'}
+                      height={'16'}
+                      alt={character.key}
+                      title={character.key}
+                    />
+                  )}
                 </span>
 
                 <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -550,6 +575,15 @@ export const TaskList = memo(<G extends IGame>() => {
     overscan: 5,
   })
 
+  const charKeys = useMemo(() => uniq(tasks.map((t) => t.charId)), [tasks])
+  const selection = useListSelection(charKeys)
+  const { selected } = selection
+  // 选的是干员：两段里这名干员的标题行一起亮，拖时只出现在另一段的选中干员也跟着挪计划顺序
+  const moving = (charId: string): ReadonlySet<string> => (selected.has(charId) ? selected : new Set([charId]))
+  const onHeaderClick = useEvent((e: React.MouseEvent, index: number) =>
+    selection.click(e, tasks[index].charId, (anchor) => headerRange(layout, anchor, layout.runOf[index])),
+  )
+
   const { drag, active, overlay, handle } = useListDrag<TaskDragSource, MoveTarget>({
     enabled: true,
     scrollRef: parentRef,
@@ -557,16 +591,23 @@ export const TaskList = memo(<G extends IGame>() => {
     virtualizer: rowVirtualizer,
     handleInset: 3,
     draggable: ({ kind, row }) =>
-      kind === 'group' ? groupDraggable(tasks, layout, row) : charDraggable(layout, layout.runOf[row]),
+      kind === 'group'
+        ? groupDraggable(tasks, layout, row)
+        : charDraggable(layout, layout.runOf[row], moving(tasks[row].charId)),
     begin: ({ kind, row }) => {
       if (kind === 'group') return groupDragGaps(tasks, layout, row)
-      const run = layout.runs[layout.runOf[row]]
-      return { rows: [run.first, run.last], gaps: charDragGaps(layout, layout.runOf[row]) }
+      const m = moving(tasks[row].charId)
+      return { ranges: charDragRanges(layout, m), gaps: charDragGaps(layout, layout.runOf[row], m), count: m.size }
     },
     commit: ({ kind, row }, target) => {
       const task = tasks[row]
-      if (kind === 'char') store.set(atoms.moveInPlan, { charId: task.charId, target })
+      if (kind === 'char') store.set(atoms.moveInPlan, { charIds: [...moving(task.charId)], target })
       else store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
+    },
+    selected: ({ kind, row }) => kind === 'char' && selected.has(tasks[row].charId),
+    handleTitle: ({ kind, row }) => (kind === 'char' ? handleTitle(selected, tasks[row].charId) : undefined),
+    onHandleClick: ({ kind, row }) => {
+      if (kind === 'char') selection.toggle(tasks[row].charId)
     },
   })
 
@@ -578,44 +619,51 @@ export const TaskList = memo(<G extends IGame>() => {
           <HideCostsButton />
         </Navbar.Group>
       </Navbar>
-      <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
-        <div
-          ref={contentRef}
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            width: '100%',
-            position: 'relative',
-          }}
-        >
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            const index = virtualRow.index
-            const dragged = active && active.rows[0] <= index && index <= active.rows[1]
-            return (
-              <TaskMenu
-                key={virtualRow.key}
-                index={index}
-                rowRef={rowVirtualizer.measureElement}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-                task={list[index][0]}
-                extra={list[index][1]}
-                same={same(index)}
-                nextSame={nextSame(index)}
-                hideCosts={param.hideCosts}
-                notes={notes[index]}
-                drag={drag}
-                dim={dragged ? (active.source.kind === 'char' ? 'all' : 'task') : undefined}
-              />
-            )
-          })}
-          {overlay}
-        </div>
-      </Menu>
+      <ListSelectionContext.Provider value={selection}>
+        <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
+          <div
+            ref={contentRef}
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+              width: '100%',
+              position: 'relative',
+            }}
+          >
+            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const index = virtualRow.index
+              const dragged = active && inRanges(active.ranges, index)
+              return (
+                <TaskMenu
+                  key={virtualRow.key}
+                  index={index}
+                  rowRef={rowVirtualizer.measureElement}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                  task={list[index][0]}
+                  extra={list[index][1]}
+                  same={same(index)}
+                  nextSame={nextSame(index)}
+                  hideCosts={param.hideCosts}
+                  notes={notes[index]}
+                  drag={drag}
+                  dim={dragged ? (active.source.kind === 'char' ? 'all' : 'task') : undefined}
+                  // 只有标题行画得出选中，别的行不跟着选择重画
+                  selected={!same(index) && selected.has(list[index][0].charId)}
+                  onHeaderClick={onHeaderClick}
+                  onHeaderMouseDown={selection.mouseDown}
+                />
+              )
+            })}
+            {overlay}
+          </div>
+        </Menu>
+      </ListSelectionContext.Provider>
+      <SelectionBar count={selected.size} onClear={selection.clear} />
       {handle}
     </>
   )

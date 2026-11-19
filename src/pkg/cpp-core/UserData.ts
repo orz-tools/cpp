@@ -6,7 +6,7 @@ import { clone, intersection, sum, uniq } from 'ramda'
 import { SetStateAction } from 'react'
 import { IGame, IGameAdapter, QueryParam, Task } from '../cpp-basic'
 import { txatom } from '../txatom'
-import { MoveTarget, moveKey } from './planOrder'
+import { MoveTarget, moveKeys } from './planOrder'
 import { generateTaskExtra } from './Task'
 
 function withDebugLabel<T extends Atom<any>>(t: T, label?: string): T {
@@ -520,9 +520,9 @@ function buildAtoms<G extends IGame>(
   )
 
   const moveInPlan = withDebugLabel(
-    atom(null, (get, set, { charId, target }: { charId: string; target: MoveTarget }) => {
+    atom(null, (get, set, { charIds, target }: { charIds: readonly string[]; target: MoveTarget }) => {
       const order = get(goalOrder)
-      const next = moveKey(order, charId, target)
+      const next = moveKeys(order, charIds, target)
       if (next === order) return
       set(dataAtom, 'modify', (data) => {
         data.goalOrder = [...next]
@@ -534,7 +534,7 @@ function buildAtoms<G extends IGame>(
   const moveTaskGroup = withDebugLabel(
     atom(null, (get, set, { charId, group, target }: { charId: string; group: string; target: MoveTarget }) => {
       const groups = uniq(get(goalTasks(charId)).flatMap((x) => (x.group ? [x.group] : [])))
-      const next = moveKey(groups, group, target)
+      const next = moveKeys(groups, [group], target)
       if (next === groups) return
       set(dataAtom, 'modify', (data) => {
         data.taskGroupOrder = { ...data.taskGroupOrder, [charId]: [...next] }

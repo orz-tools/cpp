@@ -15,10 +15,14 @@ export interface ListDrag<S> {
 }
 
 export interface ListDragStart<T> {
-  /** 被拖的首尾两行，列表把它们画淡 */
-  rows: readonly [number, number]
+  /** 被拖的几段行，每段首尾两行，列表把它们画淡 */
+  ranges: readonly (readonly [number, number])[]
   gaps: DropGap<T>[]
+  /** 一起挪几名；多于一名时蓝线上写出人数 */
+  count?: number
 }
+
+type ListDragActive<S> = { source: S } & Omit<ListDragStart<unknown>, 'gaps'>
 
 interface Options<S, T> {
   enabled: boolean
@@ -37,6 +41,11 @@ interface Options<S, T> {
   /** 移动过了门槛时调一次；返回 undefined 时这次不拖 */
   begin: (source: S) => ListDragStart<T> | undefined
   commit: (source: S, target: T) => void
+  /** 悬停的这一行选中了，把手画成蓝色 */
+  selected?: (source: S) => boolean
+  handleTitle?: (source: S) => string | undefined
+  /** 按下把手没拖就松开 */
+  onHandleClick?: (source: S) => void
 }
 
 interface Session<S, T> {
@@ -76,14 +85,19 @@ export function useListDrag<S, T>({
   draggable: isDraggable,
   begin: beginDrag,
   commit: commitDrag,
+  selected,
+  handleTitle,
+  onHandleClick,
 }: Options<S, T>) {
   const draggable = useEvent(isDraggable)
   const begin = useEvent(beginDrag)
   const commit = useEvent(commitDrag)
+  const handleClicked = useEvent((source: S) => onHandleClick?.(source))
   // 只有这三样进 state：拖动中每次移动都 setState 会重画整个列表
-  const [active, setActive] = useState<{ source: S; rows: readonly [number, number] }>()
+  const [active, setActive] = useState<ListDragActive<S>>()
   const [gap, setGap] = useState<DropGap<T>>()
-  const [handlePos, setHandlePos] = useState<{ left: number; top: number; height: number }>()
+  // 带上悬停的是哪一行：把手的颜色和提示跟着它
+  const [handlePos, setHandlePos] = useState<{ left: number; top: number; height: number; source: S }>()
 
   const session = useRef<Session<S, T>>()
   const detach = useRef<() => void>()
@@ -119,8 +133,15 @@ export function useListDrag<S, T>({
     window.clearTimeout(hideTimer.current)
     hover.current = { el: e.currentTarget, source }
     const rect = e.currentTarget.getBoundingClientRect()
-    const next = { left: rect.left - HANDLE_WIDTH, top: rect.top + handleInset, height: rect.height - 2 * handleInset }
-    setHandlePos((x) => (x && x.left === next.left && x.top === next.top && x.height === next.height ? x : next))
+    const next = {
+      left: rect.left - HANDLE_WIDTH,
+      top: rect.top + handleInset,
+      height: rect.height - 2 * handleInset,
+      source,
+    }
+    setHandlePos((x) =>
+      x && x.left === next.left && x.top === next.top && x.height === next.height && x.source === source ? x : next,
+    )
   })
 
   const updateGap = useEvent(() => {
@@ -170,7 +191,7 @@ export function useListDrag<S, T>({
     scrollRef.current?.classList.add('cpp-list-drag-scroller')
     window.getSelection()?.removeAllRanges()
     hideHandle()
-    setActive({ source: s.source, rows: started.rows })
+    setActive({ source: s.source, ranges: started.ranges, count: started.count })
     updateGap()
     function autoScroll() {
       frame.current = requestAnimationFrame(autoScroll)
@@ -230,9 +251,10 @@ export function useListDrag<S, T>({
     }
   })
 
-  const pressHandle = useEvent((e: React.PointerEvent<HTMLElement>) => {
+  /** 把手旁边还是记下的那一行、还能拖时给出它，不然收起把手 */
+  const checkHandle = useEvent(() => {
     const h = hover.current
-    if (!h || !handlePos) return
+    if (!h || !handlePos) return undefined
     // 列表在把手出现以后重画过（撤销、别处改了计划），记下的那一行可能已经不是把手旁边这一行了，或者已经没有地方放了
     const rect = h.el.getBoundingClientRect()
     if (
@@ -242,9 +264,20 @@ export function useListDrag<S, T>({
       !draggable(h.source)
     ) {
       hideHandle()
-      return
+      return undefined
     }
-    press(e, h.source)
+    return h
+  })
+
+  const pressHandle = useEvent((e: React.PointerEvent<HTMLElement>) => {
+    const h = checkHandle()
+    if (h) press(e, h.source)
+  })
+
+  // 拖过以后的那次 click 已经被 swallowNextClick 吞掉，到这里的都是没拖的
+  const clickHandle = useEvent(() => {
+    const h = checkHandle()
+    if (h) handleClicked(h.source)
   })
 
   useEffect(() => {
@@ -281,18 +314,26 @@ export function useListDrag<S, T>({
   )
 
   const rows = gap?.target != null ? measurements() : undefined
-  const overlay = gap && rows?.[gap.index] ? <div className="cpp-drop-line" style={{ top: gapY(gap, rows) }} /> : null
+  const count = active?.count ?? 1
+  const overlay =
+    gap && rows?.[gap.index] ? (
+      <div className={'cpp-drop-line' + (count > 1 ? ' cpp-drop-line-many' : '')} style={{ top: gapY(gap, rows) }}>
+        {count > 1 ? <span className="cpp-drop-line-count">{count}</span> : null}
+      </div>
+    ) : null
 
   const handle =
     handlePos && !active
       ? createPortal(
           <div
-            className="cpp-drag-handle"
+            className={'cpp-drag-handle' + (selected?.(handlePos.source) ? ' cpp-drag-handle-selected' : '')}
             aria-hidden={true}
-            style={handlePos}
+            title={handleTitle?.(handlePos.source)}
+            style={{ left: handlePos.left, top: handlePos.top, height: handlePos.height }}
             onPointerMove={keepHandle}
             onPointerLeave={leaveHandle}
             onPointerDown={pressHandle}
+            onClick={clickHandle}
           >
             <Icon icon="drag-handle-vertical" size={16} />
           </div>,

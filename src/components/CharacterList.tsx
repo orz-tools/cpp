@@ -3,6 +3,7 @@ import {
   ButtonGroup,
   Classes,
   ContextMenu,
+  Icon,
   Menu,
   MenuDivider,
   MenuItem,
@@ -19,7 +20,17 @@ import deepEqual from 'deep-equal'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { equals } from 'ramda'
-import React, { forwardRef, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  forwardRef,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import useEvent from 'react-use-event-hook'
 import { search } from 'text-search-engine'
 import {
@@ -38,10 +49,11 @@ import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import { ListDrag, useListDrag } from './ListDrag'
+import { ListSelectionContext, SelectionBar, handleTitle, useListSelection } from './ListSelection'
 import { CharacterPlanMenuItems } from './PlanActions'
 import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
-import { listGaps } from './listDrag'
+import { inRanges, listGaps } from './listDrag'
 import { IGameComponent } from './types'
 import {
   FieldConfiguration,
@@ -134,9 +146,19 @@ export function renderCharacterStatus<G extends IGame>(
 }
 
 /** 右键菜单最上面那一排：移到最前、上移、下移、移到最后 */
-export const SortButtonGroup = ({ label, onMove }: { label: string; onMove: (step: MoveStep) => void }) => (
+export const SortButtonGroup = ({
+  label,
+  labelClassName,
+  onMove,
+}: {
+  label: string
+  labelClassName?: string
+  onMove: (step: MoveStep) => void
+}) => (
   <ButtonGroup variant="minimal" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-    <span style={{ marginLeft: 10 }}>{label}</span>
+    <span className={labelClassName} style={{ marginLeft: 10 }}>
+      {label}
+    </span>
     <div style={{ flex: 1 }} />
     <Button icon={'double-chevron-up'} onClick={() => onMove('first')} />
     <Button icon={'chevron-up'} onClick={() => onMove('up')} />
@@ -152,18 +174,48 @@ export const CharacterContextMenu = memo(
     const store = useStore()
     const param = useAtomValue(useCpp().queryParamAtom)
     const order = useAtomValue(atoms.goalOrder)
+    const selection = useContext(ListSelectionContext)
+    const isSelected = selection?.selected.has(character.key) ?? false
+    // 右键选中的行，四个按钮挪所有选中的；只选了这一名时和没选一样
+    const group = isSelected && selection && selection.selected.size >= 2 ? [...selection.selected] : undefined
+    const keys = group ?? [character.key]
     const move = (step: MoveStep) => {
-      const target = stepTarget(order, character.key, step)
-      if (target) store.set(atoms.moveInPlan, { charId: character.key, target })
+      const target = stepTarget(order, keys, step)
+      if (target) store.set(atoms.moveInPlan, { charIds: keys, target })
     }
     // 和「角色内排序」一样：计划里没有别的干员可换时，四个按钮哪个都挪不动
-    const movable = order.length > 1 && order.includes(character.key)
+    const movable = group
+      ? order.some((key) => !group.includes(key))
+      : order.length > 1 && order.includes(character.key)
 
     return (
       <Menu>
         {movable && (alwaysSorting || (alwaysSorting !== false && param.query === ListModeWithGoal)) ? (
           <>
-            <SortButtonGroup label={gt.gettext('角色计划排序')} onMove={move} />
+            {group ? (
+              <SortButtonGroup
+                label={gt
+                  .ngettext('选中的 %d 名干员', '选中的 %d 名干员', group.length) /* I10N: %d: number */
+                  .replaceAll('%d', group.length.toString())}
+                labelClassName="cpp-sort-label-many"
+                onMove={move}
+              />
+            ) : (
+              <SortButtonGroup label={gt.gettext('角色计划排序')} onMove={move} />
+            )}
+            <MenuDivider />
+          </>
+        ) : null}
+        {selection ? (
+          <>
+            <MenuItem
+              icon={isSelected ? 'cross' : 'tick'}
+              text={isSelected ? gt.gettext('取消选中') : gt.gettext('选中')}
+              onClick={() => selection.toggle(character.key)}
+            />
+            {selection.selected.size > (isSelected ? 1 : 0) ? (
+              <MenuItem icon={'cross-circle'} text={gt.gettext('清除选择')} onClick={selection.clear} />
+            ) : null}
             <MenuDivider />
           </>
         ) : null}
@@ -226,6 +278,9 @@ const CharacterMenu = memo(
     drag,
     row,
     dimmed,
+    selected,
+    onSelectClick,
+    onSelectMouseDown,
   }: {
     character: ICharacter
     style?: React.CSSProperties
@@ -234,6 +289,10 @@ const CharacterMenu = memo(
     drag?: ListDrag<number>
     row?: number
     dimmed?: boolean
+    selected?: boolean
+    /** 返回 true 时是修饰键点击，已经改了选择，不开档案 */
+    onSelectClick?: (e: React.MouseEvent, key: string) => boolean
+    onSelectMouseDown?: React.MouseEventHandler
   }) => {
     const atoms = useAtoms<G>()
     const ga = useGameAdapter<G>()
@@ -260,6 +319,7 @@ const CharacterMenu = memo(
           `cpp-char-rarity-${character.rarity}`,
           ...(character.characterViewExtraClass || []),
           ...(dimmed ? ['cpp-drag-source'] : []),
+          ...(selected ? ['cpp-list-selected'] : []),
         ].join(' ')}
         style={style}
         {...(drag && row !== undefined ? drag.hoverProps(row) : null)}
@@ -274,7 +334,11 @@ const CharacterMenu = memo(
             }
             aria-haspopup="dialog"
             aria-expanded={dossierOpen}
-            onClick={() => openDossier(charId)}
+            onClick={(e) => {
+              if (onSelectClick?.(e, charId)) return
+              openDossier(charId)
+            }}
+            onMouseDown={onSelectMouseDown}
             onKeyDown={menuItemKeyDown}
             {...(drag && row !== undefined ? drag.pressProps(row) : null)}
           >
@@ -290,6 +354,11 @@ const CharacterMenu = memo(
                 {c.renderCharacterAvatarBadge && !uda.isAbsentCharacter(character, currentCharacter)
                   ? c.renderCharacterAvatarBadge(currentCharacter, character)
                   : null}
+                {selected ? (
+                  <span className="cpp-select-tick">
+                    <Icon icon="small-tick" size={12} />
+                  </span>
+                ) : null}
               </span>
               <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <div className="bp6-text-overflow-ellipsis" title={character.name}>
@@ -925,6 +994,8 @@ export const QuickFilterBuilder = memo(() => {
   )
 })
 
+const NO_KEYS: readonly string[] = []
+
 export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom: PrimitiveAtom<number> }) => {
   const param = useAtomValue(useCpp().queryParamAtom)
   const stale = useAtomValue(queryEditorStaleAtom)
@@ -962,6 +1033,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     return preset?.totalValue ? { querier: response.query, field: preset.totalValue } : undefined
   }, [cpp, loading, response, param, pin])
   const list = rows.map((x) => x.character)
+  const keys = useMemo(() => rows.map((x) => x.character.key), [rows])
   const extraColumns = useMemo(
     () =>
       response
@@ -1028,23 +1100,32 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     estimateSize: () => 50,
   })
 
-  const canDrag =
-    param.query === ListModeWithGoal && !pin && !loading && response?.param === param && response.pin === pin
+  const canSelect = param.query === ListModeWithGoal && !pin
+  const selection = useListSelection(canSelect ? keys : NO_KEYS, [param, pin])
+  const { selected } = selection
+  // 按住选中的行拖，选中的一起挪；按住没选中的只挪这一行，选择不动
+  const moving = (key: string): ReadonlySet<string> => (selected.has(key) ? selected : new Set([key]))
+
+  const canDrag = canSelect && !loading && response?.param === param && response.pin === pin
   const { drag, active, overlay, handle } = useListDrag<number, MoveTarget>({
     enabled: canDrag,
     scrollRef: parentRef,
     contentRef,
     virtualizer: rowVirtualizer,
     handleInset: 4,
-    draggable: () => list.length > 1,
-    begin: (row) => ({
-      rows: [row, row],
-      gaps: listGaps(
-        list.map((x) => x.key),
-        row,
-      ),
-    }),
-    commit: (row, target) => store.set(atoms.moveInPlan, { charId: list[row].key, target }),
+    draggable: (row) => (selected.has(keys[row]) ? selected.size < keys.length : keys.length > 1),
+    begin: (row) => {
+      const m = moving(keys[row])
+      return {
+        ranges: keys.flatMap((key, i) => (m.has(key) ? [[i, i] as const] : [])),
+        gaps: listGaps(keys, m),
+        count: m.size,
+      }
+    },
+    commit: (row, target) => store.set(atoms.moveInPlan, { charIds: [...moving(keys[row])], target }),
+    selected: (row) => selected.has(keys[row]),
+    handleTitle: (row) => handleTitle(selected, keys[row]),
+    onHandleClick: (row) => selection.toggle(keys[row]),
   })
 
   // 列头的状态格量自第一行：状态格的宽度由各游戏的渲染结果决定
@@ -1106,55 +1187,61 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
           <pre style={{ margin: 0 }}>{error.message}</pre>
         </NonIdealState>
       ) : (
-        <Menu
-          className={stale ? 'cpp-char-list-stale' : undefined}
-          style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}
-          ulRef={parentRef}
-        >
-          {/* 一行都还没出现过时量不到状态格，画出来对不齐 */}
-          {wantHeader && statusWidths.length > 0 ? (
-            <ColumnHeader
-              columns={columnHeads}
-              statusWidths={statusWidths}
-              disabled={stale}
-              onPreview={onPreview}
-              onResize={columnWidths.setWidth}
-            />
-          ) : null}
-          <div
-            ref={contentRef}
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              width: '100%',
-              position: 'relative',
-            }}
+        <ListSelectionContext.Provider value={canSelect ? selection : undefined}>
+          <Menu
+            className={stale ? 'cpp-char-list-stale' : undefined}
+            style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}
+            ulRef={parentRef}
           >
-            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-              const index = virtualRow.index
-              return (
-                <CharacterMenu
-                  key={rows[index].key}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: `${virtualRow.size}px`,
-                    transform: `translateY(${virtualRow.start}px)`,
-                  }}
-                  character={list[index]}
-                  item={rows[index]}
-                  renderExtraFields={renderExtraFields}
-                  drag={drag}
-                  row={index}
-                  dimmed={active?.source === index}
-                />
-              )
-            })}
-            {overlay}
-          </div>
-        </Menu>
+            {/* 一行都还没出现过时量不到状态格，画出来对不齐 */}
+            {wantHeader && statusWidths.length > 0 ? (
+              <ColumnHeader
+                columns={columnHeads}
+                statusWidths={statusWidths}
+                disabled={stale}
+                onPreview={onPreview}
+                onResize={columnWidths.setWidth}
+              />
+            ) : null}
+            <div
+              ref={contentRef}
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+                width: '100%',
+                position: 'relative',
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const index = virtualRow.index
+                return (
+                  <CharacterMenu
+                    key={rows[index].key}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                    character={list[index]}
+                    item={rows[index]}
+                    renderExtraFields={renderExtraFields}
+                    drag={drag}
+                    row={index}
+                    dimmed={active ? inRanges(active.ranges, index) : false}
+                    selected={selected.has(keys[index])}
+                    onSelectClick={canSelect ? selection.click : undefined}
+                    onSelectMouseDown={canSelect ? selection.mouseDown : undefined}
+                  />
+                )
+              })}
+              {overlay}
+            </div>
+          </Menu>
+        </ListSelectionContext.Provider>
       )}
+      <SelectionBar count={selected.size} onClear={selection.clear} />
       {handle}
     </>
   )

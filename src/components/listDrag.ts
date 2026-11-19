@@ -1,4 +1,4 @@
-import type { MoveTarget } from '../pkg/cpp-core/planOrder'
+import { MoveTarget, moveKeys } from '../pkg/cpp-core/planOrder'
 
 /** 按下后移动超过这么多 px 才算拖，没超过就松开仍是点击 */
 export const DRAG_THRESHOLD = 4
@@ -45,16 +45,31 @@ export function nearestGap<T>(
   return best
 }
 
-/** 「计划」视图：keys 是各行的干员，source 是被拖的那一行 */
-export function listGaps(keys: readonly string[], source: number): DropGap<MoveTarget>[] {
-  const gaps: DropGap<MoveTarget>[] = keys.map((key, i) => ({
-    index: i,
-    edge: 'start',
-    target: i === source || i === source + 1 ? null : { before: key },
-  }))
-  const last = keys.length - 1
-  if (last >= 0) gaps.push({ index: last, edge: 'end', target: source === last ? null : { after: keys[last] } })
-  return gaps
+/**
+ * keys 每条边界上放下 moving 的去处：第 i 条在 keys[i] 上面，第 keys.length 条在最后一项下面。
+ * 放下后看得到的顺序不变就是 null，按 keys 判断：藏起来的干员不会在看不出任何变化时被挪动
+ */
+export function gatherTargets(keys: readonly string[], moving: ReadonlySet<string>): (MoveTarget | null)[] {
+  const picked = [...moving]
+  const lastStill = keys.findLast((key) => !moving.has(key))
+  return Array.from({ length: keys.length + 1 }, (_, i) => {
+    const below = keys.slice(i).find((key) => !moving.has(key))
+    const target = below !== undefined ? { before: below } : lastStill !== undefined ? { after: lastStill } : null
+    return target && moveKeys(keys, picked, target) !== keys ? target : null
+  })
+}
+
+/** 「计划」视图：keys 是各行的干员，moving 是这次挪的 */
+export function listGaps(keys: readonly string[], moving: ReadonlySet<string>): DropGap<MoveTarget>[] {
+  const n = keys.length
+  if (n === 0) return []
+  return gatherTargets(keys, moving).map((target, i) =>
+    i < n ? { index: i, edge: 'start', target } : { index: n - 1, edge: 'end', target },
+  )
+}
+
+export function inRanges(ranges: readonly (readonly [number, number])[], index: number): boolean {
+  return ranges.some(([first, last]) => first <= index && index <= last)
 }
 
 /** 指针离容器上下边越近滚得越快；拖到容器外面按贴着边算 */

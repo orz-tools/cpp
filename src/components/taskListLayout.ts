@@ -1,5 +1,5 @@
 import type { MoveTarget } from '../pkg/cpp-core/planOrder'
-import type { DropGap } from './listDrag'
+import { DropGap, gatherTargets } from './listDrag'
 
 /** 干员那一行的高度；任务列表估行高时也用它 */
 export const TASK_HEADER_HEIGHT = 30
@@ -35,25 +35,49 @@ export function layoutTasks(tasks: readonly { charId: string }[], starredCount: 
   return { runs, runOf }
 }
 
-/** 拖一名干员（第 run 组）有没有地方放：本段还有别的组。星标段在前，同一段的组总是挨着 */
-export function charDraggable(layout: TaskListLayout, run: number): boolean {
+/** 和第 run 组同一段的组；星标段在前，同一段的组总是挨着，一名干员在一段里只有一组 */
+function segmentRuns(layout: TaskListLayout, run: number): TaskRun[] {
   const starred = layout.runs[run].starred
-  return layout.runs[run - 1]?.starred === starred || layout.runs[run + 1]?.starred === starred
+  return layout.runs.filter((r) => r.starred === starred)
 }
 
-/** 拖一名干员（第 run 组）：只放在本段的组之间 */
-export function charDragGaps(layout: TaskListLayout, run: number): DropGap<MoveTarget>[] {
+/**
+ * 拖 moving 里的干员（按住的是第 run 组，moving 含它的干员）有没有地方放：本段还有不挪的组。
+ * 悬停时每次移动都问，所以不试算落点
+ */
+export function charDraggable(layout: TaskListLayout, run: number, moving: ReadonlySet<string>): boolean {
   const starred = layout.runs[run].starred
-  const gaps: DropGap<MoveTarget>[] = []
-  let last = -1
-  layout.runs.forEach((r, i) => {
-    if (r.starred !== starred) return
-    gaps.push({ index: r.first, edge: 'start', target: i === run || i === run + 1 ? null : { before: r.charId } })
-    last = i
-  })
-  const r = layout.runs[last]
-  gaps.push({ index: r.last, edge: 'end', target: last === run ? null : { after: r.charId } })
-  return gaps
+  return layout.runs.some((r) => r.starred === starred && !moving.has(r.charId))
+}
+
+/** 拖 moving 里的干员（按住的是第 run 组）：只放在本段的组之间 */
+export function charDragGaps(layout: TaskListLayout, run: number, moving: ReadonlySet<string>): DropGap<MoveTarget>[] {
+  const runs = segmentRuns(layout, run)
+  const n = runs.length
+  return gatherTargets(
+    runs.map((r) => r.charId),
+    moving,
+  ).map((target, i) =>
+    i < n ? { index: runs[i].first, edge: 'start', target } : { index: runs[n - 1].last, edge: 'end', target },
+  )
+}
+
+/** 两段里 moving 的干员的组，标题行连同它的任务 */
+export function charDragRanges(layout: TaskListLayout, moving: ReadonlySet<string>): (readonly [number, number])[] {
+  return layout.runs.filter((r) => moving.has(r.charId)).map((r) => [r.first, r.last] as const)
+}
+
+/**
+ * Shift 连选：从锚点那名干员的组到第 run 组，按列表从上到下的标题行。锚点的组取和第 run 组同一段的那组，
+ * 本段没有就取它第一次出现的那组
+ */
+export function headerRange(layout: TaskListLayout, anchor: string, run: number): string[] | undefined {
+  const starred = layout.runs[run].starred
+  let from = layout.runs.findIndex((r) => r.charId === anchor && r.starred === starred)
+  if (from < 0) from = layout.runs.findIndex((r) => r.charId === anchor)
+  if (from < 0) return undefined
+  const [lo, hi] = from <= run ? [from, run] : [run, from]
+  return [...new Set(layout.runs.slice(lo, hi + 1).map((r) => r.charId))]
 }
 
 /** 第 row 行所在的组里，group 相同、连着的行是一项；不带 group 的行不归任何一项 */
@@ -83,7 +107,7 @@ export function groupDragGaps(
   tasks: readonly { group?: string }[],
   layout: TaskListLayout,
   row: number,
-): { rows: readonly [number, number]; gaps: DropGap<MoveTarget>[] } | undefined {
+): { ranges: readonly (readonly [number, number])[]; gaps: DropGap<MoveTarget>[] } | undefined {
   if (!tasks[row]?.group) return undefined
   const { run, items } = groupItems(tasks, layout, row)
   const source = items.findIndex((w) => w.first <= row && row <= w.last)
@@ -97,5 +121,5 @@ export function groupDragGaps(
   }))
   const last = items.length - 1
   gaps.push({ index: items[last].last, edge: 'end', target: last === source ? null : { after: items[last].group } })
-  return { rows: [dragged.first, dragged.last], gaps }
+  return { ranges: [[dragged.first, dragged.last]], gaps }
 }
