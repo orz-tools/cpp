@@ -29,6 +29,30 @@ export function plainSelection(key: string): SelectionState {
   return { keys: EMPTY_SELECTION.keys, anchor: key }
 }
 
+/**
+ * 有选中的就是选择模式：普通点击也是勾选，不然选上第一名后顺手点下一名会开档案、把刚选的清掉。
+ * 只有不在模式里的普通点击留给行开关档案
+ */
+export function clickHandled(kind: ClickKind, selecting: boolean): boolean {
+  return kind !== 'plain' || selecting
+}
+
+/** 这一下点击之后的选择。extent 给出锚点到 key 的连选范围，给不出时按勾选算 */
+export function clickSelection(
+  s: SelectionState,
+  kind: ClickKind,
+  key: string,
+  selecting: boolean,
+  extent: (anchor: string) => readonly string[] | undefined,
+): SelectionState {
+  if (kind === 'plain' && !selecting) return s.keys.size === 0 && s.anchor === key ? s : plainSelection(key)
+  if (kind === 'extend' && s.anchor !== undefined) {
+    const range = extent(s.anchor)
+    if (range) return extendSelection(s, range)
+  }
+  return toggleSelection(s, key)
+}
+
 export function rangeKeys(keys: readonly string[], anchor: string, key: string): readonly string[] | undefined {
   const from = keys.indexOf(anchor)
   const to = keys.indexOf(key)

@@ -5,9 +5,9 @@ import { gt } from '../pkg/gt'
 import {
   EMPTY_SELECTION,
   SelectionState,
+  clickHandled,
   clickKind,
-  extendSelection,
-  plainSelection,
+  clickSelection,
   rangeKeys,
   sameScope,
   toggleSelection,
@@ -17,10 +17,12 @@ import {
 export interface ListSelection {
   /** 和列表现在的 keys 的交集 */
   selected: ReadonlySet<string>
+  /** 有选中的就是选择模式：普通点击也是勾选，行不开档案 */
+  selecting: boolean
   toggle: (key: string) => void
   clear: () => void
   /**
-   * 开关档案的那一下用；返回 true 表示按了修饰键、已经处理，行不再开档案。
+   * 开关档案的那一下用；返回 true 表示已经改了选择（按了修饰键，或在选择模式里），行不再开档案。
    * range 给出锚点到 key 的连选范围，不给时按 keys 的先后算
    */
   click: (e: React.MouseEvent, key: string, range?: (anchor: string) => readonly string[] | undefined) => boolean
@@ -71,31 +73,24 @@ export function useListSelection(keys: readonly string[], scope?: readonly unkno
   const toggle = useEvent((key: string) => update((s) => toggleSelection(s, key)))
   const clear = useEvent(() => update((s) => (s.keys.size === 0 ? s : EMPTY_SELECTION)))
 
+  // 按渲染时看得到的选中判断：从列表里消失的不算，列表里一个勾都没有时点行照旧开档案
+  const selecting = selected.size > 0
+
   const click = useEvent<ListSelection['click']>((e, key, range) => {
     const kind = clickKind(e)
-    if (kind === 'plain') {
-      update((s) => (s.keys.size === 0 && s.anchor === key ? s : plainSelection(key)))
-      return false
-    }
-    e.preventDefault()
-    if (kind === 'toggle') {
-      update((s) => toggleSelection(s, key))
-      return true
-    }
-    update((s) => {
-      const extent = s.anchor === undefined ? undefined : (range ?? ((a) => rangeKeys(keys, a, key)))(s.anchor)
-      return extent ? extendSelection(s, extent) : toggleSelection(s, key)
-    })
-    return true
+    const extent = range ?? ((a: string) => rangeKeys(keys, a, key))
+    update((s) => clickSelection(s, kind, key, selecting, extent))
+    const handled = clickHandled(kind, selecting)
+    if (handled) e.preventDefault()
+    return handled
   })
 
   const mouseDown = useEvent((e: React.MouseEvent) => {
     if (e.shiftKey) e.preventDefault()
   })
 
-  const any = selected.size > 0
   useEffect(() => {
-    if (!any) return
+    if (!selecting) return
     // 冒泡阶段：拖动中的 Esc 已经在捕获阶段被拖动吞掉，档案、弹窗、菜单自己的 Esc 在浮层里
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || e.defaultPrevented || inTextField(e.target)) return
@@ -104,9 +99,12 @@ export function useListSelection(keys: readonly string[], scope?: readonly unkno
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [any, clear])
+  }, [selecting, clear])
 
-  return useMemo(() => ({ selected, toggle, clear, click, mouseDown }), [selected, toggle, clear, click, mouseDown])
+  return useMemo(
+    () => ({ selected, selecting, toggle, clear, click, mouseDown }),
+    [selected, selecting, toggle, clear, click, mouseDown],
+  )
 }
 
 /** 干员那一行的拖动把手的提示：点它和 Ctrl 点一样，选上或取消 */

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
   EMPTY_SELECTION,
+  clickHandled,
   clickKind,
+  clickSelection,
   extendSelection,
   plainSelection,
   rangeKeys,
@@ -25,6 +27,98 @@ describe('clickKind', () => {
 
   it('extends with Shift held along with Ctrl', () => {
     expect(click({ ctrlKey: true, shiftKey: true })).toBe('extend')
+  })
+})
+
+describe('clickHandled', () => {
+  it('leaves a plain click to the row only while nothing is selected', () => {
+    expect(clickHandled('plain', false)).toBe(false)
+    expect(clickHandled('plain', true)).toBe(true)
+  })
+
+  it('handles Ctrl and Shift clicks either way', () => {
+    for (const selecting of [false, true]) {
+      expect(clickHandled('toggle', selecting)).toBe(true)
+      expect(clickHandled('extend', selecting)).toBe(true)
+    }
+  })
+})
+
+describe('clickSelection', () => {
+  const list = ['a', 'b', 'c', 'd', 'e']
+  const extent = (key: string) => (anchor: string) => rangeKeys(list, anchor, key)
+  const none = () => undefined
+
+  describe('a plain click while nothing is selected', () => {
+    it('is plainSelection', () => {
+      expect(clickSelection({ keys: keys(), anchor: 'a' }, 'plain', 'c', false, extent('c'))).toEqual(
+        plainSelection('c'),
+      )
+    })
+
+    it('returns the state itself when it is already empty and anchored on the key', () => {
+      const s = { keys: keys(), anchor: 'c' }
+      expect(clickSelection(s, 'plain', 'c', false, extent('c'))).toBe(s)
+    })
+
+    it('clears keys left over from rows no longer in the list', () => {
+      expect(clickSelection({ keys: keys('x'), anchor: 'x' }, 'plain', 'c', false, extent('c'))).toEqual({
+        keys: keys(),
+        anchor: 'c',
+      })
+    })
+  })
+
+  describe('a plain click while selecting', () => {
+    it('selects an unselected key and anchors on it', () => {
+      expect(clickSelection({ keys: keys('a'), anchor: 'a' }, 'plain', 'c', true, extent('c'))).toEqual({
+        keys: keys('a', 'c'),
+        anchor: 'c',
+      })
+    })
+
+    it('deselects a selected key and anchors on it', () => {
+      expect(clickSelection({ keys: keys('a', 'c'), anchor: 'a' }, 'plain', 'c', true, extent('c'))).toEqual({
+        keys: keys('a'),
+        anchor: 'c',
+      })
+    })
+
+    it('leaves nothing selected after the last one', () => {
+      expect(clickSelection({ keys: keys('c'), anchor: 'c' }, 'plain', 'c', true, extent('c')).keys).toEqual(keys())
+    })
+  })
+
+  it('toggles with Ctrl either way', () => {
+    const s = { keys: keys('a'), anchor: 'a' }
+    for (const selecting of [false, true]) {
+      expect(clickSelection(s, 'toggle', 'c', selecting, extent('c'))).toEqual(toggleSelection(s, 'c'))
+      expect(clickSelection(s, 'toggle', 'a', selecting, extent('a'))).toEqual(toggleSelection(s, 'a'))
+    }
+  })
+
+  describe('a Shift click', () => {
+    it('adds the range from the anchor and keeps the anchor', () => {
+      for (const selecting of [false, true]) {
+        expect(clickSelection({ keys: keys('a'), anchor: 'b' }, 'extend', 'd', selecting, extent('d'))).toEqual({
+          keys: keys('a', 'b', 'c', 'd'),
+          anchor: 'b',
+        })
+      }
+    })
+
+    it('toggles without an anchor', () => {
+      const s = { keys: keys('a') }
+      expect(clickSelection(s, 'extend', 'c', true, extent('c'))).toEqual(toggleSelection(s, 'c'))
+      expect(clickSelection(EMPTY_SELECTION, 'extend', 'c', false, extent('c'))).toEqual(
+        toggleSelection(EMPTY_SELECTION, 'c'),
+      )
+    })
+
+    it('toggles when there is no range from the anchor', () => {
+      const s = { keys: keys(), anchor: 'x' }
+      expect(clickSelection(s, 'extend', 'c', false, none)).toEqual(toggleSelection(s, 'c'))
+    })
   })
 })
 
