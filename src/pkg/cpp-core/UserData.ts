@@ -1,6 +1,6 @@
 import deepEqual from 'deep-equal'
 import { Draft, produce } from 'immer'
-import { Atom, PrimitiveAtom, WritableAtom, atom } from 'jotai'
+import { Atom, Getter, PrimitiveAtom, Setter, WritableAtom, atom } from 'jotai'
 import { AtomFamily, atomFamily } from 'jotai-family'
 import { clone, intersection, sum, uniq } from 'ramda'
 import { SetStateAction } from 'react'
@@ -589,6 +589,66 @@ function buildAtoms<G extends IGame>(
     'clearGoals',
   )
 
+  // 和 generateTaskExtra 判断 ✓ 的凑法一样：经验按卡片从大到小取，零头用一张最小的、还有库存的卡补上
+  const consumeCost = (get: Getter, set: Setter, task: Task<G>) => {
+    const allExpItems = ga.getExpItems()
+    for (const i of task.requires) {
+      if (Object.prototype.hasOwnProperty.call(allExpItems, i.itemId)) {
+        let exp = i.quantity
+        const expItems = Object.entries(allExpItems[i.itemId].value).sort((a, b) => -a[1] + b[1])
+        const quantities: Record<string, number> = Object.create(null)
+        const cost: Record<string, number> = Object.create(null)
+        for (const expItem of expItems) {
+          quantities[expItem[0]] = get(itemQuantity(expItem[0]))
+          cost[expItem[0]] = 0
+        }
+        for (const expItem of expItems) {
+          if (!quantities[expItem[0]]) continue
+          const need = Math.min(quantities[expItem[0]], Math.floor(exp / expItem[1]))
+          exp -= need * expItem[1]
+          quantities[expItem[0]] = quantities[expItem[0]] - need
+          cost[expItem[0]] += need
+        }
+        const smallestExpItemWithQuantity = expItems.reverse().find((x) => quantities[x[0]] > 0)
+        if (exp === 0) {
+          //
+        } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
+          // exp = 0 —— 之后不再读 exp，留着与上面 exp === 0 的分支对照
+          quantities[smallestExpItemWithQuantity[0]] -= 1
+          cost[smallestExpItemWithQuantity[0]] += 1
+        } else {
+          console.assert(false, 'virtual exp failed')
+        }
+        for (const [itemId, quantity] of Object.entries(cost)) {
+          set(itemQuantity(itemId), (e) => {
+            console.assert(e - quantity >= 0, 'exp item failed')
+            return e - quantity
+          })
+        }
+      } else {
+        set(itemQuantity(i.itemId), (e) => {
+          console.assert(e - i.quantity >= 0, 'normal item failed')
+          return e - i.quantity
+        })
+      }
+    }
+  }
+
+  // 整批放在一个事务里，算撤销的一步；事务里读到的库存是前几项扣完以后的
+  const completeTasks = withDebugLabel(
+    atom(null, (get, set, { tasks, consume }: { tasks: readonly Task<G>[]; consume: boolean }) => {
+      set(dataAtom, 'transact', () => {
+        for (const task of tasks) {
+          if (consume) consumeCost(get, set, task)
+          set(currentCharacter(task.charId), (d) => {
+            ga.getUserDataAdapter().completeTask(task.type, task.charId, d)
+          })
+        }
+      })
+    }),
+    'completeTasks',
+  )
+
   // By id, not by count: elite 2 level 60 and elite 2 level 90 make as many tasks.
   const goalMaxed = atomFamily(
     (charId: string) =>
@@ -613,6 +673,7 @@ function buildAtoms<G extends IGame>(
     moveTaskGroup,
     maxGoals,
     clearGoals,
+    completeTasks,
     goalMaxed,
     stars,
     itemQuantities,

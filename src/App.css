@@ -676,6 +676,14 @@ body {
   cursor: auto !important;
 }
 
+/* 指针停在「完成至此」上时会被完成的任务（TaskList.tsx 的 completePreviewAtom）。染在任务这一块上，
+   显示材料时材料行一起染、几项连成一片；没有子菜单的任务行背景是 inherit，透出这里的颜色。
+   flow-root：块尾分隔线的下边距本来穿出这一块，几项之间会留下没染色的白缝；行本身是绝对定位，高度不变 */
+.bp6-menu.cpp-task-preview {
+  display: flow-root;
+  background-color: rgba(35, 133, 81, 0.15);
+}
+
 /* 任务的材料行（TaskList.tsx 的 ItemStack）。一行放不下时数量换到下一行靠右，名字不截断：
    「Skill Summary - 2」「Skill Summary - 3」这类英文名，区别全在末尾 */
 .cpp-task-cost {

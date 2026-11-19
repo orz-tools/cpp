@@ -51,6 +51,13 @@ msgid_plural "%d 名特殊干员靠集成战略的任务养成，不消耗材料
 msgstr[0] ""
 msgstr[1] ""
 
+#. %d: number of tasks
+#: src/components/TaskList.tsx:160
+msgid "%d 项"
+msgid_plural "%d 项"
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/components/RetiredGame.tsx:86
 msgid "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版（下面称作「旧版」），您可以在那里继续使用。旧版和这里的数据分开存放，按下面三步就能搬过去。"
 msgstr ""
@@ -124,7 +131,7 @@ msgstr ""
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr ""
 
-#: src/components/TaskList.tsx:199
+#: src/components/TaskList.tsx:174
 msgid "优先培养（星标）"
 msgstr ""
 
@@ -336,8 +343,12 @@ msgstr[1] ""
 msgid "如今"
 msgstr ""
 
-#: src/components/TaskList.tsx:181
+#: src/components/TaskList.tsx:145
 msgid "完成"
+msgstr ""
+
+#: src/components/TaskList.tsx:158
+msgid "完成至此"
 msgstr ""
 
 #: src/components/arknights/ImporterMenuItems.tsx:22
@@ -473,7 +484,7 @@ msgstr ""
 msgid "弹出成大窗口"
 msgstr ""
 
-#: src/components/TaskList.tsx:192
+#: src/components/TaskList.tsx:151
 msgid "强制完成（不消耗材料）"
 msgstr ""
 
@@ -786,7 +797,7 @@ msgstr ""
 msgid "角色"
 msgstr ""
 
-#: src/components/TaskList.tsx:176
+#: src/components/TaskList.tsx:140
 msgid "角色内排序"
 msgstr ""
 

@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import type { Task } from '../cpp-basic'
 import '../testing/mockLocalforage'
 import type { ArknightsDataManager, Character } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
-import { ArknightsCharacterStatus } from './types'
+import { Arknights, ArknightsCharacterStatus } from './types'
 
 const cost = (id: string, count: number) => ({ id, count })
 
@@ -217,6 +218,63 @@ describe('generateTasksForCharacter', () => {
         if (group) expect(task.group).toBe(group)
         else expect('group' in task).toBe(false)
       }
+    })
+  })
+
+  // 任务列表里一名干员的行总是前置在前，「完成至此」才能从最上面一项项往下完成：每完成一项，剩下的正好是后面那些
+  describe('completing a plan in list order', () => {
+    // 和 allStarredTasksDetails 一样：星标的一项连同它一路的前置按生成顺序排在最前，其余的按生成顺序跟在后面
+    const starredFirst = (tasks: readonly Task<Arknights>[], starred: Task<Arknights>) => {
+      const chain = new Set<Task<Arknights>>()
+      const visit = (t: Task<Arknights>) => {
+        chain.add(t)
+        t.depends.forEach(visit)
+      }
+      visit(starred)
+      return [...tasks.filter((t) => chain.has(t)), ...tasks.filter((t) => !chain.has(t))]
+    }
+
+    const ids = (tasks: readonly Task<Arknights>[]) => tasks.map((t) => t.id).sort()
+
+    const check = (
+      charId: string,
+      from: ArknightsCharacterStatus,
+      to: ArknightsCharacterStatus,
+      starred: Task<Arknights>,
+      tasks: readonly Task<Arknights>[],
+    ) => {
+      const uda = setup()
+      const orders = { generated: tasks, starredFirst: starredFirst(tasks, starred) }
+      expect(orders.starredFirst.map((t) => t.id)).not.toEqual(tasks.map((t) => t.id))
+      for (const [name, order] of Object.entries(orders)) {
+        // completeTask 不看前置：模组 1 级先做了，精二照样留着，剩下的 id 也对得上，所以前置在前要另外查
+        order.forEach((t, i) =>
+          expect(order.slice(0, i), `${name}: ${t.id}`).toEqual(expect.arrayContaining(t.depends)),
+        )
+        for (let n = 1; n <= order.length; n++) {
+          const s = structuredClone(from)
+          for (const t of order.slice(0, n)) uda.completeTask(t.type, charId, s)
+          expect(ids(uda.generateTasksForCharacter(charId, s, to)), `${name}, ${n} done`).toEqual(ids(order.slice(n)))
+        }
+      }
+    }
+
+    it('holds for skill levels, E2, a mastery, a module and the levels between them', () => {
+      const from = status(1, 50, { skillLevel: 4 })
+      const to = status(2, 90, { skillLevel: 7, skillMaster: { mods_s1: 3 }, modLevel: { mods_y: 2 } })
+      const tasks = setup().generateTasksForCharacter('mods', from, to)
+      expect(tasks).toHaveLength(12)
+      const mod = tasks.find((t) => t.type._ === 'mod' && t.type.modId === 'mods_y' && t.type.to === 1)!
+      check('mods', from, to, mod, tasks)
+    })
+
+    it('holds from recruiting on', () => {
+      const from = status(0, 0)
+      const to = status(1, 1, { skillLevel: 7 })
+      const tasks = setup().generateTasksForCharacter('six', from, to)
+      expect(tasks[0].type).toEqual({ _: 'join' })
+      const elite = tasks.find((t) => t.type._ === 'elite' && t.type.elite === 1)!
+      check('six', from, to, elite, tasks)
     })
   })
 })

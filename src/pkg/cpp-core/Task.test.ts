@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { ExpItem, Formula, IGame, IGameAdapter, Task } from '../cpp-basic'
 import '../testing/mockLocalforage'
-import { generateTaskExtra, TaskCostStatus, TaskStatus } from './Task'
+import { emptyTaskExtra, generateTaskExtra, tasksUpTo, TaskCostStatus, TaskExtra, TaskStatus } from './Task'
 
 interface MiniGame extends IGame {
   characterStatus: { level: number }
@@ -32,8 +32,9 @@ function task(
   id: string,
   requires: { itemId: string; quantity: number }[],
   depends: Task<MiniGame>[] = [],
+  charId = 'char_1',
 ): Task<MiniGame> {
-  return { id, charId: 'char_1', type: { _: 'test' }, requires, depends }
+  return { id, charId, type: { _: 'test' }, requires, depends }
 }
 
 describe('generateTaskExtra', () => {
@@ -257,5 +258,37 @@ describe('generateTaskExtra', () => {
     expect(second).toMatchObject({ status: TaskStatus.AllUnmet, quantityCanConsume: [1] })
     expect(third).toMatchObject({ status: TaskStatus.Synthesizable, costSynthesised: [1] })
     expect(inventory).toEqual({ x: 4, z: 3 })
+  })
+})
+
+describe('tasksUpTo', () => {
+  const a1 = task('a1', [], [], 'a')
+  const a2 = task('a2', [], [], 'a')
+  const a3 = task('a3', [], [], 'a')
+  const a4 = task('a4', [], [], 'a')
+  const b1 = task('b1', [], [], 'b')
+  const b2 = task('b2', [], [], 'b')
+  const withExtra = (tasks: Task<MiniGame>[]) => tasks.map((t): [Task<MiniGame>, TaskExtra] => [t, emptyTaskExtra])
+  const ids = (list: [Task<MiniGame>, TaskExtra][]) => list.map(([t]) => t.id)
+
+  it("takes the operator's tasks down to this one, skipping other operators between them", () => {
+    const list = withExtra([a1, b1, a2, b2, a3])
+    expect(ids(tasksUpTo(list, a2))).toEqual(['a1', 'a2'])
+    expect(ids(tasksUpTo(list, a3))).toEqual(['a1', 'a2', 'a3'])
+  })
+
+  it("includes the operator's rows in the starred block, in list order", () => {
+    const list = withExtra([a1, b1, a3, b2, a2, a4])
+    expect(ids(tasksUpTo(list, a4))).toEqual(['a1', 'a3', 'a2', 'a4'])
+  })
+
+  it('finds the task by id, not by object', () => {
+    const list = withExtra([a1, b1, a2, b2, a3])
+    expect(ids(tasksUpTo(list, task('a2', [], [], 'a')))).toEqual(['a1', 'a2'])
+    expect(ids(tasksUpTo(list, task('a3', [], [], 'a')))).toEqual(['a1', 'a2', 'a3'])
+  })
+
+  it('returns nothing for a task not in the list', () => {
+    expect(tasksUpTo(withExtra([a1, b1, a2]), a4)).toEqual([])
   })
 })

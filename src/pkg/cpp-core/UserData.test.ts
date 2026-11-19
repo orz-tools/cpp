@@ -626,3 +626,92 @@ describe('plan actions', () => {
     expect(store.get(atoms.goalMaxed('a'))).toBe(true)
   })
 })
+
+describe('completeTasks', () => {
+  type Status = { lv: number }
+  const zero: Status = Object.freeze({ lv: 0 })
+  // 每一级一项任务，依赖上一级：1 份 m 加 150 经验，经验卡 big 100、small 10
+  const leveled = {
+    getUserDataAdapter: () => ({
+      getAllCharacterIds: () => ['a'],
+      getFrozenEmptyCharacterStatus: () => zero,
+      rewriteCharacters: (_: string, current?: Status, goal?: Status) => {
+        if (current && goal && deepEqual(current, goal)) goal = undefined
+        if (current && current.lv === 0) current = undefined
+        return [current, goal] as const
+      },
+      finishedCharacterStatus: () => ({ lv: 3 }),
+      generateTasksForCharacter: (charId: string, c: Status, g: Status): Task<IGame>[] => {
+        const tasks: Task<IGame>[] = []
+        for (let n = c.lv + 1; n <= g.lv; n++) {
+          tasks.push({
+            id: `${charId}->${n}`,
+            charId,
+            type: n,
+            requires: [
+              { itemId: 'm', quantity: 1 },
+              { itemId: 'exp', quantity: 150 },
+            ],
+            depends: tasks.length ? [tasks[tasks.length - 1]] : [],
+          })
+        }
+        return tasks
+      },
+      completeTask: (type: number, _: string, d: Status) => {
+        d.lv = type
+      },
+      isManuallyTask: () => false,
+    }),
+    getFormulas: () => [],
+    getExpItems: () => ({ exp: { value: { big: 100, small: 10 }, indirectStage: [] } }),
+  } as unknown as IGameAdapter<IGame>
+
+  function setup() {
+    const store = createStore()
+    const holder = new UserDataAtomHolder(leveled)
+    holder.setAtom(
+      atom<UserData<IGame> | undefined>({
+        ...newUserData(),
+        current: { a: { lv: 1 } },
+        goal: { a: { lv: 3 } },
+        goalOrder: ['a'],
+        items: { m: 2, big: 3, small: 10 },
+      }),
+      atom<string[]>([]),
+      atom(0),
+    )
+    return { store, atoms: holder.atoms }
+  }
+
+  it('completes the tasks in order and takes their items, the second from what the first left', () => {
+    const { store, atoms } = setup()
+    const assert = vi.spyOn(console, 'assert')
+    try {
+      store.set(atoms.completeTasks, { tasks: store.get(atoms.goalTasks('a')), consume: true })
+      const data = store.get(atoms.dataAtom)
+      expect(data.current.a).toEqual({ lv: 3 })
+      expect('a' in data.goal).toBe(false)
+      expect(data.items).toEqual({ m: 0, big: 1, small: 0 })
+      // m 和 small 刚好用完
+      expect(assert.mock.calls.filter(([ok]) => ok === false)).toEqual([])
+    } finally {
+      assert.mockRestore()
+    }
+  })
+
+  it('leaves the items alone without consume', () => {
+    const { store, atoms } = setup()
+    store.set(atoms.completeTasks, { tasks: store.get(atoms.goalTasks('a')), consume: false })
+    const data = store.get(atoms.dataAtom)
+    expect(data.current.a).toEqual({ lv: 3 })
+    expect(data.items).toEqual({ m: 2, big: 3, small: 10 })
+  })
+
+  it('undoes the whole batch in one step', () => {
+    const { store, atoms } = setup()
+    const before = store.get(atoms.dataAtom)
+    store.set(atoms.completeTasks, { tasks: store.get(atoms.goalTasks('a')), consume: true })
+    store.set(atoms.dataAtom, 'undo')
+    expect(store.get(atoms.dataAtom)).toEqual(before)
+  })
+})
