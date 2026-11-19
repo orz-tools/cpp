@@ -19,6 +19,9 @@ export const externalLinkProps = {
   },
 } satisfies React.AnchorHTMLAttributes<HTMLAnchorElement>
 
+/** 「关于」、顶栏的帮助按钮和手机「更多」里的帮助文档共用 */
+export const HELP_DOC_URL = 'https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp'
+
 const AboutLinks = memo(() => {
   const { AboutCopyright, AboutCredits, AboutThirdParty, AboutDataSources, email } = useComponents()
   const realEmail = email || 'cpp@ouomail.com'
@@ -26,12 +29,7 @@ const AboutLinks = memo(() => {
   return (
     <>
       <MenuDivider title={gt.gettext('帮助与社区')} />
-      <MenuItem
-        href="https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp"
-        icon="help"
-        text={gt.gettext('帮助文档')}
-        {...externalLinkProps}
-      />
+      <MenuItem href={HELP_DOC_URL} icon="help" text={gt.gettext('帮助文档')} {...externalLinkProps} />
       <MenuItem
         icon={'chat'}
         multiline={true}
@@ -257,7 +255,7 @@ export const DataObjectStatus = memo(
 export const HelpButton = memo(() => {
   return (
     <AnchorButton
-      href="https://alidocs.dingtalk.com/i/p/OlnXRJreeRDKAXLp"
+      href={HELP_DOC_URL}
       icon="help"
       variant="minimal"
       text={<span className="cpp-very-compact">{gt.gettext('帮助')}</span>}

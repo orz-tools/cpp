@@ -1712,3 +1712,61 @@ body .bp6-navbar-group {
 .cpp-phone-tab-dot.is-pin {
   background: var(--bp-palette-blue-3);
 }
+
+/* 「更多」（PhoneMore.tsx）：侧栏那一栏在手机上是一列，列表、子页、面板页都占满宽度 */
+.cpp-phone .cpp-sidebar {
+  flex-direction: column;
+}
+
+.cpp-phone .cpp-sidebar-panel,
+.cpp-phone-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: auto;
+  min-height: 0;
+}
+
+.cpp-phone-more {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone-more > li > .bp6-menu-item {
+  align-items: center;
+  min-height: 44px;
+}
+
+.cpp-phone-more > li > .bp6-menu-item > .bp6-menu-item-label {
+  display: flex;
+  align-items: center;
+}
+
+.cpp-phone-more-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cpp-phone-more-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+  vertical-align: 1px;
+  background: var(--bp-palette-red-3);
+}
+
+/* 子页和面板页的标题栏：返回贴着左边，标题紧跟在后面 */
+.cpp-phone-page-head.bp6-navbar {
+  flex: none;
+  padding: 0 4px 0 0;
+}
+
+.cpp-phone-page-head .bp6-navbar-heading {
+  margin-right: 0;
+  font-weight: 600;
+}

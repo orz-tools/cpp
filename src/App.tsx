@@ -32,6 +32,7 @@ import { FarmList } from './components/FarmList'
 import { ImportPasteBox } from './components/ImportPasteBox'
 import { ItemList } from './components/ItemList'
 import { PeekBoard } from './components/Peek'
+import { useReloadGameData } from './components/reloadGameData'
 import { PhoneTabBar } from './components/PhoneTabBar'
 import { PhoneArea, phoneAreaAtom, usePhoneLayout } from './components/phoneLayout'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
@@ -42,7 +43,7 @@ import { UserDataManagerButton, UserDataManagerMenuItem } from './components/Use
 import { ValueOptionButton } from './components/Value'
 import { useComponents } from './hooks/useComponents'
 import { LocaleButton } from './locales'
-import { UpdateResult, UpdateScheduler } from './pkg/cpp-basic'
+import { UpdateScheduler } from './pkg/cpp-basic'
 import { gt } from './pkg/gt'
 import { formatProfileName } from './profiles'
 
@@ -77,42 +78,14 @@ const UndoButtons = memo(() => {
 })
 
 const ReloadDataButton = memo(() => {
-  const cpp = useCpp()
-  const dm = cpp.gameAdapter.getDataManager()
-  const { updating } = useAtomValue(cpp.gameDataStatusAtom)
-  const setError = useSetAtom(ErrAtom)
-  const run = useEvent(async (operation: () => Promise<UpdateResult>) => {
-    const toaster = await AppToaster
-    const reload = toaster.show(
-      { message: gt.gettext('更新数据中…'), isCloseButtonShown: false, timeout: 0, intent: 'primary' },
-      'reload',
-    )
-    try {
-      const r = await operation()
-      // Replaced in place: a dismiss followed by a show with the same key drops both, as the dismiss lands last.
-      if (r.applied) {
-        toaster.show({ message: gt.gettext('游戏数据已更新'), intent: 'success' }, reload)
-      } else {
-        toaster.show({ message: gt.gettext('未找到新数据') }, reload)
-      }
-    } catch (e) {
-      console.log(e)
-      toaster.dismiss(reload)
-      setError({ error: e, context: gt.pgettext('error context', '检查数据更新失败') })
-    }
-  })
+  const { updating, checkForUpdates, reload } = useReloadGameData()
 
   return (
     <>
       <ContextMenu
         content={
           <Menu>
-            <MenuItem
-              text={gt.gettext('重载数据')}
-              icon={'reset'}
-              disabled={updating}
-              onClick={() => void run(() => dm.reset())}
-            />
+            <MenuItem text={gt.gettext('重载数据')} icon={'reset'} disabled={updating} onClick={reload} />
           </Menu>
         }
       >
@@ -121,7 +94,7 @@ const ReloadDataButton = memo(() => {
           disabled={updating}
           text={<span className={'cpp-very-compact'}>{gt.gettext('检查数据更新')}</span>}
           variant="minimal"
-          onClick={() => void run(() => dm.update({ force: true }))}
+          onClick={checkForUpdates}
         />
       </ContextMenu>
     </>

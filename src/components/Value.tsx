@@ -270,30 +270,36 @@ export const SetValueOptionMenuItem = memo(({ type }: { type: ValueType }) => {
   )
 })
 
+/** 顶栏「价值」弹出的菜单；手机上是「更多 › 价值」那一页 */
+export const ValueOptionMenu = memo(({ className }: { className?: string }) => {
+  const { ValueConfigMenu } = useComponents()
+  return (
+    <Menu className={className}>
+      {Object.values(ValueType).map((x) => (
+        <SetValueOptionMenuItem type={x} key={x} />
+      ))}
+      {ValueConfigMenu ? (
+        <>
+          <MenuDivider title={gt.pgettext('value config', '价值计算')} />
+          <ValueConfigMenu />
+        </>
+      ) : null}
+    </Menu>
+  )
+})
+
+/** 现在用的价值单位，例如「AP」 */
+export function useValueTypeName(): string {
+  const type = useAtomValue(useCpp().preferenceAtoms.valueTypeAtom)
+  return ValueName[type].toString()
+}
+
 export const ValueOptionButton = memo(() => {
   const cpp = useCpp()
   const type = useAtomValue(cpp.preferenceAtoms.valueTypeAtom)
-  const { ValueConfigMenu } = useComponents()
 
   return (
-    <Popover
-      usePortal={true}
-      minimal={true}
-      content={
-        <Menu>
-          {Object.values(ValueType).map((x) => (
-            <SetValueOptionMenuItem type={x} key={x} />
-          ))}
-          {ValueConfigMenu ? (
-            <>
-              <MenuDivider title={gt.pgettext('value config', '价值计算')} />
-              <ValueConfigMenu />
-            </>
-          ) : null}
-        </Menu>
-      }
-      position="bottom-left"
-    >
+    <Popover usePortal={true} minimal={true} content={<ValueOptionMenu />} position="bottom-left">
       <Button icon={ValueIcon[type]} variant="minimal" endIcon={'chevron-down'}>
         {<span className={'cpp-very-compact'}>{ValueName[type].toString()}</span>}
       </Button>

@@ -53,26 +53,26 @@ const CompactQuantitiesItem = memo(() => {
   )
 })
 
-export const ConfigButton = memo(() => {
+/** 顶栏「选项」弹出的菜单；手机上是「更多 › 选项」那一页 */
+export const ConfigMenu = memo(({ className }: { className?: string }) => {
   const ga = useGameAdapter()
   const { ConfigMenuItems } = useComponents()
   const tags = Object.entries(ga.getFormulaTagNames())
   return (
-    <Popover
-      usePortal={true}
-      minimal={true}
-      content={
-        <Menu>
-          {tags.map(([k, v]) => {
-            return <ForbiddenFormulaTag key={k} tag={k} text={v.toString()} />
-          })}
-          {tags.length > 0 ? <MenuDivider /> : null}
-          <CompactQuantitiesItem />
-          {ConfigMenuItems ? <ConfigMenuItems /> : null}
-        </Menu>
-      }
-      position="bottom-left"
-    >
+    <Menu className={className}>
+      {tags.map(([k, v]) => {
+        return <ForbiddenFormulaTag key={k} tag={k} text={v.toString()} />
+      })}
+      {tags.length > 0 ? <MenuDivider /> : null}
+      <CompactQuantitiesItem />
+      {ConfigMenuItems ? <ConfigMenuItems /> : null}
+    </Menu>
+  )
+})
+
+export const ConfigButton = memo(() => {
+  return (
+    <Popover usePortal={true} minimal={true} content={<ConfigMenu />} position="bottom-left">
       <Button icon={'properties'} variant="minimal" endIcon={'chevron-down'}>
         <span className="cpp-very-compact">{gt.gettext('选项')}</span>
       </Button>
@@ -271,61 +271,71 @@ export const SoulButton = memo(() => {
   )
 })
 
+/** 游戏有不止一种外观时才有灵魂按钮 */
+export function useHasBlobFlavours(): boolean {
+  const flavours = useCpp().gameComponent.blobFlavours
+  return flavours?.length === 1 ? false : true
+}
+
 export const MaybeSoulButton = memo(() => {
-  const cpp = useCpp()
-  // const blobFlavour = useAtomValue(cpp.preferenceAtoms.blobFlavourAtom)
-  const flavours = cpp.gameComponent.blobFlavours
-  const shouldShow = flavours?.length === 1 ? false : true
-  return shouldShow ? <SoulButton /> : null
+  return useHasBlobFlavours() ? <SoulButton /> : null
 })
 
-export const RegionButton = memo(() => {
+/** 游戏服务器的列表和现在用的那个。列表只有一个时顶栏不出按钮，手机的「更多」也不出这一行 */
+export function useRegions() {
   const cpp = useCpp()
   // The region is the committed one, so it changes with the generation.
   useGameDataGeneration()
+  const regions = cpp.gameAdapterStatic.getRegions() || []
+  return { regions, region: cpp.region, current: regions.find((x) => x.id === cpp.region) }
+}
+
+/** 顶栏「游戏服务器」弹出的菜单；手机上是「更多 › 游戏服务器」那一页 */
+export const RegionMenu = memo(({ className, style }: { className?: string; style?: React.CSSProperties }) => {
+  const cpp = useCpp()
   const { updating } = useAtomValue(cpp.gameDataStatusAtom)
-  const { region, gameAdapterStatic } = cpp
-  const regions = gameAdapterStatic.getRegions() || []
+  const { regions, region } = useRegions()
+  return (
+    <Menu className={className} style={style}>
+      <MenuDivider title={gt.gettext('游戏服务器')} />
+      {regions.map((x) => {
+        return (
+          <MenuItem
+            key={x.id}
+            text={x.name}
+            labelElement={
+              x.short ? (
+                <Tag minimal style={{ fontFamily: 'monospace' }}>
+                  {x.short}
+                </Tag>
+              ) : null
+            }
+            active={x.id === region}
+            disabled={updating}
+            onClick={() => void cpp.setRegion(x.id)}
+          />
+        )
+      })}
+      <MenuDivider />
+      <DescriptionMenuItem
+        icon={'info-sign'}
+        text={gt.gettext('免责声明')}
+        description={
+          'The names, abbreviations, and codes of countries, regions, and languages are presented in their original form as accurately as possible, and do not reflect any political biases held by the developer.'
+        }
+      />
+    </Menu>
+  )
+})
+
+const regionMenuStyle: React.CSSProperties = { maxWidth: '300px' }
+
+export const RegionButton = memo(() => {
+  const { regions, region, current: currentRegion } = useRegions()
   if (regions.length <= 1) return null
-  const currentRegion = regions.find((x) => x.id === region)
 
   return (
-    <Popover
-      usePortal={true}
-      minimal={true}
-      content={
-        <Menu style={{ maxWidth: '300px' }}>
-          <MenuDivider title={gt.gettext('游戏服务器')} />
-          {regions.map((x) => {
-            return (
-              <MenuItem
-                key={x.id}
-                text={x.name}
-                labelElement={
-                  x.short ? (
-                    <Tag minimal style={{ fontFamily: 'monospace' }}>
-                      {x.short}
-                    </Tag>
-                  ) : null
-                }
-                active={x.id === region}
-                disabled={updating}
-                onClick={() => void cpp.setRegion(x.id)}
-              />
-            )
-          })}
-          <MenuDivider />
-          <DescriptionMenuItem
-            icon={'info-sign'}
-            text={gt.gettext('免责声明')}
-            description={
-              'The names, abbreviations, and codes of countries, regions, and languages are presented in their original form as accurately as possible, and do not reflect any political biases held by the developer.'
-            }
-          />
-        </Menu>
-      }
-      position="bottom-right"
-    >
+    <Popover usePortal={true} minimal={true} content={<RegionMenu style={regionMenuStyle} />} position="bottom-right">
       <Button
         icon={
           <>
