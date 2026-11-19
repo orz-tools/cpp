@@ -1,4 +1,4 @@
-import { Button, Classes, Drawer, Popover, Tab, Tabs, Tag } from '@blueprintjs/core'
+import { Button, Classes, Drawer, Menu, Popover, Tab, Tabs, Tag } from '@blueprintjs/core'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { RefObject, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
@@ -6,7 +6,7 @@ import { useGameAdapter, useGameDataMemo } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { ICharacter } from '../pkg/cpp-basic'
 import { gt, lpstr } from '../pkg/gt'
-import { CharacterContextMenu } from './CharacterList'
+import { CharacterLookupMenuItems } from './CharacterList'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { CachedImg } from './Icons'
 import { dossierAtom, dossierPrefsAtom, useCloseCharacterDossier } from './dossierHooks'
@@ -217,7 +217,16 @@ export const CharacterDossier = memo(() => {
               ) : null}
             </div>
           </div>
-          <Popover content={<CharacterContextMenu character={character} />} placement="bottom-end" minimal>
+          {/* Not the list's context menu: the dossier is in no list to sort, and the 练度 page has its own 拉满 and 清空 */}
+          <Popover
+            content={
+              <Menu>
+                <CharacterLookupMenuItems character={character} />
+              </Menu>
+            }
+            placement="bottom-end"
+            minimal
+          >
             <Button variant="minimal" icon="more" title={gt.gettext('更多')} aria-label={gt.gettext('更多')} />
           </Popover>
           <Button

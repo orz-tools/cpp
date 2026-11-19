@@ -169,7 +169,6 @@ export const SortButtonGroup = ({
 
 export const CharacterContextMenu = memo(
   ({ character, alwaysSorting }: { character: ICharacter; alwaysSorting?: boolean }) => {
-    const { CharacterContextMenuItems } = useComponents()
     const atoms = useAtoms<IGame>()
     const store = useStore()
     const param = useAtomValue(useCpp().queryParamAtom)
@@ -220,31 +219,40 @@ export const CharacterContextMenu = memo(
           </>
         ) : null}
         <CharacterPlanMenuItems charId={character.key} />
-        <MenuItem
-          icon={'duplicate'}
-          text={gt.gettext('复制角色名')}
-          onClick={() => {
-            navigator.clipboard.writeText(character.name).then(
-              async () =>
-                (await AppToaster).show({
-                  icon: 'tick',
-                  intent: 'success',
-                  message: gt.gettext('已复制「%s」').replaceAll('%s', character.name),
-                }),
-              async () =>
-                (await AppToaster).show({
-                  icon: 'error',
-                  intent: 'danger',
-                  message: gt.gettext('无法写入剪贴板'),
-                }),
-            )
-          }}
-        />
-        {CharacterContextMenuItems ? <CharacterContextMenuItems character={character} /> : null}
+        <CharacterLookupMenuItems character={character} />
       </Menu>
     )
   },
 )
+
+export const CharacterLookupMenuItems = memo(({ character }: { character: ICharacter }) => {
+  const { CharacterContextMenuItems } = useComponents()
+  return (
+    <>
+      <MenuItem
+        icon={'duplicate'}
+        text={gt.gettext('复制角色名')}
+        onClick={() => {
+          navigator.clipboard.writeText(character.name).then(
+            async () =>
+              (await AppToaster).show({
+                icon: 'tick',
+                intent: 'success',
+                message: gt.gettext('已复制「%s」').replaceAll('%s', character.name),
+              }),
+            async () =>
+              (await AppToaster).show({
+                icon: 'error',
+                intent: 'danger',
+                message: gt.gettext('无法写入剪贴板'),
+              }),
+          )
+        }}
+      />
+      {CharacterContextMenuItems ? <CharacterContextMenuItems character={character} /> : null}
+    </>
+  )
+})
 
 // 纵向放不下时交给 preventOverflow 往上挪，不因此翻到左边；顶上让出 40px 的顶栏
 const statusPopoverModifiers: PopoverProps['modifiers'] = {

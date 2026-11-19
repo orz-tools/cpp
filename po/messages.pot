@@ -178,8 +178,8 @@ msgid "关卡"
 msgstr ""
 
 #: src/App.tsx:481
-#: src/components/CharacterDossier.tsx:226
-#: src/components/CharacterDossier.tsx:227
+#: src/components/CharacterDossier.tsx:235
+#: src/components/CharacterDossier.tsx:236
 #: src/components/Importer.tsx:163
 #: src/components/Peek.tsx:133
 #: src/components/Peek.tsx:134
@@ -246,7 +246,7 @@ msgstr ""
 msgid "取消"
 msgstr ""
 
-#: src/components/CharacterList.tsx:213
+#: src/components/CharacterList.tsx:212
 msgid "取消选中"
 msgstr ""
 
@@ -321,7 +321,7 @@ msgstr ""
 msgid "复制数据"
 msgstr ""
 
-#: src/components/CharacterList.tsx:225
+#: src/components/CharacterList.tsx:234
 msgid "复制角色名"
 msgstr ""
 
@@ -411,7 +411,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr ""
 
-#: src/components/CharacterList.tsx:232
+#: src/components/CharacterList.tsx:241
 msgid "已复制「%s」"
 msgstr ""
 
@@ -557,7 +557,7 @@ msgstr ""
 
 #: src/components/arknights/ExporterMenuItems.tsx:109
 #: src/components/arknights/ExporterMenuItems.tsx:38
-#: src/components/CharacterList.tsx:238
+#: src/components/CharacterList.tsx:247
 msgid "无法写入剪贴板"
 msgstr ""
 
@@ -605,7 +605,7 @@ msgstr ""
 msgid "暂无可计算来源"
 msgstr ""
 
-#: src/components/CharacterDossier.tsx:221
+#: src/components/CharacterDossier.tsx:230
 msgid "更多"
 msgstr ""
 
@@ -651,7 +651,7 @@ msgstr ""
 msgid "查看源码"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1186
+#: src/components/CharacterList.tsx:1194
 msgid "查询失败"
 msgstr ""
 
@@ -693,7 +693,7 @@ msgstr ""
 msgid "清空"
 msgstr ""
 
-#: src/components/CharacterList.tsx:217
+#: src/components/CharacterList.tsx:216
 #: src/components/ListSelection.tsx:137
 msgid "清除选择"
 msgstr ""
@@ -778,7 +778,7 @@ msgstr ""
 msgid "角色内排序"
 msgstr ""
 
-#: src/components/CharacterList.tsx:204
+#: src/components/CharacterList.tsx:203
 msgid "角色计划排序"
 msgstr ""
 
@@ -936,12 +936,12 @@ msgstr ""
 msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 
-#: src/components/CharacterList.tsx:213
+#: src/components/CharacterList.tsx:212
 msgid "选中"
 msgstr ""
 
 #. %d: number
-#: src/components/CharacterList.tsx:197
+#: src/components/CharacterList.tsx:196
 msgid "选中的 %d 名干员"
 msgid_plural "选中的 %d 名干员"
 msgstr[0] ""
@@ -2641,22 +2641,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr ""
 
-#: src/components/CharacterList.tsx:503
+#: src/components/CharacterList.tsx:511
 msgctxt "holding filter"
 msgid "可练"
 msgstr ""
 
-#: src/components/CharacterList.tsx:504
+#: src/components/CharacterList.tsx:512
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr ""
 
-#: src/components/CharacterList.tsx:512
+#: src/components/CharacterList.tsx:520
 msgctxt "holding filter"
 msgid "缺席"
 msgstr ""
 
-#: src/components/CharacterList.tsx:513
+#: src/components/CharacterList.tsx:521
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr ""
@@ -2753,7 +2753,7 @@ msgstr ""
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:454
 #: src/components/arknights/voucherText.tsx:31
-#: src/components/CharacterList.tsx:598
+#: src/components/CharacterList.tsx:606
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
 msgctxt "list separator"
@@ -3570,19 +3570,19 @@ msgctxt "predefined query"
 msgid "精二直升价值（全部）"
 msgstr ""
 
-#: src/components/CharacterList.tsx:766
+#: src/components/CharacterList.tsx:774
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr ""
 
-#: src/components/CharacterList.tsx:759
+#: src/components/CharacterList.tsx:767
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr ""
 
-#: src/components/CharacterList.tsx:773
+#: src/components/CharacterList.tsx:781
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -4178,8 +4178,8 @@ msgctxt "query menu"
 msgid "全部 4–6 星干员的技能"
 msgstr ""
 
-#: src/components/CharacterList.tsx:950
-#: src/components/CharacterList.tsx:951
+#: src/components/CharacterList.tsx:958
+#: src/components/CharacterList.tsx:959
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr ""
@@ -4189,7 +4189,7 @@ msgctxt "query menu"
 msgid "养成成本"
 msgstr ""
 
-#: src/components/CharacterList.tsx:846
+#: src/components/CharacterList.tsx:854
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr ""
@@ -4229,7 +4229,7 @@ msgctxt "query menu"
 msgid "已持有的干员的全部基建技能，含已解锁的"
 msgstr ""
 
-#: src/components/CharacterList.tsx:891
+#: src/components/CharacterList.tsx:899
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr ""
@@ -4239,8 +4239,8 @@ msgctxt "query menu"
 msgid "所有干员的全部基建技能，含没持有的和已解锁的"
 msgstr ""
 
-#: src/components/CharacterList.tsx:942
-#: src/components/CharacterList.tsx:943
+#: src/components/CharacterList.tsx:950
+#: src/components/CharacterList.tsx:951
 msgctxt "query menu"
 msgid "更多视图"
 msgstr ""
@@ -4250,8 +4250,8 @@ msgctxt "query menu"
 msgid "练度统计"
 msgstr ""
 
-#: src/components/CharacterList.tsx:950
-#: src/components/CharacterList.tsx:951
+#: src/components/CharacterList.tsx:958
+#: src/components/CharacterList.tsx:959
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr ""
@@ -4317,13 +4317,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr ""
 
-#: src/components/CharacterList.tsx:595
+#: src/components/CharacterList.tsx:603
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr ""
 
-#: src/components/CharacterList.tsx:595
+#: src/components/CharacterList.tsx:603
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -5160,7 +5160,7 @@ msgctxt "training cost"
 msgid "最多：从精零 1 级用时能省的；条上浅蓝的那段是已经练掉的。"
 msgstr ""
 
-#: src/components/CharacterList.tsx:789
+#: src/components/CharacterList.tsx:797
 msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr ""
