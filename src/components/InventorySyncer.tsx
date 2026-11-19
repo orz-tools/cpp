@@ -2,7 +2,7 @@ import { Alignment, Button, Classes, Menu, MenuItem, Navbar, NumericInput, Popov
 import { useAtomValue } from 'jotai'
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import useResizeObserver from 'use-resize-observer'
+import { useResizeObserver } from 'use-resize-observer'
 import { useAtoms, useGameAdapter, useGameDataMemo, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, IItem } from '../pkg/cpp-basic'
