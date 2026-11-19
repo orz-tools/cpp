@@ -405,14 +405,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ValueConfigMenu.tsx:481
+#: src/components/arknights/ValueConfigMenu.tsx:486
 msgid "已定价 %d 种物品"
 msgid_plural "已定价 %d 种物品"
 msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ValueConfigMenu.tsx:227
+#: src/components/arknights/ValueConfigMenu.tsx:228
 msgid "已排除 %d 个关卡"
 msgid_plural "已排除 %d 个关卡"
 msgstr[0] ""
@@ -549,7 +549,7 @@ msgstr ""
 msgid "时间重叠、飞跃，令人恍惚，所幸我们共度的时光鲜明而真切……"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:459
+#: src/components/arknights/ValueConfigMenu.tsx:464
 msgid "明日方舟一图流"
 msgstr ""
 
@@ -615,7 +615,7 @@ msgstr ""
 msgid "查看源码"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1098
+#: src/components/CharacterList.tsx:1099
 msgid "查询失败"
 msgstr ""
 
@@ -2343,27 +2343,27 @@ msgctxt "character dossier"
 msgid "%s 的档案"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:177
+#: src/components/queryEditor/ColumnHeader.tsx:182
 msgctxt "character list column"
 msgid "「%s」的列宽"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:106
+#: src/components/queryEditor/ColumnHeader.tsx:108
 msgctxt "character list column"
 msgid "干员"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:112
+#: src/components/queryEditor/ColumnHeader.tsx:114
 msgctxt "character list column"
 msgid "当前状态"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:186
+#: src/components/queryEditor/ColumnHeader.tsx:191
 msgctxt "character list column"
 msgid "拖动调整列宽，双击恢复默认（%d px）"
 msgstr ""
 
-#: src/components/queryEditor/ColumnHeader.tsx:115
+#: src/components/queryEditor/ColumnHeader.tsx:117
 msgctxt "character list column"
 msgid "目标状态"
 msgstr ""
@@ -5137,7 +5137,7 @@ msgctxt "training cost"
 msgid "零"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:251
+#: src/components/arknights/ValueConfigMenu.tsx:252
 msgctxt "value config"
 msgid "1 表示按 CE-6 的理智折算"
 msgstr ""
@@ -5147,17 +5147,17 @@ msgctxt "value config"
 msgid "不需要"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:271
+#: src/components/arknights/ValueConfigMenu.tsx:272
 msgctxt "value config"
 msgid "不需要（0）"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:208
+#: src/components/arknights/ValueConfigMenu.tsx:209
 msgctxt "value config"
 msgid "主线"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:375
+#: src/components/arknights/ValueConfigMenu.tsx:377
 msgctxt "value config"
 msgid "价值"
 msgstr ""
@@ -5167,7 +5167,7 @@ msgctxt "value config"
 msgid "价值计算"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:490
+#: src/components/arknights/ValueConfigMenu.tsx:495
 msgctxt "value config"
 msgid "价值计算失败"
 msgstr ""
@@ -5177,33 +5177,33 @@ msgctxt "value config"
 msgid "价值计算设置"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:399
+#: src/components/arknights/ValueConfigMenu.tsx:404
 msgctxt "value config"
 msgid "删除"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:334
 #: src/components/arknights/ValueConfigMenu.tsx:336
+#: src/components/arknights/ValueConfigMenu.tsx:338
 msgctxt "value config"
 msgid "加工为 %s"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:302
+#: src/components/arknights/ValueConfigMenu.tsx:304
 msgctxt "value config"
 msgid "加工站副产物提升量"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:210
+#: src/components/arknights/ValueConfigMenu.tsx:211
 msgctxt "value config"
 msgid "含开放活动"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:341
+#: src/components/arknights/ValueConfigMenu.tsx:343
 msgctxt "value config"
 msgid "固定价值"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:331
+#: src/components/arknights/ValueConfigMenu.tsx:333
 msgctxt "value config"
 msgid "均分"
 msgstr ""
@@ -5213,27 +5213,27 @@ msgctxt "value config"
 msgid "基建材料"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:198
+#: src/components/arknights/ValueConfigMenu.tsx:199
 msgctxt "value config"
 msgid "定价关卡"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:200
+#: src/components/arknights/ValueConfigMenu.tsx:201
 msgctxt "value config"
 msgid "定价范围"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:209
+#: src/components/arknights/ValueConfigMenu.tsx:210
 msgctxt "value config"
 msgid "常驻"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:447
+#: src/components/arknights/ValueConfigMenu.tsx:452
 msgctxt "value config"
 msgid "应用"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:441
+#: src/components/arknights/ValueConfigMenu.tsx:446
 msgctxt "value config"
 msgid "恢复默认"
 msgstr ""
@@ -5248,7 +5248,7 @@ msgctxt "value config"
 msgid "技巧概要 卷2→卷3"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:266
+#: src/components/arknights/ValueConfigMenu.tsx:267
 msgctxt "value config"
 msgid "按 CE-6 定价（1）"
 msgstr ""
@@ -5258,22 +5258,22 @@ msgctxt "value config"
 msgid "按 LS-6 定价"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:236
+#: src/components/arknights/ValueConfigMenu.tsx:237
 msgctxt "value config"
 msgid "掉落样本少于此数的关卡不参与定价"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:212
+#: src/components/arknights/ValueConfigMenu.tsx:213
 msgctxt "value config"
 msgid "排除的关卡"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:425
+#: src/components/arknights/ValueConfigMenu.tsx:430
 msgctxt "value config"
 msgid "新增"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:230
+#: src/components/arknights/ValueConfigMenu.tsx:231
 msgctxt "value config"
 msgid "无"
 msgstr ""
@@ -5298,22 +5298,22 @@ msgctxt "value config"
 msgid "无人机：3 级贸易站，精 2 龙舌兰、精 2 但书"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:343
+#: src/components/arknights/ValueConfigMenu.tsx:345
 msgctxt "value config"
 msgid "材料退环境"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:235
+#: src/components/arknights/ValueConfigMenu.tsx:236
 msgctxt "value config"
 msgid "样本量阈值"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:344
+#: src/components/arknights/ValueConfigMenu.tsx:346
 msgctxt "value config"
 msgid "点亮后按按钮上的数值固定价值"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:374
+#: src/components/arknights/ValueConfigMenu.tsx:376
 msgctxt "value config"
 msgid "物品"
 msgstr ""
@@ -5338,17 +5338,17 @@ msgctxt "value config"
 msgid "精英材料 T4→T5"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:276
+#: src/components/arknights/ValueConfigMenu.tsx:277
 msgctxt "value config"
 msgid "经验系数"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:285
+#: src/components/arknights/ValueConfigMenu.tsx:286
 msgctxt "value config"
 msgid "自定义"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:316
+#: src/components/arknights/ValueConfigMenu.tsx:318
 #: src/components/arknights/ValueConfigMenu.tsx:80
 msgctxt "value config"
 msgid "芯片"
@@ -5360,27 +5360,27 @@ msgid "芯片组"
 msgstr ""
 
 #. %s: 明日方舟一图流, linked
-#: src/components/arknights/ValueConfigMenu.tsx:453
+#: src/components/arknights/ValueConfigMenu.tsx:458
 msgctxt "value config"
 msgid "计算思路参考 %s"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:501
+#: src/components/arknights/ValueConfigMenu.tsx:506
 msgctxt "value config"
 msgid "设置…"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:409
+#: src/components/arknights/ValueConfigMenu.tsx:414
 msgctxt "value config"
 msgid "选择材料…"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:248
+#: src/components/arknights/ValueConfigMenu.tsx:249
 msgctxt "value config"
 msgid "龙门币与经验"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:250
+#: src/components/arknights/ValueConfigMenu.tsx:251
 msgctxt "value config"
 msgid "龙门币系数"
 msgstr ""
