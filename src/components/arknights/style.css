@@ -1613,13 +1613,13 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-muted {
   font-size: 12px;
   line-height: 16px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-num {
   margin: 0 2px;
   font-size: 16px;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-mm-stats-main {
@@ -1645,8 +1645,8 @@ section:first-child > .cpp-stages-wide-section {
   gap: 6px;
   margin: 0 -8px -12px;
   padding: 4px 4px 4px 12px;
-  border-top: 1px solid rgba(17, 20, 24, 0.15);
-  background: #fff;
+  border-top: 1px solid rgb(var(--cpp-ink) / 0.15);
+  background: var(--cpp-surface);
   box-shadow: 0 -2px 6px rgba(17, 20, 24, 0.08);
   font-size: 12px;
   line-height: 16px;
@@ -1672,14 +1672,14 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-all-done {
   padding: 12px 0;
   text-align: center;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-ticket {
   position: relative;
-  border: 1px solid rgba(17, 20, 24, 0.2);
+  border: 1px solid rgb(var(--cpp-ink) / 0.2);
   border-radius: 4px;
-  background: #fff;
+  background: var(--cpp-surface);
   overflow: hidden;
 }
 
@@ -1689,7 +1689,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-ticket.is-clickable:hover {
-  border-color: rgba(17, 20, 24, 0.4);
+  border-color: rgb(var(--cpp-ink) / 0.4);
 }
 
 .cpp-mm-ticket.is-selected {
@@ -1724,8 +1724,8 @@ section:first-child > .cpp-stages-wide-section {
   width: 62px;
   flex: none;
   padding: 6px 2px;
-  border-right: 1px dashed rgba(17, 20, 24, 0.25);
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  border-right: 1px dashed rgb(var(--cpp-ink) / 0.25);
+  background: var(--cpp-tint-1);
   text-align: center;
 }
 
@@ -1746,7 +1746,7 @@ section:first-child > .cpp-stages-wide-section {
   overflow: hidden;
   font-size: 11px;
   line-height: 15px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1778,14 +1778,14 @@ section:first-child > .cpp-stages-wide-section {
   max-width: 100%;
   height: 24px;
   padding: 0 6px 0 2px;
-  border: 1px solid rgba(17, 20, 24, 0.15);
+  border: 1px solid rgb(var(--cpp-ink) / 0.15);
   border-radius: 3px;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  background: var(--cpp-tint-1);
   font-size: 12px;
 }
 
 .cpp-mm-chip.is-done .cpp-mm-name {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   text-decoration: line-through;
 }
 
@@ -1802,12 +1802,12 @@ section:first-child > .cpp-stages-wide-section {
 /* 带上的人：虚线框，名字前一个灰色的「+」 */
 .cpp-mm-chip.is-tag-along {
   border-style: dashed;
-  border-color: rgba(17, 20, 24, 0.3);
+  border-color: rgb(var(--cpp-ink) / 0.3);
 }
 
 .cpp-mm-tag-plus {
   margin-left: 2px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   font-weight: 600;
 }
 
@@ -1852,7 +1852,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-equip {
   font-family: monospace;
   font-size: 11px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-summary {
@@ -1868,10 +1868,10 @@ section:first-child > .cpp-stages-wide-section {
   justify-content: space-between;
   gap: 2px 8px;
   padding: 4px 8px;
-  border-top: 1px dashed rgba(17, 20, 24, 0.25);
+  border-top: 1px dashed rgb(var(--cpp-ink) / 0.25);
   font-size: 12px;
   line-height: 16px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-cap .cpp-mm-num {
@@ -1908,7 +1908,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-cap-caret {
   margin-left: 2px;
   vertical-align: -1px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-cap-button {
@@ -1928,7 +1928,7 @@ section:first-child > .cpp-stages-wide-section {
   display: inline-flex;
   width: 14px;
   height: 14px;
-  color: var(--bp-palette-dark-gray-3, #383e47);
+  color: var(--cpp-strong);
 }
 
 .cpp-mm-pro .bp6-icon,
@@ -1982,7 +1982,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-run-row.is-done .cpp-mm-run-who > .cpp-mm-summary,
 .cpp-mm-piggy.is-done .cpp-mm-summary,
 .cpp-mm-table tr.is-done .cpp-mm-summary {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   text-decoration: line-through;
 }
 
@@ -2008,14 +2008,14 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-piggy-tag {
   margin-right: 4px;
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 /* 带上的人：左栏没有勾选框，是灰色的「+」，和勾选框一样宽；「×」在第一行最右边 */
 .cpp-mm-tag-mark {
   width: 16px;
   margin: 3px 8px 0 0;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   font-size: 15px;
   font-weight: 600;
   line-height: 18px;
@@ -2039,7 +2039,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-note.is-warning {
-  color: var(--bp-palette-orange-2, #935610);
+  color: var(--bp-typography-color-warning-rest);
 }
 
 .cpp-mm-run-actions {
@@ -2054,7 +2054,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-mm-ticket.is-used .cpp-mm-stub,
 .cpp-mm-ticket.is-all-done:not(.is-selected) .cpp-mm-stub {
-  background: #fff;
+  background: var(--cpp-surface);
 }
 
 .cpp-mm-stamp {
@@ -2064,17 +2064,17 @@ section:first-child > .cpp-stages-wide-section {
   padding: 0 4px;
   border: 2px solid var(--bp-palette-red-3, #cd4246);
   border-radius: 3px;
-  color: var(--bp-palette-red-3, #cd4246);
+  color: var(--bp-typography-color-danger-rest);
   font-size: 12px;
   font-weight: 700;
   line-height: 18px;
-  background: rgba(255, 255, 255, 0.85);
+  background: color-mix(in srgb, var(--cpp-surface) 85%, transparent);
   transform: translateY(-50%) rotate(-12deg);
   pointer-events: none;
 }
 
 .cpp-mm-group > .bp6-button {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-group-body {
@@ -2104,7 +2104,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-any-row.is-done .cpp-mm-summary,
 .cpp-mm-dossier-mission.is-done > .cpp-mm-dossier-row .cpp-mm-summary,
 .cpp-mm-dossier-mission.is-done > .cpp-mm-dossier-row .cpp-mm-muted {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   text-decoration: line-through;
 }
 
@@ -2154,7 +2154,7 @@ section:first-child > .cpp-stages-wide-section {
 /* 「这一关还有 1 次：第 2 次 华法琳」：链接和句子同色 */
 .cpp-mm-siblings {
   font-size: 13px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-siblings a,
@@ -2170,7 +2170,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-detail-label {
   margin-bottom: 6px;
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-detail-pros {
@@ -2181,8 +2181,8 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-detail-pros .bp6-tag.is-barred {
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  background: var(--cpp-tint-1);
+  color: var(--bp-typography-color-muted);
   text-decoration: line-through;
 }
 
@@ -2216,8 +2216,8 @@ section:first-child > .cpp-stages-wide-section {
   bottom: 0;
   margin: 0 -4px -12px;
   padding: 8px 4px 12px;
-  border-top: 1px solid rgba(17, 20, 24, 0.15);
-  background: #fff;
+  border-top: 1px solid rgb(var(--cpp-ink) / 0.15);
+  background: var(--cpp-surface);
 }
 
 .cpp-mm-summary-big {
@@ -2244,7 +2244,7 @@ section:first-child > .cpp-stages-wide-section {
   flex-direction: column;
   gap: 6px;
   padding: 8px 10px 6px;
-  border-bottom: 1px solid rgba(17, 20, 24, 0.1);
+  border-bottom: 1px solid rgb(var(--cpp-ink) / 0.1);
 }
 
 .cpp-mm-picker-title {
@@ -2264,7 +2264,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-mm-picker-label {
   margin-right: 2px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-picker-row .bp6-button {
@@ -2325,7 +2325,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-mm-picker-group {
   margin-top: 2px;
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-cand {
@@ -2340,7 +2340,7 @@ section:first-child > .cpp-stages-wide-section {
   min-height: 20px;
   margin-top: 1px;
   padding: 0;
-  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.25);
+  box-shadow: inset 0 0 0 1px rgb(var(--cpp-ink) / 0.25);
 }
 
 .cpp-mm-cand-body {
@@ -2353,14 +2353,14 @@ section:first-child > .cpp-stages-wide-section {
   margin-left: auto;
   padding-left: 8px;
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   white-space: nowrap;
 }
 
 .cpp-mm-cand-summary {
   font-size: 12px;
   line-height: 16px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-mm-cand-more {
@@ -2432,7 +2432,7 @@ section:first-child > .cpp-stages-wide-section {
   margin-bottom: 4px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 /* 左边是人，右边是他这一次那条任务 */
@@ -2444,11 +2444,11 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-together-list .cpp-mm-summary {
-  color: var(--bp-palette-dark-gray-3, #383e47);
+  color: var(--cpp-strong);
 }
 
 .cpp-mm-together-list .cpp-mm-summary.is-done {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   text-decoration: line-through;
 }
 
@@ -2478,7 +2478,7 @@ section:first-child > .cpp-stages-wide-section {
   height: 8px;
   border-radius: 2px;
   overflow: hidden;
-  background: var(--bp-palette-light-gray-4, #edeff2);
+  background: var(--cpp-tint-2);
 }
 
 .cpp-cost-bar > span {
@@ -2536,7 +2536,7 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 11px;
   font-variant-numeric: tabular-nums;
   line-height: 13px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   white-space: nowrap;
 }
 
@@ -2552,7 +2552,7 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-voucher-caption b {
   font-weight: 600;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 /* 档案的「养成成本」一节 */
@@ -2568,11 +2568,11 @@ section:first-child > .cpp-stages-wide-section {
   margin: 16px 0 6px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-cost-muted {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   font-size: 12px;
 }
 
@@ -2597,13 +2597,13 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-cost-track-segment-label {
   bottom: 3px;
   font-size: 11px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-cost-track-point-label {
   top: 5px;
   font-size: 12px;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-cost-track-point-label.is-first {
@@ -2640,7 +2640,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-cost-track-rest {
-  background: var(--bp-palette-gray-5, #c5cbd3);
+  background: var(--cpp-tint-6);
 }
 
 .cpp-cost-track-tick {
@@ -2649,7 +2649,7 @@ section:first-child > .cpp-stages-wide-section {
   bottom: -4px;
   width: 2px;
   margin-left: -1px;
-  background: var(--bp-palette-dark-gray-1, #1c2127);
+  background: var(--bp-typography-color-default-rest);
 }
 
 /* 负边距抵掉外圈的格间距，表格和上面的进度条、下面的材料一样左右顶边 */
@@ -2665,7 +2665,7 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 12px;
   font-weight: normal;
   white-space: nowrap;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-cost-table th:first-child {
@@ -2696,7 +2696,7 @@ section:first-child > .cpp-stages-wide-section {
   padding: 6px 8px;
   border: 0;
   border-radius: 3px;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  background: var(--cpp-tint-1);
   color: inherit;
   font: inherit;
   text-align: right;
@@ -2705,7 +2705,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-cost-table-cell:hover {
-  background: var(--bp-palette-light-gray-4, #edeff2);
+  background: var(--cpp-tint-2);
 }
 
 .cpp-cost-table-cell:focus-visible {
@@ -2716,7 +2716,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-cost-table-cell.is-selected {
   background: rgba(45, 114, 210, 0.12);
   box-shadow: inset 0 0 0 1px var(--bp-intent-primary-rest, #2d72d2);
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
   font-weight: 600;
 }
 
@@ -2749,8 +2749,8 @@ section:first-child > .cpp-stages-wide-section {
   width: 40px;
   height: 40px;
   border-radius: 3px;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
-  box-shadow: inset 0 0 0 1px rgba(17, 20, 24, 0.08);
+  background: var(--cpp-tint-1);
+  box-shadow: inset 0 0 0 1px rgb(var(--cpp-ink) / 0.08);
 }
 
 .cpp-cost-material-quantity {
@@ -2760,11 +2760,11 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 11px;
   line-height: 13px;
   font-weight: 600;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
   text-shadow:
-    0 0 2px #fff,
-    0 0 2px #fff,
-    0 0 2px #fff;
+    0 0 2px var(--cpp-surface),
+    0 0 2px var(--cpp-surface),
+    0 0 2px var(--cpp-surface);
 }
 
 .cpp-cost-folded,
@@ -2789,7 +2789,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-cost-vouchers th,
 .cpp-cost-vouchers td {
   padding: 5px 4px;
-  border-bottom: 1px solid var(--bp-palette-light-gray-4, #edeff2);
+  border-bottom: 1px solid var(--cpp-tint-2);
   text-align: left;
   vertical-align: middle;
 }
@@ -2797,7 +2797,7 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-cost-vouchers thead th {
   font-size: 11px;
   font-weight: normal;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-cost-vouchers tbody th {
@@ -2826,7 +2826,7 @@ section:first-child > .cpp-stages-wide-section {
   margin-top: 2px;
   font-size: 11px;
   line-height: 13px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   white-space: nowrap;
 }
 
@@ -2844,7 +2844,7 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-cost-strip-base {
-  stroke: var(--bp-palette-gray-5, #c5cbd3);
+  stroke: var(--cpp-tint-6);
   stroke-width: 1;
 }
 
@@ -2859,13 +2859,13 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-cost-rank {
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   white-space: nowrap;
   vertical-align: middle;
 }
 
 .cpp-cost-rank b {
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
   font-weight: 600;
 }
 
