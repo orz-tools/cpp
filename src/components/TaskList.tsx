@@ -1,4 +1,16 @@
-import { Alignment, Button, ContextMenu, Icon, IconName, Menu, MenuDivider, MenuItem, Navbar } from '@blueprintjs/core'
+import {
+  Alignment,
+  Button,
+  ContextMenu,
+  Icon,
+  IconName,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  MenuItemProps,
+  Navbar,
+  PopoverNextProps,
+} from '@blueprintjs/core'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { WritableAtom, atom, useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
@@ -351,7 +363,7 @@ export const TaskMenu = memo(
                   )}
                 </div>
               }
-              popoverProps={{ usePortal: true, matchTargetWidth: true }}
+              popoverProps={taskSubmenuPopoverProps}
             >
               {submenu ? [...renderedNotes, ...renderedCosts] : null}
             </MenuItem>
@@ -367,6 +379,25 @@ export const TaskMenu = memo(
 )
 
 const preventDefault = (e: React.MouseEvent<any, MouseEvent>) => e.preventDefault()
+
+// 材料子菜单至少和任务行一样宽，放不下英文物品名时随内容加宽；matchTargetWidth 会把宽度定死成行宽。
+// MenuItem 的子菜单已经是 PopoverNext，popoverProps 却还按旧 Popover 定类型，middleware 只能绕过类型交过去：
+// popoverPropsToNextProps 把不认识的键原样转交。哪天转不过去了，子菜单只是按内容收窄，不会坏
+const minRowWidth: Pick<PopoverNextProps, 'middleware'> = {
+  middleware: {
+    size: {
+      apply: ({ rects, elements }) => {
+        elements.floating.style.minWidth = `${rects.reference.width}px`
+      },
+    },
+  },
+}
+
+const taskSubmenuPopoverProps: MenuItemProps['popoverProps'] = {
+  usePortal: true,
+  popoverClassName: 'cpp-task-submenu',
+  ...(minRowWidth as object),
+}
 
 const StatusIcon = {
   [TaskStatus.AllUnmet]: 'cross',
@@ -415,10 +446,11 @@ const ItemStack = memo(
               </div>
             }
             onContextMenu={preventDefault}
+            multiline={true}
             text={
-              <div style={{ display: 'flex' }}>
-                <span style={{ flex: 1, flexShrink: 1 }}>{item.name}</span>
-                <span>
+              <div className="cpp-task-cost">
+                <span>{item.name}</span>
+                <span className="cpp-task-cost-quantity">
                   {consumed > 0 || (consumed <= 0 && synthesised <= 0) ? consumed : undefined}
                   {consumed > 0 && synthesised > 0 ? ' + ' : undefined}
                   {synthesised > 0 ? (
@@ -451,7 +483,7 @@ const TaskNoteRow = memo(({ charId, note, style }: { charId: string; note: TaskN
   })
   return (
     <MenuItem
-      className={dossier ? undefined : 'cpp-menu-not-interactive'}
+      className={'cpp-task-note' + (dossier ? '' : ' cpp-menu-not-interactive')}
       icon={note.icon}
       text={note.text}
       multiline={true}

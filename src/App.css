@@ -652,6 +652,32 @@ body {
   cursor: auto !important;
 }
 
+/* 任务的材料行（TaskList.tsx 的 ItemStack）。一行放不下时数量换到下一行靠右，名字不截断：
+   「Skill Summary - 2」「Skill Summary - 3」这类英文名，区别全在末尾 */
+.cpp-task-cost {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 12px;
+}
+
+.cpp-task-cost-quantity {
+  margin-left: auto;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 子菜单按材料行加宽，最窄是任务行宽：TaskList.tsx 的 minRowWidth 设在外框上，弹层要铺满外框。
+   宽过上限的行，数量换到下一行 */
+.cpp-task-submenu {
+  flex-grow: 1;
+  max-width: 400px;
+}
+
+/* 长说明会把按内容定宽的子菜单一路撑到上限；说明只跟着材料行定下的宽度折行 */
+.cpp-task-note {
+  contain: inline-size;
+}
+
 /* 干员列表里不能点的附加列：和 .cpp-menu-not-interactive 一样，排版仍靠 bp6-menu-item */
 .cpp-char-col-static {
   background-color: inherit !important;
