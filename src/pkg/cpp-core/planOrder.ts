@@ -2,30 +2,46 @@ export type MoveTarget = { before: string } | { after: string }
 
 export type MoveStep = 'first' | 'up' | 'down' | 'last'
 
-/** 不用挪时返回传入的那个数组本身，调用方按引用判断要不要写数据 */
-export function moveKey(order: readonly string[], key: string, target: MoveTarget): readonly string[] {
+/**
+ * 选中的几项按它们在 order 里的先后收拢成一串，插到锚点前后；不连着的也收拢。
+ * 不用挪时返回传入的那个数组本身，调用方按引用判断要不要写数据
+ */
+export function moveKeys(order: readonly string[], keys: readonly string[], target: MoveTarget): readonly string[] {
+  const moving = new Set(keys)
   const anchor = 'before' in target ? target.before : target.after
-  if (key === anchor || !order.includes(key) || !order.includes(anchor)) return order
-  const rest = order.filter((x) => x !== key)
+  if (moving.has(anchor) || !order.includes(anchor)) return order
+  const picked = order.filter((x) => moving.has(x))
+  if (picked.length === 0) return order
+  const rest = order.filter((x) => !moving.has(x))
   const at = rest.indexOf(anchor) + ('before' in target ? 0 : 1)
-  const next = [...rest.slice(0, at), key, ...rest.slice(at)]
+  const next = [...rest.slice(0, at), ...picked, ...rest.slice(at)]
   return next.every((x, i) => x === order[i]) ? order : next
 }
 
-export function stepTarget(order: readonly string[], key: string, step: MoveStep): MoveTarget | undefined {
-  const i = order.indexOf(key)
-  if (i < 0) return undefined
-  const last = order.length - 1
-  switch (step) {
-    case 'first':
-      return i > 0 ? { before: order[0] } : undefined
-    case 'up':
-      return i > 0 ? { before: order[i - 1] } : undefined
-    case 'down':
-      return i < last ? { after: order[i + 1] } : undefined
-    case 'last':
-      return i < last ? { after: order[last] } : undefined
-  }
+/** 上移、下移按收拢算：选中的一串挪到第一项前面（最后一项后面）那名没选中的旁边，和拖动同一个规矩 */
+export function stepTarget(order: readonly string[], keys: readonly string[], step: MoveStep): MoveTarget | undefined {
+  const moving = new Set(keys)
+  const rest = order.filter((x) => !moving.has(x))
+  if (rest.length === 0 || rest.length === order.length) return undefined
+  const first: MoveTarget = { before: rest[0] }
+  const last: MoveTarget = { after: rest[rest.length - 1] }
+  const target = (() => {
+    switch (step) {
+      case 'first':
+        return first
+      case 'last':
+        return last
+      case 'up': {
+        const i = order.findIndex((x) => moving.has(x))
+        return i > 0 ? { before: order[i - 1] } : first
+      }
+      case 'down': {
+        const i = order.findLastIndex((x) => moving.has(x))
+        return i < order.length - 1 ? { after: order[i + 1] } : last
+      }
+    }
+  })()
+  return moveKeys(order, keys, target) === order ? undefined : target
 }
 
 /**

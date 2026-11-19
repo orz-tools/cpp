@@ -153,8 +153,8 @@ export const CharacterContextMenu = memo(
     const param = useAtomValue(useCpp().queryParamAtom)
     const order = useAtomValue(atoms.goalOrder)
     const move = (step: MoveStep) => {
-      const target = stepTarget(order, character.key, step)
-      if (target) store.set(atoms.moveInPlan, { charId: character.key, target })
+      const target = stepTarget(order, [character.key], step)
+      if (target) store.set(atoms.moveInPlan, { charIds: [character.key], target })
     }
     // 和「角色内排序」一样：计划里没有别的干员可换时，四个按钮哪个都挪不动
     const movable = order.length > 1 && order.includes(character.key)
@@ -1044,7 +1044,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
         row,
       ),
     }),
-    commit: (row, target) => store.set(atoms.moveInPlan, { charId: list[row].key, target }),
+    commit: (row, target) => store.set(atoms.moveInPlan, { charIds: [list[row].key], target }),
   })
 
   // 列头的状态格量自第一行：状态格的宽度由各游戏的渲染结果决定

@@ -126,7 +126,7 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
   const goalTasks = useAtomValue(atoms.goalTasks(task.charId))
   const groups = useMemo(() => uniq(goalTasks.flatMap((x) => (x.group ? [x.group] : []))), [goalTasks])
   const moveGroup = (step: MoveStep) => {
-    const target = task.group ? stepTarget(groups, task.group, step) : undefined
+    const target = task.group ? stepTarget(groups, [task.group], step) : undefined
     if (target) store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
   }
 
@@ -565,7 +565,7 @@ export const TaskList = memo(<G extends IGame>() => {
     },
     commit: ({ kind, row }, target) => {
       const task = tasks[row]
-      if (kind === 'char') store.set(atoms.moveInPlan, { charId: task.charId, target })
+      if (kind === 'char') store.set(atoms.moveInPlan, { charIds: [task.charId], target })
       else store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
     },
   })

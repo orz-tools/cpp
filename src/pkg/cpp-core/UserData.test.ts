@@ -203,14 +203,31 @@ describe('plan order', () => {
     const { store, atoms } = setup()
     const before = store.get(atoms.dataAtom)
     store.set(atoms.moveTaskGroup, { charId: 'a', group: 'g1', target: { before: 'g2' } })
-    store.set(atoms.moveInPlan, { charId: 'a', target: { before: 'a' } })
+    store.set(atoms.moveInPlan, { charIds: ['a'], target: { before: 'a' } })
     expect(store.get(atoms.dataAtom)).toBe(before)
   })
 
   it('moves in the plan order with the planned operators the stored order misses', () => {
     const { store, atoms } = setup({ current: { a: {}, b: {} }, goal: { a: {}, b: {} } })
-    store.set(atoms.moveInPlan, { charId: 'b', target: { before: 'a' } })
+    store.set(atoms.moveInPlan, { charIds: ['b'], target: { before: 'a' } })
     expect(store.get(atoms.dataAtom).goalOrder).toEqual(['b', 'a'])
+  })
+
+  it('moves several operators together in one undo step', () => {
+    const three = { a: {}, b: {}, c: {} }
+    const { store, atoms } = setup({ current: three, goal: three, goalOrder: ['a', 'b', 'c'] })
+    store.set(atoms.moveInPlan, { charIds: ['c', 'a'], target: { after: 'b' } })
+    expect(store.get(atoms.dataAtom).goalOrder).toEqual(['b', 'a', 'c'])
+    store.set(atoms.dataAtom, 'undo')
+    expect(store.get(atoms.dataAtom).goalOrder).toEqual(['a', 'b', 'c'])
+  })
+
+  it('writes nothing when several operators land where they are', () => {
+    const three = { a: {}, b: {}, c: {} }
+    const { store, atoms } = setup({ current: three, goal: three, goalOrder: ['a', 'b', 'c'] })
+    const before = store.get(atoms.dataAtom)
+    store.set(atoms.moveInPlan, { charIds: ['a', 'b'], target: { before: 'c' } })
+    expect(store.get(atoms.dataAtom)).toBe(before)
   })
 
   it("drops an operator's group order with its plan", () => {
