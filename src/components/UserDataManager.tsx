@@ -293,9 +293,9 @@ const UserDataManagerContent = memo(
             <TextArea
               size="small"
               value={value}
+              className="cpp-userdata-text"
               style={{
                 width: '100%',
-                minWidth: '400px',
                 height: '200px',
                 fontFamily: 'monospace',
                 whiteSpace: 'pre-wrap',

@@ -1191,6 +1191,24 @@ body {
   transform: rotateX(180deg);
 } */
 
+/* 用户数据管理的文本框撑开弹窗；手机上弹窗占满屏宽，不再撑 */
+.cpp-userdata-text {
+  min-width: 400px;
+}
+
+.cpp-importer-result {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  height: 70vh;
+  padding: 15px;
+}
+
+.cpp-importer-diff {
+  flex: 1;
+  overflow: auto;
+}
+
 .cpp-importer-diff > .bp6-tabs {
   height: 100%;
 }
@@ -1946,6 +1964,74 @@ body .bp6-navbar-group {
   color: var(--bp-palette-gray-1);
   opacity: 1;
   white-space: nowrap;
+}
+
+/*
+ * 弹窗占满一屏：标题栏、底栏不动，中间滚动。盖过上面 .bp6-dialog 的 80vw，所以也要 !important。
+ * 提示框（Alert）照旧居中，只是两边各留 16px
+ */
+.cpp-phone .bp6-dialog:not(.bp6-alert) {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100dvh;
+  margin: 0;
+  border-radius: 0;
+}
+
+.cpp-phone .bp6-dialog:not(.bp6-alert) > .bp6-dialog-header {
+  border-radius: 0;
+}
+
+.cpp-phone .bp6-dialog:not(.bp6-alert) > :not(.bp6-dialog-header) {
+  min-height: 0;
+}
+
+.cpp-phone .bp6-dialog:not(.bp6-alert) > .bp6-dialog-footer,
+.cpp-phone .bp6-dialog:not(.bp6-alert) > .bp6-dialog-footer-fixed {
+  margin-top: auto;
+}
+
+.cpp-phone .bp6-dialog-body {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .bp6-dialog-body-scroll-container {
+  max-height: none;
+}
+
+.cpp-phone .bp6-alert {
+  max-width: calc(100vw - 32px) !important;
+}
+
+/* 底栏的按钮不把字挤成两行，放不下就折到下一行 */
+.cpp-phone .bp6-dialog-footer-fixed,
+.cpp-phone .bp6-dialog-footer-actions {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+.cpp-phone .bp6-dialog-footer .bp6-button {
+  white-space: nowrap;
+}
+
+.cpp-phone .cpp-userdata-text {
+  min-width: 0;
+}
+
+/* 「关于」的大窗口排成一栏，整页滚动 */
+.cpp-phone .cpp-about-wide {
+  grid-template-columns: 1fr;
+  width: auto;
+  max-width: none;
+  height: auto;
+}
+
+/* 导入结果撑满弹窗中间那一块 */
+.cpp-phone .cpp-importer-result {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
 }
 
 /* 「更多」（PhoneMore.tsx）：侧栏那一栏在手机上是一列，列表、子页、面板页都占满宽度 */

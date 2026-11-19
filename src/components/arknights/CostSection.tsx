@@ -456,58 +456,60 @@ const VoucherTable = memo(({ ga, tc, character }: { ga: ArknightsAdapter; tc: Tr
   return (
     <>
       <div className="cpp-cost-subtitle">{gt.pgettext('training cost', '直升道具')}</div>
-      <table className="cpp-cost-vouchers">
-        <thead>
-          <tr>
-            <th />
-            <th>{gt.pgettext('training cost', '在 %d 星里排第几').replaceAll('%d', `${stars}`)}</th>
-            <th className="cpp-cost-vouchers-eff">
-              <HeadTerm
-                title={gt.pgettext('training cost', '效率')}
-                tip={<EfficiencyTip tc={tc} character={character} />}
-              />
-            </th>
-            <th className="cpp-cost-vouchers-saving">
-              <HeadTerm title={gt.pgettext('training cost', '现在用能省')} tip={<SavingTip />} />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => {
-            const item = ga.getItem(row.itemId)
-            return (
-              <tr key={row.key}>
-                <th scope="row">
-                  <span className="cpp-cost-voucher">
-                    {item ? (
-                      <CachedImg src={item.icon} width={24} height={24} alt={item.name} title={item.name} />
-                    ) : null}
-                    {row.label}
-                  </span>
-                </th>
-                <td>
-                  {row.rank === 'level' ? (
-                    <span className="cpp-cost-muted">{gt.pgettext('training cost', '不分干员，只看等级')}</span>
-                  ) : (
-                    <RankCell rank={row.rank} value={row.voucher.now.value} />
-                  )}
-                </td>
-                <td className="cpp-cost-vouchers-eff">
-                  {Number.isFinite(row.voucher.efficiency) ? `${efficiencyPercent(row.voucher.efficiency)}%` : null}
-                </td>
-                <td className="cpp-cost-vouchers-saving">
-                  <ValueTag value={row.voucher.now.value} minimal={true} />
-                  {showsMost(row.voucher) ? (
-                    <span className="cpp-cost-vouchers-most">
-                      <MostText value={row.voucher.most.value} />
+      <div className="cpp-cost-vouchers-scroll">
+        <table className="cpp-cost-vouchers">
+          <thead>
+            <tr>
+              <th />
+              <th>{gt.pgettext('training cost', '在 %d 星里排第几').replaceAll('%d', `${stars}`)}</th>
+              <th className="cpp-cost-vouchers-eff">
+                <HeadTerm
+                  title={gt.pgettext('training cost', '效率')}
+                  tip={<EfficiencyTip tc={tc} character={character} />}
+                />
+              </th>
+              <th className="cpp-cost-vouchers-saving">
+                <HeadTerm title={gt.pgettext('training cost', '现在用能省')} tip={<SavingTip />} />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => {
+              const item = ga.getItem(row.itemId)
+              return (
+                <tr key={row.key}>
+                  <th scope="row">
+                    <span className="cpp-cost-voucher">
+                      {item ? (
+                        <CachedImg src={item.icon} width={24} height={24} alt={item.name} title={item.name} />
+                      ) : null}
+                      {row.label}
                     </span>
-                  ) : null}
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+                  </th>
+                  <td>
+                    {row.rank === 'level' ? (
+                      <span className="cpp-cost-muted">{gt.pgettext('training cost', '不分干员，只看等级')}</span>
+                    ) : (
+                      <RankCell rank={row.rank} value={row.voucher.now.value} />
+                    )}
+                  </td>
+                  <td className="cpp-cost-vouchers-eff">
+                    {Number.isFinite(row.voucher.efficiency) ? `${efficiencyPercent(row.voucher.efficiency)}%` : null}
+                  </td>
+                  <td className="cpp-cost-vouchers-saving">
+                    <ValueTag value={row.voucher.now.value} minimal={true} />
+                    {showsMost(row.voucher) ? (
+                      <span className="cpp-cost-vouchers-most">
+                        <MostText value={row.voucher.most.value} />
+                      </span>
+                    ) : null}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     </>
   )
 })
