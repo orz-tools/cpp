@@ -706,7 +706,7 @@ export function generateIndirects<G extends IGame>(
       if (exp > 0) {
         const value = sum(thisExpItem.indirectStage.map((x) => thisExpItem.value[x.itemId] * x.quantity))
         const clears = Math.ceil(exp / value)
-        exp -= clears * value
+        // exp -= clears * value —— 之后不再读 exp，留着与上面的 exp -= fulfilled 对照
         for (const i of thisExpItem.indirectStage) {
           indirects[i.itemId] = (indirects[i.itemId] || 0) + Math.ceil(i.quantity * clears)
         }

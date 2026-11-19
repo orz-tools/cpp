@@ -99,7 +99,7 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
         if (exp === 0) {
           //
         } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
-          exp = 0
+          // exp = 0 —— 之后不再读 exp，留着与上面 exp === 0 的分支对照
           quantities[smallestExpItemWithQuantity[0]] -= 1
           cost[smallestExpItemWithQuantity[0]] += 1
         } else {

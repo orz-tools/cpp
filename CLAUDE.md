@@ -24,6 +24,7 @@ pnpm gt           # Extract + update + build i18n message files
 pnpm lint         # oxlint with type-aware rules (.oxlintrc.json) and the repo's own (scripts/oxlint-plugin.js)
 pnpm fmt          # Format with oxfmt (.oxfmtrc.json)
 pnpm vitest run   # Unit tests
+pnpm test:coverage # Unit tests with v8 coverage of cpp-core and cpp-arknights, written to coverage/
 ```
 
 ## i18n Workflow

@@ -4,7 +4,6 @@ import { atomWithStorage } from 'jotai/utils'
 import React, { memo, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useCpp, useGameAdapter } from '../../Cpp'
-import { getLocale } from '../../locales'
 import { AK_ITEM_GOLD, AK_ITEM_VIRTUAL_EXP, Arknights, ArknightsAdapter, Character } from '../../pkg/cpp-arknights'
 import {
   CostBreakdown,
@@ -20,6 +19,7 @@ import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { CachedImg } from '../Icons'
 import { PeekTrigger } from '../Peek'
+import { formatQuantity } from '../quantity'
 import { ValueTag, ValueText, ValueUnitIcon } from '../Value'
 import { DossierSection } from '../types'
 import { MostText, fillNodes } from './voucherText'
@@ -211,12 +211,6 @@ const CostTable = memo(
     )
   },
 )
-
-// 用默认的取舍（「9.3万」「24万」「238K」）：固定留一位小数时，英文的「238.3K」挤出了 40px 的格子
-function formatQuantity(n: number) {
-  if (n < 10000) return `${n}`
-  return new Intl.NumberFormat(getLocale().replace('_', '-'), { notation: 'compact' }).format(n)
-}
 
 type MaterialsMode = 'raw' | 'blue'
 

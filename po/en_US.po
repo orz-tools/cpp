@@ -298,7 +298,7 @@ msgid "取消"
 msgstr "Cancel"
 
 #. %d: number
-#: src/components/arknights/StageRows.tsx:234
+#: src/components/arknights/StageRows.tsx:235
 msgid "另外 %d 关"
 msgid_plural "另外 %d 关"
 msgstr[0] "%d more"
@@ -563,7 +563,7 @@ msgstr "Current"
 msgid "心情"
 msgstr "Morale"
 
-#: src/components/ItemList.tsx:394
+#: src/components/ItemList.tsx:398
 msgid "总价值"
 msgstr "Total Value"
 
@@ -588,7 +588,7 @@ msgstr "Own"
 msgid "按关卡代号或名称筛选"
 msgstr "Filter by stage code or name"
 
-#: src/components/ItemList.tsx:351
+#: src/components/ItemList.tsx:355
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
@@ -980,7 +980,7 @@ msgid_plural "还剩 %d 次作战"
 msgstr[0] "%d run left"
 msgstr[1] "%d runs left"
 
-#: src/components/ItemList.tsx:367
+#: src/components/ItemList.tsx:371
 msgid ""
 "还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出"
 "它和它前置任务要用的材料。"
@@ -1969,19 +1969,19 @@ msgctxt "arknights quick filter"
 msgid "精英 %d"
 msgstr "Elite %d"
 
-#: src/components/arknights/CostSection.tsx:433
+#: src/components/arknights/CostSection.tsx:427
 #: src/components/arknights/peekKinds.tsx:31
 msgctxt "arknights skill ref"
 msgid "一技能"
 msgstr "S1"
 
-#: src/components/arknights/CostSection.tsx:435
+#: src/components/arknights/CostSection.tsx:429
 #: src/components/arknights/peekKinds.tsx:33
 msgctxt "arknights skill ref"
 msgid "三技能"
 msgstr "S3"
 
-#: src/components/arknights/CostSection.tsx:434
+#: src/components/arknights/CostSection.tsx:428
 #: src/components/arknights/peekKinds.tsx:32
 msgctxt "arknights skill ref"
 msgid "二技能"
@@ -2047,17 +2047,17 @@ msgctxt "arknights stage category"
 msgid "资源收集"
 msgstr "Supplies"
 
-#: src/components/arknights/stagePanelModel.ts:178
+#: src/components/arknights/stagePanelModel.ts:177
 msgctxt "arknights stage category short"
 msgid "主线"
 msgstr "Main"
 
-#: src/components/arknights/stagePanelModel.ts:180
+#: src/components/arknights/stagePanelModel.ts:179
 msgctxt "arknights stage category short"
 msgid "别传"
 msgstr "Side"
 
-#: src/components/arknights/stagePanelModel.ts:182
+#: src/components/arknights/stagePanelModel.ts:181
 msgctxt "arknights stage category short"
 msgid "资源"
 msgstr "Resources"
@@ -2667,7 +2667,7 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr "assets vectorizing"
 
-#: src/components/arknights/CostSection.tsx:552
+#: src/components/arknights/CostSection.tsx:546
 msgctxt "dossier section"
 msgid "养成成本"
 msgstr "Training costs"
@@ -2843,51 +2843,51 @@ msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr "Import Result · %s"
 
-#: src/components/ItemList.tsx:158
+#: src/components/ItemList.tsx:162
 msgctxt "item list counter label"
 msgid "可合成"
 msgstr "Syn.-able"
 
-#: src/components/ItemList.tsx:137
+#: src/components/ItemList.tsx:141
 msgctxt "item list counter label"
 msgid "合成后"
 msgstr "Post Syn."
 
-#: src/components/ItemList.tsx:175
+#: src/components/ItemList.tsx:179
 msgctxt "item list counter label"
 msgid "直接需求"
 msgstr "Direct"
 
-#: src/components/ItemList.tsx:168
+#: src/components/ItemList.tsx:172
 msgctxt "item list counter label"
 msgid "还需"
 msgstr "Gap"
 
-#: src/components/ItemList.tsx:182
+#: src/components/ItemList.tsx:186
 msgctxt "item list counter label"
 msgid "间接需求"
 msgstr "Indirect"
 
-#: src/components/arknights/stagePanelModel.ts:221
-#: src/components/ItemList.tsx:284
+#: src/components/arknights/stagePanelModel.ts:220
+#: src/components/ItemList.tsx:288
 msgctxt "item list view label"
 msgid "星标"
 msgstr "Starred"
 
-#: src/components/arknights/stagePanelModel.ts:225
-#: src/components/ItemList.tsx:282
+#: src/components/arknights/stagePanelModel.ts:224
+#: src/components/ItemList.tsx:286
 msgctxt "item list view label"
 msgid "毕业"
 msgstr "Maxed"
 
-#: src/components/arknights/stagePanelModel.ts:223
-#: src/components/ItemList.tsx:283
+#: src/components/arknights/stagePanelModel.ts:222
+#: src/components/ItemList.tsx:287
 msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
 
 #: src/components/arknights/baseSkillText.ts:110
-#: src/components/arknights/CostSection.tsx:254
+#: src/components/arknights/CostSection.tsx:248
 #: src/components/arknights/importHooks.ts:110
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
@@ -5016,7 +5016,7 @@ msgctxt "stage panel"
 msgid "主要掉落（每次）"
 msgstr "Main drops (per run)"
 
-#: src/components/arknights/stagePanelModel.ts:189
+#: src/components/arknights/stagePanelModel.ts:188
 msgctxt "stage panel"
 msgid "作战记录"
 msgstr "Battle Records"
@@ -5038,7 +5038,7 @@ msgctxt "stage panel"
 msgid "关卡代号或名称"
 msgstr "Stage code or name"
 
-#: src/components/arknights/stagePanelModel.ts:281
+#: src/components/arknights/stagePanelModel.ts:280
 msgctxt "stage panel"
 msgid "其他"
 msgstr "Other"
@@ -5050,7 +5050,7 @@ msgstr ""
 "Icon corner: stock. “Need”: what goals require. Click a material for its "
 "stages."
 
-#: src/components/arknights/StageRows.tsx:171
+#: src/components/arknights/StageRows.tsx:172
 msgctxt "stage panel"
 msgid "够了"
 msgstr "Enough"
@@ -5066,24 +5066,24 @@ msgctxt "stage panel"
 msgid "已启用的关卡"
 msgstr "Enabled stages"
 
-#: src/components/arknights/StageRows.tsx:164
+#: src/components/arknights/StageRows.tsx:165
 msgctxt "stage panel"
 msgid "库存"
 msgstr "Stock"
 
-#: src/components/arknights/StageRows.tsx:203
+#: src/components/arknights/StageRows.tsx:204
 msgctxt "stage panel"
 msgid "库存 %s"
 msgstr "Stock %s"
 
 #. %s$level: 星标, 计划 or 毕业
-#: src/components/arknights/StageRows.tsx:143
+#: src/components/arknights/StageRows.tsx:144
 msgctxt "stage panel"
 msgid "按%s$level目标：直接需求 %s$direct，间接需求 %s$indirect"
 msgstr "%s$level goals: %s$direct direct, %s$indirect indirect"
 
 #. %s$level: 星标, 计划 or 毕业
-#: src/components/arknights/StageRows.tsx:139
+#: src/components/arknights/StageRows.tsx:140
 msgctxt "stage panel"
 msgid ""
 "按%s$level目标：直接需求 %s$direct，间接需求 %s$indirect；数字都是经验，库存"
@@ -5092,12 +5092,12 @@ msgstr ""
 "%s$level goals: %s$direct direct, %s$indirect indirect. All figures are EXP; "
 "the stock is your battle records counted as EXP"
 
-#: src/components/arknights/StageRows.tsx:255
+#: src/components/arknights/StageRows.tsx:256
 msgctxt "stage panel"
 msgid "按材料"
 msgstr "By material"
 
-#: src/components/arknights/StageRows.tsx:254
+#: src/components/arknights/StageRows.tsx:255
 msgctxt "stage panel"
 msgid "按章节"
 msgstr "By chapter"
@@ -5122,17 +5122,17 @@ msgstr ""
 "Efficiency = value per run ÷ sanity. Item values follow the Value "
 "Calculation settings; event tokens have no value and are left out."
 
-#: src/components/arknights/stagePanelModel.ts:275
+#: src/components/arknights/stagePanelModel.ts:274
 msgctxt "stage panel"
 msgid "效率超过 100%"
 msgstr "Above 100%"
 
-#: src/components/arknights/StageRows.tsx:270
+#: src/components/arknights/StageRows.tsx:271
 msgctxt "stage panel"
 msgid "无匹配材料"
 msgstr "No matching materials"
 
-#: src/components/arknights/stagePanelModel.ts:277
+#: src/components/arknights/stagePanelModel.ts:276
 msgctxt "stage panel"
 msgid "材料"
 msgstr "Materials"
@@ -5153,17 +5153,17 @@ msgctxt "stage panel"
 msgid "每次掉落价值"
 msgstr "Value per run"
 
-#: src/components/arknights/StageRows.tsx:81
+#: src/components/arknights/StageRows.tsx:82
 msgctxt "stage panel"
 msgid "活动"
 msgstr "Event"
 
-#: src/components/arknights/StageRows.tsx:269
+#: src/components/arknights/StageRows.tsx:270
 msgctxt "stage panel"
 msgid "物品价值计算失败"
 msgstr "Item values could not be computed"
 
-#: src/components/arknights/StageRows.tsx:263
+#: src/components/arknights/StageRows.tsx:264
 msgctxt "stage panel"
 msgid "物品价值计算失败，暂时无法显示效率；关卡的启用、禁用不受影响"
 msgstr ""
@@ -5180,27 +5180,27 @@ msgctxt "stage panel"
 msgid "理智 %d"
 msgstr "Sanity %d"
 
-#: src/components/arknights/stagePanelModel.ts:279
+#: src/components/arknights/stagePanelModel.ts:278
 msgctxt "stage panel"
 msgid "芯片"
 msgstr "Chips"
 
-#: src/components/arknights/StageRows.tsx:168
+#: src/components/arknights/StageRows.tsx:169
 msgctxt "stage panel"
 msgid "还缺"
 msgstr "Short"
 
-#: src/components/arknights/StageRows.tsx:217
+#: src/components/arknights/StageRows.tsx:218
 msgctxt "stage panel"
 msgid "需 %s"
 msgstr "Need %s"
 
-#: src/components/arknights/StageRows.tsx:161
+#: src/components/arknights/StageRows.tsx:162
 msgctxt "stage panel"
 msgid "需求"
 msgstr "Need"
 
-#: src/components/arknights/StageRows.tsx:212
+#: src/components/arknights/StageRows.tsx:213
 msgctxt "stage panel"
 msgid "需求 %s"
 msgstr "Need %s"
@@ -5222,24 +5222,24 @@ msgid "%d 星 %s"
 msgstr "%d★ %s"
 
 #. %s: item name
-#: src/components/arknights/CostSection.tsx:232
+#: src/components/arknights/CostSection.tsx:226
 msgctxt "training cost"
 msgid "%s × %d$total（直接 %d$direct，折算 %d$folded）"
 msgstr "%s × %d$total (%d$direct directly, %d$folded from crafting)"
 
 #. %s: 一技能, 二技能 or 三技能
-#: src/components/arknights/CostSection.tsx:443
+#: src/components/arknights/CostSection.tsx:437
 msgctxt "training cost"
 msgid "%s专三"
 msgstr "%s M3"
 
 #. %s: item names
-#: src/components/arknights/CostSection.tsx:309
+#: src/components/arknights/CostSection.tsx:303
 msgctxt "training cost"
 msgid "%s没有价值，没算进上面的数"
 msgstr "%s have no value and are not counted above"
 
-#: src/components/arknights/CostSection.tsx:408
+#: src/components/arknights/CostSection.tsx:402
 msgctxt "training cost"
 msgid ""
 "下面的「最多」是从能用这张道具的最早那一点用时能省的：精二从精零 1 级，专三从"
@@ -5248,7 +5248,7 @@ msgstr ""
 "“Max” below is what it saves if used at the earliest point it can be: E2 "
 "from E0 level 1, M3 from M0, max level from E2 level 1."
 
-#: src/components/arknights/CostSection.tsx:496
+#: src/components/arknights/CostSection.tsx:490
 msgctxt "training cost"
 msgid "不分干员，只看等级"
 msgstr "The same for every operator, by level only"
@@ -5323,12 +5323,12 @@ msgctxt "training cost"
 msgid "到目标"
 msgstr "To goal"
 
-#: src/components/arknights/CostSection.tsx:267
+#: src/components/arknights/CostSection.tsx:261
 msgctxt "training cost"
 msgid "原样"
 msgstr "As is"
 
-#: src/components/arknights/CostSection.tsx:469
+#: src/components/arknights/CostSection.tsx:463
 msgctxt "training cost"
 msgid "在 %d 星里排第几"
 msgstr "Rank among %d★"
@@ -5338,7 +5338,7 @@ msgctxt "training cost"
 msgid "已投入"
 msgstr "Invested"
 
-#: src/components/arknights/CostSection.tsx:268
+#: src/components/arknights/CostSection.tsx:262
 msgctxt "training cost"
 msgid "折成蓝材料"
 msgstr "In T3"
@@ -5348,7 +5348,7 @@ msgctxt "training cost"
 msgid "拉满"
 msgstr "To max"
 
-#: src/components/arknights/CostSection.tsx:472
+#: src/components/arknights/CostSection.tsx:466
 msgctxt "training cost"
 msgid "效率"
 msgstr "Efficiency"
@@ -5383,7 +5383,7 @@ msgctxt "training cost"
 msgid "满"
 msgstr "Max"
 
-#: src/components/arknights/CostSection.tsx:540
+#: src/components/arknights/CostSection.tsx:534
 msgctxt "training cost"
 msgid "物品价值计算失败，暂时算不出价值；材料明细不受影响"
 msgstr ""
@@ -5424,12 +5424,12 @@ msgstr ""
 "level 1. What is already trained can no longer be saved, so the more "
 "trained, the lower the number."
 
-#: src/components/arknights/CostSection.tsx:477
+#: src/components/arknights/CostSection.tsx:471
 msgctxt "training cost"
 msgid "现在用能省"
 msgstr "Saves now"
 
-#: src/components/arknights/CostSection.tsx:405
+#: src/components/arknights/CostSection.tsx:399
 msgctxt "training cost"
 msgid ""
 "现在用这张道具能省多少，从这名干员现在的练度算起；已经练过的那一段省不回来。"
@@ -5438,7 +5438,7 @@ msgstr ""
 "training; what is already trained can no longer be saved."
 
 #. %d: 4, 5 or 6; %s$…: the most each voucher saves on an operator of that rarity
-#: src/components/arknights/CostSection.tsx:388
+#: src/components/arknights/CostSection.tsx:382
 msgctxt "training cost"
 msgid ""
 "现在能省的，占这张道具在 %d 星干员身上最多能省的几成：精二 %s$elite2（从精零 "
@@ -5459,22 +5459,22 @@ msgctxt "training cost"
 msgid "目标到满的材料"
 msgstr "Materials from the goal to max"
 
-#: src/components/arknights/CostSection.tsx:464
+#: src/components/arknights/CostSection.tsx:458
 msgctxt "training cost"
 msgid "直升道具"
 msgstr "Vouchers"
 
-#: src/components/arknights/CostSection.tsx:338
+#: src/components/arknights/CostSection.tsx:332
 msgctxt "training cost"
 msgid "第 %d$rank / %d$count"
 msgstr "#%d$rank of %d$count"
 
-#: src/components/arknights/CostSection.tsx:427
+#: src/components/arknights/CostSection.tsx:421
 msgctxt "training cost"
 msgid "精二"
 msgstr "E2"
 
-#: src/components/arknights/CostSection.tsx:455
+#: src/components/arknights/CostSection.tsx:449
 msgctxt "training cost"
 msgid "精二满级"
 msgstr "E2 max level"
@@ -5489,12 +5489,12 @@ msgctxt "training cost"
 msgid "还差"
 msgstr "To go"
 
-#: src/components/arknights/CostSection.tsx:304
+#: src/components/arknights/CostSection.tsx:298
 msgctxt "training cost"
 msgid "金、紫材料按加工站配方折成了蓝材料"
 msgstr "T5 and T4 materials are broken down into T3 by their Workshop recipes."
 
-#: src/components/arknights/CostSection.tsx:301
+#: src/components/arknights/CostSection.tsx:295
 msgctxt "training cost"
 msgid "金、紫材料按加工站配方折成了蓝材料；龙门币里有 %d 是合成费"
 msgstr ""

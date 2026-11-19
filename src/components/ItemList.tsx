@@ -11,6 +11,7 @@ import { gt } from '../pkg/gt'
 import { useChamber } from './Chamber'
 import { ItemIcon } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
+import { formatQuantity } from './quantity'
 import { PeekTrigger } from './Peek'
 import { ItemCounterCells, itemCounterCells, itemCounterSlots } from './itemCounters'
 import { ValueTag, ValueTagProgressBar } from './Value'
@@ -57,13 +58,14 @@ export const ItemQuantityEditor = memo(
       : { style }
 
     if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
-      return <NumericInput value={input} {...look} disabled={true} allowNumericCharactersOnly={false} />
+      return <NumericInput value={input} {...look} title={input} disabled={true} allowNumericCharactersOnly={false} />
     }
     return (
       <MemoNumericInput
         allowNumericCharactersOnly={false}
         value={input}
         {...look}
+        title={input}
         min={0}
         onValueChange={onValueChange}
         onBlur={onBlur}
@@ -125,7 +127,9 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
   const rows = (cell: keyof ItemCounterCells) =>
     slots.map((slot, i) => (
       <div key={i} style={{ textAlign: 'right', opacity: slot.shown ? (cells[i][cell].strong ? 1 : 0.4) : 0 }}>
-        <span>{cells[i][cell].value}</span>
+        <span title={formatter(cells[i][cell].value)} style={{ whiteSpace: 'nowrap' }}>
+          {formatQuantity(cells[i][cell].value)}
+        </span>
       </div>
     ))
 
