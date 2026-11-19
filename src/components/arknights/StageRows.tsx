@@ -8,6 +8,8 @@ import { ArknightsStageCategory } from '../../pkg/cpp-arknights/zones'
 import { gt } from '../../pkg/gt'
 import type { StageToggleProps } from '../ConfigUi'
 import { ItemIcon } from '../Icons'
+// 本文件自己的 formatQuantity 是掉落数量的格式
+import { formatQuantity as formatCountShort } from '../quantity'
 import { SampleTag } from '../Value'
 import {
   MaterialStock,
@@ -15,7 +17,6 @@ import {
   StageView,
   efficiencyTone,
   formatCount,
-  formatCountShort,
   formatEfficiency,
   formatEfficiencyShort,
   levelName,

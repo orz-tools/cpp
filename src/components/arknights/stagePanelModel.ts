@@ -1,7 +1,6 @@
 import { atom, useAtom, useAtomValue } from 'jotai'
 import { useCallback, useMemo, useState } from 'react'
 import { FarmLevel, Level, useAtoms, useCpp, useGameAdapter, useGameDataMemo } from '../../Cpp'
-import { getLocale } from '../../locales'
 import type { IStageCategory, IStageInfo, IZoneInfo } from '../../pkg/cpp-basic'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
 import { AK_ITEM_VIRTUAL_EXP } from '../../pkg/cpp-arknights/types'
@@ -289,12 +288,6 @@ export function matchesStage(stage: IStageInfo, query: string) {
 
 export function formatCount(n: number) {
   return n.toLocaleString('en-US')
-}
-
-/** 组标题里的数字：龙门币、经验动辄几百万，一万以上和养成成本一样按界面语言缩写 */
-export function formatCountShort(n: number) {
-  if (n < 10000) return `${n}`
-  return new Intl.NumberFormat(getLocale().replace('_', '-'), { notation: 'compact' }).format(n)
 }
 
 /** 显示出来的千分数：比较大小、定颜色都按显示的一位小数 */

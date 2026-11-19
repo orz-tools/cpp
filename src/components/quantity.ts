@@ -1,29 +1,21 @@
 import { gt } from '../pkg/gt'
 
-/** 数量达到该值后改用单位缩写显示（普通材料最多 5 位数，不会触发）。 */
-export const QUANTITY_COMPACT_THRESHOLD = 100000
+// 物品列表、档案的养成成本页和关卡面板共用这条规则，同一个数在各处读起来一样。
+// 一万起按界面语言缩写，用 Intl 的默认取舍（「9.3万」「4029万」「238K」「2M」）：最窄的是养成成本页 40px 的格子，
+// 固定留小数时英文的「238.3K」「1.96M」会挤出格子。准确的数由调用处放进 title。
+const COMPACT_FROM = 10000
 
-const compactFormatterCache = new Map<string, Intl.NumberFormat>()
+const formatters = new Map<string, Intl.NumberFormat>()
 
-function getCompactFormatter(maximumFractionDigits: number): Intl.NumberFormat {
-  const locale = gt.locale === 'en_US' ? 'en-US' : 'zh-Hans'
-  const key = `${locale}:${maximumFractionDigits}`
-  let formatter = compactFormatterCache.get(key)
-  if (!formatter) {
-    formatter = new Intl.NumberFormat(locale, {
-      notation: 'compact',
-      maximumFractionDigits,
-    })
-    compactFormatterCache.set(key, formatter)
-  }
-  return formatter
-}
-
-/** 大数量使用单位缩写显示（如 196万 / 1.96M），小数量保持原样。 */
 export function formatQuantity(value: number): string {
   if (!Number.isFinite(value)) return '0'
-  if (Math.abs(value) < QUANTITY_COMPACT_THRESHOLD) return Math.trunc(value).toString()
-  // 万级数字只保留整数位，亿级数字保留两位小数，尽量缩短显示宽度避免溢出
-  const maximumFractionDigits = gt.locale === 'en_US' || Math.abs(value) >= 1e8 ? 2 : 0
-  return getCompactFormatter(maximumFractionDigits).format(value)
+  if (Math.abs(value) < COMPACT_FROM) return `${Math.trunc(value)}`
+  // 用 gt.locale 而不是 locales.tsx 的 getLocale()：两者随界面语言一起切换，后者会把 React 组件带进来
+  const locale = (gt.locale || 'zh_Hans').replace('_', '-')
+  let formatter = formatters.get(locale)
+  if (!formatter) {
+    formatter = new Intl.NumberFormat(locale, { notation: 'compact' })
+    formatters.set(locale, formatter)
+  }
+  return formatter.format(value)
 }

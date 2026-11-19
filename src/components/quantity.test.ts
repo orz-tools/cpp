@@ -1,31 +1,39 @@
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { gt } from '../pkg/gt'
 import { formatQuantity } from './quantity'
 
 beforeAll(() => {
   gt.addTranslations('zh_Hans', 'messages', { translations: {} } as any)
   gt.addTranslations('en_US', 'messages', { translations: {} } as any)
+})
+
+afterEach(() => {
   gt.setLocale('zh_Hans')
 })
 
 describe('formatQuantity', () => {
-  it('keeps small quantities as exact integers', () => {
+  it('keeps quantities below ten thousand exact', () => {
+    gt.setLocale('zh_Hans')
     expect(formatQuantity(0)).toBe('0')
-    expect(formatQuantity(99999)).toBe('99999')
-    expect(formatQuantity(-12345)).toBe('-12345')
+    expect(formatQuantity(9999)).toBe('9999')
+    expect(formatQuantity(-9999)).toBe('-9999')
   })
 
-  it('compacts large quantities with Chinese units', () => {
-    expect(formatQuantity(100000)).toBe('10万')
-    expect(formatQuantity(1964400)).toBe('196万')
+  it('abbreviates from ten thousand with Chinese units', () => {
+    gt.setLocale('zh_Hans')
+    expect(formatQuantity(10000)).toBe('1万')
+    expect(formatQuantity(93000)).toBe('9.3万')
+    expect(formatQuantity(238300)).toBe('24万')
     expect(formatQuantity(40288589)).toBe('4029万')
     expect(formatQuantity(-40288589)).toBe('-4029万')
-    expect(formatQuantity(123456789)).toBe('1.23亿')
+    expect(formatQuantity(123456789)).toBe('1.2亿')
   })
 
-  it('compacts large quantities with English units', () => {
+  it('abbreviates from ten thousand with English units, short enough for a 40px tile', () => {
     gt.setLocale('en_US')
-    expect(formatQuantity(1964400)).toBe('1.96M')
-    expect(formatQuantity(123456789)).toBe('123.46M')
+    expect(formatQuantity(9999)).toBe('9999')
+    expect(formatQuantity(238300)).toBe('238K')
+    expect(formatQuantity(1964400)).toBe('2M')
+    expect(formatQuantity(123456789)).toBe('123M')
   })
 })
