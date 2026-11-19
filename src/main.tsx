@@ -9,8 +9,10 @@ import './icons'
 import { LocaleBoundary, setupLocale } from './locales'
 import { gt } from './pkg/gt'
 import { formatProfileName, getStoragePrefix } from './profiles'
+import { startTheme } from './theme'
 
 FocusStyleManager.onlyShowFocusOnTabs()
+startTheme()
 
 async function runApp() {
   await setupLocale()

@@ -5,6 +5,14 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Closure++: 二游计算器</title>
+    <script>
+      // src/theme.ts 的规则在打包脚本加载前先跑一遍：深色用户刷新时不先画出浅色
+      try {
+        var t = localStorage.getItem('cpp$theme')
+        if (t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches))
+          document.documentElement.classList.add('bp6-dark')
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

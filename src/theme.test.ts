@@ -1,5 +1,7 @@
+import { Classes } from '@blueprintjs/core'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { THEME_SETTINGS, isDark, readThemeSetting } from './theme'
+import { DARK_QUERY, THEME_SETTINGS, THEME_STORAGE_KEY, isDark, readThemeSetting } from './theme'
 
 describe('readThemeSetting', () => {
   it('keeps each setting as stored', () => {
@@ -23,5 +25,14 @@ describe('isDark', () => {
     expect(isDark('light', false)).toBe(false)
     expect(isDark('dark', true)).toBe(true)
     expect(isDark('dark', false)).toBe(true)
+  })
+})
+
+describe('the first-paint script in index.html', () => {
+  it('reads the same key and query and sets the same class as src/theme.ts', () => {
+    const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8')
+    expect(html).toContain(THEME_STORAGE_KEY)
+    expect(html).toContain(Classes.DARK)
+    expect(html).toContain(DARK_QUERY)
   })
 })
