@@ -52,7 +52,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number of tasks
-#: src/components/TaskList.tsx:160
+#: src/components/TaskList.tsx:161
 msgid "%d 项"
 msgid_plural "%d 项"
 msgstr[0] ""
@@ -135,7 +135,7 @@ msgstr ""
 msgid "企鹅物流的掉落数据没有载入，排除的关卡没有导出。"
 msgstr ""
 
-#: src/components/TaskList.tsx:174
+#: src/components/TaskList.tsx:175
 msgid "优先培养（星标）"
 msgstr ""
 
@@ -167,6 +167,10 @@ msgstr[1] ""
 msgid "免责声明"
 msgstr ""
 
+#: src/components/ListSelection.tsx:160
+msgid "全选"
+msgstr ""
+
 #: src/components/arknights/StagePanelWide.tsx:388
 #: src/components/ConfigUi.tsx:215
 msgid "全部启用"
@@ -188,7 +192,7 @@ msgstr ""
 msgid "关卡"
 msgstr ""
 
-#: src/App.tsx:530
+#: src/App.tsx:538
 #: src/components/CharacterDossier.tsx:235
 #: src/components/CharacterDossier.tsx:236
 #: src/components/Importer.tsx:163
@@ -257,7 +261,7 @@ msgstr ""
 msgid "取消"
 msgstr ""
 
-#: src/components/CharacterList.tsx:215
+#: src/components/CharacterList.tsx:216
 msgid "取消选中"
 msgstr ""
 
@@ -332,7 +336,7 @@ msgstr ""
 msgid "复制数据"
 msgstr ""
 
-#: src/components/CharacterList.tsx:237
+#: src/components/CharacterList.tsx:238
 msgid "复制角色名"
 msgstr ""
 
@@ -347,11 +351,11 @@ msgstr[1] ""
 msgid "如今"
 msgstr ""
 
-#: src/components/TaskList.tsx:145
+#: src/components/TaskList.tsx:146
 msgid "完成"
 msgstr ""
 
-#: src/components/TaskList.tsx:158
+#: src/components/TaskList.tsx:159
 msgid "完成至此"
 msgstr ""
 
@@ -370,7 +374,7 @@ msgstr ""
 msgid "导入 MAA「干员识别」数据"
 msgstr ""
 
-#: src/App.tsx:336
+#: src/App.tsx:344
 #: src/components/RetiredGame.tsx:193
 msgid "导入/导出"
 msgstr ""
@@ -426,7 +430,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr ""
 
-#: src/components/CharacterList.tsx:244
+#: src/components/CharacterList.tsx:245
 msgid "已复制「%s」"
 msgstr ""
 
@@ -441,6 +445,13 @@ msgstr[1] ""
 #: src/components/arknights/ValueConfigMenu.tsx:489
 msgid "已定价 %d 种物品"
 msgid_plural "已定价 %d 种物品"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d: number
+#: src/components/PlanActions.tsx:86
+msgid "已拉满 %d 名干员的计划"
+msgid_plural "已拉满 %d 名干员的计划"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -465,7 +476,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/ListSelection.tsx:125
+#: src/components/PlanActions.tsx:99
+msgid "已清空 %d 名干员的计划"
+msgid_plural "已清空 %d 名干员的计划"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d: number
+#: src/components/ListSelection.tsx:157
 msgid "已选 %d 名干员"
 msgid_plural "已选 %d 名干员"
 msgstr[0] ""
@@ -488,7 +506,7 @@ msgstr ""
 msgid "弹出成大窗口"
 msgstr ""
 
-#: src/components/TaskList.tsx:151
+#: src/components/TaskList.tsx:152
 msgid "强制完成（不消耗材料）"
 msgstr ""
 
@@ -506,7 +524,7 @@ msgstr ""
 msgid "总价值"
 msgstr ""
 
-#: src/App.tsx:480
+#: src/App.tsx:488
 msgid "您不妨试试"
 msgstr ""
 
@@ -520,13 +538,20 @@ msgid "打开旧版"
 msgstr ""
 
 #. %d: number
-#: src/components/ListSelection.tsx:113
+#: src/components/PlanActions.tsx:128
+msgid "拉满 %d 名干员的计划"
+msgid_plural "拉满 %d 名干员的计划"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d: number
+#: src/components/ListSelection.tsx:127
 msgid "拖动：%d 名一起移动 · 点击：取消选中"
 msgid_plural "拖动：%d 名一起移动 · 点击：取消选中"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/ListSelection.tsx:112
+#: src/components/ListSelection.tsx:126
 msgid "拖动：调整顺序 · 点击：选中"
 msgstr ""
 
@@ -542,9 +567,10 @@ msgstr ""
 msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
-#: src/App.tsx:63
-#: src/App.tsx:64
+#: src/App.tsx:65
+#: src/App.tsx:66
 #: src/components/Importer.tsx:168
+#: src/components/PlanActions.tsx:51
 msgid "撤销"
 msgstr ""
 
@@ -574,7 +600,7 @@ msgstr ""
 
 #: src/components/arknights/ExporterMenuItems.tsx:111
 #: src/components/arknights/ExporterMenuItems.tsx:38
-#: src/components/CharacterList.tsx:250
+#: src/components/CharacterList.tsx:251
 msgid "无法写入剪贴板"
 msgstr ""
 
@@ -673,7 +699,7 @@ msgstr ""
 msgid "查看源码"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1285
+#: src/components/CharacterList.tsx:1300
 msgid "查询失败"
 msgstr ""
 
@@ -694,7 +720,7 @@ msgstr ""
 msgid "档案 %s 不存在，要新建吗？"
 msgstr ""
 
-#: src/App.tsx:97
+#: src/App.tsx:105
 #: src/components/PhoneMore.tsx:126
 msgid "检查数据更新"
 msgstr ""
@@ -716,12 +742,19 @@ msgstr ""
 msgid "清空"
 msgstr ""
 
-#: src/components/CharacterList.tsx:219
-#: src/components/ListSelection.tsx:135
+#. %d: number
+#: src/components/PlanActions.tsx:136
+msgid "清空 %d 名干员的计划"
+msgid_plural "清空 %d 名干员的计划"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/CharacterList.tsx:220
+#: src/components/ListSelection.tsx:161
 msgid "清除选择"
 msgstr ""
 
-#: src/App.tsx:204
+#: src/App.tsx:212
 #: src/components/reloadGameData.ts:31
 msgid "游戏数据已更新"
 msgstr ""
@@ -801,11 +834,11 @@ msgstr ""
 msgid "角色"
 msgstr ""
 
-#: src/components/TaskList.tsx:140
+#: src/components/TaskList.tsx:141
 msgid "角色内排序"
 msgstr ""
 
-#: src/components/CharacterList.tsx:206
+#: src/components/CharacterList.tsx:207
 msgid "角色计划排序"
 msgstr ""
 
@@ -861,7 +894,7 @@ msgstr ""
 msgid "返回"
 msgstr ""
 
-#: src/App.tsx:473
+#: src/App.tsx:481
 msgid "返回主页"
 msgstr ""
 
@@ -971,12 +1004,12 @@ msgstr ""
 msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 
-#: src/components/CharacterList.tsx:215
+#: src/components/CharacterList.tsx:216
 msgid "选中"
 msgstr ""
 
 #. %d: number
-#: src/components/CharacterList.tsx:199
+#: src/components/CharacterList.tsx:200
 msgid "选中的 %d 名干员"
 msgid_plural "选中的 %d 名干员"
 msgstr[0] ""
@@ -997,11 +1030,11 @@ msgstr ""
 msgid "邮箱"
 msgstr ""
 
-#: src/App.tsx:72
+#: src/App.tsx:77
 msgid "重做"
 msgstr ""
 
-#: src/App.tsx:90
+#: src/App.tsx:98
 #: src/components/PhoneMore.tsx:127
 msgid "重新下载数据"
 msgstr ""
@@ -2655,7 +2688,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr ""
 
-#: src/App.tsx:460
+#: src/App.tsx:468
 msgctxt "error context"
 msgid "遇到错误"
 msgstr ""
@@ -2690,22 +2723,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr ""
 
-#: src/components/CharacterList.tsx:600
+#: src/components/CharacterList.tsx:615
 msgctxt "holding filter"
 msgid "可练"
 msgstr ""
 
-#: src/components/CharacterList.tsx:601
+#: src/components/CharacterList.tsx:616
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr ""
 
-#: src/components/CharacterList.tsx:609
+#: src/components/CharacterList.tsx:624
 msgctxt "holding filter"
 msgid "缺席"
 msgstr ""
 
-#: src/components/CharacterList.tsx:610
+#: src/components/CharacterList.tsx:625
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr ""
@@ -2802,7 +2835,7 @@ msgstr ""
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:454
 #: src/components/arknights/voucherText.tsx:31
-#: src/components/CharacterList.tsx:695
+#: src/components/CharacterList.tsx:710
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
 msgctxt "list separator"
@@ -2810,43 +2843,43 @@ msgid "、"
 msgstr ""
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:362
+#: src/App.tsx:370
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr ""
 
 #. initial
-#: src/App.tsx:370
+#: src/App.tsx:378
 msgctxt "loading status"
 msgid "别急…"
 msgstr ""
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:397
+#: src/App.tsx:405
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr ""
 
 #. loaded data objects
-#: src/App.tsx:369
+#: src/App.tsx:377
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr ""
 
 #. joke text
-#: src/App.tsx:395
+#: src/App.tsx:403
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr ""
 
 #. loading hero line 2
-#: src/App.tsx:404
+#: src/App.tsx:412
 msgctxt "loading status"
 msgid "请稍候"
 msgstr ""
 
 #. done
-#: src/App.tsx:360
+#: src/App.tsx:368
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr ""
@@ -3588,32 +3621,34 @@ msgctxt "phone tab"
 msgid "材料"
 msgstr ""
 
-#: src/components/PlanActions.tsx:52
+#: src/components/PlanActions.tsx:191
 msgctxt "plan action"
 msgid "把培养目标拉满"
 msgstr ""
 
-#: src/components/PlanActions.tsx:42
+#: src/components/PlanActions.tsx:181
 msgctxt "plan action"
 msgid "拉满"
 msgstr ""
 
-#: src/components/PlanActions.tsx:32
+#: src/components/PlanActions.tsx:112
+#: src/components/PlanActions.tsx:150
 msgctxt "plan action"
 msgid "拉满计划"
 msgstr ""
 
-#: src/components/PlanActions.tsx:43
+#: src/components/PlanActions.tsx:182
 msgctxt "plan action"
 msgid "清空"
 msgstr ""
 
-#: src/components/PlanActions.tsx:33
+#: src/components/PlanActions.tsx:113
+#: src/components/PlanActions.tsx:151
 msgctxt "plan action"
 msgid "清空计划"
 msgstr ""
 
-#: src/components/PlanActions.tsx:62
+#: src/components/PlanActions.tsx:201
 msgctxt "plan action"
 msgid "清空计划：培养目标改回当前状态"
 msgstr ""
@@ -3718,19 +3753,19 @@ msgctxt "predefined query"
 msgid "精二直升价值（全部）"
 msgstr ""
 
-#: src/components/CharacterList.tsx:863
+#: src/components/CharacterList.tsx:878
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr ""
 
-#: src/components/CharacterList.tsx:856
+#: src/components/CharacterList.tsx:871
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr ""
 
-#: src/components/CharacterList.tsx:870
+#: src/components/CharacterList.tsx:885
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -4326,8 +4361,8 @@ msgctxt "query menu"
 msgid "全部 4–6 星干员的技能"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1047
-#: src/components/CharacterList.tsx:1048
+#: src/components/CharacterList.tsx:1062
+#: src/components/CharacterList.tsx:1063
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr ""
@@ -4337,7 +4372,7 @@ msgctxt "query menu"
 msgid "养成成本"
 msgstr ""
 
-#: src/components/CharacterList.tsx:943
+#: src/components/CharacterList.tsx:958
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr ""
@@ -4377,7 +4412,7 @@ msgctxt "query menu"
 msgid "已持有的干员的全部基建技能，含已解锁的"
 msgstr ""
 
-#: src/components/CharacterList.tsx:988
+#: src/components/CharacterList.tsx:1003
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr ""
@@ -4387,8 +4422,8 @@ msgctxt "query menu"
 msgid "所有干员的全部基建技能，含没持有的和已解锁的"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1039
-#: src/components/CharacterList.tsx:1040
+#: src/components/CharacterList.tsx:1054
+#: src/components/CharacterList.tsx:1055
 msgctxt "query menu"
 msgid "更多视图"
 msgstr ""
@@ -4398,8 +4433,8 @@ msgctxt "query menu"
 msgid "练度统计"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1047
-#: src/components/CharacterList.tsx:1048
+#: src/components/CharacterList.tsx:1062
+#: src/components/CharacterList.tsx:1063
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr ""
@@ -4465,13 +4500,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr ""
 
-#: src/components/CharacterList.tsx:692
+#: src/components/CharacterList.tsx:707
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr ""
 
-#: src/components/CharacterList.tsx:692
+#: src/components/CharacterList.tsx:707
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -5308,7 +5343,7 @@ msgctxt "training cost"
 msgid "最多：从精零 1 级用时能省的；条上浅蓝的那段是已经练掉的。"
 msgstr ""
 
-#: src/components/CharacterList.tsx:886
+#: src/components/CharacterList.tsx:901
 msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr ""
