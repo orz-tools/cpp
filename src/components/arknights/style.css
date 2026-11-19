@@ -2315,8 +2315,27 @@ section:first-child > .cpp-stages-wide-section {
   gap: 14px;
 }
 
+/* 行高和图标一样高，标题折行时图标对着第一行；图标 20px 加间距 6px，文字和下面任务的摘要对齐 */
 .cpp-mm-dossier-title {
-  margin-bottom: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  line-height: 20px;
+}
+
+/* 模组图标是白的，和状态编辑里一样垫一块深色底 */
+.cpp-mm-dossier-modicon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  background: #30363d;
+}
+
+.cpp-mm-dossier-title + .cpp-mm-dossier-mission {
+  margin-top: 6px;
 }
 
 .cpp-mm-dossier-mission + .cpp-mm-dossier-mission {

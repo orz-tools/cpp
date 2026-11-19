@@ -6,6 +6,7 @@ import { Arknights, ArknightsAdapter, Character } from '../../pkg/cpp-arknights'
 import { MissionInput, missionProgress, missionSummary, parseMission } from '../../pkg/cpp-arknights/moduleMissions'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
+import { CachedImg } from '../Icons'
 import { useShowSidebarPanel } from '../Sidebar'
 import { useFocusFrame } from '../focusFrame'
 import { DossierSection } from '../types'
@@ -30,6 +31,26 @@ const ModuleBlock = memo(({ equipId, children }: React.PropsWithChildren<{ equip
   )
 })
 
+/** 一块的标题：模组图标，然后是代号、名字，`children` 是灰字写的状态 */
+const ModuleTitle = memo(
+  ({ charId, equipId, children }: React.PropsWithChildren<{ charId: string; equipId: string }>) => {
+    const equip = (useGameAdapter<Arknights>() as ArknightsAdapter).getDataManager().data.uniEquips[equipId]
+    return (
+      <div className="cpp-mm-dossier-title">
+        {equip ? (
+          <span className="cpp-mm-dossier-modicon">
+            <CachedImg src={equip.icon} width={16} height={16} alt="" />
+          </span>
+        ) : null}
+        <div>
+          <ModuleCode charId={charId} equipId={equipId} /> {equip?.name ?? ''}{' '}
+          <span className="cpp-mm-muted">{children}</span>
+        </div>
+      </div>
+    )
+  },
+)
+
 const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter }) => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
   const c = character as Character
@@ -50,25 +71,23 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
   return (
     <div className="cpp-mm-dossier">
       {modules.map((mod) => {
-        const name = ga.getDataManager().data.uniEquips[mod.equipId]?.name ?? ''
         if ((current.modLevel[mod.equipId] ?? 0) >= 1) {
           return (
             <ModuleBlock key={mod.equipId} equipId={mod.equipId}>
-              <ModuleCode charId={c.key} equipId={mod.equipId} /> {gt.pgettext('module mission', '已解锁，任务已完成')}
+              <ModuleTitle charId={c.key} equipId={mod.equipId}>
+                {gt.pgettext('module mission', '已解锁，任务已完成')}
+              </ModuleTitle>
             </ModuleBlock>
           )
         }
         const planned = goal?.modLevel[mod.equipId] ?? 0
         return (
           <ModuleBlock key={mod.equipId} equipId={mod.equipId}>
-            <div className="cpp-mm-dossier-title">
-              <ModuleCode charId={c.key} equipId={mod.equipId} /> {name}{' '}
-              <span className="cpp-mm-muted">
-                {planned >= 1
-                  ? gt.pgettext('module mission', '未解锁 · 计划解锁到 %d 级').replaceAll('%d', String(planned))
-                  : gt.pgettext('module mission', '未解锁')}
-              </span>
-            </div>
+            <ModuleTitle charId={c.key} equipId={mod.equipId}>
+              {planned >= 1
+                ? gt.pgettext('module mission', '未解锁 · 计划解锁到 %d 级').replaceAll('%d', String(planned))
+                : gt.pgettext('module mission', '未解锁')}
+            </ModuleTitle>
             {mod.missions.map((m) => {
               const done = doneSet.has(m.id)
               const ticket = board.ticketOf.get(m.id)
