@@ -75,6 +75,7 @@ Games are code-split via dynamic imports. The URL path (`/{game}/{profile}`) det
 | `gt`            | Gettext wrapper                                            |
 | `dccache`       | Data container caching                                     |
 | `blobcache`     | Image/asset variant handling                               |
+| `zod`           | `zod/mini` with English error messages; import `z` here    |
 
 ### State management
 

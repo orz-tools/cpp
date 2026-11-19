@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '../zod'
 import type { ArknightsCharacterStatus } from './types'
 
 // arkntools「精英材料计算」的「导出 → 备份」与「导入 → 恢复」用的文本：dataForSave 的 JSON 经 js-base64 编码（UTF-8、标准字母表）。
@@ -10,46 +10,53 @@ const ArkntoolsPreset = z.object({
   // 去掉 char_ 前缀的干员 id，阿米娅的升变形态各有一项
   name: z.string(),
   setting: z.object({
-    evolve: z.array(z.boolean()).default([]),
-    skills: z
-      .object({
-        normal: Range.default([false, 1, 7]),
-        elite: z.array(Range).default([]),
-      })
-      // default 的值原样返回，不经过内层 schema；prefault 的会，normal 和 elite 才补得上各自的默认值
-      .prefault({}),
+    evolve: z._default(z.array(z.boolean()), []),
+    // _default 的值原样返回，不经过内层 schema；prefault 的会，normal 和 elite 才补得上各自的默认值
+    skills: z.prefault(
+      z.object({
+        normal: z._default(Range, [false, 1, 7]),
+        elite: z._default(z.array(Range), []),
+      }),
+      {},
+    ),
     // 早期备份的模组只有一个布尔值，arkntools 读到时当作 [勾选, 0, 3]
-    uniequip: z
-      .record(z.string(), z.union([Range, z.boolean()]))
-      .default({})
-      .transform((x) =>
+    uniequip: z.pipe(
+      z._default(z.record(z.string(), z.union([Range, z.boolean()])), {}),
+      z.transform((x) =>
         Object.fromEntries(
           Object.entries(x).map(([id, v]) => [id, typeof v === 'boolean' ? ([v, 0, 3] as const) : v] as const),
         ),
       ),
-    focus: z.boolean().optional(),
+    ),
+    focus: z.optional(z.boolean()),
   }),
 })
 
-const Count = z.union([z.number(), z.string()]).transform((x) => {
-  const n = typeof x === 'number' ? x : parseInt(x, 10)
-  return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0
-})
+const Count = z.pipe(
+  z.union([z.number(), z.string()]),
+  z.transform((x) => {
+    const n = typeof x === 'number' ? x : parseInt(x, 10)
+    return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0
+  }),
+)
 
 const ArkntoolsBackup = z.object({
   // 物品 id → [需求, 已有]；更早的备份是 { need, have } 字符串
-  inputs: z
-    .record(
+  inputs: z.optional(
+    z.record(
       z.string(),
       z.union([
         z.tuple([Count, Count]),
-        z.object({ need: Count.optional(), have: Count.optional() }).transform((x) => [x.need ?? 0, x.have ?? 0]),
+        z.pipe(
+          z.object({ need: z.optional(Count), have: z.optional(Count) }),
+          z.transform((x) => [x.need ?? 0, x.have ?? 0]),
+        ),
       ]),
-    )
-    .optional(),
-  presets: z.array(ArkntoolsPreset).optional(),
+    ),
+  ),
+  presets: z.optional(z.array(ArkntoolsPreset)),
   // 关卡代号（1-7、GT-5），不是关卡 id
-  planStageBlacklist: z.array(z.string()).optional(),
+  planStageBlacklist: z.optional(z.array(z.string())),
 })
 
 export type ArkntoolsBackup = z.output<typeof ArkntoolsBackup>

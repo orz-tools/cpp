@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { intBetween, z } from '../zod'
 import type { Character } from './DataManager'
 import { replaceSkins } from './skins'
 import type { ArknightsCharacterStatus } from './types'
@@ -7,75 +7,76 @@ export const SklandData = z.object({
   chars: z.array(
     z.object({
       charId: z.string(),
-      level: z.number().int().positive(),
-      evolvePhase: z.number().int().min(0).max(2),
-      potentialRank: z.number().int().min(0).max(5),
-      mainSkillLvl: z.number().int().min(1).max(7),
+      level: z.int().check(z.positive()),
+      evolvePhase: intBetween(0, 2),
+      potentialRank: intBetween(0, 5),
+      mainSkillLvl: intBetween(1, 7),
       skills: z.array(
         z.object({
           id: z.string(),
-          specializeLevel: z.number().int().min(0).max(3),
+          specializeLevel: intBetween(0, 3),
         }),
       ),
       equip: z.array(
         z.object({
           id: z.string(),
-          level: z.number().int().min(1).max(3),
-          locked: z.boolean().optional(),
+          level: intBetween(1, 3),
+          locked: z.optional(z.boolean()),
         }),
       ),
       defaultEquipId: z.string(),
     }),
   ),
-  cultivate: z
-    .object({
+  cultivate: z.optional(
+    z.object({
       characters: z.array(
         z.object({
           id: z.string(),
-          level: z.number().int().positive(),
-          evolvePhase: z.number().int().min(0).max(2),
-          mainSkillLevel: z.number().int().min(1).max(7),
+          level: z.int().check(z.positive()),
+          evolvePhase: intBetween(0, 2),
+          mainSkillLevel: intBetween(1, 7),
           skills: z.array(
             z.object({
               id: z.string(),
-              level: z.number().int().min(0).max(3),
+              level: intBetween(0, 3),
             }),
           ),
           equips: z.array(
             z.object({
               id: z.string(),
-              level: z.number().int().min(0).max(3),
+              level: intBetween(0, 3),
             }),
           ),
-          potentialRank: z.number().int().min(0).max(5),
+          potentialRank: intBetween(0, 5),
         }),
       ),
       items: z.array(
         z.object({
           id: z.string(),
-          count: z.string().regex(/^\d+$/),
+          count: z.string().check(z.regex(/^\d+$/)),
         }),
       ),
-    })
-    .optional(),
-  building: z
-    .object({
-      training: z
-        .object({
-          trainee: z
-            .object({
-              charId: z.string(),
-              targetSkill: z.number().min(-1).max(2),
-            })
-            .nullable(),
-          remainPoint: z.number(),
-        })
-        .nullable()
-        .optional(),
-    })
-    .optional(),
+    }),
+  ),
+  building: z.optional(
+    z.object({
+      training: z.optional(
+        z.nullable(
+          z.object({
+            trainee: z.nullable(
+              z.object({
+                charId: z.string(),
+                targetSkill: z.number().check(z.minimum(-1), z.maximum(2)),
+              }),
+            ),
+            remainPoint: z.number(),
+          }),
+        ),
+      ),
+    }),
+  ),
   // 这个账号的全部时装，ts 是获得时间（Unix 秒）
-  skins: z.array(z.object({ id: z.string(), ts: z.number() })).optional(),
+  skins: z.optional(z.array(z.object({ id: z.string(), ts: z.number() }))),
 })
 export type SklandData = z.infer<typeof SklandData>
 

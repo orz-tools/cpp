@@ -2,7 +2,7 @@ import { Button, Callout, Dialog, DialogBody, Intent, Spinner } from '@blueprint
 import { useSetAtom } from 'jotai'
 import React, { memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { z } from 'zod'
+import { z } from '../../pkg/zod'
 import { useGameAdapter } from '../../Cpp'
 import { useRequest } from '../../hooks/useRequest'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'

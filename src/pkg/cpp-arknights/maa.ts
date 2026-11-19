@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { intBetween, z } from '../zod'
 import type { Character } from './DataManager'
 import type { ArknightsCharacterStatus } from './types'
 
@@ -70,24 +70,22 @@ function parseCSVLine(line: string): string[] {
 
 const PenguinDepot = z.object({
   '@type': z.literal('@penguin-statistics/depot'),
-  items: z.array(z.object({ id: z.string(), have: z.number().int().nonnegative() })),
+  items: z.array(z.object({ id: z.string(), have: z.int().check(z.nonnegative()) })),
 })
 
 const MAAOperBox = z.array(
   z.object({
     id: z.string(),
-    name: z.string().nullish(),
+    name: z.nullish(z.string()),
     own: z.boolean(),
-    elite: z.number().int().min(0).max(2),
-    level: z.number().int().min(0),
+    elite: intBetween(0, 2),
+    level: z.int().check(z.nonnegative()),
     // 1-6，未拥有时为 0
-    potential: z.number().int().min(0).max(6),
+    potential: intBetween(0, 6),
     // 以下三项只在数据来自一图流 OpenAPI 时存在
-    mainSkillLevel: z.number().int().min(1).max(7).nullish(),
-    skills: z.array(z.object({ id: z.string(), level: z.number().int().min(0).max(3) })).nullish(),
-    equips: z
-      .array(z.object({ id: z.string(), type: z.string().nullish(), level: z.number().int().min(0).max(3) }))
-      .nullish(),
+    mainSkillLevel: z.nullish(intBetween(1, 7)),
+    skills: z.nullish(z.array(z.object({ id: z.string(), level: intBetween(0, 3) }))),
+    equips: z.nullish(z.array(z.object({ id: z.string(), type: z.nullish(z.string()), level: intBetween(0, 3) }))),
   }),
 )
 export type MAAOperBox = z.infer<typeof MAAOperBox>
