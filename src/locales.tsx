@@ -1,5 +1,5 @@
 import { Button, Icon, Menu, MenuDivider, MenuItem, Popover, Tag } from '@blueprintjs/core'
-import { Fragment, ReactNode, memo, useSyncExternalStore } from 'react'
+import { CSSProperties, Fragment, ReactNode, memo, useSyncExternalStore } from 'react'
 import { PSTRs } from './components/LineBreaks'
 import { showAlert } from './components/MessageBox'
 import { gt } from './pkg/gt'
@@ -69,33 +69,35 @@ export const LocaleBoundary = ({ children }: { children: ReactNode }) => {
   return <Fragment key={locale}>{children}</Fragment>
 }
 
+/** 顶栏「界面语言」弹出的菜单；手机上是「更多 › 界面语言」那一页 */
+export const LocaleMenu = memo(({ className, style }: { className?: string; style?: CSSProperties }) => {
+  return (
+    <Menu className={className} style={style}>
+      <MenuDivider title={<PSTRs strings={['UI Language', '界面语言', gt.gettext('界面语言')]} />} />
+      {Object.entries(locales).map(([k, x]) => {
+        return (
+          <MenuItem
+            key={k}
+            text={<PSTRs strings={[x.name, x.localizedName]} />}
+            labelElement={
+              <Tag minimal style={{ fontFamily: 'monospace' }}>
+                {k}
+              </Tag>
+            }
+            active={k === currentLocale}
+            onClick={() => void setLocale(k)}
+          />
+        )
+      })}
+    </Menu>
+  )
+})
+
+const localeMenuStyle: CSSProperties = { maxWidth: '300px' }
+
 export const LocaleButton = memo(() => {
   return (
-    <Popover
-      usePortal={true}
-      minimal={true}
-      content={
-        <Menu style={{ maxWidth: '300px' }}>
-          <MenuDivider title={<PSTRs strings={['UI Language', '界面语言', gt.gettext('界面语言')]} />} />
-          {Object.entries(locales).map(([k, x]) => {
-            return (
-              <MenuItem
-                key={k}
-                text={<PSTRs strings={[x.name, x.localizedName]} />}
-                labelElement={
-                  <Tag minimal style={{ fontFamily: 'monospace' }}>
-                    {k}
-                  </Tag>
-                }
-                active={k === currentLocale}
-                onClick={() => void setLocale(k)}
-              />
-            )
-          })}
-        </Menu>
-      }
-      position="bottom-right"
-    >
+    <Popover usePortal={true} minimal={true} content={<LocaleMenu style={localeMenuStyle} />} position="bottom-right">
       <Button
         icon={
           <>

@@ -9,6 +9,7 @@ import { gt, lpstr } from '../../pkg/gt'
 import { CachedImg } from '../Icons'
 import { useShowSidebarPanel } from '../Sidebar'
 import { useFocusFrame } from '../focusFrame'
+import { usePhoneLayout } from '../phoneLayout'
 import { DossierSection } from '../types'
 import { MissionCheck, ModuleCode, OperatorButton, blockText, summaryOf, useSelectTicket } from './ModuleMissionPanel'
 import { useDoneMissions, useMissionBoard, useMissionNames } from './moduleMissionState'
@@ -62,6 +63,8 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
   const names = useMissionNames()
   const showPanel = useShowSidebarPanel()
   const select = useSelectTicket()
+  // 手机上没有侧栏，面板在「更多」里
+  const phone = usePhoneLayout()
 
   const catalog = ga.getMissionCatalog()
   const modules = catalog.modules.filter((m) => m.charId === c.key)
@@ -121,7 +124,11 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
                           size="small"
                           intent="primary"
                           icon="flag"
-                          text={gt.pgettext('module mission', '在侧栏里看')}
+                          text={
+                            phone
+                              ? gt.pgettext('module mission', '在「更多」里看')
+                              : gt.pgettext('module mission', '在侧栏里看')
+                          }
                           onClick={() => {
                             showPanel('moduleMissions')
                             select(ticket)

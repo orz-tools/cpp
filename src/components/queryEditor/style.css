@@ -402,3 +402,10 @@ select.cpp-qe-invalid {
 .cpp-qe-colhead-handle[aria-disabled='true'] {
   cursor: default;
 }
+
+/* 触屏上列宽不跟手指（ColumnHeader.tsx），按住分隔线也要能横滑列表 */
+@media (pointer: coarse) {
+  .cpp-qe-colhead-handle {
+    touch-action: auto;
+  }
+}

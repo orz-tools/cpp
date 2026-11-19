@@ -32,6 +32,8 @@ import { inRanges } from './listDrag'
 import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
 import { useRequestFrame } from './focusFrame'
+import { useLongPressContextMenu } from './longPress'
+import { useCoarsePointer } from './phoneLayout'
 import {
   TASK_HEADER_HEIGHT,
   charDragGaps,
@@ -74,118 +76,135 @@ const TaskDisplay = memo(<G extends IGame>({ type, charId }: { type: G['characte
   return <>{ga.getUserDataAdapter().formatTaskAsString(type, charId)}</>
 })
 
-const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>; extra: TaskExtra }) => {
-  const store = useStore()
-  const atoms = useAtoms<G>()
-  const ga = useGameAdapter<G>()
+const TaskContextMenu = memo(
+  <G extends IGame>({
+    task,
+    extra,
+    details,
+  }: {
+    task: Task<G>
+    extra: TaskExtra
+    /** 触屏上隐藏材料时，悬停的子菜单没有了：备注和材料放在菜单最上面 */
+    details?: React.ReactNode
+  }) => {
+    const store = useStore()
+    const atoms = useAtoms<G>()
+    const ga = useGameAdapter<G>()
 
-  const consumeCost = () => {
-    for (const i of task.requires) {
-      const allExpItems = ga.getExpItems()
-      if (Object.prototype.hasOwnProperty.call(allExpItems, i.itemId)) {
-        let exp = i.quantity
-        const thisExpItems = allExpItems[i.itemId]
-        const expItems = Object.entries(thisExpItems.value).sort((a, b) => -a[1] + b[1])
-        const quantities: Record<string, number> = Object.create(null)
-        const cost: Record<string, number> = Object.create(null)
-        for (const expItem of expItems) {
-          quantities[expItem[0]] = store.get(atoms.itemQuantity(expItem[0]))
-          cost[expItem[0]] = 0
-        }
-        for (const expItem of expItems) {
-          if (!quantities[expItem[0]]) continue
-          const need = Math.min(quantities[expItem[0]], Math.floor(exp / expItem[1]))
-          exp -= need * expItem[1]
-          quantities[expItem[0]] = quantities[expItem[0]] - need
-          cost[expItem[0]] += need
-        }
-        const smallestExpItemWithQuantity = expItems.reverse().find((x) => quantities[x[0]] > 0)
-        if (exp === 0) {
-          //
-        } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
-          // exp = 0 —— 之后不再读 exp，留着与上面 exp === 0 的分支对照
-          quantities[smallestExpItemWithQuantity[0]] -= 1
-          cost[smallestExpItemWithQuantity[0]] += 1
+    const consumeCost = () => {
+      for (const i of task.requires) {
+        const allExpItems = ga.getExpItems()
+        if (Object.prototype.hasOwnProperty.call(allExpItems, i.itemId)) {
+          let exp = i.quantity
+          const thisExpItems = allExpItems[i.itemId]
+          const expItems = Object.entries(thisExpItems.value).sort((a, b) => -a[1] + b[1])
+          const quantities: Record<string, number> = Object.create(null)
+          const cost: Record<string, number> = Object.create(null)
+          for (const expItem of expItems) {
+            quantities[expItem[0]] = store.get(atoms.itemQuantity(expItem[0]))
+            cost[expItem[0]] = 0
+          }
+          for (const expItem of expItems) {
+            if (!quantities[expItem[0]]) continue
+            const need = Math.min(quantities[expItem[0]], Math.floor(exp / expItem[1]))
+            exp -= need * expItem[1]
+            quantities[expItem[0]] = quantities[expItem[0]] - need
+            cost[expItem[0]] += need
+          }
+          const smallestExpItemWithQuantity = expItems.reverse().find((x) => quantities[x[0]] > 0)
+          if (exp === 0) {
+            //
+          } else if (smallestExpItemWithQuantity && exp <= smallestExpItemWithQuantity[1]) {
+            // exp = 0 —— 之后不再读 exp，留着与上面 exp === 0 的分支对照
+            quantities[smallestExpItemWithQuantity[0]] -= 1
+            cost[smallestExpItemWithQuantity[0]] += 1
+          } else {
+            console.assert(false, 'virtual exp failed')
+          }
+          for (const [itemId, quantity] of Object.entries(cost)) {
+            store.set(atoms.itemQuantity(itemId), (e) => {
+              console.assert(e - quantity > 0, 'exp item failed')
+              return e - quantity
+            })
+          }
         } else {
-          console.assert(false, 'virtual exp failed')
-        }
-        for (const [itemId, quantity] of Object.entries(cost)) {
-          store.set(atoms.itemQuantity(itemId), (e) => {
-            console.assert(e - quantity > 0, 'exp item failed')
-            return e - quantity
+          store.set(atoms.itemQuantity(i.itemId), (e) => {
+            console.assert(e - i.quantity > 0, 'normal item failed')
+            return e - i.quantity
           })
         }
-      } else {
-        store.set(atoms.itemQuantity(i.itemId), (e) => {
-          console.assert(e - i.quantity > 0, 'normal item failed')
-          return e - i.quantity
-        })
       }
     }
-  }
 
-  const stars = useAtomValue(atoms.stars)
+    const stars = useAtomValue(atoms.stars)
 
-  // 按这名干员计划里全部的整项算，不只是本段看得到的那几项
-  const goalTasks = useAtomValue(atoms.goalTasks(task.charId))
-  const groups = useMemo(() => uniq(goalTasks.flatMap((x) => (x.group ? [x.group] : []))), [goalTasks])
-  const moveGroup = (step: MoveStep) => {
-    const target = task.group ? stepTarget(groups, [task.group], step) : undefined
-    if (target) store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
-  }
+    // 按这名干员计划里全部的整项算，不只是本段看得到的那几项
+    const goalTasks = useAtomValue(atoms.goalTasks(task.charId))
+    const groups = useMemo(() => uniq(goalTasks.flatMap((x) => (x.group ? [x.group] : []))), [goalTasks])
+    const moveGroup = (step: MoveStep) => {
+      const target = task.group ? stepTarget(groups, [task.group], step) : undefined
+      if (target) store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
+    }
 
-  const completeTask = () => {
-    store.set(atoms.currentCharacter(task.charId), (d) => {
-      ga.getUserDataAdapter().completeTask(task.type, task.charId, d)
-    })
-  }
+    const completeTask = () => {
+      store.set(atoms.currentCharacter(task.charId), (d) => {
+        ga.getUserDataAdapter().completeTask(task.type, task.charId, d)
+      })
+    }
 
-  const starTask = () => {
-    store.set(atoms.stars, (d) => {
-      const pos = d.indexOf(task.id)
-      if (pos >= 0) {
-        d.splice(pos, 1)
-      } else {
-        d.push(task.id)
-      }
-    })
-  }
+    const starTask = () => {
+      store.set(atoms.stars, (d) => {
+        const pos = d.indexOf(task.id)
+        if (pos >= 0) {
+          d.splice(pos, 1)
+        } else {
+          d.push(task.id)
+        }
+      })
+    }
 
-  return (
-    <Menu>
-      {task.group && groups.length >= 2 ? (
-        <>
-          <SortButtonGroup label={gt.gettext('角色内排序')} onMove={moveGroup} />
-          <MenuDivider />
-        </>
-      ) : null}
-      <MenuItem
-        text={gt.gettext('完成')}
-        icon={'tick-circle'}
-        disabled={extra.status !== TaskStatus.Completable || !!task.depends.length}
-        onClick={() => {
-          store.set(atoms.dataAtom, 'transact', () => {
-            consumeCost()
-            completeTask()
-          })
-        }}
-      />
-      <MenuItem
-        text={gt.gettext('强制完成（不消耗材料）')}
-        disabled={!!task.depends.length}
-        icon={'cross-circle'}
-        onClick={completeTask}
-      />
-      <MenuDivider />
-      <MenuItem
-        text={gt.gettext('优先培养（星标）')}
-        icon={'star'}
-        active={stars.includes(task.id)}
-        onClick={starTask}
-      />
-    </Menu>
-  )
-})
+    return (
+      <Menu>
+        {details ? (
+          <>
+            {details}
+            <MenuDivider />
+          </>
+        ) : null}
+        {task.group && groups.length >= 2 ? (
+          <>
+            <SortButtonGroup label={gt.gettext('角色内排序')} onMove={moveGroup} />
+            <MenuDivider />
+          </>
+        ) : null}
+        <MenuItem
+          text={gt.gettext('完成')}
+          icon={'tick-circle'}
+          disabled={extra.status !== TaskStatus.Completable || !!task.depends.length}
+          onClick={() => {
+            store.set(atoms.dataAtom, 'transact', () => {
+              consumeCost()
+              completeTask()
+            })
+          }}
+        />
+        <MenuItem
+          text={gt.gettext('强制完成（不消耗材料）')}
+          disabled={!!task.depends.length}
+          icon={'cross-circle'}
+          onClick={completeTask}
+        />
+        <MenuDivider />
+        <MenuItem
+          text={gt.gettext('优先培养（星标）')}
+          icon={'star'}
+          active={stars.includes(task.id)}
+          onClick={starTask}
+        />
+      </Menu>
+    )
+  },
+)
 
 /** 拖干员那一行（char）或拖一整项（group），row 是按住的那一行 */
 interface TaskDragSource {
@@ -235,6 +254,8 @@ export const TaskMenu = memo(
     const details = useAtomValue(detailsAtom)
     const openDossier = useOpenCharacterDossier()
     const dossierOpen = useDossierOpenFor(character.key)
+    // 触屏上长按干员那一行出右键菜单：iOS 长按不触发 contextmenu
+    const longPress = useLongPressContextMenu()
     const TaskTag = useComponents().TaskTag
     const sortedRequires = useMemo(
       () =>
@@ -266,7 +287,11 @@ export const TaskMenu = memo(
       />
     ))
 
-    const submenu = hideCosts && (renderedNotes.length > 0 || renderedCosts.length > 0)
+    const hasDetails = renderedNotes.length > 0 || renderedCosts.length > 0
+    // 触屏上没有悬停：点任务行弹出它的右键菜单，隐藏材料时材料也列在那个菜单里
+    const coarse = useCoarsePointer()
+    const submenu = !coarse && hideCosts && hasDetails
+    const menuDetails = coarse && hideCosts && hasDetails ? [...renderedNotes, ...renderedCosts] : undefined
 
     const starred = details.directStars.has(task)
       ? StarStatus.Starred
@@ -316,6 +341,7 @@ export const TaskMenu = memo(
               style={{ flexShrink: 1, overflow: 'hidden' }}
               aria-haspopup="dialog"
               aria-expanded={dossierOpen}
+              {...longPress}
               onClick={(e) => {
                 if (index !== undefined && onHeaderClick?.(e, index)) return
                 openDossier(character.key)
@@ -357,11 +383,12 @@ export const TaskMenu = memo(
           </ContextMenu>
         )}
         <Menu style={{ padding: 0 }} className={dim === 'task' ? 'cpp-drag-source' : undefined}>
-          <ContextMenu content={<TaskContextMenu task={task} extra={extra} />}>
+          <ContextMenu content={<TaskContextMenu task={task} extra={extra} details={menuDetails} />}>
             <MenuItem
               {...(task.group ? dragProps('group') : null)}
-              // 没有子菜单时只有右键菜单，悬停不该像能点
-              className={'cpp-menu-nosubmenu' + (submenu ? '' : ' cpp-task-row-static')}
+              // 没有子菜单时只有右键菜单，悬停不该像能点；触屏上点了就出菜单
+              className={'cpp-menu-nosubmenu cpp-task-row' + (submenu || coarse ? '' : ' cpp-task-row-static')}
+              onClick={coarse ? openContextMenuBelow : undefined}
               // title={task.id}
               style={{ fontWeight: 'normal' }}
               icon={StatusIcon[extra.status]}
@@ -404,6 +431,18 @@ export const TaskMenu = memo(
 )
 
 const preventDefault = (e: React.MouseEvent<any, MouseEvent>) => e.preventDefault()
+
+/**
+ * 在这一行左下角派发一次右键，由包着它的 ContextMenu 弹出菜单：iOS 长按不触发 contextmenu，
+ * 而菜单里的 jotai、Cpp 上下文都要从这一行来，不另写一份
+ */
+const openContextMenuBelow = (e: React.MouseEvent<HTMLElement>) => {
+  const row = e.currentTarget
+  const r = row.getBoundingClientRect()
+  row.dispatchEvent(
+    new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2, clientX: r.left, clientY: r.bottom }),
+  )
+}
 
 // 材料子菜单至少和任务行一样宽，放不下英文物品名时随内容加宽；matchTargetWidth 会把宽度定死成行宽。
 // MenuItem 的子菜单已经是 PopoverNext，popoverProps 却还按旧 Popover 定类型，middleware 只能绕过类型交过去：

@@ -2770,6 +2770,11 @@ section:first-child > .cpp-stages-wide-section {
   margin-top: 2px;
 }
 
+/* 比档案宽时（手机上）在页里横滑，不把整页撑宽 */
+.cpp-cost-vouchers-scroll {
+  overflow-x: auto;
+}
+
 .cpp-cost-vouchers {
   width: 100%;
   border-collapse: collapse;
@@ -4524,6 +4529,19 @@ section:first-child > .cpp-stages-wide-section {
 
 .cpp-value-config-rows > .bp6-form-group.bp6-inline > * {
   margin-bottom: 15px;
+}
+
+/* 手机上标签在控件上面，一行放不下的控件折到下一行 */
+.cpp-phone .cpp-value-config-rows {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.cpp-phone .cpp-value-config-rows > .bp6-form-group.bp6-inline > .bp6-label {
+  margin-bottom: 4px;
+}
+
+.cpp-phone .cpp-value-config-rows .bp6-form-content > div {
+  flex-wrap: wrap;
 }
 
 /* 块级的 flex：行内的话它按基线坐在单元格的行框里，比同一行的输入框中线高出几像素 */

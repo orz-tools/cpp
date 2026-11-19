@@ -2,7 +2,7 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage, selectAtom } from 'jotai/utils'
 import { SetStateAction, createContext, useContext, useMemo } from 'react'
 import useEvent from 'react-use-event-hook'
-import { DossierPrefs, DossierState, clickCharacter, readDossierPrefs, showCharacter } from './dossierState'
+import { DossierPrefs, DossierState, StatusMode, clickCharacter, readDossierPrefs, showCharacter } from './dossierState'
 
 // 每个 Cpp 实例有自己的 store，所以档案开着没有是按 profile 分开的，刷新后是关着的
 export const dossierAtom = atom<DossierState | null>(null)
@@ -22,6 +22,14 @@ export const dossierPrefsAtom = atom(
 export interface OpenDossierOptions {
   /** 打开到这一页：先改本机记录的 section，再按原来的规则打开或切换档案 */
   section?: string
+  /** 「练度」页显示哪一边，和 section 一样先记下 */
+  statusMode?: StatusMode
+}
+
+function withOptions(prefs: DossierPrefs, options: OpenDossierOptions | undefined): DossierPrefs {
+  const section = options?.section || prefs.section
+  const statusMode = options?.statusMode ?? prefs.statusMode
+  return section === prefs.section && statusMode === prefs.statusMode ? prefs : { section, statusMode }
 }
 
 let windowCount = 0
@@ -43,8 +51,7 @@ export function useOpenCharacterDossier(): (charId: string, options?: OpenDossie
   const setPrefs = useSetAtom(dossierPrefsAtom)
   const setState = useSetAtom(dossierAtom)
   return useEvent((charId: string, options?: OpenDossierOptions) => {
-    const section = options?.section
-    if (section) setPrefs((p) => ({ ...p, section }))
+    if (options) setPrefs((p) => withOptions(p, options))
     setState((state) =>
       clickCharacter(state, charId, {
         epoch: windowEpoch ?? currentWindowEpoch(),
@@ -60,8 +67,7 @@ export function useShowCharacterDossier(): (charId: string, options?: OpenDossie
   const setPrefs = useSetAtom(dossierPrefsAtom)
   const setState = useSetAtom(dossierAtom)
   return useEvent((charId: string, options?: OpenDossierOptions) => {
-    const section = options?.section
-    if (section) setPrefs((p) => ({ ...p, section }))
+    if (options) setPrefs((p) => withOptions(p, options))
     setState((state) =>
       showCharacter(state, charId, {
         epoch: windowEpoch ?? currentWindowEpoch(),

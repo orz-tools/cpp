@@ -193,7 +193,8 @@ const ColumnHeadCell = memo(
                   .replace('%d', String(column.defaultWidth))
           }
           onPointerDown={(e) => {
-            if (disabled || e.button !== 0) return
+            // 手指在列头上是要横滑列表
+            if (disabled || e.button !== 0 || e.pointerType === 'touch') return
             e.preventDefault()
             e.currentTarget.setPointerCapture(e.pointerId)
             drag.current = { startX: e.clientX, startWidth: column.width, width: column.width }

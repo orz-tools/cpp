@@ -217,7 +217,7 @@ const DiffView = memo(({ diff }: { diff: State }) => {
 
   return (
     <>
-      <div style={{ height: '70vh', display: 'flex', flexDirection: 'column', padding: '15px', rowGap: '15px' }}>
+      <div className="cpp-importer-result">
         {diff.notes.length > 0 ? (
           <Callout icon="info-sign">
             <ul style={{ margin: 0, padding: 0 }}>
@@ -236,7 +236,7 @@ const DiffView = memo(({ diff }: { diff: State }) => {
             </ul>
           </Callout>
         ) : null}
-        <div className="cpp-importer-diff" style={{ overflow: 'auto', flex: 1 }}>
+        <div className="cpp-importer-diff">
           <Tabs selectedTabId={tab} vertical onChange={(x) => setTab(x)} fill>
             <Tab
               id={'char'}

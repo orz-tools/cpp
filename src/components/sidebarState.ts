@@ -12,6 +12,11 @@ export function readSidebarState(stored: unknown): SidebarState {
   return { open, panel }
 }
 
+/** 手机上「更多」开着面板页没有；从没记过时是列表，桌面上第一次打开时侧栏展开着「关于」 */
+export function phonePanelOpen(stored: unknown): boolean {
+  return stored != null && readSidebarState(stored).open
+}
+
 export function activePanelId(state: SidebarState, panelIds: readonly string[]): string {
   return panelIds.includes(state.panel) ? state.panel : panelIds[0]
 }

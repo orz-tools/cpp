@@ -10,6 +10,7 @@ import { menuItemKeyDown, raisePortal } from './CharacterList'
 import { itemPeekKind } from './ItemPeek'
 import { currentWindowEpoch, dossierAtom } from './dossierHooks'
 import { useFocusFrame, useRequestFrame } from './focusFrame'
+import { usePhoneLayout } from './phoneLayout'
 import {
   PeekKind,
   PeekRef,
@@ -107,6 +108,9 @@ export const PeekCard = memo(
     const back = useEvent(() => onNavigate(popPeek(stack)))
     const backLabel = gt.pgettext('peek card', '返回')
     const pinLabel = gt.pgettext('peek card', '钉住')
+    // 钉板要在旁边留一栏，手机上没有：卡片只能关掉
+    const phone = usePhoneLayout()
+    const canPin = !pinned && exists && !phone
     return (
       <div className="cpp-peek-card" role="dialog" aria-labelledby={titleId} tabIndex={-1}>
         <div className="cpp-peek-head">
@@ -123,7 +127,7 @@ export const PeekCard = memo(
           <PeekTitleIdContext.Provider value={titleId}>
             {exists ? <kind.Head id={ref.id} /> : <PeekHead title={ref.id} />}
           </PeekTitleIdContext.Provider>
-          {!pinned && exists ? (
+          {canPin ? (
             <Button variant="minimal" size="small" icon="pin" title={pinLabel} aria-label={pinLabel} onClick={onPin} />
           ) : (
             <Button
@@ -189,6 +193,8 @@ export const PeekTrigger = ({
   const kind = usePeekKinds()[peek.kind]
   const anchor = useId()
   const store = useStore()
+  // 手机上一行占满屏宽，旁边放不下，卡片弹在它下面
+  const phone = usePhoneLayout()
   // 每一处只订阅自己开着没有，换一张卡片时只有开关变了的两处重画
   const openAtom = useMemo(() => selectAtom(openPeekAtom, (x) => (x?.anchor === anchor ? x : null)), [anchor])
   const open = useAtomValue(openAtom)
@@ -228,7 +234,7 @@ export const PeekTrigger = ({
       onInteraction={(next) => {
         if (!next) close()
       }}
-      placement="right"
+      placement={phone ? 'bottom' : 'right'}
       popoverClassName="cpp-peek-popover"
       autoFocus
       enforceFocus={false}
@@ -287,7 +293,9 @@ export const PeekBoard = memo(() => {
   const [pins, setPins] = useAtom(pinnedPeeksAtom)
   const { generation } = useAtomValue(boardLayerAtom)
   const besideDossier = useAtomValue(dossierAtom) != null
-  if (pins.length === 0) return null
+  // 在宽屏上钉住、再把窗口拉窄时，钉住的卡片收起来，拉宽了再出来
+  const phone = usePhoneLayout()
+  if (pins.length === 0 || phone) return null
   const keys = pinKeys(pins)
   return (
     // 和档案一样：浮层按 portal 第一次建出来的先后叠放，换 key 重新挂载才排到之后打开的窗口上面

@@ -459,6 +459,23 @@ body {
   white-space: nowrap;
 }
 
+/* 刷图：关卡一列、合成一列，各自滚动 */
+.cpp-farm-body {
+  display: flex;
+  flex: 1 1 0%;
+  overflow: auto;
+}
+
+.cpp-farm-stages {
+  width: 250px;
+  overflow: auto;
+}
+
+.cpp-farm-synthesis {
+  flex: 1 1 0%;
+  overflow: auto;
+}
+
 .cpp-item-menu-master > li {
   display: flex;
   align-items: center;
@@ -482,6 +499,12 @@ body {
 /* 不裁掉溢出：不缩写大数时，十个字符的数（「-394738332」）比 6em 宽，裁掉就少了末位 */
 .cpp-goal-counter {
   position: relative;
+  width: 6em;
+}
+
+/* 手机上计数格从这里折到第二层 */
+.cpp-item-row-break {
+  display: none;
 }
 
 .cpp-goal-counter::before {
@@ -1168,6 +1191,24 @@ body {
   transform: rotateX(180deg);
 } */
 
+/* 用户数据管理的文本框撑开弹窗；手机上弹窗占满屏宽，不再撑 */
+.cpp-userdata-text {
+  min-width: 400px;
+}
+
+.cpp-importer-result {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  height: 70vh;
+  padding: 15px;
+}
+
+.cpp-importer-diff {
+  flex: 1;
+  overflow: auto;
+}
+
 .cpp-importer-diff > .bp6-tabs {
   height: 100%;
 }
@@ -1548,4 +1589,533 @@ body .bp6-navbar-group {
   .cpp-retired-clear > .bp6-button {
     margin: 0 0 0 -8px;
   }
+}
+
+/*
+ * 手机布局（src/components/phoneLayout.ts）：宽度不到 768px 时 <html> 带 cpp-phone。
+ * 五个区域叠在一起，一次只露出一个，底部一排标签切换；侧栏那一栏是「更多」。
+ * 颜色只取 Blueprint 的变量
+ */
+
+/* 顶栏只有品牌和撤销 / 重做；品牌不换行，排不下时省略档案名那一段 */
+.cpp-phone .cpp-navbar-main {
+  display: flex;
+  align-items: center;
+  padding: 0 0 0 8px;
+}
+
+.cpp-phone .cpp-navbar-main > .bp6-navbar-group {
+  float: none;
+}
+
+.cpp-phone .cpp-navbar-main > .bp6-align-left {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cpp-phone .cpp-navbar-main > .bp6-align-right {
+  flex: none;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading {
+  min-width: 0;
+  margin-right: 0;
+  white-space: nowrap;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading > img,
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading > code {
+  flex: none;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading > .bp6-popover-target {
+  min-width: 0;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading .bp6-button {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading .bp6-button-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 40px 见方，没有字也没有步数 */
+.cpp-phone .cpp-navbar-main > .bp6-align-right .bp6-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+}
+
+.cpp-phone .cpp-navbar-main > .bp6-align-right .bp6-tag {
+  display: none;
+}
+
+.cpp-phone .App {
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  overflow: hidden;
+}
+
+.cpp-phone .App > section {
+  position: absolute;
+  inset: 0;
+  margin-right: 0;
+}
+
+.cpp-phone .App > section:not(.is-phone-current) {
+  visibility: hidden;
+}
+
+/* 在 .App（z-index 0）之上、Blueprint 的浮层（20）之下：档案、弹窗盖得住它 */
+.cpp-phone-tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  box-sizing: border-box;
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--bp-palette-white);
+  box-shadow: inset 0 1px 0 var(--bp-palette-light-gray-1);
+}
+
+.cpp-phone-tab {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--bp-palette-gray-1);
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cpp-phone-tab.is-current {
+  color: var(--bp-palette-blue-3);
+}
+
+.cpp-phone-tab.is-current::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 32px;
+  height: 2px;
+  margin-left: -16px;
+  background: var(--bp-palette-blue-3);
+}
+
+.cpp-phone-tab:focus-visible {
+  outline: 2px solid var(--bp-palette-blue-3);
+  outline-offset: -2px;
+}
+
+.cpp-phone-tab-icon {
+  position: relative;
+  display: flex;
+}
+
+.cpp-phone-tab-label {
+  max-width: 100%;
+  padding: 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 「更多」上的红点：每个面板各画一个，叠在同一处 */
+.cpp-phone-tab-dot {
+  position: absolute;
+  top: -2px;
+  right: -6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bp-palette-red-3);
+  box-shadow: 0 0 0 2px var(--bp-palette-white);
+}
+
+.cpp-phone-tab-dot.is-pin {
+  background: var(--bp-palette-blue-3);
+}
+
+/*
+ * 干员列表：一行比屏幕宽，整行（列头也是）一起横滑。头像钉在左边；名字跟着往左滑，
+ * 一路贴着头像、从右边被截短，直到整格滑出去。滑动停在每一格的开头
+ */
+.cpp-phone .cpp-char-list {
+  padding-left: 0;
+  padding-right: 0;
+  overscroll-behavior: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-left: 48px;
+}
+
+.cpp-phone .cpp-char-menu-master,
+.cpp-phone .cpp-char-list .cpp-qe-colhead {
+  width: max-content;
+  min-width: 100%;
+}
+
+.cpp-phone .cpp-char-menu-master > * {
+  flex: none;
+  scroll-snap-align: start;
+}
+
+.cpp-phone .cpp-char-menu-master > .cpp-char-menu-avatar-cell {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  width: 48px;
+  overflow: visible;
+  scroll-snap-align: none;
+  background: var(--bp-palette-white);
+}
+
+.cpp-phone .cpp-char-menu-avatar-cell > .cpp-char-menu-char {
+  width: 48px;
+  height: 100%;
+  margin: 0;
+  padding: 4px;
+}
+
+.cpp-phone .cpp-char-menu-avatar-cell .bp6-menu-item-icon {
+  margin: 0;
+}
+
+.cpp-char-menu-name {
+  display: flex;
+  align-items: center;
+  width: 84px;
+  overflow: clip;
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 10px), transparent);
+  mask-image: linear-gradient(to right, black calc(100% - 10px), transparent);
+  line-height: 20px;
+  cursor: pointer;
+}
+
+/*
+ * 选中的干员（ListSelection.tsx）：底色落在头像格和名字格上，不铺满比屏宽的整行；
+ * 头像格钉着、要盖住滑过的格子，所以浅蓝叠在不透明的白底上
+ */
+.cpp-phone .cpp-char-menu-master.cpp-list-selected {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.cpp-phone .cpp-list-selected > .cpp-char-menu-avatar-cell {
+  background:
+    linear-gradient(color-mix(in srgb, var(--bp-palette-blue-3) 12%, transparent) 0 0), var(--bp-palette-white);
+}
+
+.cpp-phone .cpp-list-selected > .cpp-char-menu-name {
+  background-color: color-mix(in srgb, var(--bp-palette-blue-3) 12%, transparent);
+}
+
+/* 和头像格的 bp6-active bp6-intent-primary 同一种浅蓝 */
+.cpp-char-menu-name.is-open {
+  background-color: color-mix(in srgb, var(--bp-palette-blue-3) 20%, transparent);
+  color: var(--bp-palette-blue-1);
+}
+
+.cpp-char-menu-name-text {
+  position: sticky;
+  left: 48px;
+  width: 0;
+  padding-left: 8px;
+  white-space: nowrap;
+}
+
+.cpp-char-menu-name-sub {
+  opacity: 0.75;
+}
+
+/* 练度格的深色底是 z-index -100 的 ::after：留在格子里，滑到头像底下时不会把头像盖住 */
+.cpp-phone .cpp-char-menu-master > .cpp-char-menu-status {
+  isolation: isolate;
+}
+
+/* 列头第一格是头像那一列的空格子，和头像一起钉着 */
+.cpp-phone .cpp-char-list .cpp-qe-colhead::before {
+  content: '';
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  flex: none;
+  width: 48px;
+  background: var(--bp-palette-white);
+}
+
+.cpp-phone .cpp-char-list .cpp-qe-colhead > .cpp-qe-colhead-name {
+  flex: none;
+  width: 84px;
+}
+
+/* 搜索框展开时挤掉的是视图按钮，右边的按钮留在屏幕里 */
+.cpp-phone .cpp-char-toolbar-views {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* 快捷过滤排成一行，放不下时横滑 */
+.cpp-phone .cpp-quick-filter {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.cpp-phone .cpp-quick-filter::-webkit-scrollbar {
+  display: none;
+}
+
+.cpp-phone .cpp-quick-filter > * {
+  flex: none;
+}
+
+/* 任务：触屏上干员那一行和任务名那一行至少 40px 高，点任务名弹出它的菜单（TaskList.tsx） */
+@media (pointer: coarse) {
+  .cpp-task-menu-master .bp6-menu-item.cpp-task-menu,
+  .cpp-task-menu-master .bp6-menu-item.cpp-task-row {
+    align-items: center;
+    min-height: 40px;
+  }
+}
+
+/* 刷图：关卡在上、合成在下，整块一起滚 */
+.cpp-phone .cpp-farm-body {
+  flex-direction: column;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .cpp-farm-body > .cpp-farm-stages,
+.cpp-phone .cpp-farm-body > .cpp-farm-synthesis {
+  flex: none;
+  width: 100%;
+  overflow: visible;
+}
+
+/*
+ * 材料：第一层是物品和数量框，第二层是五个计数格，标签写在数字上方。
+ * 一行放不下时计数格再折一行，数字不重叠、不截断
+ */
+.cpp-phone .cpp-item-menu-master {
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .cpp-item-menu-master > li {
+  flex-wrap: wrap;
+  column-gap: 8px;
+  padding-bottom: 6px;
+}
+
+.cpp-phone .cpp-item-menu-master > li > :first-child {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.cpp-phone .cpp-item-menu-master > li > :nth-child(2) {
+  flex: none;
+}
+
+.cpp-phone .cpp-item-row-break {
+  display: block;
+  flex: 0 0 100%;
+  height: 0;
+}
+
+.cpp-phone .cpp-item-menu-master > li > .cpp-item-row-break ~ * {
+  flex: 1 1 0;
+  min-width: max-content;
+}
+
+/* 「可合成」那一格包在能点开物品卡的菜单项里 */
+.cpp-phone .cpp-item-menu-master > li > .cpp-item-row-break ~ a > .cpp-goal-counter {
+  flex: 1 1 auto;
+}
+
+.cpp-phone .cpp-goal-counter {
+  width: auto;
+  font-size: 13px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.cpp-phone .cpp-goal-counter::before {
+  position: static;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--bp-palette-gray-1);
+  opacity: 1;
+  white-space: nowrap;
+}
+
+/*
+ * 弹窗占满一屏：标题栏、底栏不动，中间滚动。盖过上面 .bp6-dialog 的 80vw，所以也要 !important。
+ * 提示框（Alert）照旧居中，只是两边各留 16px
+ */
+.cpp-phone .bp6-dialog:not(.bp6-alert) {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100dvh;
+  margin: 0;
+  border-radius: 0;
+}
+
+.cpp-phone .bp6-dialog:not(.bp6-alert) > .bp6-dialog-header {
+  border-radius: 0;
+}
+
+.cpp-phone .bp6-dialog:not(.bp6-alert) > :not(.bp6-dialog-header) {
+  min-height: 0;
+}
+
+.cpp-phone .bp6-dialog:not(.bp6-alert) > .bp6-dialog-footer,
+.cpp-phone .bp6-dialog:not(.bp6-alert) > .bp6-dialog-footer-fixed {
+  margin-top: auto;
+}
+
+.cpp-phone .bp6-dialog-body {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .bp6-dialog-body-scroll-container {
+  max-height: none;
+}
+
+.cpp-phone .bp6-alert {
+  max-width: calc(100vw - 32px) !important;
+}
+
+/* 底栏的按钮不把字挤成两行，放不下就折到下一行 */
+.cpp-phone .bp6-dialog-footer-fixed,
+.cpp-phone .bp6-dialog-footer-actions {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+.cpp-phone .bp6-dialog-footer .bp6-button {
+  white-space: nowrap;
+}
+
+.cpp-phone .cpp-userdata-text {
+  min-width: 0;
+}
+
+/* 「关于」的大窗口排成一栏，整页滚动 */
+.cpp-phone .cpp-about-wide {
+  grid-template-columns: 1fr;
+  width: auto;
+  max-width: none;
+  height: auto;
+}
+
+/* 导入结果撑满弹窗中间那一块 */
+.cpp-phone .cpp-importer-result {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+}
+
+/* 「更多」（PhoneMore.tsx）：侧栏那一栏在手机上是一列，列表、子页、面板页都占满宽度 */
+.cpp-phone .cpp-sidebar {
+  flex-direction: column;
+}
+
+.cpp-phone .cpp-sidebar-panel,
+.cpp-phone-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: auto;
+  min-height: 0;
+}
+
+.cpp-phone-more {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone-more > li > .bp6-menu-item {
+  align-items: center;
+  min-height: 44px;
+}
+
+.cpp-phone-more > li > .bp6-menu-item > .bp6-menu-item-label {
+  display: flex;
+  align-items: center;
+}
+
+.cpp-phone-more-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cpp-phone-more-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+  vertical-align: 1px;
+  background: var(--bp-palette-red-3);
+}
+
+/* 子页和面板页的标题栏：返回贴着左边，标题紧跟在后面 */
+.cpp-phone-page-head.bp6-navbar {
+  flex: none;
+  padding: 0 4px 0 0;
+}
+
+.cpp-phone-page-head .bp6-navbar-heading {
+  margin-right: 0;
+  font-weight: 600;
+}
+
+/* 输入框不小于 16px：iOS 聚焦小于 16px 的输入框会放大整页 */
+.cpp-phone .bp6-input,
+.cpp-phone .bp6-input.bp6-small,
+.cpp-phone .bp6-input-group.bp6-small .bp6-input,
+.cpp-phone .bp6-html-select select {
+  font-size: 16px;
+}
+
+/* 长按头像和物品图标不弹存图菜单：长按留给右键菜单 */
+@media (pointer: coarse) {
+  .cpp-char-avatar img,
+  img.cpp-item-icon {
+    -webkit-touch-callout: none;
+  }
+}
+
+/* 滑到头时不带着整页走，也不触发下拉刷新 */
+html.cpp-phone,
+html.cpp-phone body {
+  overscroll-behavior: none;
+}
+
+.cpp-phone .App > section > .bp6-menu,
+.cpp-phone .cpp-dossier-body,
+.cpp-phone .cpp-sidebar-panel .bp6-menu {
+  overscroll-behavior: contain;
 }

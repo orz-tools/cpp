@@ -15,6 +15,7 @@ import {
   Popover,
   Spinner,
   Tag,
+  useOverlayStack,
 } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { ErrorInfo, memo, useEffect, useRef, useState } from 'react'
@@ -32,15 +33,19 @@ import { FarmList } from './components/FarmList'
 import { ImportPasteBox } from './components/ImportPasteBox'
 import { ItemList } from './components/ItemList'
 import { PeekBoard } from './components/Peek'
+import { useReloadGameData } from './components/reloadGameData'
+import { PhoneTabBar } from './components/PhoneTabBar'
+import { BackGuardEvent, closeTopOverlay, initialBackGuard, openOverlays, stepBackGuard } from './components/phoneBack'
+import { PhoneArea, phoneAreaAtom, usePhoneLayout } from './components/phoneLayout'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
-import { Sidebar } from './components/Sidebar'
+import { Sidebar, usePhoneMoreLayer } from './components/Sidebar'
 import { TaskList } from './components/TaskList'
 import { AppToaster } from './components/Toaster'
 import { UserDataManagerButton, UserDataManagerMenuItem } from './components/UserDataManager'
 import { ValueOptionButton } from './components/Value'
 import { useComponents } from './hooks/useComponents'
 import { LocaleButton } from './locales'
-import { UpdateResult, UpdateScheduler } from './pkg/cpp-basic'
+import { UpdateScheduler } from './pkg/cpp-basic'
 import { gt } from './pkg/gt'
 import { formatProfileName } from './profiles'
 
@@ -55,6 +60,7 @@ const UndoButtons = memo(() => {
       <Button
         icon="undo"
         disabled={undoCounter === 0}
+        aria-label={gt.gettext('撤销')}
         text={<span className={'cpp-very-compact'}>{gt.gettext('撤销')}</span>}
         variant="minimal"
         onClick={() => setData('undo')}
@@ -63,6 +69,7 @@ const UndoButtons = memo(() => {
       <Button
         icon="redo"
         disabled={redoCounter === 0}
+        aria-label={gt.gettext('重做')}
         text=""
         variant="minimal"
         onClick={() => setData('redo')}
@@ -73,42 +80,14 @@ const UndoButtons = memo(() => {
 })
 
 const ReloadDataButton = memo(() => {
-  const cpp = useCpp()
-  const dm = cpp.gameAdapter.getDataManager()
-  const { updating } = useAtomValue(cpp.gameDataStatusAtom)
-  const setError = useSetAtom(ErrAtom)
-  const run = useEvent(async (operation: () => Promise<UpdateResult>) => {
-    const toaster = await AppToaster
-    const reload = toaster.show(
-      { message: gt.gettext('更新数据中…'), isCloseButtonShown: false, timeout: 0, intent: 'primary' },
-      'reload',
-    )
-    try {
-      const r = await operation()
-      // Replaced in place: a dismiss followed by a show with the same key drops both, as the dismiss lands last.
-      if (r.applied) {
-        toaster.show({ message: gt.gettext('游戏数据已更新'), intent: 'success' }, reload)
-      } else {
-        toaster.show({ message: gt.gettext('未找到新数据') }, reload)
-      }
-    } catch (e) {
-      console.log(e)
-      toaster.dismiss(reload)
-      setError({ error: e, context: gt.pgettext('error context', '检查数据更新失败') })
-    }
-  })
+  const { updating, checkForUpdates, reload } = useReloadGameData()
 
   return (
     <>
       <ContextMenu
         content={
           <Menu>
-            <MenuItem
-              text={gt.gettext('重载数据')}
-              icon={'reset'}
-              disabled={updating}
-              onClick={() => void run(() => dm.reset())}
-            />
+            <MenuItem text={gt.gettext('重载数据')} icon={'reset'} disabled={updating} onClick={reload} />
           </Menu>
         }
       >
@@ -117,7 +96,7 @@ const ReloadDataButton = memo(() => {
           disabled={updating}
           text={<span className={'cpp-very-compact'}>{gt.gettext('检查数据更新')}</span>}
           variant="minimal"
-          onClick={() => void run(() => dm.update({ force: true }))}
+          onClick={checkForUpdates}
         />
       </ContextMenu>
     </>
@@ -151,10 +130,66 @@ const ClosureButtonHeading = memo(() => {
   )
 })
 
+// 历史里的守卫跟着页面走，不跟着组件：换游戏数据时 App 重新挂载，守卫还在
+let backGuard = initialBackGuard
+
+/** 手机上的返回键先关掉最上面那层（phoneBack.ts）；只在手机布局下挂监听 */
+const PhoneBack = memo(() => {
+  const phone = usePhoneLayout()
+  const { getLastOpened } = useOverlayStack()
+  const moreLayer = usePhoneMoreLayer()
+  const closeTop = useEvent(() => {
+    if (!closeTopOverlay(getLastOpened())) moreLayer.close()
+  })
+
+  useEffect(() => {
+    if (!phone) return
+    const depth = () => openOverlays().length + (moreLayer.isOpen() ? 1 : 0)
+    const step = (event: BackGuardEvent) => {
+      const r = stepBackGuard(backGuard, event)
+      backGuard = r.state
+      for (const action of r.actions) {
+        if (action.type === 'push') for (let i = 0; i < action.count; i++) history.pushState(history.state, '')
+        else if (action.type === 'go') history.go(action.delta)
+        else if (action.type === 'close') closeTop()
+        else history.back()
+      }
+    }
+    // Blueprint 的浮层在 effect 里才建出 portal，Chamber 的弹窗还要隔一次渲染：点完过一会儿再数，晚到的再数一次
+    let timers: number[] = []
+    const clear = () => timers.forEach((t) => clearTimeout(t))
+    // 代码派发的事件（关最上面那层的 Esc、任务行的右键）不算：那时的层数还没定下来
+    const settle = (e: Event) => {
+      if (!e.isTrusted) return
+      clear()
+      timers = [120, 600].map((ms) => window.setTimeout(() => step({ type: 'settled', depth: depth() }), ms))
+    }
+    const pop = () => step({ type: 'pop', depth: depth() })
+    // 长按出的菜单后面没有 click：松手（touchend）和安卓自己的长按（contextmenu）也对账
+    const triggers = ['click', 'keydown', 'paste', 'touchend', 'contextmenu'] as const
+    window.addEventListener('popstate', pop)
+    for (const type of triggers) document.addEventListener(type, settle, true)
+    return () => {
+      clear()
+      window.removeEventListener('popstate', pop)
+      for (const type of triggers) document.removeEventListener(type, settle, true)
+    }
+  }, [phone, moreLayer, closeTop])
+
+  return null
+})
+
 const charExtraWidthAtom = atom(0)
+
+/** 手机上五个区域叠在一起，只露出当前那个；都一直挂着，切回来时滚动位置、搜索框都还在 */
+function areaProps(area: PhoneArea, phone: boolean, current: PhoneArea) {
+  return { 'data-area': area, className: Classes.ELEVATION_1 + (phone && area === current ? ' is-phone-current' : '') }
+}
 
 const App = memo(() => {
   const cpp = useCpp()
+  const phone = usePhoneLayout()
+  const area = useAtomValue(phoneAreaAtom)
   const defaultCharStatusWidth = 43 * 6
   const charExtraWidth = useAtomValue(charExtraWidthAtom)
   const charStatusWidth = cpp.gameComponent.charStatusWidth || defaultCharStatusWidth
@@ -176,42 +211,53 @@ const App = memo(() => {
   return (
     <>
       {cpp.gameComponent.style ? <style dangerouslySetInnerHTML={{ __html: cpp.gameComponent.style }} /> : null}
-      <Navbar fixedToTop={true} className="cpp-navbar-main">
-        <Navbar.Group align={Alignment.LEFT}>
-          <ClosureButtonHeading />
-          <Navbar.Divider />
-          <UndoButtons />
-          <Navbar.Divider />
-          <ValueOptionButton />
-          <ConfigButton />
-          <MaybeSoulButton />
-        </Navbar.Group>
-        <Navbar.Group align={Alignment.RIGHT}>
-          <RegionButton />
-          <DataDropdown />
-          <ReloadDataButton />
-          <HelpButton />
-          <LocaleButton />
-        </Navbar.Group>
-      </Navbar>
+      {phone ? (
+        <Navbar fixedToTop={true} className="cpp-navbar-main">
+          <Navbar.Group align={Alignment.LEFT}>
+            <ClosureButtonHeading />
+          </Navbar.Group>
+          <Navbar.Group align={Alignment.RIGHT}>
+            <UndoButtons />
+          </Navbar.Group>
+        </Navbar>
+      ) : (
+        <Navbar fixedToTop={true} className="cpp-navbar-main">
+          <Navbar.Group align={Alignment.LEFT}>
+            <ClosureButtonHeading />
+            <Navbar.Divider />
+            <UndoButtons />
+            <Navbar.Divider />
+            <ValueOptionButton />
+            <ConfigButton />
+            <MaybeSoulButton />
+          </Navbar.Group>
+          <Navbar.Group align={Alignment.RIGHT}>
+            <RegionButton />
+            <DataDropdown />
+            <ReloadDataButton />
+            <HelpButton />
+            <LocaleButton />
+          </Navbar.Group>
+        </Navbar>
+      )}
       <div className="App">
         <Sidebar />
         <section
-          className={Classes.ELEVATION_1}
+          {...areaProps('chars', phone, area)}
           style={{
-            width: Math.max(charListBaseWidth + charExtraWidth, 560),
+            width: phone ? undefined : Math.max(charListBaseWidth + charExtraWidth, 560),
             display: 'flex',
             flexDirection: 'column',
             // 过滤器编辑器的条件区和 JSON 区按没有附加列时的宽度排版，加列、拖列宽时控件不跟着变宽
-            ['--cpp-char-list-base-width' as string]: `${Math.max(charListBaseWidth, 560)}px`,
+            ['--cpp-char-list-base-width' as string]: phone ? '100%' : `${Math.max(charListBaseWidth, 560)}px`,
           }}
         >
           <CharacterList charExtraWidthAtom={charExtraWidthAtom} />
         </section>
         <section
-          className={Classes.ELEVATION_1}
+          {...areaProps('tasks', phone, area)}
           style={{
-            width: '270px',
+            width: phone ? undefined : '270px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -219,9 +265,9 @@ const App = memo(() => {
           <TaskList />
         </section>
         <section
-          className={Classes.ELEVATION_1}
+          {...areaProps('farm', phone, area)}
           style={{
-            width: '470px',
+            width: phone ? undefined : '470px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -229,9 +275,9 @@ const App = memo(() => {
           <FarmList />
         </section>
         <section
-          className={Classes.ELEVATION_1}
+          {...areaProps('items', phone, area)}
           style={{
-            width: '720px',
+            width: phone ? undefined : '720px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -241,6 +287,8 @@ const App = memo(() => {
       </div>
       <CharacterDossier />
       <PeekBoard />
+      {phone ? <PhoneTabBar /> : null}
+      <PhoneBack />
     </>
   )
 })

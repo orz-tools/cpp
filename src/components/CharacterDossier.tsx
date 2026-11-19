@@ -10,7 +10,7 @@ import { CharacterLookupMenuItems } from './CharacterList'
 import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { CachedImg } from './Icons'
 import { dossierAtom, dossierPrefsAtom, useCloseCharacterDossier } from './dossierHooks'
-import { DossierState, shownSection, visibleSections } from './dossierState'
+import { DossierState, STATUS_SECTION_ID, shownSection, visibleSections } from './dossierState'
 import { DossierSection } from './types'
 
 const StatusSectionBody = memo(({ character }: { character: ICharacter }) => {
@@ -32,7 +32,7 @@ const StatusSectionBody = memo(({ character }: { character: ICharacter }) => {
 })
 
 export const statusSection: DossierSection = {
-  id: 'status',
+  id: STATUS_SECTION_ID,
   title: lpstr(() => gt.pgettext('dossier section', '练度')),
   Body: StatusSectionBody,
 }

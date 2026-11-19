@@ -5,7 +5,8 @@ import { useChamber } from './Chamber'
 import { ListModeWithGoal, PredefinedGameQueryPrefix } from './characterQuery'
 import { dataMenuOpenAtom } from './dataMenu'
 import { useQueryEditorToggle } from './queryEditor/QueryEditor'
-import { useShowSidebarPanel } from './Sidebar'
+import { phoneAreaAtom, usePhoneLayout } from './phoneLayout'
+import { useShowPhoneMoreList, useShowSidebarPanel } from './Sidebar'
 
 /** Where a changelog line leads when clicked */
 export type LogTarget =
@@ -24,14 +25,27 @@ export function useLogTarget(target: LogTarget | undefined): (() => void) | unde
   const ga = useGameAdapter()
   const { sidebarPanels, ValueConfigDialog } = useComponents()
   const showPanel = useShowSidebarPanel()
-  const setParam = useSetAtom(useCpp().queryParamAtom)
+  const setQueryParam = useSetAtom(useCpp().queryParamAtom)
   const editor = useQueryEditorToggle()
   const setDataMenuOpen = useSetAtom(dataMenuOpenAtom)
   const { add } = useChamber()
+  // 手机上更新笔记在「更多」里：指向干员列表的那几条要切过去才看得到，「导入/导出」在「更多」的列表里
+  const phone = usePhoneLayout()
+  const setPhoneArea = useSetAtom(phoneAreaAtom)
+  const showPhoneMoreList = useShowPhoneMoreList()
+  const toList = phone ? () => setPhoneArea('chars') : () => {}
+  const setParam: typeof setQueryParam = (update) => {
+    setQueryParam(update)
+    toList()
+  }
 
   if (target == null) return undefined
-  if (target === 'filterEditor') return () => (editor.open ? undefined : editor.toggle())
-  if (target === 'dataMenu') return () => setDataMenuOpen(true)
+  if (target === 'filterEditor')
+    return () => {
+      if (!editor.open) editor.toggle()
+      toList()
+    }
+  if (target === 'dataMenu') return phone ? showPhoneMoreList : () => setDataMenuOpen(true)
   if (target === 'planView') return () => setParam((x) => ({ ...x, query: ListModeWithGoal, source: undefined }))
   if (target === 'valueSettings') {
     return ValueConfigDialog ? () => add(ValueConfigDialog, {}, 'valueSettings') : undefined
