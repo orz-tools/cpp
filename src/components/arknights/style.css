@@ -4438,3 +4438,30 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-so-exp.is-idle .cpp-so-st {
   color: var(--bp-palette-gray-4, #abb3bf);
 }
+
+/* 价值计算设置（ValueConfigMenu.tsx） */
+
+/* 一行一项的设置共用一列标签，输入框都从同一条竖线起；标签宽度各语言不同，按最宽的那个 */
+.cpp-value-config-rows {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+}
+
+.cpp-value-config-rows > :not(.bp6-inline) {
+  grid-column: 1 / -1;
+}
+
+.cpp-value-config-rows > .bp6-form-group.bp6-inline {
+  display: contents;
+}
+
+.cpp-value-config-rows > .bp6-form-group.bp6-inline > * {
+  margin-bottom: 15px;
+}
+
+/* 块级的 flex：行内的话它按基线坐在单元格的行框里，比同一行的输入框中线高出几像素 */
+.cpp-value-config-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
