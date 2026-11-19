@@ -1719,6 +1719,12 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 15px;
   font-weight: 700;
   line-height: 20px;
+  white-space: nowrap;
+}
+
+/* 「DM-EX-1」这样七个字的代号 15px 放不进 58px 的票根，会从连字符处折成两行 */
+.cpp-mm-stub-code.is-long {
+  font-size: 13px;
 }
 
 .cpp-mm-stub-line {
