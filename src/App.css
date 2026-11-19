@@ -599,9 +599,10 @@ body {
   outline: none !important;
 }
 
+/* 说明和上面那一项的文字对齐：16px 图标加它右边 8px */
 .cpp-menu-indent {
   padding: 0 !important;
-  margin-left: 22px !important;
+  margin-left: 24px !important;
 }
 
 /* 从别处点过来、框出的那一项（focusFrame.ts）；和时装卡片图上的框一样 */
