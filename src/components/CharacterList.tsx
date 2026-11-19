@@ -150,14 +150,17 @@ export const CharacterContextMenu = memo(
     const atoms = useAtoms<IGame>()
     const store = useStore()
     const param = useAtomValue(useCpp().queryParamAtom)
+    const order = useAtomValue(atoms.goalOrder)
     const move = (step: MoveStep) => {
-      const target = stepTarget(store.get(atoms.goalOrder), character.key, step)
+      const target = stepTarget(order, character.key, step)
       if (target) store.set(atoms.moveInPlan, { charId: character.key, target })
     }
+    // 和「角色内排序」一样：计划里没有别的干员可换时，四个按钮哪个都挪不动
+    const movable = order.length > 1 && order.includes(character.key)
 
     return (
       <Menu>
-        {alwaysSorting || (alwaysSorting !== false && param.query === ListModeWithGoal) ? (
+        {movable && (alwaysSorting || (alwaysSorting !== false && param.query === ListModeWithGoal)) ? (
           <>
             <SortButtonGroup label={gt.gettext('角色计划排序')} onMove={move} />
             <MenuDivider />
