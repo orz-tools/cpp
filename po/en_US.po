@@ -175,7 +175,7 @@ msgstr "Value Delta"
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr "Drop Rate Data from Penguin Statistics"
 
-#: src/components/TaskList.tsx:141
+#: src/components/TaskList.tsx:158
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
@@ -380,7 +380,7 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制数据"
 msgstr "Copy Data"
 
-#: src/components/CharacterList.tsx:207
+#: src/components/CharacterList.tsx:168
 msgid "复制角色名"
 msgstr "Copy Name"
 
@@ -388,7 +388,7 @@ msgstr "Copy Name"
 msgid "如今"
 msgstr "Current"
 
-#: src/components/TaskList.tsx:123
+#: src/components/TaskList.tsx:140
 msgid "完成"
 msgstr "Complete"
 
@@ -471,7 +471,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
-#: src/components/CharacterList.tsx:214
+#: src/components/CharacterList.tsx:175
 msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
@@ -535,7 +535,7 @@ msgstr "Documentation"
 msgid "弹出成大窗口"
 msgstr "Open in a window"
 
-#: src/components/TaskList.tsx:134
+#: src/components/TaskList.tsx:151
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
 
@@ -610,7 +610,7 @@ msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:109
 #: src/components/arknights/ExporterMenuItems.tsx:38
-#: src/components/CharacterList.tsx:220
+#: src/components/CharacterList.tsx:181
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
@@ -738,7 +738,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:1100
+#: src/components/CharacterList.tsx:1098
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -873,7 +873,7 @@ msgstr "Characters"
 msgid "角色内排序"
 msgstr "Sorting within Character"
 
-#: src/components/CharacterList.tsx:146
+#: src/components/CharacterList.tsx:162
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -2359,82 +2359,82 @@ msgid "精零"
 msgstr "E0"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:266
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:278
 msgctxt "arknights task"
 msgid "%d$number 技能专一: %s$name"
 msgstr "Skill %d$number M1: %s$name"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:274
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:286
 msgctxt "arknights task"
 msgid "%d$number 技能专三: %s$name"
 msgstr "Skill %d$number M3: %s$name"
 
 #. %d$number: skill number, %s$name: skill name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:270
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:282
 msgctxt "arknights task"
 msgid "%d$number 技能专二: %s$name"
 msgstr "Skill %d$number M2: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:285
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:297
 msgctxt "arknights task"
 msgid "%s$code 模组 1 级: %s$name"
 msgstr "Module-%s$code L1: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:289
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:301
 msgctxt "arknights task"
 msgid "%s$code 模组 2 级: %s$name"
 msgstr "Module-%s$code L2: %s$name"
 
 #. %s$code: module code, %s$name: module name
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:293
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:305
 msgctxt "arknights task"
 msgid "%s$code 模组 3 级: %s$name"
 msgstr "Module-%s$code L3: %s$name"
 
 #. %d: number
 #: src/components/arknights/SpecialOperatorSection.tsx:59
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:246
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:258
 msgctxt "arknights task"
 msgid "技能 %d 级"
 msgstr "Skill Level %d"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:244
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:256
 msgctxt "arknights task"
 msgid "招募"
 msgstr "Recruit"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:252
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:264
 msgctxt "arknights task"
 msgid "精一"
 msgstr "Promote to Elite 1"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:258
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:270
 msgctxt "arknights task"
 msgid "精一等级 %d$from -> %d$to"
 msgstr "E1 Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:253
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:265
 msgctxt "arknights task"
 msgid "精二"
 msgstr "Promote to Elite 2"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:259
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:271
 msgctxt "arknights task"
 msgid "精二等级 %d$from -> %d$to"
 msgstr "E2 Level %d$from -> %d$to"
 
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:251
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:263
 msgctxt "arknights task"
 msgid "精零"
 msgstr "Promote to Non-Elite"
 
 #. %d$from: from, %d$to: to
-#: src/pkg/cpp-arknights/UserDataAdapter.ts:257
+#: src/pkg/cpp-arknights/UserDataAdapter.ts:269
 msgctxt "arknights task"
 msgid "精零等级 %d$from -> %d$to"
 msgstr "Non-Elite Level %d$from -> %d$to"
@@ -2678,22 +2678,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:459
+#: src/components/CharacterList.tsx:429
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:460
+#: src/components/CharacterList.tsx:430
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:468
+#: src/components/CharacterList.tsx:438
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:469
+#: src/components/CharacterList.tsx:439
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -2785,7 +2785,7 @@ msgstr "Planned"
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:454
 #: src/components/arknights/voucherText.tsx:31
-#: src/components/CharacterList.tsx:554
+#: src/components/CharacterList.tsx:524
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
 msgctxt "list separator"
@@ -3575,19 +3575,19 @@ msgctxt "predefined query"
 msgid "精二直升价值（全部）"
 msgstr "E2 voucher value (all)"
 
-#: src/components/CharacterList.tsx:722
+#: src/components/CharacterList.tsx:692
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:715
+#: src/components/CharacterList.tsx:685
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:729
+#: src/components/CharacterList.tsx:699
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -4190,7 +4190,7 @@ msgctxt "query menu"
 msgid "全部 4–6 星干员的技能"
 msgstr "Every skill of the 4–6★ operators"
 
-#: src/components/CharacterList.tsx:906 src/components/CharacterList.tsx:907
+#: src/components/CharacterList.tsx:876 src/components/CharacterList.tsx:877
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
@@ -4200,7 +4200,7 @@ msgctxt "query menu"
 msgid "养成成本"
 msgstr "Training costs"
 
-#: src/components/CharacterList.tsx:802
+#: src/components/CharacterList.tsx:772
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
@@ -4240,7 +4240,7 @@ msgctxt "query menu"
 msgid "已持有的干员的全部基建技能，含已解锁的"
 msgstr "Every base skill of the owned operators, unlocked ones too"
 
-#: src/components/CharacterList.tsx:847
+#: src/components/CharacterList.tsx:817
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
@@ -4250,7 +4250,7 @@ msgctxt "query menu"
 msgid "所有干员的全部基建技能，含没持有的和已解锁的"
 msgstr "Every base skill of every operator, owned or not, unlocked or not"
 
-#: src/components/CharacterList.tsx:898 src/components/CharacterList.tsx:899
+#: src/components/CharacterList.tsx:868 src/components/CharacterList.tsx:869
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
@@ -4260,7 +4260,7 @@ msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:906 src/components/CharacterList.tsx:907
+#: src/components/CharacterList.tsx:876 src/components/CharacterList.tsx:877
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -4326,13 +4326,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:551
+#: src/components/CharacterList.tsx:521
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:551
+#: src/components/CharacterList.tsx:521
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -5194,7 +5194,7 @@ msgstr ""
 "Max: what it saves if used from E0 level 1; the light blue part of the bar "
 "is already trained."
 
-#: src/components/CharacterList.tsx:745
+#: src/components/CharacterList.tsx:715
 msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr "What the operators in the list have cost in total"
