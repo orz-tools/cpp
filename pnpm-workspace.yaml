@@ -1,9 +1,12 @@
 allowBuilds:
   '@swc/core': true
 
+minimumReleaseAgeExclude:
+  - '@blueprintjs/core@6.23.2'
+
 overrides:
-  '@blueprintjs/icons': 6.16.0
+  '@blueprintjs/icons': 6.17.0
   gettext-extractor>glob: ^14.0.2
 
 patchedDependencies:
-  '@blueprintjs/icons@6.16.0': patches/@blueprintjs__icons@6.16.0.patch
+  '@blueprintjs/icons@6.17.0': patches/@blueprintjs__icons@6.17.0.patch

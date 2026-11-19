@@ -1,7 +1,7 @@
 import { Icon, Tag } from '@blueprintjs/core'
 import { useAtom } from 'jotai'
 import { ReactNode, memo, useMemo, useRef } from 'react'
-import useResizeObserver from 'use-resize-observer'
+import { useResizeObserver } from 'use-resize-observer'
 import { DAY, PeriodLane, SkinPeriod, packLanes } from '../../pkg/cpp-arknights/skins'
 import { gt } from '../../pkg/gt'
 import { missingCount, periodSummary } from './SkinControls'

@@ -4,7 +4,7 @@ import { Atom, Getter, PrimitiveAtom, Setter, WritableAtom, atom } from 'jotai'
 import { AtomFamily, atomFamily } from 'jotai-family'
 import { clone, intersection, sum, uniq } from 'ramda'
 import { SetStateAction } from 'react'
-import { IGame, IGameAdapter, QueryParam, Task } from '../cpp-basic'
+import { CharacterStatusDraft, IGame, IGameAdapter, QueryParam, Task } from '../cpp-basic'
 import { txatom } from '../txatom'
 import { MoveTarget, moveKeys } from './planOrder'
 import { generateTaskExtra } from './Task'
@@ -172,7 +172,7 @@ function buildAtoms<G extends IGame>(
                 data.current[charId] = (produce(
                   data.current[charId] || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()),
                   value,
-                ) || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus())) as Draft<G['characterStatus']>
+                ) || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus())) as CharacterStatusDraft<G>
 
                 data.goal[charId] =
                   produce(data.goal[charId] || clone(data.current[charId]), () => {
@@ -207,7 +207,7 @@ function buildAtoms<G extends IGame>(
                   () => {
                     /**/
                   },
-                ) || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus())) as Draft<G['characterStatus']>
+                ) || clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus())) as CharacterStatusDraft<G>
 
                 data.goal[charId] =
                   produce(data.goal[charId] || clone(data.current[charId]), value) || clone(data.current[charId])
@@ -559,11 +559,11 @@ function buildAtoms<G extends IGame>(
         dropStars(data, untouched)
         for (const [charId, status] of finished) {
           if (!data.current[charId]) {
-            data.current[charId] = clone(ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()) as Draft<
-              G['characterStatus']
-            >
+            data.current[charId] = clone(
+              ga.getUserDataAdapter().getFrozenEmptyCharacterStatus(),
+            ) as CharacterStatusDraft<G>
           }
-          data.goal[charId] = clone(status) as Draft<G['characterStatus']>
+          data.goal[charId] = clone(status) as CharacterStatusDraft<G>
           doRewrite(charId, data)
         }
       })

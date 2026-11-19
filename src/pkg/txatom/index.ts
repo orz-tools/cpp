@@ -14,6 +14,10 @@ interface TxStorage<T extends object> {
   inversePatches: Patch[]
 }
 
+// immer 11 types a field holding T as `T extends object ? Draft<T> : T`, which TypeScript cannot narrow to
+// Draft<T> while T is a type parameter
+type DraftHead<T extends object> = Draft<TxStorage<T>>['head']
+
 type TxStorageAction<T extends object> =
   | [action: 'update', doc: T, directPatches: Patch[], inversePatches: Patch[]]
   | [action: 'begin']
@@ -46,7 +50,7 @@ export function txatom<T extends object>(baseAtom: PrimitiveAtom<T>, history = 1
           set(
             txStorageAtom,
             (storage = produce(storage, (draft) => {
-              draft.head = action[1] as Draft<T>
+              draft.head = action[1] as DraftHead<T>
               draft.directPatches.push(...action[2])
               draft.inversePatches.splice(0, 0, ...action[3])
             })),
@@ -70,7 +74,7 @@ export function txatom<T extends object>(baseAtom: PrimitiveAtom<T>, history = 1
                   draft.directPatches = []
                   draft.inversePatches = []
                   draft.startHead = undefined
-                  draft.head = get(baseAtom) as Draft<T>
+                  draft.head = get(baseAtom) as DraftHead<T>
                   return
                 }
                 if (draft.directPatches.length > 0 || draft.inversePatches.length > 0) {
@@ -115,7 +119,7 @@ export function txatom<T extends object>(baseAtom: PrimitiveAtom<T>, history = 1
                   draft.redos = []
                   draft.undos = []
                 }
-                draft.startHead = ext as Draft<T>
+                draft.startHead = ext as DraftHead<T>
                 draft.head = draft.startHead
               }
               draft.level += 1
@@ -136,7 +140,7 @@ export function txatom<T extends object>(baseAtom: PrimitiveAtom<T>, history = 1
             set(
               txStorageAtom,
               (storage = produce(storage, (draft) => {
-                draft.head = get(baseAtom) as Draft<T>
+                draft.head = get(baseAtom) as DraftHead<T>
                 draft.undos.pop()
                 draft.redos.splice(0, 0, patches)
               })),
@@ -156,7 +160,7 @@ export function txatom<T extends object>(baseAtom: PrimitiveAtom<T>, history = 1
             set(
               txStorageAtom,
               (storage = produce(storage, (draft) => {
-                draft.head = get(baseAtom) as Draft<T>
+                draft.head = get(baseAtom) as DraftHead<T>
                 draft.redos.shift()
                 draft.undos.push(patches)
               })),
@@ -179,7 +183,7 @@ export function txatom<T extends object>(baseAtom: PrimitiveAtom<T>, history = 1
                     draft.undos = []
                     draft.redos = []
                   }
-                  draft.head = get(baseAtom) as Draft<T>
+                  draft.head = get(baseAtom) as DraftHead<T>
                 })),
               )
             }
