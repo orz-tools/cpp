@@ -258,7 +258,7 @@ describe('mergeSklandData skins', () => {
 
   it('replaces the owned skins, dropping ones marked by hand that Skland does not list', () => {
     const draft = draftWith({ 'char_010_chen@test#1': 0, 'char_009_12fce@sale#1': 0 })
-    const result = mergeSklandData(
+    mergeSklandData(
       ga,
       draft,
       empty,
@@ -269,7 +269,6 @@ describe('mergeSklandData skins', () => {
         ],
       }),
     )
-    expect(result.skins).toEqual({ added: 1, removed: 1 })
     expect(draft.skins).toEqual({ 'char_010_chen@test#1': 1690000000, 'char_002_amiya@winter#1': 1600000000 })
   })
 
@@ -281,8 +280,7 @@ describe('mergeSklandData skins', () => {
 
   it('leaves them alone when the data has no skins', () => {
     const draft = draftWith({ 'char_010_chen@test#1': 0 })
-    const result = mergeSklandData(ga, draft, empty, sklandData({}))
-    expect(result.skins).toBeUndefined()
+    mergeSklandData(ga, draft, empty, sklandData({}))
     expect(draft.skins).toEqual({ 'char_010_chen@test#1': 0 })
   })
 })

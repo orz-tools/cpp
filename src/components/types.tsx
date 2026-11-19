@@ -2,6 +2,7 @@ import { IconName } from '@blueprintjs/core'
 import React from 'react'
 import { BlobFlavour } from '../pkg/blobcache'
 import { FieldContext, ICharacter, IGameAdapter, Querier, Task } from '../pkg/cpp-basic'
+import type { UserData } from '../pkg/cpp-core/UserData'
 import { PSTR } from '../pkg/gt'
 import type { ImportFormat } from './Importer'
 import type { PeekKind } from './peek'
@@ -55,6 +56,16 @@ export interface TaskNote {
   dossier?: { section: string; frame: string }
 }
 
+/** 导入结果对话框里，外壳自己的「角色」「目标」「道具」后面的一页 */
+export interface ImportDiffTab {
+  /** 对话框里唯一 */
+  id: string
+  title: string
+  /** 页签上的数字：这一页列出几项。对话框打开时停在第一个不是 0 的页签 */
+  count: number
+  panel: React.JSX.Element
+}
+
 export interface IGameComponent {
   email?: string
   AboutCopyright?: React.FC
@@ -82,6 +93,8 @@ export interface IGameComponent {
   ConfigMenuItems?: React.FC
   /** A hook: the formats the import paste box tries after Closure++'s own, in order */
   useImportFormats?: () => ImportFormat[]
+  /** hook：导入结果对话框按导入前后的用户数据加的页，按数组顺序 */
+  useImportDiffTabs?: (before: UserData<any>, after: UserData<any>) => ImportDiffTab[]
   extraFields?: Record<
     string,
     {

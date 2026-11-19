@@ -3437,6 +3437,43 @@ section:first-child > .cpp-stages-wide-section {
   line-height: 16px;
 }
 
+/* 导入结果的「时装」页：同样的行，点不了 */
+
+/* 对话框跟着页的内容变宽变窄：和「道具」页差不多宽，切页签时不跳 */
+.cpp-skins-import {
+  min-width: 560px;
+  padding-bottom: 8px;
+}
+
+/* 第一次导入有几百件：往下翻时还看得出是多了还是少了 */
+.cpp-skins-import-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  padding: 8px 10px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--bp-typography-color-muted, #5f6b7c);
+}
+
+.cpp-skins-import-row {
+  cursor: default;
+}
+
+.cpp-skins-import-row:hover {
+  background: none;
+}
+
+.cpp-skins-import-row.is-removed .cpp-skins-row-name {
+  color: var(--bp-typography-color-muted, #5f6b7c);
+}
+
+.cpp-skins-import-row.is-removed .cpp-skins-row-pic {
+  opacity: 0.5;
+}
+
 /* 底部一行 */
 
 .cpp-skins-foot {

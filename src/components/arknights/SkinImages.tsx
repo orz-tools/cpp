@@ -121,7 +121,7 @@ export function readLabel(...parts: string[]) {
 }
 
 /** 「干员 · 系列」；阿米娅另外几个形态的时装，系列前面加上形态的职业名 */
-export function skinSubtitle(state: SkinState, character: Character | undefined) {
+export function skinSubtitle(state: Pick<SkinState, 'skin'>, character: Character | undefined) {
   const { skin } = state
   return [character?.name, formLabel(skin.tmplId, character), skin.groupName].filter(Boolean).join(' · ')
 }

@@ -17,6 +17,7 @@ import { ErrAtom } from './Err'
 import { CachedImg, ItemIcon } from './Icons'
 import { StatusDiff, statusDiffs } from './importDiff'
 import { showAlert } from './MessageBox'
+import type { ImportDiffTab } from './types'
 import { ValueTag } from './Value'
 
 export interface ImportContext {
@@ -36,6 +37,7 @@ export interface ImportFormat {
 }
 
 const noImportFormats = (): ImportFormat[] => []
+const noImportDiffTabs = (): ImportDiffTab[] => []
 
 export function useImportFormats(): ImportFormat[] {
   const cppDump = useCppDumpImportFormat()
@@ -174,6 +176,9 @@ const ImportResultDialog = memo(({ source, diff, onUndo, onClose }: ImportResult
 
 const DiffView = memo(({ diff }: { diff: State }) => {
   const ga = useGameAdapter()
+  // The game component is fixed per page load, so every render calls the same hooks.
+  const { useImportDiffTabs = noImportDiffTabs } = useComponents()
+  const gameTabs = useImportDiffTabs(diff.before, diff.after)
 
   const detail = useGameDataMemo(() => {
     const { before, after } = diff
@@ -206,7 +211,8 @@ const DiffView = memo(({ diff }: { diff: State }) => {
   const [tab, setTab] = useState<string | number>(() => {
     if (detail.charDiffs.length > 0) return 'char'
     if (detail.goalDiffs.length > 0) return 'goal'
-    return detail.inventoryDiffs.length > 0 ? 'inv' : 'char'
+    if (detail.inventoryDiffs.length > 0) return 'inv'
+    return gameTabs.find((x) => x.count > 0)?.id ?? 'char'
   })
 
   return (
@@ -255,6 +261,9 @@ const DiffView = memo(({ diff }: { diff: State }) => {
                 />
               }
             />
+            {gameTabs.map((x) => (
+              <Tab key={x.id} id={x.id} title={x.title} tagContent={x.count} panel={x.panel} />
+            ))}
           </Tabs>
         </div>
       </div>

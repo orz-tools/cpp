@@ -18,6 +18,7 @@ import {
   replaceSkins,
   setSkinsOwned,
   shopWindowsFromGame,
+  skinChanges,
   windowsFromPrts,
 } from './skins'
 
@@ -309,14 +310,13 @@ describe('matchesQuery', () => {
 })
 
 describe('owned skins', () => {
-  it('replaces them with the Skland list, counting what came and went', () => {
+  it('replaces them with the Skland list, leaving out default art', () => {
     const draft = { skins: { 'a@x#1': 0, 'b@x#1': 100 } as Record<string, number> }
-    const result = replaceSkins(draft, [
+    replaceSkins(draft, [
       { id: 'b@x#1', ts: 200 },
       { id: 'c@x#1', ts: 300 },
       { id: 'char_x#1', ts: 1 },
     ])
-    expect(result).toEqual({ added: 1, removed: 1 })
     expect(draft.skins).toEqual({ 'b@x#1': 200, 'c@x#1': 300 })
   })
 
@@ -326,5 +326,34 @@ describe('owned skins', () => {
     expect(draft.skins).toEqual({ 'a@x#1': 100, 'b@x#1': 0 })
     setSkinsOwned(draft, ['a@x#1'], false)
     expect(draft.skins).toEqual({ 'b@x#1': 0 })
+  })
+})
+
+describe('skinChanges', () => {
+  const ids = (list: { id: string }[]) => list.map((x) => x.id)
+
+  it('lists what came and went, newest first, then in catalog order, unknown skins last', () => {
+    const { added, removed } = skinChanges(
+      catalog,
+      { 'char_a@witch#1': 100, 'char_x@gone#1': 50, 'char_c@witch#1': 0 },
+      {
+        'char_a@witch#1': 200,
+        'char_new@future#1': 0,
+        'char_b@witch#1': 0,
+        'char_e@nobrand#1': 300,
+        'char_d@sale#1': 0,
+      },
+    )
+    expect(ids(added)).toEqual(['char_e@nobrand#1', 'char_d@sale#1', 'char_b@witch#1', 'char_new@future#1'])
+    expect(added[0]).toMatchObject({ acquiredAt: 300, skin: { name: 'char_e@nobrand#1' } })
+    expect(added[3].skin).toBeUndefined()
+    expect(ids(removed)).toEqual(['char_x@gone#1', 'char_c@witch#1'])
+    expect(removed[0]).toMatchObject({ acquiredAt: 50, skin: undefined })
+  })
+
+  it('works without a catalog', () => {
+    const { added, removed } = skinChanges(null, {}, { 'b@x#1': 0, 'a@x#1': 0, 'c@x#1': 5 })
+    expect(ids(added)).toEqual(['c@x#1', 'a@x#1', 'b@x#1'])
+    expect(removed).toEqual([])
   })
 })

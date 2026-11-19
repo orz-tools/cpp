@@ -112,11 +112,11 @@ msgstr ""
 msgid "从文本框中导入"
 msgstr ""
 
-#: src/components/Importer.tsx:441
+#: src/components/Importer.tsx:450
 msgid "以往"
 msgstr ""
 
-#: src/components/Importer.tsx:444
+#: src/components/Importer.tsx:453
 msgid "价值变化"
 msgstr ""
 
@@ -180,7 +180,7 @@ msgstr ""
 #: src/App.tsx:481
 #: src/components/CharacterDossier.tsx:226
 #: src/components/CharacterDossier.tsx:227
-#: src/components/Importer.tsx:161
+#: src/components/Importer.tsx:163
 #: src/components/Peek.tsx:133
 #: src/components/Peek.tsx:134
 msgid "关闭"
@@ -221,7 +221,7 @@ msgid_plural "制作 %d 次所需"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/Importer.tsx:52
+#: src/components/Importer.tsx:54
 msgid "剪贴板里没有文本或文件。"
 msgstr ""
 
@@ -321,7 +321,14 @@ msgstr ""
 msgid "复制角色名"
 msgstr ""
 
-#: src/components/Importer.tsx:443
+#. %d: number of skins
+#: src/components/arknights/SkinImportDiff.tsx:43
+msgid "多了 %d 件"
+msgid_plural "多了 %d 件"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/Importer.tsx:452
 msgid "如今"
 msgstr ""
 
@@ -349,7 +356,7 @@ msgstr ""
 msgid "导入/导出"
 msgstr ""
 
-#: src/components/Importer.tsx:225
+#: src/components/Importer.tsx:231
 msgid "导入时产生的警告"
 msgstr ""
 
@@ -370,6 +377,13 @@ msgstr ""
 #: src/pkg/cpp-arknights/survey.ts:216
 msgid "小黑盒 app 干员统计数据"
 msgstr ""
+
+#. %d: number of skins
+#: src/components/arknights/SkinImportDiff.tsx:55
+msgid "少了 %d 件"
+msgid_plural "少了 %d 件"
+msgstr[0] ""
+msgstr[1] ""
 
 #. %s: character names
 #: src/components/arknights/importHooks.ts:163
@@ -491,7 +505,7 @@ msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
 #: src/App.tsx:58
-#: src/components/Importer.tsx:166
+#: src/components/Importer.tsx:168
 msgid "撤销"
 msgstr ""
 
@@ -533,7 +547,7 @@ msgstr ""
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 
-#: src/components/Importer.tsx:62
+#: src/components/Importer.tsx:64
 msgid "无法识别粘贴的内容。支持以下格式："
 msgstr ""
 
@@ -701,7 +715,7 @@ msgstr[1] ""
 msgid "界面语言"
 msgstr ""
 
-#: src/components/Importer.tsx:243
+#: src/components/Importer.tsx:249
 msgid "目标"
 msgstr ""
 
@@ -729,7 +743,7 @@ msgstr[1] ""
 msgid "虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！"
 msgstr ""
 
-#: src/components/Importer.tsx:237
+#: src/components/Importer.tsx:243
 msgid "角色"
 msgstr ""
 
@@ -870,7 +884,7 @@ msgid "这份 Closure++ 用户数据的版本无法识别。"
 msgstr ""
 
 #. %s$new: UID in this data, %s$old: UID imported into this profile before
-#: src/components/arknights/importHooks.ts:260
+#: src/components/arknights/importHooks.ts:249
 msgid "这份森空岛数据的 UID 是 %s$new，与这个档案上次导入的 %s$old 不同；如果导入错了档案，请点「撤销」。"
 msgstr ""
 
@@ -899,8 +913,8 @@ msgstr ""
 msgid "选项"
 msgstr ""
 
-#: src/components/Importer.tsx:249
-#: src/components/Importer.tsx:440
+#: src/components/Importer.tsx:255
+#: src/components/Importer.tsx:449
 msgid "道具"
 msgstr ""
 
@@ -2523,7 +2537,7 @@ msgctxt "error context"
 msgid "刷本规划时遇到问题"
 msgstr ""
 
-#: src/components/Importer.tsx:109
+#: src/components/Importer.tsx:111
 msgctxt "error context"
 msgid "合并导入数据时遇到问题"
 msgstr ""
@@ -2543,7 +2557,7 @@ msgctxt "error context"
 msgid "环境检测失败"
 msgstr ""
 
-#: src/components/Importer.tsx:116
+#: src/components/Importer.tsx:118
 msgctxt "error context"
 msgid "解析导入数据时遇到问题"
 msgstr ""
@@ -2639,8 +2653,13 @@ msgctxt "import format"
 msgid "森空岛数据"
 msgstr ""
 
+#: src/components/arknights/SkinImportDiff.tsx:80
+msgctxt "import result"
+msgid "时装"
+msgstr ""
+
 #. %s: format name
-#: src/components/Importer.tsx:151
+#: src/components/Importer.tsx:153
 msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr ""
@@ -4555,12 +4574,6 @@ msgstr ""
 #: src/components/arknights/SkinTimeline.tsx:209
 msgctxt "skins"
 msgid "新装"
-msgstr ""
-
-#. %d$added: skins Skland lists that were not recorded before, %d$removed: recorded skins it does not list
-#: src/components/arknights/importHooks.ts:249
-msgctxt "skins"
-msgid "时装：多了 %d$added 件，少了 %d$removed 件"
 msgstr ""
 
 #: src/components/arknights/SkinImages.tsx:14

@@ -11,6 +11,7 @@ import { ImporterMenuItems } from './ImporterMenuItems'
 import { moduleMissionsPanel } from './ModuleMissionPanel'
 import { moduleMissionsSection } from './ModuleMissionSection'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
+import { useSkinImportDiffTabs } from './SkinImportDiff'
 import { skinsPanel } from './SkinsPanel'
 import { skinsSection } from './SkinsSection'
 import { specialOperatorSection } from './SpecialOperatorSection'
@@ -41,6 +42,7 @@ export const ArknightsComponents: IGameComponent = {
   ExporterMenuItems,
   ConfigMenuItems,
   useImportFormats: useArknightsImportFormats,
+  useImportDiffTabs: useSkinImportDiffTabs,
   style,
   extraFields: extraFields,
   TaskDisplay,

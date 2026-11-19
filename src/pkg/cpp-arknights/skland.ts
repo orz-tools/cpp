@@ -158,8 +158,6 @@ export interface SklandMergeResult {
   trainingAmiya: boolean
   // 训练室数据读不懂：原始数据与异常，给用户转交开发者
   trainingError?: string
-  // 数据里有时装时，和导入前比多了、少了几件
-  skins?: { added: number; removed: number }
 }
 
 export function mergeSklandData(
@@ -308,7 +306,7 @@ export function mergeSklandData(
     )
   }
 
-  if (data.skins) result.skins = replaceSkins(draft, data.skins)
+  if (data.skins) replaceSkins(draft, data.skins)
 
   const training = data.building?.training
   if (training && training.trainee && training.trainee.targetSkill >= 0) {

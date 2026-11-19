@@ -334,13 +334,36 @@ export function matchesQuery(
 
 /** 森空岛给的是这个账号的全部时装：整个换掉，手动标了、森空岛没有的也去掉 */
 export function replaceSkins(draft: { skins?: Record<string, number> }, list: readonly { id: string; ts: number }[]) {
-  const before = draft.skins ?? {}
   const next: Record<string, number> = {}
   for (const { id, ts } of list) if (id.includes('@')) next[id] = ts
-  const added = Object.keys(next).filter((id) => !Object.hasOwn(before, id)).length
-  const removed = Object.keys(before).filter((id) => !Object.hasOwn(next, id)).length
   draft.skins = next
-  return { added, removed }
+}
+
+export interface SkinChange {
+  id: string
+  /** 图鉴里还没有（游戏数据没更新，或者这个区服没有）时是 undefined */
+  skin: Skin | undefined
+  /** 有它的那一边记的获得时间（Unix 秒，不知道时为 0） */
+  acquiredAt: number
+}
+
+/**
+ * 导入前后已有的时装多了哪些、少了哪些；只是获得时间变了的不算。
+ * 各自按获得时间从新到旧排，同一时间的按图鉴顺序，图鉴里没有的排在最后
+ */
+export function skinChanges(
+  catalog: SkinCatalog | null,
+  before: Readonly<Record<string, number>>,
+  after: Readonly<Record<string, number>>,
+): { added: SkinChange[]; removed: SkinChange[] } {
+  const rank = new Map(catalog?.skins.map((s, i) => [s.id, i]))
+  const rankOf = (id: string) => rank.get(id) ?? rank.size
+  const changes = (from: Readonly<Record<string, number>>, to: Readonly<Record<string, number>>) =>
+    Object.keys(from)
+      .filter((id) => !Object.hasOwn(to, id))
+      .map((id): SkinChange => ({ id, skin: catalog?.byId.get(id), acquiredAt: from[id] }))
+      .sort((a, b) => b.acquiredAt - a.acquiredAt || rankOf(a.id) - rankOf(b.id) || (a.id < b.id ? -1 : 1))
+  return { added: changes(after, before), removed: changes(before, after) }
 }
 
 /** 标成已有时，已经有的保留获得时间，没有的记 0；取消就删掉 */
