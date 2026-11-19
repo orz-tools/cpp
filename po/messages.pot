@@ -1882,7 +1882,7 @@ msgid "磨难"
 msgstr ""
 
 #: src/components/arknights/statusEditor/Detail.tsx:377
-#: src/components/arknights/statusEditor/text.ts:68
+#: src/components/arknights/statusEditor/text.ts:56
 msgctxt "arknights status editor"
 msgid "，"
 msgstr ""
@@ -1905,16 +1905,10 @@ msgctxt "arknights status editor"
 msgid "%1（%2）"
 msgstr ""
 
-#. %d: skill number, 1-3
-#: src/components/arknights/statusEditor/text.ts:21
-msgctxt "arknights status editor"
-msgid "%d 技能"
-msgstr ""
-
 #. %d: skill or module level
 #: src/components/arknights/statusEditor/Detail.tsx:368
-#: src/components/arknights/statusEditor/ModSection.tsx:37
-#: src/components/arknights/statusEditor/text.ts:32
+#: src/components/arknights/statusEditor/ModSection.tsx:20
+#: src/components/arknights/statusEditor/text.ts:26
 msgctxt "arknights status editor"
 msgid "%d 级"
 msgstr ""
@@ -1925,14 +1919,8 @@ msgctxt "arknights status editor"
 msgid "%d 级起"
 msgstr ""
 
-#. %d: how many skills or modules a goal raises
-#: src/components/arknights/statusEditor/text.ts:38
-msgctxt "arknights status editor"
-msgid "%d 项要练"
-msgstr ""
-
 #. %s: 精二; %1–%2: level range
-#: src/components/arknights/statusEditor/EliteLevelSection.tsx:270
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:264
 msgctxt "arknights status editor"
 msgid "%s %1–%2 级"
 msgstr ""
@@ -1944,7 +1932,7 @@ msgid "%s %d"
 msgstr ""
 
 #. %s: 精二; %d: level
-#: src/components/arknights/statusEditor/EliteLevelSection.tsx:275
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:269
 msgctxt "arknights status editor"
 msgid "%s %d 级以上"
 msgstr ""
@@ -1967,7 +1955,7 @@ msgid "不显示"
 msgstr ""
 
 #. %d: mastery, 1-3
-#: src/components/arknights/statusEditor/text.ts:28
+#: src/components/arknights/statusEditor/text.ts:22
 msgctxt "arknights status editor"
 msgid "专精 %d"
 msgstr ""
@@ -1977,7 +1965,7 @@ msgctxt "arknights status editor"
 msgid "初始技力"
 msgstr ""
 
-#: src/components/arknights/statusEditor/EliteLevelSection.tsx:353
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:347
 msgctxt "arknights status editor"
 msgid "升一级"
 msgstr ""
@@ -1992,14 +1980,9 @@ msgctxt "arknights status editor"
 msgid "天赋"
 msgstr ""
 
-#: src/components/arknights/statusEditor/ModSection.tsx:81
+#: src/components/arknights/statusEditor/CharacterStatusEditor.tsx:73
 msgctxt "arknights status editor"
-msgid "小黑盒：解锁者中各级的占比"
-msgstr ""
-
-#: src/components/arknights/statusEditor/SectionHeader.tsx:34
-msgctxt "arknights status editor"
-msgid "已满"
+msgid "已经练满了"
 msgstr ""
 
 #: src/components/arknights/statusEditor/Detail.tsx:273
@@ -2013,7 +1996,7 @@ msgctxt "arknights status editor"
 msgid "当前 %s"
 msgstr ""
 
-#: src/components/arknights/statusEditor/CharacterStatusEditor.tsx:73
+#: src/components/arknights/statusEditor/CharacterStatusEditor.tsx:71
 msgctxt "arknights status editor"
 msgid "打开「持有」后设置练度"
 msgstr ""
@@ -2023,13 +2006,13 @@ msgctxt "arknights status editor"
 msgid "技力消耗"
 msgstr ""
 
-#: src/components/arknights/statusEditor/SkillSection.tsx:75
+#: src/components/arknights/statusEditor/SkillSection.tsx:46
 msgctxt "arknights status editor"
 msgid "技能等级"
 msgstr ""
 
 #. follows 还会把等级提到 …; %d: skill level
-#: src/components/arknights/statusEditor/text.ts:57
+#: src/components/arknights/statusEditor/text.ts:45
 msgctxt "arknights status editor"
 msgid "技能等级提到 %d"
 msgstr ""
@@ -2056,12 +2039,12 @@ msgctxt "arknights status editor"
 msgid "无限"
 msgstr ""
 
-#: src/components/arknights/statusEditor/SkillSection.tsx:27
+#: src/components/arknights/statusEditor/SkillSection.tsx:25
 msgctxt "arknights status editor"
 msgid "未专精"
 msgstr ""
 
-#: src/components/arknights/statusEditor/ModSection.tsx:36
+#: src/components/arknights/statusEditor/ModSection.tsx:19
 msgctxt "arknights status editor"
 msgid "未解锁"
 msgstr ""
@@ -2071,8 +2054,8 @@ msgctxt "arknights status editor"
 msgid "样本数未知"
 msgstr ""
 
-#: src/components/arknights/statusEditor/EliteLevelSection.tsx:261
-#: src/components/arknights/statusEditor/ModSection.tsx:74
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:255
+#: src/components/arknights/statusEditor/ModSection.tsx:32
 msgctxt "arknights status editor"
 msgid "模组"
 msgstr ""
@@ -2093,21 +2076,15 @@ msgctxt "arknights status editor"
 msgid "目标 %s"
 msgstr ""
 
-#: src/components/arknights/statusEditor/EliteLevelSection.tsx:341
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:335
 msgctxt "arknights status editor"
 msgid "等级"
 msgstr ""
 
 #. %d: skill level
-#: src/components/arknights/statusEditor/SkillSection.tsx:31
+#: src/components/arknights/statusEditor/SkillSection.tsx:29
 msgctxt "arknights status editor"
 msgid "等级 %d"
-msgstr ""
-
-#: src/components/arknights/statusEditor/ModSection.tsx:82
-#: src/components/arknights/statusEditor/SkillSection.tsx:70
-msgctxt "arknights status editor"
-msgid "精二干员中练到这一档的占比"
 msgstr ""
 
 #. %1: E2 owners; %2: of them at this tier
@@ -2116,7 +2093,7 @@ msgctxt "arknights status editor"
 msgid "精二的 %1 人里有 %2 人"
 msgstr ""
 
-#: src/components/arknights/statusEditor/EliteLevelSection.tsx:60
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:46
 msgctxt "arknights status editor"
 msgid "精英化与等级"
 msgstr ""
@@ -2137,19 +2114,19 @@ msgid "说明载入失败"
 msgstr ""
 
 #. %d: skill level
-#: src/components/arknights/statusEditor/text.ts:59
+#: src/components/arknights/statusEditor/text.ts:47
 msgctxt "arknights status editor"
 msgid "还会把技能等级提到 %d"
 msgstr ""
 
 #. %s: elite and level, e.g. 精二 1
-#: src/components/arknights/statusEditor/text.ts:55
+#: src/components/arknights/statusEditor/text.ts:43
 msgctxt "arknights status editor"
 msgid "还会把等级提到 %s"
 msgstr ""
 
 #. %s: elite and level, e.g. 精二 50
-#: src/components/arknights/statusEditor/text.ts:53
+#: src/components/arknights/statusEditor/text.ts:41
 msgctxt "arknights status editor"
 msgid "还会把等级提到 %s（模组解锁）"
 msgstr ""
@@ -2169,17 +2146,17 @@ msgctxt "arknights status editor"
 msgid "重试"
 msgstr ""
 
-#: src/components/arknights/statusEditor/EliteLevelSection.tsx:362
+#: src/components/arknights/statusEditor/EliteLevelSection.tsx:356
 msgctxt "arknights status editor"
 msgid "降一级"
 msgstr ""
 
-#: src/components/arknights/statusEditor/SkillSection.tsx:64
+#: src/components/arknights/statusEditor/SkillSection.tsx:43
 msgctxt "arknights status group"
 msgid "技能"
 msgstr ""
 
-#: src/components/arknights/statusEditor/PotentialSection.tsx:24
+#: src/components/arknights/statusEditor/PotentialSection.tsx:22
 msgctxt "arknights status group"
 msgid "潜能"
 msgstr ""

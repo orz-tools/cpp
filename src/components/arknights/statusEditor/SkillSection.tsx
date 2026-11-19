@@ -1,12 +1,10 @@
-import React, { memo, useId } from 'react'
+import { memo, useId } from 'react'
 import { Character } from '../../../pkg/cpp-arknights'
 import {
   hasMasteries,
   raisesPrerequisite,
-  sectionCollapsed,
   setMastery,
   setSkillLevel,
-  skillChanges,
   skillLevelSteps,
 } from '../../../pkg/cpp-arknights/statusEdit'
 import { toTierShares } from '../../../pkg/cpp-arknights/survey'
@@ -15,11 +13,11 @@ import { CachedImg } from '../../Icons'
 import { ProfessionIcon } from '../Icons'
 import { DetailToggle, SkillDetail } from './Detail'
 import { MasteryGlyph } from './MasteryGlyph'
-import { Delta, Section } from './SectionHeader'
+import { Section } from './Section'
 import { StepGroup } from './StepGroup'
 import { SurveyStat, statTooltip } from './SurveyStat'
 import { useEditor } from './context'
-import { changesText, prerequisiteText, skillLevelText, skillNumberText } from './text'
+import { prerequisiteText, skillLevelText } from './text'
 
 const MASTERIES = [0, 1, 2, 3]
 
@@ -35,41 +33,14 @@ function levelSummary(level: number) {
 
 /** 技能: skill level 1–7 (1, 4, 7 for a special operator) first, then each skill's masteries with their statistics, and its (i). */
 export const SkillSection = memo(() => {
-  const { character, status, current, setStatus, survey } = useEditor()
-  const titleId = useId()
+  const { character, status, current, setStatus } = useEditor()
   const levelId = useId()
   if (!character.skills.length) return null
 
-  const masteries = hasMasteries(character)
-  let summary: React.ReactNode = levelSummary(status.skillLevel)
-  if (current) {
-    const changes = skillChanges(character, current, status)
-    if (changes.length > 1) {
-      summary = changesText(changes.length)
-    } else if (changes.length === 1) {
-      const c = changes[0]
-      if (c.kind === 'skillLevel') {
-        summary = <Delta from={levelSummary(c.from)} to={`${c.to}`} />
-      } else {
-        const skill = character.skills.find((x) => x.skillId === c.skillId)!
-        summary = <Delta from={`${skillNumberText(skill.charSkillIndex)} ${c.from}`} to={`${c.to}`} />
-      }
-    }
-  }
   const levels = skillLevelSteps(character)
 
   return (
-    <Section
-      id={titleId}
-      title={gt.pgettext('arknights status group', '技能')}
-      summary={summary}
-      collapsed={current ? sectionCollapsed('skill', character, current) : false}
-    >
-      {survey && masteries ? (
-        <div className="cpp-charstat-legend">
-          {gt.pgettext('arknights status editor', '精二干员中练到这一档的占比')}
-        </div>
-      ) : null}
+    <Section title={gt.pgettext('arknights status group', '技能')}>
       <div className="cpp-charstat-row">
         <div className="cpp-charstat-lbl cpp-charstat-lbl-muted" id={levelId}>
           {gt.pgettext('arknights status editor', '技能等级')}
@@ -88,7 +59,7 @@ export const SkillSection = memo(() => {
           onPick={(v) => setStatus((x) => setSkillLevel(x, v))}
         />
       </div>
-      {masteries ? character.skills.map((s) => <SkillRow key={s.skillId} charSkill={s} />) : null}
+      {hasMasteries(character) ? character.skills.map((s) => <SkillRow key={s.skillId} charSkill={s} />) : null}
     </Section>
   )
 })

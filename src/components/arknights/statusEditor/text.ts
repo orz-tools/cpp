@@ -17,12 +17,6 @@ export function eliteLevelText({ elite, level }: CharacterLevel) {
     .replaceAll('%d', `${level}`)
 }
 
-export function skillNumberText(index: number) {
-  return gt
-    .pgettext('arknights status editor', '%d 技能') /* I10N: %d: skill number, 1-3 */
-    .replaceAll('%d', `${index + 1}`)
-}
-
 export function skillLevelText(skillLevel: number, mastery: number) {
   if (mastery > 0) {
     return gt
@@ -32,12 +26,6 @@ export function skillLevelText(skillLevel: number, mastery: number) {
   return gt
     .pgettext('arknights status editor', '%d 级') /* I10N: %d: skill or module level */
     .replaceAll('%d', `${skillLevel}`)
-}
-
-export function changesText(n: number) {
-  return gt
-    .pgettext('arknights status editor', '%d 项要练') /* I10N: %d: how many skills or modules a goal raises */
-    .replaceAll('%d', `${n}`)
 }
 
 export function percentText(share: number) {

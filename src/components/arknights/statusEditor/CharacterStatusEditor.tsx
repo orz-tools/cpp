@@ -2,6 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { memo, useState } from 'react'
 import { WithGame, useAtoms, useGameAdapter, useGameDataMemo } from '../../../Cpp'
 import { Arknights, ArknightsDataManager, Character, PreferenceKeys, SurveySourceKey } from '../../../pkg/cpp-arknights'
+import { editableUniEquips, levelMaxed } from '../../../pkg/cpp-arknights/statusEdit'
 import { HeyboxSurveySource, YituliuSurveySource } from '../../../pkg/cpp-arknights/survey'
 import { gt } from '../../../pkg/gt'
 import { EliteLevelSection } from './EliteLevelSection'
@@ -45,6 +46,10 @@ export const CharacterStatusEditor = memo(
       return [null, ''] as const
     }, [dm, source])
 
+    // Maxed skills and modules stay in a goal, all gray, because their (i) still opens the descriptions.
+    const showLevel = !isGoal || !levelMaxed(character, currentStatus)
+    const maxed = !showLevel && !character.skills.length && !editableUniEquips(character).length
+
     const ctx: EditorContextValue = {
       character,
       status,
@@ -62,15 +67,17 @@ export const CharacterStatusEditor = memo(
         <div className={'cpp-charstat' + (embedded ? ' cpp-charstat-embedded' : '')}>
           <Header isGoal={isGoal} embedded={embedded} onModeChange={onModeChange} />
           <SurveyBar source={source} setSource={setSource} />
-          {status.level > 0 ? (
+          {status.level <= 0 ? (
+            <div className="cpp-charstat-empty">{gt.pgettext('arknights status editor', '打开「持有」后设置练度')}</div>
+          ) : maxed ? (
+            <div className="cpp-charstat-empty">{gt.pgettext('arknights status editor', '已经练满了')}</div>
+          ) : (
             <>
-              <EliteLevelSection />
+              {showLevel ? <EliteLevelSection /> : null}
               <SkillSection />
               <ModSection />
               {!isGoal && showPotential ? <PotentialSection /> : null}
             </>
-          ) : (
-            <div className="cpp-charstat-empty">{gt.pgettext('arknights status editor', '打开「持有」后设置练度')}</div>
           )}
         </div>
       </EditorContext.Provider>

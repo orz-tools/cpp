@@ -1,5 +1,5 @@
 import { Button, InputGroup, Tooltip } from '@blueprintjs/core'
-import React, { memo, useId, useRef, useState } from 'react'
+import React, { memo, useRef, useState } from 'react'
 import { CharacterLevel } from '../../../pkg/cpp-arknights'
 import {
   EditedCharacter,
@@ -10,7 +10,6 @@ import {
   maxEliteOf,
   railLayout,
   railToLevel,
-  sectionCollapsed,
   setEliteLevel,
   stepLevel,
 } from '../../../pkg/cpp-arknights/statusEdit'
@@ -19,7 +18,7 @@ import { gt } from '../../../pkg/gt'
 import elite0 from '../assets/elite0-small.png'
 import elite1 from '../assets/elite1-small.png'
 import elite2 from '../assets/elite2-small.png'
-import { Delta, Section } from './SectionHeader'
+import { Section } from './Section'
 import { isFewSamples, statTooltip } from './SurveyStat'
 import { useEditor } from './context'
 import { eliteLevelText, eliteName } from './text'
@@ -43,8 +42,8 @@ function levelIndex(character: EditedCharacter, { elite, level }: CharacterLevel
 }
 
 export const EliteLevelSection = memo(() => {
-  const { character, status, current, setStatus } = useEditor()
-  const titleId = useId()
+  const { status, current, setStatus } = useEditor()
+  const title = gt.pgettext('arknights status editor', '精英化与等级')
   // While the rail is dragged, the knob and the box follow it; the status is written once, on release.
   const [preview, setPreview] = useState<CharacterLevel | null>(null)
   const shown = preview ?? status
@@ -55,14 +54,9 @@ export const EliteLevelSection = memo(() => {
   }
 
   return (
-    <Section
-      id={titleId}
-      title={gt.pgettext('arknights status editor', '精英化与等级')}
-      summary={current ? <Delta from={eliteLevelText(current)} to={eliteLevelText(status)} /> : eliteLevelText(status)}
-      collapsed={current ? sectionCollapsed('elite', character, current) : false}
-    >
+    <Section title={title}>
       <div className="cpp-charstat-lv">
-        <LevelRail shown={shown} floor={floor} setPreview={setPreview} set={set} labelledBy={titleId} />
+        <LevelRail shown={shown} floor={floor} setPreview={setPreview} set={set} label={title} />
         <LevelBox shown={shown} floor={floor} set={set} />
       </div>
     </Section>
@@ -75,13 +69,13 @@ const LevelRail = memo(
     floor,
     setPreview,
     set,
-    labelledBy,
+    label,
   }: {
     shown: CharacterLevel
     floor: CharacterLevel
     setPreview: (x: CharacterLevel | null) => void
     set: (x: CharacterLevel) => void
-    labelledBy: string
+    label: string
   }) => {
     const { character, current, survey, surveyName } = useEditor()
     const trackRef = useRef<HTMLDivElement>(null)
@@ -205,7 +199,7 @@ const LevelRail = memo(
           style={{ width: TRACK_WIDTH }}
           role="slider"
           tabIndex={0}
-          aria-labelledby={labelledBy}
+          aria-label={label}
           aria-valuemin={levelIndex(character, floor)}
           aria-valuemax={levelIndex(character, top)}
           aria-valuenow={levelIndex(character, shown)}

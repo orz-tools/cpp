@@ -132,55 +132,10 @@ export function cellState(value: number, status: number, current?: number): { st
   return { state: value <= status ? 'on' : 'off', disabled: false }
 }
 
-export type SectionId = 'elite' | 'skill' | 'mod'
-
-/** In a goal, a section whose current value is already at the top collapses to one line. */
-export function sectionCollapsed(section: SectionId, character: EditedCharacter, current: Status) {
-  switch (section) {
-    case 'elite': {
-      const maxElite = maxEliteOf(character)
-      return current.elite === maxElite && current.level >= character.maxLevels[maxElite]
-    }
-    case 'skill':
-      return (
-        current.skillLevel >= maxSkillLevel(character) &&
-        (!hasMasteries(character) || character.skills.every((s) => (current.skillMaster[s.skillId] || 0) >= 3))
-      )
-    case 'mod': {
-      const mods = editableUniEquips(character)
-      return mods.length > 0 && mods.every((m) => (current.modLevel[m.equipId] || 0) >= 3)
-    }
-  }
-}
-
-export type SkillChange =
-  | { kind: 'skillLevel'; from: number; to: number }
-  | { kind: 'mastery'; skillId: string; from: number; to: number }
-
-/** What a goal plans in the 技能 section, for its summary: one change is spelled out, more are counted. */
-export function skillChanges(character: EditedCharacter, current: Status, goal: Status): SkillChange[] {
-  const changes: SkillChange[] = []
-  if (goal.skillLevel > current.skillLevel) {
-    changes.push({ kind: 'skillLevel', from: current.skillLevel, to: goal.skillLevel })
-  }
-  if (hasMasteries(character)) {
-    for (const { skillId } of character.skills) {
-      const from = current.skillMaster[skillId] || 0
-      const to = goal.skillMaster[skillId] || 0
-      if (to > from) changes.push({ kind: 'mastery', skillId, from, to })
-    }
-  }
-  return changes
-}
-
-export function modChanges(character: EditedCharacter, current: Status, goal: Status) {
-  const changes: { modId: string; from: number; to: number }[] = []
-  for (const { equipId } of editableUniEquips(character)) {
-    const from = current.modLevel[equipId] || 0
-    const to = goal.modLevel[equipId] || 0
-    if (to > from) changes.push({ modId: equipId, from, to })
-  }
-  return changes
+/** A goal leaves out 精英化与等级 once the current status is at the top level: nothing there is left to raise. */
+export function levelMaxed(character: EditedCharacter, current: CharacterLevel) {
+  const maxElite = maxEliteOf(character)
+  return current.elite === maxElite && current.level >= character.maxLevels[maxElite]
 }
 
 const maxOf = (character: EditedCharacter, elite: number) => character.maxLevels[elite]

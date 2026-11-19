@@ -2,7 +2,7 @@ import { memo, useId } from 'react'
 import { setPotential } from '../../../pkg/cpp-arknights/statusEdit'
 import { gt } from '../../../pkg/gt'
 import { PotentialIcon } from '../Icons'
-import { Section } from './SectionHeader'
+import { Section } from './Section'
 import { StepGroup } from './StepGroup'
 import { useEditor } from './context'
 
@@ -17,19 +17,21 @@ function potentialText(potential: number) {
 /** Only in the current status: potential costs tokens, not materials, so there is nothing to plan. */
 export const PotentialSection = memo(() => {
   const { status, setStatus } = useEditor()
-  const titleId = useId()
+  const labelId = useId()
   const rank = status.potentialRank || 0
+  const title = gt.pgettext('arknights status group', '潜能')
 
   return (
-    <Section id={titleId} title={gt.pgettext('arknights status group', '潜能')} summary={potentialText(rank + 1)}>
+    <Section title={title}>
       <div className="cpp-charstat-row">
         <div className="cpp-charstat-lbl">
           <span className="cpp-charstat-potential">
             <PotentialIcon potentialRank={rank} />
           </span>
+          <span id={labelId}>{title}</span>
         </div>
         <StepGroup
-          labelledBy={titleId}
+          labelledBy={labelId}
           values={POTENTIALS}
           value={rank + 1}
           label={potentialText}

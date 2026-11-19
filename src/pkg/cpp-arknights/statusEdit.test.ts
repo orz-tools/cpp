@@ -4,19 +4,17 @@ import {
   EditedCharacter,
   cellState,
   elite2LevelBuckets,
+  levelMaxed,
   levelToRail,
   maxSkillLevel,
-  modChanges,
   raisesPrerequisite,
   railLayout,
   railToLevel,
-  sectionCollapsed,
   setEliteLevel,
   setMastery,
   setMod,
   setOwned,
   setSkillLevel,
-  skillChanges,
   skillLevelSteps,
   snapLevels,
   stepLevel,
@@ -167,34 +165,11 @@ describe('cellState', () => {
 })
 
 describe('sections', () => {
-  it('collapses what the current status has maxed', () => {
-    expect(sectionCollapsed('elite', quercus, status({ elite: 2, level: 80 }))).toBe(true)
-    expect(sectionCollapsed('elite', quercus, status({ elite: 2, level: 79 }))).toBe(false)
-    expect(sectionCollapsed('elite', three, status({ elite: 1, level: 55 }))).toBe(true)
-
-    const maxed = { elite: 2, level: 80, skillLevel: 7, skillMaster: { s1: 3, s2: 3 }, modLevel: { mx: 3 } }
-    expect(sectionCollapsed('skill', quercus, status(maxed))).toBe(true)
-    expect(sectionCollapsed('skill', quercus, status({ ...maxed, skillMaster: { s1: 3 } }))).toBe(false)
-    expect(sectionCollapsed('skill', three, status({ elite: 1, level: 1, skillLevel: 7 }))).toBe(true)
-    expect(sectionCollapsed('mod', quercus, status(maxed))).toBe(true)
-    expect(sectionCollapsed('mod', quercus, status({ ...maxed, modLevel: {} }))).toBe(false)
-  })
-
-  it('lists the changes a goal plans', () => {
-    const current = status({ elite: 2, level: 40, skillLevel: 7 })
-    expect(skillChanges(quercus, current, status({ ...current, skillMaster: { s2: 3 } }))).toEqual([
-      { kind: 'mastery', skillId: 's2', from: 0, to: 3 },
-    ])
-    expect(
-      skillChanges(quercus, status({ skillLevel: 4 }), status({ elite: 2, skillLevel: 7, skillMaster: { s1: 1 } })),
-    ).toEqual([
-      { kind: 'skillLevel', from: 4, to: 7 },
-      { kind: 'mastery', skillId: 's1', from: 0, to: 1 },
-    ])
-    expect(skillChanges(quercus, current, current)).toEqual([])
-    expect(modChanges(quercus, current, status({ ...current, modLevel: { mx: 2, m0: 1 } }))).toEqual([
-      { modId: 'mx', from: 0, to: 2 },
-    ])
+  it('knows when the current status has the top level', () => {
+    expect(levelMaxed(quercus, { elite: 2, level: 80 })).toBe(true)
+    expect(levelMaxed(quercus, { elite: 2, level: 79 })).toBe(false)
+    expect(levelMaxed(quercus, { elite: 0, level: 0 })).toBe(false)
+    expect(levelMaxed(three, { elite: 1, level: 55 })).toBe(true)
   })
 
   it('stops skill levels at 4 for an operator that stays at E0', () => {
