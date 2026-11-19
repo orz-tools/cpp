@@ -2475,15 +2475,27 @@ section:first-child > .cpp-stages-wide-section {
   background: rgba(45, 114, 210, 0.28);
 }
 
+/* 列窄了先截「最多」，效率留在右边 */
 .cpp-voucher-caption {
-  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.3em;
   padding-right: 4px;
   font-size: 11px;
+  font-variant-numeric: tabular-nums;
   line-height: 13px;
   color: var(--bp-palette-gray-1, #5f6b7c);
-  text-align: right;
   white-space: nowrap;
+}
+
+.cpp-voucher-most {
+  overflow: hidden;
+  min-width: 0;
   text-overflow: ellipsis;
+}
+
+.cpp-voucher-efficiency {
+  flex: none;
 }
 
 .cpp-voucher-caption b {

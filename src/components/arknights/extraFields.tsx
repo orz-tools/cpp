@@ -135,16 +135,21 @@ function createVoucherField(kind: RankKind, Tip: React.ComponentType) {
               <ValueTag value={value} minimal />
             </div>
             {detail ? (
+              // 效率放在最右，有没有「最多」都在同一个位置，一列往下读不跳
               <div className="cpp-voucher-caption">
-                {fillNodes(gt.pgettext('training cost', '效率 %s') /* I10N: %s: a percentage like 54% */, {
-                  '%s': <b>{efficiencyPercent(v.efficiency)}%</b>,
-                })}
                 {most ? (
                   <>
-                    {' · '}
-                    <MostText value={v.most.value} />
+                    <span className="cpp-voucher-most">
+                      <MostText value={v.most.value} />
+                    </span>
+                    <span>·</span>
                   </>
                 ) : null}
+                <span className="cpp-voucher-efficiency">
+                  {fillNodes(gt.pgettext('training cost', '效率 %s') /* I10N: %s: a percentage like 54% */, {
+                    '%s': <b>{efficiencyPercent(v.efficiency)}%</b>,
+                  })}
+                </span>
               </div>
             ) : null}
           </div>
