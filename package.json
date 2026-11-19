@@ -17,7 +17,7 @@
     "@blueprintjs/icons": "^6.16.0",
     "@tanstack/react-virtual": "^3.0.0-alpha.0",
     "browser-stream-tar": "^1.2.5",
-    "date-fns": "^2.30.0",
+    "date-fns": "^4.4.0",
     "deep-equal": "^2.2.2",
     "immer": "^10.0.2",
     "javascript-lp-solver": "^1.0.3",
