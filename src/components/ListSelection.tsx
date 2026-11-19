@@ -117,7 +117,7 @@ export function SelectionBar({ count, onClear }: { count: number; onClear: () =>
     .split('%d')
   return (
     <div className="cpp-selection-bar">
-      <span className={Classes.FILL}>
+      <span className="cpp-selection-bar-count">
         {before}
         <b>{count}</b>
         {after}

@@ -864,6 +864,14 @@ body {
   background: var(--bp-palette-light-gray-5, #f6f7f9);
 }
 
+.cpp-selection-bar-count {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .cpp-selection-bar b {
   color: var(--bp-palette-blue-2, #215db0);
 }
