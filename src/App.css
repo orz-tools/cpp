@@ -776,6 +776,13 @@ body {
   background-color: rgba(45, 114, 210, 0.18);
 }
 
+/* The task list's operator row carries both on one element; keep the dossier's bar and the outline */
+.bp6-menu-item.cpp-list-selected.cpp-dossier-open {
+  box-shadow:
+    inset 3px 0 0 var(--bp-palette-blue-3, #2d72d2),
+    inset 0 0 0 1px rgba(45, 114, 210, 0.35);
+}
+
 /* The game's stylesheet sets this too, but the tick must not depend on it */
 .cpp-char-menu-char .cpp-char-avatar {
   position: relative;
@@ -801,6 +808,14 @@ body {
 
 .cpp-select-tick > .bp6-icon {
   color: #fff;
+}
+
+/* In place of the task list's 16px avatar, which has no corner to spare */
+.cpp-select-tick.cpp-select-tick-inline {
+  position: static;
+  width: 16px;
+  height: 16px;
+  border: none;
 }
 
 .cpp-drag-handle.cpp-drag-handle-selected {
