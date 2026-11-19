@@ -459,6 +459,23 @@ body {
   white-space: nowrap;
 }
 
+/* 刷图：关卡一列、合成一列，各自滚动 */
+.cpp-farm-body {
+  display: flex;
+  flex: 1 1 0%;
+  overflow: auto;
+}
+
+.cpp-farm-stages {
+  width: 250px;
+  overflow: auto;
+}
+
+.cpp-farm-synthesis {
+  flex: 1 1 0%;
+  overflow: auto;
+}
+
 .cpp-item-menu-master > li {
   display: flex;
   align-items: center;
@@ -482,6 +499,12 @@ body {
 /* 不裁掉溢出：不缩写大数时，十个字符的数（「-394738332」）比 6em 宽，裁掉就少了末位 */
 .cpp-goal-counter {
   position: relative;
+  width: 6em;
+}
+
+/* 手机上计数格从这里折到第二层 */
+.cpp-item-row-break {
+  display: none;
 }
 
 .cpp-goal-counter::before {
@@ -1854,6 +1877,75 @@ body .bp6-navbar-group {
     align-items: center;
     min-height: 40px;
   }
+}
+
+/* 刷图：关卡在上、合成在下，整块一起滚 */
+.cpp-phone .cpp-farm-body {
+  flex-direction: column;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .cpp-farm-body > .cpp-farm-stages,
+.cpp-phone .cpp-farm-body > .cpp-farm-synthesis {
+  flex: none;
+  width: 100%;
+  overflow: visible;
+}
+
+/*
+ * 材料：第一层是物品和数量框，第二层是五个计数格，标签写在数字上方。
+ * 一行放不下时计数格再折一行，数字不重叠、不截断
+ */
+.cpp-phone .cpp-item-menu-master {
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .cpp-item-menu-master > li {
+  flex-wrap: wrap;
+  column-gap: 8px;
+  padding-bottom: 6px;
+}
+
+.cpp-phone .cpp-item-menu-master > li > :first-child {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.cpp-phone .cpp-item-menu-master > li > :nth-child(2) {
+  flex: none;
+}
+
+.cpp-phone .cpp-item-row-break {
+  display: block;
+  flex: 0 0 100%;
+  height: 0;
+}
+
+.cpp-phone .cpp-item-menu-master > li > .cpp-item-row-break ~ * {
+  flex: 1 1 0;
+  min-width: max-content;
+}
+
+/* 「可合成」那一格包在能点开物品卡的菜单项里 */
+.cpp-phone .cpp-item-menu-master > li > .cpp-item-row-break ~ a > .cpp-goal-counter {
+  flex: 1 1 auto;
+}
+
+.cpp-phone .cpp-goal-counter {
+  width: auto;
+  font-size: 13px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.cpp-phone .cpp-goal-counter::before {
+  position: static;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--bp-palette-gray-1);
+  opacity: 1;
+  white-space: nowrap;
 }
 
 /* 「更多」（PhoneMore.tsx）：侧栏那一栏在手机上是一列，列表、子页、面板页都占满宽度 */

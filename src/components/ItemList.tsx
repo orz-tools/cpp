@@ -14,7 +14,7 @@ import { InventorySyncer } from './InventorySyncer'
 import { formatQuantity } from './quantity'
 import { PeekTrigger } from './Peek'
 import { ItemCounterCells, itemCounterCells, itemCounterSlots } from './itemCounters'
-import { useCoarsePointer } from './phoneLayout'
+import { useCoarsePointer, usePhoneLayout } from './phoneLayout'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
 const formatter = (q: number) => q.toFixed(0)
@@ -35,6 +35,7 @@ export const ItemQuantityEditor = memo(
   }) => {
     const ga = useGameAdapter<G>()
     const atoms = useAtoms<G>()
+    const phone = usePhoneLayout()
     const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
     const [input, setInput] = useState(formatter(quantity))
     useEffect(() => setInput(formatter(quantity)), [quantity])
@@ -56,7 +57,10 @@ export const ItemQuantityEditor = memo(
           className: 'cpp-quantity-compact',
           style: { ...style, width: `calc(${Math.max(input.length, 3)}ch + 14px)` },
         } as const)
-      : { style }
+      : phone
+        ? // 手机上弹数字键盘，不画上下箭头
+          ({ style, buttonPosition: 'none', inputMode: 'numeric' } as const)
+        : { style }
 
     if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
       return <NumericInput value={input} {...look} title={input} disabled={true} allowNumericCharactersOnly={false} />
@@ -139,7 +143,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
     <>
       <div
         className="cpp-goal-counter"
-        style={{ width: '6em', visibility: !formula || synable === 0 ? 'hidden' : undefined }}
+        style={{ visibility: !formula || synable === 0 ? 'hidden' : undefined }}
         data-label={gt.pgettext('item list counter label', '合成后')}
       >
         {rows('afterSynthesis')}
@@ -158,35 +162,19 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
               visibility: !formula ? 'hidden' : undefined,
             }}
           >
-            <div
-              className="cpp-goal-counter"
-              style={{ width: '6em' }}
-              data-label={gt.pgettext('item list counter label', '可合成')}
-            >
+            <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '可合成')}>
               {rows('synthesizable')}
             </div>
           </a>
         )}
       />
-      <div
-        className="cpp-goal-counter"
-        style={{ width: '6em' }}
-        data-label={gt.pgettext('item list counter label', '还需')}
-      >
+      <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '还需')}>
         {rows('remaining')}
       </div>
-      <div
-        className="cpp-goal-counter"
-        style={{ width: '6em' }}
-        data-label={gt.pgettext('item list counter label', '直接需求')}
-      >
+      <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '直接需求')}>
         {rows('direct')}
       </div>
-      <div
-        className="cpp-goal-counter"
-        style={{ width: '6em' }}
-        data-label={gt.pgettext('item list counter label', '间接需求')}
-      >
+      <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '间接需求')}>
         {rows('indirect')}
       </div>
     </>
@@ -222,6 +210,8 @@ export const ItemMenu = memo(({ item }: { item: IItem }) => {
       <div>
         <ItemQuantityEditor item={item} style={itemQuantityStyle} />
       </div>
+      {/* 手机上计数格从这里折到第二层 */}
+      <span className="cpp-item-row-break" aria-hidden />
       <ItemTaskRequirements item={item} />
     </li>
   )
