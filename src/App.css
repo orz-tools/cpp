@@ -2091,3 +2091,31 @@ body .bp6-navbar-group {
   margin-right: 0;
   font-weight: 600;
 }
+
+/* 输入框不小于 16px：iOS 聚焦小于 16px 的输入框会放大整页 */
+.cpp-phone .bp6-input,
+.cpp-phone .bp6-input.bp6-small,
+.cpp-phone .bp6-input-group.bp6-small .bp6-input,
+.cpp-phone .bp6-html-select select {
+  font-size: 16px;
+}
+
+/* 长按头像和物品图标不弹存图菜单：长按留给右键菜单 */
+@media (pointer: coarse) {
+  .cpp-char-avatar img,
+  img.cpp-item-icon {
+    -webkit-touch-callout: none;
+  }
+}
+
+/* 滑到头时不带着整页走，也不触发下拉刷新 */
+html.cpp-phone,
+html.cpp-phone body {
+  overscroll-behavior: none;
+}
+
+.cpp-phone .App > section > .bp6-menu,
+.cpp-phone .cpp-dossier-body,
+.cpp-phone .cpp-sidebar-panel .bp6-menu {
+  overscroll-behavior: contain;
+}
