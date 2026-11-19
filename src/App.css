@@ -781,6 +781,22 @@ body {
   text-align: center;
 }
 
+/* A flex item of the list's column, under the Menu: the list gets shorter instead of rows hiding behind it */
+.cpp-selection-bar {
+  flex: none;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px 0 10px;
+  border-top: 1px solid var(--bp-palette-light-gray-2, #dce0e5);
+  background: var(--bp-palette-light-gray-5, #f6f7f9);
+}
+
+.cpp-selection-bar b {
+  color: var(--bp-palette-blue-2, #215db0);
+}
+
 .cpp-peek-card {
   width: 344px;
   max-width: calc(100vw - 16px);
