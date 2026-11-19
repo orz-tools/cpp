@@ -1,0 +1,35 @@
+name: Check
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v31
+
+      # 和本地开发、.gitlab-ci.yml 用同一个 devshell（.nix/flake.lock）。
+      - name: Install dependencies
+        run: nix develop "path:$PWD/.nix" --command pnpm install --frozen-lockfile
+
+      # github 格式把诊断标到 pull request 的改动行上；vitest 在 GitHub Actions 里会自己加上同样的 reporter。
+      - name: Lint
+        run: nix develop "path:$PWD/.nix" --command pnpm lint --format github
+
+      - name: Test
+        run: nix develop "path:$PWD/.nix" --command pnpm vitest run
+
+      # pull request 只在这里跑，到不了 .gitlab-ci.yml 的 build。
+      - name: Build
+        run: nix develop "path:$PWD/.nix" --command pnpm build

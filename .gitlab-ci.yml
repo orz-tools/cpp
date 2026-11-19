@@ -1,4 +1,5 @@
 # 和本地开发、cpp-data-worker 的 CI 用同一个 devshell（.nix/flake.lock），node 和 pnpm 只在那里钉版本。
+# lint 和单元测试在 .github/workflows/check.yml 里跑。
 image: nixos/nix:2.35.6
 variables:
   NIX_CONFIG: experimental-features = nix-command flakes
