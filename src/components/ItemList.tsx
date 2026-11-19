@@ -21,7 +21,16 @@ const parser = (q: string) => Math.floor(parseFloat(q) || 0)
 // component; the item list holds one per item, and they all render again with each new game data generation.
 const MemoNumericInput = memo(NumericInput)
 export const ItemQuantityEditor = memo(
-  <G extends IGame>({ item, style }: { item: IItem; style?: React.CSSProperties }) => {
+  <G extends IGame>({
+    item,
+    style,
+    compact,
+  }: {
+    item: IItem
+    style?: React.CSSProperties
+    /** 和价值标签一样高、没有上下箭头（键盘 ↑↓ 照样加减），宽度跟着数字 */
+    compact?: boolean
+  }) => {
     const ga = useGameAdapter<G>()
     const atoms = useAtoms<G>()
     const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
@@ -38,14 +47,23 @@ export const ItemQuantityEditor = memo(
       setQuantity(parser(valueAsString))
     })
 
+    const look = compact
+      ? ({
+          size: 'small',
+          buttonPosition: 'none',
+          className: 'cpp-quantity-compact',
+          style: { ...style, width: `calc(${Math.max(input.length, 3)}ch + 14px)` },
+        } as const)
+      : { style }
+
     if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
-      return <NumericInput value={input} style={style} disabled={true} allowNumericCharactersOnly={false} />
+      return <NumericInput value={input} {...look} disabled={true} allowNumericCharactersOnly={false} />
     }
     return (
       <MemoNumericInput
         allowNumericCharactersOnly={false}
         value={input}
-        style={style}
+        {...look}
         min={0}
         onValueChange={onValueChange}
         onBlur={onBlur}

@@ -37,8 +37,20 @@ export function usePeekKinds(): Record<string, PeekKind> {
 const PeekTitleIdContext = createContext<string | undefined>(undefined)
 
 /** 种类的 Head 用它画标题栏左半边；名字同时是卡片的无障碍名称 */
-export const PeekHead = ({ icon, title, sub }: { icon?: React.ReactNode; title: string; sub?: React.ReactNode }) => {
+export const PeekHead = ({
+  icon,
+  title,
+  sub,
+  subEnd,
+}: {
+  icon?: React.ReactNode
+  title: string
+  sub?: React.ReactNode
+  /** 小字那一行的右端，名字仍占整行；物品卡的库存 */
+  subEnd?: React.ReactNode
+}) => {
   const titleId = useContext(PeekTitleIdContext)
+  const subLine = sub != null ? <div className="cpp-peek-sub">{sub}</div> : null
   return (
     <div className="cpp-peek-head-main">
       {icon != null ? <span className="cpp-peek-icon">{icon}</span> : null}
@@ -46,7 +58,14 @@ export const PeekHead = ({ icon, title, sub }: { icon?: React.ReactNode; title: 
         <div className="cpp-peek-title" id={titleId} title={title}>
           {title}
         </div>
-        {sub != null ? <div className="cpp-peek-sub">{sub}</div> : null}
+        {subEnd != null ? (
+          <div className="cpp-peek-sub-line">
+            {subLine}
+            {subEnd}
+          </div>
+        ) : (
+          subLine
+        )}
       </div>
     </div>
   )
@@ -185,7 +204,9 @@ export const PeekTrigger = ({
   // 虚拟滚动把它滚走了、所在的行没了：开着的正是自己就关上
   useEffect(() => close, [close])
 
-  const onClick = useEvent(() => {
+  const target = useRef<HTMLElement | null>(null)
+  const onClick = useEvent((e: React.MouseEvent) => {
+    target.current = e.currentTarget as HTMLElement
     if (findPinned(store.get(pinnedPeeksAtom), peek) >= 0) {
       close()
       showPinned(peek)
@@ -211,9 +232,16 @@ export const PeekTrigger = ({
       popoverClassName="cpp-peek-popover"
       autoFocus
       enforceFocus={false}
-      shouldReturnFocusOnClose
+      // Blueprint 还焦点时不看焦点已经去了哪里，而且会把列表滚到这一行：卡片随行滚走以后点另一样东西，列表就跳回来。
+      // 只在焦点跟着卡片没了时还，不滚动
+      shouldReturnFocusOnClose={false}
       modifiers={peekPopoverModifiers}
       onOpening={onOpening}
+      onClosed={(node) => {
+        const active = document.activeElement
+        if (active == null || active === document.body || node.contains(active))
+          target.current?.focus({ preventScroll: true })
+      }}
       content={<PeekCard stack={shown} pinned={false} onNavigate={onNavigate} onPin={onPin} onClose={close} />}
       renderTarget={({ ref }) =>
         renderTarget({
