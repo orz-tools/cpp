@@ -185,7 +185,9 @@ export const PeekTrigger = ({
   // 虚拟滚动把它滚走了、所在的行没了：开着的正是自己就关上
   useEffect(() => close, [close])
 
-  const onClick = useEvent(() => {
+  const target = useRef<HTMLElement | null>(null)
+  const onClick = useEvent((e: React.MouseEvent) => {
+    target.current = e.currentTarget as HTMLElement
     if (findPinned(store.get(pinnedPeeksAtom), peek) >= 0) {
       close()
       showPinned(peek)
@@ -211,9 +213,16 @@ export const PeekTrigger = ({
       popoverClassName="cpp-peek-popover"
       autoFocus
       enforceFocus={false}
-      shouldReturnFocusOnClose
+      // Blueprint 还焦点时不看焦点已经去了哪里，而且会把列表滚到这一行：卡片随行滚走以后点另一样东西，列表就跳回来。
+      // 只在焦点跟着卡片没了时还，不滚动
+      shouldReturnFocusOnClose={false}
       modifiers={peekPopoverModifiers}
       onOpening={onOpening}
+      onClosed={(node) => {
+        const active = document.activeElement
+        if (active == null || active === document.body || node.contains(active))
+          target.current?.focus({ preventScroll: true })
+      }}
       content={<PeekCard stack={shown} pinned={false} onNavigate={onNavigate} onPin={onPin} onClose={close} />}
       renderTarget={({ ref }) =>
         renderTarget({
