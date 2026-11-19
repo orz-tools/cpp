@@ -176,6 +176,7 @@ export const TaskMenu = memo(
     const details = useAtomValue(detailsAtom)
     const openDossier = useOpenCharacterDossier()
     const dossierOpen = useDossierOpenFor(character.key)
+    const TaskTag = useComponents().TaskTag
     const sortedRequires = useMemo(
       () =>
         sortBy(
@@ -284,6 +285,7 @@ export const TaskMenu = memo(
                   <div style={{ flex: 1, flexShrink: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     <TaskDisplay type={task.type} charId={character.key} />
                   </div>
+                  {TaskTag ? <TaskTag type={task.type} charId={character.key} /> : null}
                   {extra.status === TaskStatus.AllUnmet ? (
                     <div>
                       <ValueTagProgressBar

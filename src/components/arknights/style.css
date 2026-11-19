@@ -2367,7 +2367,9 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-mm-task-tag.bp6-tag {
-  margin-right: 4px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin: 0 4px;
 }
 
 /* 模组类型图标是白的，和状态编辑里一样垫一块深色底 */

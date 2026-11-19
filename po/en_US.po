@@ -2574,7 +2574,7 @@ msgctxt "dossier section"
 msgid "时装"
 msgstr "Outfits"
 
-#: src/components/arknights/ModuleMissionSection.tsx:138
+#: src/components/arknights/ModuleMissionSection.tsx:157
 msgctxt "dossier section"
 msgid "模组任务"
 msgstr "Module missions"
@@ -2857,7 +2857,7 @@ msgid "%d 理智"
 msgstr "%d sanity"
 
 #. %s: stage code
-#: src/components/arknights/ModuleMissionSection.tsx:76
+#: src/components/arknights/ModuleMissionSection.tsx:95
 msgctxt "module mission"
 msgid "%s 这一次还能做"
 msgstr "Also in this run of %s"
@@ -2916,7 +2916,7 @@ msgid "任务"
 msgstr "Mission"
 
 #. %1: missions done; %2: missions
-#: src/components/arknights/TaskDisplay.tsx:18
+#: src/components/arknights/TaskDisplay.tsx:39
 msgctxt "module mission"
 msgid "任务 %1/%2"
 msgstr "Missions %1/%2"
@@ -2992,7 +2992,7 @@ msgctxt "module mission"
 msgid "只能远程位"
 msgstr "Ranged only"
 
-#: src/components/arknights/ModuleMissionSection.tsx:86
+#: src/components/arknights/ModuleMissionSection.tsx:105
 msgctxt "module mission"
 msgid "在侧栏里看"
 msgstr "Show in sidebar"
@@ -3003,6 +3003,11 @@ msgid "在干员的培养目标里把模组设到 1 级以上，它的任务就�
 msgstr ""
 "Set a module to level 1 or above in an operator’s goal, and its missions are "
 "listed here."
+
+#: src/components/arknights/TaskDisplay.tsx:37
+msgctxt "module mission"
+msgid "在档案里看模组任务"
+msgstr "Show module missions in the dossier"
 
 #: src/components/arknights/ModuleMissionPanel.tsx:1537
 msgctxt "module mission"
@@ -3015,7 +3020,7 @@ msgctxt "module mission"
 msgid "已完成"
 msgstr "Done"
 
-#: src/components/arknights/ModuleMissionSection.tsx:38
+#: src/components/arknights/ModuleMissionSection.tsx:57
 msgctxt "module mission"
 msgid "已解锁，任务已完成"
 msgstr "unlocked, missions done"
@@ -3082,12 +3087,12 @@ msgctxt "module mission"
 msgid "未持有"
 msgstr "Not owned"
 
-#: src/components/arknights/ModuleMissionSection.tsx:50
+#: src/components/arknights/ModuleMissionSection.tsx:69
 msgctxt "module mission"
 msgid "未解锁"
 msgstr "Locked"
 
-#: src/components/arknights/ModuleMissionSection.tsx:49
+#: src/components/arknights/ModuleMissionSection.tsx:68
 msgctxt "module mission"
 msgid "未解锁 · 计划解锁到 %d 级"
 msgstr "Locked · planned for level %d"

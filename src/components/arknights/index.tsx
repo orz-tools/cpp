@@ -15,7 +15,7 @@ import { skinsPanel } from './SkinsPanel'
 import { skinsSection } from './SkinsSection'
 import { specialOperatorSection } from './SpecialOperatorSection'
 import { stagesPanel } from './StagePanel'
-import { TaskDisplay } from './TaskDisplay'
+import { TaskDisplay, TaskTag } from './TaskDisplay'
 import { ValueConfigMenu } from './ValueConfigMenu'
 import { extraFields } from './extraFields'
 import { modulePeekKind, skillPeekKind, stagePeekKind } from './peekKinds'
@@ -44,6 +44,7 @@ export const ArknightsComponents: IGameComponent = {
   style,
   extraFields: extraFields,
   TaskDisplay,
+  TaskTag,
   QuickFilterBuilder,
   ValueConfigMenu,
   quickFilters: {

@@ -1,15 +1,34 @@
 import { Button } from '@blueprintjs/core'
 import { useAtomValue } from 'jotai'
-import React, { memo } from 'react'
+import React, { memo, useRef } from 'react'
 import { useAtoms, useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter, Character } from '../../pkg/cpp-arknights'
 import { MissionInput, missionProgress, missionSummary, parseMission } from '../../pkg/cpp-arknights/moduleMissions'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { useShowSidebarPanel } from '../Sidebar'
+import { useFocusFrame } from '../focusFrame'
 import { DossierSection } from '../types'
 import { MissionCheck, ModuleCode, OperatorButton, blockText, summaryOf, useSelectTicket } from './ModuleMissionPanel'
 import { useDoneMissions, useMissionBoard, useMissionNames } from './moduleMissionState'
+
+/** 档案「模组任务」页的 id；记在 cpp_dossier 里，发布之后不能改 */
+export const MODULE_MISSIONS_SECTION = 'moduleMissions'
+
+/** 「模组任务」页里一个模组那一块的框选目标 */
+export function moduleMissionsFrame(equipId: string) {
+  return `mm:${equipId}`
+}
+
+const ModuleBlock = memo(({ equipId, children }: React.PropsWithChildren<{ equipId: string }>) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const framed = useFocusFrame(moduleMissionsFrame(equipId), ref)
+  return (
+    <div ref={ref} className={'cpp-mm-dossier-module' + (framed ? ' cpp-framed' : '')}>
+      {children}
+    </div>
+  )
+})
 
 const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter }) => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
@@ -34,14 +53,14 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
         const name = ga.getDataManager().data.uniEquips[mod.equipId]?.name ?? ''
         if ((current.modLevel[mod.equipId] ?? 0) >= 1) {
           return (
-            <div key={mod.equipId} className="cpp-mm-dossier-module">
+            <ModuleBlock key={mod.equipId} equipId={mod.equipId}>
               <ModuleCode charId={c.key} equipId={mod.equipId} /> {gt.pgettext('module mission', '已解锁，任务已完成')}
-            </div>
+            </ModuleBlock>
           )
         }
         const planned = goal?.modLevel[mod.equipId] ?? 0
         return (
-          <div key={mod.equipId} className="cpp-mm-dossier-module">
+          <ModuleBlock key={mod.equipId} equipId={mod.equipId}>
             <div className="cpp-mm-dossier-title">
               <ModuleCode charId={c.key} equipId={mod.equipId} /> {name}{' '}
               <span className="cpp-mm-muted">
@@ -110,7 +129,7 @@ const ModuleMissionSectionBody = memo(({ character }: { character: ICharacter })
                 </div>
               )
             })}
-          </div>
+          </ModuleBlock>
         )
       })}
     </div>
@@ -134,7 +153,7 @@ function useMissionTag(character: ICharacter): string | null {
 }
 
 export const moduleMissionsSection: DossierSection = {
-  id: 'moduleMissions',
+  id: MODULE_MISSIONS_SECTION,
   title: lpstr(() => gt.pgettext('dossier section', '模组任务')),
   Body: ModuleMissionSectionBody,
   useTag: useMissionTag,

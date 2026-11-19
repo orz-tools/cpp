@@ -93,6 +93,8 @@ export interface IGameComponent {
     }
   >
   TaskDisplay?: React.FC<{ type: any; charId: string; formattedString: string }>
+  /** 任务列表里任务名右边的标记，任务名太长被截断时它不跟着截掉；没有时画 null */
+  TaskTag?: React.FC<{ type: any; charId: string }>
   /** join 是当前查询展开的子查询，按它画这一组的按钮 */
   QuickFilterBuilder?: React.FC<{ join?: string }>
   ValueConfigMenu?: React.FC
