@@ -2567,7 +2567,7 @@ msgctxt "dossier section"
 msgid "时装"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:176
+#: src/components/arknights/ModuleMissionSection.tsx:183
 msgctxt "dossier section"
 msgid "模组任务"
 msgstr ""
@@ -2856,7 +2856,7 @@ msgid "%d 理智"
 msgstr ""
 
 #. %s: stage code
-#: src/components/arknights/ModuleMissionSection.tsx:114
+#: src/components/arknights/ModuleMissionSection.tsx:117
 msgctxt "module mission"
 msgid "%s 这一次还能做"
 msgstr ""
@@ -2991,7 +2991,12 @@ msgctxt "module mission"
 msgid "只能远程位"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:124
+#: src/components/arknights/ModuleMissionSection.tsx:129
+msgctxt "module mission"
+msgid "在「更多」里看"
+msgstr ""
+
+#: src/components/arknights/ModuleMissionSection.tsx:130
 msgctxt "module mission"
 msgid "在侧栏里看"
 msgstr ""
@@ -3017,7 +3022,7 @@ msgctxt "module mission"
 msgid "已完成"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:78
+#: src/components/arknights/ModuleMissionSection.tsx:81
 msgctxt "module mission"
 msgid "已解锁，任务已完成"
 msgstr ""
@@ -3085,12 +3090,12 @@ msgctxt "module mission"
 msgid "未持有"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:89
+#: src/components/arknights/ModuleMissionSection.tsx:92
 msgctxt "module mission"
 msgid "未解锁"
 msgstr ""
 
-#: src/components/arknights/ModuleMissionSection.tsx:88
+#: src/components/arknights/ModuleMissionSection.tsx:91
 msgctxt "module mission"
 msgid "未解锁 · 计划解锁到 %d 级"
 msgstr ""
