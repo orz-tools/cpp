@@ -145,7 +145,7 @@ const NumberField = memo(
   },
 )
 
-const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => {
+export const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
   const [saved, setSaved] = WithGame<Arknights>().useGamePreferenceAtom(PreferenceKeys.ItemValue)
   const [draft, setDraft] = useState<ItemValueConfig>(() => structuredClone(saved))

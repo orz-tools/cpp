@@ -26,6 +26,7 @@ import { Chamber, ChamberPortal } from './components/Chamber'
 import { CharacterDossier } from './components/CharacterDossier'
 import { CharacterList } from './components/CharacterList'
 import { ConfigButton, MaybeSoulButton, RegionButton } from './components/ConfigUi'
+import { dataMenuOpenAtom } from './components/dataMenu'
 import { Err, ErrAtom } from './components/Err'
 import { FarmList } from './components/FarmList'
 import { ImportPasteBox } from './components/ImportPasteBox'
@@ -264,7 +265,7 @@ const DataMenu = memo(({ pasteBoxRef, onImported }: DataMenuProps) => {
 })
 
 const DataDropdown = memo(() => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useAtom(dataMenuOpenAtom)
   const pasteBoxRef = useRef<HTMLInputElement>(null)
   // A touch device would raise its keyboard on every open; there the box still takes a long-press paste.
   const focusPasteBox = useEvent(() => {

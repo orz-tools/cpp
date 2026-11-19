@@ -16,7 +16,7 @@ import { skinsSection } from './SkinsSection'
 import { specialOperatorSection } from './SpecialOperatorSection'
 import { stagesPanel } from './StagePanel'
 import { TaskDisplay, TaskTag } from './TaskDisplay'
-import { ValueConfigMenu } from './ValueConfigMenu'
+import { ValueConfigDialog, ValueConfigMenu } from './ValueConfigMenu'
 import { extraFields } from './extraFields'
 import { modulePeekKind, skillPeekKind, stagePeekKind } from './peekKinds'
 import { useArknightsImportFormats } from './importFormats'
@@ -47,6 +47,7 @@ export const ArknightsComponents: IGameComponent = {
   TaskTag,
   QuickFilterBuilder,
   ValueConfigMenu,
+  ValueConfigDialog,
   quickFilters: {
     professions: 'contains',
     rarity: '==',

@@ -100,6 +100,8 @@ export interface IGameComponent {
   /** join 是当前查询展开的子查询，按它画这一组的按钮 */
   QuickFilterBuilder?: React.FC<{ join?: string }>
   ValueConfigMenu?: React.FC
+  /** ValueConfigMenu 里「设置…」打开的那个对话框，别处要直接打开它时用 */
+  ValueConfigDialog?: React.FC<{ onClose: () => void }>
   /** 快捷过滤的字段 → 比较符 */
   quickFilters?: Record<string, string>
   /** 展开了这里列出的子查询时用它的那一组，代替 quickFilters */

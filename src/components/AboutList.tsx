@@ -90,19 +90,19 @@ const AboutLinks = memo(() => {
         {...externalLinkProps}
       />
       <MenuDivider title={gt.gettext('鸣谢')} />
+      <DescriptionMenuItem
+        icon={'person'}
+        text="西園寺玲咲 (SaionjiReisaki)"
+        href={'https://github.com/SaionjiReisaki/'}
+        {...externalLinkProps}
+        description={gt.pgettext('credit role', '数据源自动化、氛围开发')}
+      />
       {AboutCredits && <AboutCredits />}
       <DescriptionMenuItem
         icon={'person'}
         text="若淇未央"
         {...externalLinkProps}
         description={gt.pgettext('credit role', '帮助文档撰写')}
-      />
-      <DescriptionMenuItem
-        icon={'person'}
-        text="西園寺玲咲 (SaionjiReisaki)"
-        href={'https://github.com/SaionjiReisaki/'}
-        {...externalLinkProps}
-        description={gt.pgettext('credit role', '数据源自动化')}
       />
       <MenuDivider title={gt.gettext('声明')} />
       {AboutCopyright && <AboutCopyright />}

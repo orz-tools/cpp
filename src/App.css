@@ -599,6 +599,11 @@ body {
   outline: none !important;
 }
 
+/* 子菜单的弹层按内容收缩，不设上限时一条长细目会把它撑成一整行 */
+.cpp-log-details {
+  max-width: 320px;
+}
+
 /* 说明和上面那一项的文字对齐：16px 图标加它右边 8px */
 .cpp-menu-indent {
   padding: 0 !important;

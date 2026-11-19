@@ -2,15 +2,101 @@ import { IconName, MenuDivider, MenuItem } from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, sortBy } from 'ramda'
-import React, { memo, useEffect, useMemo } from 'react'
+import React, { memo, useContext, useEffect, useMemo } from 'react'
+import useEvent from 'react-use-event-hook'
 import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
 import { PSTR, gt, lpstr } from '../pkg/gt'
 import { externalLinkProps } from './AboutList'
 import { PSTRs } from './LineBreaks'
+import { LogTarget, useLogTarget } from './logTargets'
+import { CloseSidebarPanelDialogContext } from './SidebarPanelDialog'
 import { LogMark, hasUnseenLogs, readLogMark } from './sidebarState'
 
-const logs = [
+type LogType = 'new' | 'fix' | 'optimize'
+
+interface LogLine {
+  game?: GameName[]
+  type: LogType
+  desc: PSTR | PSTR[]
+}
+
+interface LogDetail extends LogLine {
+  target?: LogTarget
+}
+
+interface Log extends LogLine {
+  date: string
+  children?: React.ReactNode
+  href?: string
+  /** 一条日志底下的细目，悬停时在子菜单里按类型分组列出；计数、分组和未读标记只算这一条 */
+  details?: LogDetail[]
+}
+
+const arknights = [GameName.Arknights]
+
+const logs: Log[] = [
+  {
+    date: '2026-11-19',
+    type: 'new',
+    desc: lpstr(() => gt.pgettext('changelog', '「不是人类，而是氛围」大更新')),
+    details: [
+      { game: arknights, type: 'new', desc: lpstr(() => gt.pgettext('changelog', '干员档案')) },
+      {
+        game: arknights,
+        type: 'new',
+        desc: lpstr(() => gt.pgettext('changelog', '关卡效率')),
+        target: { panel: 'stages' },
+      },
+      {
+        game: arknights,
+        type: 'new',
+        desc: lpstr(() => gt.pgettext('changelog', '模组任务')),
+        target: { panel: 'moduleMissions' },
+      },
+      {
+        game: arknights,
+        type: 'new',
+        desc: lpstr(() => gt.pgettext('changelog', '时装')),
+        target: { panel: 'skins' },
+      },
+      {
+        game: arknights,
+        type: 'new',
+        desc: lpstr(() => gt.pgettext('changelog', '养成成本')),
+        target: { view: 'cost.elite2' },
+      },
+      {
+        game: arknights,
+        type: 'new',
+        desc: lpstr(() => gt.pgettext('changelog', '基建技能')),
+        target: { view: 'building.locked' },
+      },
+      {
+        game: arknights,
+        type: 'new',
+        desc: lpstr(() => gt.pgettext('changelog', '模组解锁率')),
+        target: { view: 'mod.unlockrate.yituliu' },
+      },
+      { type: 'new', desc: lpstr(() => gt.pgettext('changelog', '编辑角色过滤器')), target: 'filterEditor' },
+      { type: 'new', desc: lpstr(() => gt.pgettext('changelog', '拖动干员、任务调整计划顺序')), target: 'planView' },
+      {
+        game: arknights,
+        type: 'new',
+        desc: lpstr(() => gt.pgettext('changelog', '支持更多数据导入')),
+        target: 'dataMenu',
+      },
+      {
+        game: arknights,
+        type: 'optimize',
+        desc: lpstr(() => gt.pgettext('changelog', '物品价值改为本地计算，支持设置')),
+        target: 'valueSettings',
+      },
+      { type: 'optimize', desc: lpstr(() => gt.pgettext('changelog', '更新数据、切换语言和地区无需刷新页面')) },
+      { game: arknights, type: 'fix', desc: lpstr(() => gt.pgettext('changelog', '修正部分模组不显示')) },
+      { game: arknights, type: 'fix', desc: lpstr(() => gt.pgettext('changelog', '肉鸽干员养成支持')) },
+    ],
+  },
   {
     date: '2026-05-01',
     type: 'optimize',
@@ -151,42 +237,88 @@ const logs = [
   { date: '2023-04-23', type: 'optimize', desc: '以价值排序刷图产物' },
   { date: '2023-04-23', type: 'fix', desc: '任务完成时正确消耗经验道具' },
   { date: '2023-04-23', game: [GameName.Arknights], type: 'fix', desc: '修复复刻的插曲关卡数据' },
-] as {
-  date: string
-  game?: GameName[]
-  type: 'new' | 'fix' | 'optimize'
-  desc: PSTR | PSTR[]
-  children?: React.ReactNode
-  href?: string
-}[]
+]
 
 const iconMap = {
   optimize: 'key-command',
   new: 'star',
   fix: 'build',
-} satisfies Record<string, IconName>
+} satisfies Record<LogType, IconName>
 
-const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: typeof logs }) => {
+const typeTitles: Record<LogType, () => string> = {
+  new: () => gt.pgettext('changelog type', '新增'),
+  optimize: () => gt.pgettext('changelog type', '优化'),
+  fix: () => gt.pgettext('changelog type', '修复'),
+}
+
+const LogText = memo(({ desc }: { desc: PSTR | PSTR[] }) => (
+  <div className="cpp-menu-semi-secondary">
+    <PSTRs strings={desc} />
+  </div>
+))
+
+const LogDetailItem = memo(({ detail }: { detail: LogDetail }) => {
+  const open = useLogTarget(detail.target)
+  // In 查看更多 the window would cover the panel or list the line leads to
+  const closeWindow = useContext(CloseSidebarPanelDialogContext)
+  const onClick = useEvent(() => {
+    closeWindow?.()
+    open?.()
+  })
+  return (
+    <MenuItem
+      className={open ? undefined : 'cpp-menu-not-interactive'}
+      icon={iconMap[detail.type]}
+      text={<LogText desc={detail.desc} />}
+      multiline={true}
+      onClick={open ? onClick : undefined}
+      shouldDismissPopover={!!open}
+    />
+  )
+})
+
+const LogDetails = memo(({ details }: { details: LogDetail[] }) => (
+  <>
+    {(Object.keys(typeTitles) as LogType[]).map((type) => {
+      const lines = details.filter((x) => x.type === type)
+      return lines.length ? (
+        <React.Fragment key={type}>
+          <MenuDivider title={typeTitles[type]()} />
+          {lines.map((detail, i) => (
+            <LogDetailItem key={i} detail={detail} />
+          ))}
+        </React.Fragment>
+      ) : null
+    })}
+  </>
+))
+
+const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: Log[] }) => {
   return (
     <>
       <MenuDivider title={title} />
       {items.map((vv, index) => {
+        // Blueprint opens a submenu whenever children is not null, so pass nothing for a plain entry
+        const submenu =
+          vv.details || vv.children ? (
+            <>
+              {vv.details ? <LogDetails details={vv.details} /> : null}
+              {vv.children}
+            </>
+          ) : undefined
         return (
           <MenuItem
             key={index}
             href={vv.href}
-            className={vv.children || vv.href ? undefined : 'cpp-menu-not-interactive'}
-            icon={vv.type in iconMap ? (iconMap as any)[vv.type] : ''}
-            text={
-              <div className="cpp-menu-semi-secondary">
-                <PSTRs strings={vv.desc} />
-              </div>
-            }
+            className={submenu || vv.href ? undefined : 'cpp-menu-not-interactive'}
+            icon={iconMap[vv.type]}
+            text={<LogText desc={vv.desc} />}
             multiline={true}
             popoverProps={{ usePortal: true }}
+            submenuProps={vv.details ? { className: 'cpp-log-details' } : undefined}
             {...(vv.href ? externalLinkProps : {})}
           >
-            {vv.children}
+            {submenu}
           </MenuItem>
         )
       })}
@@ -194,10 +326,17 @@ const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: typeof
   )
 })
 
+const shownIn =
+  (codename: GameName) =>
+  (x: LogLine): boolean =>
+    x.game ? x.game.includes(codename) : true
+
 function groupLog(codename: GameName) {
   const sortedLogs = sortBy((x) => x.date, logs.slice(0).reverse())
     .reverse()
-    .filter((x) => (x.game ? x.game.includes(codename) : true))
+    .filter(shownIn(codename))
+    .map((x) => (x.details ? { ...x, details: x.details.filter(shownIn(codename)) } : x))
+    .filter((x) => !x.details || x.details.length > 0)
   return groupBy((x) => x.date, sortedLogs)
 }
 
