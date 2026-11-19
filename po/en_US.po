@@ -549,7 +549,7 @@ msgstr[0] "Marked %2 mission on %1 done"
 msgstr[1] "Marked %2 missions on %1 done"
 
 #. %d: number
-#: src/components/ListSelection.tsx:127
+#: src/components/ListSelection.tsx:125
 msgid "已选 %d 名干员"
 msgid_plural "已选 %d 名干员"
 msgstr[0] "%d operator selected"
@@ -603,13 +603,13 @@ msgid "打开旧版"
 msgstr "Open the old version"
 
 #. %d: number
-#: src/components/ListSelection.tsx:115
+#: src/components/ListSelection.tsx:113
 msgid "拖动：%d 名一起移动 · 点击：取消选中"
 msgid_plural "拖动：%d 名一起移动 · 点击：取消选中"
 msgstr[0] "Drag to move it · Click to deselect"
 msgstr[1] "Drag to move %d together · Click to deselect"
 
-#: src/components/ListSelection.tsx:114
+#: src/components/ListSelection.tsx:112
 msgid "拖动：调整顺序 · 点击：选中"
 msgstr "Drag to reorder · Click to select"
 
@@ -790,7 +790,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:1280
+#: src/components/CharacterList.tsx:1285
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -840,7 +840,7 @@ msgstr "Switching region…"
 msgid "清空"
 msgstr "Clear"
 
-#: src/components/CharacterList.tsx:219 src/components/ListSelection.tsx:137
+#: src/components/CharacterList.tsx:219 src/components/ListSelection.tsx:135
 msgid "清除选择"
 msgstr "Clear selection"
 
@@ -2855,22 +2855,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:595
+#: src/components/CharacterList.tsx:600
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:596
+#: src/components/CharacterList.tsx:601
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:604
+#: src/components/CharacterList.tsx:609
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:605
+#: src/components/CharacterList.tsx:610
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -2967,7 +2967,7 @@ msgstr "Planned"
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:454
 #: src/components/arknights/voucherText.tsx:31
-#: src/components/CharacterList.tsx:690
+#: src/components/CharacterList.tsx:695
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
 msgctxt "list separator"
@@ -3867,19 +3867,19 @@ msgctxt "predefined query"
 msgid "精二直升价值（全部）"
 msgstr "E2 voucher value (all)"
 
-#: src/components/CharacterList.tsx:858
+#: src/components/CharacterList.tsx:863
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:851
+#: src/components/CharacterList.tsx:856
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:865
+#: src/components/CharacterList.tsx:870
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -4482,7 +4482,7 @@ msgctxt "query menu"
 msgid "全部 4–6 星干员的技能"
 msgstr "Every skill of the 4–6★ operators"
 
-#: src/components/CharacterList.tsx:1042 src/components/CharacterList.tsx:1043
+#: src/components/CharacterList.tsx:1047 src/components/CharacterList.tsx:1048
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
@@ -4492,7 +4492,7 @@ msgctxt "query menu"
 msgid "养成成本"
 msgstr "Training costs"
 
-#: src/components/CharacterList.tsx:938
+#: src/components/CharacterList.tsx:943
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
@@ -4532,7 +4532,7 @@ msgctxt "query menu"
 msgid "已持有的干员的全部基建技能，含已解锁的"
 msgstr "Every base skill of the owned operators, unlocked ones too"
 
-#: src/components/CharacterList.tsx:983
+#: src/components/CharacterList.tsx:988
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
@@ -4542,7 +4542,7 @@ msgctxt "query menu"
 msgid "所有干员的全部基建技能，含没持有的和已解锁的"
 msgstr "Every base skill of every operator, owned or not, unlocked or not"
 
-#: src/components/CharacterList.tsx:1034 src/components/CharacterList.tsx:1035
+#: src/components/CharacterList.tsx:1039 src/components/CharacterList.tsx:1040
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
@@ -4552,7 +4552,7 @@ msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:1042 src/components/CharacterList.tsx:1043
+#: src/components/CharacterList.tsx:1047 src/components/CharacterList.tsx:1048
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -4618,13 +4618,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:687
+#: src/components/CharacterList.tsx:692
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:687
+#: src/components/CharacterList.tsx:692
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -5486,7 +5486,7 @@ msgstr ""
 "Max: what it saves if used from E0 level 1; the light blue part of the bar "
 "is already trained."
 
-#: src/components/CharacterList.tsx:881
+#: src/components/CharacterList.tsx:886
 msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr "What the operators in the list have cost in total"

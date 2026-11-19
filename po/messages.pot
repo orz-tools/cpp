@@ -461,7 +461,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/ListSelection.tsx:127
+#: src/components/ListSelection.tsx:125
 msgid "已选 %d 名干员"
 msgid_plural "已选 %d 名干员"
 msgstr[0] ""
@@ -516,13 +516,13 @@ msgid "打开旧版"
 msgstr ""
 
 #. %d: number
-#: src/components/ListSelection.tsx:115
+#: src/components/ListSelection.tsx:113
 msgid "拖动：%d 名一起移动 · 点击：取消选中"
 msgid_plural "拖动：%d 名一起移动 · 点击：取消选中"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/ListSelection.tsx:114
+#: src/components/ListSelection.tsx:112
 msgid "拖动：调整顺序 · 点击：选中"
 msgstr ""
 
@@ -669,7 +669,7 @@ msgstr ""
 msgid "查看源码"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1280
+#: src/components/CharacterList.tsx:1285
 msgid "查询失败"
 msgstr ""
 
@@ -713,7 +713,7 @@ msgid "清空"
 msgstr ""
 
 #: src/components/CharacterList.tsx:219
-#: src/components/ListSelection.tsx:137
+#: src/components/ListSelection.tsx:135
 msgid "清除选择"
 msgstr ""
 
@@ -2679,22 +2679,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr ""
 
-#: src/components/CharacterList.tsx:595
+#: src/components/CharacterList.tsx:600
 msgctxt "holding filter"
 msgid "可练"
 msgstr ""
 
-#: src/components/CharacterList.tsx:596
+#: src/components/CharacterList.tsx:601
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr ""
 
-#: src/components/CharacterList.tsx:604
+#: src/components/CharacterList.tsx:609
 msgctxt "holding filter"
 msgid "缺席"
 msgstr ""
 
-#: src/components/CharacterList.tsx:605
+#: src/components/CharacterList.tsx:610
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr ""
@@ -2791,7 +2791,7 @@ msgstr ""
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:454
 #: src/components/arknights/voucherText.tsx:31
-#: src/components/CharacterList.tsx:690
+#: src/components/CharacterList.tsx:695
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
 msgctxt "list separator"
@@ -3686,19 +3686,19 @@ msgctxt "predefined query"
 msgid "精二直升价值（全部）"
 msgstr ""
 
-#: src/components/CharacterList.tsx:858
+#: src/components/CharacterList.tsx:863
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr ""
 
-#: src/components/CharacterList.tsx:851
+#: src/components/CharacterList.tsx:856
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr ""
 
-#: src/components/CharacterList.tsx:865
+#: src/components/CharacterList.tsx:870
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -4294,8 +4294,8 @@ msgctxt "query menu"
 msgid "全部 4–6 星干员的技能"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1042
-#: src/components/CharacterList.tsx:1043
+#: src/components/CharacterList.tsx:1047
+#: src/components/CharacterList.tsx:1048
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr ""
@@ -4305,7 +4305,7 @@ msgctxt "query menu"
 msgid "养成成本"
 msgstr ""
 
-#: src/components/CharacterList.tsx:938
+#: src/components/CharacterList.tsx:943
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr ""
@@ -4345,7 +4345,7 @@ msgctxt "query menu"
 msgid "已持有的干员的全部基建技能，含已解锁的"
 msgstr ""
 
-#: src/components/CharacterList.tsx:983
+#: src/components/CharacterList.tsx:988
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr ""
@@ -4355,8 +4355,8 @@ msgctxt "query menu"
 msgid "所有干员的全部基建技能，含没持有的和已解锁的"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1034
-#: src/components/CharacterList.tsx:1035
+#: src/components/CharacterList.tsx:1039
+#: src/components/CharacterList.tsx:1040
 msgctxt "query menu"
 msgid "更多视图"
 msgstr ""
@@ -4366,8 +4366,8 @@ msgctxt "query menu"
 msgid "练度统计"
 msgstr ""
 
-#: src/components/CharacterList.tsx:1042
-#: src/components/CharacterList.tsx:1043
+#: src/components/CharacterList.tsx:1047
+#: src/components/CharacterList.tsx:1048
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr ""
@@ -4433,13 +4433,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr ""
 
-#: src/components/CharacterList.tsx:687
+#: src/components/CharacterList.tsx:692
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr ""
 
-#: src/components/CharacterList.tsx:687
+#: src/components/CharacterList.tsx:692
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -5276,7 +5276,7 @@ msgctxt "training cost"
 msgid "最多：从精零 1 级用时能省的；条上浅蓝的那段是已经练掉的。"
 msgstr ""
 
-#: src/components/CharacterList.tsx:881
+#: src/components/CharacterList.tsx:886
 msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr ""
