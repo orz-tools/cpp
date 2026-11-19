@@ -82,6 +82,10 @@ Games are code-split via dynamic imports. The URL path (`/{game}/{profile}`) det
 
 Jotai atoms are the primary state mechanism. `Cpp.ts` creates the store with preference atoms (value type, farm goals, forbidden stages). Game adapters extend this with game-specific atoms. Undo/redo is built into the `dataAtom` via immer patches.
 
+### Phone layout
+
+Below 768px wide (`PHONE_QUERY` in `src/components/phoneLayout.ts`) `<html>` carries `cpp-phone` (set by `watchPhoneLayoutClass()` from `runCpp`) and the shell shows one area at a time: the five `section`s of `.App` (`data-area`) stack in place, all mounted, only the current one visible (`phoneAreaAtom`, kept in `cpp_phone_area`), and `PhoneTabBar` at the bottom switches 干员 / 任务 / 刷图 / 材料 / 更多. The sidebar's column is 更多 (`PhoneMore.tsx`): the data menu, the sidebar panels and the navbar's menus, each opening a page (`phoneMorePageAtom`) that holds the same menu component the navbar pops up; a panel fills the screen, and `useShowSidebarPanel` switches to 更多 and closes the dossier. `usePhoneLayout()` decides layout; `useCoarsePointer()` (`(pointer: coarse)`, any width) decides touch behaviour: a tap on a task opens its context menu, a finger never resizes a column. On a phone the back key closes the top layer before it leaves the page (`phoneBack.ts`, run by `PhoneBack` in `App.tsx`). Phone styles live at the end of `App.css`, under `.cpp-phone`, and use Blueprint's colour variables only.
+
 ### Icons
 
 Blueprint's own icon loader is patched out (`patches/`), so an icon renders only if `src/icons.ts` bundles its paths, and at the size it is drawn: Blueprint takes the 20px paths for an icon drawn at 20px or more, which `NonIdealState`, `Alert` (so `showAlert` / `showConfirm`), `Drawer` and `<Icon size={20}>` always are. A missing one renders blank and toasts "missing icon". `pnpm lint` reports it (`cpp/bundled-icon`) wherever the name is written out: icon props, `{ icon: … }` objects, and values typed `IconName`.
