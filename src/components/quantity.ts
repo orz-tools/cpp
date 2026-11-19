@@ -7,9 +7,10 @@ const COMPACT_FROM = 10000
 
 const formatters = new Map<string, Intl.NumberFormat>()
 
-export function formatQuantity(value: number): string {
+/** `compact` 默认缩写，是给叠在图标上的数用的，那里放不下全数；其余地方传「选项」里的「缩写大数」（`compactQuantitiesAtom`） */
+export function formatQuantity(value: number, compact = true): string {
   if (!Number.isFinite(value)) return '0'
-  if (Math.abs(value) < COMPACT_FROM) return `${Math.trunc(value)}`
+  if (!compact || Math.abs(value) < COMPACT_FROM) return `${Math.trunc(value)}`
   // 用 gt.locale 而不是 locales.tsx 的 getLocale()：两者随界面语言一起切换，后者会把 React 组件带进来
   const locale = (gt.locale || 'zh_Hans').replace('_', '-')
   let formatter = formatters.get(locale)

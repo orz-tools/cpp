@@ -205,17 +205,17 @@ msgid_plural "做完 %d 条"
 msgstr[0] "%d done"
 msgstr[1] "%d done"
 
-#: src/components/ConfigUi.tsx:304
+#: src/components/ConfigUi.tsx:320
 msgid "免责声明"
 msgstr "Disclaimer"
 
 #: src/components/arknights/StagePanelWide.tsx:387
-#: src/components/ConfigUi.tsx:199
+#: src/components/ConfigUi.tsx:215
 msgid "全部启用"
 msgstr "Enable all"
 
 #: src/components/arknights/StagePanelWide.tsx:392
-#: src/components/ConfigUi.tsx:204
+#: src/components/ConfigUi.tsx:220
 msgid "全部禁用"
 msgstr "Disable all"
 
@@ -289,7 +289,7 @@ msgid_plural "勾掉的 %d 条还留在券上"
 msgstr[0] "%d ticked mission is still on its ticket"
 msgstr[1] "%d ticked missions are still on their tickets"
 
-#: src/Cpp.ts:161
+#: src/Cpp.ts:163
 msgid "区域已切换"
 msgstr "Region switched"
 
@@ -302,7 +302,7 @@ msgid "取消选中"
 msgstr "Deselect"
 
 #. %d: number
-#: src/components/arknights/StageRows.tsx:235
+#: src/components/arknights/StageRows.tsx:239
 msgid "另外 %d 关"
 msgid_plural "另外 %d 关"
 msgstr[0] "%d more"
@@ -574,7 +574,7 @@ msgstr "Current"
 msgid "心情"
 msgstr "Morale"
 
-#: src/components/ItemList.tsx:398
+#: src/components/ItemList.tsx:399
 msgid "总价值"
 msgstr "Total Value"
 
@@ -606,11 +606,11 @@ msgstr "Drag to reorder · Click to select"
 msgid "持有"
 msgstr "Own"
 
-#: src/components/ConfigUi.tsx:193
+#: src/components/ConfigUi.tsx:209
 msgid "按关卡代号或名称筛选"
 msgstr "Filter by stage code or name"
 
-#: src/components/ItemList.tsx:355
+#: src/components/ItemList.tsx:356
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
@@ -640,7 +640,7 @@ msgstr "Data Sources"
 #: src/components/arknights/StagePanel.tsx:222
 #: src/components/arknights/StagePanelWide.tsx:208
 #: src/components/arknights/StagePanelWide.tsx:314
-#: src/components/ConfigUi.tsx:175
+#: src/components/ConfigUi.tsx:191
 msgid "无匹配关卡"
 msgstr "No matching stages"
 
@@ -816,7 +816,7 @@ msgstr ""
 "Skland data cannot tell which form the Amiya in the Training Room is in, so "
 "the specialization in training was not counted. Please check it yourself."
 
-#: src/Cpp.ts:154
+#: src/Cpp.ts:156
 msgid "正在切换区域…"
 msgstr "Switching region…"
 
@@ -832,7 +832,7 @@ msgstr "Clear selection"
 msgid "游戏数据已更新"
 msgstr "Game data updated"
 
-#: src/components/ConfigUi.tsx:282
+#: src/components/ConfigUi.tsx:298
 msgid "游戏服务器"
 msgstr "Game Region"
 
@@ -1006,7 +1006,7 @@ msgid_plural "还剩 %d 次作战"
 msgstr[0] "%d run left"
 msgstr[1] "%d runs left"
 
-#: src/components/ItemList.tsx:371
+#: src/components/ItemList.tsx:372
 msgid ""
 "还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出"
 "它和它前置任务要用的材料。"
@@ -1123,7 +1123,7 @@ msgid_plural "选中的 %d 名干员"
 msgstr[0] "%d selected operator"
 msgstr[1] "%d selected operators"
 
-#: src/components/ConfigUi.tsx:61
+#: src/components/ConfigUi.tsx:77
 msgid "选项"
 msgstr "Options"
 
@@ -2739,7 +2739,7 @@ msgctxt "error context"
 msgid "与「提取装置」互操作时遇到问题"
 msgstr "Error During Interacting with «Sklanding»"
 
-#: src/Cpp.ts:164
+#: src/Cpp.ts:166
 msgctxt "error context"
 msgid "切换区域失败"
 msgstr "Error During Switching Region"
@@ -2789,32 +2789,32 @@ msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
 
-#: src/Cpp.ts:48
+#: src/Cpp.ts:50
 msgctxt "full name"
 msgid "仅星标"
 msgstr "Starred only"
 
-#: src/Cpp.ts:51
+#: src/Cpp.ts:53
 msgctxt "full name"
 msgid "仅计划"
 msgstr "Planned only"
 
-#: src/Cpp.ts:50
+#: src/Cpp.ts:52
 msgctxt "full name"
 msgid "星标 (以毕业为目标)"
 msgstr "Starred targeting Maxed"
 
-#: src/Cpp.ts:49
+#: src/Cpp.ts:51
 msgctxt "full name"
 msgid "星标 (以计划为目标)"
 msgstr "Starred targeting Planned"
 
-#: src/Cpp.ts:53
+#: src/Cpp.ts:55
 msgctxt "full name"
 msgid "毕业"
 msgstr "Maxed"
 
-#: src/Cpp.ts:52
+#: src/Cpp.ts:54
 msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
@@ -2880,45 +2880,45 @@ msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr "Import Result · %s"
 
-#: src/components/ItemList.tsx:162
+#: src/components/ItemList.tsx:163
 msgctxt "item list counter label"
 msgid "可合成"
 msgstr "Syn.-able"
 
-#: src/components/ItemList.tsx:141
+#: src/components/ItemList.tsx:142
 msgctxt "item list counter label"
 msgid "合成后"
 msgstr "Post Syn."
 
-#: src/components/ItemList.tsx:179
+#: src/components/ItemList.tsx:180
 msgctxt "item list counter label"
 msgid "直接需求"
 msgstr "Direct"
 
-#: src/components/ItemList.tsx:172
+#: src/components/ItemList.tsx:173
 msgctxt "item list counter label"
 msgid "还需"
 msgstr "Gap"
 
-#: src/components/ItemList.tsx:186
+#: src/components/ItemList.tsx:187
 msgctxt "item list counter label"
 msgid "间接需求"
 msgstr "Indirect"
 
 #: src/components/arknights/stagePanelModel.ts:220
-#: src/components/ItemList.tsx:288
+#: src/components/ItemList.tsx:289
 msgctxt "item list view label"
 msgid "星标"
 msgstr "Starred"
 
 #: src/components/arknights/stagePanelModel.ts:224
-#: src/components/ItemList.tsx:286
+#: src/components/ItemList.tsx:287
 msgctxt "item list view label"
 msgid "毕业"
 msgstr "Maxed"
 
 #: src/components/arknights/stagePanelModel.ts:222
-#: src/components/ItemList.tsx:287
+#: src/components/ItemList.tsx:288
 msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
@@ -3549,6 +3549,21 @@ msgstr "Aug"
 msgctxt "month"
 msgid "9 月"
 msgstr "Sep"
+
+#: src/components/ConfigUi.tsx:47
+msgctxt "option"
+msgid ""
+"物品列表、关卡面板里一万以上的数写成「9.3万」这样，鼠标停上去看准确数字。叠在"
+"图标上的数总是缩写。"
+msgstr ""
+"Writes numbers of 10,000 and more in the item list and the Stages panel as "
+"“93K”; hover over one for the exact number. Numbers on icons are always "
+"abbreviated."
+
+#: src/components/ConfigUi.tsx:46
+msgctxt "option"
+msgid "缩写大数"
+msgstr "Abbreviate Large Numbers"
 
 #: src/components/Peek.tsx:313
 msgctxt "peek card"
@@ -4534,12 +4549,12 @@ msgctxt "short name"
 msgid "一图流练度统计"
 msgstr "Stats from Arknights-yituliu"
 
-#: src/Cpp.ts:57
+#: src/Cpp.ts:59
 msgctxt "short name"
 msgid "仅星标"
 msgstr "Starred"
 
-#: src/Cpp.ts:60
+#: src/Cpp.ts:62
 msgctxt "short name"
 msgid "仅计划"
 msgstr "Planned"
@@ -4549,22 +4564,22 @@ msgctxt "short name"
 msgid "小黑盒干员统计"
 msgstr "Stats from Heybox"
 
-#: src/Cpp.ts:59
+#: src/Cpp.ts:61
 msgctxt "short name"
 msgid "星标(毕业)"
 msgstr "Starred t/Maxed"
 
-#: src/Cpp.ts:58
+#: src/Cpp.ts:60
 msgctxt "short name"
 msgid "星标(计划)"
 msgstr "Starred t/Planned"
 
-#: src/Cpp.ts:62
+#: src/Cpp.ts:64
 msgctxt "short name"
 msgid "毕业"
 msgstr "Maxed"
 
-#: src/Cpp.ts:61
+#: src/Cpp.ts:63
 msgctxt "short name"
 msgid "计划(毕业)"
 msgstr "Planned t/Maxed"
@@ -5138,7 +5153,7 @@ msgctxt "stage panel"
 msgid "库存"
 msgstr "Stock"
 
-#: src/components/arknights/StageRows.tsx:204
+#: src/components/arknights/StageRows.tsx:205
 msgctxt "stage panel"
 msgid "库存 %s"
 msgstr "Stock %s"
@@ -5159,12 +5174,12 @@ msgstr ""
 "%s$level goals: %s$direct direct, %s$indirect indirect. All figures are EXP; "
 "the stock is your battle records counted as EXP"
 
-#: src/components/arknights/StageRows.tsx:256
+#: src/components/arknights/StageRows.tsx:260
 msgctxt "stage panel"
 msgid "按材料"
 msgstr "By material"
 
-#: src/components/arknights/StageRows.tsx:255
+#: src/components/arknights/StageRows.tsx:259
 msgctxt "stage panel"
 msgid "按章节"
 msgstr "By chapter"
@@ -5194,7 +5209,7 @@ msgctxt "stage panel"
 msgid "效率超过 100%"
 msgstr "Above 100%"
 
-#: src/components/arknights/StageRows.tsx:271
+#: src/components/arknights/StageRows.tsx:275
 msgctxt "stage panel"
 msgid "无匹配材料"
 msgstr "No matching materials"
@@ -5225,12 +5240,12 @@ msgctxt "stage panel"
 msgid "活动"
 msgstr "Event"
 
-#: src/components/arknights/StageRows.tsx:270
+#: src/components/arknights/StageRows.tsx:274
 msgctxt "stage panel"
 msgid "物品价值计算失败"
 msgstr "Item values could not be computed"
 
-#: src/components/arknights/StageRows.tsx:264
+#: src/components/arknights/StageRows.tsx:268
 msgctxt "stage panel"
 msgid "物品价值计算失败，暂时无法显示效率；关卡的启用、禁用不受影响"
 msgstr ""
@@ -5257,7 +5272,7 @@ msgctxt "stage panel"
 msgid "还缺"
 msgstr "Short"
 
-#: src/components/arknights/StageRows.tsx:218
+#: src/components/arknights/StageRows.tsx:220
 msgctxt "stage panel"
 msgid "需 %s"
 msgstr "Need %s"
@@ -5267,7 +5282,7 @@ msgctxt "stage panel"
 msgid "需求"
 msgstr "Need"
 
-#: src/components/arknights/StageRows.tsx:213
+#: src/components/arknights/StageRows.tsx:214
 msgctxt "stage panel"
 msgid "需求 %s"
 msgstr "Need %s"

@@ -4,7 +4,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
 import React, { SetStateAction, memo, useEffect, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { Level, useAtoms, useGameAdapter, useGameDataMemo } from '../Cpp'
+import { Level, useAtoms, useCpp, useGameAdapter, useGameDataMemo } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
@@ -113,6 +113,7 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
   const lowerDirect = useAtomValue(lower.requirements)[item.key] || 0
   const lowerIndirect = useAtomValue(lower.indirects)[item.key] || 0
   const forbiddenFormulaTags = useAtomValue(atoms.forbiddenFormulaTagsAtom)
+  const compact = useAtomValue(useCpp().preferenceAtoms.compactQuantitiesAtom)
 
   const synableReal = formula
     ? Math.max(0, Math.min(...formula.costs.map((x) => Math.floor((quantities[x.itemId] || 0) / x.quantity)))) *
@@ -127,8 +128,8 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
   const rows = (cell: keyof ItemCounterCells) =>
     slots.map((slot, i) => (
       <div key={i} style={{ textAlign: 'right', opacity: slot.shown ? (cells[i][cell].strong ? 1 : 0.4) : 0 }}>
-        <span title={formatter(cells[i][cell].value)} style={{ whiteSpace: 'nowrap' }}>
-          {formatQuantity(cells[i][cell].value)}
+        <span title={compact ? formatter(cells[i][cell].value) : undefined} style={{ whiteSpace: 'nowrap' }}>
+          {formatQuantity(cells[i][cell].value, compact)}
         </span>
       </div>
     ))

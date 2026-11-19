@@ -36,4 +36,13 @@ describe('formatQuantity', () => {
     expect(formatQuantity(1964400)).toBe('2M')
     expect(formatQuantity(123456789)).toBe('123M')
   })
+
+  it('writes every digit when not compact', () => {
+    gt.setLocale('zh_Hans')
+    expect(formatQuantity(9999, false)).toBe('9999')
+    expect(formatQuantity(40288589, false)).toBe('40288589')
+    expect(formatQuantity(-40288589, false)).toBe('-40288589')
+    gt.setLocale('en_US')
+    expect(formatQuantity(123456789, false)).toBe('123456789')
+  })
 })

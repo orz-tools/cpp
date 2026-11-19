@@ -479,9 +479,9 @@ body {
   position: relative;
 }
 
+/* 不裁掉溢出：不缩写大数时，十个字符的数（「-394738332」）比 6em 宽，裁掉就少了末位 */
 .cpp-goal-counter {
   position: relative;
-  overflow: hidden;
 }
 
 .cpp-goal-counter::before {

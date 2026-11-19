@@ -38,6 +38,21 @@ export const ForbiddenFormulaTag = memo(({ tag, text }: { tag: string; text: Rea
   )
 })
 
+const CompactQuantitiesItem = memo(() => {
+  const [compact, setCompact] = useAtom(useCpp().preferenceAtoms.compactQuantitiesAtom)
+  return (
+    <MenuItem
+      icon={compact ? 'tick' : 'blank'}
+      text={gt.pgettext('option', '缩写大数')}
+      htmlTitle={gt.pgettext(
+        'option',
+        '物品列表、关卡面板里一万以上的数写成「9.3万」这样，鼠标停上去看准确数字。叠在图标上的数总是缩写。',
+      )}
+      onClick={() => setCompact(!compact)}
+    />
+  )
+})
+
 export const ConfigButton = memo(() => {
   const ga = useGameAdapter()
   const { ConfigMenuItems } = useComponents()
@@ -51,7 +66,8 @@ export const ConfigButton = memo(() => {
           {tags.map(([k, v]) => {
             return <ForbiddenFormulaTag key={k} tag={k} text={v.toString()} />
           })}
-          {ConfigMenuItems && tags.length > 0 ? <MenuDivider /> : null}
+          {tags.length > 0 ? <MenuDivider /> : null}
+          <CompactQuantitiesItem />
           {ConfigMenuItems ? <ConfigMenuItems /> : null}
         </Menu>
       }

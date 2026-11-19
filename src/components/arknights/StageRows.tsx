@@ -1,6 +1,7 @@
 import { Button, Callout, Checkbox, Icon, NonIdealState, SegmentedControl, Tag } from '@blueprintjs/core'
+import { useAtomValue } from 'jotai'
 import { memo } from 'react'
-import { Level, useGameAdapter } from '../../Cpp'
+import { Level, useCpp, useGameAdapter } from '../../Cpp'
 import type { IStageInfo, IZoneInfo } from '../../pkg/cpp-basic'
 import { MaterialGroup, StageDrop } from '../../pkg/cpp-arknights/stageEfficiency'
 import { AK_ITEM_VIRTUAL_EXP } from '../../pkg/cpp-arknights/types'
@@ -8,8 +9,7 @@ import { ArknightsStageCategory } from '../../pkg/cpp-arknights/zones'
 import { gt } from '../../pkg/gt'
 import type { StageToggleProps } from '../ConfigUi'
 import { ItemIcon } from '../Icons'
-// 本文件自己的 formatQuantity 是掉落数量的格式
-import { formatQuantity as formatCountShort } from '../quantity'
+import { formatQuantity } from '../quantity'
 import { SampleTag } from '../Value'
 import {
   MaterialStock,
@@ -96,7 +96,7 @@ export const MaterialLabel = memo(({ itemId, size = 20 }: { itemId: string; size
   )
 })
 
-const formatQuantity = (quantity: number) => quantity.toFixed(2).replace(/\.?0+$/, '')
+const formatDropQuantity = (quantity: number) => quantity.toFixed(2).replace(/\.?0+$/, '')
 
 export const DropList = memo(({ drops }: { drops: StageDrop[] }) => {
   const ga = useGameAdapter()
@@ -105,7 +105,7 @@ export const DropList = memo(({ drops }: { drops: StageDrop[] }) => {
       {drops.map((x) => (
         <span key={x.itemId} className="cpp-stages-drop">
           <ItemIcon item={ga.getItem(x.itemId)} size={22} />
-          {`×${formatQuantity(x.quantity)}`}
+          {`×${formatDropQuantity(x.quantity)}`}
         </span>
       ))}
     </span>
@@ -185,6 +185,7 @@ export const MaterialGroupCard = memo(
   }: { model: StageModel; group: MaterialGroup; onOpen: (itemId: string) => void } & StageToggleProps) => {
     const ga = useGameAdapter()
     const { level, stockOf } = useMaterialStock()
+    const compact = useAtomValue(useCpp().preferenceAtoms.compactQuantitiesAtom)
     const s = stockOf(group.itemId)
     const top: string[] = []
     for (const id of group.stageIds) {
@@ -203,7 +204,7 @@ export const MaterialGroupCard = memo(
               className="cpp-stages-stock-badge"
               title={gt.pgettext('stage panel', '库存 %s').replaceAll('%s', formatCount(s.have))}
             >
-              {formatCountShort(s.have)}
+              {formatQuantity(s.have)}
             </span>
           </span>
           <span className="cpp-stages-material-name">{name}</span>
@@ -215,7 +216,10 @@ export const MaterialGroupCard = memo(
               needNote(group.itemId, level, s)
             }
           >
-            {gt.pgettext('stage panel', '需 %s').replaceAll('%s', formatCountShort(s.need))}
+            {/* 不缩写时和点进去的「需求」写法一样，带千分位 */}
+            {gt
+              .pgettext('stage panel', '需 %s')
+              .replaceAll('%s', compact ? formatQuantity(s.need) : formatCount(s.need))}
           </span>
           <EfficiencyText value={group.best} />
           <Icon icon="chevron-right" />

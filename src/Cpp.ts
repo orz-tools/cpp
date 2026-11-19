@@ -19,6 +19,8 @@ export interface Preference {
   forbiddenStageIds: string[]
   farmLevel: FarmLevel
   blobFlavour: BlobFlavour
+  /** 物品列表、关卡面板里的大数缩写成「9.3万」；图标上的数不看它，总是缩写 */
+  compactQuantities: boolean
   game: Record<string, any>
 }
 
@@ -256,6 +258,7 @@ export class Cpp<G extends IGame> {
         if (value.forbiddenFormulaTags == null) value.forbiddenFormulaTags = []
         if (value.forbiddenStageIds == null) value.forbiddenStageIds = []
         if (value.blobFlavour == null) value.blobFlavour = 'soul'
+        if (value.compactQuantities == null) value.compactQuantities = false
         value.v = 1
         return value
       },
@@ -314,6 +317,16 @@ export class Cpp<G extends IGame> {
       },
     )
 
+    const compactQuantitiesAtom = atom(
+      (get) => get(preferenceAtom).compactQuantities,
+      (get, set, value: SetStateAction<boolean>) => {
+        set(preferenceAtom, (r) => ({
+          ...r,
+          compactQuantities: typeof value === 'function' ? value(get(preferenceAtom).compactQuantities) : value,
+        }))
+      },
+    )
+
     const gameAtom = atom(
       (get) => get(preferenceAtom).game || {},
       (get, set, value: Record<string, any> | SetStateAction<Record<string, any>>) => {
@@ -339,6 +352,7 @@ export class Cpp<G extends IGame> {
       forbiddenStageIdsAtom,
       farmLevelAtom,
       blobFlavourAtom,
+      compactQuantitiesAtom,
       gameAtom,
       gameAtoms,
     }
