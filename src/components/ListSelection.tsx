@@ -109,6 +109,18 @@ export function useListSelection(keys: readonly string[], scope?: readonly unkno
   return useMemo(() => ({ selected, toggle, clear, click, mouseDown }), [selected, toggle, clear, click, mouseDown])
 }
 
+/** 干员那一行的拖动把手的提示：点它和 Ctrl 点一样，选上或取消 */
+export function handleTitle(selected: ReadonlySet<string>, key: string): string {
+  if (!selected.has(key)) return gt.gettext('拖动：调整顺序 · 点击：选中')
+  return gt
+    .ngettext(
+      '拖动：%d 名一起移动 · 点击：取消选中',
+      '拖动：%d 名一起移动 · 点击：取消选中',
+      selected.size,
+    ) /* I10N: %d: number */
+    .replaceAll('%d', selected.size.toString())
+}
+
 /** 列表（Menu）下面的一条，跟着列走而不浮在行上：有选择时列表矮这么一条 */
 export function SelectionBar({ count, onClear }: { count: number; onClear: () => void }) {
   if (count === 0) return null

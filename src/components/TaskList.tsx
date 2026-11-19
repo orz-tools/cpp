@@ -27,7 +27,7 @@ import { gt } from '../pkg/gt'
 import { CharacterContextMenu, SortButtonGroup, menuItemKeyDown } from './CharacterList'
 import { CachedImg, ItemIcon } from './Icons'
 import { ListDrag, useListDrag } from './ListDrag'
-import { ListSelectionContext, SelectionBar, useListSelection } from './ListSelection'
+import { ListSelectionContext, SelectionBar, handleTitle, useListSelection } from './ListSelection'
 import { inRanges } from './listDrag'
 import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
@@ -605,18 +605,7 @@ export const TaskList = memo(<G extends IGame>() => {
       else store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
     },
     selected: ({ kind, row }) => kind === 'char' && selected.has(tasks[row].charId),
-    handleTitle: ({ kind, row }) => {
-      if (kind !== 'char') return undefined
-      return selected.has(tasks[row].charId)
-        ? gt
-            .ngettext(
-              '拖动：%d 名一起移动 · 点击：取消选中',
-              '拖动：%d 名一起移动 · 点击：取消选中',
-              selected.size,
-            ) /* I10N: %d: number */
-            .replaceAll('%d', selected.size.toString())
-        : gt.gettext('拖动：调整顺序 · 点击：选中')
-    },
+    handleTitle: ({ kind, row }) => (kind === 'char' ? handleTitle(selected, tasks[row].charId) : undefined),
     onHandleClick: ({ kind, row }) => {
       if (kind === 'char') selection.toggle(tasks[row].charId)
     },

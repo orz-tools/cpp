@@ -49,7 +49,7 @@ import { AppToaster } from '../components/Toaster'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import { ListDrag, useListDrag } from './ListDrag'
-import { ListSelectionContext, SelectionBar, useListSelection } from './ListSelection'
+import { ListSelectionContext, SelectionBar, handleTitle, useListSelection } from './ListSelection'
 import { CharacterPlanMenuItems } from './PlanActions'
 import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
@@ -1124,16 +1124,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     },
     commit: (row, target) => store.set(atoms.moveInPlan, { charIds: [...moving(keys[row])], target }),
     selected: (row) => selected.has(keys[row]),
-    handleTitle: (row) =>
-      selected.has(keys[row])
-        ? gt
-            .ngettext(
-              '拖动：%d 名一起移动 · 点击：取消选中',
-              '拖动：%d 名一起移动 · 点击：取消选中',
-              selected.size,
-            ) /* I10N: %d: number */
-            .replaceAll('%d', selected.size.toString())
-        : gt.gettext('拖动：调整顺序 · 点击：选中'),
+    handleTitle: (row) => handleTitle(selected, keys[row]),
     onHandleClick: (row) => selection.toggle(keys[row]),
   })
 

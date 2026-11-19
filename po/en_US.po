@@ -538,7 +538,7 @@ msgstr[0] "Marked %2 mission on %1 done"
 msgstr[1] "Marked %2 missions on %1 done"
 
 #. %d: number
-#: src/components/ListSelection.tsx:115
+#: src/components/ListSelection.tsx:127
 msgid "已选 %d 名干员"
 msgid_plural "已选 %d 名干员"
 msgstr[0] "%d operator selected"
@@ -592,13 +592,13 @@ msgid "打开旧版"
 msgstr "Open the old version"
 
 #. %d: number
-#: src/components/CharacterList.tsx:1129 src/components/TaskList.tsx:611
+#: src/components/ListSelection.tsx:115
 msgid "拖动：%d 名一起移动 · 点击：取消选中"
 msgid_plural "拖动：%d 名一起移动 · 点击：取消选中"
 msgstr[0] "Drag to move it · Click to deselect"
 msgstr[1] "Drag to move %d together · Click to deselect"
 
-#: src/components/CharacterList.tsx:1136 src/components/TaskList.tsx:618
+#: src/components/ListSelection.tsx:114
 msgid "拖动：调整顺序 · 点击：选中"
 msgstr "Drag to reorder · Click to select"
 
@@ -774,7 +774,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:1195
+#: src/components/CharacterList.tsx:1186
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -824,7 +824,7 @@ msgstr "Switching region…"
 msgid "清空"
 msgstr "Clear"
 
-#: src/components/CharacterList.tsx:217 src/components/ListSelection.tsx:125
+#: src/components/CharacterList.tsx:217 src/components/ListSelection.tsx:137
 msgid "清除选择"
 msgstr "Clear selection"
 
