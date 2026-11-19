@@ -32,6 +32,8 @@ import { FarmList } from './components/FarmList'
 import { ImportPasteBox } from './components/ImportPasteBox'
 import { ItemList } from './components/ItemList'
 import { PeekBoard } from './components/Peek'
+import { PhoneTabBar } from './components/PhoneTabBar'
+import { PhoneArea, phoneAreaAtom, usePhoneLayout } from './components/phoneLayout'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
 import { Sidebar } from './components/Sidebar'
 import { TaskList } from './components/TaskList'
@@ -55,6 +57,7 @@ const UndoButtons = memo(() => {
       <Button
         icon="undo"
         disabled={undoCounter === 0}
+        aria-label={gt.gettext('撤销')}
         text={<span className={'cpp-very-compact'}>{gt.gettext('撤销')}</span>}
         variant="minimal"
         onClick={() => setData('undo')}
@@ -63,6 +66,7 @@ const UndoButtons = memo(() => {
       <Button
         icon="redo"
         disabled={redoCounter === 0}
+        aria-label={gt.gettext('重做')}
         text=""
         variant="minimal"
         onClick={() => setData('redo')}
@@ -153,8 +157,15 @@ const ClosureButtonHeading = memo(() => {
 
 const charExtraWidthAtom = atom(0)
 
+/** 手机上五个区域叠在一起，只露出当前那个；都一直挂着，切回来时滚动位置、搜索框都还在 */
+function areaProps(area: PhoneArea, phone: boolean, current: PhoneArea) {
+  return { 'data-area': area, className: Classes.ELEVATION_1 + (phone && area === current ? ' is-phone-current' : '') }
+}
+
 const App = memo(() => {
   const cpp = useCpp()
+  const phone = usePhoneLayout()
+  const area = useAtomValue(phoneAreaAtom)
   const defaultCharStatusWidth = 43 * 6
   const charExtraWidth = useAtomValue(charExtraWidthAtom)
   const charStatusWidth = cpp.gameComponent.charStatusWidth || defaultCharStatusWidth
@@ -176,42 +187,53 @@ const App = memo(() => {
   return (
     <>
       {cpp.gameComponent.style ? <style dangerouslySetInnerHTML={{ __html: cpp.gameComponent.style }} /> : null}
-      <Navbar fixedToTop={true} className="cpp-navbar-main">
-        <Navbar.Group align={Alignment.LEFT}>
-          <ClosureButtonHeading />
-          <Navbar.Divider />
-          <UndoButtons />
-          <Navbar.Divider />
-          <ValueOptionButton />
-          <ConfigButton />
-          <MaybeSoulButton />
-        </Navbar.Group>
-        <Navbar.Group align={Alignment.RIGHT}>
-          <RegionButton />
-          <DataDropdown />
-          <ReloadDataButton />
-          <HelpButton />
-          <LocaleButton />
-        </Navbar.Group>
-      </Navbar>
+      {phone ? (
+        <Navbar fixedToTop={true} className="cpp-navbar-main">
+          <Navbar.Group align={Alignment.LEFT}>
+            <ClosureButtonHeading />
+          </Navbar.Group>
+          <Navbar.Group align={Alignment.RIGHT}>
+            <UndoButtons />
+          </Navbar.Group>
+        </Navbar>
+      ) : (
+        <Navbar fixedToTop={true} className="cpp-navbar-main">
+          <Navbar.Group align={Alignment.LEFT}>
+            <ClosureButtonHeading />
+            <Navbar.Divider />
+            <UndoButtons />
+            <Navbar.Divider />
+            <ValueOptionButton />
+            <ConfigButton />
+            <MaybeSoulButton />
+          </Navbar.Group>
+          <Navbar.Group align={Alignment.RIGHT}>
+            <RegionButton />
+            <DataDropdown />
+            <ReloadDataButton />
+            <HelpButton />
+            <LocaleButton />
+          </Navbar.Group>
+        </Navbar>
+      )}
       <div className="App">
         <Sidebar />
         <section
-          className={Classes.ELEVATION_1}
+          {...areaProps('chars', phone, area)}
           style={{
-            width: Math.max(charListBaseWidth + charExtraWidth, 560),
+            width: phone ? undefined : Math.max(charListBaseWidth + charExtraWidth, 560),
             display: 'flex',
             flexDirection: 'column',
             // 过滤器编辑器的条件区和 JSON 区按没有附加列时的宽度排版，加列、拖列宽时控件不跟着变宽
-            ['--cpp-char-list-base-width' as string]: `${Math.max(charListBaseWidth, 560)}px`,
+            ['--cpp-char-list-base-width' as string]: phone ? '100%' : `${Math.max(charListBaseWidth, 560)}px`,
           }}
         >
           <CharacterList charExtraWidthAtom={charExtraWidthAtom} />
         </section>
         <section
-          className={Classes.ELEVATION_1}
+          {...areaProps('tasks', phone, area)}
           style={{
-            width: '270px',
+            width: phone ? undefined : '270px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -219,9 +241,9 @@ const App = memo(() => {
           <TaskList />
         </section>
         <section
-          className={Classes.ELEVATION_1}
+          {...areaProps('farm', phone, area)}
           style={{
-            width: '470px',
+            width: phone ? undefined : '470px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -229,9 +251,9 @@ const App = memo(() => {
           <FarmList />
         </section>
         <section
-          className={Classes.ELEVATION_1}
+          {...areaProps('items', phone, area)}
           style={{
-            width: '720px',
+            width: phone ? undefined : '720px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -241,6 +263,7 @@ const App = memo(() => {
       </div>
       <CharacterDossier />
       <PeekBoard />
+      {phone ? <PhoneTabBar /> : null}
     </>
   )
 })

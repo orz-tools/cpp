@@ -1,5 +1,5 @@
 import { Alignment, Button, Classes, Navbar } from '@blueprintjs/core'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { memo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
@@ -7,6 +7,7 @@ import { useGameAdapter } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { gt } from '../pkg/gt'
 import { aboutPanel } from './AboutList'
+import { phoneAreaAtom, usePhoneLayout } from './phoneLayout'
 import { useOpenSidebarPanel } from './SidebarPanelDialog'
 import { SidebarState, activePanelId, clickRailItem, readSidebarState } from './sidebarState'
 import { SidebarPanel } from './types'
@@ -79,10 +80,15 @@ const SidebarPanelView = memo(({ panel, onCollapse }: { panel: SidebarPanel; onC
   )
 })
 
-export const Sidebar = memo(() => {
+/** 「关于」和游戏的面板里，现在可用的那些；侧栏、手机的「更多」和它标签上的红点共用 */
+export function useSidebarPanels(): SidebarPanel[] {
   const ga = useGameAdapter()
   const extraPanels = useComponents().sidebarPanels
-  const panels = [aboutPanel, ...(extraPanels ?? [])].filter((p) => !p.isAvailable || p.isAvailable(ga))
+  return [aboutPanel, ...(extraPanels ?? [])].filter((p) => !p.isAvailable || p.isAvailable(ga))
+}
+
+export const Sidebar = memo(() => {
+  const panels = useSidebarPanels()
   const [stored, setStored] = useAtom(sidebarStateAtom)
   const state = readSidebarState(stored)
   // Falls back only while rendering: the remembered panel comes back once its data is published
@@ -102,8 +108,14 @@ export const Sidebar = memo(() => {
     )
   })
 
+  const phone = usePhoneLayout()
+  const current = useAtomValue(phoneAreaAtom) === 'more'
   return (
-    <section className={Classes.ELEVATION_1 + ' cpp-sidebar'} style={{ width: activePanel ? 348 : 48 }}>
+    <section
+      data-area="more"
+      className={Classes.ELEVATION_1 + ' cpp-sidebar' + (phone && current ? ' is-phone-current' : '')}
+      style={phone ? undefined : { width: activePanel ? 348 : 48 }}
+    >
       <nav className="cpp-sidebar-rail" aria-label={gt.gettext('侧栏')} ref={railRef}>
         {panels.map((p) => (
           <SidebarRailItem key={p.id} panel={p} active={p === activePanel} onClick={onRailClick} />

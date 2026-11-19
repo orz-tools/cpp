@@ -1549,3 +1549,166 @@ body .bp6-navbar-group {
     margin: 0 0 0 -8px;
   }
 }
+
+/*
+ * 手机布局（src/components/phoneLayout.ts）：宽度不到 768px 时 <html> 带 cpp-phone。
+ * 五个区域叠在一起，一次只露出一个，底部一排标签切换；侧栏那一栏是「更多」。
+ * 颜色只取 Blueprint 的变量
+ */
+
+/* 顶栏只有品牌和撤销 / 重做；品牌不换行，排不下时省略档案名那一段 */
+.cpp-phone .cpp-navbar-main {
+  display: flex;
+  align-items: center;
+  padding: 0 0 0 8px;
+}
+
+.cpp-phone .cpp-navbar-main > .bp6-navbar-group {
+  float: none;
+}
+
+.cpp-phone .cpp-navbar-main > .bp6-align-left {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cpp-phone .cpp-navbar-main > .bp6-align-right {
+  flex: none;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading {
+  min-width: 0;
+  margin-right: 0;
+  white-space: nowrap;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading > img,
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading > code {
+  flex: none;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading > .bp6-popover-target {
+  min-width: 0;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading .bp6-button {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.cpp-phone .cpp-navbar-main .bp6-navbar-heading .bp6-button-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 40px 见方，没有字也没有步数 */
+.cpp-phone .cpp-navbar-main > .bp6-align-right .bp6-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+}
+
+.cpp-phone .cpp-navbar-main > .bp6-align-right .bp6-tag {
+  display: none;
+}
+
+.cpp-phone .App {
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  overflow: hidden;
+}
+
+.cpp-phone .App > section {
+  position: absolute;
+  inset: 0;
+  margin-right: 0;
+}
+
+.cpp-phone .App > section:not(.is-phone-current) {
+  visibility: hidden;
+}
+
+/* 在 .App（z-index 0）之上、Blueprint 的浮层（20）之下：档案、弹窗盖得住它 */
+.cpp-phone-tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  box-sizing: border-box;
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--bp-palette-white);
+  box-shadow: inset 0 1px 0 var(--bp-palette-light-gray-1);
+}
+
+.cpp-phone-tab {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--bp-palette-gray-1);
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cpp-phone-tab.is-current {
+  color: var(--bp-palette-blue-3);
+}
+
+.cpp-phone-tab.is-current::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 32px;
+  height: 2px;
+  margin-left: -16px;
+  background: var(--bp-palette-blue-3);
+}
+
+.cpp-phone-tab:focus-visible {
+  outline: 2px solid var(--bp-palette-blue-3);
+  outline-offset: -2px;
+}
+
+.cpp-phone-tab-icon {
+  position: relative;
+  display: flex;
+}
+
+.cpp-phone-tab-label {
+  max-width: 100%;
+  padding: 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 「更多」上的红点：每个面板各画一个，叠在同一处 */
+.cpp-phone-tab-dot {
+  position: absolute;
+  top: -2px;
+  right: -6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bp-palette-red-3);
+  box-shadow: 0 0 0 2px var(--bp-palette-white);
+}
+
+.cpp-phone-tab-dot.is-pin {
+  background: var(--bp-palette-blue-3);
+}
