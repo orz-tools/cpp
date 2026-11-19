@@ -231,8 +231,8 @@ importers:
         specifier: ^0.9.6
         version: 0.9.6(react@18.2.0)
       text-search-engine:
-        specifier: ^1.4.2
-        version: 1.4.2(react@18.2.0)
+        specifier: ^1.6.2
+        version: 1.6.2(react@18.2.0)
       use-resize-observer:
         specifier: ^10.0.0
         version: 10.0.0(react@18.2.0)
@@ -2088,8 +2088,8 @@ packages:
   tabbable@6.5.2:
     resolution: {integrity: sha512-XgdnB1nGU6KU4VgMnZPaZCx7M1hBrLyEiZYau2G2gq9UT0d7d4FUBlNX7vvPlm/B1vk1PjrzJBx9Lbv4fsqS9g==}
 
-  text-search-engine@1.4.2:
-    resolution: {integrity: sha512-15lh/KIiq0d7RBq3yrmkLGZ60n3TUe/OFW7QhqWhtQitY1iL1tSpX7wAXQntSfE1MohyuXfldsZ2IZKayCLm1g==}
+  text-search-engine@1.6.2:
+    resolution: {integrity: sha512-mE37IyQUhUeihOr4VLMscL+tYeCCdsoSC6rPzeUh7fka++aBq2rNnjx9wQ94NCUY5aLiJdN7+9vmfVf2xYzGXQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
@@ -3868,7 +3868,7 @@ snapshots:
 
   tabbable@6.5.2: {}
 
-  text-search-engine@1.4.2(react@18.2.0):
+  text-search-engine@1.6.2(react@18.2.0):
     dependencies:
       react: 18.2.0
 
