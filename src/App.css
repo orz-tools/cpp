@@ -1847,6 +1847,15 @@ body .bp6-navbar-group {
   flex: none;
 }
 
+/* 任务：触屏上干员那一行和任务名那一行至少 40px 高，点任务名弹出它的菜单（TaskList.tsx） */
+@media (pointer: coarse) {
+  .cpp-task-menu-master .bp6-menu-item.cpp-task-menu,
+  .cpp-task-menu-master .bp6-menu-item.cpp-task-row {
+    align-items: center;
+    min-height: 40px;
+  }
+}
+
 /* 「更多」（PhoneMore.tsx）：侧栏那一栏在手机上是一列，列表、子页、面板页都占满宽度 */
 .cpp-phone .cpp-sidebar {
   flex-direction: column;

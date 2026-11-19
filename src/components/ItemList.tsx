@@ -14,6 +14,7 @@ import { InventorySyncer } from './InventorySyncer'
 import { formatQuantity } from './quantity'
 import { PeekTrigger } from './Peek'
 import { ItemCounterCells, itemCounterCells, itemCounterSlots } from './itemCounters'
+import { useCoarsePointer } from './phoneLayout'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
 const formatter = (q: number) => q.toFixed(0)
@@ -365,13 +366,18 @@ const NoStarsCallout = memo(<G extends IGame>() => {
   const param = useAtomValue(itemListParamAtom)
   const atoms = useAtoms<G>()
   const starredTasks = useAtomValue(atoms.allStarredTasks)
+  const coarse = useCoarsePointer()
   if (param.level !== Level.Star || starredTasks.length > 0) return null
 
   return (
     <Callout intent="primary" icon="star" compact style={{ borderRadius: 0, flexShrink: 0 }}>
-      {gt.gettext(
-        '还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出它和它前置任务要用的材料。',
-      )}
+      {coarse
+        ? gt.gettext(
+            '还没有星标任务。在任务列表里点一项任务，选「优先培养（星标）」，这里就列出它和它前置任务要用的材料。',
+          )
+        : gt.gettext(
+            '还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出它和它前置任务要用的材料。',
+          )}
     </Callout>
   )
 })
