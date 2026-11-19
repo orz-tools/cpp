@@ -102,6 +102,11 @@
   margin-left: -7px;
 }
 
+/* 分段控件连外框 34px，比左边 30px 的标签行高出一截，所在的行就整体往下错 2px；让它只占 30px 的位置 */
+.cpp-qe-body .bp6-segmented-control {
+  margin: -2px 0;
+}
+
 .cpp-qe-row {
   display: flex;
   align-items: center;
@@ -238,6 +243,11 @@ select.cpp-qe-invalid {
   align-items: center;
   gap: 4px;
   min-height: 30px;
+}
+
+/* 还没有附加列时，「添加列…」的加号和「条件」「排序依据」的一样，对齐到内容左边 */
+.cpp-qe-columns > .bp6-popover-target:first-child {
+  margin-left: -7px;
 }
 
 .cpp-qe-menu {
