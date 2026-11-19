@@ -6,6 +6,7 @@ import { clone, intersection, sum, uniq } from 'ramda'
 import { SetStateAction } from 'react'
 import { IGame, IGameAdapter, QueryParam, Task } from '../cpp-basic'
 import { txatom } from '../txatom'
+import { MoveTarget, moveKey } from './planOrder'
 import { generateTaskExtra } from './Task'
 
 function withDebugLabel<T extends Atom<any>>(t: T, label?: string): T {
@@ -103,6 +104,7 @@ function buildAtoms<G extends IGame>(
     } else {
       delete data.goal[charId]
       if (goalIndex >= 0) data.goalOrder.splice(goalIndex, 1)
+      if (data.taskGroupOrder) delete data.taskGroupOrder[charId]
     }
   }
 
@@ -260,6 +262,15 @@ function buildAtoms<G extends IGame>(
     `finishedCharacters`,
   )
 
+  const taskGroupOrder = atomFamily(
+    (charId: string) =>
+      withDebugLabel(
+        atom((get) => get(dataAtom).taskGroupOrder?.[charId]),
+        `taskGroupOrder(${charId})`,
+      ),
+    (a, b) => a === b,
+  )
+
   const goalTasks = atomFamily(
     (charId: string) =>
       withDebugLabel(
@@ -268,7 +279,7 @@ function buildAtoms<G extends IGame>(
           // console.log('regen goalTasks', charId)
           const current = get(currentCharacter(charId))
           const goal = get(goalCharacter(charId))
-          return ga.getUserDataAdapter().generateTasksForCharacter(charId, current, goal)
+          return ga.getUserDataAdapter().generateTasksForCharacter(charId, current, goal, get(taskGroupOrder(charId)))
         }),
         `goalTasks(${charId})`,
       ),
@@ -283,7 +294,10 @@ function buildAtoms<G extends IGame>(
           // console.log('regen finishedTasks', charId)
           const current = get(currentCharacter(charId))
           const finished = get(characterFinishedStatus(charId))
-          return ga.getUserDataAdapter().generateTasksForCharacter(charId, current, finished)
+          // sortedFinishedTasks dedupes these against goalTasks by value, which needs the same order on both sides.
+          return ga
+            .getUserDataAdapter()
+            .generateTasksForCharacter(charId, current, finished, get(taskGroupOrder(charId)))
         }),
         `finishedTasks(${charId})`,
       ),
@@ -505,6 +519,30 @@ function buildAtoms<G extends IGame>(
     `finishedTasksWithExtra`,
   )
 
+  const moveInPlan = withDebugLabel(
+    atom(null, (get, set, { charId, target }: { charId: string; target: MoveTarget }) => {
+      const order = get(goalOrder)
+      const next = moveKey(order, charId, target)
+      if (next === order) return
+      set(dataAtom, 'modify', (data) => {
+        data.goalOrder = [...next]
+      })
+    }),
+    'moveInPlan',
+  )
+
+  const moveTaskGroup = withDebugLabel(
+    atom(null, (get, set, { charId, group, target }: { charId: string; group: string; target: MoveTarget }) => {
+      const groups = uniq(get(goalTasks(charId)).flatMap((x) => (x.group ? [x.group] : [])))
+      const next = moveKey(groups, group, target)
+      if (next === groups) return
+      set(dataAtom, 'modify', (data) => {
+        data.taskGroupOrder = { ...data.taskGroupOrder, [charId]: [...next] }
+      })
+    }),
+    'moveTaskGroup',
+  )
+
   return {
     baseAtom,
     forbiddenFormulaTagsAtom,
@@ -512,6 +550,8 @@ function buildAtoms<G extends IGame>(
     allDataAtom,
     rootAtom,
     goalOrder,
+    moveInPlan,
+    moveTaskGroup,
     stars,
     itemQuantities,
     itemQuantity,
@@ -522,6 +562,7 @@ function buildAtoms<G extends IGame>(
     currentCharacters,
     goalCharacters,
     finishedCharacters,
+    taskGroupOrder,
     goalTasks,
     finishedTasks,
     allCharacterIds,
@@ -565,6 +606,11 @@ export interface UserData<G extends IGame> {
    * 只记改过的列，没改的跟着预设走
    */
   presetWidths?: Record<string, Record<string, number>>
+  /**
+   * 每名干员里几项整组任务（Task.group）的先后：干员 id → 组的 key。拖过或按过「角色内排序」才有；
+   * 没列出的组跟在后面，按游戏给的默认顺序
+   */
+  taskGroupOrder?: Record<string, string[]>
 }
 
 export interface SavedQuery {

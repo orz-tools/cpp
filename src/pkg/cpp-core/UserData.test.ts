@@ -1,6 +1,7 @@
 import { atom, createStore } from 'jotai'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ExpItem, Formula, IGame, IGameAdapter, Task } from '../cpp-basic'
+import { orderGroups } from '../cpp-basic/groupOrder'
 import { UserData, UserDataAtomHolder, newUserData } from './UserData'
 
 let ids: string[]
@@ -128,5 +129,92 @@ describe('UserDataAtomHolder', () => {
     expect(store.get(atoms.dataAtom).skins).toEqual({})
     store.set(atoms.dataAtom, 'redo')
     expect(store.get(atoms.dataAtom).skins).toEqual({ 'char_002_amiya@winter#1': 1700000000 })
+  })
+})
+
+describe('plan order', () => {
+  // 三项整组任务，每项依赖排在它前面的那项：顺序不同，同一项的 depends 就不同
+  const grouped = {
+    getUserDataAdapter: () => ({
+      getAllCharacterIds: () => ['a', 'b'],
+      getFrozenEmptyCharacterStatus: () => empty,
+      rewriteCharacters: (_: string, current: object, goal: object) => [current, goal] as const,
+      finishedCharacterStatus: () => empty,
+      generateTasksForCharacter: (charId: string, _c: object, _g: object, groupOrder?: readonly string[]) => {
+        const tasks: Task<IGame>[] = []
+        for (const group of orderGroups(['g1', 'g2', 'g3'], groupOrder)) {
+          tasks.push({
+            id: `${charId}-${group}`,
+            charId,
+            type: group,
+            requires: [],
+            depends: tasks.slice(-1),
+            group,
+          })
+        }
+        return tasks
+      },
+    }),
+    getFormulas: () => [],
+    getExpItems: () => ({}),
+  } as unknown as IGameAdapter<IGame>
+
+  function setup(data: Partial<UserData<IGame>> = {}) {
+    const store = createStore()
+    const holder = new UserDataAtomHolder(grouped)
+    holder.setAtom(
+      atom<UserData<IGame> | undefined>({
+        ...newUserData(),
+        current: { a: {} },
+        goal: { a: {} },
+        goalOrder: ['a'],
+        ...data,
+      }),
+      atom<string[]>([]),
+      atom(0),
+    )
+    return { store, atoms: holder.atoms }
+  }
+
+  it("generates an operator's tasks in its stored group order", () => {
+    const { store, atoms } = setup({ taskGroupOrder: { a: ['g3'] } })
+    expect(store.get(atoms.goalTasks('a')).map((x) => x.group)).toEqual(['g3', 'g1', 'g2'])
+    expect(store.get(atoms.finishedTasks('a')).map((x) => x.group)).toEqual(['g3', 'g1', 'g2'])
+  })
+
+  it('counts each task once when finishing everything', () => {
+    const { store, atoms } = setup({ taskGroupOrder: { a: ['g3'] } })
+    const ids = store.get(atoms.sortedFinishedTasks).map((x) => x.id)
+    expect(ids).toEqual([...new Set(ids)])
+  })
+
+  it("writes the operator's whole group order in one undo step", () => {
+    const { store, atoms } = setup()
+    store.set(atoms.moveTaskGroup, { charId: 'a', group: 'g1', target: { after: 'g3' } })
+    expect(store.get(atoms.dataAtom).taskGroupOrder?.a).toEqual(['g2', 'g3', 'g1'])
+    store.set(atoms.dataAtom, 'undo')
+    expect('taskGroupOrder' in store.get(atoms.dataAtom)).toBe(false)
+  })
+
+  it('writes nothing when a group lands where it was', () => {
+    const { store, atoms } = setup()
+    const before = store.get(atoms.dataAtom)
+    store.set(atoms.moveTaskGroup, { charId: 'a', group: 'g1', target: { before: 'g2' } })
+    store.set(atoms.moveInPlan, { charId: 'a', target: { before: 'a' } })
+    expect(store.get(atoms.dataAtom)).toBe(before)
+  })
+
+  it('moves in the plan order with the planned operators the stored order misses', () => {
+    const { store, atoms } = setup({ current: { a: {}, b: {} }, goal: { a: {}, b: {} } })
+    store.set(atoms.moveInPlan, { charId: 'b', target: { before: 'a' } })
+    expect(store.get(atoms.dataAtom).goalOrder).toEqual(['b', 'a'])
+  })
+
+  it("drops an operator's group order with its plan", () => {
+    const { store, atoms } = setup({ taskGroupOrder: { a: ['g3'] } })
+    store.set(atoms.allDataAtom, (d) => {
+      delete d.goal.a
+    })
+    expect(store.get(atoms.dataAtom).taskGroupOrder).toEqual({})
   })
 })

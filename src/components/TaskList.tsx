@@ -2,20 +2,23 @@ import { Alignment, Button, ContextMenu, Icon, IconName, Menu, MenuDivider, Menu
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { WritableAtom, atom, useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { sortBy, sum } from 'ramda'
+import { sortBy, sum, uniq } from 'ramda'
 import React, { SetStateAction, memo, useCallback, useMemo, useRef } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useGameAdapter, useStore } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { IGame, Task } from '../pkg/cpp-basic'
+import { MoveStep, MoveTarget, stepTarget } from '../pkg/cpp-core/planOrder'
 import { TaskCostStatus, TaskExtra, TaskStatus } from '../pkg/cpp-core/Task'
 import { StarStatus } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
-import { CharacterContextMenu, menuItemKeyDown } from './CharacterList'
+import { CharacterContextMenu, SortButtonGroup, menuItemKeyDown } from './CharacterList'
 import { CachedImg, ItemIcon } from './Icons'
+import { ListDrag, useListDrag } from './ListDrag'
 import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
 import { useRequestFrame } from './focusFrame'
+import { TASK_HEADER_HEIGHT, charDragGaps, groupDragGaps, layoutTasks } from './taskListLayout'
 import { TaskNote } from './types'
 import { ValueTagProgressBar } from './Value'
 
@@ -100,6 +103,14 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
 
   const stars = useAtomValue(atoms.stars)
 
+  // 按这名干员计划里全部的整项算，不只是本段看得到的那几项
+  const goalTasks = useAtomValue(atoms.goalTasks(task.charId))
+  const groups = useMemo(() => uniq(goalTasks.flatMap((x) => (x.group ? [x.group] : []))), [goalTasks])
+  const moveGroup = (step: MoveStep) => {
+    const target = task.group ? stepTarget(groups, task.group, step) : undefined
+    if (target) store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
+  }
+
   const completeTask = () => {
     store.set(atoms.currentCharacter(task.charId), (d) => {
       ga.getUserDataAdapter().completeTask(task.type, task.charId, d)
@@ -119,6 +130,12 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
 
   return (
     <Menu>
+      {task.group && groups.length >= 2 ? (
+        <>
+          <SortButtonGroup label={gt.gettext('角色内排序')} onMove={moveGroup} />
+          <MenuDivider />
+        </>
+      ) : null}
       <MenuItem
         text={gt.gettext('完成')}
         icon={'tick-circle'}
@@ -147,6 +164,12 @@ const TaskContextMenu = memo(<G extends IGame>({ task, extra }: { task: Task<G>;
   )
 })
 
+/** 拖干员那一行（char）或拖一整项（group），row 是按住的那一行 */
+interface TaskDragSource {
+  kind: 'char' | 'group'
+  row: number
+}
+
 export const TaskMenu = memo(
   <G extends IGame>({
     task,
@@ -158,10 +181,12 @@ export const TaskMenu = memo(
     nextSame,
     hideCosts,
     notes,
+    drag,
+    dim,
   }: {
     task: Task<G>
     extra: TaskExtra
-    /** 虚拟列表里的序号，和 rowRef 一起让列表量这一行的高度 */
+    /** 虚拟列表里的序号，和 rowRef 一起让列表量这一行的高度；拖动也按它认行 */
     index?: number
     rowRef?: (el: HTMLLIElement | null) => void
     style?: React.CSSProperties
@@ -169,6 +194,9 @@ export const TaskMenu = memo(
     nextSame?: boolean
     hideCosts: boolean
     notes: readonly TaskNote[]
+    drag?: ListDrag<TaskDragSource>
+    /** 正在被拖：整组连干员那一行（all），或只是这一项的任务（task） */
+    dim?: 'all' | 'task'
   }) => {
     const ga = useGameAdapter<G>()
     const character = ga.getCharacter(task.charId)
@@ -215,6 +243,11 @@ export const TaskMenu = memo(
         ? StarStatus.Depended
         : StarStatus.None
 
+    const dragProps = (kind: TaskDragSource['kind']) =>
+      drag && index !== undefined
+        ? { ...drag.hoverProps({ kind, row: index }), ...drag.pressProps({ kind, row: index }) }
+        : null
+
     const starIcon: IconName | null = hideCosts
       ? (
           {
@@ -232,7 +265,13 @@ export const TaskMenu = memo(
         )[starred]
 
     return (
-      <li role="none" ref={rowRef} data-index={index} style={style} className="cpp-task-menu-master">
+      <li
+        role="none"
+        ref={rowRef}
+        data-index={index}
+        style={style}
+        className={'cpp-task-menu-master' + (dim === 'all' ? ' cpp-drag-source' : '')}
+      >
         {same ? undefined : (
           <ContextMenu content={<CharacterContextMenu character={character} alwaysSorting={true} />}>
             <a
@@ -246,6 +285,7 @@ export const TaskMenu = memo(
               aria-expanded={dossierOpen}
               onClick={() => openDossier(character.key)}
               onKeyDown={menuItemKeyDown}
+              {...dragProps('char')}
             >
               <>
                 <span className="bp6-menu-item-icon">
@@ -272,9 +312,10 @@ export const TaskMenu = memo(
             </a>
           </ContextMenu>
         )}
-        <Menu style={{ padding: 0 }}>
+        <Menu style={{ padding: 0 }} className={dim === 'task' ? 'cpp-drag-source' : undefined}>
           <ContextMenu content={<TaskContextMenu task={task} extra={extra} />}>
             <MenuItem
+              {...(task.group ? dragProps('group') : null)}
               // 没有子菜单时只有右键菜单，悬停不该像能点
               className={'cpp-menu-nosubmenu' + (submenu ? '' : ' cpp-task-row-static')}
               // title={task.id}
@@ -439,22 +480,27 @@ export const TaskList = memo(<G extends IGame>() => {
 
   const hideCosts = param.hideCosts || false
   const list = useAtomValue(atoms.goalTasksWithExtra)
+  const starredCount = useAtomValue(atoms.allStarredTasksDetails).sortedStarredTasks.length
+  const tasks = useMemo(() => list.map(([task]) => task), [list])
+  const layout = useMemo(() => layoutTasks(tasks, starredCount), [tasks, starredCount])
+  const same = (index: number) => layout.runs[layout.runOf[index]].first !== index
+  const nextSame = (index: number) => layout.runOf[index + 1] === layout.runOf[index]
   const ga = useGameAdapter<G>()
+  const store = useStore()
   const taskNotes = useComponents().taskNotes
-  const notes = useMemo(() => list.map(([task]) => (taskNotes ? taskNotes(ga, task) : NO_NOTES)), [list, ga, taskNotes])
+  const notes = useMemo(() => tasks.map((task) => (taskNotes ? taskNotes(ga, task) : NO_NOTES)), [tasks, ga, taskNotes])
   // 说明行会折行，行高以量出来的为准；这里按每条说明一行估，给还没画出来的行占位。分隔线 9px：1px 线加上下各 4px 边距
   const itemSize = useCallback<(index: number) => number>(
     (index) => {
-      const same = list[index - 1]?.[0].charId === list[index][0].charId
-      const nextSame = list[index + 1]?.[0].charId === list[index][0].charId
-      const costs = hideCosts ? 0 : (list[index][0].requires.length + notes[index].length) * 30
-      const base = costs + (same ? 0 : 30) + 30 + (hideCosts && nextSame ? 0 : 9)
-      return base
+      const costs = hideCosts ? 0 : (tasks[index].requires.length + notes[index].length) * 30
+      const header = layout.runs[layout.runOf[index]].first === index ? TASK_HEADER_HEIGHT : 0
+      return costs + header + 30 + (hideCosts && layout.runOf[index + 1] === layout.runOf[index] ? 0 : 9)
     },
-    [list, notes, hideCosts],
+    [tasks, layout, notes, hideCosts],
   )
 
   const parentRef = useRef<HTMLUListElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const rowVirtualizer = useVirtualizer({
     count: list.length,
@@ -463,6 +509,24 @@ export const TaskList = memo(<G extends IGame>() => {
     getItemKey: (index) => `${list[index][0].id}:${hideCosts ? 'h' : 'e'}`,
     estimateSize: itemSize,
     overscan: 5,
+  })
+
+  const { drag, active, overlay, handle } = useListDrag<TaskDragSource, MoveTarget>({
+    enabled: true,
+    scrollRef: parentRef,
+    contentRef,
+    virtualizer: rowVirtualizer,
+    handleInset: 3,
+    begin: ({ kind, row }) => {
+      if (kind === 'group') return groupDragGaps(tasks, layout, row)
+      const run = layout.runs[layout.runOf[row]]
+      return { rows: [run.first, run.last], gaps: charDragGaps(layout, layout.runOf[row]) }
+    },
+    commit: ({ kind, row }, target) => {
+      const task = tasks[row]
+      if (kind === 'char') store.set(atoms.moveInPlan, { charId: task.charId, target })
+      else store.set(atoms.moveTaskGroup, { charId: task.charId, group: task.group!, target })
+    },
   })
 
   return (
@@ -475,6 +539,7 @@ export const TaskList = memo(<G extends IGame>() => {
       </Navbar>
       <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
         <div
+          ref={contentRef}
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`,
             width: '100%',
@@ -483,6 +548,7 @@ export const TaskList = memo(<G extends IGame>() => {
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const index = virtualRow.index
+            const dragged = active && active.rows[0] <= index && index <= active.rows[1]
             return (
               <TaskMenu
                 key={virtualRow.key}
@@ -497,15 +563,19 @@ export const TaskList = memo(<G extends IGame>() => {
                 }}
                 task={list[index][0]}
                 extra={list[index][1]}
-                same={list[index - 1]?.[0].charId === list[index][0].charId}
-                nextSame={list[index + 1]?.[0].charId === list[index][0].charId}
+                same={same(index)}
+                nextSame={nextSame(index)}
                 hideCosts={param.hideCosts}
                 notes={notes[index]}
+                drag={drag}
+                dim={dragged ? (active.source.kind === 'char' ? 'all' : 'task') : undefined}
               />
             )
           })}
+          {overlay}
         </div>
       </Menu>
+      {handle}
     </>
   )
 })

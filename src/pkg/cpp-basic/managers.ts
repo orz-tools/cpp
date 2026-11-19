@@ -97,7 +97,13 @@ export interface IUserDataAdapter<G extends IGame> {
     goal: Draft<G['characterStatus']> | undefined,
   ): readonly [current: Draft<G['characterStatus']> | undefined, goal: Draft<G['characterStatus']> | undefined]
   isManuallyTask(task: Task<G>): boolean
-  generateTasksForCharacter(charId: string, current: G['characterStatus'], goal: G['characterStatus']): Task<G>[]
+  /** groupOrder 排的是任务的 group，约定见 orderGroups */
+  generateTasksForCharacter(
+    charId: string,
+    current: G['characterStatus'],
+    goal: G['characterStatus'],
+    groupOrder?: readonly string[],
+  ): Task<G>[]
   formatTaskAsString(type: G['characterTaskType'], charId: string): string
   completeTask(type: G['characterTaskType'], charId: string, draft: Draft<G['characterStatus']>): void
   compareCharacter(a: ICharacter, b: ICharacter, stA: G['characterStatus'], stB: G['characterStatus']): number

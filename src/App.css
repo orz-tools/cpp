@@ -653,6 +653,79 @@ body {
   outline: none !important;
 }
 
+/* Dragging a row in the 计划 view or the task list (src/components/ListDrag.tsx); after .cpp-task-row-static so its cursor gives way */
+.cpp-list-dragging,
+.cpp-list-dragging * {
+  cursor: grabbing !important;
+  user-select: none;
+}
+
+/* Nothing under the pointer reacts while dragging: no hover background, no submenu opening on hover. The list still
+   takes the wheel, and the hook hears the pointer on window either way */
+.cpp-list-dragging * {
+  pointer-events: none;
+}
+
+.cpp-list-dragging .cpp-list-drag-scroller {
+  pointer-events: auto;
+}
+
+/* The pressed row keeps :active until release */
+.cpp-list-dragging .bp6-menu-item:not(.bp6-active):active {
+  background-color: transparent;
+}
+
+.cpp-drag-source {
+  opacity: 0.4;
+}
+
+.cpp-drop-line {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--bp-palette-blue-3, #2d72d2);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cpp-drop-line::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 2px solid var(--bp-palette-blue-3, #2d72d2);
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Fixed in body rather than in the row: it hangs over the next column, and the columns clip what overflows them.
+   Above .App (z-index 0), under Blueprint's overlays (20), so the dossier and dialogs cover it */
+.cpp-drag-handle {
+  position: fixed;
+  z-index: 10;
+  width: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #c5cbd3;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  box-shadow: -1px 1px 2px rgba(17, 20, 24, 0.15);
+  color: #5f6b7c;
+  cursor: grab;
+}
+
+/* The 16px icon box is wider than the handle; its dots sit at x 5–11, so only transparent edges spill over */
+.cpp-drag-handle > .bp6-icon {
+  flex: none;
+}
+
 .cpp-peek-card {
   width: 344px;
   max-width: calc(100vw - 16px);
