@@ -220,3 +220,16 @@ export function generateTaskExtra<G extends IGame>(
 
   return tasks.map((x) => [x, map.get(x)!])
 }
+
+/**
+ * 列表顺序总把前置排在前面（星标段带着星标任务一路的前置），所以从这里截出的一段按顺序一项项完成不会跳级。
+ * 按 id 找：菜单开着时列表可能重算过，任务对象换了
+ */
+export function tasksUpTo<G extends IGame>(
+  list: readonly [Task<G>, TaskExtra][],
+  task: Task<G>,
+): [Task<G>, TaskExtra][] {
+  const end = list.findIndex(([t]) => t.id === task.id)
+  if (end < 0) return []
+  return list.slice(0, end + 1).filter(([t]) => t.charId === task.charId)
+}
