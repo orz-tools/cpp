@@ -19,7 +19,7 @@
     "browser-stream-tar": "^3.0.6",
     "date-fns": "^4.4.0",
     "deep-equal": "^2.2.2",
-    "immer": "^10.0.2",
+    "immer": "^11.2.10",
     "javascript-lp-solver": "^1.0.3",
     "jotai": "^3.0.2",
     "jotai-family": "^1.1.0",

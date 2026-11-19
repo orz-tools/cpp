@@ -87,15 +87,23 @@ export interface IGameAdapter<G extends IGame> {
   applyPreferenceSnapshot?(storage: Record<string, any>): boolean
 }
 
+/**
+ * A character status as it sits in a draft of the user data. immer 11 types such a field this way; it is
+ * Draft<G['characterStatus']> for any actual game, but TypeScript cannot narrow it to that while G is a type parameter.
+ */
+export type CharacterStatusDraft<G extends IGame> = G['characterStatus'] extends object
+  ? Draft<G['characterStatus']>
+  : G['characterStatus']
+
 export interface IUserDataAdapter<G extends IGame> {
   getAllCharacterIds(): string[]
   getFrozenEmptyCharacterStatus(): G['characterStatus']
   finishedCharacterStatus(charId: string, current: G['characterStatus']): G['characterStatus']
   rewriteCharacters(
     charId: string,
-    current: Draft<G['characterStatus']> | undefined,
-    goal: Draft<G['characterStatus']> | undefined,
-  ): readonly [current: Draft<G['characterStatus']> | undefined, goal: Draft<G['characterStatus']> | undefined]
+    current: CharacterStatusDraft<G> | undefined,
+    goal: CharacterStatusDraft<G> | undefined,
+  ): readonly [current: CharacterStatusDraft<G> | undefined, goal: CharacterStatusDraft<G> | undefined]
   isManuallyTask(task: Task<G>): boolean
   /** groupOrder 排的是任务的 group，约定见 orderGroups */
   generateTasksForCharacter(

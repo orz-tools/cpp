@@ -192,8 +192,8 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2
       immer:
-        specifier: ^10.0.2
-        version: 10.0.2
+        specifier: ^11.2.10
+        version: 11.2.10
       javascript-lp-solver:
         specifier: ^1.0.3
         version: 1.0.3
@@ -1562,8 +1562,8 @@ packages:
   immediate@3.0.6:
     resolution: {integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==}
 
-  immer@10.0.2:
-    resolution: {integrity: sha512-Rx3CqeqQ19sxUtYV9CU911Vhy8/721wRFnJv3REVGWUmoAcIwzifTsdmJte/MV+0/XpM35LZdQMBGkRIoLPwQA==}
+  immer@11.2.10:
+    resolution: {integrity: sha512-pzANBj+0A9u+prdhBJ14DVi44vCvVUQzBa8DKt6I0AMCokPHtt722BK9IX5bFC70xUSU9TnzLRIJLTGqIzjEFw==}
 
   import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -3343,7 +3343,7 @@ snapshots:
 
   immediate@3.0.6: {}
 
-  immer@10.0.2: {}
+  immer@11.2.10: {}
 
   import-fresh@3.3.0:
     dependencies:
