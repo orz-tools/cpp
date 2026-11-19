@@ -1031,6 +1031,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     contentRef,
     virtualizer: rowVirtualizer,
     handleInset: 4,
+    draggable: () => list.length > 1,
     begin: (row) => ({
       rows: [row, row],
       gaps: listGaps(

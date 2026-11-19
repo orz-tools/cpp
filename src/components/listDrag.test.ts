@@ -66,6 +66,10 @@ describe('listGaps', () => {
       { index: 2, edge: 'end', target: null },
     ])
   })
+
+  it('has nowhere to go for the only row', () => {
+    expect(listGaps(['a'], 0).some((gap) => gap.target !== null)).toBe(false)
+  })
 })
 
 describe('autoScrollStep', () => {

@@ -29,6 +29,11 @@ interface Options<S, T> {
   virtualizer: Virtualizer<HTMLUListElement, Element>
   /** 把手上下各比行缩进几 px */
   handleInset: number
+  /**
+   * 拖起来有没有地方放，即 begin 给的落点里有没有 target 不为 null 的。为假的行不出把手，按住移动也不起拖。
+   * 悬停时每次移动都问，要便宜
+   */
+  draggable: (source: S) => boolean
   /** 移动过了门槛时调一次；返回 undefined 时这次不拖 */
   begin: (source: S) => ListDragStart<T> | undefined
   commit: (source: S, target: T) => void
@@ -68,9 +73,11 @@ export function useListDrag<S, T>({
   contentRef,
   virtualizer,
   handleInset,
+  draggable: isDraggable,
   begin: beginDrag,
   commit: commitDrag,
 }: Options<S, T>) {
+  const draggable = useEvent(isDraggable)
   const begin = useEvent(beginDrag)
   const commit = useEvent(commitDrag)
   // 只有这三样进 state：拖动中每次移动都 setState 会重画整个列表
@@ -105,6 +112,10 @@ export function useListDrag<S, T>({
 
   const showHandle = useEvent((e: React.PointerEvent<HTMLElement>, source: S) => {
     if (e.pointerType === 'touch' || session.current) return
+    if (!draggable(source)) {
+      hideHandle()
+      return
+    }
     window.clearTimeout(hideTimer.current)
     hover.current = { el: e.currentTarget, source }
     const rect = e.currentTarget.getBoundingClientRect()
@@ -173,7 +184,7 @@ export function useListDrag<S, T>({
   }
 
   const press = useEvent((e: React.PointerEvent<HTMLElement>, source: S) => {
-    if (!enabled || session.current || e.pointerType === 'touch' || e.button !== 0) return
+    if (!enabled || session.current || e.pointerType === 'touch' || e.button !== 0 || !draggable(source)) return
     const s: Session<S, T> = { source, pointerId: e.pointerId, x: e.clientX, y: e.clientY, clientY: e.clientY }
     session.current = s
 
@@ -222,9 +233,14 @@ export function useListDrag<S, T>({
   const pressHandle = useEvent((e: React.PointerEvent<HTMLElement>) => {
     const h = hover.current
     if (!h || !handlePos) return
-    // 列表在把手出现以后重画过（撤销、别处改了计划），记下的那一行可能已经不是把手旁边这一行了
+    // 列表在把手出现以后重画过（撤销、别处改了计划），记下的那一行可能已经不是把手旁边这一行了，或者已经没有地方放了
     const rect = h.el.getBoundingClientRect()
-    if (!h.el.isConnected || rect.left - HANDLE_WIDTH !== handlePos.left || rect.top + handleInset !== handlePos.top) {
+    if (
+      !h.el.isConnected ||
+      rect.left - HANDLE_WIDTH !== handlePos.left ||
+      rect.top + handleInset !== handlePos.top ||
+      !draggable(h.source)
+    ) {
       hideHandle()
       return
     }

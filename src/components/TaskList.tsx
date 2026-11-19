@@ -18,7 +18,14 @@ import { ListDrag, useListDrag } from './ListDrag'
 import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
 import { useRequestFrame } from './focusFrame'
-import { TASK_HEADER_HEIGHT, charDragGaps, groupDragGaps, layoutTasks } from './taskListLayout'
+import {
+  TASK_HEADER_HEIGHT,
+  charDragGaps,
+  charDraggable,
+  groupDragGaps,
+  groupDraggable,
+  layoutTasks,
+} from './taskListLayout'
 import { TaskNote } from './types'
 import { ValueTagProgressBar } from './Value'
 
@@ -517,6 +524,8 @@ export const TaskList = memo(<G extends IGame>() => {
     contentRef,
     virtualizer: rowVirtualizer,
     handleInset: 3,
+    draggable: ({ kind, row }) =>
+      kind === 'group' ? groupDraggable(tasks, layout, row) : charDraggable(layout, layout.runOf[row]),
     begin: ({ kind, row }) => {
       if (kind === 'group') return groupDragGaps(tasks, layout, row)
       const run = layout.runs[layout.runOf[row]]

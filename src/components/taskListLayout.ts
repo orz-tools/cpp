@@ -35,6 +35,12 @@ export function layoutTasks(tasks: readonly { charId: string }[], starredCount: 
   return { runs, runOf }
 }
 
+/** 拖一名干员（第 run 组）有没有地方放：本段还有别的组。星标段在前，同一段的组总是挨着 */
+export function charDraggable(layout: TaskListLayout, run: number): boolean {
+  const starred = layout.runs[run].starred
+  return layout.runs[run - 1]?.starred === starred || layout.runs[run + 1]?.starred === starred
+}
+
 /** 拖一名干员（第 run 组）：只放在本段的组之间 */
 export function charDragGaps(layout: TaskListLayout, run: number): DropGap<MoveTarget>[] {
   const starred = layout.runs[run].starred
@@ -50,16 +56,8 @@ export function charDragGaps(layout: TaskListLayout, run: number): DropGap<MoveT
   return gaps
 }
 
-/**
- * 拖第 row 行那一整项：同一组里 group 相同、连着的行是一项，只放在别的整项前面、最后一项后面。
- * 这一行没有 group 时不能拖
- */
-export function groupDragGaps(
-  tasks: readonly { group?: string }[],
-  layout: TaskListLayout,
-  row: number,
-): { rows: readonly [number, number]; gaps: DropGap<MoveTarget>[] } | undefined {
-  if (!tasks[row]?.group) return undefined
+/** 第 row 行所在的组里，group 相同、连着的行是一项；不带 group 的行不归任何一项 */
+function groupItems(tasks: readonly { group?: string }[], layout: TaskListLayout, row: number) {
   const run = layout.runs[layout.runOf[row]]
   const items: { group: string; first: number; last: number }[] = []
   for (let i = run.first; i <= run.last; i++) {
@@ -69,6 +67,25 @@ export function groupDragGaps(
     if (prev && prev.group === group && prev.last === i - 1) prev.last = i
     else items.push({ group, first: i, last: i })
   }
+  return { run, items }
+}
+
+/** 拖第 row 行那一整项有没有地方放：这一行带 group，组里还有别的整项 */
+export function groupDraggable(tasks: readonly { group?: string }[], layout: TaskListLayout, row: number): boolean {
+  return !!tasks[row]?.group && groupItems(tasks, layout, row).items.length > 1
+}
+
+/**
+ * 拖第 row 行那一整项：只放在别的整项前面、最后一项后面。
+ * 这一行没有 group 时不能拖
+ */
+export function groupDragGaps(
+  tasks: readonly { group?: string }[],
+  layout: TaskListLayout,
+  row: number,
+): { rows: readonly [number, number]; gaps: DropGap<MoveTarget>[] } | undefined {
+  if (!tasks[row]?.group) return undefined
+  const { run, items } = groupItems(tasks, layout, row)
   const source = items.findIndex((w) => w.first <= row && row <= w.last)
   const dragged = items[source]
   const gaps: DropGap<MoveTarget>[] = items.map((w, j) => ({

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { TASK_HEADER_HEIGHT, charDragGaps, groupDragGaps, layoutTasks } from './taskListLayout'
+import {
+  TASK_HEADER_HEIGHT,
+  charDragGaps,
+  charDraggable,
+  groupDragGaps,
+  groupDraggable,
+  layoutTasks,
+} from './taskListLayout'
 
 const tasks = (...charIds: string[]) => charIds.map((charId) => ({ charId }))
 
@@ -49,6 +56,26 @@ describe('charDragGaps', () => {
   })
 })
 
+describe('charDraggable', () => {
+  it('drags an operator only when its segment has another', () => {
+    // 星标段只有 A，其余段 A B
+    const layout = layoutTasks(tasks('A', 'A', 'B'), 1)
+    expect(layout.runs.map((_, run) => charDraggable(layout, run))).toEqual([false, true, true])
+  })
+
+  it('drags nothing for the only operator in the list', () => {
+    expect(charDraggable(layoutTasks(tasks('A', 'A'), 0), 0)).toBe(false)
+  })
+
+  it('agrees with whether the gaps have a target', () => {
+    for (const layout of [layoutTasks(tasks('A', 'B', 'A', 'A', 'C', 'D'), 2), layoutTasks(tasks('A', 'A', 'B'), 1)]) {
+      layout.runs.forEach((_, run) => {
+        expect(charDraggable(layout, run)).toBe(charDragGaps(layout, run).some((gap) => gap.target !== null))
+      })
+    }
+  })
+})
+
 describe('groupDragGaps', () => {
   // A：专精 s1 两级、精二、专精 s2 一级、模组 m 一级；B：一项专精
   const list = [
@@ -95,5 +122,37 @@ describe('groupDragGaps', () => {
 
   it('does not drag a task without a group', () => {
     expect(groupDragGaps(list, layout, 2)).toBeUndefined()
+  })
+})
+
+describe('groupDraggable', () => {
+  const list = [
+    { charId: 'A', group: 's1' },
+    { charId: 'A', group: 's1' },
+    { charId: 'A' },
+    { charId: 'A', group: 's2' },
+    { charId: 'B', group: 'x' },
+    { charId: 'B', group: 'x' },
+    { charId: 'B' },
+  ]
+  const layout = layoutTasks(list, 0)
+
+  it('drags an item only when its run has another', () => {
+    expect(list.map((_, row) => groupDraggable(list, layout, row))).toEqual([
+      true,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+    ])
+  })
+
+  it('agrees with whether the gaps have a target', () => {
+    list.forEach((_, row) => {
+      const gaps = groupDragGaps(list, layout, row)?.gaps ?? []
+      expect(groupDraggable(list, layout, row)).toBe(gaps.some((gap) => gap.target !== null))
+    })
   })
 })
