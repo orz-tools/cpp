@@ -183,8 +183,8 @@ importers:
         specifier: ^3.0.0-alpha.0
         version: 3.0.0-beta.54(react@18.2.0)
       browser-stream-tar:
-        specifier: ^1.2.5
-        version: 1.2.5
+        specifier: ^3.0.6
+        version: 3.0.6
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
@@ -1310,9 +1310,9 @@ packages:
     resolution: {integrity: sha512-Vh3dmFbc4wZeox7M9I/0L9GfFd83Su4+yCck/OF9Gi/P/dAHn0RT7X4K9R7gMNMhDck3DvhR6QXsnQdjjgwNvQ==}
     engines: {node: 20 || >=22}
 
-  browser-stream-tar@1.2.5:
-    resolution: {integrity: sha512-GZDU7KWEvKyouHlsCIyY6AeL4SskGbRMm7wzak2UnTkwCHnoCV4Q9dxh4JYcmYA8y+hnZ6DiE4uB9/QqBzUhvA==}
-    engines: {node: '>=18.17.1'}
+  browser-stream-tar@3.0.6:
+    resolution: {integrity: sha512-gedadFPpslLWqY3i4Ahx+sxliOxr8p8BU0aertdr59IuFwpfPI4SssXWwiBlobje2lmdonINlf5dlIxxIlnQpg==}
+    engines: {node: '>=20.15.0'}
 
   browserslist@4.29.6:
     resolution: {integrity: sha512-CmVVIQ3RVc5HxYEc9X84GvxK/C8C1wH8TlKAiO7uTxF8PDwt7r8t9Qk3J9NkMOVzX5O/HbLv3yzxZg9HPrnI9w==}
@@ -3101,7 +3101,7 @@ snapshots:
     dependencies:
       balanced-match: 4.0.4
 
-  browser-stream-tar@1.2.5: {}
+  browser-stream-tar@3.0.6: {}
 
   browserslist@4.29.6:
     dependencies:
