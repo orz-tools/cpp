@@ -98,6 +98,15 @@ describe('decodeArkntoolsBackup', () => {
     expect(backup.planStageBlacklist).toEqual(['1-7'])
   })
 
+  it('fills in the settings a preset leaves out', () => {
+    const backup = decodeArkntoolsBackup(JSON.stringify({ presets: [{ name: '010_chen', setting: {} }] }))
+    expect(backup.presets![0].setting).toEqual({
+      evolve: [],
+      skills: { normal: [false, 1, 7], elite: [] },
+      uniequip: {},
+    })
+  })
+
   it('round-trips through its own encoding, also as plain JSON', () => {
     const backup = decodeArkntoolsBackup(JSON.stringify({ inputs: { '3301': [1, 2] } }))
     expect(decodeArkntoolsBackup(encodeArkntoolsBackup(backup))).toEqual(backup)

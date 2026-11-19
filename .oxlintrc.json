@@ -24,9 +24,15 @@
     "typescript/no-unsafe-return": "off",
     // 只对 React Compiler 有意义，构建里没有启用 React Compiler
     "react/incompatible-library": "off",
-    "cpp/bundled-icon": "error"
+    "cpp/bundled-icon": "error",
+    // 经典写法的 zod 比 zod/mini 多打包约 16 KB（gzip）；zod/mini 不带报错文案，src/pkg/zod 替它加载
+    "no-restricted-imports": ["error", { "patterns": [{ "regex": "^zod(/|$)", "message": "从 src/pkg/zod 引入 z" }] }]
   },
   "overrides": [
+    {
+      "files": ["src/pkg/zod/**"],
+      "rules": { "no-restricted-imports": "off" }
+    },
     {
       "files": ["scripts/**", "vite.config.ts"],
       "env": { "node": true, "browser": false, "serviceworker": false }

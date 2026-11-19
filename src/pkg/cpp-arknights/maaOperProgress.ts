@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { intBetween, z } from '../zod'
 import type { Character } from './DataManager'
 import { ArknightsCharacterStatus, Profession } from './types'
 
@@ -93,20 +93,18 @@ export function formatMaaOperProgressPlans(plans: readonly MaaOperProgressPlan[]
 }
 
 // 只认 MAA 的这五个键：MAA「干员识别」的导出也是带 name、elite 的对象数组，靠多出来的键把两者分开
-const MaaOperProgressPlanInput = z
-  .object({
-    role: z.string().optional(),
-    name: z.string().min(1),
-    // MAA 自己只接受 elite 1–2、skill_level 2–7；arkntools 导出的计划可能带 0 和 1，一并接受
-    elite: z.number().int().min(0).max(2).optional(),
-    skill_level: z.number().int().min(1).max(7).optional(),
-    skill_mastery: z.array(z.number().int().min(0).max(3)).max(3).optional(),
-  })
-  .strict()
+const MaaOperProgressPlanInput = z.strictObject({
+  role: z.optional(z.string()),
+  name: z.string().check(z.minLength(1)),
+  // MAA 自己只接受 elite 1–2、skill_level 2–7；arkntools 导出的计划可能带 0 和 1，一并接受
+  elite: z.optional(intBetween(0, 2)),
+  skill_level: z.optional(intBetween(1, 7)),
+  skill_mastery: z.optional(z.array(intBetween(0, 3)).check(z.maxLength(3))),
+})
 export type MaaOperProgressPlanInput = z.infer<typeof MaaOperProgressPlanInput>
 
 export function parseMaaOperProgressPlans(input: string): MaaOperProgressPlanInput[] {
-  return z.array(MaaOperProgressPlanInput).min(1).parse(JSON.parse(input))
+  return z.array(MaaOperProgressPlanInput).check(z.minLength(1)).parse(JSON.parse(input))
 }
 
 export type MaaOperProgressImportCharacter = Pick<Character, 'key' | 'maxElite' | 'charIds'> & {
