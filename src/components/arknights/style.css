@@ -1989,8 +1989,10 @@ section:first-child > .cpp-stages-wide-section {
   line-height: 16px;
 }
 
+/* 和后面的任务摘要一样大；宽视图的表格格子是 14px，不写的话「顺带」比摘要大一号 */
 .cpp-mm-piggy-tag {
   margin-right: 4px;
+  font-size: 12px;
   color: var(--bp-palette-gray-1, #5f6b7c);
 }
 
