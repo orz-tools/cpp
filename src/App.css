@@ -908,7 +908,7 @@ body {
 }
 
 .cpp-selection-bar-count {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
@@ -917,6 +917,14 @@ body {
 
 .cpp-selection-bar b {
   color: var(--bp-palette-blue-2, #215db0);
+}
+
+/* 「全选」「清除选择」 at the far end, away from 「清空计划」 next to the count */
+.cpp-selection-bar-end {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  margin-left: auto;
 }
 
 .cpp-peek-card {

@@ -133,12 +133,32 @@ export function handleTitle(selected: ReadonlySet<string>, key: string): string 
     .replaceAll('%d', selected.size.toString())
 }
 
-/** 列表（Menu）下面的一条，跟着列走而不浮在行上：有选择时列表矮这么一条 */
-export function SelectionBar({ count, onClear }: { count: number; onClear: () => void }) {
+/**
+ * 列表（Menu）下面的一条，跟着列走而不浮在行上：有选择时列表矮这么一条。
+ * children 是列表放进来的、对选中的干员做的事，排在人数后面；选择本身不知道计划这回事
+ */
+export function SelectionBar({
+  count,
+  compact,
+  allSelected,
+  onSelectAll,
+  onClear,
+  children,
+}: {
+  count: number
+  /** 只画图标：任务列表那一栏和手机都放不下四个带文字的按钮 */
+  compact?: boolean
+  allSelected: boolean
+  onSelectAll: () => void
+  onClear: () => void
+  children?: React.ReactNode
+}) {
   if (count === 0) return null
   const [before, after] = gt
     .ngettext('已选 %d 名干员', '已选 %d 名干员', count) /* I10N: %d: number */
     .split('%d')
+  const selectAllText = gt.gettext('全选')
+  const clearText = gt.gettext('清除选择')
   return (
     <div className="cpp-selection-bar">
       <span className="cpp-selection-bar-count">
@@ -146,7 +166,28 @@ export function SelectionBar({ count, onClear }: { count: number; onClear: () =>
         <b>{count}</b>
         {after}
       </span>
-      <Button variant="minimal" size="small" text={gt.gettext('清除选择')} onClick={onClear} />
+      {children}
+      <div className="cpp-selection-bar-end">
+        <Button
+          variant="minimal"
+          size="small"
+          icon={compact ? 'multi-select' : undefined}
+          text={compact ? undefined : selectAllText}
+          aria-label={compact ? selectAllText : undefined}
+          title={compact ? selectAllText : undefined}
+          disabled={allSelected}
+          onClick={onSelectAll}
+        />
+        <Button
+          variant="minimal"
+          size="small"
+          icon={compact ? 'cross-circle' : undefined}
+          text={compact ? undefined : clearText}
+          aria-label={compact ? clearText : undefined}
+          title={compact ? clearText : undefined}
+          onClick={onClear}
+        />
+      </div>
     </div>
   )
 }

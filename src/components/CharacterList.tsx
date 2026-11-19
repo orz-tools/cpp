@@ -1342,7 +1342,12 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
           </Menu>
         </ListSelectionContext.Provider>
       )}
-      <SelectionBar count={selected.size} onClear={selection.clear} />
+      <SelectionBar
+        count={selected.size}
+        allSelected={selection.allSelected}
+        onSelectAll={selection.selectAll}
+        onClear={selection.clear}
+      />
       {handle}
     </>
   )
