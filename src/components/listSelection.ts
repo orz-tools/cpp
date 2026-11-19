@@ -24,6 +24,12 @@ export function extendSelection(s: SelectionState, range: readonly string[]): Se
   return { keys: new Set([...s.keys, ...range]), anchor: s.anchor }
 }
 
+/** 锚点不动；keys 已经全在里面时返回 s 本身，免得白白重画 */
+export function selectAllSelection(s: SelectionState, keys: readonly string[]): SelectionState {
+  if (keys.every((key) => s.keys.has(key))) return s
+  return { keys: new Set([...s.keys, ...keys]), anchor: s.anchor }
+}
+
 /** 普通点击是「只要这一个」：清掉选择，但记下锚点，接着 Shift 点另一项选上这两项之间的一段 */
 export function plainSelection(key: string): SelectionState {
   return { keys: EMPTY_SELECTION.keys, anchor: key }

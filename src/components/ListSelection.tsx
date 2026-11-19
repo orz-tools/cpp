@@ -10,6 +10,7 @@ import {
   clickSelection,
   rangeKeys,
   sameScope,
+  selectAllSelection,
   toggleSelection,
   visibleSelection,
 } from './listSelection'
@@ -17,10 +18,15 @@ import {
 export interface ListSelection {
   /** 和列表现在的 keys 的交集 */
   selected: ReadonlySet<string>
+  /** 列表里被选中的，按 keys 的先后；selected 不变时引用不变 */
+  selectedKeys: readonly string[]
+  /** keys 不为空，并且全选上了 */
+  allSelected: boolean
   /** 有选中的就是选择模式：普通点击也是勾选，行不开档案 */
   selecting: boolean
   toggle: (key: string) => void
   clear: () => void
+  selectAll: () => void
   /**
    * 开关档案的那一下用；返回 true 表示已经改了选择（按了修饰键，或在选择模式里），行不再开档案。
    * range 给出锚点到 key 的连选范围，不给时按 keys 的先后算
@@ -35,6 +41,8 @@ export interface ListSelection {
  * 用 context 而不给菜单加 prop：菜单在行里构造，给行传选中集合，选择一变所有行都要重画
  */
 export const ListSelectionContext = createContext<ListSelection | undefined>(undefined)
+
+const NO_KEYS: readonly string[] = []
 
 function inTextField(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false
@@ -61,6 +69,11 @@ export function useListSelection(keys: readonly string[], scope?: readonly unkno
   const state = current ? stored.state : EMPTY_SELECTION
 
   const selected = useMemo(() => visibleSelection(state, keys), [state, keys])
+  const selectedKeys = useMemo(
+    () => (selected.size === 0 ? NO_KEYS : keys.filter((k) => selected.has(k))),
+    [keys, selected],
+  )
+  const allSelected = keys.length > 0 && selected.size === keys.length
 
   const update = useEvent((f: (s: SelectionState) => SelectionState) =>
     setStored((x) => {
@@ -72,6 +85,7 @@ export function useListSelection(keys: readonly string[], scope?: readonly unkno
 
   const toggle = useEvent((key: string) => update((s) => toggleSelection(s, key)))
   const clear = useEvent(() => update((s) => (s.keys.size === 0 ? s : EMPTY_SELECTION)))
+  const selectAll = useEvent(() => update((s) => selectAllSelection(s, keys)))
 
   // 按渲染时看得到的选中判断：从列表里消失的不算，列表里一个勾都没有时点行照旧开档案
   const selecting = selected.size > 0
@@ -102,8 +116,8 @@ export function useListSelection(keys: readonly string[], scope?: readonly unkno
   }, [selecting, clear])
 
   return useMemo(
-    () => ({ selected, selecting, toggle, clear, click, mouseDown }),
-    [selected, selecting, toggle, clear, click, mouseDown],
+    () => ({ selected, selectedKeys, allSelected, selecting, toggle, clear, selectAll, click, mouseDown }),
+    [selected, selectedKeys, allSelected, selecting, toggle, clear, selectAll, click, mouseDown],
   )
 }
 
