@@ -2705,6 +2705,22 @@ section:first-child > .cpp-stages-wide-section {
   font-weight: 600;
 }
 
+.cpp-cost-materials-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin: 16px 0 6px;
+}
+
+.cpp-cost-materials-head > .cpp-cost-subtitle {
+  margin: 0;
+}
+
+.cpp-cost-materials-head > .bp6-segmented-control {
+  margin-left: auto;
+}
+
 .cpp-cost-materials {
   display: flex;
   flex-wrap: wrap;
@@ -2736,8 +2752,13 @@ section:first-child > .cpp-stages-wide-section {
     0 0 2px #fff;
 }
 
+.cpp-cost-folded,
 .cpp-cost-unvalued {
   margin-top: 6px;
+}
+
+.cpp-cost-folded + .cpp-cost-unvalued {
+  margin-top: 2px;
 }
 
 .cpp-cost-vouchers {

@@ -1,6 +1,7 @@
-import { Callout, Tooltip } from '@blueprintjs/core'
-import { useAtomValue } from 'jotai'
-import React, { memo, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { Callout, SegmentedControl, Tooltip } from '@blueprintjs/core'
+import { atom, useAtom, useAtomValue } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+import React, { memo, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useAtoms, useCpp, useGameAdapter } from '../../Cpp'
 import { getLocale } from '../../locales'
@@ -217,25 +218,60 @@ function formatQuantity(n: number) {
   return new Intl.NumberFormat(getLocale().replace('_', '-'), { notation: 'compact' }).format(n)
 }
 
+type MaterialsMode = 'raw' | 'blue'
+
+// 和 cpp_dossier 一样记在本机、不分档案
+const materialsModeStorageAtom = atomWithStorage<unknown>('cpp_cost_materials', null, undefined, { getOnInit: true })
+const materialsModeAtom = atom(
+  (get): MaterialsMode => (get(materialsModeStorageAtom) === 'blue' ? 'blue' : 'raw'),
+  (_get, set, mode: MaterialsMode) => set(materialsModeStorageAtom, mode),
+)
+
+function materialTitle(name: string, quantity: number, folded: number) {
+  if (folded === 0) return `${name} × ${quantity}`
+  return gt
+    .pgettext('training cost', '%s × %d$total（直接 %d$direct，折算 %d$folded）') /* I10N: %s: item name */
+    .replaceAll('%d$total', `${quantity}`)
+    .replaceAll('%d$direct', `${quantity - folded}`)
+    .replaceAll('%d$folded', `${folded}`)
+    .replaceAll('%s', name)
+}
+
 const CostMaterials = memo(({ ga, title, cost }: { ga: ArknightsAdapter; title: string; cost: CostBreakdown }) => {
+  const [mode, setMode] = useAtom(materialsModeAtom)
+  const fold = useMemo(() => (mode === 'blue' ? ga.foldToBlue(cost.items) : null), [ga, cost, mode])
   const items = useMemo(() => {
     const rank = (id: string) => (id === AK_ITEM_VIRTUAL_EXP ? 0 : id === AK_ITEM_GOLD ? 1 : 2)
-    return [...cost.items]
-      .map(([id, quantity]) => ({ id, quantity, item: ga.getItem(id) }))
+    return [...(fold?.items ?? cost.items)]
+      .map(([id, quantity]) => ({ id, quantity, folded: fold?.folded.get(id) ?? 0, item: ga.getItem(id) }))
       .sort(
         (a, b) =>
           rank(a.id) - rank(b.id) ||
           (b.item?.rarity ?? 0) - (a.item?.rarity ?? 0) ||
           (a.item?.sortId ?? '').localeCompare(b.item?.sortId ?? ''),
       )
-  }, [ga, cost])
+  }, [ga, cost, fold])
   const separator = gt.pgettext('list separator', '、')
+  const titleId = useId()
   return (
     <>
-      <div className="cpp-cost-subtitle">{title}</div>
+      <div className="cpp-cost-materials-head" role="group" aria-labelledby={titleId}>
+        <div className="cpp-cost-subtitle" id={titleId}>
+          {title}
+        </div>
+        <SegmentedControl
+          size="small"
+          value={mode}
+          onValueChange={(x) => setMode(x as MaterialsMode)}
+          options={[
+            { label: gt.pgettext('training cost', '原样'), value: 'raw' },
+            { label: gt.pgettext('training cost', '折成蓝材料'), value: 'blue' },
+          ]}
+        />
+      </div>
       {items.length > 0 ? (
         <div className="cpp-cost-materials">
-          {items.map(({ id, quantity, item }) => {
+          {items.map(({ id, quantity, folded, item }) => {
             const name = item?.name ?? id
             return (
               <PeekTrigger
@@ -246,7 +282,7 @@ const CostMaterials = memo(({ ga, title, cost }: { ga: ArknightsAdapter; title: 
                     role={peek ? 'button' : undefined}
                     {...peek}
                     className={'cpp-cost-material' + (peek ? ' ' + peek.className : '')}
-                    title={`${name} × ${quantity}`}
+                    title={materialTitle(name, quantity, folded)}
                   >
                     {item ? <CachedImg src={item.icon} width={34} height={34} alt={name} /> : null}
                     <span className="cpp-cost-material-quantity">{formatQuantity(quantity)}</span>
@@ -259,6 +295,15 @@ const CostMaterials = memo(({ ga, title, cost }: { ga: ArknightsAdapter; title: 
       ) : (
         <div className="cpp-cost-muted">—</div>
       )}
+      {fold && fold.unfolded.size > 0 ? (
+        <div className="cpp-cost-muted cpp-cost-folded">
+          {fold.fee > 0
+            ? gt
+                .pgettext('training cost', '金、紫材料按加工站配方折成了蓝材料；龙门币里有 %d 是合成费')
+                .replaceAll('%d', `${fold.fee}`)
+            : gt.pgettext('training cost', '金、紫材料按加工站配方折成了蓝材料')}
+        </div>
+      ) : null}
       {cost.unvalued.length > 0 ? (
         <div className="cpp-cost-muted cpp-cost-unvalued">
           {gt

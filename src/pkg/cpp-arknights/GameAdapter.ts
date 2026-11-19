@@ -23,6 +23,7 @@ import { PSTR, gt, lpstr } from '../gt'
 import { ArknightsDataManager, Character } from './DataManager'
 import { ArknightsUserDataAdapter } from './UserDataAdapter'
 import { BASE_ROOMS, baseRoomName, reached, roomOrder, unlockCost } from './baseSkills'
+import { FoldedMaterials, foldMaterials } from './foldMaterials'
 import {
   DEFAULT_ITEM_VALUE_CONFIG,
   ItemValueConfig,
@@ -1082,6 +1083,14 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
 
   public getFormulas() {
     return this.dataManager.data.formulas
+  }
+
+  /** 物品栏里的金、紫材料按加工站配方拆到蓝材料；芯片、技巧概要有自己的分类，不拆 */
+  public foldToBlue(items: ReadonlyMap<string, number>): FoldedMaterials {
+    return foldMaterials(items, this.getFormulas(), (id) => {
+      const category = this.getItem(id)?.inventoryCategory
+      return category === Category.Rarity4 || category === Category.Rarity3
+    })
   }
 
   private _expItems?: Record<string, ExpItem>
