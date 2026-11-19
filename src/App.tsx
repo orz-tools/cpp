@@ -87,7 +87,7 @@ const ReloadDataButton = memo(() => {
       <ContextMenu
         content={
           <Menu>
-            <MenuItem text={gt.gettext('重载数据')} icon={'reset'} disabled={updating} onClick={reload} />
+            <MenuItem text={gt.gettext('重新下载数据')} icon={'reset'} disabled={updating} onClick={reload} />
           </Menu>
         }
       >

@@ -124,7 +124,7 @@ const MoreList = memo(({ panels, onOpenPanel }: { panels: SidebarPanel[]; onOpen
       {soul ? <SoulMenuItem /> : null}
       <MenuDivider title={gt.pgettext('phone more', '游戏数据')} />
       <MenuItem icon="refresh" text={gt.gettext('检查数据更新')} disabled={updating} onClick={checkForUpdates} />
-      <MenuItem icon="reset" text={gt.gettext('重载数据')} disabled={updating} onClick={reload} />
+      <MenuItem icon="reset" text={gt.gettext('重新下载数据')} disabled={updating} onClick={reload} />
       <MenuDivider />
       <MenuItem icon="help" text={gt.gettext('帮助文档')} href={HELP_DOC_URL} {...externalLinkProps} />
     </Menu>

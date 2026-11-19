@@ -6,7 +6,7 @@ import { gt } from '../pkg/gt'
 import { ErrAtom } from './Err'
 import { AppToaster } from './Toaster'
 
-/** 顶栏的「检查数据更新」和它右键的「重载数据」，手机「更多」里的两行也用它 */
+/** 顶栏的「检查数据更新」和它右键的「重新下载数据」，手机「更多」里的两行也用它 */
 export function useReloadGameData() {
   const cpp = useCpp()
   const dm = cpp.gameAdapter.getDataManager()
