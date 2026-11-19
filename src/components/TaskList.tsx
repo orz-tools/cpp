@@ -202,6 +202,7 @@ export const TaskMenu = memo(
     dim,
     selected,
     previewed,
+    selecting,
     onHeaderClick,
     onHeaderMouseDown,
   }: {
@@ -222,7 +223,9 @@ export const TaskMenu = memo(
     selected?: boolean
     /** 指针停在「完成至此」上时，这一项会被完成 */
     previewed?: boolean
-    /** 返回 true 时是修饰键点击，已经改了选择，不开档案 */
+    /** 列表有选择：点干员那一行是勾选，不开档案 */
+    selecting?: boolean
+    /** 返回 true 时已经改了选择（修饰键点击，或在选择模式里），不开档案 */
     onHeaderClick?: (e: React.MouseEvent, index: number) => boolean
     onHeaderMouseDown?: React.MouseEventHandler
   }) => {
@@ -298,6 +301,11 @@ export const TaskMenu = memo(
           } as const
         )[starred]
 
+    // 模式里点干员那一行是勾选，不再弹出档案
+    const headerRole = selecting
+      ? ({ role: 'menuitemcheckbox', 'aria-checked': !!selected } as const)
+      : ({ role: 'menuitem', 'aria-haspopup': 'dialog', 'aria-expanded': dossierOpen } as const)
+
     return (
       <li
         role="none"
@@ -309,7 +317,7 @@ export const TaskMenu = memo(
         {same ? undefined : (
           <ContextMenu content={<CharacterContextMenu character={character} alwaysSorting={true} />}>
             <a
-              role="menuitem"
+              {...headerRole}
               tabIndex={0}
               className={
                 'bp6-menu-item cpp-task-menu' +
@@ -317,8 +325,6 @@ export const TaskMenu = memo(
                 (selected ? ' cpp-list-selected' : '')
               }
               style={{ flexShrink: 1, overflow: 'hidden' }}
-              aria-haspopup="dialog"
-              aria-expanded={dossierOpen}
               {...longPress}
               onClick={(e) => {
                 if (index !== undefined && onHeaderClick?.(e, index)) return
@@ -330,11 +336,13 @@ export const TaskMenu = memo(
             >
               <>
                 <span className="bp6-menu-item-icon">
-                  {/* 16px 的头像角上放不下勾，整个换掉 */}
+                  {/* 16px 的头像角上放不下勾和空圈，整个换掉 */}
                   {selected ? (
                     <span className="cpp-select-tick cpp-select-tick-inline">
                       <Icon icon="small-tick" size={12} />
                     </span>
+                  ) : selecting ? (
+                    <span className="cpp-select-tick cpp-select-tick-inline cpp-select-tick-empty" />
                   ) : (
                     <CachedImg
                       src={character.avatar}
@@ -676,6 +684,7 @@ export const TaskList = memo(<G extends IGame>() => {
                   // 只有标题行画得出选中，别的行不跟着选择重画
                   selected={!same(index) && selected.has(list[index][0].charId)}
                   previewed={preview?.has(list[index][0].id) ?? false}
+                  selecting={!same(index) && selection.selecting}
                   onHeaderClick={onHeaderClick}
                   onHeaderMouseDown={selection.mouseDown}
                 />

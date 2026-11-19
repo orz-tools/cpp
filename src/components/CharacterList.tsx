@@ -290,6 +290,7 @@ const CharacterMenu = memo(
     row,
     dimmed,
     selected,
+    selecting,
     onSelectClick,
     onSelectMouseDown,
   }: {
@@ -301,7 +302,9 @@ const CharacterMenu = memo(
     row?: number
     dimmed?: boolean
     selected?: boolean
-    /** 返回 true 时是修饰键点击，已经改了选择，不开档案 */
+    /** 列表有选择：点头像和名字那一格是勾选，不开档案 */
+    selecting?: boolean
+    /** 返回 true 时已经改了选择（修饰键点击，或在选择模式里），不开档案 */
     onSelectClick?: (e: React.MouseEvent, key: string) => boolean
     onSelectMouseDown?: React.MouseEventHandler
   }) => {
@@ -333,9 +336,15 @@ const CharacterMenu = memo(
           <span className="cpp-select-tick">
             <Icon icon="small-tick" size={12} />
           </span>
+        ) : selecting ? (
+          <span className="cpp-select-tick cpp-select-tick-empty" />
         ) : null}
       </span>
     )
+    // 模式里点这一格是勾选，不再弹出档案
+    const charRole = selecting
+      ? ({ role: 'menuitemcheckbox', 'aria-checked': !!selected } as const)
+      : ({ role: 'menuitem', 'aria-haspopup': 'dialog', 'aria-expanded': dossierOpen } as const)
     const onCharClick = (e: React.MouseEvent) => {
       if (onSelectClick?.(e, charId)) return
       openDossier(charId)
@@ -365,15 +374,13 @@ const CharacterMenu = memo(
         >
           <ContextMenu className="cpp-char-menu-avatar-cell" content={<CharacterContextMenu character={character} />}>
             <a
-              role="menuitem"
+              {...charRole}
               tabIndex={0}
               className={
                 'bp6-menu-item cpp-char-menu-char' +
                 (dossierOpen ? ' bp6-active bp6-intent-primary cpp-dossier-open' : '')
               }
               aria-label={character.name}
-              aria-haspopup="dialog"
-              aria-expanded={dossierOpen}
               {...longPress}
               onClick={onCharClick}
               onMouseDown={onSelectMouseDown}
@@ -436,14 +443,12 @@ const CharacterMenu = memo(
       >
         <ContextMenu content={<CharacterContextMenu character={character} />}>
           <a
-            role="menuitem"
+            {...charRole}
             tabIndex={0}
             className={
               'bp6-menu-item cpp-char-menu-char' +
               (dossierOpen ? ' bp6-active bp6-intent-primary cpp-dossier-open' : '')
             }
-            aria-haspopup="dialog"
-            aria-expanded={dossierOpen}
             {...longPress}
             onClick={onCharClick}
             onMouseDown={onSelectMouseDown}
@@ -1326,6 +1331,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
                     row={index}
                     dimmed={active ? inRanges(active.ranges, index) : false}
                     selected={selected.has(keys[index])}
+                    selecting={canSelect && selection.selecting}
                     onSelectClick={canSelect ? selection.click : undefined}
                     onSelectMouseDown={canSelect ? selection.mouseDown : undefined}
                   />
