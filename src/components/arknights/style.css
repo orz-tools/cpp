@@ -2389,6 +2389,11 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 13px;
 }
 
+/* 勾选框对着摘要第一行的字：通用的 4px 上边距让它低出 3px（中文字形比行框中线还高半像素） */
+.cpp-mm-dossier-row > .cpp-mm-check.bp6-control {
+  margin-top: 1px;
+}
+
 .cpp-mm-together {
   margin: 6px 0 0 24px;
   padding: 6px 8px;
