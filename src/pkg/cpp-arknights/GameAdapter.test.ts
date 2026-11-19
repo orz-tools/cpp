@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Querier, QueryParam } from '../cpp-basic'
 import type { DataContainerObject } from '../dccache'
+import { Character } from './DataManager'
 import { ArknightsAdapter } from './GameAdapter'
+import { HeyboxSurveySource, YituliuSurveySource } from './survey'
 import { Arknights, ArknightsRegion, PreferenceKeys, SurveySourceKey } from './types'
 
 vi.mock('localforage', () => ({
@@ -362,6 +364,63 @@ describe('ArknightsAdapter', () => {
       // The default segment also asks for `own`, a field of the shell's, so it is only checked to drop the zeros too
       const where = { _: 'field' as const, field: 'cost.elite2', op: '!=', operand: 0 }
       expect(presets['cost.elite2'].query.where).toMatchObject({ operand: expect.arrayContaining([where]) })
+    })
+  })
+
+  describe('optional data', () => {
+    const someone = { key: 'char_x' } as Character
+
+    beforeEach(() => {
+      vi.spyOn(console, 'warn').mockImplementation(() => {})
+      remote.set('arknights-yituliu-operatorsurvey', {
+        result: [{ charId: 'char_x', rarity: 5, own: 0.5, elite: {} }],
+        userCount: 10,
+      })
+      remote.set('arknights-heybox-operatorsurvey', { rows: [{ i: 'char_x', o: 0.4, e: [null, null, null] }] })
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('starts without the penguin matrix, with no stages and no item values', async () => {
+      remote.delete('arknights-penguin-CN')
+      const ga = new ArknightsAdapter()
+      const dm = ga.getDataManager()
+      await dm.init('zh_CN')
+      expect(dm.isMissing(dm.$penguin)).toBe(true)
+      expect(ga.getStageInfos()).toEqual({})
+      expect(ga.getItemValues()).toEqual({ status: 'unavailable' })
+      expect(ga.getItem('30011').valueAsAp).toBeUndefined()
+    })
+
+    it('starts without a survey, whose source then has nothing for anyone', async () => {
+      remote.delete('arknights-yituliu-operatorsurvey')
+      const ga = new ArknightsAdapter()
+      const dm = ga.getDataManager()
+      await dm.init('zh_CN')
+      expect(dm.isMissing(dm.$surveyYituliu)).toBe(true)
+      expect(new YituliuSurveySource(dm).own(someone)).toBeNull()
+      expect(new HeyboxSurveySource(dm).own(someone)).toMatchObject({ percent: 0.4 })
+    })
+
+    it('does not start without the game data', async () => {
+      remote.delete('arknights-kengxxiao-zh_CN')
+      await expect(new ArknightsAdapter().getDataManager().init('zh_CN')).rejects.toThrow('no remote')
+    })
+
+    it('takes the penguin matrix in once loadMissing gets it', async () => {
+      const matrix = remote.get('arknights-penguin-CN')
+      remote.delete('arknights-penguin-CN')
+      const ga = new ArknightsAdapter()
+      const dm = ga.getDataManager()
+      await dm.init('zh_CN')
+
+      remote.set('arknights-penguin-CN', matrix)
+      expect(await dm.loadMissing()).toMatchObject({ applied: true, failed: [] })
+      expect(dm.isMissing(dm.$penguin)).toBe(false)
+      expect(Object.keys(ga.getStageInfos())).toContain('main_01')
+      expect(ga.getItemValues().status).not.toBe('unavailable')
     })
   })
 })

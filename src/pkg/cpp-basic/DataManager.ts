@@ -27,6 +27,8 @@ void destroy('arknights-yituliu-values')
 export interface DataSources {
   readonly required: DataContainerObject<any>[]
   readonly absolutelyRequired: DataContainerObject<any>[]
+  /** Among required, the containers a load may go without; absent means none. */
+  readonly optional?: DataContainerObject<any>[]
 }
 
 export interface DataSnapshot {
@@ -35,6 +37,8 @@ export interface DataSnapshot {
 }
 
 export type ContainerGetter = <T extends object>(obj: DataContainerObject<T>) => IDataContainer<T>
+/** For an optional container: undefined while the committed data goes without it */
+export type OptionalContainerGetter = <T extends object>(obj: DataContainerObject<T>) => IDataContainer<T> | undefined
 
 export interface DataManagerState {
   status: 'loading' | 'ready' | 'error'
@@ -46,6 +50,8 @@ export interface DataManagerState {
   updating: boolean
   /** only while status is 'error', that is, when the first load failed */
   error?: Error
+  /** Names of the optional containers the committed data goes without */
+  missing: string[]
 }
 
 export interface UpdateOptions {
@@ -56,6 +62,8 @@ export interface UpdateOptions {
 export interface UpdateResult {
   applied: boolean
   notify: boolean
+  /** Errors of the optional containers that could not be loaded this time; everything else was committed */
+  failed: Error[]
 }
 
 /** Returns when the derived data built at this commit goes stale (an event starting or ending), if ever. */
@@ -79,11 +87,15 @@ export abstract class BasicDataManager<
 > {
   /** Validates the region and creates its sources without touching this manager; throws for an unknown region. */
   protected abstract createSources(region: string): S
-  protected abstract buildSnapshot(sources: S, getContainer: ContainerGetter): Snap
+  protected abstract buildSnapshot(
+    sources: S,
+    getContainer: ContainerGetter,
+    getOptional: OptionalContainerGetter,
+  ): Snap
 
   private committed?: Committed<S, Snap>
   private initRegion?: string
-  private state: DataManagerState = { status: 'loading', generation: 0, loading: [], updating: false }
+  private state: DataManagerState = { status: 'loading', generation: 0, loading: [], updating: false, missing: [] }
   private readonly listeners = new Set<() => void>()
   private readonly loadingNames = new Set<string>()
   private readonly commitHooks: CommitHook[] = []
@@ -120,6 +132,11 @@ export abstract class BasicDataManager<
     return this.state
   }
 
+  /** The committed data goes without this optional container. */
+  public isMissing(obj: DataContainerObject<any>): boolean {
+    return this.state.missing.includes(obj.name)
+  }
+
   public subscribe(listener: () => void): () => void {
     this.listeners.add(listener)
     return () => void this.listeners.delete(listener)
@@ -131,7 +148,7 @@ export abstract class BasicDataManager<
 
   public init(region: string): Promise<void> {
     this.initRegion = region
-    return this.enqueue(() => this.doInit(region))
+    return this.enqueue(async () => void (await this.doInit(region)))
   }
 
   public update({ force = false, absolutelyRequiredOnly = false }: UpdateOptions = {}): Promise<UpdateResult> {
@@ -170,9 +187,28 @@ export abstract class BasicDataManager<
 
       const sources = this.createSources(region)
       const byName = new Map([...committed.containers].map(([obj, container]) => [obj.name, container]))
-      const containers = await this.loadContainers(sources.required, undefined, (obj) => byName.get(obj.name))
-      this.commit({ region, sources, containers, snapshot: this.buildSnapshot(sources, getter(containers)) })
+      const { containers } = await this.loadContainers(
+        sources.required,
+        undefined,
+        (obj) => byName.get(obj.name),
+        optionalOf(sources),
+      )
+      this.commit({ region, sources, containers, snapshot: this.snapshotOf(sources, containers) })
       return true
+    })
+  }
+
+  /** Loads the optional containers the committed data goes without, and commits what came. */
+  public loadMissing(): Promise<UpdateResult> {
+    return this.enqueue(async () => {
+      const committed = this.committed
+      const missing = committed ? missingOf(committed) : []
+      if (!committed || missing.length === 0) return { applied: false, notify: false, failed: [] }
+      const loaded = await this.loadContainers(missing, undefined, () => undefined, optionalOf(committed.sources))
+      if (loaded.containers.size === 0) return { applied: false, notify: false, failed: loaded.failed }
+      const containers = new Map([...committed.containers, ...loaded.containers])
+      this.commit({ ...committed, containers, snapshot: this.snapshotOf(committed.sources, containers) })
+      return { applied: true, notify: false, failed: loaded.failed }
     })
   }
 
@@ -194,11 +230,17 @@ export abstract class BasicDataManager<
     })
   }
 
-  private async doInit(region: string) {
+  private async doInit(region: string): Promise<Error[]> {
     try {
       const sources = this.createSources(region)
-      const containers = await this.loadContainers(sources.required, undefined, () => undefined)
-      this.commit({ region, sources, containers, snapshot: this.buildSnapshot(sources, getter(containers)) })
+      const { containers, failed } = await this.loadContainers(
+        sources.required,
+        undefined,
+        () => undefined,
+        optionalOf(sources),
+      )
+      this.commit({ region, sources, containers, snapshot: this.snapshotOf(sources, containers) })
+      return failed
     } catch (e) {
       if (!this.committed) this.setState({ status: 'error', error: e as Error })
       throw e
@@ -209,23 +251,34 @@ export abstract class BasicDataManager<
     const committed = this.committed
     if (!committed) {
       if (this.initRegion === undefined) throw new Error('DataManager is not initialized')
-      await this.doInit(this.initRegion)
-      return { applied: true, notify: false }
+      const failed = await this.doInit(this.initRegion)
+      return { applied: true, notify: false, failed }
     }
 
     const targets = absolutelyRequiredOnly ? committed.sources.absolutelyRequired : committed.sources.required
+    const optional = optionalOf(committed.sources)
     const changed = new Set<DataContainerObject<any>>()
     const fresh = new Map<DataContainerObject<any>, IDataContainer>()
+    const failed: Error[] = []
     await Promise.all(
       targets.map(async (obj) => {
-        if (!force && Date.now() - (await getLastCheckedAt(obj)) < obj.autoUpdateThreshold) return
         const previous = committed.containers.get(obj)
-        const container = await this.loadContainer(
-          obj,
-          force,
-          () => changed.add(obj),
-          useCurrent ? previous : undefined,
-        )
+        // One the committed data goes without is tried on every update, however recently it was checked.
+        if (!force && previous && Date.now() - (await getLastCheckedAt(obj)) < obj.autoUpdateThreshold) return
+        let container: IDataContainer
+        try {
+          container = await this.loadContainer(obj, force, () => changed.add(obj), useCurrent ? previous : undefined)
+        } catch (e) {
+          if (!optional.has(obj)) throw e
+          // It stays as committed, the old copy or none, and the rest go ahead.
+          console.warn(`Failed to update ${obj.name}; keeping what is committed.`, e)
+          changed.delete(obj)
+          failed.push(e as Error)
+          return
+        }
+        // dccache reports no refresh when it finds a stored copy of the version named, which is new to the snapshot
+        // all the same.
+        if (!previous) changed.add(obj)
         // Downloaded again yet the same (a repo version file can run ahead of its data file): keep the object held,
         // so what is cached against it, such as the item value inputs, stays valid.
         const same =
@@ -239,7 +292,7 @@ export abstract class BasicDataManager<
     if (changed.size === 0) {
       // Only the version moved. Keep it, or the next check downloads the same content again to compare.
       for (const [obj, container] of fresh) committed.containers.set(obj, container)
-      return { applied: false, notify: false }
+      return { applied: false, notify: false, failed }
     }
 
     let notify = false
@@ -255,26 +308,41 @@ export abstract class BasicDataManager<
 
     const containers = new Map(committed.containers)
     for (const [obj, container] of fresh) containers.set(obj, container)
-    this.commit({ ...committed, containers, snapshot: this.buildSnapshot(committed.sources, getter(containers)) })
-    return { applied: true, notify }
+    this.commit({ ...committed, containers, snapshot: this.snapshotOf(committed.sources, containers) })
+    return { applied: true, notify, failed }
   }
 
   private doRebuild() {
     const committed = this.committed
     if (!committed) return
-    this.commit({ ...committed, snapshot: this.buildSnapshot(committed.sources, getter(committed.containers)) })
+    this.commit({ ...committed, snapshot: this.snapshotOf(committed.sources, committed.containers) })
   }
 
+  private snapshotOf(sources: S, containers: Map<DataContainerObject<any>, IDataContainer>) {
+    return this.buildSnapshot(sources, getter(containers), optionalGetter(containers))
+  }
+
+  /** An optional container that fails is left out and its error returned; a required one that fails throws. */
   private async loadContainers(
     objs: DataContainerObject<any>[],
     refresh: boolean | undefined,
     current: (obj: DataContainerObject<any>) => IDataContainer | undefined,
+    optional: ReadonlySet<DataContainerObject<any>>,
   ) {
     const containers = new Map<DataContainerObject<any>, IDataContainer>()
+    const failed: Error[] = []
     await Promise.all(
-      objs.map(async (obj) => containers.set(obj, await this.loadContainer(obj, refresh, undefined, current(obj)))),
+      objs.map(async (obj) => {
+        try {
+          containers.set(obj, await this.loadContainer(obj, refresh, undefined, current(obj)))
+        } catch (e) {
+          if (!optional.has(obj)) throw e
+          console.warn(`Failed to load ${obj.name}; going without it.`, e)
+          failed.push(e as Error)
+        }
+      }),
     )
-    return containers
+    return { containers, failed }
   }
 
   private async loadContainer(
@@ -301,11 +369,13 @@ export abstract class BasicDataManager<
 
   private commit(next: Committed<S, Snap>) {
     this.committed = next
+    // Set before the commit hooks run, so that isMissing() answers for this commit in them.
     this.state = {
       ...this.state,
       status: 'ready',
       generation: this.state.generation + 1,
       error: undefined,
+      missing: missingOf(next).map((obj) => obj.name),
     }
 
     let expiresAt: number | undefined
@@ -357,6 +427,18 @@ function getter(containers: Map<DataContainerObject<any>, IDataContainer>): Cont
     if (!container) throw new Error(`DataContainerObject ${obj.name} not found`)
     return container as IDataContainer<T>
   }
+}
+
+function optionalGetter(containers: Map<DataContainerObject<any>, IDataContainer>): OptionalContainerGetter {
+  return <T extends object>(obj: DataContainerObject<T>) => containers.get(obj) as IDataContainer<T> | undefined
+}
+
+function optionalOf(sources: DataSources): ReadonlySet<DataContainerObject<any>> {
+  return new Set(sources.optional ?? [])
+}
+
+function missingOf({ sources, containers }: Committed<DataSources, DataSnapshot>) {
+  return (sources.optional ?? []).filter((obj) => !containers.has(obj))
 }
 
 function noop() {

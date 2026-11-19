@@ -6,7 +6,7 @@ import { gt } from '../pkg/gt'
 import { ErrAtom } from './Err'
 import { AppToaster } from './Toaster'
 
-/** 顶栏的「检查数据更新」和它右键的「重载数据」，手机「更多」里的两行也用它 */
+/** 顶栏的「检查数据更新」和它右键的「重新下载数据」，手机「更多」里的两行也用它 */
 export function useReloadGameData() {
   const cpp = useCpp()
   const dm = cpp.gameAdapter.getDataManager()
@@ -20,6 +20,12 @@ export function useReloadGameData() {
     )
     try {
       const r = await operation()
+      if (r.failed.length > 0) {
+        // What did load is committed already; the error says what did not.
+        toaster.dismiss(reload)
+        setError({ error: r.failed[0], context: gt.pgettext('error context', '检查数据更新失败') })
+        return
+      }
       // Replaced in place: a dismiss followed by a show with the same key drops both, as the dismiss lands last.
       if (r.applied) {
         toaster.show({ message: gt.gettext('游戏数据已更新'), intent: 'success' }, reload)

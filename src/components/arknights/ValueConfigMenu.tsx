@@ -39,6 +39,7 @@ import { gt } from '../../pkg/gt'
 import { externalLinkProps } from '../AboutList'
 import { StagePopover } from '../ConfigUi'
 import { ItemIcon } from '../Icons'
+import { useMissingData } from '../MissingData'
 
 // 用每对芯片中 T1 芯片的物品名称呼职业，跟随区服语言
 const CHIP_ITEM_BY_PROFESSION: Record<string, string> = {
@@ -475,6 +476,8 @@ export const ValueConfigDialog = memo(({ onClose }: { onClose: () => void }) => 
 export const ValueConfigMenu = memo(() => {
   const ga = useGameAdapter<Arknights>() as ArknightsAdapter
   const [open, setOpen] = useState(false)
+  const dm = ga.getDataManager()
+  const { loading, retry } = useMissingData(dm.$penguin)
   const result = ga.getItemValues()
 
   return (
@@ -487,6 +490,22 @@ export const ValueConfigMenu = memo(() => {
             .ngettext('已定价 %d 种物品', '已定价 %d 种物品', result.pricedCount) /* I10N: %d: number */
             .replaceAll('%d', String(result.pricedCount))}
         />
+      ) : result.status === 'unavailable' ? (
+        <>
+          <MenuItem
+            className="cpp-menu-not-interactive"
+            icon="error"
+            intent={Intent.DANGER}
+            text={gt.pgettext('value config', '企鹅物流的掉落数据载入失败')}
+          />
+          <MenuItem
+            icon="refresh"
+            text={gt.pgettext('value config', '重试')}
+            shouldDismissPopover={false}
+            disabled={loading}
+            onClick={retry}
+          />
+        </>
       ) : (
         <MenuItem
           className="cpp-menu-not-interactive"

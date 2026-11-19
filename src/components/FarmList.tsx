@@ -16,6 +16,7 @@ import { sortBy } from 'ramda'
 import { memo, useEffect } from 'react'
 import useEvent from 'react-use-event-hook'
 import { Cpp, FarmLevel, FarmLevelNames, FarmLevelShortNames, Level, useCpp, useGameAdapter } from '../Cpp'
+import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
@@ -161,13 +162,20 @@ const FarmLevelButton = memo(({ level, refresh }: { level: FarmLevel; refresh?: 
   )
 })
 
+const noFarmNotice = () => null
+
 export const FarmList = memo(() => {
   const cpp = useCpp()
   const { loading, response, send, error } = useRequest(plan)
   const farmLevelAtom = cpp.preferenceAtoms.farmLevelAtom
   const farmLevel = useAtomValue(farmLevelAtom)
   const setErr = useSetAtom(ErrAtom)
+  // The game component is fixed per page load, so every render calls the same hooks.
+  const { useFarmNotice = noFarmNotice } = useComponents()
+  const notice = useFarmNotice()
+  const blocked = notice != null
   const refresh = useEvent((f?: FarmLevel) => {
+    if (blocked) return
     if (!f) f = farmLevel
     try {
       switch (f) {
@@ -200,18 +208,20 @@ export const FarmList = memo(() => {
     }
   }, [error])
 
+  // Runs again when the notice goes away, such as after its 重试, and plans then.
   useEffect(() => {
+    if (blocked) return
     const i = setTimeout(refresh, 1000)
     return () => clearTimeout(i)
-  }, [refresh])
+  }, [blocked, refresh])
 
   const expired = response && response.expired()
   useEffect(() => {
-    if (expired) {
+    if (expired && !blocked) {
       const i = setTimeout(refresh, 1000)
       return () => clearTimeout(i)
     }
-  }, [expired, refresh])
+  }, [blocked, expired, refresh])
 
   return (
     <>
@@ -246,16 +256,18 @@ export const FarmList = memo(() => {
           <Button
             icon={loading ? <Spinner size={16} /> : 'refresh'}
             variant="minimal"
-            disabled={loading}
+            disabled={loading || blocked}
             onClick={() => refresh()}
           />
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
-          {response ? <ValueTag value={response.ap} intent={'primary'} /> : null}
+          {response && !blocked ? <ValueTag value={response.ap} intent={'primary'} /> : null}
         </Navbar.Group>
       </Navbar>
-      <div className="cpp-farm-body" style={{ opacity: expired ? 0.5 : undefined }}>
-        {response ? (
+      <div className="cpp-farm-body" style={{ opacity: expired && !blocked ? 0.5 : undefined }}>
+        {blocked ? (
+          notice
+        ) : response ? (
           <>
             <Menu className="bp6-elevation-1 cpp-farm-stages">
               {response.stageRuns.map((run) => (

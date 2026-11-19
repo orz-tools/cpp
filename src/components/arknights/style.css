@@ -236,6 +236,10 @@
   color: var(--bp-palette-dark-gray-1, #1c2127);
 }
 
+.cpp-charstat-own-error {
+  color: var(--bp-palette-gray-1, #5f6b7c);
+}
+
 .cpp-charstat-empty {
   padding: 14px;
   font-size: 13px;

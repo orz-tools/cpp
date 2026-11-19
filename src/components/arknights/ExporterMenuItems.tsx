@@ -93,13 +93,15 @@ export const ExporterMenuItems = memo(() => {
   const copyArkntoolsBackup = useEvent(async () => {
     const aga = ga as ArknightsAdapter
     const uda = aga.getUserDataAdapter()
+    const dm = aga.getDataManager()
     const stageCodes = Object.fromEntries(Object.values(aga.getStageInfos()).map((x) => [x.id, x.rawCode] as const))
+    const forbiddenStageIds = store.get(cpp.preferenceAtoms.forbiddenStageIdsAtom)
     const { backup, presets, partial, excluded, special } = buildArkntoolsBackup(
       store.get(atoms.allDataAtom),
       uda.getFrozenEmptyCharacterStatus(),
       (key) => aga.getCharacter(key) as Character | undefined,
       (key, current, goal) => uda.generateTasksForCharacter(key, current, goal).flatMap((x) => x.requires),
-      arkntoolsCodesFromStageIds(store.get(cpp.preferenceAtoms.forbiddenStageIdsAtom), stageCodes),
+      arkntoolsCodesFromStageIds(forbiddenStageIds, stageCodes),
     )
 
     const toaster = await AppToaster
@@ -119,6 +121,10 @@ export const ExporterMenuItems = memo(() => {
         ) /* I10N: %d: number */
         .replaceAll('%d', String(presets)),
     ]
+    // The stage codes come from the penguin matrix; without it no excluded stage can be named.
+    if (dm.isMissing(dm.$penguin) && forbiddenStageIds.length > 0) {
+      notes.push(gt.gettext('企鹅物流的掉落数据没有载入，排除的关卡没有导出。'))
+    }
     if (partial > 0) {
       notes.push(
         gt

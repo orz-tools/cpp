@@ -21,8 +21,11 @@ const mismatches = new Map<string, { named: Version; carried: Version }>()
 
 interface Meta {
   lastCheckedAt: number
-  error?: string
   header: IDataContainerHeader
+}
+
+function headerOf(c: IDataContainerHeader): IDataContainerHeader {
+  return Object.assign({}, c, { data: undefined })
 }
 
 async function loadMeta(name: string) {
@@ -59,6 +62,9 @@ export async function destroy(name: string) {
 }
 
 /**
+ * Without refresh, a copy in hand that passes verification is returned as it is, so opening the page does not wait on
+ * the network; the update check brings it up to date. The repo is asked only when there is no such copy.
+ *
  * current: the container already held in memory. It stands in for the copy stored in IndexedDB, so an unchanged
  * version is neither downloaded again nor read back from storage.
  */
@@ -74,37 +80,27 @@ export function load<T extends object>(
       return await fetch(obj, refresh, onRefreshed, current)
     }
 
+    // What is held in memory speaks for this session, whatever the meta says.
+    if (current) return current
+
+    const data = await loadData<T>(obj.name)
     const meta = await loadMeta(obj.name)
-    const data = current || (await loadData<T>(obj.name))
-    const metaVerify = meta ? obj.safeVerify(meta.header) : null
-    const dataVerify = data ? obj.safeVerify(data) : null
-
-    if (metaVerify) {
-      return await fetch(obj, true, onRefreshed)
-    }
-
-    if (meta) {
-      if (data) {
-        if (!deepEqual(meta.header.version, data.version, { strict: true })) {
-          // break
-        } else if (!metaVerify && !dataVerify) {
-          return data
-        } else if (meta.error) {
-          throw new Error(meta.error)
-        }
-      } else {
-        if (meta.error) {
-          throw new Error(meta.error)
-        }
+    if (data && !obj.safeVerify(data)) {
+      if (!meta || !deepEqual(meta.header.version, data.version, { strict: true })) {
+        // Earlier builds wrote the meta before downloading, so a download cut short left it naming another version;
+        // a page closed between storing the data and writing the meta leaves it behind too. Make it describe the
+        // copy, never checked, so the next update check asks the repo at once.
+        await saveMeta(obj.name, { lastCheckedAt: 0, header: headerOf(data) })
       }
-    } else {
-      // break
+      return data
     }
 
-    return await fetch(obj, undefined, onRefreshed, current)
+    // A higher requiredSchema fails the stored version too; force past the version file a CDN may still serve.
+    return await fetch(obj, meta && obj.safeVerify(meta.header) ? true : undefined, onRefreshed)
   })
 }
 
+/** The meta is written only once the data it names is stored, so a download cut short leaves the copy in hand. */
 async function fetch<T extends object>(
   obj: DataContainerObject<T>,
   force?: boolean,
@@ -112,13 +108,13 @@ async function fetch<T extends object>(
   current?: IDataContainer<T>,
 ): Promise<IDataContainer<T>> {
   const header = await obj.getHeader(force)
-  const now = Date.now()
-  await saveMeta(obj.name, { lastCheckedAt: now, header: Object.assign({}, header, { data: undefined }) })
   obj.verify(header)
+  const now = Date.now()
 
   const previousData = current || (await loadData<T>(obj.name))
   if (previousData && previousData.version && !obj.safeVerify(previousData)) {
     if (deepEqual(header.version, previousData.version, { strict: true })) {
+      await saveMeta(obj.name, { lastCheckedAt: now, header: headerOf(header) })
       return previousData
     }
     const mismatch = mismatches.get(obj.name)
@@ -127,19 +123,22 @@ async function fetch<T extends object>(
       deepEqual(header.version, mismatch.named, { strict: true }) &&
       deepEqual(previousData.version, mismatch.carried, { strict: true })
     ) {
-      await saveMeta(obj.name, { lastCheckedAt: now, header: Object.assign({}, previousData, { data: undefined }) })
+      await saveMeta(obj.name, { lastCheckedAt: now, header: headerOf(previousData) })
       return previousData
     }
   }
 
   const data = 'data' in header ? header : await obj.getData(header)
-  await saveData(obj.name, data)
+  // Verified before it is stored, so a download that fails it does not replace a copy that works.
   obj.verify(data)
+  await saveData(obj.name, data)
 
-  if (!deepEqual(header.version, data.version, { strict: true })) {
+  if (deepEqual(header.version, data.version, { strict: true })) {
+    await saveMeta(obj.name, { lastCheckedAt: now, header: headerOf(header) })
+  } else {
     console.warn('Remote version and data mismatch.')
     mismatches.set(obj.name, { named: header.version, carried: data.version })
-    await saveMeta(obj.name, { lastCheckedAt: now, header: Object.assign({}, data, { data: undefined }) })
+    await saveMeta(obj.name, { lastCheckedAt: now, header: headerOf(data) })
   }
 
   // deep-equal spent 1.3 s in a single task on the 1 MB penguin matrix; key order changes only cost an extra rebuild.

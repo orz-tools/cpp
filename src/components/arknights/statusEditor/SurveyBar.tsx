@@ -1,16 +1,25 @@
-import { Icon, SegmentedControl, Tooltip } from '@blueprintjs/core'
+import { Button, Icon, SegmentedControl, Tooltip } from '@blueprintjs/core'
 import { memo, useId } from 'react'
-import { SurveySourceKey } from '../../../pkg/cpp-arknights'
+import { ArknightsDataManager, SurveySourceKey } from '../../../pkg/cpp-arknights'
 import { HeyboxSurveySource, YituliuSurveySource } from '../../../pkg/cpp-arknights/survey'
 import { gt } from '../../../pkg/gt'
+import { useMissingData } from '../../MissingData'
 import { statTooltip } from './SurveyStat'
 import { useEditor } from './context'
 import { percentText } from './text'
 
+/** The data container behind the statistics chosen; null for 不显示 */
+export function surveyContainer(dm: ArknightsDataManager, source: SurveySourceKey) {
+  if (source === SurveySourceKey.Yituliu) return dm.$surveyYituliu
+  if (source === SurveySourceKey.Heybox) return dm.$surveyHeybox
+  return null
+}
+
 /** Which community statistics to show under the cells, and the operator's ownership rate in them. */
 export const SurveyBar = memo(
   ({ source, setSource }: { source: SurveySourceKey; setSource: (x: SurveySourceKey) => void }) => {
-    const { survey, surveyName, character } = useEditor()
+    const { survey, surveyName, character, dm } = useEditor()
+    const { missing, loading, retry } = useMissingData(surveyContainer(dm, source))
     const labelId = useId()
     const own = survey?.own(character)
 
@@ -29,7 +38,14 @@ export const SurveyBar = memo(
             ]}
           />
         </div>
-        {survey ? (
+        {missing ? (
+          <span className="cpp-charstat-own cpp-charstat-own-error">
+            {gt.pgettext('arknights status editor', '统计载入失败')}
+            <Button size="small" variant="outlined" loading={loading} onClick={retry}>
+              {gt.pgettext('arknights status editor', '重试')}
+            </Button>
+          </span>
+        ) : survey ? (
           <span className="cpp-charstat-own">
             <Icon icon="people" size={14} />
             {gt.pgettext('arknights status editor', '持有率')}

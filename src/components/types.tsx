@@ -93,6 +93,8 @@ export interface IGameComponent {
   ConfigMenuItems?: React.FC
   /** A hook: the formats the import paste box tries after Closure++'s own, in order */
   useImportFormats?: () => ImportFormat[]
+  /** A hook: what the 刷图 area shows in place of a plan when the game cannot plan; null plans as usual */
+  useFarmNotice?: () => React.ReactNode
   /** hook：导入结果对话框按导入前后的用户数据加的页，按数组顺序 */
   useImportDiffTabs?: (before: UserData<any>, after: UserData<any>) => ImportDiffTab[]
   extraFields?: Record<
