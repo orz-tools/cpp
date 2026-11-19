@@ -1906,10 +1906,12 @@ section:first-child > .cpp-stages-wide-section {
   padding: 6px 8px;
 }
 
+/* 每个人一块：左栏是勾选框或「+」，右栏是人、摘要、原因；顺带每条一行，勾选框也在左栏 */
 .cpp-mm-run-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 2px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 2px;
+  align-items: start;
 }
 
 .cpp-mm-check.bp6-control {
@@ -1927,11 +1929,14 @@ section:first-child > .cpp-stages-wide-section {
   text-decoration: line-through;
 }
 
-/* 顺带的任务挂在干员下面 */
+/* 顺带跟着这一块分列，勾选框在左栏。不认 subgrid 的浏览器用前一行 */
 .cpp-mm-piggy {
-  display: flex;
-  align-items: flex-start;
-  gap: 2px;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: subgrid;
+  column-gap: 2px;
+  align-items: start;
   margin-top: 2px;
 }
 
@@ -1949,7 +1954,6 @@ section:first-child > .cpp-stages-wide-section {
 
 /* 带上的人：左栏没有勾选框，是灰色的「+」，和勾选框一样宽；「×」在第一行最右边 */
 .cpp-mm-tag-mark {
-  flex: none;
   width: 16px;
   margin: 3px 8px 0 0;
   color: var(--bp-palette-gray-1, #5f6b7c);
@@ -1957,10 +1961,6 @@ section:first-child > .cpp-stages-wide-section {
   font-weight: 600;
   line-height: 18px;
   text-align: center;
-}
-
-.cpp-mm-run-row.is-tag-along > .cpp-mm-run-who {
-  flex: 1 1 auto;
 }
 
 .cpp-mm-run-line > .cpp-mm-tag-drop {

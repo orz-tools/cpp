@@ -912,7 +912,7 @@ const PiggybackRows = memo(({ board, missions }: { board: Board; missions: Missi
   )
 })
 
-/** 带上的人：左栏是灰色的「+」，右栏第一行是人、模组和「×」，下面是他这一次能推进的任务 */
+/** 带上的人：左栏是灰色的「+」，右栏是人、模组和「×」；下面是他这一次能推进的任务，每条一行，勾选框也在左栏 */
 const TagAlongRows = memo(
   ({ ticket, board, onDrop }: { ticket: Ticket; board: Board; onDrop: (index: number, charId: string) => void }) => (
     <>
@@ -927,8 +927,8 @@ const TagAlongRows = memo(
               <ModuleCodes missions={x.missions} />
               <DropButton className="cpp-mm-tag-drop" charId={x.charId} onClick={() => onDrop(i, x.charId)} />
             </div>
-            <PiggybackRows board={board} missions={x.missions} />
           </div>
+          <PiggybackRows board={board} missions={x.missions} />
         </div>
       ))}
     </>
@@ -971,8 +971,8 @@ const ExpandedRun = memo(
                   {summary}
                 </div>
                 {block ? <div className="cpp-mm-muted">{blockText(ga, m.charId, block.reason)}</div> : null}
-                {piggies ? <PiggybackRows board={board} missions={piggies} /> : null}
               </div>
+              {piggies ? <PiggybackRows board={board} missions={piggies} /> : null}
             </div>
           )
         })}
