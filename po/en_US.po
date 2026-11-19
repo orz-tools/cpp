@@ -105,7 +105,7 @@ msgstr ""
 "straight there."
 
 #. %s: sidebar panel label
-#: src/components/Sidebar.tsx:42
+#: src/components/Sidebar.tsx:88
 msgid "%s（有新内容）"
 msgstr "%s (new)"
 
@@ -118,7 +118,7 @@ msgstr "Data Mining by ArknightsAssets"
 msgid "Closure++ 已不再支持 %s"
 msgstr "Closure++ no longer supports %s"
 
-#: src/components/AboutList.tsx:40
+#: src/components/AboutList.tsx:38
 msgid "Discord"
 msgstr "Discord"
 
@@ -139,7 +139,7 @@ msgstr ""
 msgid "PRTS 时装回廊"
 msgstr "PRTS 时装回廊 (outfit gallery)"
 
-#: src/components/AboutList.tsx:51
+#: src/components/AboutList.tsx:49
 msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
@@ -175,7 +175,7 @@ msgstr "Value Delta"
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr "Drop Rate Data from Penguin Statistics"
 
-#: src/components/TaskList.tsx:181
+#: src/components/TaskList.tsx:198
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
@@ -189,7 +189,7 @@ msgstr[1] "You own %d outfits of this operator, but not the operator."
 msgid "使用「提取装置」"
 msgstr "Use «Sklanding»"
 
-#: src/components/Sidebar.tsx:107
+#: src/components/Sidebar.tsx:189
 msgid "侧栏"
 msgstr "Sidebar"
 
@@ -205,7 +205,7 @@ msgid_plural "做完 %d 条"
 msgstr[0] "%d done"
 msgstr[1] "%d done"
 
-#: src/components/ConfigUi.tsx:320
+#: src/components/ConfigUi.tsx:322
 msgid "免责声明"
 msgstr "Disclaimer"
 
@@ -219,7 +219,7 @@ msgstr "Enable all"
 msgid "全部禁用"
 msgstr "Disable all"
 
-#: src/components/AboutList.tsx:143 src/components/AboutList.tsx:144
+#: src/components/AboutList.tsx:141 src/components/AboutList.tsx:142
 msgid "关于"
 msgstr "About"
 
@@ -229,9 +229,9 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:481 src/components/CharacterDossier.tsx:235
+#: src/App.tsx:531 src/components/CharacterDossier.tsx:235
 #: src/components/CharacterDossier.tsx:236 src/components/Importer.tsx:163
-#: src/components/Peek.tsx:133 src/components/Peek.tsx:134
+#: src/components/Peek.tsx:137 src/components/Peek.tsx:138
 msgid "关闭"
 msgstr "Close"
 
@@ -241,7 +241,7 @@ msgid_plural "其中 %d 次有人还不能做"
 msgstr[0] "%d run has someone who cannot count yet"
 msgstr[1] "%d runs have someone who cannot count yet"
 
-#: src/components/AboutList.tsx:82
+#: src/components/AboutList.tsx:80
 msgid "其他资源"
 msgstr "Other Resources"
 
@@ -297,7 +297,7 @@ msgstr "Region switched"
 msgid "取消"
 msgstr "Cancel"
 
-#: src/components/CharacterList.tsx:212
+#: src/components/CharacterList.tsx:214
 msgid "取消选中"
 msgstr "Deselect"
 
@@ -352,7 +352,7 @@ msgstr ""
 msgid "培养目标"
 msgstr "Target"
 
-#: src/components/AboutList.tsx:107
+#: src/components/AboutList.tsx:105
 msgid "声明"
 msgstr "Statements"
 
@@ -384,7 +384,7 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制数据"
 msgstr "Copy Data"
 
-#: src/components/CharacterList.tsx:234
+#: src/components/CharacterList.tsx:236
 msgid "复制角色名"
 msgstr "Copy Name"
 
@@ -399,7 +399,7 @@ msgstr[1] "%d outfits added"
 msgid "如今"
 msgstr "Current"
 
-#: src/components/TaskList.tsx:163
+#: src/components/TaskList.tsx:180
 msgid "完成"
 msgstr "Complete"
 
@@ -418,7 +418,7 @@ msgstr "Import MAA «Operator Progression» Plan"
 msgid "导入 MAA「干员识别」数据"
 msgstr "Import MAA «Operator» Data"
 
-#: src/App.tsx:287 src/components/RetiredGame.tsx:193
+#: src/App.tsx:337 src/components/RetiredGame.tsx:193
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -489,7 +489,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
-#: src/components/CharacterList.tsx:241
+#: src/components/CharacterList.tsx:243
 msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
@@ -544,23 +544,23 @@ msgid_plural "已选 %d 名干员"
 msgstr[0] "%d operator selected"
 msgstr[1] "%d operators selected"
 
-#: src/components/AboutList.tsx:263
+#: src/components/AboutList.tsx:261
 msgid "帮助"
 msgstr "Help"
 
-#: src/components/AboutList.tsx:28
+#: src/components/AboutList.tsx:31
 msgid "帮助与社区"
 msgstr "Help & Community"
 
-#: src/components/AboutList.tsx:32
+#: src/components/AboutList.tsx:32 src/components/PhoneMore.tsx:129
 msgid "帮助文档"
 msgstr "Documentation"
 
-#: src/components/Sidebar.tsx:69
+#: src/components/Sidebar.tsx:127
 msgid "弹出成大窗口"
 msgstr "Open in a window"
 
-#: src/components/TaskList.tsx:174
+#: src/components/TaskList.tsx:191
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
 
@@ -574,11 +574,11 @@ msgstr "Current"
 msgid "心情"
 msgstr "Morale"
 
-#: src/components/ItemList.tsx:399
+#: src/components/ItemList.tsx:395
 msgid "总价值"
 msgstr "Total Value"
 
-#: src/App.tsx:431
+#: src/App.tsx:481
 msgid "您不妨试试"
 msgstr "You may try"
 
@@ -610,15 +610,15 @@ msgstr "Own"
 msgid "按关卡代号或名称筛选"
 msgstr "Filter by stage code or name"
 
-#: src/components/ItemList.tsx:356
+#: src/components/ItemList.tsx:347
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
-#: src/App.tsx:58 src/components/Importer.tsx:168
+#: src/App.tsx:63 src/App.tsx:64 src/components/Importer.tsx:168
 msgid "撤销"
 msgstr "Undo"
 
-#: src/components/Sidebar.tsx:73
+#: src/components/Sidebar.tsx:131
 msgid "收起"
 msgstr "Collapse"
 
@@ -632,7 +632,7 @@ msgstr ""
 "Data gathered from the Heybox app's Operator Statistics for Arknights "
 "feature."
 
-#: src/components/AboutList.tsx:80
+#: src/components/AboutList.tsx:78
 msgid "数据源"
 msgstr "Data Sources"
 
@@ -646,7 +646,7 @@ msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:109
 #: src/components/arknights/ExporterMenuItems.tsx:38
-#: src/components/CharacterList.tsx:247
+#: src/components/CharacterList.tsx:249
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
@@ -695,32 +695,37 @@ msgstr "Operator Statistics from Arknights-yituliu"
 msgid "显示全部"
 msgstr "Show All"
 
-#: src/components/FarmList.tsx:276
+#: src/components/FarmList.tsx:268
 msgid "暂不支持计算毕业合成"
 msgstr "Synthesizing Cannot be Planned for Maxed"
 
-#: src/components/FarmList.tsx:372
+#: src/components/FarmList.tsx:364
 msgid "暂无可计算来源"
 msgstr "No Feasible Sources"
 
-#: src/components/CharacterDossier.tsx:230
+#: src/components/CharacterDossier.tsx:230 src/components/PhoneTabBar.tsx:15
 msgid "更多"
 msgstr "More"
 
 #. %s: datetime
-#: src/components/AboutList.tsx:217
+#: src/components/AboutList.tsx:215
 msgid "更新于 %s"
 msgstr "Last updated at %s"
 
-#: src/App.tsx:83 src/components/arknights/SklandImporter.tsx:169
+#: src/components/arknights/SklandImporter.tsx:169
+#: src/components/reloadGameData.ts:18
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/AboutList.tsx:130
+#: src/components/AboutList.tsx:128
 msgid "更新笔记"
 msgstr "Patch Notes"
 
-#: src/App.tsx:92
+#: src/components/PhoneMore.tsx:44
+msgid "有新内容"
+msgstr "New"
+
+#: src/components/reloadGameData.ts:27
 msgid "未找到新数据"
 msgstr "No updates found for data"
 
@@ -774,7 +779,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:1194
+#: src/components/CharacterList.tsx:1275
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -797,7 +802,7 @@ msgstr "Profile %1 has no data, so there is nothing to export."
 msgid "档案 %s 不存在，要新建吗？"
 msgstr "Profile %s does not exist. Do you want to create it?"
 
-#: src/App.tsx:118
+#: src/App.tsx:97 src/components/PhoneMore.tsx:126
 msgid "检查数据更新"
 msgstr "Check For Data Updates"
 
@@ -824,15 +829,16 @@ msgstr "Switching region…"
 msgid "清空"
 msgstr "Clear"
 
-#: src/components/CharacterList.tsx:216 src/components/ListSelection.tsx:137
+#: src/components/CharacterList.tsx:218 src/components/ListSelection.tsx:137
 msgid "清除选择"
 msgstr "Clear selection"
 
-#: src/App.tsx:168 src/App.tsx:90
+#: src/App.tsx:205 src/components/reloadGameData.ts:25
 msgid "游戏数据已更新"
 msgstr "Game data updated"
 
-#: src/components/ConfigUi.tsx:298
+#: src/components/ConfigUi.tsx:300 src/components/PhoneMore.tsx:113
+#: src/components/PhoneMore.tsx:145
 msgid "游戏服务器"
 msgstr "Game Region"
 
@@ -870,7 +876,8 @@ msgid_plural "用过的 · %d 张"
 msgstr[0] "Used · %d ticket"
 msgstr[1] "Used · %d tickets"
 
-#: src/locales.tsx:79
+#: src/components/PhoneMore.tsx:120 src/components/PhoneMore.tsx:147
+#: src/locales.tsx:76
 msgid "界面语言"
 msgstr "UI Language"
 
@@ -888,7 +895,7 @@ msgid_plural "等 %d 条"
 msgstr[0] "(%d mission)"
 msgstr[1] "(%d missions)"
 
-#: src/components/FarmList.tsx:285
+#: src/components/FarmList.tsx:277
 msgid "线性规划失败"
 msgstr "Failed to Plan"
 
@@ -909,11 +916,11 @@ msgstr ""
 msgid "角色"
 msgstr "Characters"
 
-#: src/components/TaskList.tsx:158
+#: src/components/TaskList.tsx:175
 msgid "角色内排序"
 msgstr "Sorting within Character"
 
-#: src/components/CharacterList.tsx:203
+#: src/components/CharacterList.tsx:205
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -946,11 +953,11 @@ msgstr "Please continue in the popup window «Sklanding»"
 msgid "请在弹出窗口中继续操作"
 msgstr "Please continue in the popup window"
 
-#: src/entry.tsx:65
+#: src/entry.tsx:67
 msgid "请更新您的浏览器。"
 msgstr "Please upgrade your browser."
 
-#: src/components/FarmList.tsx:287
+#: src/components/FarmList.tsx:279
 msgid "请稍候"
 msgstr "Loading"
 
@@ -983,7 +990,11 @@ msgstr ""
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/App.tsx:424
+#: src/components/PhoneMore.tsx:179
+msgid "返回"
+msgstr "Back"
+
+#: src/App.tsx:474
 msgid "返回主页"
 msgstr "Back to Home"
 
@@ -1006,7 +1017,7 @@ msgid_plural "还剩 %d 次作战"
 msgstr[0] "%d run left"
 msgstr[1] "%d runs left"
 
-#: src/components/ItemList.tsx:372
+#: src/components/ItemList.tsx:368
 msgid ""
 "还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出"
 "它和它前置任务要用的材料。"
@@ -1014,6 +1025,15 @@ msgstr ""
 "No starred tasks yet. Right-click a task in the task list and choose "
 "«Prioritize (mark as starred)»; the materials it and the tasks it depends on "
 "need will be listed here."
+
+#: src/components/ItemList.tsx:365
+msgid ""
+"还没有星标任务。在任务列表里点一项任务，选「优先培养（星标）」，这里就列出它"
+"和它前置任务要用的材料。"
+msgstr ""
+"No starred tasks yet. Tap a task in the task list and choose «Prioritize "
+"(mark as starred)»; the materials it and the tasks it depends on need will "
+"be listed here."
 
 #: src/components/arknights/ModuleMissionPanel.tsx:479
 #: src/components/arknights/ModuleMissionPanel.tsx:693
@@ -1112,18 +1132,19 @@ msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 "This is Closure++ save data for %s; it cannot be imported into this game."
 
-#: src/components/CharacterList.tsx:212
+#: src/components/CharacterList.tsx:214
 msgid "选中"
 msgstr "Select"
 
 #. %d: number
-#: src/components/CharacterList.tsx:196
+#: src/components/CharacterList.tsx:198
 msgid "选中的 %d 名干员"
 msgid_plural "选中的 %d 名干员"
 msgstr[0] "%d selected operator"
 msgstr[1] "%d selected operators"
 
-#: src/components/ConfigUi.tsx:77
+#: src/components/ConfigUi.tsx:77 src/components/PhoneMore.tsx:109
+#: src/components/PhoneMore.tsx:143
 msgid "选项"
 msgstr "Options"
 
@@ -1131,15 +1152,19 @@ msgstr "Options"
 msgid "道具"
 msgstr "Items"
 
-#: src/components/AboutList.tsx:63
+#: src/components/AboutList.tsx:61
 msgid "邮箱"
 msgstr "E-mail"
 
-#: src/App.tsx:107
+#: src/App.tsx:72
+msgid "重做"
+msgstr "Redo"
+
+#: src/App.tsx:90 src/components/PhoneMore.tsx:127
 msgid "重载数据"
 msgstr "Reset Data"
 
-#: src/components/AboutList.tsx:92
+#: src/components/AboutList.tsx:90
 msgid "鸣谢"
 msgstr "Credits"
 
@@ -2689,12 +2714,12 @@ msgctxt "character list column"
 msgid "目标状态"
 msgstr "Goal"
 
-#: src/components/AboutList.tsx:105
+#: src/components/AboutList.tsx:103
 msgctxt "credit role"
 msgid "帮助文档撰写"
 msgstr "documentation authoring"
 
-#: src/components/AboutList.tsx:98
+#: src/components/AboutList.tsx:96
 msgctxt "credit role"
 msgid "数据源自动化、氛围开发"
 msgstr "data source automation, vibe coding"
@@ -2704,7 +2729,7 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr "assets vectorizing"
 
-#: src/components/arknights/CostSection.tsx:546
+#: src/components/arknights/CostSection.tsx:548
 msgctxt "dossier section"
 msgid "养成成本"
 msgstr "Training costs"
@@ -2744,7 +2769,7 @@ msgctxt "error context"
 msgid "切换区域失败"
 msgstr "Error During Switching Region"
 
-#: src/entry.tsx:27
+#: src/entry.tsx:29
 msgctxt "error context"
 msgid "初始化失败"
 msgstr "Error During Initializing"
@@ -2764,12 +2789,12 @@ msgctxt "error context"
 msgid "导入数据时遇到问题"
 msgstr "Error During Importing"
 
-#: src/App.tsx:97
+#: src/components/reloadGameData.ts:32
 msgctxt "error context"
 msgid "检查数据更新失败"
 msgstr "Error During Checking for Data Updates"
 
-#: src/entry.tsx:22
+#: src/entry.tsx:24
 msgctxt "error context"
 msgid "环境检测失败"
 msgstr "Error During Starting"
@@ -2784,7 +2809,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr "Error During Reading File"
 
-#: src/App.tsx:411
+#: src/App.tsx:461
 msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
@@ -2819,22 +2844,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:511
+#: src/components/CharacterList.tsx:590
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:512
+#: src/components/CharacterList.tsx:591
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:520
+#: src/components/CharacterList.tsx:599
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:521
+#: src/components/CharacterList.tsx:600
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -2880,45 +2905,45 @@ msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr "Import Result · %s"
 
-#: src/components/ItemList.tsx:163
+#: src/components/ItemList.tsx:165
 msgctxt "item list counter label"
 msgid "可合成"
 msgstr "Syn.-able"
 
-#: src/components/ItemList.tsx:142
+#: src/components/ItemList.tsx:147
 msgctxt "item list counter label"
 msgid "合成后"
 msgstr "Post Syn."
 
-#: src/components/ItemList.tsx:180
+#: src/components/ItemList.tsx:174
 msgctxt "item list counter label"
 msgid "直接需求"
 msgstr "Direct"
 
-#: src/components/ItemList.tsx:173
+#: src/components/ItemList.tsx:171
 msgctxt "item list counter label"
 msgid "还需"
 msgstr "Gap"
 
-#: src/components/ItemList.tsx:187
+#: src/components/ItemList.tsx:177
 msgctxt "item list counter label"
 msgid "间接需求"
 msgstr "Indirect"
 
 #: src/components/arknights/stagePanelModel.ts:220
-#: src/components/ItemList.tsx:289
+#: src/components/ItemList.tsx:280
 msgctxt "item list view label"
 msgid "星标"
 msgstr "Starred"
 
 #: src/components/arknights/stagePanelModel.ts:224
-#: src/components/ItemList.tsx:287
+#: src/components/ItemList.tsx:278
 msgctxt "item list view label"
 msgid "毕业"
 msgstr "Maxed"
 
 #: src/components/arknights/stagePanelModel.ts:222
-#: src/components/ItemList.tsx:288
+#: src/components/ItemList.tsx:279
 msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
@@ -2931,7 +2956,7 @@ msgstr "Planned"
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:454
 #: src/components/arknights/voucherText.tsx:31
-#: src/components/CharacterList.tsx:606
+#: src/components/CharacterList.tsx:685
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
 msgctxt "list separator"
@@ -2939,43 +2964,43 @@ msgid "、"
 msgstr ", "
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:313
+#: src/App.tsx:363
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr "Setting up %s…"
 
 #. initial
-#: src/App.tsx:321
+#: src/App.tsx:371
 msgctxt "loading status"
 msgid "别急…"
 msgstr "Don't hurry…"
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:348
+#: src/App.tsx:398
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr "We're setting things up for you"
 
 #. loaded data objects
-#: src/App.tsx:320
+#: src/App.tsx:370
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr "Almost there…"
 
 #. joke text
-#: src/App.tsx:346
+#: src/App.tsx:396
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr "Installing Macindows X"
 
 #. loading hero line 2
-#: src/App.tsx:355
+#: src/App.tsx:405
 msgctxt "loading status"
 msgid "请稍候"
 msgstr "This won't take long"
 
 #. done
-#: src/App.tsx:311
+#: src/App.tsx:361
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
@@ -3565,7 +3590,7 @@ msgctxt "option"
 msgid "缩写大数"
 msgstr "Abbreviate Large Numbers"
 
-#: src/components/Peek.tsx:313
+#: src/components/Peek.tsx:321
 msgctxt "peek card"
 msgid "全部关闭"
 msgstr "Close all"
@@ -3590,7 +3615,7 @@ msgctxt "peek card"
 msgid "在「关卡」面板里看"
 msgstr "Show in Stages"
 
-#: src/components/Peek.tsx:144
+#: src/components/Peek.tsx:148
 msgctxt "peek card"
 msgid "已不在现在的数据里"
 msgstr "No longer in the current data"
@@ -3616,17 +3641,17 @@ msgctxt "peek card"
 msgid "每次"
 msgstr "Per run"
 
-#: src/components/Peek.tsx:108
+#: src/components/Peek.tsx:109
 msgctxt "peek card"
 msgid "返回"
 msgstr "Back"
 
-#: src/components/Peek.tsx:109
+#: src/components/Peek.tsx:110
 msgctxt "peek card"
 msgid "钉住"
 msgstr "Pin"
 
-#: src/components/Peek.tsx:307
+#: src/components/Peek.tsx:315
 msgctxt "peek card"
 msgid "钉住的卡片"
 msgstr "Pinned cards"
@@ -3635,6 +3660,66 @@ msgstr "Pinned cards"
 msgctxt "peek card"
 msgid "需要 / 库存"
 msgstr "Need / Stock"
+
+#: src/components/PhoneMore.tsx:105 src/components/PhoneMore.tsx:141
+msgctxt "phone more"
+msgid "价值"
+msgstr "Value"
+
+#: src/components/PhoneMore.tsx:137 src/components/PhoneMore.tsx:84
+msgctxt "phone more"
+msgid "导入"
+msgstr "Import"
+
+#: src/components/PhoneMore.tsx:139 src/components/PhoneMore.tsx:92
+msgctxt "phone more"
+msgid "导出"
+msgstr "Export"
+
+#: src/components/PhoneMore.tsx:79
+msgctxt "phone more"
+msgid "数据"
+msgstr "Data"
+
+#: src/components/PhoneMore.tsx:125
+msgctxt "phone more"
+msgid "游戏数据"
+msgstr "Game Data"
+
+#: src/components/PhoneMore.tsx:102
+msgctxt "phone more"
+msgid "设置"
+msgstr "Settings"
+
+#: src/components/PhoneMore.tsx:98
+msgctxt "phone more"
+msgid "面板"
+msgstr "Panels"
+
+#: src/components/PhoneTabBar.tsx:12
+msgctxt "phone tab"
+msgid "任务"
+msgstr "Tasks"
+
+#: src/components/PhoneTabBar.tsx:13
+msgctxt "phone tab"
+msgid "刷图"
+msgstr "Farming"
+
+#: src/components/PhoneTabBar.tsx:33
+msgctxt "phone tab"
+msgid "区域"
+msgstr "Areas"
+
+#: src/components/PhoneTabBar.tsx:11
+msgctxt "phone tab"
+msgid "干员"
+msgstr "Operators"
+
+#: src/components/PhoneTabBar.tsx:14
+msgctxt "phone tab"
+msgid "材料"
+msgstr "Items"
 
 #: src/components/PlanActions.tsx:52
 msgctxt "plan action"
@@ -3766,19 +3851,19 @@ msgctxt "predefined query"
 msgid "精二直升价值（全部）"
 msgstr "E2 voucher value (all)"
 
-#: src/components/CharacterList.tsx:774
+#: src/components/CharacterList.tsx:853
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:767
+#: src/components/CharacterList.tsx:846
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:781
+#: src/components/CharacterList.tsx:860
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -4381,7 +4466,7 @@ msgctxt "query menu"
 msgid "全部 4–6 星干员的技能"
 msgstr "Every skill of the 4–6★ operators"
 
-#: src/components/CharacterList.tsx:958 src/components/CharacterList.tsx:959
+#: src/components/CharacterList.tsx:1037 src/components/CharacterList.tsx:1038
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
@@ -4391,7 +4476,7 @@ msgctxt "query menu"
 msgid "养成成本"
 msgstr "Training costs"
 
-#: src/components/CharacterList.tsx:854
+#: src/components/CharacterList.tsx:933
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
@@ -4431,7 +4516,7 @@ msgctxt "query menu"
 msgid "已持有的干员的全部基建技能，含已解锁的"
 msgstr "Every base skill of the owned operators, unlocked ones too"
 
-#: src/components/CharacterList.tsx:899
+#: src/components/CharacterList.tsx:978
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
@@ -4441,7 +4526,7 @@ msgctxt "query menu"
 msgid "所有干员的全部基建技能，含没持有的和已解锁的"
 msgstr "Every base skill of every operator, owned or not, unlocked or not"
 
-#: src/components/CharacterList.tsx:950 src/components/CharacterList.tsx:951
+#: src/components/CharacterList.tsx:1029 src/components/CharacterList.tsx:1030
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
@@ -4451,7 +4536,7 @@ msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:958 src/components/CharacterList.tsx:959
+#: src/components/CharacterList.tsx:1037 src/components/CharacterList.tsx:1038
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -4517,13 +4602,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:603
+#: src/components/CharacterList.tsx:682
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:603
+#: src/components/CharacterList.tsx:682
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -5330,7 +5415,7 @@ msgstr ""
 "“Max” below is what it saves if used at the earliest point it can be: E2 "
 "from E0 level 1, M3 from M0, max level from E2 level 1."
 
-#: src/components/arknights/CostSection.tsx:490
+#: src/components/arknights/CostSection.tsx:491
 msgctxt "training cost"
 msgid "不分干员，只看等级"
 msgstr "The same for every operator, by level only"
@@ -5385,7 +5470,7 @@ msgstr ""
 "Max: what it saves if used from E0 level 1; the light blue part of the bar "
 "is already trained."
 
-#: src/components/CharacterList.tsx:797
+#: src/components/CharacterList.tsx:876
 msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr "What the operators in the list have cost in total"
@@ -5410,7 +5495,7 @@ msgctxt "training cost"
 msgid "原样"
 msgstr "As is"
 
-#: src/components/arknights/CostSection.tsx:463
+#: src/components/arknights/CostSection.tsx:464
 msgctxt "training cost"
 msgid "在 %d 星里排第几"
 msgstr "Rank among %d★"
@@ -5430,7 +5515,7 @@ msgctxt "training cost"
 msgid "拉满"
 msgstr "To max"
 
-#: src/components/arknights/CostSection.tsx:466
+#: src/components/arknights/CostSection.tsx:467
 msgctxt "training cost"
 msgid "效率"
 msgstr "Efficiency"
@@ -5465,7 +5550,7 @@ msgctxt "training cost"
 msgid "满"
 msgstr "Max"
 
-#: src/components/arknights/CostSection.tsx:534
+#: src/components/arknights/CostSection.tsx:536
 msgctxt "training cost"
 msgid "物品价值计算失败，暂时算不出价值；材料明细不受影响"
 msgstr ""
@@ -5506,7 +5591,7 @@ msgstr ""
 "level 1. What is already trained can no longer be saved, so the more "
 "trained, the lower the number."
 
-#: src/components/arknights/CostSection.tsx:471
+#: src/components/arknights/CostSection.tsx:472
 msgctxt "training cost"
 msgid "现在用能省"
 msgstr "Saves now"
@@ -5613,7 +5698,7 @@ msgctxt "value config"
 msgid "价值"
 msgstr "Value"
 
-#: src/components/Value.tsx:289
+#: src/components/Value.tsx:283
 msgctxt "value config"
 msgid "价值计算"
 msgstr "Value Calculation"
