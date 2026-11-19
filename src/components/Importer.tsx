@@ -15,6 +15,7 @@ import { renderCharacterStatus } from './CharacterList'
 import { useCppDumpImportFormat } from './CppDumpImport'
 import { ErrAtom } from './Err'
 import { CachedImg, ItemIcon } from './Icons'
+import { StatusDiff, statusDiffs } from './importDiff'
 import { showAlert } from './MessageBox'
 import { ValueTag } from './Value'
 
@@ -177,21 +178,11 @@ const DiffView = memo(({ diff }: { diff: State }) => {
   const detail = useGameDataMemo(() => {
     const { before, after } = diff
 
-    const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
-    const statusDiffs = (before: Record<string, object>, after: Record<string, object>) => {
-      const diffs = [] as { key: string; before: object; after: object }[]
-      const allChars = new Set([...Object.keys(before), ...Object.keys(after)])
-      for (const char of allChars) {
-        // Data saved before a status field existed lacks its key; importing fills it in, which is not a change.
-        const b = before[char] && { ...empty, ...before[char] }
-        const a = after[char] && { ...empty, ...after[char] }
-        if (deepEqual(b, a)) continue
-        diffs.push({ key: char, before: before[char], after: after[char] })
-      }
-      return diffs
-    }
-    const charDiffs = statusDiffs(before.current, after.current)
-    const goalDiffs = statusDiffs(before.goal, after.goal)
+    const uda = ga.getUserDataAdapter()
+    const empty = uda.getFrozenEmptyCharacterStatus()
+    const compared = uda.statusForImportDiff?.bind(uda)
+    const charDiffs = statusDiffs(before.current, after.current, empty, compared)
+    const goalDiffs = statusDiffs(before.goal, after.goal, empty, compared)
 
     const inventoryDiffs = [] as { key: string; before: number; after: number }[]
     let inventoryValueDelta = 0
@@ -271,7 +262,7 @@ const DiffView = memo(({ diff }: { diff: State }) => {
   )
 })
 
-const CharDiffView = memo(({ charDiffs }: { charDiffs: { key: string; before: object; after: object }[] }) => {
+const CharDiffView = memo(({ charDiffs }: { charDiffs: StatusDiff<object>[] }) => {
   const list = charDiffs || []
   const parentRef = useRef<HTMLUListElement>(null)
   const components = useComponents()
@@ -328,77 +319,75 @@ const CharDiffView = memo(({ charDiffs }: { charDiffs: { key: string; before: ob
   )
 })
 
-const CharDiffViewRow = memo(
-  ({ row, style }: { row: { key: string; before: object; after: object }; style?: React.CSSProperties }) => {
-    const ga = useGameAdapter()
-    const uda = ga.getUserDataAdapter()
-    const charId = row.key
-    const character = ga.getCharacter(charId)
-    const currentCharacter = row.before || uda.getFrozenEmptyCharacterStatus()
-    const goalCharacter = row.after || uda.getFrozenEmptyCharacterStatus()
+const CharDiffViewRow = memo(({ row, style }: { row: StatusDiff<object>; style?: React.CSSProperties }) => {
+  const ga = useGameAdapter()
+  const uda = ga.getUserDataAdapter()
+  const charId = row.key
+  const character = ga.getCharacter(charId)
+  const currentCharacter = row.before || uda.getFrozenEmptyCharacterStatus()
+  const goalCharacter = row.after || uda.getFrozenEmptyCharacterStatus()
 
-    const c = useComponents()
-    const render = c.renderCharacterStatus || renderCharacterStatus
+  const c = useComponents()
+  const render = c.renderCharacterStatus || renderCharacterStatus
 
-    return (
-      <li
-        role="none"
-        className={[
-          'cpp-char-menu-master',
-          `cpp-char-rarity-${character.rarity}`,
-          ...(character.characterViewExtraClass || []),
-        ].join(' ')}
-        style={style}
-      >
-        <a role="menuitem" tabIndex={0} className="bp6-menu-item cpp-char-menu-char cpp-menu-not-interactive">
-          <>
-            <span className="bp6-menu-item-icon cpp-char-avatar">
-              <CachedImg
-                src={character.avatar}
-                width={'100%'}
-                height={'100%'}
-                alt={character.key}
-                title={character.key}
-              />
-              {c.renderCharacterAvatarBadge && !uda.isAbsentCharacter(character, goalCharacter)
-                ? c.renderCharacterAvatarBadge(goalCharacter, character)
-                : null}
-            </span>
-            <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div className="bp6-text-overflow-ellipsis" title={character.name}>
-                {character.name}
-              </div>
-              <div
-                className="bp6-text-overflow-ellipsis"
-                title={character.appellation}
-                style={{ fontWeight: 'normal', opacity: 0.75 }}
-              >
-                {character.appellation}
-              </div>
+  return (
+    <li
+      role="none"
+      className={[
+        'cpp-char-menu-master',
+        `cpp-char-rarity-${character.rarity}`,
+        ...(character.characterViewExtraClass || []),
+      ].join(' ')}
+      style={style}
+    >
+      <a role="menuitem" tabIndex={0} className="bp6-menu-item cpp-char-menu-char cpp-menu-not-interactive">
+        <>
+          <span className="bp6-menu-item-icon cpp-char-avatar">
+            <CachedImg
+              src={character.avatar}
+              width={'100%'}
+              height={'100%'}
+              alt={character.key}
+              title={character.key}
+            />
+            {c.renderCharacterAvatarBadge && !uda.isAbsentCharacter(character, goalCharacter)
+              ? c.renderCharacterAvatarBadge(goalCharacter, character)
+              : null}
+          </span>
+          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp6-text-overflow-ellipsis" title={character.name}>
+              {character.name}
             </div>
-          </>
-        </a>
+            <div
+              className="bp6-text-overflow-ellipsis"
+              title={character.appellation}
+              style={{ fontWeight: 'normal', opacity: 0.75 }}
+            >
+              {character.appellation}
+            </div>
+          </div>
+        </>
+      </a>
 
-        <a
-          role="menuitem"
-          tabIndex={0}
-          className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-current cpp-menu-not-interactive"
-          style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
-        >
-          {render(currentCharacter, character, goalCharacter, false)}
-        </a>
-        <a
-          role="menuitem"
-          tabIndex={0}
-          className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-goal cpp-menu-not-interactive"
-          style={{ opacity: uda.isAbsentCharacter(character, goalCharacter) ? 0.25 : 1 }}
-        >
-          {render(goalCharacter, character, currentCharacter, false)}
-        </a>
-      </li>
-    )
-  },
-)
+      <a
+        role="menuitem"
+        tabIndex={0}
+        className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-current cpp-menu-not-interactive"
+        style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
+      >
+        {render(currentCharacter, character, goalCharacter, false)}
+      </a>
+      <a
+        role="menuitem"
+        tabIndex={0}
+        className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-goal cpp-menu-not-interactive"
+        style={{ opacity: uda.isAbsentCharacter(character, goalCharacter) ? 0.25 : 1 }}
+      >
+        {render(goalCharacter, character, currentCharacter, false)}
+      </a>
+    </li>
+  )
+})
 
 const InventoryDiffView = memo(
   ({

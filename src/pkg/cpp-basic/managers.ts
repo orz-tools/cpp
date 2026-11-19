@@ -109,4 +109,6 @@ export interface IUserDataAdapter<G extends IGame> {
   compareCharacter(a: ICharacter, b: ICharacter, stA: G['characterStatus'], stB: G['characterStatus']): number
   isAbsentCharacter(c: ICharacter, st: G['characterStatus']): boolean
   isFavCharacter(c: ICharacter, st: G['characterStatus']): boolean
+  /** 导入结果只比较返回的这部分，只有别处变了的角色不列出；不提供时比较整个状态 */
+  statusForImportDiff?(status: G['characterStatus']): unknown
 }

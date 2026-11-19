@@ -1,7 +1,7 @@
 import deepEqual from 'deep-equal'
 import { Draft } from 'immer'
 import stringify from 'json-stringify-deterministic'
-import { sum } from 'ramda'
+import { omit, sum } from 'ramda'
 import { IUserDataAdapter, Task } from '../cpp-basic'
 import { orderGroups } from '../cpp-basic/groupOrder'
 import { gt } from '../gt'
@@ -60,6 +60,12 @@ export class ArknightsUserDataAdapter implements IUserDataAdapter<Arknights> {
 
   public getFrozenEmptyCharacterStatus(): ArknightsCharacterStatus {
     return emptyCharacterStatus
+  }
+
+  // Potential takes no materials, has no goal of its own and is not drawn in the dialog's rows: a change in it alone
+  // would be a blank row, one for nearly every operator when 森空岛 fills it into data saved before it existed.
+  public statusForImportDiff(status: ArknightsCharacterStatus) {
+    return omit(['potentialRank'], status)
   }
 
   public isManuallyTask(task: Task<Arknights>) {
