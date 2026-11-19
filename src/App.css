@@ -861,6 +861,19 @@ body {
   border-color: var(--bp-palette-blue-3, #2d72d2);
 }
 
+/* Outside a selection the ring shows on the hovered row only, as a way into it; a touch screen has no hover and
+   selects from the long-press menu */
+.cpp-select-tick.cpp-select-tick-hover {
+  display: none;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .cpp-char-menu-master:hover .cpp-select-tick.cpp-select-tick-hover {
+    display: flex;
+  }
+}
+
 /* 「选中的 n 名干员」 in place of 「角色计划排序」: the buttons move the whole selection */
 .cpp-sort-label-many {
   color: var(--bp-palette-blue-2, #215db0);

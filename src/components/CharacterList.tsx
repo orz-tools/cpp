@@ -50,7 +50,7 @@ import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import { ListDrag, useListDrag } from './ListDrag'
 import { ListSelectionContext, SelectionBar, handleTitle, useListSelection } from './ListSelection'
-import { CharacterPlanMenuItems } from './PlanActions'
+import { CharacterPlanMenuItems, GroupPlanMenuItems, PlanBatchButtons } from './PlanActions'
 import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
 import { STATUS_SECTION_ID } from './dossierState'
@@ -84,6 +84,7 @@ import {
   createListQuerier,
   isCustomQuery,
 } from './characterQuery'
+import { listRequeryAtom } from './planBatch'
 import { presetMenu } from './presetMenu'
 import { quickFiltersFor, wrapQueryWithQuickFilter } from './quickFilters'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
@@ -178,8 +179,8 @@ export const CharacterContextMenu = memo(
     const order = useAtomValue(atoms.goalOrder)
     const selection = useContext(ListSelectionContext)
     const isSelected = selection?.selected.has(character.key) ?? false
-    // 右键选中的行，四个按钮挪所有选中的；只选了这一名时和没选一样
-    const group = isSelected && selection && selection.selected.size >= 2 ? [...selection.selected] : undefined
+    // 右键选中的行，四个按钮挪所有选中的、计划的两项也作用于所有选中的；只选了这一名时和没选一样
+    const group = isSelected && selection && selection.selectedKeys.length >= 2 ? selection.selectedKeys : undefined
     const keys = group ?? [character.key]
     const move = (step: MoveStep) => {
       const target = stepTarget(order, keys, step)
@@ -221,7 +222,7 @@ export const CharacterContextMenu = memo(
             <MenuDivider />
           </>
         ) : null}
-        <CharacterPlanMenuItems charId={character.key} />
+        {group ? <GroupPlanMenuItems charIds={group} /> : <CharacterPlanMenuItems charId={character.key} />}
         <CharacterLookupMenuItems character={character} />
       </Menu>
     )
@@ -293,6 +294,7 @@ const CharacterMenu = memo(
     selecting,
     onSelectClick,
     onSelectMouseDown,
+    onSelectToggle,
   }: {
     character: ICharacter
     style?: React.CSSProperties
@@ -307,6 +309,8 @@ const CharacterMenu = memo(
     /** 返回 true 时已经改了选择（修饰键点击，或在选择模式里），不开档案 */
     onSelectClick?: (e: React.MouseEvent, key: string) => boolean
     onSelectMouseDown?: React.MouseEventHandler
+    /** 悬停时头像上的空圈：不在选择模式里也能一下选上这一名 */
+    onSelectToggle?: (key: string) => void
   }) => {
     const atoms = useAtoms<G>()
     const ga = useGameAdapter<G>()
@@ -338,6 +342,17 @@ const CharacterMenu = memo(
           </span>
         ) : selecting ? (
           <span className="cpp-select-tick cpp-select-tick-empty" />
+        ) : onSelectToggle ? (
+          <span
+            className="cpp-select-tick cpp-select-tick-empty cpp-select-tick-hover"
+            aria-hidden
+            onClick={(e) => {
+              // 点空圈是选上，不开档案
+              e.stopPropagation()
+              e.preventDefault()
+              onSelectToggle(charId)
+            }}
+          />
         ) : null}
       </span>
     )
@@ -1091,8 +1106,6 @@ export const QuickFilterBuilder = memo(() => {
   )
 })
 
-const NO_KEYS: readonly string[] = []
-
 export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom: PrimitiveAtom<number> }) => {
   const param = useAtomValue(useCpp().queryParamAtom)
   const phone = usePhoneLayout()
@@ -1107,7 +1120,8 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   })
 
   const generation = useGameDataGeneration()
-  useEffect(() => refresh(), [param, pin, refresh, generation])
+  const requery = useAtomValue(listRequeryAtom)
+  useEffect(() => refresh(), [param, pin, refresh, generation, requery])
   useEffect(() => {
     if (error) console.error('Failed to query', error)
   }, [error])
@@ -1198,13 +1212,14 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     estimateSize: () => 50,
   })
 
-  const canSelect = param.query === ListModeWithGoal && !pin
-  const selection = useListSelection(canSelect ? keys : NO_KEYS, [param, pin])
+  // 重新查询（requery）不在 scope 里：改了计划以后选择还在
+  const selection = useListSelection(keys, [param, pin])
   const { selected } = selection
   // 按住选中的行拖，选中的一起挪；按住没选中的只挪这一行，选择不动
   const moving = (key: string): ReadonlySet<string> => (selected.has(key) ? selected : new Set([key]))
 
-  const canDrag = canSelect && !loading && response?.param === param && response.pin === pin
+  const canDrag =
+    param.query === ListModeWithGoal && !pin && !loading && response?.param === param && response.pin === pin
   const { drag, active, overlay, handle } = useListDrag<number, MoveTarget>({
     enabled: canDrag,
     scrollRef: parentRef,
@@ -1286,7 +1301,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
           <pre style={{ margin: 0 }}>{error.message}</pre>
         </NonIdealState>
       ) : (
-        <ListSelectionContext.Provider value={canSelect ? selection : undefined}>
+        <ListSelectionContext.Provider value={selection}>
           <Menu
             className={'cpp-char-list' + (stale ? ' cpp-char-list-stale' : '')}
             style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}
@@ -1331,9 +1346,10 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
                     row={index}
                     dimmed={active ? inRanges(active.ranges, index) : false}
                     selected={selected.has(keys[index])}
-                    selecting={canSelect && selection.selecting}
-                    onSelectClick={canSelect ? selection.click : undefined}
-                    onSelectMouseDown={canSelect ? selection.mouseDown : undefined}
+                    selecting={selection.selecting}
+                    onSelectClick={selection.click}
+                    onSelectMouseDown={selection.mouseDown}
+                    onSelectToggle={selection.toggle}
                   />
                 )
               })}
@@ -1344,10 +1360,13 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
       )}
       <SelectionBar
         count={selected.size}
+        compact={phone}
         allSelected={selection.allSelected}
         onSelectAll={selection.selectAll}
         onClear={selection.clear}
-      />
+      >
+        <PlanBatchButtons charIds={selection.selectedKeys} compact={phone} />
+      </SelectionBar>
       {handle}
     </>
   )
