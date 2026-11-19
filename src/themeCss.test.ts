@@ -93,18 +93,15 @@ describe('findNeutralColours', () => {
 })
 
 describe('the stylesheets under src/', () => {
-  // Stylesheets whose colours still have to move onto the theme tokens
-  const PENDING: string[] = []
-
-  it('write no white, grey or gray-1 text that a dark theme would keep', () => {
+  it('write white, greys and the ink only through the theme tokens', () => {
     const src = fileURLToPath(new URL('.', import.meta.url))
     const root = join(src, '..')
     const files = readdirSync(src, { recursive: true, encoding: 'utf8' })
       .filter((f) => f.endsWith('.css'))
       .map((f) => relative(root, join(src, f)).split('\\').join('/'))
-      .filter((f) => f !== 'src/theme.css' && !PENDING.includes(f))
+      .filter((f) => f !== 'src/theme.css')
       .sort()
-    expect(files).toContain('src/index.css')
+    expect(files).toEqual(expect.arrayContaining(['src/App.css', 'src/components/arknights/style.css']))
     const found = files.flatMap((f) =>
       findNeutralColours(readFileSync(join(root, f), 'utf8')).map((x) => `${f}:${x.line} ${x.property}: ${x.value}`),
     )
