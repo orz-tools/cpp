@@ -41,6 +41,7 @@ import { PhoneArea, phoneAreaAtom, usePhoneLayout } from './components/phoneLayo
 import { ProfileMenu, ProfileTitle } from './components/Profile'
 import { Sidebar, usePhoneMoreLayer } from './components/Sidebar'
 import { TaskList } from './components/TaskList'
+import { ThemeButton } from './components/ThemeMenu'
 import { AppToaster } from './components/Toaster'
 import { UserDataManagerButton, UserDataManagerMenuItem } from './components/UserDataManager'
 import { ValueOptionButton } from './components/Value'
@@ -245,6 +246,7 @@ const App = memo(() => {
             <DataDropdown />
             <ReloadDataButton />
             <HelpButton />
+            <ThemeButton />
             <LocaleButton />
           </Navbar.Group>
         </Navbar>
@@ -385,6 +387,7 @@ export const Loading = memo(() => {
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <HelpButton />
+          <ThemeButton />
           <LocaleButton />
         </Navbar.Group>
       </Navbar>

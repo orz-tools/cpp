@@ -89,7 +89,7 @@ msgid_plural "%d 项"
 msgstr[0] "%d task"
 msgstr[1] "%d tasks"
 
-#: src/components/RetiredGame.tsx:86
+#: src/components/RetiredGame.tsx:87
 msgid ""
 "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版"
 "（下面称作「旧版」），您可以在那里继续使用。旧版和这里的数据分开存放，按下面"
@@ -100,7 +100,7 @@ msgstr ""
 "below, where they all still work. It stores its data separately from this "
 "site, so the three steps below move yours over."
 
-#: src/components/RetiredGame.tsx:82
+#: src/components/RetiredGame.tsx:83
 msgid ""
 "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版"
 "（下面称作「旧版」），您可以在那里继续使用。这个档案里没有数据，直接打开旧版"
@@ -121,7 +121,7 @@ msgid "ArknightsAssets 解析的游戏数据"
 msgstr "Data Mining by ArknightsAssets"
 
 #. %s: game codename
-#: src/components/RetiredGame.tsx:79
+#: src/components/RetiredGame.tsx:80
 msgid "Closure++ 已不再支持 %s"
 msgstr "Closure++ no longer supports %s"
 
@@ -150,7 +150,7 @@ msgstr "PRTS 时装回廊 (outfit gallery)"
 msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
-#: src/components/RetiredGame.tsx:200
+#: src/components/RetiredGame.tsx:202
 msgid "不再需要这里的数据时，可以把它清空，旧版里的数据不受影响。"
 msgstr ""
 "When you no longer need the data here, you can clear it. The data in the old "
@@ -166,7 +166,7 @@ msgstr[1] "Any stage · %d missions"
 msgid "从文件导入"
 msgstr "Import from File"
 
-#: src/components/RetiredGame.tsx:195 src/components/UserDataManager.tsx:358
+#: src/components/RetiredGame.tsx:197 src/components/UserDataManager.tsx:358
 msgid "从文本框中导入"
 msgstr "Import from Text Box"
 
@@ -246,7 +246,7 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/App.tsx:538 src/components/CharacterDossier.tsx:235
+#: src/App.tsx:541 src/components/CharacterDossier.tsx:235
 #: src/components/CharacterDossier.tsx:236 src/components/Importer.tsx:163
 #: src/components/Peek.tsx:137 src/components/Peek.tsx:138
 msgid "关闭"
@@ -276,7 +276,7 @@ msgstr "Better Not Synthesizing"
 msgid "切换语言失败"
 msgstr "Failed to switch the UI language"
 
-#: src/components/RetiredGame.tsx:167
+#: src/components/RetiredGame.tsx:169
 msgid "到旧版去"
 msgstr "Head to the old version"
 
@@ -334,7 +334,7 @@ msgstr ""
 msgid "回到「提取装置」"
 msgstr "Back to «Sklanding»"
 
-#: src/components/RetiredGame.tsx:191
+#: src/components/RetiredGame.tsx:193
 msgid "在旧版里导入"
 msgstr "Import in the old version"
 
@@ -349,15 +349,15 @@ msgstr "Paste here…"
 msgid "在此粘贴数据或文件，自动识别格式"
 msgstr "Paste data or a file here, format auto-detected"
 
-#: src/components/RetiredGame.tsx:142
+#: src/components/RetiredGame.tsx:144
 msgid "在这里导出"
 msgstr "Export here"
 
-#: src/components/RetiredGame.tsx:98
+#: src/components/RetiredGame.tsx:99
 msgid "地址是 %1，会在新标签页打开。"
 msgstr "It is at %1 and opens in a new tab."
 
-#: src/components/RetiredGame.tsx:96
+#: src/components/RetiredGame.tsx:97
 msgid "地址是 %1，会在新标签页打开。旧版会询问是否新建档案 %2，请选确定。"
 msgstr ""
 "It is at %1 and opens in a new tab. The old version will ask whether to "
@@ -397,13 +397,18 @@ msgstr "Copy as MAA «Operator Progression» Plan"
 msgid "复制为明日方舟工具箱「精英材料计算」备份"
 msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 
-#: src/components/RetiredGame.tsx:148
+#: src/components/RetiredGame.tsx:150
 msgid "复制数据"
 msgstr "Copy Data"
 
 #: src/components/CharacterList.tsx:238
 msgid "复制角色名"
 msgstr "Copy Name"
+
+#: src/components/PhoneMore.tsx:129 src/components/PhoneMore.tsx:158
+#: src/components/ThemeMenu.tsx:29 src/components/ThemeMenu.tsx:46
+msgid "外观"
+msgstr "Appearance"
 
 #. %d: number of skins
 #: src/components/arknights/SkinImportDiff.tsx:43
@@ -439,7 +444,7 @@ msgstr "Import MAA «Operator Progression» Plan"
 msgid "导入 MAA「干员识别」数据"
 msgstr "Import MAA «Operator» Data"
 
-#: src/App.tsx:344 src/components/RetiredGame.tsx:193
+#: src/App.tsx:346 src/components/RetiredGame.tsx:195
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -506,7 +511,7 @@ msgstr[1] ""
 "Copied the plan for %d operators. In MAA «Operator Progression», click «Read "
 "from Clipboard»."
 
-#: src/components/RetiredGame.tsx:114
+#: src/components/RetiredGame.tsx:115
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
@@ -587,7 +592,7 @@ msgstr "Help"
 msgid "帮助与社区"
 msgstr "Help & Community"
 
-#: src/components/AboutList.tsx:33 src/components/PhoneMore.tsx:129
+#: src/components/AboutList.tsx:33 src/components/PhoneMore.tsx:138
 msgid "帮助文档"
 msgstr "Documentation"
 
@@ -613,7 +618,7 @@ msgstr "Morale"
 msgid "总价值"
 msgstr "Total Value"
 
-#: src/App.tsx:488
+#: src/App.tsx:491
 msgid "您不妨试试"
 msgstr "You may try"
 
@@ -622,7 +627,7 @@ msgstr "You may try"
 msgid "截止 %s"
 msgstr "As of %s"
 
-#: src/components/RetiredGame.tsx:175
+#: src/components/RetiredGame.tsx:177
 msgid "打开旧版"
 msgstr "Open the old version"
 
@@ -656,7 +661,7 @@ msgstr "Filter by stage code or name"
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
-#: src/App.tsx:65 src/App.tsx:66 src/components/Importer.tsx:168
+#: src/App.tsx:66 src/App.tsx:67 src/components/Importer.tsx:168
 #: src/components/PlanActions.tsx:51
 msgid "撤销"
 msgstr "Undo"
@@ -693,7 +698,7 @@ msgstr "No matching stages"
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
-#: src/components/RetiredGame.tsx:110
+#: src/components/RetiredGame.tsx:111
 msgid "无法写入剪贴板，请改用「导出为文件」。"
 msgstr "Could not write to the clipboard. Use «Export as File» instead."
 
@@ -706,7 +711,7 @@ msgstr ""
 msgid "无法识别粘贴的内容。支持以下格式："
 msgstr "Could not recognize what was pasted. Supported formats:"
 
-#: src/components/RetiredGame.tsx:184
+#: src/components/RetiredGame.tsx:186
 msgid ""
 "旧版能保留多久，我们也说不准。万一它打不开了，源码还在 GitHub 上，可以自行部"
 "署。"
@@ -764,7 +769,7 @@ msgstr "Data updating…"
 msgid "更新笔记"
 msgstr "Patch Notes"
 
-#: src/components/PhoneMore.tsx:44
+#: src/components/PhoneMore.tsx:46
 msgid "有新内容"
 msgstr "New"
 
@@ -818,7 +823,7 @@ msgstr "Drop to Import"
 msgid "查看更多…"
 msgstr "Read More…"
 
-#: src/components/RetiredGame.tsx:186
+#: src/components/RetiredGame.tsx:188
 msgid "查看源码"
 msgstr "View source"
 
@@ -830,22 +835,22 @@ msgstr "Query Failed"
 msgid "样本数"
 msgstr "Samples"
 
-#: src/components/RetiredGame.tsx:93
+#: src/components/RetiredGame.tsx:94
 msgid "档案 %1 的数据可以存成文件留作备份，也可以直接复制，到旧版里粘贴。"
 msgstr ""
 "Save the data of profile %1 as a file to keep as a backup, or copy it and "
 "paste it into the old version."
 
-#: src/components/RetiredGame.tsx:91
+#: src/components/RetiredGame.tsx:92
 msgid "档案 %1 里没有数据，不用导出。"
 msgstr "Profile %1 has no data, so there is nothing to export."
 
 #. %s: profile name
-#: src/main.tsx:40
+#: src/main.tsx:42
 msgid "档案 %s 不存在，要新建吗？"
 msgstr "Profile %s does not exist. Do you want to create it?"
 
-#: src/App.tsx:105 src/components/PhoneMore.tsx:126
+#: src/App.tsx:106 src/components/PhoneMore.tsx:135
 msgid "检查数据更新"
 msgstr "Check For Data Updates"
 
@@ -868,7 +873,7 @@ msgstr ""
 msgid "正在切换区域…"
 msgstr "Switching region…"
 
-#: src/components/RetiredGame.tsx:206 src/components/UserDataManager.tsx:344
+#: src/components/RetiredGame.tsx:208 src/components/UserDataManager.tsx:344
 msgid "清空"
 msgstr "Clear"
 
@@ -883,12 +888,12 @@ msgstr[1] "Clear the plans of %d operators"
 msgid "清除选择"
 msgstr "Clear selection"
 
-#: src/App.tsx:212 src/components/reloadGameData.ts:31
+#: src/App.tsx:213 src/components/reloadGameData.ts:31
 msgid "游戏数据已更新"
 msgstr "Game data updated"
 
-#: src/components/ConfigUi.tsx:300 src/components/PhoneMore.tsx:113
-#: src/components/PhoneMore.tsx:145
+#: src/components/ConfigUi.tsx:300 src/components/PhoneMore.tsx:116
+#: src/components/PhoneMore.tsx:154
 msgid "游戏服务器"
 msgstr "Game Region"
 
@@ -902,7 +907,7 @@ msgstr "Assets from Game"
 msgid "潜能 %d"
 msgstr "Potential %d"
 
-#: src/components/RetiredGame.tsx:102
+#: src/components/RetiredGame.tsx:103
 msgid ""
 "点右上角的 %1，选 %2；把文本框清空，粘贴刚才复制的数据或导出文件的全部内容，"
 "再点 %3 并确认。"
@@ -915,7 +920,7 @@ msgstr ""
 msgid "现在可以合成的道具"
 msgstr "Synthesizing"
 
-#: src/components/RetiredGame.tsx:194 src/components/UserDataManager.tsx:380
+#: src/components/RetiredGame.tsx:196 src/components/UserDataManager.tsx:380
 #: src/components/UserDataManager.tsx:399 src/components/UserDataManager.tsx:85
 msgid "用户数据管理"
 msgstr "Save Manager"
@@ -926,7 +931,7 @@ msgid_plural "用过的 · %d 张"
 msgstr[0] "Used · %d ticket"
 msgstr[1] "Used · %d tickets"
 
-#: src/components/PhoneMore.tsx:120 src/components/PhoneMore.tsx:147
+#: src/components/PhoneMore.tsx:123 src/components/PhoneMore.tsx:156
 #: src/locales.tsx:76
 msgid "界面语言"
 msgstr "UI Language"
@@ -1040,11 +1045,11 @@ msgstr ""
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/components/PhoneMore.tsx:179
+#: src/components/PhoneMore.tsx:192
 msgid "返回"
 msgstr "Back"
 
-#: src/App.tsx:481
+#: src/App.tsx:484
 msgid "返回主页"
 msgstr "Back to Home"
 
@@ -1110,7 +1115,7 @@ msgstr[1] "This stage has %d more runs: "
 msgid "这不是 Closure++ 用户数据。"
 msgstr "This is not Closure++ save data."
 
-#: src/components/RetiredGame.tsx:100
+#: src/components/RetiredGame.tsx:101
 msgid "这个档案没有数据，不需要导入。"
 msgstr "This profile has no data, so there is nothing to import."
 
@@ -1193,8 +1198,8 @@ msgid_plural "选中的 %d 名干员"
 msgstr[0] "%d selected operator"
 msgstr[1] "%d selected operators"
 
-#: src/components/ConfigUi.tsx:77 src/components/PhoneMore.tsx:109
-#: src/components/PhoneMore.tsx:143
+#: src/components/ConfigUi.tsx:77 src/components/PhoneMore.tsx:112
+#: src/components/PhoneMore.tsx:152
 msgid "选项"
 msgstr "Options"
 
@@ -1206,11 +1211,11 @@ msgstr "Items"
 msgid "邮箱"
 msgstr "E-mail"
 
-#: src/App.tsx:77
+#: src/App.tsx:78
 msgid "重做"
 msgstr "Redo"
 
-#: src/App.tsx:98 src/components/PhoneMore.tsx:127
+#: src/App.tsx:99 src/components/PhoneMore.tsx:136
 msgid "重新下载数据"
 msgstr "Re-download Data"
 
@@ -2865,7 +2870,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr "Error During Reading File"
 
-#: src/App.tsx:468
+#: src/App.tsx:471
 msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
@@ -3020,43 +3025,43 @@ msgid "、"
 msgstr ", "
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:370
+#: src/App.tsx:372
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr "Setting up %s…"
 
 #. initial
-#: src/App.tsx:378
+#: src/App.tsx:380
 msgctxt "loading status"
 msgid "别急…"
 msgstr "Don't hurry…"
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:405
+#: src/App.tsx:408
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr "We're setting things up for you"
 
 #. loaded data objects
-#: src/App.tsx:377
+#: src/App.tsx:379
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr "Almost there…"
 
 #. joke text
-#: src/App.tsx:403
+#: src/App.tsx:406
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr "Installing Macindows X"
 
 #. loading hero line 2
-#: src/App.tsx:412
+#: src/App.tsx:415
 msgctxt "loading status"
 msgid "请稍候"
 msgstr "This won't take long"
 
 #. done
-#: src/App.tsx:368
+#: src/App.tsx:370
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
@@ -3742,37 +3747,37 @@ msgctxt "peek card"
 msgid "需要 / 库存"
 msgstr "Need / Stock"
 
-#: src/components/PhoneMore.tsx:105 src/components/PhoneMore.tsx:141
+#: src/components/PhoneMore.tsx:108 src/components/PhoneMore.tsx:150
 msgctxt "phone more"
 msgid "价值"
 msgstr "Value"
 
-#: src/components/PhoneMore.tsx:137 src/components/PhoneMore.tsx:84
+#: src/components/PhoneMore.tsx:146 src/components/PhoneMore.tsx:87
 msgctxt "phone more"
 msgid "导入"
 msgstr "Import"
 
-#: src/components/PhoneMore.tsx:139 src/components/PhoneMore.tsx:92
+#: src/components/PhoneMore.tsx:148 src/components/PhoneMore.tsx:95
 msgctxt "phone more"
 msgid "导出"
 msgstr "Export"
 
-#: src/components/PhoneMore.tsx:79
+#: src/components/PhoneMore.tsx:82
 msgctxt "phone more"
 msgid "数据"
 msgstr "Data"
 
-#: src/components/PhoneMore.tsx:125
+#: src/components/PhoneMore.tsx:134
 msgctxt "phone more"
 msgid "游戏数据"
 msgstr "Game Data"
 
-#: src/components/PhoneMore.tsx:102
+#: src/components/PhoneMore.tsx:105
 msgctxt "phone more"
 msgid "设置"
 msgstr "Settings"
 
-#: src/components/PhoneMore.tsx:98
+#: src/components/PhoneMore.tsx:101
 msgctxt "phone more"
 msgid "面板"
 msgstr "Panels"
@@ -3950,7 +3955,7 @@ msgctxt "predefined view name"
 msgid "计划"
 msgstr "Planned"
 
-#: src/components/RetiredGame.tsx:70
+#: src/components/RetiredGame.tsx:71
 msgctxt "profile name"
 msgid "默认"
 msgstr "Default"
@@ -5462,6 +5467,21 @@ msgstr "Chapter"
 msgctxt "status editor"
 msgid "要改的练度"
 msgstr "Status to edit"
+
+#: src/components/ThemeMenu.tsx:17
+msgctxt "theme"
+msgid "浅色"
+msgstr "Light"
+
+#: src/components/ThemeMenu.tsx:19
+msgctxt "theme"
+msgid "深色"
+msgstr "Dark"
+
+#: src/components/ThemeMenu.tsx:15
+msgctxt "theme"
+msgid "跟随系统"
+msgstr "System"
 
 #. %d: 4, 5 or 6; %s: a value
 #: src/components/arknights/voucherText.tsx:37

@@ -58,11 +58,11 @@ msgid_plural "%d 项"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/RetiredGame.tsx:86
+#: src/components/RetiredGame.tsx:87
 msgid "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版（下面称作「旧版」），您可以在那里继续使用。旧版和这里的数据分开存放，按下面三步就能搬过去。"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:82
+#: src/components/RetiredGame.tsx:83
 msgid "%s 的功能已经全部移除，这里只能导出或清空您的数据。我们保留了移除前的最后一版（下面称作「旧版」），您可以在那里继续使用。这个档案里没有数据，直接打开旧版就好。"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgid "ArknightsAssets 解析的游戏数据"
 msgstr ""
 
 #. %s: game codename
-#: src/components/RetiredGame.tsx:79
+#: src/components/RetiredGame.tsx:80
 msgid "Closure++ 已不再支持 %s"
 msgstr ""
 
@@ -100,7 +100,7 @@ msgstr ""
 msgid "QQ 交流群"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:200
+#: src/components/RetiredGame.tsx:202
 msgid "不再需要这里的数据时，可以把它清空，旧版里的数据不受影响。"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgstr[1] ""
 msgid "从文件导入"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:195
+#: src/components/RetiredGame.tsx:197
 #: src/components/UserDataManager.tsx:358
 msgid "从文本框中导入"
 msgstr ""
@@ -192,7 +192,7 @@ msgstr ""
 msgid "关卡"
 msgstr ""
 
-#: src/App.tsx:538
+#: src/App.tsx:541
 #: src/components/CharacterDossier.tsx:235
 #: src/components/CharacterDossier.tsx:236
 #: src/components/Importer.tsx:163
@@ -225,7 +225,7 @@ msgstr ""
 msgid "切换语言失败"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:167
+#: src/components/RetiredGame.tsx:169
 msgid "到旧版去"
 msgstr ""
 
@@ -280,7 +280,7 @@ msgstr ""
 msgid "回到「提取装置」"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:191
+#: src/components/RetiredGame.tsx:193
 msgid "在旧版里导入"
 msgstr ""
 
@@ -295,15 +295,15 @@ msgstr ""
 msgid "在此粘贴数据或文件，自动识别格式"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:142
+#: src/components/RetiredGame.tsx:144
 msgid "在这里导出"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:98
+#: src/components/RetiredGame.tsx:99
 msgid "地址是 %1，会在新标签页打开。"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:96
+#: src/components/RetiredGame.tsx:97
 msgid "地址是 %1，会在新标签页打开。旧版会询问是否新建档案 %2，请选确定。"
 msgstr ""
 
@@ -332,12 +332,19 @@ msgstr ""
 msgid "复制为明日方舟工具箱「精英材料计算」备份"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:148
+#: src/components/RetiredGame.tsx:150
 msgid "复制数据"
 msgstr ""
 
 #: src/components/CharacterList.tsx:238
 msgid "复制角色名"
+msgstr ""
+
+#: src/components/PhoneMore.tsx:129
+#: src/components/PhoneMore.tsx:158
+#: src/components/ThemeMenu.tsx:29
+#: src/components/ThemeMenu.tsx:46
+msgid "外观"
 msgstr ""
 
 #. %d: number of skins
@@ -374,8 +381,8 @@ msgstr ""
 msgid "导入 MAA「干员识别」数据"
 msgstr ""
 
-#: src/App.tsx:344
-#: src/components/RetiredGame.tsx:193
+#: src/App.tsx:346
+#: src/components/RetiredGame.tsx:195
 msgid "导入/导出"
 msgstr ""
 
@@ -426,7 +433,7 @@ msgid_plural "已复制 %d 名干员的培养计划，请在 MAA「干员培养�
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/RetiredGame.tsx:114
+#: src/components/RetiredGame.tsx:115
 msgid "已复制，到旧版里粘贴就好。"
 msgstr ""
 
@@ -498,7 +505,7 @@ msgid "帮助与社区"
 msgstr ""
 
 #: src/components/AboutList.tsx:33
-#: src/components/PhoneMore.tsx:129
+#: src/components/PhoneMore.tsx:138
 msgid "帮助文档"
 msgstr ""
 
@@ -524,7 +531,7 @@ msgstr ""
 msgid "总价值"
 msgstr ""
 
-#: src/App.tsx:488
+#: src/App.tsx:491
 msgid "您不妨试试"
 msgstr ""
 
@@ -533,7 +540,7 @@ msgstr ""
 msgid "截止 %s"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:175
+#: src/components/RetiredGame.tsx:177
 msgid "打开旧版"
 msgstr ""
 
@@ -567,8 +574,8 @@ msgstr ""
 msgid "按游戏内仓库排布形式展示"
 msgstr ""
 
-#: src/App.tsx:65
 #: src/App.tsx:66
+#: src/App.tsx:67
 #: src/components/Importer.tsx:168
 #: src/components/PlanActions.tsx:51
 msgid "撤销"
@@ -604,7 +611,7 @@ msgstr ""
 msgid "无法写入剪贴板"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:110
+#: src/components/RetiredGame.tsx:111
 msgid "无法写入剪贴板，请改用「导出为文件」。"
 msgstr ""
 
@@ -616,7 +623,7 @@ msgstr ""
 msgid "无法识别粘贴的内容。支持以下格式："
 msgstr ""
 
-#: src/components/RetiredGame.tsx:184
+#: src/components/RetiredGame.tsx:186
 msgid "旧版能保留多久，我们也说不准。万一它打不开了，源码还在 GitHub 上，可以自行部署。"
 msgstr ""
 
@@ -667,7 +674,7 @@ msgstr ""
 msgid "更新笔记"
 msgstr ""
 
-#: src/components/PhoneMore.tsx:44
+#: src/components/PhoneMore.tsx:46
 msgid "有新内容"
 msgstr ""
 
@@ -695,7 +702,7 @@ msgstr ""
 msgid "查看更多…"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:186
+#: src/components/RetiredGame.tsx:188
 msgid "查看源码"
 msgstr ""
 
@@ -707,21 +714,21 @@ msgstr ""
 msgid "样本数"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:93
+#: src/components/RetiredGame.tsx:94
 msgid "档案 %1 的数据可以存成文件留作备份，也可以直接复制，到旧版里粘贴。"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:91
+#: src/components/RetiredGame.tsx:92
 msgid "档案 %1 里没有数据，不用导出。"
 msgstr ""
 
 #. %s: profile name
-#: src/main.tsx:40
+#: src/main.tsx:42
 msgid "档案 %s 不存在，要新建吗？"
 msgstr ""
 
-#: src/App.tsx:105
-#: src/components/PhoneMore.tsx:126
+#: src/App.tsx:106
+#: src/components/PhoneMore.tsx:135
 msgid "检查数据更新"
 msgstr ""
 
@@ -737,7 +744,7 @@ msgstr ""
 msgid "正在切换区域…"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:206
+#: src/components/RetiredGame.tsx:208
 #: src/components/UserDataManager.tsx:344
 msgid "清空"
 msgstr ""
@@ -754,14 +761,14 @@ msgstr[1] ""
 msgid "清除选择"
 msgstr ""
 
-#: src/App.tsx:212
+#: src/App.tsx:213
 #: src/components/reloadGameData.ts:31
 msgid "游戏数据已更新"
 msgstr ""
 
 #: src/components/ConfigUi.tsx:300
-#: src/components/PhoneMore.tsx:113
-#: src/components/PhoneMore.tsx:145
+#: src/components/PhoneMore.tsx:116
+#: src/components/PhoneMore.tsx:154
 msgid "游戏服务器"
 msgstr ""
 
@@ -775,7 +782,7 @@ msgstr ""
 msgid "潜能 %d"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:102
+#: src/components/RetiredGame.tsx:103
 msgid "点右上角的 %1，选 %2；把文本框清空，粘贴刚才复制的数据或导出文件的全部内容，再点 %3 并确认。"
 msgstr ""
 
@@ -783,7 +790,7 @@ msgstr ""
 msgid "现在可以合成的道具"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:194
+#: src/components/RetiredGame.tsx:196
 #: src/components/UserDataManager.tsx:380
 #: src/components/UserDataManager.tsx:399
 #: src/components/UserDataManager.tsx:85
@@ -796,8 +803,8 @@ msgid_plural "用过的 · %d 张"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/PhoneMore.tsx:120
-#: src/components/PhoneMore.tsx:147
+#: src/components/PhoneMore.tsx:123
+#: src/components/PhoneMore.tsx:156
 #: src/locales.tsx:76
 msgid "界面语言"
 msgstr ""
@@ -890,11 +897,11 @@ msgstr ""
 msgid "近期更新"
 msgstr ""
 
-#: src/components/PhoneMore.tsx:179
+#: src/components/PhoneMore.tsx:192
 msgid "返回"
 msgstr ""
 
-#: src/App.tsx:481
+#: src/App.tsx:484
 msgid "返回主页"
 msgstr ""
 
@@ -950,7 +957,7 @@ msgstr[1] ""
 msgid "这不是 Closure++ 用户数据。"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:100
+#: src/components/RetiredGame.tsx:101
 msgid "这个档案没有数据，不需要导入。"
 msgstr ""
 
@@ -1016,8 +1023,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/components/ConfigUi.tsx:77
-#: src/components/PhoneMore.tsx:109
-#: src/components/PhoneMore.tsx:143
+#: src/components/PhoneMore.tsx:112
+#: src/components/PhoneMore.tsx:152
 msgid "选项"
 msgstr ""
 
@@ -1030,12 +1037,12 @@ msgstr ""
 msgid "邮箱"
 msgstr ""
 
-#: src/App.tsx:77
+#: src/App.tsx:78
 msgid "重做"
 msgstr ""
 
-#: src/App.tsx:98
-#: src/components/PhoneMore.tsx:127
+#: src/App.tsx:99
+#: src/components/PhoneMore.tsx:136
 msgid "重新下载数据"
 msgstr ""
 
@@ -2688,7 +2695,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr ""
 
-#: src/App.tsx:468
+#: src/App.tsx:471
 msgctxt "error context"
 msgid "遇到错误"
 msgstr ""
@@ -2843,43 +2850,43 @@ msgid "、"
 msgstr ""
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:370
+#: src/App.tsx:372
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr ""
 
 #. initial
-#: src/App.tsx:378
+#: src/App.tsx:380
 msgctxt "loading status"
 msgid "别急…"
 msgstr ""
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:405
+#: src/App.tsx:408
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr ""
 
 #. loaded data objects
-#: src/App.tsx:377
+#: src/App.tsx:379
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr ""
 
 #. joke text
-#: src/App.tsx:403
+#: src/App.tsx:406
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr ""
 
 #. loading hero line 2
-#: src/App.tsx:412
+#: src/App.tsx:415
 msgctxt "loading status"
 msgid "请稍候"
 msgstr ""
 
 #. done
-#: src/App.tsx:368
+#: src/App.tsx:370
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr ""
@@ -3558,40 +3565,40 @@ msgctxt "peek card"
 msgid "需要 / 库存"
 msgstr ""
 
-#: src/components/PhoneMore.tsx:105
-#: src/components/PhoneMore.tsx:141
+#: src/components/PhoneMore.tsx:108
+#: src/components/PhoneMore.tsx:150
 msgctxt "phone more"
 msgid "价值"
 msgstr ""
 
-#: src/components/PhoneMore.tsx:137
-#: src/components/PhoneMore.tsx:84
+#: src/components/PhoneMore.tsx:146
+#: src/components/PhoneMore.tsx:87
 msgctxt "phone more"
 msgid "导入"
 msgstr ""
 
-#: src/components/PhoneMore.tsx:139
-#: src/components/PhoneMore.tsx:92
+#: src/components/PhoneMore.tsx:148
+#: src/components/PhoneMore.tsx:95
 msgctxt "phone more"
 msgid "导出"
 msgstr ""
 
-#: src/components/PhoneMore.tsx:79
+#: src/components/PhoneMore.tsx:82
 msgctxt "phone more"
 msgid "数据"
 msgstr ""
 
-#: src/components/PhoneMore.tsx:125
+#: src/components/PhoneMore.tsx:134
 msgctxt "phone more"
 msgid "游戏数据"
 msgstr ""
 
-#: src/components/PhoneMore.tsx:102
+#: src/components/PhoneMore.tsx:105
 msgctxt "phone more"
 msgid "设置"
 msgstr ""
 
-#: src/components/PhoneMore.tsx:98
+#: src/components/PhoneMore.tsx:101
 msgctxt "phone more"
 msgid "面板"
 msgstr ""
@@ -3771,7 +3778,7 @@ msgctxt "predefined view name"
 msgid "计划"
 msgstr ""
 
-#: src/components/RetiredGame.tsx:70
+#: src/components/RetiredGame.tsx:71
 msgctxt "profile name"
 msgid "默认"
 msgstr ""
@@ -5261,6 +5268,21 @@ msgstr ""
 #: src/components/StatusModeSwitch.tsx:9
 msgctxt "status editor"
 msgid "要改的练度"
+msgstr ""
+
+#: src/components/ThemeMenu.tsx:17
+msgctxt "theme"
+msgid "浅色"
+msgstr ""
+
+#: src/components/ThemeMenu.tsx:19
+msgctxt "theme"
+msgid "深色"
+msgstr ""
+
+#: src/components/ThemeMenu.tsx:15
+msgctxt "theme"
+msgid "跟随系统"
 msgstr ""
 
 #. %d: 4, 5 or 6; %s: a value
