@@ -715,10 +715,50 @@ body {
   text-overflow: ellipsis;
 }
 
+.cpp-peek-sub-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* 一行小字的行高 16px 比价值标签矮，按文字基线排时下面多出一截，和库存框对不齐 */
+.cpp-peek-sub-line > .cpp-peek-sub {
+  display: flex;
+  min-width: 0;
+}
+
+/* 物品卡的库存，在价值标签那一行的右端 */
+.cpp-peek-stock {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.cpp-peek-stock > .cpp-peek-label {
+  min-width: 0;
+}
+
+/* 和价值标签一样高。行内排时框下面多出 1px 行高，比标签低半个像素，所以排成块 */
+.cpp-quantity-compact .bp6-input-group.bp6-small .bp6-input {
+  height: 20px;
+  padding: 0 6px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  display: block;
+}
+
 .cpp-peek-body {
   padding: 8px 10px 10px;
   font-size: 12.5px;
   line-height: 1.55;
+}
+
+/* 没有配方的物品卡 */
+.cpp-peek-body:empty {
+  display: none;
 }
 
 .cpp-peek-foot {
@@ -761,24 +801,18 @@ body {
   margin-left: auto;
 }
 
-/* 物品卡的合成：和库存隔一条细线 */
-.cpp-peek-sec {
-  margin: 10px -10px 0;
-  padding: 8px 10px 0;
-  border-top: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
-}
-
-.cpp-peek-sec-head {
+.cpp-peek-synth {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.cpp-peek-sec-head > .bp6-button-group {
+.cpp-peek-synth > .bp6-button-group {
   margin-left: auto;
 }
 
-.cpp-peek-build {
+/* 锤子在按钮的图标位，Blueprint 留的 8px 太宽 */
+.bp6-button > .cpp-peek-build {
   margin-right: 2px;
   opacity: 0.5;
 }

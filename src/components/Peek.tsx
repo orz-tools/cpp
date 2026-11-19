@@ -37,8 +37,20 @@ export function usePeekKinds(): Record<string, PeekKind> {
 const PeekTitleIdContext = createContext<string | undefined>(undefined)
 
 /** 种类的 Head 用它画标题栏左半边；名字同时是卡片的无障碍名称 */
-export const PeekHead = ({ icon, title, sub }: { icon?: React.ReactNode; title: string; sub?: React.ReactNode }) => {
+export const PeekHead = ({
+  icon,
+  title,
+  sub,
+  subEnd,
+}: {
+  icon?: React.ReactNode
+  title: string
+  sub?: React.ReactNode
+  /** 小字那一行的右端，名字仍占整行；物品卡的库存 */
+  subEnd?: React.ReactNode
+}) => {
   const titleId = useContext(PeekTitleIdContext)
+  const subLine = sub != null ? <div className="cpp-peek-sub">{sub}</div> : null
   return (
     <div className="cpp-peek-head-main">
       {icon != null ? <span className="cpp-peek-icon">{icon}</span> : null}
@@ -46,7 +58,14 @@ export const PeekHead = ({ icon, title, sub }: { icon?: React.ReactNode; title: 
         <div className="cpp-peek-title" id={titleId} title={title}>
           {title}
         </div>
-        {sub != null ? <div className="cpp-peek-sub">{sub}</div> : null}
+        {subEnd != null ? (
+          <div className="cpp-peek-sub-line">
+            {subLine}
+            {subEnd}
+          </div>
+        ) : (
+          subLine
+        )}
       </div>
     </div>
   )

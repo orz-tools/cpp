@@ -56,8 +56,8 @@ export const ItemSynthesis = memo(
       Math.min(...formula.costs.map((x) => Math.floor((quantities[x.itemId] || 0) / x.quantity))),
     )
     return (
-      <div className="cpp-peek-sec">
-        <div className="cpp-peek-sec-head">
+      <>
+        <div className="cpp-peek-synth">
           <span className="cpp-peek-label">{gt.pgettext('peek card', '合成')}</span>
           {formula.apCost ? (
             <span className="cpp-peek-sub">
@@ -70,12 +70,8 @@ export const ItemSynthesis = memo(
                 key={t}
                 size="small"
                 disabled={t > maxTimes}
-                text={
-                  <>
-                    {buildIcon}
-                    {t}
-                  </>
-                }
+                icon={buildIcon}
+                text={t}
                 style={{ opacity: formula.apCost && t > 24 / formula.apCost ? 0.5 : 1 }}
                 onMouseEnter={() => setTimes(t)}
                 onMouseLeave={() => setTimes(1)}
@@ -115,12 +111,10 @@ export const ItemSynthesis = memo(
             )
           })}
         </div>
-      </div>
+      </>
     )
   },
 )
-
-const quantityStyle: React.CSSProperties = { width: '8em', textAlign: 'right' }
 
 export const itemPeekKind: PeekKind = {
   Head: memo(({ id }: { id: string }) => {
@@ -130,20 +124,18 @@ export const itemPeekKind: PeekKind = {
         icon={<ItemIcon item={item} size={28} />}
         title={item.name}
         sub={<ValueTag value={item.valueAsAp} minimal single />}
+        subEnd={
+          <label className="cpp-peek-stock">
+            <span className="cpp-peek-label">{gt.pgettext('peek card', '库存')}</span>
+            <ItemQuantityEditor item={item} compact />
+          </label>
+        }
       />
     )
   }),
-  Body: memo(({ id, navigate }: { id: string; navigate: (ref: PeekRef) => void }) => {
-    const item = useGameAdapter().getItem(id)
-    return (
-      <>
-        <div className="cpp-peek-row">
-          <span className="cpp-peek-label">{gt.pgettext('peek card', '库存')}</span>
-          <ItemQuantityEditor item={item} style={quantityStyle} />
-        </div>
-        <ItemSynthesis item={item} navigate={navigate} />
-      </>
-    )
-  }),
+  // 没有配方时什么都不画，卡片只剩标题栏
+  Body: memo(({ id, navigate }: { id: string; navigate: (ref: PeekRef) => void }) => (
+    <ItemSynthesis item={useGameAdapter().getItem(id)} navigate={navigate} />
+  )),
   exists: (ga, id) => !!ga.getItem(id),
 }
