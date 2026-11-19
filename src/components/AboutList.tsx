@@ -7,6 +7,7 @@ import { useComponents } from '../hooks/useComponents'
 import { DataContainerObject } from '../pkg/dccache'
 import { PSTR, gt, lpstr } from '../pkg/gt'
 import { FullLogList, SimpleLogList, useChangelogBadge, useMarkChangelogSeen } from './LogList'
+import { useMissingData } from './MissingData'
 import { useOpenSidebarPanel } from './SidebarPanelDialog'
 import { SidebarPanel } from './types'
 
@@ -186,13 +187,15 @@ export const DataObjectStatus = memo(
     hideCommit?: boolean
   }) => {
     const dm = useGameAdapter().getDataManager()
-    const data = dm.get(dataObj)
+    const { missing, loading, retry } = useMissingData(dataObj)
+    const data = missing ? undefined : dm.get(dataObj)
     const shouldShowCommit =
+      data &&
       !hideCommit &&
       data.version.text &&
       data.version.text.trim() !== new Date(data.version.timestamp).toJSON() &&
       data.version.text.trim() !== new Date(data.version.timestamp).toJSON().replace(/\.\d+/g, '')
-    const finalHref = href == null ? undefined : href || data.version.sources[0] || undefined
+    const finalHref = href == null ? undefined : href || data?.version.sources[0] || undefined
     return (
       <>
         <MenuItem
@@ -204,22 +207,39 @@ export const DataObjectStatus = memo(
           {...externalLinkProps}
         />
         <Menu className="cpp-menu-indent">
-          <MenuItem
-            className="cpp-menu-not-interactive"
-            text={
-              <div
-                className="cpp-menu-secondary"
-                style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
-              >
-                <span style={{ flex: 1 }}>
-                  {gt
-                    .gettext('更新于 %s') /* I10N: %s: datetime */
-                    .replaceAll('%s', format(data.version.timestamp, 'yyyy-MM-dd HH:mm:ss'))}
-                </span>
-              </div>
-            }
-          />
-          {shouldShowCommit ? (
+          {data ? (
+            <MenuItem
+              className="cpp-menu-not-interactive"
+              text={
+                <div
+                  className="cpp-menu-secondary"
+                  style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+                >
+                  <span style={{ flex: 1 }}>
+                    {gt
+                      .gettext('更新于 %s') /* I10N: %s: datetime */
+                      .replaceAll('%s', format(data.version.timestamp, 'yyyy-MM-dd HH:mm:ss'))}
+                  </span>
+                </div>
+              }
+            />
+          ) : (
+            <>
+              <MenuItem
+                className="cpp-menu-not-interactive"
+                intent="danger"
+                text={gt.pgettext('missing data', '载入失败')}
+              />
+              <MenuItem
+                icon="refresh"
+                text={gt.pgettext('missing data', '重试')}
+                disabled={loading}
+                shouldDismissPopover={false}
+                onClick={retry}
+              />
+            </>
+          )}
+          {data && shouldShowCommit ? (
             <MenuItem
               multiline={true}
               href={data.version.sources[0] || undefined}
