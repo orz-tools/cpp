@@ -759,6 +759,28 @@ body {
   flex: none;
 }
 
+/* Several operators dragged together: the count takes the ring's place at the line's left end */
+.cpp-drop-line-many::before {
+  display: none;
+}
+
+.cpp-drop-line-count {
+  position: absolute;
+  left: -4px;
+  top: -8px;
+  box-sizing: border-box;
+  height: 18px;
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--bp-palette-blue-3, #2d72d2);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
 .cpp-peek-card {
   width: 344px;
   max-width: calc(100vw - 16px);

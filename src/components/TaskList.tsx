@@ -27,6 +27,7 @@ import { gt } from '../pkg/gt'
 import { CharacterContextMenu, SortButtonGroup, menuItemKeyDown } from './CharacterList'
 import { CachedImg, ItemIcon } from './Icons'
 import { ListDrag, useListDrag } from './ListDrag'
+import { inRanges } from './listDrag'
 import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
 import { useRequestFrame } from './focusFrame'
@@ -557,11 +558,16 @@ export const TaskList = memo(<G extends IGame>() => {
     virtualizer: rowVirtualizer,
     handleInset: 3,
     draggable: ({ kind, row }) =>
-      kind === 'group' ? groupDraggable(tasks, layout, row) : charDraggable(layout, layout.runOf[row]),
+      kind === 'group'
+        ? groupDraggable(tasks, layout, row)
+        : charDraggable(layout, layout.runOf[row], new Set([tasks[row].charId])),
     begin: ({ kind, row }) => {
       if (kind === 'group') return groupDragGaps(tasks, layout, row)
       const run = layout.runs[layout.runOf[row]]
-      return { rows: [run.first, run.last], gaps: charDragGaps(layout, layout.runOf[row]) }
+      return {
+        ranges: [[run.first, run.last]],
+        gaps: charDragGaps(layout, layout.runOf[row], new Set([tasks[row].charId])),
+      }
     },
     commit: ({ kind, row }, target) => {
       const task = tasks[row]
@@ -589,7 +595,7 @@ export const TaskList = memo(<G extends IGame>() => {
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const index = virtualRow.index
-            const dragged = active && active.rows[0] <= index && index <= active.rows[1]
+            const dragged = active && inRanges(active.ranges, index)
             return (
               <TaskMenu
                 key={virtualRow.key}

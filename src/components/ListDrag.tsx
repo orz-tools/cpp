@@ -15,10 +15,14 @@ export interface ListDrag<S> {
 }
 
 export interface ListDragStart<T> {
-  /** 被拖的首尾两行，列表把它们画淡 */
-  rows: readonly [number, number]
+  /** 被拖的几段行，每段首尾两行，列表把它们画淡 */
+  ranges: readonly (readonly [number, number])[]
   gaps: DropGap<T>[]
+  /** 一起挪几名；多于一名时蓝线上写出人数 */
+  count?: number
 }
+
+type ListDragActive<S> = { source: S } & Omit<ListDragStart<unknown>, 'gaps'>
 
 interface Options<S, T> {
   enabled: boolean
@@ -81,7 +85,7 @@ export function useListDrag<S, T>({
   const begin = useEvent(beginDrag)
   const commit = useEvent(commitDrag)
   // 只有这三样进 state：拖动中每次移动都 setState 会重画整个列表
-  const [active, setActive] = useState<{ source: S; rows: readonly [number, number] }>()
+  const [active, setActive] = useState<ListDragActive<S>>()
   const [gap, setGap] = useState<DropGap<T>>()
   const [handlePos, setHandlePos] = useState<{ left: number; top: number; height: number }>()
 
@@ -170,7 +174,7 @@ export function useListDrag<S, T>({
     scrollRef.current?.classList.add('cpp-list-drag-scroller')
     window.getSelection()?.removeAllRanges()
     hideHandle()
-    setActive({ source: s.source, rows: started.rows })
+    setActive({ source: s.source, ranges: started.ranges, count: started.count })
     updateGap()
     function autoScroll() {
       frame.current = requestAnimationFrame(autoScroll)
@@ -281,7 +285,13 @@ export function useListDrag<S, T>({
   )
 
   const rows = gap?.target != null ? measurements() : undefined
-  const overlay = gap && rows?.[gap.index] ? <div className="cpp-drop-line" style={{ top: gapY(gap, rows) }} /> : null
+  const count = active?.count ?? 1
+  const overlay =
+    gap && rows?.[gap.index] ? (
+      <div className={'cpp-drop-line' + (count > 1 ? ' cpp-drop-line-many' : '')} style={{ top: gapY(gap, rows) }}>
+        {count > 1 ? <span className="cpp-drop-line-count">{count}</span> : null}
+      </div>
+    ) : null
 
   const handle =
     handlePos && !active

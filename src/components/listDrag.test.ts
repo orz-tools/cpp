@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DropGap, autoScrollStep, gapY, listGaps, nearestGap } from './listDrag'
+import { DropGap, autoScrollStep, gapY, gatherTargets, inRanges, listGaps, nearestGap } from './listDrag'
 
 const rows = [
   { start: 0, end: 50 },
@@ -41,7 +41,7 @@ describe('listGaps', () => {
   const keys = ['a', 'b', 'c']
 
   it('keeps the first row in place at its own edges', () => {
-    expect(listGaps(keys, 0)).toEqual([
+    expect(listGaps(keys, new Set([keys[0]]))).toEqual([
       { index: 0, edge: 'start', target: null },
       { index: 1, edge: 'start', target: null },
       { index: 2, edge: 'start', target: { before: 'c' } },
@@ -50,7 +50,7 @@ describe('listGaps', () => {
   })
 
   it('keeps a middle row in place at its own edges', () => {
-    expect(listGaps(keys, 1)).toEqual([
+    expect(listGaps(keys, new Set([keys[1]]))).toEqual([
       { index: 0, edge: 'start', target: { before: 'a' } },
       { index: 1, edge: 'start', target: null },
       { index: 2, edge: 'start', target: null },
@@ -59,7 +59,7 @@ describe('listGaps', () => {
   })
 
   it('keeps the last row in place at its own edges', () => {
-    expect(listGaps(keys, 2)).toEqual([
+    expect(listGaps(keys, new Set([keys[2]]))).toEqual([
       { index: 0, edge: 'start', target: { before: 'a' } },
       { index: 1, edge: 'start', target: { before: 'b' } },
       { index: 2, edge: 'start', target: null },
@@ -68,7 +68,77 @@ describe('listGaps', () => {
   })
 
   it('has nowhere to go for the only row', () => {
-    expect(listGaps(['a'], 0).some((gap) => gap.target !== null)).toBe(false)
+    expect(listGaps(['a'], new Set(['a'])).some((gap) => gap.target !== null)).toBe(false)
+  })
+
+  it('has no gaps without rows', () => {
+    expect(listGaps([], new Set(['a']))).toEqual([])
+  })
+
+  // 期望照收拢以前只拖一行的 listGaps 手写：单行拖动不能因为改成收拢而变
+  it('keeps the rule of dragging one row', () => {
+    for (const keys of [
+      ['a', 'b'],
+      ['a', 'b', 'c', 'd', 'e'],
+      ['p', 'q', 'r', 's', 't', 'u', 'v'],
+    ]) {
+      const last = keys.length - 1
+      keys.forEach((key, source) => {
+        expect(listGaps(keys, new Set([key]))).toEqual([
+          ...keys.map((k, i) => ({
+            index: i,
+            edge: 'start',
+            target: i === source || i === source + 1 ? null : { before: k },
+          })),
+          { index: last, edge: 'end', target: source === last ? null : { after: keys[last] } },
+        ])
+      })
+    }
+  })
+})
+
+describe('gatherTargets', () => {
+  const keys = ['a', 'b', 'c', 'd']
+
+  it('stays put at the edges of the one being moved', () => {
+    expect(gatherTargets(keys, new Set(['b']))).toEqual([{ before: 'a' }, null, null, { before: 'd' }, { after: 'd' }])
+  })
+
+  it('stays put around a run and inside it', () => {
+    expect(gatherTargets(keys, new Set(['b', 'c']))).toEqual([{ before: 'a' }, null, null, null, { after: 'd' }])
+  })
+
+  it('moves keys apart anywhere, since gathering them changes the order', () => {
+    expect(gatherTargets(keys, new Set(['a', 'c']))).toEqual([
+      { before: 'b' },
+      { before: 'b' },
+      { before: 'd' },
+      { before: 'd' },
+      { after: 'd' },
+    ])
+  })
+
+  it('has nowhere to go with every key moving', () => {
+    expect(gatherTargets(keys, new Set(keys))).toEqual([null, null, null, null, null])
+  })
+
+  it('goes by the keys it is given only', () => {
+    expect(gatherTargets(keys, new Set(['b', 'x']))).toEqual(gatherTargets(keys, new Set(['b'])))
+  })
+})
+
+describe('inRanges', () => {
+  const ranges = [
+    [1, 1],
+    [3, 5],
+  ] as const
+
+  it('takes in both ends of a range', () => {
+    expect([1, 3, 4, 5].map((i) => inRanges(ranges, i))).toEqual([true, true, true, true])
+  })
+
+  it('leaves out what is outside every range', () => {
+    expect([0, 2, 6].map((i) => inRanges(ranges, i))).toEqual([false, false, false])
   })
 })
 

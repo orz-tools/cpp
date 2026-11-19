@@ -1,14 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import {
   TASK_HEADER_HEIGHT,
+  TaskListLayout,
   charDragGaps,
+  charDragRanges,
   charDraggable,
   groupDragGaps,
   groupDraggable,
+  headerRange,
   layoutTasks,
 } from './taskListLayout'
 
 const tasks = (...charIds: string[]) => charIds.map((charId) => ({ charId }))
+/** 只挪按住的那一组的干员 */
+const alone = (layout: TaskListLayout, run: number) => new Set([layout.runs[run].charId])
 
 describe('layoutTasks', () => {
   it('starts a new run where the starred tasks end, even for the same operator', () => {
@@ -35,7 +40,7 @@ describe('charDragGaps', () => {
   const layout = layoutTasks(tasks('A', 'B', 'A', 'A', 'C', 'D'), 2)
 
   it("offers only the dragged run's segment, with the run's own edges as staying put", () => {
-    expect(charDragGaps(layout, 3)).toEqual([
+    expect(charDragGaps(layout, 3, alone(layout, 3))).toEqual([
       { index: 2, edge: 'start', target: { before: 'A' } },
       { index: 4, edge: 'start', target: null },
       { index: 5, edge: 'start', target: null },
@@ -44,15 +49,53 @@ describe('charDragGaps', () => {
   })
 
   it('stays put at the end of the segment for its last run', () => {
-    expect(charDragGaps(layout, 4).slice(-1)).toEqual([{ index: 5, edge: 'end', target: null }])
+    expect(charDragGaps(layout, 4, alone(layout, 4)).slice(-1)).toEqual([{ index: 5, edge: 'end', target: null }])
   })
 
   it('keeps a drag in the starred segment out of the rest', () => {
-    expect(charDragGaps(layout, 0)).toEqual([
+    expect(charDragGaps(layout, 0, alone(layout, 0))).toEqual([
       { index: 0, edge: 'start', target: null },
       { index: 1, edge: 'start', target: null },
       { index: 1, edge: 'end', target: { after: 'B' } },
     ])
+  })
+
+  it('gathers the operators being moved, judged by the segment alone', () => {
+    expect(charDragGaps(layout, 2, new Set(['A', 'D']))).toEqual([
+      { index: 2, edge: 'start', target: { before: 'C' } },
+      { index: 4, edge: 'start', target: { before: 'C' } },
+      { index: 5, edge: 'start', target: { after: 'C' } },
+      { index: 5, edge: 'end', target: { after: 'C' } },
+    ])
+  })
+})
+
+describe('charDragRanges', () => {
+  it('dims every run of the operators being moved, in both segments', () => {
+    const layout = layoutTasks(tasks('A', 'B', 'A', 'A', 'C', 'D'), 2)
+    expect(charDragRanges(layout, new Set(['A', 'D']))).toEqual([
+      [0, 0],
+      [2, 3],
+      [5, 5],
+    ])
+  })
+})
+
+describe('headerRange', () => {
+  // 组 0 A★、1 B★、2 A、3 C、4 D
+  const layout = layoutTasks(tasks('A', 'B', 'A', 'A', 'C', 'D'), 2)
+
+  it("takes the anchor's run in the clicked run's segment", () => {
+    expect(headerRange(layout, 'A', 3)).toEqual(['A', 'C'])
+    expect(headerRange(layout, 'A', 1)).toEqual(['A', 'B'])
+  })
+
+  it("takes the anchor's first run when the segment has none", () => {
+    expect(headerRange(layout, 'B', 3)).toEqual(['B', 'A', 'C'])
+  })
+
+  it('has no range for an anchor not in the list', () => {
+    expect(headerRange(layout, 'X', 1)).toBeUndefined()
   })
 })
 
@@ -60,17 +103,27 @@ describe('charDraggable', () => {
   it('drags an operator only when its segment has another', () => {
     // 星标段只有 A，其余段 A B
     const layout = layoutTasks(tasks('A', 'A', 'B'), 1)
-    expect(layout.runs.map((_, run) => charDraggable(layout, run))).toEqual([false, true, true])
+    expect(layout.runs.map((_, run) => charDraggable(layout, run, alone(layout, run)))).toEqual([false, true, true])
   })
 
   it('drags nothing for the only operator in the list', () => {
-    expect(charDraggable(layoutTasks(tasks('A', 'A'), 0), 0)).toBe(false)
+    expect(charDraggable(layoutTasks(tasks('A', 'A'), 0), 0, new Set(['A']))).toBe(false)
+  })
+
+  it('drags the operators being moved only when their segment has one staying', () => {
+    const layout = layoutTasks(tasks('A', 'B', 'A', 'A', 'C', 'D'), 2)
+    expect(charDraggable(layout, 2, new Set(['A', 'C', 'D']))).toBe(false)
+    expect(charDraggable(layout, 0, new Set(['A', 'C', 'D']))).toBe(true)
   })
 
   it('agrees with whether the gaps have a target', () => {
     for (const layout of [layoutTasks(tasks('A', 'B', 'A', 'A', 'C', 'D'), 2), layoutTasks(tasks('A', 'A', 'B'), 1)]) {
-      layout.runs.forEach((_, run) => {
-        expect(charDraggable(layout, run)).toBe(charDragGaps(layout, run).some((gap) => gap.target !== null))
+      layout.runs.forEach((r, run) => {
+        for (const moving of [[], ['A', 'D'], ['A', 'C', 'D']].map((x) => new Set([...x, r.charId]))) {
+          expect(charDraggable(layout, run, moving)).toBe(
+            charDragGaps(layout, run, moving).some((gap) => gap.target !== null),
+          )
+        }
       })
     }
   })
@@ -100,7 +153,7 @@ describe('groupDragGaps', () => {
 
   it('offers whole items, with a task between two items left out', () => {
     expect(groupDragGaps(list, layout, 1)).toEqual({
-      rows: [0, 1],
+      ranges: [[0, 1]],
       gaps: [
         { index: 0, edge: 'start', offset: TASK_HEADER_HEIGHT, target: null },
         { index: 3, edge: 'start', target: null },
@@ -112,7 +165,7 @@ describe('groupDragGaps', () => {
 
   it('has nowhere else to go for the only item', () => {
     expect(groupDragGaps(list, layout, 5)).toEqual({
-      rows: [5, 5],
+      ranges: [[5, 5]],
       gaps: [
         { index: 5, edge: 'start', offset: TASK_HEADER_HEIGHT, target: null },
         { index: 5, edge: 'end', target: null },

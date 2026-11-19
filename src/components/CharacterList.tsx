@@ -41,7 +41,7 @@ import { ListDrag, useListDrag } from './ListDrag'
 import { CharacterPlanMenuItems } from './PlanActions'
 import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
-import { listGaps } from './listDrag'
+import { inRanges, listGaps } from './listDrag'
 import { IGameComponent } from './types'
 import {
   FieldConfiguration,
@@ -962,6 +962,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     return preset?.totalValue ? { querier: response.query, field: preset.totalValue } : undefined
   }, [cpp, loading, response, param, pin])
   const list = rows.map((x) => x.character)
+  const keys = useMemo(() => rows.map((x) => x.character.key), [rows])
   const extraColumns = useMemo(
     () =>
       response
@@ -1037,14 +1038,8 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
     virtualizer: rowVirtualizer,
     handleInset: 4,
     draggable: () => list.length > 1,
-    begin: (row) => ({
-      rows: [row, row],
-      gaps: listGaps(
-        list.map((x) => x.key),
-        row,
-      ),
-    }),
-    commit: (row, target) => store.set(atoms.moveInPlan, { charIds: [list[row].key], target }),
+    begin: (row) => ({ ranges: [[row, row]], gaps: listGaps(keys, new Set([keys[row]])) }),
+    commit: (row, target) => store.set(atoms.moveInPlan, { charIds: [keys[row]], target }),
   })
 
   // 列头的状态格量自第一行：状态格的宽度由各游戏的渲染结果决定
@@ -1147,7 +1142,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
                   renderExtraFields={renderExtraFields}
                   drag={drag}
                   row={index}
-                  dimmed={active?.source === index}
+                  dimmed={active ? inRanges(active.ranges, index) : false}
                 />
               )
             })}
