@@ -14,6 +14,8 @@ export interface Task<G extends IGame> {
   type: G['characterTaskType']
   requires: { itemId: string; quantity: number }[]
   depends: Task<G>[]
+  /** 同一 group 的任务总是一起挪；游戏只给允许用户排先后的任务填 */
+  group?: string
 }
 
 export interface Formula {
