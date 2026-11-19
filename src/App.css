@@ -1713,6 +1713,140 @@ body .bp6-navbar-group {
   background: var(--bp-palette-blue-3);
 }
 
+/*
+ * 干员列表：一行比屏幕宽，整行（列头也是）一起横滑。头像钉在左边；名字跟着往左滑，
+ * 一路贴着头像、从右边被截短，直到整格滑出去。滑动停在每一格的开头
+ */
+.cpp-phone .cpp-char-list {
+  padding-left: 0;
+  padding-right: 0;
+  overscroll-behavior: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-left: 48px;
+}
+
+.cpp-phone .cpp-char-menu-master,
+.cpp-phone .cpp-char-list .cpp-qe-colhead {
+  width: max-content;
+  min-width: 100%;
+}
+
+.cpp-phone .cpp-char-menu-master > * {
+  flex: none;
+  scroll-snap-align: start;
+}
+
+.cpp-phone .cpp-char-menu-master > .cpp-char-menu-avatar-cell {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  width: 48px;
+  overflow: visible;
+  scroll-snap-align: none;
+  background: var(--bp-palette-white);
+}
+
+.cpp-phone .cpp-char-menu-avatar-cell > .cpp-char-menu-char {
+  width: 48px;
+  height: 100%;
+  margin: 0;
+  padding: 4px;
+}
+
+.cpp-phone .cpp-char-menu-avatar-cell .bp6-menu-item-icon {
+  margin: 0;
+}
+
+.cpp-char-menu-name {
+  display: flex;
+  align-items: center;
+  width: 84px;
+  overflow: clip;
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 10px), transparent);
+  mask-image: linear-gradient(to right, black calc(100% - 10px), transparent);
+  line-height: 20px;
+  cursor: pointer;
+}
+
+/*
+ * 选中的干员（ListSelection.tsx）：底色落在头像格和名字格上，不铺满比屏宽的整行；
+ * 头像格钉着、要盖住滑过的格子，所以浅蓝叠在不透明的白底上
+ */
+.cpp-phone .cpp-char-menu-master.cpp-list-selected {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.cpp-phone .cpp-list-selected > .cpp-char-menu-avatar-cell {
+  background:
+    linear-gradient(color-mix(in srgb, var(--bp-palette-blue-3) 12%, transparent) 0 0), var(--bp-palette-white);
+}
+
+.cpp-phone .cpp-list-selected > .cpp-char-menu-name {
+  background-color: color-mix(in srgb, var(--bp-palette-blue-3) 12%, transparent);
+}
+
+/* 和头像格的 bp6-active bp6-intent-primary 同一种浅蓝 */
+.cpp-char-menu-name.is-open {
+  background-color: color-mix(in srgb, var(--bp-palette-blue-3) 20%, transparent);
+  color: var(--bp-palette-blue-1);
+}
+
+.cpp-char-menu-name-text {
+  position: sticky;
+  left: 48px;
+  width: 0;
+  padding-left: 8px;
+  white-space: nowrap;
+}
+
+.cpp-char-menu-name-sub {
+  opacity: 0.75;
+}
+
+/* 练度格的深色底是 z-index -100 的 ::after：留在格子里，滑到头像底下时不会把头像盖住 */
+.cpp-phone .cpp-char-menu-master > .cpp-char-menu-status {
+  isolation: isolate;
+}
+
+/* 列头第一格是头像那一列的空格子，和头像一起钉着 */
+.cpp-phone .cpp-char-list .cpp-qe-colhead::before {
+  content: '';
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  flex: none;
+  width: 48px;
+  background: var(--bp-palette-white);
+}
+
+.cpp-phone .cpp-char-list .cpp-qe-colhead > .cpp-qe-colhead-name {
+  flex: none;
+  width: 84px;
+}
+
+/* 搜索框展开时挤掉的是视图按钮，右边的按钮留在屏幕里 */
+.cpp-phone .cpp-char-toolbar-views {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* 快捷过滤排成一行，放不下时横滑 */
+.cpp-phone .cpp-quick-filter {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.cpp-phone .cpp-quick-filter::-webkit-scrollbar {
+  display: none;
+}
+
+.cpp-phone .cpp-quick-filter > * {
+  flex: none;
+}
+
 /* 「更多」（PhoneMore.tsx）：侧栏那一栏在手机上是一列，列表、子页、面板页都占满宽度 */
 .cpp-phone .cpp-sidebar {
   flex-direction: column;

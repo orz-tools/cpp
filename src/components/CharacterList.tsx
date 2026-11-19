@@ -52,7 +52,8 @@ import { ListDrag, useListDrag } from './ListDrag'
 import { ListSelectionContext, SelectionBar, handleTitle, useListSelection } from './ListSelection'
 import { CharacterPlanMenuItems } from './PlanActions'
 import { ValueTag } from './Value'
-import { useDossierOpenFor, useOpenCharacterDossier } from './dossierHooks'
+import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
+import { STATUS_SECTION_ID } from './dossierState'
 import { inRanges, listGaps } from './listDrag'
 import { IGameComponent } from './types'
 import {
@@ -88,6 +89,7 @@ import { quickFiltersFor, wrapQueryWithQuickFilter } from './quickFilters'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
 import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
 import { RosterPin, clearRosterPin, useActiveRosterPin } from './rosterPin'
+import { usePhoneLayout } from './phoneLayout'
 
 export const Hide = memo(
   ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
@@ -317,7 +319,103 @@ const CharacterMenu = memo(
     const c = useComponents()
     const render = c.renderCharacterStatus || renderCharacterStatus
     const openDossier = useOpenCharacterDossier()
+    const showDossier = useShowCharacterDossier()
     const dossierOpen = useDossierOpenFor(charId)
+    const phone = usePhoneLayout()
+    const avatar = (
+      <span className="bp6-menu-item-icon cpp-char-avatar">
+        <CachedImg src={character.avatar} width={'100%'} height={'100%'} alt={character.key} title={character.key} />
+        {c.renderCharacterAvatarBadge && !uda.isAbsentCharacter(character, currentCharacter)
+          ? c.renderCharacterAvatarBadge(currentCharacter, character)
+          : null}
+        {selected ? (
+          <span className="cpp-select-tick">
+            <Icon icon="small-tick" size={12} />
+          </span>
+        ) : null}
+      </span>
+    )
+    const onCharClick = (e: React.MouseEvent) => {
+      if (onSelectClick?.(e, charId)) return
+      openDossier(charId)
+    }
+    const currentStatus = render(currentCharacter, character)
+    const currentStyle = { opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }
+    const goalStatus = render(goalCharacter, character, currentCharacter, goalSame)
+    const goalStyle = { opacity: finished ? 0 : goalSame ? 0.25 : 1 }
+
+    // 手机上头像钉在左边，名字跟着往左滑、被头像盖住；练度不弹出编辑器，改为打开档案的「练度」页
+    if (phone) {
+      return (
+        <li
+          role="none"
+          className={[
+            'cpp-char-menu-master',
+            'is-phone',
+            `cpp-char-rarity-${character.rarity}`,
+            ...(character.characterViewExtraClass || []),
+            ...(dimmed ? ['cpp-drag-source'] : []),
+            ...(selected ? ['cpp-list-selected'] : []),
+          ].join(' ')}
+          style={style}
+          {...(drag && row !== undefined ? drag.hoverProps(row) : null)}
+        >
+          <ContextMenu className="cpp-char-menu-avatar-cell" content={<CharacterContextMenu character={character} />}>
+            <a
+              role="menuitem"
+              tabIndex={0}
+              className={
+                'bp6-menu-item cpp-char-menu-char' +
+                (dossierOpen ? ' bp6-active bp6-intent-primary cpp-dossier-open' : '')
+              }
+              aria-label={character.name}
+              aria-haspopup="dialog"
+              aria-expanded={dossierOpen}
+              onClick={onCharClick}
+              onMouseDown={onSelectMouseDown}
+              onKeyDown={menuItemKeyDown}
+              {...(drag && row !== undefined ? drag.pressProps(row) : null)}
+            >
+              {avatar}
+            </a>
+          </ContextMenu>
+          <div
+            className={'cpp-char-menu-name' + (dossierOpen ? ' is-open' : '')}
+            aria-hidden
+            onClick={onCharClick}
+            onMouseDown={onSelectMouseDown}
+          >
+            <div className="cpp-char-menu-name-text">
+              <div>{character.name}</div>
+              <div className="cpp-char-menu-name-sub">{character.appellation}</div>
+            </div>
+          </div>
+          {renderExtraFields ? renderExtraFields(item) : null}
+          <a
+            role="menuitem"
+            tabIndex={0}
+            className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-current"
+            style={currentStyle}
+            aria-haspopup="dialog"
+            onClick={() => showDossier(charId, { section: STATUS_SECTION_ID, statusMode: 'current' })}
+            onKeyDown={menuItemKeyDown}
+          >
+            {currentStatus}
+          </a>
+          <a
+            role="menuitem"
+            tabIndex={0}
+            className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
+            style={goalStyle}
+            aria-haspopup="dialog"
+            onClick={() => showDossier(charId, { section: STATUS_SECTION_ID, statusMode: 'goal' })}
+            onKeyDown={menuItemKeyDown}
+          >
+            {goalStatus}
+          </a>
+        </li>
+      )
+    }
 
     return (
       <li
@@ -342,32 +440,13 @@ const CharacterMenu = memo(
             }
             aria-haspopup="dialog"
             aria-expanded={dossierOpen}
-            onClick={(e) => {
-              if (onSelectClick?.(e, charId)) return
-              openDossier(charId)
-            }}
+            onClick={onCharClick}
             onMouseDown={onSelectMouseDown}
             onKeyDown={menuItemKeyDown}
             {...(drag && row !== undefined ? drag.pressProps(row) : null)}
           >
             <>
-              <span className="bp6-menu-item-icon cpp-char-avatar">
-                <CachedImg
-                  src={character.avatar}
-                  width={'100%'}
-                  height={'100%'}
-                  alt={character.key}
-                  title={character.key}
-                />
-                {c.renderCharacterAvatarBadge && !uda.isAbsentCharacter(character, currentCharacter)
-                  ? c.renderCharacterAvatarBadge(currentCharacter, character)
-                  : null}
-                {selected ? (
-                  <span className="cpp-select-tick">
-                    <Icon icon="small-tick" size={12} />
-                  </span>
-                ) : null}
-              </span>
+              {avatar}
               <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <div className="bp6-text-overflow-ellipsis" title={character.name}>
                   {character.name}
@@ -397,9 +476,9 @@ const CharacterMenu = memo(
             role="menuitem"
             tabIndex={0}
             className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-current"
-            style={{ opacity: uda.isAbsentCharacter(character, currentCharacter) ? 0.25 : 1 }}
+            style={currentStyle}
           >
-            {render(currentCharacter, character)}
+            {currentStatus}
           </a>
         </Popover>
         <Popover
@@ -415,9 +494,9 @@ const CharacterMenu = memo(
             role="menuitem"
             tabIndex={0}
             className="bp6-menu-item cpp-char-menu-status cpp-char-menu-status-goal"
-            style={{ opacity: finished ? 0 : goalSame ? 0.25 : 1 }}
+            style={goalStyle}
           >
-            {render(goalCharacter, character, currentCharacter, goalSame)}
+            {goalStatus}
           </a>
         </Popover>
       </li>
@@ -1006,6 +1085,7 @@ const NO_KEYS: readonly string[] = []
 
 export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom: PrimitiveAtom<number> }) => {
   const param = useAtomValue(useCpp().queryParamAtom)
+  const phone = usePhoneLayout()
   const stale = useAtomValue(queryEditorStaleAtom)
 
   const cpp = useCpp()
@@ -1170,12 +1250,13 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          gap: 15,
-          paddingLeft: '0.5em',
-          paddingRight: '0.5em',
+          // 360px 宽的手机上也排成一行，排不下时先省略当前视图名
+          gap: phone ? 4 : 15,
+          paddingLeft: phone ? 4 : '0.5em',
+          paddingRight: phone ? 4 : '0.5em',
         }}
       >
-        <Navbar.Group style={{ flexShrink: 1 }}>
+        <Navbar.Group className="cpp-char-toolbar-views" style={{ flexShrink: 1 }}>
           <QueryBuilder total={total} />
         </Navbar.Group>
         <Navbar.Group style={{ flexShrink: 0 }}>
@@ -1197,7 +1278,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
       ) : (
         <ListSelectionContext.Provider value={canSelect ? selection : undefined}>
           <Menu
-            className={stale ? 'cpp-char-list-stale' : undefined}
+            className={'cpp-char-list' + (stale ? ' cpp-char-list-stale' : '')}
             style={{ flex: 1, flexShrink: 1, overflow: 'auto' }}
             ulRef={parentRef}
           >
@@ -1228,7 +1309,8 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
                       position: 'absolute',
                       top: 0,
                       left: 0,
-                      width: '100%',
+                      // 手机上一行比列表宽，整行一起横滑
+                      width: phone ? undefined : '100%',
                       height: `${virtualRow.size}px`,
                       transform: `translateY(${virtualRow.start}px)`,
                     }}
