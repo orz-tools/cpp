@@ -248,7 +248,9 @@ describe('generateTasksForCharacter', () => {
       expect(orders.starredFirst.map((t) => t.id)).not.toEqual(tasks.map((t) => t.id))
       for (const [name, order] of Object.entries(orders)) {
         // completeTask 不看前置：模组 1 级先做了，精二照样留着，剩下的 id 也对得上，所以前置在前要另外查
-        order.forEach((t, i) => expect(order.slice(0, i), `${name}: ${t.id}`).toEqual(expect.arrayContaining(t.depends)))
+        order.forEach((t, i) =>
+          expect(order.slice(0, i), `${name}: ${t.id}`).toEqual(expect.arrayContaining(t.depends)),
+        )
         for (let n = 1; n <= order.length; n++) {
           const s = structuredClone(from)
           for (const t of order.slice(0, n)) uda.completeTask(t.type, charId, s)
