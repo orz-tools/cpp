@@ -663,7 +663,7 @@ export const TaskList = memo(<G extends IGame>() => {
               const dragged = active && inRanges(active.ranges, index)
               return (
                 <TaskMenu
-                  key={virtualRow.key}
+                  key={String(virtualRow.key)}
                   index={index}
                   rowRef={rowVirtualizer.measureElement}
                   style={{

@@ -309,7 +309,7 @@ const CharDiffView = memo(({ charDiffs }: { charDiffs: StatusDiff<object>[] }) =
             const index = virtualRow.index
             return (
               <CharDiffViewRow
-                key={virtualRow.key}
+                key={String(virtualRow.key)}
                 style={{
                   position: 'absolute',
                   top: 0,
