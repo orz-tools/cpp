@@ -859,6 +859,11 @@ body {
   border: 1.5px solid var(--bp-palette-gray-3, #8f99a8);
 }
 
+/* 白底是给盖在头像上的空圈的；任务列表里的空圈画在界面上，深色下跟着底色 */
+:root.bp6-dark .cpp-select-tick-inline.cpp-select-tick-empty {
+  background: var(--cpp-surface);
+}
+
 .cpp-char-menu-char:hover .cpp-select-tick-empty,
 .cpp-task-menu:hover .cpp-select-tick-empty {
   border-color: var(--bp-palette-blue-3, #2d72d2);
