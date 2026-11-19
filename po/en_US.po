@@ -175,7 +175,7 @@ msgstr "Value Delta"
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr "Drop Rate Data from Penguin Statistics"
 
-#: src/components/TaskList.tsx:165
+#: src/components/TaskList.tsx:177
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
@@ -388,7 +388,7 @@ msgstr "Copy Name"
 msgid "如今"
 msgstr "Current"
 
-#: src/components/TaskList.tsx:147
+#: src/components/TaskList.tsx:159
 msgid "完成"
 msgstr "Complete"
 
@@ -535,7 +535,7 @@ msgstr "Documentation"
 msgid "弹出成大窗口"
 msgstr "Open in a window"
 
-#: src/components/TaskList.tsx:158
+#: src/components/TaskList.tsx:170
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
 
@@ -869,7 +869,7 @@ msgstr ""
 msgid "角色"
 msgstr "Characters"
 
-#: src/components/TaskList.tsx:142
+#: src/components/TaskList.tsx:154
 msgid "角色内排序"
 msgstr "Sorting within Character"
 

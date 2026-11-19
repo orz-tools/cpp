@@ -124,7 +124,7 @@ msgstr ""
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr ""
 
-#: src/components/TaskList.tsx:165
+#: src/components/TaskList.tsx:177
 msgid "优先培养（星标）"
 msgstr ""
 
@@ -325,7 +325,7 @@ msgstr ""
 msgid "如今"
 msgstr ""
 
-#: src/components/TaskList.tsx:147
+#: src/components/TaskList.tsx:159
 msgid "完成"
 msgstr ""
 
@@ -447,7 +447,7 @@ msgstr ""
 msgid "弹出成大窗口"
 msgstr ""
 
-#: src/components/TaskList.tsx:158
+#: src/components/TaskList.tsx:170
 msgid "强制完成（不消耗材料）"
 msgstr ""
 
@@ -733,7 +733,7 @@ msgstr ""
 msgid "角色"
 msgstr ""
 
-#: src/components/TaskList.tsx:142
+#: src/components/TaskList.tsx:154
 msgid "角色内排序"
 msgstr ""
 
