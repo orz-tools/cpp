@@ -9,6 +9,7 @@ import {
   FOOTER_LINE2_SIZE,
   FOOTER_LOGO,
   FOOTER_LOGO_GAP,
+  FOOTER_ROW,
   FOOTER_RULE,
   FOOTER_SPACE_ABOVE,
   FOOTER_SPACE_BELOW,
@@ -21,7 +22,6 @@ import {
   ROW_HEIGHT,
   RosterOrder,
   cellOrigin,
-  footerRow,
   sheetSize,
 } from './layout'
 import { RosterImagePainter, Scene, SceneNode, sceneFont } from './scene'
@@ -70,7 +70,7 @@ export interface RosterPalette {
   rule: string
   /** 二维码的深色格 */
   qr: string
-  /** 给了时二维码先垫一块这个颜色的底板，四周留出静区：有的扫码软件认不出深底浅格的反色码 */
+  /** 给了时在二维码的静区垫一块这个颜色的底板：有的扫码软件认不出深底浅格的反色码 */
   qrPlate?: string
 }
 
@@ -152,7 +152,6 @@ export function buildRosterScene(
     goal: options.goal,
     header: !!header,
     footer: options.footer,
-    qrPlate: !!colors.qrPlate,
   })
   const nodes: SceneNode[] = []
   const statusLeft = AVATAR_SIZE + CELL_GAP + NAME_WIDTH + CELL_GAP
@@ -258,14 +257,13 @@ export function buildRosterScene(
       fill: colors.rule,
     })
     const rowTop = ruleTop + FOOTER_RULE + FOOTER_SPACE_BELOW
-    const plate = colors.qrPlate
-    const blockTop = rowTop + (footerRow(!!plate) - FOOTER_LOGO) / 2
+    const blockTop = rowTop + (FOOTER_ROW - FOOTER_LOGO) / 2
     const textLeft = MARGIN + FOOTER_LOGO + FOOTER_LOGO_GAP
-    // 有底板时底板和图里别的东西一样对齐内容的右缘，码在底板里四周留出静区
-    const qrLeft = sheet.contentRight - (plate ? QR_PLATE : QR_SIZE)
+    // 静区的外缘和图里别的东西一样对齐内容的右缘。浅色配色不画底板，但码的位置和深色相同
+    const plateLeft = sheet.contentRight - QR_PLATE
     const line1 = { size: FOOTER_LINE1_SIZE }
     const line2 = { size: FOOTER_LINE2_SIZE }
-    const textWidth = qrLeft - FOOTER_TEXT_GAP - textLeft
+    const textWidth = plateLeft - FOOTER_TEXT_GAP - textLeft
     nodes.push(
       {
         kind: 'image',
@@ -292,12 +290,13 @@ export function buildRosterScene(
         fill: colors.muted,
       },
     )
-    if (plate) nodes.push({ kind: 'rect', x: qrLeft, y: rowTop, w: QR_PLATE, h: QR_PLATE, fill: plate })
-    const quiet = plate ? QR_QUIET : 0
+    if (colors.qrPlate) {
+      nodes.push({ kind: 'rect', x: plateLeft, y: rowTop, w: QR_PLATE, h: QR_PLATE, fill: colors.qrPlate })
+    }
     nodes.push({
       kind: 'path',
-      x: qrLeft + quiet,
-      y: rowTop + quiet,
+      x: plateLeft + QR_QUIET,
+      y: rowTop + QR_QUIET,
       d: qrPath(SITE_QR, QR_SIZE / SITE_QR.length),
       fill: colors.qr,
     })

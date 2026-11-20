@@ -167,7 +167,7 @@ describe('buildRosterScene', () => {
       expect(qr(scene)).toBeDefined()
     })
 
-    it('lines the QR code up with the right edge of the content', () => {
+    it("lines the QR code's quiet zone up with the right edge of the content and the bottom margin", () => {
       for (const columns of [1, 3]) {
         const scene = buildRosterScene(
           [entry('a'), entry('b'), entry('c')],
@@ -177,27 +177,27 @@ describe('buildRosterScene', () => {
           texts,
         )
         const code = qr(scene)!
-        expect(code.x + QR_SIZE).toBe(scene.width - 16)
-        expect(code.y + QR_SIZE).toBe(scene.height - 16)
+        expect(code.x + QR_SIZE + QR_QUIET).toBe(scene.width - 16)
+        expect(code.y + QR_SIZE + QR_QUIET).toBe(scene.height - 16)
         const rule = all(scene).find((n) => n.kind === 'rect' && n.fill === '#e5e8eb')!
         expect(rule.kind === 'rect' && rule.x + rule.w).toBe(scene.width - 16)
       }
     })
 
-    it('cuts a long first line and keeps 16 px from the QR code', () => {
+    it("cuts a long first line and keeps 16 px from the QR code's quiet zone", () => {
       const long = { ...texts, footer: 'Roster image made with Closure++ '.repeat(5) }
       const scene = buildRosterScene([entry('a')], footerOn, painter(), measure, long)
       const line = all(scene).find((n) => n.kind === 'text' && n.text.startsWith('Roster'))!
       if (line.kind !== 'text') throw new Error()
       expect(line.text.endsWith('…')).toBe(true)
-      expect(line.x + measure(line.text, '13px x')).toBeLessThanOrEqual(qr(scene)!.x - 16)
+      expect(line.x + measure(line.text, '13px x')).toBeLessThanOrEqual(qr(scene)!.x - QR_QUIET - 16)
     })
 
-    it('leaves all of it out when off, 93 px shorter', () => {
+    it('leaves all of it out when off, 111 px shorter', () => {
       const on = buildRosterScene([entry('a')], footerOn, painter(), measure, texts)
       const off = buildRosterScene([entry('a')], options, painter(), measure, texts)
       expect(on.height - off.height).toBe(FOOTER_HEIGHT)
-      expect(FOOTER_HEIGHT).toBe(93)
+      expect(FOOTER_HEIGHT).toBe(111)
       expect(qr(off)).toBeUndefined()
       expect(fills(off)).not.toContain('#e5e8eb')
       expect(textsOf(off)).not.toContain(texts.footer)
@@ -211,17 +211,18 @@ describe('buildRosterScene', () => {
     const fillOf = (scene: Scene, text: string) =>
       all(scene).find((n): n is Extract<SceneNode, { kind: 'text' }> => n.kind === 'text' && n.text === text)?.fill
 
-    it('paints the light scheme on white, with the QR code straight on it', () => {
+    it('paints the light scheme on white, with the QR code on it and no plate', () => {
       const scene = buildRosterScene([entry('a')], full, painter(), measure, texts)
       expect(scene.background).toBe('#ffffff')
       expect(fillOf(scene, 'name-a')).toBe('#1c2127')
       expect(fillOf(scene, 'sub-a')).toBe('#5f6b7c')
       expect(qr(scene)).toMatchObject({
-        x: scene.width - 16 - QR_SIZE,
-        y: scene.height - 16 - QR_SIZE,
+        x: scene.width - 16 - QR_PLATE + QR_QUIET,
+        y: scene.height - 16 - QR_PLATE + QR_QUIET,
         d: qrPath(SITE_QR, QR_SIZE / SITE_QR.length),
         fill: '#1c2127',
       })
+      expect(ROSTER_PALETTES.light.qrPlate).toBeUndefined()
       expect(fills(scene)).not.toContain('#ffffff')
     })
 
@@ -271,26 +272,42 @@ describe('buildRosterScene', () => {
       expect(nodes.indexOf(plate)).toBeLessThan(nodes.indexOf(code))
     })
 
-    it('makes the footer as much taller as the plate, centres the logo in it and keeps the text off the plate', () => {
-      const light = buildRosterScene([entry('a')], full, painter(), measure, texts)
+    it('lays both schemes out alike, the dark one adding only the plate', () => {
+      /** 去掉颜色，只留位置、大小和内容 */
+      const shapes = (nodes: readonly SceneNode[]): object[] =>
+        nodes.map((n) => (n.kind === 'group' ? { ...n, children: shapes(n.children) } : { ...n, fill: undefined }))
+      for (const footer of [true, false]) {
+        const light = buildRosterScene([entry('a'), entry('b')], { ...full, footer }, painter(), measure, texts)
+        const dark = buildRosterScene(
+          [entry('a'), entry('b')],
+          { ...full, footer, scheme: 'dark' },
+          painter(),
+          measure,
+          texts,
+        )
+        expect([light.width, light.height]).toEqual([dark.width, dark.height])
+        const plate = dark.nodes.find((n) => n.kind === 'rect' && n.fill === '#ffffff')
+        expect(!!plate).toBe(footer)
+        expect(shapes(light.nodes)).toEqual(shapes(dark.nodes.filter((n) => n !== plate)))
+        if (!footer) continue
+        expect(qr(light)).toMatchObject({ x: qr(dark)!.x, y: qr(dark)!.y })
+      }
+    })
+
+    it('centres the logo on the plate and keeps the text off it in both schemes', () => {
       const dark = buildRosterScene([entry('a')], { ...full, scheme: 'dark' }, painter(), measure, texts)
-      expect(dark.height - light.height).toBe(QR_PLATE - QR_SIZE)
-      expect(dark.width).toBe(light.width)
       const logo = all(dark).find((n) => n.kind === 'image')!
       const plate = all(dark).find((n) => n.kind === 'rect' && n.fill === '#ffffff')!
       if (logo.kind !== 'image' || plate.kind !== 'rect') throw new Error()
       expect(logo.y + logo.h / 2).toBe(plate.y + plate.h / 2)
 
       const long = { ...texts, footer: 'Roster image made with Closure++ '.repeat(5) }
-      const cut = buildRosterScene([entry('a')], { ...full, scheme: 'dark' }, painter(), measure, long)
-      const line = all(cut).find((n) => n.kind === 'text' && n.text.startsWith('Roster'))!
-      if (line.kind !== 'text') throw new Error()
-      expect(line.x + measure(line.text, '13px x')).toBeLessThanOrEqual(plate.x - 16)
-
-      const noFooter = { ...full, footer: false }
-      expect(buildRosterScene([entry('a')], { ...noFooter, scheme: 'dark' }, painter(), measure, texts).height).toBe(
-        buildRosterScene([entry('a')], noFooter, painter(), measure, texts).height,
-      )
+      for (const scheme of ['light', 'dark'] as const) {
+        const cut = buildRosterScene([entry('a')], { ...full, scheme }, painter(), measure, long)
+        const line = all(cut).find((n) => n.kind === 'text' && n.text.startsWith('Roster'))!
+        if (line.kind !== 'text') throw new Error()
+        expect(line.x + measure(line.text, '13px x')).toBeLessThanOrEqual(plate.x - 16)
+      }
     })
   })
 

@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest'
 import {
   AREA_CAPS,
   FOOTER_HEIGHT,
+  FOOTER_ROW,
   MAX_SIDE,
   QR_PLATE,
   QR_QUIET,
   cellOrigin,
   cellWidth,
-  footerRow,
   gridCells,
   pngPixels,
   pngScale,
@@ -80,18 +80,16 @@ describe('sheetSize', () => {
     expect(sheetSize(base).height).toBe(16 * 2 + 4 * 48)
     expect(sheetSize({ ...base, header: true }).height).toBe(16 * 2 + 48 + 4 * 48)
     expect(sheetSize({ ...base, goal: true }).height).toBe(16 * 2 + 20 + 4 * 48)
-    expect(sheetSize({ ...base, footer: true }).height).toBe(16 * 2 + 4 * 48 + 93)
-    expect(FOOTER_HEIGHT).toBe(93)
+    expect(sheetSize({ ...base, footer: true }).height).toBe(16 * 2 + 4 * 48 + 111)
+    expect(FOOTER_HEIGHT).toBe(111)
   })
 
-  it('makes the footer row as tall as the QR plate when there is one', () => {
+  it('makes the footer row as tall as the QR code with its quiet zone', () => {
     // 4 格静区：56 / 25 × 4 = 8.96，取整到 9
     expect(QR_QUIET).toBe(9)
     expect(QR_PLATE).toBe(74)
-    expect(footerRow(false)).toBe(56)
-    expect(footerRow(true)).toBe(74)
-    expect(sheetSize({ ...base, footer: true, qrPlate: true }).height).toBe(16 * 2 + 4 * 48 + 93 + 18)
-    expect(sheetSize({ ...base, qrPlate: true }).height).toBe(sheetSize(base).height)
+    expect(FOOTER_ROW).toBe(74)
+    expect(FOOTER_HEIGHT).toBe(20 + 1 + 16 + 74)
   })
 
   it('lays the columns out with a gap', () => {
@@ -113,7 +111,7 @@ describe('sheetSize', () => {
     const sheet = sheetSize({ ...base, n: 70, statusWidth: ARKNIGHTS_STATUS_WIDTH, footer: true })
     const scale = pngScale(sheet.width, sheet.height, AREA_CAPS[0])
     expect(scale).toBe(2)
-    expect(pngPixels(sheet.width, sheet.height, scale)).toEqual({ width: 936, height: 6970 })
+    expect(pngPixels(sheet.width, sheet.height, scale)).toEqual({ width: 936, height: 7006 })
   })
 })
 
@@ -132,8 +130,8 @@ describe('pngScale', () => {
 
   it('never goes over the caps once multiplied back', () => {
     for (const [w, h] of [
-      [468, 16925],
-      [736, 20305],
+      [468, 16943],
+      [736, 20323],
       [5000, 5000],
       [3000, 31000],
       [7777, 1234],
@@ -158,13 +156,13 @@ describe('pngScale', () => {
         footer: true,
       })
 
-    // 三百五十名、不带目标：约 468 × 16,930
+    // 三百五十名、不带目标：约 468 × 16,940
     const a = at(350, false)
     expect(a.width).toBe(468)
     expect(pngScale(a.width, a.height, AREA_CAPS[0])).toBe(1.93)
     expect(pngScale(a.width, a.height, AREA_CAPS[1])).toBe(1.45)
 
-    // 四百二十名、带目标：约 736 × 20,300
+    // 四百二十名、带目标：约 736 × 20,320
     const b = at(420, true)
     expect(b.width).toBe(736)
     expect(pngScale(b.width, b.height, AREA_CAPS[0])).toBe(1.49)
