@@ -2098,7 +2098,8 @@ body .bp6-navbar-group {
 
 .cpp-phone .cpp-item-counts {
   display: grid;
-  grid-template-columns: 40px repeat(3, minmax(max-content, 1fr));
+  /* 层名那一列和图标一样宽；英文的「Planned」比 40px 宽，列跟着变宽，不压到旁边的数 */
+  grid-template-columns: minmax(40px, max-content) repeat(3, minmax(max-content, 1fr));
   column-gap: 4px;
   margin-top: 6px;
   font-size: 13px;
@@ -2107,7 +2108,7 @@ body .bp6-navbar-group {
 }
 
 .cpp-phone .cpp-item-counts.is-wide {
-  grid-template-columns: 40px repeat(5, minmax(max-content, 1fr));
+  grid-template-columns: minmax(40px, max-content) repeat(5, minmax(max-content, 1fr));
 }
 
 .cpp-phone .cpp-item-counts-label {
