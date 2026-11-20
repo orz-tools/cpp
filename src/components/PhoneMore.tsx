@@ -11,6 +11,7 @@ import { ConfigMenu, RegionMenu, useHasBlobFlavours, useRegions } from './Config
 import { ImportPasteBox } from './ImportPasteBox'
 import { PhoneMorePage, phoneMorePageAtom } from './phoneLayout'
 import { useReloadGameData } from './reloadGameData'
+import { RosterImageMenuItem, useHasRosterImage } from './rosterImage/entries'
 import { ThemeMenu, themeIcon, themeName } from './ThemeMenu'
 import { SidebarPanel } from './types'
 import { UserDataManagerMenuItem } from './UserDataManager'
@@ -69,6 +70,7 @@ const noop = () => {}
 const MoreList = memo(({ panels, onOpenPanel }: { panels: SidebarPanel[]; onOpenPanel: (id: string) => void }) => {
   const setPage = useSetAtom(phoneMorePageAtom)
   const { ImporterMenuItems, ExporterMenuItems } = useComponents()
+  const rosterImage = useHasRosterImage()
   const pasteBoxRef = useRef<HTMLInputElement>(null)
   const valueName = useValueTypeName()
   const { regions, current: currentRegion, region } = useRegions()
@@ -89,7 +91,7 @@ const MoreList = memo(({ panels, onOpenPanel }: { panels: SidebarPanel[]; onOpen
           onClick={go('import')}
         />
       ) : null}
-      {ExporterMenuItems ? (
+      {ExporterMenuItems || rosterImage ? (
         <MenuItem
           icon="log-out"
           text={gt.pgettext('phone more', '导出')}
@@ -165,7 +167,12 @@ const PageBody = memo(({ page }: { page: PhoneMorePage }) => {
     case 'import':
       return <Menu className="cpp-phone-more">{ImporterMenuItems ? <ImporterMenuItems /> : null}</Menu>
     case 'export':
-      return <Menu className="cpp-phone-more">{ExporterMenuItems ? <ExporterMenuItems /> : null}</Menu>
+      return (
+        <Menu className="cpp-phone-more">
+          <RosterImageMenuItem />
+          {ExporterMenuItems ? <ExporterMenuItems /> : null}
+        </Menu>
+      )
     case 'value':
       return <ValueOptionMenu className="cpp-phone-more" />
     case 'options':

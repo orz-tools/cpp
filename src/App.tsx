@@ -39,6 +39,7 @@ import { requeryList } from './components/planBatch'
 import { BackGuardEvent, closeTopOverlay, initialBackGuard, openOverlays, stepBackGuard } from './components/phoneBack'
 import { PhoneArea, phoneAreaAtom, phoneSectionOf, usePhoneLayout } from './components/phoneLayout'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
+import { RosterImageMenuItem, useHasRosterImage } from './components/rosterImage/entries'
 import { Sidebar, usePhoneMoreLayer } from './components/Sidebar'
 import { TaskList } from './components/TaskList'
 import { ThemeButton } from './components/ThemeMenu'
@@ -314,13 +315,15 @@ interface DataMenuProps {
 
 const DataMenu = memo(({ pasteBoxRef, onImported }: DataMenuProps) => {
   const { ImporterMenuItems, ExporterMenuItems } = useComponents()
+  const rosterImage = useHasRosterImage()
   return (
     <Menu>
       <ImportPasteBox inputRef={pasteBoxRef} onImported={onImported} />
       <UserDataManagerMenuItem />
       {ImporterMenuItems ? <MenuDivider /> : null}
       {ImporterMenuItems ? <ImporterMenuItems /> : null}
-      {ExporterMenuItems ? <MenuDivider /> : null}
+      {ExporterMenuItems || rosterImage ? <MenuDivider /> : null}
+      <RosterImageMenuItem />
       {ExporterMenuItems ? <ExporterMenuItems /> : null}
     </Menu>
   )

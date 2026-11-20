@@ -222,6 +222,94 @@ body {
   max-width: 80vw !important;
 }
 
+/* 练度图（rosterImage/RosterImageDialog.tsx）：760 宽，要 !important 才盖得过上面的 width: unset；手机上照旧占满一屏 */
+.bp6-dialog.cpp-roster-image-dialog {
+  width: 760px !important;
+}
+
+.cpp-roster-image-form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cpp-roster-image-description,
+.cpp-roster-image-checks {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.cpp-roster-image-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+}
+
+.cpp-roster-image-order {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cpp-roster-image-columns {
+  flex: none;
+}
+
+.cpp-roster-image-columns .bp6-input-group {
+  width: 56px;
+}
+
+.cpp-roster-image-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+
+.cpp-roster-image-checks .bp6-control {
+  margin: 0;
+}
+
+/* 预览是生成好的 PNG，按宽度缩、上下滚动；重画时旧的图变淡，上面一个 Spinner */
+.cpp-roster-image-stage {
+  position: relative;
+  height: 420px;
+  border-radius: 2px;
+  background: var(--cpp-tint-2);
+}
+
+.cpp-roster-image-preview {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 12px;
+  overflow: auto;
+}
+
+.cpp-roster-image-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cpp-roster-image-preview img.is-stale {
+  opacity: 0.4;
+}
+
+.cpp-roster-image-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.cpp-roster-image-notes {
+  margin-top: 8px;
+}
+
 .cpp-level-target {
   width: 100%;
   height: 100%;
@@ -2269,6 +2357,54 @@ body .bp6-navbar-group {
   flex: 1 1 auto;
   height: auto;
   min-height: 0;
+}
+
+/* 练度图：预览占设置下面剩下的高度，提示和 PNG 的尺寸写在它下面，两个下载按钮平分底栏 */
+.cpp-phone .cpp-roster-image-dialog .bp6-dialog-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.cpp-phone .cpp-roster-image-form {
+  gap: 8px 10px;
+}
+
+.cpp-phone .cpp-roster-image-checks {
+  flex-direction: column;
+}
+
+.cpp-phone .cpp-roster-image-stage {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  height: auto;
+  min-height: 240px;
+}
+
+.cpp-phone .cpp-roster-image-preview {
+  flex: 1 1 0;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+}
+
+.cpp-phone .cpp-roster-image-notes {
+  font-size: 12px;
+  text-align: center;
+}
+
+.cpp-phone .cpp-roster-image-dialog .bp6-dialog-footer-main-section {
+  display: none;
+}
+
+.cpp-phone .cpp-roster-image-dialog .bp6-dialog-footer-actions {
+  flex: 1 1 auto;
+  gap: 8px;
+}
+
+.cpp-phone .cpp-roster-image-dialog .bp6-dialog-footer-actions .bp6-button {
+  flex: 1 1 0;
+  margin-left: 0;
 }
 
 /* 「更多」（PhoneMore.tsx）：侧栏那一栏在手机上是一列，列表、子页、面板页都占满宽度 */

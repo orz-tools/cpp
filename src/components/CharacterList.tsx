@@ -91,6 +91,7 @@ import { quickFiltersFor, wrapQueryWithQuickFilter } from './quickFilters'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
 import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
 import { RosterPin, clearRosterPin, useActiveRosterPin } from './rosterPin'
+import { RosterImageSelectionButton } from './rosterImage/entries'
 import { useLongPressContextMenu } from './longPress'
 import { usePhoneLayout } from './phoneLayout'
 import { useScrollStrip } from './scrollStrip'
@@ -1373,6 +1374,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
         onClear={selection.clear}
       >
         <PlanBatchButtons charIds={selection.selectedKeys} compact={phone} />
+        <RosterImageSelectionButton compact={phone} />
       </SelectionBar>
       {handle}
     </>
