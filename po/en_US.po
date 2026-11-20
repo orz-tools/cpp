@@ -162,7 +162,6 @@ msgstr "PRTS 时装回廊 (outfit gallery)"
 msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
-#: src/components/RetiredGame.tsx:196
 #: src/components/rosterImage/RosterImageDialog.tsx:407
 msgid "下载 PNG"
 msgstr "Download PNG"
@@ -171,7 +170,7 @@ msgstr "Download PNG"
 msgid "下载 SVG"
 msgstr "Download SVG"
 
-#: src/components/RetiredGame.tsx:202
+#: src/components/RetiredGame.tsx:196
 msgid "不再需要这里的数据时，可以把它清空，旧版里的数据不受影响。"
 msgstr ""
 "When you no longer need the data here, you can clear it. The data in the old "
@@ -279,7 +278,7 @@ msgstr "Stages"
 msgid "关卡产物显示为图标"
 msgstr "Show stage drops as icons"
 
-#: src/App.tsx:544 src/components/CharacterDossier.tsx:243
+#: src/App.tsx:547 src/components/CharacterDossier.tsx:243
 #: src/components/CharacterDossier.tsx:244 src/components/Importer.tsx:163
 #: src/components/Peek.tsx:137 src/components/Peek.tsx:138
 msgid "关闭"
@@ -313,7 +312,6 @@ msgstr "Shown at the top, e.g. the Doctor’s name; none if left empty"
 msgid "切换语言失败"
 msgstr "Failed to switch the UI language"
 
-#: src/components/RetiredGame.tsx:163
 #: src/components/rosterImage/RosterImageDialog.tsx:333
 msgid "列数"
 msgstr "Columns"
@@ -330,7 +328,7 @@ msgstr "The List’s Query Failed"
 msgid "列表还在查询"
 msgstr "The list is still being queried"
 
-#: src/components/RetiredGame.tsx:169
+#: src/components/RetiredGame.tsx:163
 msgid "到旧版去"
 msgstr "Head to the old version"
 
@@ -392,12 +390,11 @@ msgstr "To import copied data, replace what is in the text box with it."
 msgid "回到「提取装置」"
 msgstr "Back to «Sklanding»"
 
-#: src/components/RetiredGame.tsx:187
 #: src/components/rosterImage/RosterImageDialog.tsx:249
 msgid "图太大，或者浏览器内存不够。"
 msgstr "The image is too large, or the browser is out of memory."
 
-#: src/components/RetiredGame.tsx:193
+#: src/components/RetiredGame.tsx:187
 msgid "在旧版里导入"
 msgstr "Import in the old version"
 
@@ -507,8 +504,7 @@ msgstr "Import MAA «Operator Progression» Plan"
 msgid "导入 MAA「干员识别」数据"
 msgstr "Import MAA «Operator» Data"
 
-#: src/App.tsx:349 src/components/RetiredGame.tsx:189
-#: src/App.tsx:349 src/components/RetiredGame.tsx:195
+#: src/App.tsx:352 src/components/RetiredGame.tsx:189
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -690,7 +686,7 @@ msgstr "Morale"
 msgid "总价值"
 msgstr "Total Value"
 
-#: src/App.tsx:494
+#: src/App.tsx:497
 msgid "您不妨试试"
 msgstr "You may try"
 
@@ -828,7 +824,6 @@ msgstr "Operator Statistics from Arknights-yituliu"
 msgid "显示全部"
 msgstr "Show All"
 
-#: src/components/FarmList.tsx:316
 #: src/components/rosterImage/RosterImageDialog.tsx:372
 msgid "显示培养目标"
 msgstr "Show Targets"
@@ -837,7 +832,7 @@ msgstr "Show Targets"
 msgid "显示页脚"
 msgstr "Show Footer"
 
-#: src/components/FarmList.tsx:280
+#: src/components/FarmList.tsx:316
 msgid "暂不支持计算毕业合成"
 msgstr "Synthesizing Cannot be Planned for Maxed"
 
@@ -971,13 +966,12 @@ msgstr ""
 msgid "正在切换区域…"
 msgstr "Switching region…"
 
-#: src/components/RetiredGame.tsx:202 src/components/UserDataManager.tsx:371
 #. %d$done, %d$total: number of images
 #: src/components/rosterImage/RosterImageDialog.tsx:258
 msgid "正在载入图片 %d$done / %d$total"
 msgstr "Loading images %d$done / %d$total"
 
-#: src/components/RetiredGame.tsx:208 src/components/UserDataManager.tsx:344
+#: src/components/RetiredGame.tsx:202 src/components/UserDataManager.tsx:371
 msgid "清空"
 msgstr "Clear"
 
@@ -992,8 +986,7 @@ msgstr[1] "Clear the plans of %d operators"
 msgid "清除选择"
 msgstr "Clear selection"
 
-#: src/App.tsx:216 src/components/reloadGameData.ts:31
-#: src/App.tsx:214 src/components/reloadGameData.ts:31
+#: src/App.tsx:217 src/components/reloadGameData.ts:31
 msgid "游戏数据已更新"
 msgstr "Game data updated"
 
@@ -1047,8 +1040,10 @@ msgstr "Draw"
 #: src/components/rosterImage/RosterImageDialog.tsx:212
 msgid "画当前列表里的 %d 名干员，次序和列表一样。"
 msgid_plural "画当前列表里的 %d 名干员，次序和列表一样。"
-msgstr[0] "Draws the %d operator in the current list, in the order of the list."
-msgstr[1] "Draws the %d operators in the current list, in the order of the list."
+msgstr[0] ""
+"Draws the %d operator in the current list, in the order of the list."
+msgstr[1] ""
+"Draws the %d operators in the current list, in the order of the list."
 
 #. %d: number
 #: src/components/rosterImage/RosterImageDialog.tsx:207
@@ -1191,7 +1186,7 @@ msgstr "Recent Patches"
 msgid "返回"
 msgstr "Back"
 
-#: src/App.tsx:487
+#: src/App.tsx:490
 msgid "返回主页"
 msgstr "Back to Home"
 
@@ -3020,7 +3015,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr "Error During Reading File"
 
-#: src/App.tsx:474
+#: src/App.tsx:477
 msgctxt "error context"
 msgid "遇到错误"
 msgstr "Error"
@@ -3185,43 +3180,43 @@ msgid "、"
 msgstr ", "
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:375
+#: src/App.tsx:378
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr "Setting up %s…"
 
 #. initial
-#: src/App.tsx:383
+#: src/App.tsx:386
 msgctxt "loading status"
 msgid "别急…"
 msgstr "Don't hurry…"
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:411
+#: src/App.tsx:414
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr "We're setting things up for you"
 
 #. loaded data objects
-#: src/App.tsx:382
+#: src/App.tsx:385
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr "Almost there…"
 
 #. joke text
-#: src/App.tsx:409
+#: src/App.tsx:412
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr "Installing Macindows X"
 
 #. loading hero line 2
-#: src/App.tsx:418
+#: src/App.tsx:421
 msgctxt "loading status"
 msgid "请稍候"
 msgstr "This won't take long"
 
 #. done
-#: src/App.tsx:373
+#: src/App.tsx:376
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr "Let's start…"
