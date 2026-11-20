@@ -479,6 +479,11 @@ body {
   overflow: auto;
 }
 
+/* 没有可以合成的道具（SynthesisList.tsx）：和「暂不支持计算毕业合成」一样在这一栏里居中 */
+.cpp-farm-synthesis-empty {
+  height: 100%;
+}
+
 /* 图标模式下一关的产物（FarmList.tsx 的 Drops）：左右和菜单项的内容对齐 */
 .cpp-farm-drop-tiles {
   padding: 4px 8px;
