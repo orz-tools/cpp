@@ -479,6 +479,11 @@ body {
   overflow: auto;
 }
 
+/* 图标模式下一关的产物（FarmList.tsx 的 Drops）：左右和菜单项的内容对齐 */
+.cpp-farm-drop-tiles {
+  padding: 4px 8px;
+}
+
 .cpp-item-menu-master > li {
   display: flex;
   align-items: center;

@@ -54,6 +54,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.FULLSCREEN, Paths16.Fullscreen],
       [IconNames.GLOBE, Paths16.Globe],
       [IconNames.GIT_REPO, Paths16.GitRepo],
+      [IconNames.GRID_VIEW, Paths16.GridView],
       [IconNames.HELP, Paths16.Help],
       [IconNames.HISTORY, Paths16.History],
       [IconNames.HOME, Paths16.Home],
