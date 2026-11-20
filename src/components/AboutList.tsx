@@ -104,6 +104,13 @@ const AboutLinks = memo(() => {
         {...externalLinkProps}
         description={gt.pgettext('credit role', '帮助文档撰写')}
       />
+      <DescriptionMenuItem
+        icon={'person'}
+        text="Pluspeeeeed"
+        href={'https://github.com/Pluspeeeeed/'}
+        {...externalLinkProps}
+        description={gt.pgettext('credit role', '代码贡献')}
+      />
       <MenuDivider title={gt.gettext('声明')} />
       {AboutCopyright && <AboutCopyright />}
     </>

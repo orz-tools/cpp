@@ -37,6 +37,30 @@ const arknights = [GameName.Arknights]
 
 const logs: Log[] = [
   {
+    date: '2026-11-20',
+    type: 'new',
+    desc: lpstr(() => gt.pgettext('changelog', '「口袋里的罗德岛」更新')),
+    details: [
+      { type: 'new', desc: lpstr(() => gt.pgettext('changelog', '适配手机')) },
+      { type: 'new', desc: lpstr(() => gt.pgettext('changelog', '深色模式')) },
+      { game: arknights, type: 'new', desc: lpstr(() => gt.pgettext('changelog', '练度图')), target: 'dataMenu' },
+      {
+        type: 'new',
+        desc: lpstr(() => gt.pgettext('changelog', '多选干员，批量调整顺序、拉满或清空计划')),
+        target: 'planView',
+      },
+      { type: 'new', desc: lpstr(() => gt.pgettext('changelog', '任务右键「完成至此」')) },
+      {
+        game: arknights,
+        type: 'new',
+        desc: lpstr(() => gt.pgettext('changelog', '养成成本可折算成蓝材料')),
+        target: { view: 'cost.elite2' },
+      },
+      { type: 'optimize', desc: lpstr(() => gt.pgettext('changelog', '刷图区掉落可显示为图标，合成单独一栏')) },
+      { type: 'fix', desc: lpstr(() => gt.pgettext('changelog', '修正部分情况下刷图规划失败或缺漏')) },
+    ],
+  },
+  {
     date: '2026-11-19',
     type: 'new',
     desc: lpstr(() => gt.pgettext('changelog', '「不是人类，而是氛围」大更新')),

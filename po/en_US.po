@@ -264,7 +264,7 @@ msgstr "Enable all"
 msgid "全部禁用"
 msgstr "Disable all"
 
-#: src/components/AboutList.tsx:143 src/components/AboutList.tsx:144
+#: src/components/AboutList.tsx:150 src/components/AboutList.tsx:151
 msgid "关于"
 msgstr "About"
 
@@ -458,7 +458,7 @@ msgstr ""
 msgid "培养目标"
 msgstr "Target"
 
-#: src/components/AboutList.tsx:107
+#: src/components/AboutList.tsx:114
 msgid "声明"
 msgstr "Statements"
 
@@ -685,7 +685,7 @@ msgid_plural "已选 %d 名干员"
 msgstr[0] "%d operator selected"
 msgstr[1] "%d operators selected"
 
-#: src/components/AboutList.tsx:287
+#: src/components/AboutList.tsx:294
 msgid "帮助"
 msgstr "Help"
 
@@ -732,7 +732,7 @@ msgid "您不妨试试"
 msgstr "You may try"
 
 #. %s: datetime
-#: src/components/LogList.tsx:391
+#: src/components/LogList.tsx:415
 msgid "截止 %s"
 msgstr "As of %s"
 
@@ -891,7 +891,7 @@ msgid "更多"
 msgstr "More"
 
 #. %s: datetime
-#: src/components/AboutList.tsx:220
+#: src/components/AboutList.tsx:227
 msgid "更新于 %s"
 msgstr "Last updated at %s"
 
@@ -900,7 +900,7 @@ msgstr "Last updated at %s"
 msgid "更新数据中…"
 msgstr "Data updating…"
 
-#: src/components/AboutList.tsx:130
+#: src/components/AboutList.tsx:137
 msgid "更新笔记"
 msgstr "Patch Notes"
 
@@ -959,7 +959,7 @@ msgstr "Drop to Import"
 msgid "构建：%s"
 msgstr "Build: %s"
 
-#: src/components/LogList.tsx:409
+#: src/components/LogList.tsx:433
 msgid "查看更多…"
 msgstr "Read More…"
 
@@ -1252,7 +1252,7 @@ msgstr ""
 "Your current data will be permanently lost!\n"
 "(And by \"permanently,\" we mean it!)"
 
-#: src/components/LogList.tsx:395
+#: src/components/LogList.tsx:419
 msgid "近期更新"
 msgstr "Recent Patches"
 
@@ -2807,164 +2807,209 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr "Chip Search"
 
-#: src/components/LogList.tsx:42
+#: src/components/LogList.tsx:66
 msgctxt "changelog"
 msgid "「不是人类，而是氛围」大更新"
 msgstr "“Not Humans, but Vibes” Mega Update"
 
-#: src/components/LogList.tsx:115
+#: src/components/LogList.tsx:42
+msgctxt "changelog"
+msgid "「口袋里的罗德岛」更新"
+msgstr "“Rhodes Island in Your Pocket” Update"
+
+#: src/components/LogList.tsx:139
 msgctxt "changelog"
 msgid "从 MAA 导入仓库时保留不支持识别的道具"
 msgstr "Keep unrecognizable items when importing from MAA"
 
-#: src/components/LogList.tsx:131
+#: src/components/LogList.tsx:52
+msgctxt "changelog"
+msgid "任务右键「完成至此」"
+msgstr "Complete Up to Here in a task's context menu"
+
+#: src/components/LogList.tsx:155
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr "Enhance the navigation bar experience on small screens"
 
-#: src/components/LogList.tsx:157
+#: src/components/LogList.tsx:181
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr "Refine the style of character list"
 
-#: src/components/LogList.tsx:126
+#: src/components/LogList.tsx:150
 msgctxt "changelog"
 msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
 msgstr ""
 "Fixed an issue where the operator \"Amiya\" had abnormal data under certain "
 "circumstances"
 
-#: src/components/LogList.tsx:96
+#: src/components/LogList.tsx:60
+msgctxt "changelog"
+msgid "修正部分情况下刷图规划失败或缺漏"
+msgstr "Fix farm plans that failed or left materials out in some cases"
+
+#: src/components/LogList.tsx:120
 msgctxt "changelog"
 msgid "修正部分模组不显示"
 msgstr "Fix some modules not showing"
 
-#: src/components/LogList.tsx:48
+#: src/components/LogList.tsx:72
 msgctxt "changelog"
 msgid "关卡效率"
 msgstr "Stage efficiency"
 
-#: src/components/LogList.tsx:66
+#: src/components/LogList.tsx:90
 msgctxt "changelog"
 msgid "养成成本"
 msgstr "Training costs"
 
-#: src/components/LogList.tsx:163
+#: src/components/LogList.tsx:56
+msgctxt "changelog"
+msgid "养成成本可折算成蓝材料"
+msgstr "Show training costs in T3 materials"
+
+#: src/components/LogList.tsx:59
+msgctxt "changelog"
+msgid "刷图区掉落可显示为图标，合成单独一栏"
+msgstr "Show farm drops as icons, with synthesis in its own column"
+
+#: src/components/LogList.tsx:187
 msgctxt "changelog"
 msgid "加入海外服务器的游戏数据"
 msgstr "Support data from more game regions"
 
-#: src/components/LogList.tsx:72
+#: src/components/LogList.tsx:96
 msgctxt "changelog"
 msgid "基建技能"
 msgstr "Base skills"
 
-#: src/components/LogList.tsx:169
+#: src/components/LogList.tsx:193
 msgctxt "changelog"
 msgid "增加一些基于社区练度统计数据的排行榜视图"
 msgstr "Add views of community-based statistics"
 
-#: src/components/LogList.tsx:120
+#: src/components/LogList.tsx:144
 msgctxt "changelog"
 msgid "增加角色的快速过滤器"
 msgstr "Add quick filters for characters"
 
-#: src/components/LogList.tsx:104
+#: src/components/LogList.tsx:49
+msgctxt "changelog"
+msgid "多选干员，批量调整顺序、拉满或清空计划"
+msgstr "Select several operators to reorder, max out or clear their plans together"
+
+#: src/components/LogList.tsx:128
 msgctxt "changelog"
 msgid "导入前检查数据更新"
 msgstr "Check for data updates before importing"
 
-#: src/components/LogList.tsx:44
+#: src/components/LogList.tsx:68
 msgctxt "changelog"
 msgid "干员档案"
 msgstr "Operator dossiers"
 
-#: src/components/LogList.tsx:82
+#: src/components/LogList.tsx:106
 msgctxt "changelog"
 msgid "拖动干员、任务调整计划顺序"
 msgstr "Drag operators and tasks to reorder the plan"
 
-#: src/components/LogList.tsx:176
+#: src/components/LogList.tsx:200
 msgctxt "changelog"
 msgid "接入小黑盒 app 的干员统计数据"
 msgstr "Add operator statistics from Heybox"
 
-#: src/components/LogList.tsx:182
+#: src/components/LogList.tsx:206
 msgctxt "changelog"
 msgid "接入明日方舟一图流的干员练度统计数据"
 msgstr "Add operator statistics from Arknights-yituliu"
 
-#: src/components/LogList.tsx:109
+#: src/components/LogList.tsx:133
 msgctxt "changelog"
 msgid "支持拼音、模糊匹配"
 msgstr "Add fuzzy matching in filter"
 
-#: src/components/LogList.tsx:86
+#: src/components/LogList.tsx:110
 msgctxt "changelog"
 msgid "支持更多数据导入"
 msgstr "Import more kinds of data"
 
-#: src/components/LogList.tsx:151
+#: src/components/LogList.tsx:175
 msgctxt "changelog"
 msgid "支持森空岛仓库导入"
 msgstr "Support inventory importing from Skland"
 
-#: src/components/LogList.tsx:144
+#: src/components/LogList.tsx:168
 msgctxt "changelog"
 msgid "支持界面语言切换"
 msgstr "Add option for UI Languages"
 
-#: src/components/LogList.tsx:60
+#: src/components/LogList.tsx:84
 msgctxt "changelog"
 msgid "时装"
 msgstr "Outfits"
 
-#: src/components/LogList.tsx:95
+#: src/components/LogList.tsx:119
 msgctxt "changelog"
 msgid "更新数据、切换语言和地区无需刷新页面"
 msgstr "Update data and switch language or region without reloading"
 
-#: src/components/LogList.tsx:54
+#: src/components/LogList.tsx:78
 msgctxt "changelog"
 msgid "模组任务"
 msgstr "Module missions"
 
-#: src/components/LogList.tsx:78
+#: src/components/LogList.tsx:102
 msgctxt "changelog"
 msgid "模组解锁率"
 msgstr "Module unlock rates"
 
-#: src/components/LogList.tsx:92
+#: src/components/LogList.tsx:45
+msgctxt "changelog"
+msgid "深色模式"
+msgstr "Dark mode"
+
+#: src/components/LogList.tsx:116
 msgctxt "changelog"
 msgid "物品价值改为本地计算，支持设置"
 msgstr "Compute item values locally, with settings"
 
-#: src/components/LogList.tsx:81
+#: src/components/LogList.tsx:46
+msgctxt "changelog"
+msgid "练度图"
+msgstr "Roster image"
+
+#: src/components/LogList.tsx:105
 msgctxt "changelog"
 msgid "编辑角色过滤器"
 msgstr "Edit character filters"
 
-#: src/components/LogList.tsx:97
+#: src/components/LogList.tsx:121
 msgctxt "changelog"
 msgid "肉鸽干员养成支持"
 msgstr "Support training Integrated Strategies operators"
 
-#: src/components/LogList.tsx:136
+#: src/components/LogList.tsx:44
+msgctxt "changelog"
+msgid "适配手机"
+msgstr "Phone layout"
+
+#: src/components/LogList.tsx:160
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr "Show item name when icon is not available"
 
-#: src/components/LogList.tsx:250
+#: src/components/LogList.tsx:274
 msgctxt "changelog type"
 msgid "优化"
 msgstr "Improved"
 
-#: src/components/LogList.tsx:251
+#: src/components/LogList.tsx:275
 msgctxt "changelog type"
 msgid "修复"
 msgstr "Fixed"
 
-#: src/components/LogList.tsx:249
+#: src/components/LogList.tsx:273
 msgctxt "changelog type"
 msgid "新增"
 msgstr "New"
@@ -2999,6 +3044,11 @@ msgstr "Drag to resize, double-click to reset (%d px)"
 msgctxt "character list column"
 msgid "目标状态"
 msgstr "Goal"
+
+#: src/components/AboutList.tsx:112
+msgctxt "credit role"
+msgid "代码贡献"
+msgstr "code contributions"
 
 #: src/components/AboutList.tsx:105
 msgctxt "credit role"
@@ -3311,12 +3361,12 @@ msgctxt "missing data"
 msgid "物品价值、关卡统计不可用"
 msgstr "Item values and stage statistics unavailable"
 
-#: src/components/AboutList.tsx:232
+#: src/components/AboutList.tsx:239
 msgctxt "missing data"
 msgid "载入失败"
 msgstr "Couldn't load"
 
-#: src/components/AboutList.tsx:241
+#: src/components/AboutList.tsx:248
 #: src/components/arknights/CostSection.tsx:536
 #: src/components/MissingData.tsx:47
 msgctxt "missing data"
