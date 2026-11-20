@@ -278,7 +278,7 @@ export const onButtonKey = (e: React.KeyboardEvent<HTMLElement>) => {
   e.currentTarget.click()
 }
 
-/** 品牌墙上的 40px 头像：悬停看说明，点一下打开档案（标记中是切换） */
+/** 品牌墙上的头像（侧栏里 40px，手机上随屏宽放大）：悬停看说明，点一下打开档案（标记中是切换） */
 export const SkinTile = memo(
   ({
     state,

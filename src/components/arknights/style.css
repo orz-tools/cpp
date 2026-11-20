@@ -2940,6 +2940,24 @@ section:first-child > .cpp-stages-wide-section {
   min-height: 0;
 }
 
+.cpp-skins-scroll {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* 手机上筛选、档期和列表一起滚：小屏竖着拿时头像墙只剩两三行，横着拿时一行都不剩 */
+.cpp-phone .cpp-skins-scroll {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .cpp-skins-list {
+  flex: none;
+  overflow: visible;
+}
+
 .cpp-skins-filter {
   display: flex;
   flex-direction: column;
@@ -3257,6 +3275,13 @@ section:first-child > .cpp-stages-wide-section {
   grid-template-columns: repeat(6, minmax(0, 40px));
   gap: 5px;
   padding: 6px 4px 10px 14px;
+}
+
+/* 手机上面板占满一屏：一行能放几个头像就放几个，再放大到排满整行；右边留 12px，勾伸出头像 4px，和进度条右端对齐 */
+.cpp-phone .cpp-skins-wall {
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 6px;
+  padding-right: 12px;
 }
 
 .cpp-skins-tile-wrap.bp6-popover-target {
@@ -3989,6 +4014,21 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-skins-dcard-pic {
   width: 100px;
   height: 200px;
+}
+
+/* 手机上一行放不下四张 100px 的卡：能放几张放几张，再放宽到排满整行，立绘保持 1:2 */
+.cpp-phone .cpp-skins-dcards {
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+}
+
+.cpp-phone .cpp-skins-dcard {
+  width: auto;
+}
+
+.cpp-phone .cpp-skins-dcard-pic {
+  width: auto;
+  height: auto;
+  aspect-ratio: 1 / 2;
 }
 
 .cpp-skins-dcard.is-focused .cpp-skins-dcard-pic {
