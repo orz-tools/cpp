@@ -135,7 +135,15 @@ describe('pngScale', () => {
 
   it('matches the estimates for long lists', () => {
     const at = (n: number, goal: boolean) =>
-      sheetSize({ n, columns: 1, order: 'rows', statusWidth: ARKNIGHTS_STATUS_WIDTH, goal, header: false, footer: true })
+      sheetSize({
+        n,
+        columns: 1,
+        order: 'rows',
+        statusWidth: ARKNIGHTS_STATUS_WIDTH,
+        goal,
+        header: false,
+        footer: true,
+      })
 
     // 三百五十名、不带目标：约 468 × 16,930
     const a = at(350, false)

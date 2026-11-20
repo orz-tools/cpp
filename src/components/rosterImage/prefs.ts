@@ -18,7 +18,7 @@ export const defaultRosterImagePrefs: RosterImagePrefs = { columns: 1, order: 'r
 
 /** 按码点截，不切开代理对 */
 export function clampHeader(header: string): string {
-  const chars = [...header]
+  const chars = Array.from(header)
   return chars.length > MAX_HEADER_LENGTH ? chars.slice(0, MAX_HEADER_LENGTH).join('') : header
 }
 

@@ -35,6 +35,6 @@ describe('readRosterImagePrefs', () => {
   it('cuts a long header to 40 characters without splitting a surrogate pair', () => {
     expect(readRosterImagePrefs({ header: 'a'.repeat(50) }).header).toBe('a'.repeat(40))
     const emoji = '😀'.repeat(41)
-    expect([...readRosterImagePrefs({ header: emoji }).header]).toHaveLength(40)
+    expect(readRosterImagePrefs({ header: emoji }).header).toBe('😀'.repeat(40))
   })
 })

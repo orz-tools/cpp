@@ -57,7 +57,9 @@ describe('sceneToSvg', () => {
 
   it('writes the text attributes', () => {
     const svg = sceneToSvg(
-      scene([{ kind: 'text', x: 1, y: 2, text: 'a', size: 14, fill: '#000', bold: true, mono: true, anchor: 'middle' }]),
+      scene([
+        { kind: 'text', x: 1, y: 2, text: 'a', size: 14, fill: '#000', bold: true, mono: true, anchor: 'middle' },
+      ]),
       embedAll,
     )
     expect(svg).toMatch(/<text x="1" y="2" font-family="ui-monospace[^"]*" font-size="14" font-weight="bold"/)
@@ -80,7 +82,9 @@ describe('sceneToSvg', () => {
       ]),
       embedAll,
     )
-    expect(svg).toContain('<g transform="translate(10 20)" opacity="0.25"><svg width="30" height="40" overflow="hidden">')
+    expect(svg).toContain(
+      '<g transform="translate(10 20)" opacity="0.25"><svg width="30" height="40" overflow="hidden">',
+    )
     expect(svg).toContain('filter="url(#cpp-glow)"')
     expect(count(svg, /<feDropShadow /g)).toBe(2)
   })
@@ -109,7 +113,9 @@ describe('sceneToSvg', () => {
 
   it('sizes the root and paints the background first', () => {
     const svg = sceneToSvg(scene([]), embedAll)
-    expect(svg).toMatch(/^<svg xmlns="http:\/\/www.w3.org\/2000\/svg"[^>]* width="100" height="50" viewBox="0 0 100 50">/)
+    expect(svg).toMatch(
+      /^<svg xmlns="http:\/\/www.w3.org\/2000\/svg"[^>]* width="100" height="50" viewBox="0 0 100 50">/,
+    )
     expect(svg).toContain('<rect x="0" y="0" width="100" height="50" fill="#ffffff"/></svg>')
   })
 
