@@ -9,6 +9,7 @@ import { ArknightsStageCategory } from '../../pkg/cpp-arknights/zones'
 import { gt } from '../../pkg/gt'
 import type { StageToggleProps } from '../ConfigUi'
 import { ItemIcon } from '../Icons'
+import { PeekTrigger } from '../Peek'
 import { formatQuantity } from '../quantity'
 import { SampleTag } from '../Value'
 import {
@@ -86,13 +87,26 @@ export const ZoneShortName = memo(({ zone, full }: { zone: IZoneInfo | undefined
   )
 })
 
+/** 点开物品卡看库存；「作战记录」一组开「经验」的卡，和这一组「库存」的数一样 */
 export const MaterialLabel = memo(({ itemId, size = 20 }: { itemId: string; size?: number }) => {
   const ga = useGameAdapter()
+  const name = materialName(ga, itemId)
   return (
-    <>
-      <ItemIcon item={ga.getItem(itemId)} size={size} />
-      <span className="cpp-stages-material-name">{materialName(ga, itemId)}</span>
-    </>
+    <PeekTrigger
+      peek={{ kind: 'item', id: stockItemOf(itemId) }}
+      renderTarget={(peek) => (
+        <span
+          role={peek ? 'button' : undefined}
+          // 图标的 alt 也是物品名，不给的话读出来是两遍
+          aria-label={peek ? name : undefined}
+          {...peek}
+          className={'cpp-stages-material' + (peek ? ' ' + peek.className : '')}
+        >
+          <ItemIcon item={ga.getItem(itemId)} size={size} />
+          <span className="cpp-stages-material-name">{name}</span>
+        </span>
+      )}
+    />
   )
 })
 
@@ -103,10 +117,20 @@ export const DropList = memo(({ drops }: { drops: StageDrop[] }) => {
   return (
     <span className="cpp-stages-drops">
       {drops.map((x) => (
-        <span key={x.itemId} className="cpp-stages-drop">
-          <ItemIcon item={ga.getItem(x.itemId)} size={22} />
-          {`×${formatDropQuantity(x.quantity)}`}
-        </span>
+        <PeekTrigger
+          key={x.itemId}
+          peek={{ kind: 'item', id: x.itemId }}
+          renderTarget={(peek) => (
+            <span
+              role={peek ? 'button' : undefined}
+              {...peek}
+              className={'cpp-stages-drop' + (peek ? ' ' + peek.className : '')}
+            >
+              <ItemIcon item={ga.getItem(x.itemId)} size={22} />
+              {`×${formatDropQuantity(x.quantity)}`}
+            </span>
+          )}
+        />
       ))}
     </span>
   )

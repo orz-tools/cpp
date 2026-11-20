@@ -1531,6 +1531,33 @@ section:first-child > .cpp-stages-wide-section {
   font-variant-numeric: tabular-nums;
 }
 
+/* 材料名、掉落能点开物品卡，灰底来自 .cpp-peek-target：灰底往外多出一圈，负边距抵掉，图标和字留在原处 */
+.cpp-stages-material {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin: -1px -4px;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.cpp-stages-drop.cpp-peek-target {
+  margin: -1px -3px;
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+
+/* 标题里图标和名字隔 8px，下面「需求」那一行按它对齐；「n 关」仍在最右 */
+.cpp-stages-drill-title .cpp-stages-material {
+  gap: 8px;
+  margin-right: auto;
+}
+
+.cpp-stages-wide-drill-head .cpp-stages-material {
+  gap: 8px;
+}
+
 /* Four columns at full width; a narrower window drops to three rather than squeezing the stage rows */
 .cpp-stages-wide-columns {
   display: grid;
