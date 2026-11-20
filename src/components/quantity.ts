@@ -33,3 +33,11 @@ export function formatExpectedQuantity(value: number): string {
 export function formatTileQuantity(value: number): string {
   return value < 100 ? formatExpectedQuantity(value) : formatQuantity(Math.round(value))
 }
+
+/**
+ * 格子上的数里只有四位数带单位的（「1265万」，毕业规划的龙门币、经验）粗体 11px 宽过 40px 的格子，要小一号。
+ * 英文的缩写到 999K 就换成 1M，带单位的最多三位数
+ */
+export function isWideTileQuantity(label: string): boolean {
+  return /\d{4}\D/.test(label)
+}

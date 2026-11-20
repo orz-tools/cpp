@@ -1,6 +1,6 @@
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { gt } from '../pkg/gt'
-import { formatExpectedQuantity, formatQuantity, formatTileQuantity } from './quantity'
+import { formatExpectedQuantity, formatQuantity, formatTileQuantity, isWideTileQuantity } from './quantity'
 
 beforeAll(() => {
   gt.addTranslations('zh_Hans', 'messages', { translations: {} } as any)
@@ -72,5 +72,24 @@ describe('formatTileQuantity', () => {
     expect(formatTileQuantity(75600)).toBe('7.6万')
     gt.setLocale('en_US')
     expect(formatTileQuantity(75600)).toBe('76K')
+  })
+})
+
+describe('isWideTileQuantity', () => {
+  it('picks out four digits with a unit after them', () => {
+    gt.setLocale('zh_Hans')
+    expect(isWideTileQuantity(formatTileQuantity(12650000))).toBe(true)
+    expect(isWideTileQuantity(formatQuantity(99990000))).toBe(true)
+    expect(isWideTileQuantity(formatQuantity(1110000))).toBe(false)
+    expect(isWideTileQuantity(formatQuantity(420000000))).toBe(false)
+  })
+
+  it('leaves plain numbers, decimals and English abbreviations alone', () => {
+    gt.setLocale('zh_Hans')
+    expect(isWideTileQuantity(formatTileQuantity(9999))).toBe(false)
+    expect(isWideTileQuantity(formatTileQuantity(95.31))).toBe(false)
+    gt.setLocale('en_US')
+    expect(isWideTileQuantity(formatTileQuantity(12650000))).toBe(false)
+    expect(isWideTileQuantity(formatTileQuantity(999400))).toBe(false)
   })
 })

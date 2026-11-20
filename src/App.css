@@ -816,11 +816,18 @@ body {
   font-size: 11px;
   line-height: 13px;
   font-weight: 600;
+  /* 折行的话单位掉到第二行、出了格子；字体更宽时宁可往左伸出一点 */
+  white-space: nowrap;
   color: var(--bp-typography-color-default-rest);
   text-shadow:
     0 0 2px var(--cpp-surface),
     0 0 2px var(--cpp-surface),
     0 0 2px var(--cpp-surface);
+}
+
+/* 「1265万」（quantity.ts 的 isWideTileQuantity）：11px 时比格子宽，伸出去会和左边一格的数连成一串 */
+.cpp-item-tile-quantity.is-wide {
+  font-size: 10px;
 }
 
 /* 任务列表里没有子菜单的任务行：只有右键菜单，焦点框留给键盘打开右键菜单用 */

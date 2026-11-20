@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { IItem } from '../pkg/cpp-basic'
 import { CachedImg } from './Icons'
 import { PeekTrigger } from './Peek'
+import { isWideTileQuantity } from './quantity'
 
 /**
  * 一样东西画成 40px 的格子，数叠在右下角，点开物品卡；一排格子放在 `.cpp-item-tiles` 里。
@@ -20,7 +21,7 @@ export const ItemTile = memo(
         >
           {/* 不用 ItemIcon：它的图片自带 title，会盖掉格子的 title */}
           {item ? <CachedImg src={item.icon} width={34} height={34} alt={item.name} /> : null}
-          <span className="cpp-item-tile-quantity">{label}</span>
+          <span className={'cpp-item-tile-quantity' + (isWideTileQuantity(label) ? ' is-wide' : '')}>{label}</span>
         </span>
       )}
     />
