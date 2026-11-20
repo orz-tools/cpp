@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { Scene, SceneImage, SceneNode, SvgEmbedder, collectSceneImages, imageKey, sceneToSvg } from './scene'
+import {
+  Scene,
+  SceneImage,
+  SceneNode,
+  SceneShadow,
+  SvgEmbedder,
+  collectSceneImages,
+  imageKey,
+  sceneOverhang,
+  sceneToSvg,
+  shadowReach,
+} from './scene'
 
 const avatar: SceneImage = { blob: { normal: { id: 'a', urls: ['https://example.com/a.png'] } } }
 const shine: SceneImage = { asset: '/assets/shining_blue.png' }
@@ -119,9 +130,105 @@ describe('sceneToSvg', () => {
     expect(svg).toContain('<rect x="0" y="0" width="100" height="50" fill="#ffffff"/></svg>')
   })
 
+  describe('shadow', () => {
+    // 列表练度格的 box-shadow: #313131 0px 3px 6px
+    const shadow: SceneShadow = { dx: 0, dy: 3, blur: 6, color: '#313131' }
+    const box = (x: number, y: number, w = 260, h = 42): SceneNode => ({
+      kind: 'rect',
+      x,
+      y,
+      w,
+      h,
+      fill: '#313131',
+      shadow,
+    })
+
+    it('draws a blurred copy of the box under it, moved by the offset', () => {
+      const svg = sceneToSvg(scene([box(10, 20)]), embedAll)
+      expect(svg).toContain(
+        '<rect x="10" y="23" width="260" height="42" fill="#313131" filter="url(#cpp-shadow0)"/>' +
+          '<rect x="10" y="20" width="260" height="42" fill="#313131"/>',
+      )
+    })
+
+    it('blurs by half the CSS blur radius, as the standard deviation', () => {
+      const svg = sceneToSvg(scene([box(0, 0)]), embedAll)
+      expect(svg).toContain('<feGaussianBlur stdDeviation="3"/>')
+      expect(svg).not.toContain('feDropShadow')
+    })
+
+    it('makes the filter region big enough for the blur on a low box', () => {
+      const svg = sceneToSvg(scene([box(0, 0)]), embedAll)
+      const region = /<filter id="cpp-shadow0" x="([^"]+)" y="([^"]+)" width="([^"]+)" height="([^"]+)">/.exec(svg)!
+      const [x, y, width, height] = region.slice(1).map(Number)
+      // 3 个标准差：9 px
+      expect(-x * 260).toBeGreaterThanOrEqual(9)
+      expect(-y * 42).toBeGreaterThanOrEqual(9)
+      expect((width - 1 + x) * 260).toBeGreaterThanOrEqual(9)
+      expect((height - 1 + y) * 42).toBeGreaterThanOrEqual(9)
+    })
+
+    it('shares one filter among boxes of one size', () => {
+      const svg = sceneToSvg(
+        scene([
+          box(0, 0),
+          { kind: 'group', x: 0, y: 48, w: 260, h: 48, opacity: 0.25, children: [box(0, 3)] },
+          box(0, 100, 40, 40),
+        ]),
+        embedAll,
+      )
+      expect(count(svg, /<filter id="cpp-shadow\d"/g)).toBe(2)
+      expect(count(svg, /filter="url\(#cpp-shadow0\)"/g)).toBe(2)
+      expect(count(svg, /filter="url\(#cpp-shadow1\)"/g)).toBe(1)
+    })
+
+    it('writes no filter for a box without a shadow', () => {
+      const svg = sceneToSvg(scene([{ kind: 'rect', x: 0, y: 0, w: 10, h: 10, fill: '#313131' }]), embedAll)
+      expect(svg).not.toContain('<filter')
+    })
+  })
+
   it('rounds coordinates', () => {
     const svg = sceneToSvg(scene([{ kind: 'rect', x: 1 / 3, y: 0, w: 77 / 3, h: 40, fill: '#313131' }]), embedAll)
     expect(svg).toContain('<rect x="0.333" y="0" width="25.667" height="40" fill="#313131"/>')
+  })
+})
+
+describe('sceneOverhang', () => {
+  const shadow: SceneShadow = { dx: 0, dy: 3, blur: 6, color: '#313131' }
+
+  it('is how far the farthest shadow reaches, three standard deviations past the offset', () => {
+    expect(shadowReach(shadow)).toBe(12)
+    expect(
+      sceneOverhang([
+        { kind: 'rect', x: 0, y: 0, w: 10, h: 10, fill: '#000' },
+        {
+          kind: 'group',
+          x: 5,
+          y: 5,
+          w: 10,
+          h: 10,
+          children: [{ kind: 'rect', x: 0, y: 0, w: 10, h: 10, fill: '#000', shadow }],
+        },
+      ]),
+    ).toBe(12)
+  })
+
+  it('is 0 without shadows and leaves out clipped groups', () => {
+    expect(sceneOverhang([{ kind: 'rect', x: 0, y: 0, w: 10, h: 10, fill: '#000' }])).toBe(0)
+    expect(
+      sceneOverhang([
+        {
+          kind: 'group',
+          x: 0,
+          y: 0,
+          w: 10,
+          h: 10,
+          clip: true,
+          children: [{ kind: 'rect', x: 0, y: 0, w: 10, h: 10, fill: '#000', shadow }],
+        },
+      ]),
+    ).toBe(0)
   })
 })
 

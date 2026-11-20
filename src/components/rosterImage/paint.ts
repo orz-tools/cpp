@@ -1,10 +1,19 @@
 import type { ImageLookup } from './images'
 import { AREA_CAPS, pngPixels, pngScale } from './layout'
-import { Scene, SceneNode, SvgEmbed, SvgEmbedder, collectSceneImages, imageKey, sceneFont } from './scene'
+import {
+  Scene,
+  SceneNode,
+  SvgEmbed,
+  SvgEmbedder,
+  collectSceneImages,
+  imageKey,
+  sceneFont,
+  sceneOverhang,
+} from './scene'
 
 type Ctx = CanvasRenderingContext2D
 
-/** 半透明的组先画到一张小 canvas 上：子元素超出组的框一点（例如阴影）也不裁掉 */
+/** 半透明的组先画到一张小 canvas 上，四边至少留这么多，子元素超出组的框一点（例如潜能角标的黑影）也不裁掉；带影子的框按 sceneOverhang 留得更多 */
 const GROUP_PAD = 4
 
 function releaseCanvas(canvas: HTMLCanvasElement) {
@@ -16,8 +25,17 @@ function drawNodes(ctx: Ctx, nodes: readonly SceneNode[], images: ImageLookup, s
   for (const node of nodes) {
     switch (node.kind) {
       case 'rect':
+        if (node.shadow) {
+          ctx.save()
+          // shadowBlur 和 CSS 的模糊半径一样是标准差的两倍；它和两个偏移都按设备像素算，不跟 ctx.scale 走
+          ctx.shadowColor = node.shadow.color
+          ctx.shadowOffsetX = node.shadow.dx * scale
+          ctx.shadowOffsetY = node.shadow.dy * scale
+          ctx.shadowBlur = node.shadow.blur * scale
+        }
         ctx.fillStyle = node.fill
         ctx.fillRect(node.x, node.y, node.w, node.h)
+        if (node.shadow) ctx.restore()
         break
       case 'image': {
         const img = images(node.image)
@@ -85,20 +103,21 @@ function drawNodes(ctx: Ctx, nodes: readonly SceneNode[], images: ImageLookup, s
           break
         }
         // 整组合成：先画好整组，再按透明度贴上去，和 SVG 的 <g opacity> 一样
+        const pad = node.clip ? GROUP_PAD : Math.max(GROUP_PAD, Math.ceil(sceneOverhang(node.children)))
         const layer = document.createElement('canvas')
-        layer.width = Math.ceil((node.w + GROUP_PAD * 2) * scale)
-        layer.height = Math.ceil((node.h + GROUP_PAD * 2) * scale)
+        layer.width = Math.ceil((node.w + pad * 2) * scale)
+        layer.height = Math.ceil((node.h + pad * 2) * scale)
         const lctx = layer.getContext('2d')
         if (!lctx) break
         lctx.imageSmoothingEnabled = true
         lctx.imageSmoothingQuality = 'high'
         lctx.scale(scale, scale)
-        lctx.translate(GROUP_PAD, GROUP_PAD)
+        lctx.translate(pad, pad)
         clip(lctx)
         drawNodes(lctx, node.children, images, scale)
         ctx.save()
         ctx.globalAlpha *= node.opacity
-        ctx.drawImage(layer, node.x - GROUP_PAD, node.y - GROUP_PAD, layer.width / scale, layer.height / scale)
+        ctx.drawImage(layer, node.x - pad, node.y - pad, layer.width / scale, layer.height / scale)
         ctx.restore()
         releaseCanvas(layer)
         break

@@ -4,7 +4,12 @@ import type { ArknightsCharacterStatus } from '../../pkg/cpp-arknights/types'
 import { SceneNode, walkScene } from '../rosterImage/scene'
 import m2 from './assets/m2.png'
 import potential3 from './assets/potential3.png'
-import { ARKNIGHTS_STATUS_HEIGHT, ARKNIGHTS_STATUS_WIDTH, createArknightsRosterPainter } from './rosterImage'
+import {
+  ARKNIGHTS_STATUS_HEIGHT,
+  ARKNIGHTS_STATUS_WIDTH,
+  STATUS_SHADOW,
+  createArknightsRosterPainter,
+} from './rosterImage'
 
 // 只测画法本身，不碰 React
 vi.mock('../../Cpp', () => ({}))
@@ -57,6 +62,18 @@ describe('createArknightsRosterPainter', () => {
     expect(ARKNIGHTS_STATUS_WIDTH).toBe(260)
     expect(ARKNIGHTS_STATUS_HEIGHT).toBe(42)
     expect(painter.statusWidth).toBe(260)
+  })
+
+  it('gives the status box the shadow of the list, under the current and the goal alike', () => {
+    expect(STATUS_SHADOW).toEqual({ dx: 0, dy: 3, blur: 6, color: '#313131' })
+    for (const nodes of [
+      painter.status(status(), character()),
+      painter.status(status({ elite: 2, level: 90 }), character(), status()),
+    ]) {
+      expect(nodes[0]).toMatchObject({ kind: 'rect', w: 260, h: 42, fill: '#313131', shadow: STATUS_SHADOW })
+      // 等级的小方块不带
+      expect(all(nodes).filter((n) => n.kind === 'rect' && n.shadow)).toHaveLength(1)
+    }
   })
 
   it('draws the mastery icon for a mastered skill and the level for the others', () => {

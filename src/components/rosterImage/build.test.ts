@@ -10,7 +10,7 @@ import {
   fitText,
   rosterEntries,
 } from './build'
-import { FOOTER_HEIGHT, QR_SIZE } from './layout'
+import { COLUMN_GAP, FOOTER_HEIGHT, QR_SIZE, cellWidth } from './layout'
 import { RosterImagePainter, Scene, SceneNode, walkScene } from './scene'
 
 /** 字数 × 字号 × 0.6 */
@@ -200,6 +200,61 @@ describe('buildRosterScene', () => {
       expect(fills(off)).not.toContain('#e5e8eb')
       expect(textsOf(off)).not.toContain(texts.footer)
       expect(all(off).some((n) => n.kind === 'image')).toBe(false)
+    })
+  })
+
+  describe('room for the status shadow', () => {
+    // 列表的 box-shadow: 0 3px 6px
+    const shadow = { dx: 0, dy: 3, blur: 6, color: '#313131' }
+    const shadowed = (): RosterImagePainter => ({
+      ...painter(),
+      status: () => [{ kind: 'rect', x: 0, y: 0, w: 100, h: 42, fill: '#313131', shadow }],
+    })
+
+    /** 每个带影子的框连影子在图上占到哪里 */
+    function shadowBoxes(scene: Scene) {
+      const reach = shadow.blur * 1.5
+      const boxes: { left: number; top: number; right: number; bottom: number }[] = []
+      const visit = (nodes: readonly SceneNode[], ox: number, oy: number) => {
+        for (const n of nodes) {
+          if (n.kind === 'rect' && n.shadow) {
+            const x = ox + n.x + n.shadow.dx
+            const y = oy + n.y + n.shadow.dy
+            boxes.push({ left: x - reach, top: y - reach, right: x + n.w + reach, bottom: y + n.h + reach })
+          } else if (n.kind === 'group') visit(n.children, ox + n.x, oy + n.y)
+        }
+      }
+      visit(scene.nodes, 0, 0)
+      return boxes
+    }
+
+    const layouts = [1, 3].flatMap((columns) =>
+      [false, true].flatMap((goal) =>
+        [false, true].flatMap((footer) =>
+          ['', '博士'].map((header) => ({ ...options, columns, goal, footer, header })),
+        ),
+      ),
+    )
+    const entries = [entry('a'), entry('b', { absent: true }), entry('c'), entry('d'), entry('e')]
+
+    it('keeps every shadow inside the image, above the footer rule and clear of the next column', () => {
+      for (const layout of layouts) {
+        const scene = buildRosterScene(entries, layout, shadowed(), measure, texts)
+        const boxes = shadowBoxes(scene)
+        expect(boxes).toHaveLength(entries.length + (layout.goal ? entries.length : 0))
+        const rule = all(scene).find((n) => n.kind === 'rect' && n.fill === '#e5e8eb')
+        expect(!!rule).toBe(layout.footer)
+        const step = cellWidth(100, layout.goal) + COLUMN_GAP
+        for (const box of boxes) {
+          expect(box.left, JSON.stringify(layout)).toBeGreaterThanOrEqual(0)
+          expect(box.top).toBeGreaterThanOrEqual(0)
+          expect(box.right).toBeLessThanOrEqual(scene.width)
+          expect(box.bottom).toBeLessThanOrEqual(scene.height)
+          if (rule?.kind === 'rect') expect(box.bottom).toBeLessThanOrEqual(rule.y)
+          const col = Math.floor((box.left - 16) / step)
+          expect(box.right).toBeLessThanOrEqual(16 + (col + 1) * step)
+        }
+      }
     })
   })
 

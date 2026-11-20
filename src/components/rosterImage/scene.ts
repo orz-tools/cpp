@@ -5,9 +5,22 @@ export type SceneImage = ({ asset: string } | { blob: BlobImages }) & { grayscal
 
 export type SceneFit = 'fill' | 'cover'
 
+/** 照 CSS 的 box-shadow 写：blur 是 CSS 的模糊半径，是标准差的两倍 */
+export interface SceneShadow {
+  dx: number
+  dy: number
+  blur: number
+  color: string
+}
+
+/** 影子伸出框外最远多少：高斯模糊到 3 个标准差就看不出了 */
+export function shadowReach(shadow: SceneShadow): number {
+  return Math.max(Math.abs(shadow.dx), Math.abs(shadow.dy)) + shadow.blur * 1.5
+}
+
 /** 坐标都是 1 倍 px；group 的子元素相对它的左上角；文字的 y 是基线 */
 export type SceneNode =
-  | { kind: 'rect'; x: number; y: number; w: number; h: number; fill: string }
+  | { kind: 'rect'; x: number; y: number; w: number; h: number; fill: string; shadow?: SceneShadow }
   | {
       kind: 'image'
       x: number
@@ -95,6 +108,16 @@ export function walkScene(nodes: readonly SceneNode[], visit: (node: SceneNode) 
   }
 }
 
+/** 这些节点的影子最远伸出它们自己的框多少；裁切的组不往外画 */
+export function sceneOverhang(nodes: readonly SceneNode[]): number {
+  let reach = 0
+  for (const node of nodes) {
+    if (node.kind === 'rect' && node.shadow) reach = Math.max(reach, shadowReach(node.shadow))
+    else if (node.kind === 'group' && !node.clip) reach = Math.max(reach, sceneOverhang(node.children))
+  }
+  return reach
+}
+
 export function collectSceneImages(scene: Scene): SceneImageUse[] {
   const uses = new Map<string, SceneImageUse>()
   walkScene(scene.nodes, (node) => {
@@ -142,7 +165,26 @@ const GLOW_FILTER_ID = 'cpp-glow'
 export function sceneToSvg(scene: Scene, embed: SvgEmbedder): string {
   const symbols = new Map<string, string>()
   const defs: string[] = []
+  const shadowFilters = new Map<string, string>()
   let glow = false
+
+  // 滤镜的区域默认只比框大 10%，矮的框装不下往下的影子；按框的大小各写一个
+  const shadowFilter = (blur: number, w: number, h: number): string => {
+    const key = `${blur}|${w}|${h}`
+    let id = shadowFilters.get(key)
+    if (!id) {
+      id = `cpp-shadow${shadowFilters.size}`
+      shadowFilters.set(key, id)
+      const reach = Math.ceil(blur * 1.5) + 1
+      const fx = reach / w
+      const fy = reach / h
+      defs.push(
+        `<filter id="${id}" x="${num(-fx)}" y="${num(-fy)}" width="${num(1 + fx * 2)}" height="${num(1 + fy * 2)}">` +
+          `<feGaussianBlur stdDeviation="${num(blur / 2)}"/></filter>`,
+      )
+    }
+    return id
+  }
 
   for (const use of collectSceneImages(scene)) {
     const data = embed(use.image)
@@ -163,8 +205,17 @@ export function sceneToSvg(scene: Scene, embed: SvgEmbedder): string {
     nodes
       .map((node) => {
         switch (node.kind) {
-          case 'rect':
-            return `<rect x="${num(node.x)}" y="${num(node.y)}" width="${num(node.w)}" height="${num(node.h)}" fill="${escapeXml(node.fill)}"/>`
+          case 'rect': {
+            const rect = `<rect x="${num(node.x)}" y="${num(node.y)}" width="${num(node.w)}" height="${num(node.h)}" fill="${escapeXml(node.fill)}"/>`
+            const { shadow } = node
+            if (!shadow) return rect
+            // 影子是框下面另一个模糊了的框，只用 SVG 1.1 就有的 feGaussianBlur：看图软件的滤镜出了问题，坏的也只是影子，框照画
+            const id = shadowFilter(shadow.blur, node.w, node.h)
+            return (
+              `<rect x="${num(node.x + shadow.dx)}" y="${num(node.y + shadow.dy)}" width="${num(node.w)}" height="${num(node.h)}" ` +
+              `fill="${escapeXml(shadow.color)}" filter="url(#${id})"/>${rect}`
+            )
+          }
           case 'image': {
             const id = symbols.get(`${imageKey(node.image)}|${node.fit ?? 'fill'}`)
             if (!id) return ''

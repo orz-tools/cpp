@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { WithGame } from '../../Cpp'
 import type { Character } from '../../pkg/cpp-arknights'
 import { Arknights, ArknightsCharacterStatus, PreferenceKeys } from '../../pkg/cpp-arknights/types'
-import type { RosterImagePainter, SceneImage, SceneNode } from '../rosterImage/scene'
+import type { RosterImagePainter, SceneImage, SceneNode, SceneShadow } from '../rosterImage/scene'
 import charbg1 from './assets/charbg1.png'
 import charbg2 from './assets/charbg2.png'
 import charbg3 from './assets/charbg3.png'
@@ -53,6 +53,8 @@ const PAD_LEFT = 1
 const PAD_RIGHT = 4
 const MODULE_AREA = ICON * 2 + GAP
 const CELL_BACKGROUND = '#313131'
+/** 列表里练度格的 box-shadow: #313131 0px 3px 6px（App.css 的 .cpp-char-menu-status::after） */
+export const STATUS_SHADOW: SceneShadow = { dx: 0, dy: 3, blur: 6, color: CELL_BACKGROUND }
 const LABEL_HEIGHT = 20
 const LABEL_PAD = 4
 const LABEL_SIZE = 14
@@ -226,7 +228,15 @@ export function createArknightsRosterPainter({ showPotential }: { showPotential:
 
     status(status: ArknightsCharacterStatus, character: Character, current?: ArknightsCharacterStatus): SceneNode[] {
       const nodes: SceneNode[] = [
-        { kind: 'rect', x: 0, y: 0, w: ARKNIGHTS_STATUS_WIDTH, h: ARKNIGHTS_STATUS_HEIGHT, fill: CELL_BACKGROUND },
+        {
+          kind: 'rect',
+          x: 0,
+          y: 0,
+          w: ARKNIGHTS_STATUS_WIDTH,
+          h: ARKNIGHTS_STATUS_HEIGHT,
+          fill: CELL_BACKGROUND,
+          shadow: STATUS_SHADOW,
+        },
       ]
       nodes.push(levelItem(status, current ? status.elite === current.elite && status.level === current.level : false))
 

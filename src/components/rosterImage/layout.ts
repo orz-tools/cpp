@@ -9,7 +9,8 @@ export const COLUMN_GAP = 24
 export const HEADER_HEIGHT = 48
 export const COLUMN_HEAD_HEIGHT = 20
 
-// 页脚：最后一行格子下面空 20，1px 的分隔线，再空 16，然后是 56 高的一行
+// 页脚：最后一行格子下面空 20，1px 的分隔线，再空 16，然后是 56 高的一行。
+// 练度格的影子（列表的 0 3px 6px）往外最多伸出 12，最后一行下面的 20、底边的 16 和列间的 24 都容得下
 export const FOOTER_SPACE_ABOVE = 20
 export const FOOTER_RULE = 1
 export const FOOTER_SPACE_BELOW = 16
