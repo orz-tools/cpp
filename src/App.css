@@ -1367,7 +1367,13 @@ body {
   align-self: flex-end;
 }
 
+/*
+ * 卡片可以比钉板窄（关卡卡片按内容定宽）：窄的也贴着右边，聚焦的框跟着卡片的宽。
+ * 不再拉满以后，钉板出了滚动条时 344px 的卡片要靠 max-width 收进来
+ */
 .cpp-peek-pinned {
+  align-self: flex-end;
+  max-width: 100%;
   border-radius: 4px;
 }
 
