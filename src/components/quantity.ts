@@ -20,3 +20,16 @@ export function formatQuantity(value: number, compact = true): string {
   }
   return formatter.format(value)
 }
+
+/** 关卡的期望掉落：两位小数，去掉末尾的零 */
+export function formatExpectedQuantity(value: number): string {
+  return value.toFixed(2).replace(/\.?0+$/, '')
+}
+
+/**
+ * 叠在 40px 物品格上的期望掉落：100 以下同 formatExpectedQuantity；100 起取整，一万起缩写。
+ * 和养成成本页一样不看「缩写大数」：格子上放不下全数
+ */
+export function formatTileQuantity(value: number): string {
+  return value < 100 ? formatExpectedQuantity(value) : formatQuantity(Math.round(value))
+}

@@ -192,7 +192,11 @@ msgstr ""
 msgid "关卡"
 msgstr ""
 
-#: src/App.tsx:541
+#: src/components/FarmList.tsx:187
+msgid "关卡产物显示为图标"
+msgstr ""
+
+#: src/App.tsx:544
 #: src/components/CharacterDossier.tsx:243
 #: src/components/CharacterDossier.tsx:244
 #: src/components/Importer.tsx:163
@@ -217,7 +221,7 @@ msgid_plural "其余 %d 条也做成了"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/SynthesisList.tsx:99
+#: src/components/SynthesisList.tsx:107
 msgid "最好还是别合成的道具"
 msgstr ""
 
@@ -381,7 +385,7 @@ msgstr ""
 msgid "导入 MAA「干员识别」数据"
 msgstr ""
 
-#: src/App.tsx:346
+#: src/App.tsx:349
 #: src/components/RetiredGame.tsx:195
 msgid "导入/导出"
 msgstr ""
@@ -531,7 +535,7 @@ msgstr ""
 msgid "总价值"
 msgstr ""
 
-#: src/App.tsx:491
+#: src/App.tsx:494
 msgid "您不妨试试"
 msgstr ""
 
@@ -647,16 +651,16 @@ msgstr ""
 msgid "显示全部"
 msgstr ""
 
-#: src/components/FarmList.tsx:280
+#: src/components/FarmList.tsx:316
 msgid "暂不支持计算毕业合成"
 msgstr ""
 
-#: src/components/FarmList.tsx:376
+#: src/components/FarmList.tsx:388
 msgid "暂无可计算来源"
 msgstr ""
 
 #: src/components/CharacterDossier.tsx:238
-#: src/components/PhoneTabBar.tsx:15
+#: src/components/PhoneTabBar.tsx:16
 msgid "更多"
 msgstr ""
 
@@ -761,7 +765,7 @@ msgstr[1] ""
 msgid "清除选择"
 msgstr ""
 
-#: src/App.tsx:213
+#: src/App.tsx:216
 #: src/components/reloadGameData.ts:31
 msgid "游戏数据已更新"
 msgstr ""
@@ -786,8 +790,12 @@ msgstr ""
 msgid "点右上角的 %1，选 %2；把文本框清空，粘贴刚才复制的数据或导出文件的全部内容，再点 %3 并确认。"
 msgstr ""
 
-#: src/components/SynthesisList.tsx:71
+#: src/components/SynthesisList.tsx:79
 msgid "现在可以合成的道具"
+msgstr ""
+
+#: src/components/SynthesisList.tsx:70
+msgid "现在没有可以合成的道具"
 msgstr ""
 
 #: src/components/RetiredGame.tsx:196
@@ -823,7 +831,7 @@ msgid_plural "等 %d 条"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/FarmList.tsx:289
+#: src/components/FarmList.tsx:325
 msgid "线性规划失败"
 msgstr ""
 
@@ -833,7 +841,7 @@ msgid_plural "缺 %d 件"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/SynthesisList.tsx:100
+#: src/components/SynthesisList.tsx:108
 msgid "虽然现在确实可以合成下列道具来完成任务，但今后将消耗更多体力。还是去刷吧！"
 msgstr ""
 
@@ -878,7 +886,7 @@ msgstr ""
 msgid "请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 
-#: src/components/FarmList.tsx:291
+#: src/components/FarmList.tsx:327
 msgid "请稍候"
 msgstr ""
 
@@ -905,7 +913,7 @@ msgstr ""
 msgid "返回"
 msgstr ""
 
-#: src/App.tsx:484
+#: src/App.tsx:487
 msgid "返回主页"
 msgstr ""
 
@@ -1915,19 +1923,19 @@ msgctxt "arknights quick filter"
 msgid "精英 %d"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:429
+#: src/components/arknights/CostSection.tsx:418
 #: src/components/arknights/peekKinds.tsx:31
 msgctxt "arknights skill ref"
 msgid "一技能"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:431
+#: src/components/arknights/CostSection.tsx:420
 #: src/components/arknights/peekKinds.tsx:33
 msgctxt "arknights skill ref"
 msgid "三技能"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:430
+#: src/components/arknights/CostSection.tsx:419
 #: src/components/arknights/peekKinds.tsx:32
 msgctxt "arknights skill ref"
 msgid "二技能"
@@ -2617,7 +2625,7 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:565
+#: src/components/arknights/CostSection.tsx:554
 msgctxt "dossier section"
 msgid "养成成本"
 msgstr ""
@@ -2662,7 +2670,7 @@ msgctxt "error context"
 msgid "初始化失败"
 msgstr ""
 
-#: src/components/FarmList.tsx:197
+#: src/components/FarmList.tsx:228
 msgctxt "error context"
 msgid "刷本规划时遇到问题"
 msgstr ""
@@ -2699,7 +2707,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr ""
 
-#: src/App.tsx:471
+#: src/App.tsx:474
 msgctxt "error context"
 msgid "遇到错误"
 msgstr ""
@@ -2854,43 +2862,43 @@ msgid "、"
 msgstr ""
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:372
+#: src/App.tsx:375
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr ""
 
 #. initial
-#: src/App.tsx:380
+#: src/App.tsx:383
 msgctxt "loading status"
 msgid "别急…"
 msgstr ""
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:408
+#: src/App.tsx:411
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr ""
 
 #. loaded data objects
-#: src/App.tsx:379
+#: src/App.tsx:382
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr ""
 
 #. joke text
-#: src/App.tsx:406
+#: src/App.tsx:409
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr ""
 
 #. loading hero line 2
-#: src/App.tsx:415
+#: src/App.tsx:418
 msgctxt "loading status"
 msgid "请稍候"
 msgstr ""
 
 #. done
-#: src/App.tsx:370
+#: src/App.tsx:373
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr ""
@@ -2911,7 +2919,7 @@ msgid "载入失败"
 msgstr ""
 
 #: src/components/AboutList.tsx:241
-#: src/components/arknights/CostSection.tsx:547
+#: src/components/arknights/CostSection.tsx:536
 #: src/components/MissingData.tsx:47
 msgctxt "missing data"
 msgid "重试"
@@ -3618,9 +3626,14 @@ msgctxt "phone tab"
 msgid "刷图"
 msgstr ""
 
-#: src/components/PhoneTabBar.tsx:33
+#: src/components/PhoneTabBar.tsx:34
 msgctxt "phone tab"
 msgid "区域"
+msgstr ""
+
+#: src/components/PhoneTabBar.tsx:14
+msgctxt "phone tab"
+msgid "合成"
 msgstr ""
 
 #: src/components/PhoneTabBar.tsx:11
@@ -3628,7 +3641,7 @@ msgctxt "phone tab"
 msgid "干员"
 msgstr ""
 
-#: src/components/PhoneTabBar.tsx:14
+#: src/components/PhoneTabBar.tsx:15
 msgctxt "phone tab"
 msgid "材料"
 msgstr ""
@@ -5303,23 +5316,23 @@ msgid "%s × %d$total（直接 %d$direct，折算 %d$folded）"
 msgstr ""
 
 #. %s: 一技能, 二技能 or 三技能
-#: src/components/arknights/CostSection.tsx:439
+#: src/components/arknights/CostSection.tsx:428
 msgctxt "training cost"
 msgid "%s专三"
 msgstr ""
 
 #. %s: item names
-#: src/components/arknights/CostSection.tsx:305
+#: src/components/arknights/CostSection.tsx:294
 msgctxt "training cost"
 msgid "%s没有价值，没算进上面的数"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:404
+#: src/components/arknights/CostSection.tsx:393
 msgctxt "training cost"
 msgid "下面的「最多」是从能用这张道具的最早那一点用时能省的：精二从精零 1 级，专三从专零，满级从精二 1 级。"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:493
+#: src/components/arknights/CostSection.tsx:482
 msgctxt "training cost"
 msgid "不分干员，只看等级"
 msgstr ""
@@ -5354,7 +5367,7 @@ msgctxt "training cost"
 msgid "从零到目标的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:542
+#: src/components/arknights/CostSection.tsx:531
 msgctxt "training cost"
 msgid "企鹅物流的掉落数据载入失败，暂时算不出价值；材料明细不受影响"
 msgstr ""
@@ -5400,7 +5413,7 @@ msgctxt "training cost"
 msgid "原样"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:466
+#: src/components/arknights/CostSection.tsx:455
 msgctxt "training cost"
 msgid "在 %d 星里排第几"
 msgstr ""
@@ -5420,7 +5433,7 @@ msgctxt "training cost"
 msgid "拉满"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:469
+#: src/components/arknights/CostSection.tsx:458
 msgctxt "training cost"
 msgid "效率"
 msgstr ""
@@ -5448,7 +5461,7 @@ msgctxt "training cost"
 msgid "满"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:553
+#: src/components/arknights/CostSection.tsx:542
 msgctxt "training cost"
 msgid "物品价值计算失败，暂时算不出价值；材料明细不受影响"
 msgstr ""
@@ -5478,18 +5491,18 @@ msgctxt "training cost"
 msgid "现在用特训邀请函能省多少：从现在的练度到精二 1 级的材料价值。已经练过的那一段省不回来，所以练得越多，数越小。"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:474
+#: src/components/arknights/CostSection.tsx:463
 msgctxt "training cost"
 msgid "现在用能省"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:401
+#: src/components/arknights/CostSection.tsx:390
 msgctxt "training cost"
 msgid "现在用这张道具能省多少，从这名干员现在的练度算起；已经练过的那一段省不回来。"
 msgstr ""
 
 #. %d: 4, 5 or 6; %s$…: the most each voucher saves on an operator of that rarity
-#: src/components/arknights/CostSection.tsx:384
+#: src/components/arknights/CostSection.tsx:373
 msgctxt "training cost"
 msgid "现在能省的，占这张道具在 %d 星干员身上最多能省的几成：精二 %s$elite2（从精零 1 级用），专三 %s$mastery3（从专零用），精二满级 %s$levelMax（从精二 1 级用）。"
 msgstr ""
@@ -5504,22 +5517,22 @@ msgctxt "training cost"
 msgid "目标到满的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:460
+#: src/components/arknights/CostSection.tsx:449
 msgctxt "training cost"
 msgid "直升道具"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:334
+#: src/components/arknights/CostSection.tsx:323
 msgctxt "training cost"
 msgid "第 %d$rank / %d$count"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:423
+#: src/components/arknights/CostSection.tsx:412
 msgctxt "training cost"
 msgid "精二"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:451
+#: src/components/arknights/CostSection.tsx:440
 msgctxt "training cost"
 msgid "精二满级"
 msgstr ""
@@ -5534,12 +5547,12 @@ msgctxt "training cost"
 msgid "还差"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:300
+#: src/components/arknights/CostSection.tsx:289
 msgctxt "training cost"
 msgid "金、紫材料按加工站配方折成了蓝材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:297
+#: src/components/arknights/CostSection.tsx:286
 msgctxt "training cost"
 msgid "金、紫材料按加工站配方折成了蓝材料；龙门币里有 %d 是合成费"
 msgstr ""

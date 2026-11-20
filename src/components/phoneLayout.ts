@@ -36,8 +36,13 @@ export function watchPhoneLayoutClass(): () => void {
   return phoneStore.subscribe(sync)
 }
 
-export const PHONE_AREAS = ['chars', 'tasks', 'farm', 'items', 'more'] as const
+export const PHONE_AREAS = ['chars', 'tasks', 'farm', 'synthesis', 'items', 'more'] as const
 export type PhoneArea = (typeof PHONE_AREAS)[number]
+
+/** 「合成」没有自己的 section：它露出刷图区，刷图区里换成合成那一块（FarmList 的 data-pane） */
+export function phoneSectionOf(area: PhoneArea): PhoneArea {
+  return area === 'synthesis' ? 'farm' : area
+}
 
 export function readPhoneArea(stored: unknown): PhoneArea {
   return PHONE_AREAS.includes(stored as PhoneArea) ? (stored as PhoneArea) : 'chars'

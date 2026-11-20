@@ -11,7 +11,8 @@ import {
   Spinner,
   Tag,
 } from '@blueprintjs/core'
-import { Atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { Atom, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import { sortBy } from 'ramda'
 import { memo, useEffect } from 'react'
 import useEvent from 'react-use-event-hook'
@@ -23,7 +24,10 @@ import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { ErrAtom } from './Err'
 import { ItemIcon } from './Icons'
+import { ItemTile } from './ItemTile'
 import { PeekTrigger } from './Peek'
+import { phoneAreaAtom, usePhoneLayout } from './phoneLayout'
+import { formatExpectedQuantity, formatTileQuantity } from './quantity'
 import { SynthesisList, planSynthesisList } from './SynthesisList'
 import { SampleTag, ValueTag } from './Value'
 
@@ -162,6 +166,30 @@ const FarmLevelButton = memo(({ level, refresh }: { level: FarmLevel; refresh?: 
   )
 })
 
+type DropsView = 'list' | 'tiles'
+
+// 和 cpp_cost_materials 一样记在本机、不分档案
+const dropsViewStorageAtom = atomWithStorage<unknown>('cpp_farm_drops', null, undefined, { getOnInit: true })
+const dropsViewAtom = atom(
+  (get): DropsView => (get(dropsViewStorageAtom) === 'tiles' ? 'tiles' : 'list'),
+  (_get, set, view: DropsView) => set(dropsViewStorageAtom, view),
+)
+
+const DropsViewButton = memo(() => {
+  const [view, setView] = useAtom(dropsViewAtom)
+  const tiles = view === 'tiles'
+  return (
+    <Button
+      variant="minimal"
+      icon="grid-view"
+      active={tiles}
+      aria-pressed={tiles}
+      title={gt.gettext('关卡产物显示为图标')}
+      onClick={() => setView(tiles ? 'list' : 'tiles')}
+    />
+  )
+})
+
 const noFarmNotice = () => null
 
 export const FarmList = memo(() => {
@@ -174,6 +202,9 @@ export const FarmList = memo(() => {
   const { useFarmNotice = noFarmNotice } = useComponents()
   const notice = useFarmNotice()
   const blocked = notice != null
+  const phone = usePhoneLayout()
+  const area = useAtomValue(phoneAreaAtom)
+  const synthesisPane = phone && area === 'synthesis'
   const refresh = useEvent((f?: FarmLevel) => {
     if (blocked) return
     if (!f) f = farmLevel
@@ -227,6 +258,7 @@ export const FarmList = memo(() => {
     <>
       <Navbar style={{ paddingLeft: '0.5em', paddingRight: '0.5em' }}>
         <Navbar.Group align={Alignment.RIGHT}>
+          {synthesisPane ? null : <DropsViewButton />}
           <Popover
             usePortal={true}
             minimal={true}
@@ -264,7 +296,11 @@ export const FarmList = memo(() => {
           {response && !blocked ? <ValueTag value={response.ap} intent={'primary'} /> : null}
         </Navbar.Group>
       </Navbar>
-      <div className="cpp-farm-body" style={{ opacity: expired && !blocked ? 0.5 : undefined }}>
+      <div
+        className="cpp-farm-body"
+        data-pane={synthesisPane ? 'synthesis' : 'stages'}
+        style={{ opacity: expired && !blocked ? 0.5 : undefined }}
+      >
         {blocked ? (
           notice
         ) : response ? (
@@ -296,7 +332,6 @@ export const FarmList = memo(() => {
 })
 
 export const StageLine = memo(({ run }: { run: StageRun }) => {
-  const ga = useGameAdapter()
   const samples = Math.max(
     -Infinity,
     ...Object.values(run.stage.dropInfo)
@@ -339,44 +374,54 @@ export const StageLine = memo(({ run }: { run: StageRun }) => {
         )}
       />
       {/* The plan's own stage: an event may have ended in the newer data, and the plan is redone only a second later */}
-      {run.stage.sortedDropInfo.map(([k, v, z]) => {
-        const item = ga.getItem(k)
-        const value = Number.isFinite(z) ? v / z : v
-        return (
-          <PeekTrigger
-            key={k}
-            peek={{ kind: 'item', id: k }}
-            renderTarget={(peek) => (
-              <MenuItem
-                {...peek}
-                style={{ fontWeight: 'normal' }}
-                className={peek ? peek.className : 'cpp-menu-not-interactive'}
-                icon={<ItemIcon item={item} size={20} />}
-                text={
-                  <>
-                    <span>{item.name}</span>
-                    <span style={{ float: 'right' }}>{(value * run.count).toFixed(2).replace(/\.?0+$/, '')}</span>
-                  </>
-                }
-              />
-            )}
-          />
-        )
-      })}
+      <Drops
+        drops={run.stage.sortedDropInfo.map(([k, v, z]) => [k, (Number.isFinite(z) ? v / z : v) * run.count] as const)}
+      />
       <MenuDivider />
     </>
   )
 })
 
 export const UnfeasibleLine = memo(({ items }: { items: Record<string, number> }) => {
-  const ga = useGameAdapter()
-
   return (
     <>
       <MenuItem className="cpp-menu-not-interactive" tabIndex={-1} text={gt.gettext('暂无可计算来源')} />
-      {Object.entries(items).map(([k, v]) => {
+      <Drops drops={Object.entries(items)} />
+      <MenuDivider />
+    </>
+  )
+})
+
+/** 一组物品和数量：一样一行，或者按 dropsViewAtom 收成一排格子 */
+const Drops = ({ drops }: { drops: readonly (readonly [itemId: string, quantity: number])[] }) => {
+  const ga = useGameAdapter()
+  const view = useAtomValue(dropsViewAtom)
+
+  if (view === 'tiles') {
+    return (
+      <li role="none" className="cpp-farm-drop-tiles">
+        <div className="cpp-item-tiles">
+          {drops.map(([k, quantity]) => {
+            const item = ga.getItem(k)
+            return (
+              <ItemTile
+                key={k}
+                id={k}
+                item={item}
+                label={formatTileQuantity(quantity)}
+                title={`${item.name} × ${formatExpectedQuantity(quantity)}`}
+              />
+            )
+          })}
+        </div>
+      </li>
+    )
+  }
+
+  return (
+    <>
+      {drops.map(([k, quantity]) => {
         const item = ga.getItem(k)
-        const value = v
         return (
           <PeekTrigger
             key={k}
@@ -384,13 +429,13 @@ export const UnfeasibleLine = memo(({ items }: { items: Record<string, number> }
             renderTarget={(peek) => (
               <MenuItem
                 {...peek}
-                className={peek ? peek.className : 'cpp-menu-not-interactive'}
                 style={{ fontWeight: 'normal' }}
+                className={peek ? peek.className : 'cpp-menu-not-interactive'}
                 icon={<ItemIcon item={item} size={20} />}
                 text={
                   <>
                     <span>{item.name}</span>
-                    <span style={{ float: 'right' }}>{value.toFixed(2).replace(/\.?0+$/, '')}</span>
+                    <span style={{ float: 'right' }}>{formatExpectedQuantity(quantity)}</span>
                   </>
                 }
               />
@@ -398,7 +443,6 @@ export const UnfeasibleLine = memo(({ items }: { items: Record<string, number> }
           />
         )
       })}
-      <MenuDivider />
     </>
   )
-})
+}

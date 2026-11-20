@@ -1,4 +1,4 @@
-import { Callout, Icon, Intent, MenuDivider, MenuItem } from '@blueprintjs/core'
+import { Callout, Icon, Intent, MenuDivider, MenuItem, NonIdealState } from '@blueprintjs/core'
 import React, { memo } from 'react'
 import { Cpp, Level, useGameAdapter, useGameDataMemo } from '../Cpp'
 import { IGame, IItem } from '../pkg/cpp-basic'
@@ -63,6 +63,14 @@ export const SynthesisList = memo(({ data }: { data: ReturnType<typeof planSynth
 
   const hasAnySynthesis = synthesisTargets.size > 0
   const hasAnyUnsatisfied = unsatisfiedTargets.size > 0
+
+  if (!hasAnySynthesis && !hasAnyUnsatisfied) {
+    return (
+      <li role="none" className="cpp-farm-synthesis-empty">
+        <NonIdealState icon="build" title={gt.gettext('现在没有可以合成的道具')} />
+      </li>
+    )
+  }
 
   return (
     <>

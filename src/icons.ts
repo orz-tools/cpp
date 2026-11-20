@@ -54,6 +54,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.FULLSCREEN, Paths16.Fullscreen],
       [IconNames.GLOBE, Paths16.Globe],
       [IconNames.GIT_REPO, Paths16.GitRepo],
+      [IconNames.GRID_VIEW, Paths16.GridView],
       [IconNames.HELP, Paths16.Help],
       [IconNames.HISTORY, Paths16.History],
       [IconNames.HOME, Paths16.Home],
@@ -105,6 +106,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
     new Map([
       [IconNames.AUTOMATIC_UPDATES, Paths20.AutomaticUpdates],
       [IconNames.BOX, Paths20.Box],
+      [IconNames.BUILD, Paths20.Build],
       [IconNames.ERROR, Paths20.Error],
       [IconNames.FLAG, Paths20.Flag],
       [IconNames.IMPORT, Paths20.Import],

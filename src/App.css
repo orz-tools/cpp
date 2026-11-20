@@ -479,6 +479,16 @@ body {
   overflow: auto;
 }
 
+/* 没有可以合成的道具（SynthesisList.tsx）：和「暂不支持计算毕业合成」一样在这一栏里居中 */
+.cpp-farm-synthesis-empty {
+  height: 100%;
+}
+
+/* 图标模式下一关的产物（FarmList.tsx 的 Drops）：左右和菜单项的内容对齐 */
+.cpp-farm-drop-tiles {
+  padding: 4px 8px;
+}
+
 .cpp-item-menu-master > li {
   display: flex;
   align-items: center;
@@ -676,6 +686,39 @@ body {
 .cpp-peek-inline:focus-visible {
   outline: 2px solid rgba(45, 114, 210, 0.6);
   outline-offset: 1px;
+}
+
+/* 带数的物品格（ItemTile.tsx）：档案的「养成成本」页、刷图区的图标模式。
+   悬停和卡片开着时的灰底来自 .cpp-peek-target，它多一个伪类或类，盖得过这里的底 */
+.cpp-item-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cpp-item-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 3px;
+  background: var(--cpp-tint-1);
+  box-shadow: inset 0 0 0 1px rgb(var(--cpp-ink) / 0.08);
+}
+
+.cpp-item-tile-quantity {
+  position: absolute;
+  right: 1px;
+  bottom: 0;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: 600;
+  color: var(--bp-typography-color-default-rest);
+  text-shadow:
+    0 0 2px var(--cpp-surface),
+    0 0 2px var(--cpp-surface),
+    0 0 2px var(--cpp-surface);
 }
 
 /* 任务列表里没有子菜单的任务行：只有右键菜单，焦点框留给键盘打开右键菜单用 */
@@ -1970,17 +2013,23 @@ body .bp6-navbar-group {
   }
 }
 
-/* 刷图：关卡在上、合成在下，整块一起滚 */
+/* 刷图：「刷图」露出关卡，「合成」露出合成。两块叠在一起、各自滚动，都一直挂着，切回来滚动位置还在 */
 .cpp-phone .cpp-farm-body {
-  flex-direction: column;
-  overscroll-behavior: contain;
+  position: relative;
 }
 
 .cpp-phone .cpp-farm-body > .cpp-farm-stages,
 .cpp-phone .cpp-farm-body > .cpp-farm-synthesis {
-  flex: none;
-  width: 100%;
-  overflow: visible;
+  position: absolute;
+  inset: 0;
+  width: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .cpp-farm-body[data-pane='stages'] > .cpp-farm-synthesis,
+.cpp-phone .cpp-farm-body[data-pane='synthesis'] > .cpp-farm-stages {
+  visibility: hidden;
 }
 
 /*
