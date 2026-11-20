@@ -35,7 +35,7 @@ export function formatTileQuantity(value: number): string {
 }
 
 /**
- * 格子上的数里只有四位数带单位的（「1265万」，毕业规划的龙门币、经验）粗体 11px 宽过 40px 的格子，要小一号。
+ * 格子上的数里只有四位数带单位的（「1265万」，毕业规划的龙门币、经验）11px 连同黑底宽过 40px 的格子，要小一号。
  * 英文的缩写到 999K 就换成 1M，带单位的最多三位数
  */
 export function isWideTileQuantity(label: string): boolean {
