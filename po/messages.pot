@@ -110,12 +110,12 @@ msgid_plural "不限关卡 · %d 条"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/UserDataManager.tsx:352
+#: src/components/UserDataManager.tsx:354
 msgid "从文件导入"
 msgstr ""
 
 #: src/components/RetiredGame.tsx:191
-#: src/components/UserDataManager.tsx:359
+#: src/components/UserDataManager.tsx:361
 msgid "从文本框中导入"
 msgstr ""
 
@@ -276,11 +276,11 @@ msgid_plural "另外 %d 关"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/UserDataManager.tsx:380
+#: src/components/UserDataManager.tsx:382
 msgid "可将导出的文件拖入此处，或直接粘贴文件导入。"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:379
+#: src/components/UserDataManager.tsx:381
 msgid "可将文本框里的内容换成复制来的数据后导入。"
 msgstr ""
 
@@ -593,7 +593,7 @@ msgstr ""
 msgid "收起"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:341
+#: src/components/UserDataManager.tsx:342
 msgid "数据已复制。"
 msgstr ""
 
@@ -706,7 +706,7 @@ msgstr ""
 msgid "来自明日方舟一图流的数据，除非另有声明，采用 知识共享 署名-非商业性使用 4.0 国际 许可协议 进行许可。转载、公开或以任何形式复制、发行、再传播明日方舟一图流的任何内容时，必须注明从明日方舟一图流转载，并提供版权标识、许可协议标识、免责标识和作品链接；且未经许可，不得将本站内容或由其衍生作品用于商业目的。"
 msgstr ""
 
-#: src/components/UserDataManager.tsx:403
+#: src/components/UserDataManager.tsx:405
 msgid "松开以导入文件"
 msgstr ""
 
@@ -757,7 +757,7 @@ msgid "正在切换区域…"
 msgstr ""
 
 #: src/components/RetiredGame.tsx:202
-#: src/components/UserDataManager.tsx:369
+#: src/components/UserDataManager.tsx:371
 msgid "清空"
 msgstr ""
 
@@ -807,8 +807,8 @@ msgid "现在没有可以合成的道具"
 msgstr ""
 
 #: src/components/RetiredGame.tsx:190
-#: src/components/UserDataManager.tsx:452
-#: src/components/UserDataManager.tsx:471
+#: src/components/UserDataManager.tsx:454
+#: src/components/UserDataManager.tsx:473
 #: src/components/UserDataManager.tsx:92
 msgid "用户数据管理"
 msgstr ""
