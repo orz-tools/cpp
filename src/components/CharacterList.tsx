@@ -84,12 +84,14 @@ import {
   createListQuerier,
   isCustomQuery,
 } from './characterQuery'
+import { listedCharactersAtom } from './listedCharacters'
 import { listRequeryAtom } from './planBatch'
 import { presetMenu } from './presetMenu'
 import { quickFiltersFor, wrapQueryWithQuickFilter } from './quickFilters'
 import { ColumnHeader, clampColumnWidth, useColumnWidths } from './queryEditor/ColumnHeader'
 import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './queryEditor/QueryEditor'
 import { RosterPin, clearRosterPin, useActiveRosterPin } from './rosterPin'
+import { RosterImageSelectionButton } from './rosterImage/entries'
 import { useLongPressContextMenu } from './longPress'
 import { usePhoneLayout } from './phoneLayout'
 import { useScrollStrip } from './scrollStrip'
@@ -1209,6 +1211,18 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
   // 重新查询（requery）不在 scope 里：改了计划以后选择还在
   const selection = useListSelection(keys, [param, pin])
   const { selected } = selection
+  // 练度图画的就是列表画的这些、这个次序；菜单里的入口也要读到选择
+  const listPending = loading || !response || response.param !== param || response.pin !== pin
+  const listFailed = !!error
+  useEffect(() => {
+    store.set(listedCharactersAtom, {
+      keys,
+      selected: selection.selectedKeys,
+      pending: listPending,
+      failed: listFailed,
+    })
+  }, [store, keys, selection.selectedKeys, listPending, listFailed])
+
   // 按住选中的行拖，选中的一起挪；按住没选中的只挪这一行，选择不动
   const moving = (key: string): ReadonlySet<string> => (selected.has(key) ? selected : new Set([key]))
 
@@ -1360,6 +1374,7 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
         onClear={selection.clear}
       >
         <PlanBatchButtons charIds={selection.selectedKeys} compact={phone} />
+        <RosterImageSelectionButton compact={phone} />
       </SelectionBar>
       {handle}
     </>

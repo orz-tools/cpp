@@ -4,6 +4,7 @@ import { Arknights, Character, PreferenceKeys } from '../../pkg/cpp-arknights'
 import { Hide } from '../CharacterList'
 import { EmptyIcon } from '../Icons'
 import { LevelIcon, PotentialIcon, SkillIcon, UniEquipIcon } from './Icons'
+import { moduleSlots, unlockedUniEquips } from './moduleSlots'
 
 const PotentialBadge = memo(({ potentialRank }: { potentialRank: number }) => {
   const show = WithGame<Arknights>().useGamePreferenceAtomValue(PreferenceKeys.ShowPotential)
@@ -20,23 +21,13 @@ export function renderCharacterStatus(
   current?: Arknights['characterStatus'],
   alreadyHide = false,
 ) {
-  const uniEquips = character.uniEquips.filter((x) => x.equip.raw.unlockEvolvePhase > 'PHASE_0')
-  const uniX = uniEquips.find((x) => x.equip.raw.typeName2?.toUpperCase() === 'X')
-  const uniY = uniEquips.find((x) => x.equip.raw.typeName2?.toUpperCase() === 'Y')
-  const rest = uniEquips.filter((x) => x !== uniX && x !== uniY)
-
-  // X and Y keep their own columns so they line up across the list; every other branch (D, A, B, ...)
-  // goes into a third, narrower column, and only borrows an empty X/Y slot when one column is not enough.
-  const slots: (Character['uniEquips'][number] | undefined)[] = [uniX, uniY]
-  if (rest.length) slots.push(undefined)
-  for (let i = slots.length - 1; i >= 0 && rest.length; i--) {
-    if (!slots[i]) slots[i] = rest.pop()
-  }
-  slots.push(...rest)
+  const uniEquips = unlockedUniEquips(character)
+  const slots = moduleSlots(character)
+  const hasType = (t: string) => uniEquips.some((x) => x.equip.raw.typeName2?.toUpperCase() === t)
 
   const classes = [`cpp-uniequip-count-${uniEquips.length}`, `cpp-uniequip-slots-${slots.length}`]
-  if (uniX) classes.push(`cpp-uniequip-has-x`)
-  if (uniY) classes.push(`cpp-uniequip-has-y`)
+  if (hasType('X')) classes.push(`cpp-uniequip-has-x`)
+  if (hasType('Y')) classes.push(`cpp-uniequip-has-y`)
 
   return (
     <>

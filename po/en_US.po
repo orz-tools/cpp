@@ -82,6 +82,13 @@ msgstr[1] ""
 "%d special operators were not exported: they are trained through Integrated "
 "Strategies missions, not with materials."
 
+#. %d: number
+#: src/components/rosterImage/RosterImageDialog.tsx:285
+msgid "%d 张图片没有载入，图里留空。"
+msgid_plural "%d 张图片没有载入，图里留空。"
+msgstr[0] "%d image did not load and is left blank."
+msgstr[1] "%d images did not load and are left blank."
+
 #. %d: number of tasks
 #: src/components/TaskList.tsx:161
 msgid "%d 项"
@@ -142,6 +149,11 @@ msgstr ""
 "not skill level, specialization or modules; those keep their values from "
 "before the import. Please check them yourself."
 
+#. %d$width, %d$height: pixels; %s: scale, e.g. 1.5
+#: src/components/rosterImage/RosterImageDialog.tsx:224
+msgid "PNG %d$width × %d$height px（%s 倍）"
+msgstr "PNG %d$width × %d$height px (%s×)"
+
 #: src/components/arknights/AboutList.tsx:68
 msgid "PRTS 时装回廊"
 msgstr "PRTS 时装回廊 (outfit gallery)"
@@ -151,6 +163,15 @@ msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
 #: src/components/RetiredGame.tsx:196
+#: src/components/rosterImage/RosterImageDialog.tsx:407
+msgid "下载 PNG"
+msgstr "Download PNG"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:399
+msgid "下载 SVG"
+msgstr "Download SVG"
+
+#: src/components/RetiredGame.tsx:202
 msgid "不再需要这里的数据时，可以把它清空，旧版里的数据不受影响。"
 msgstr ""
 "When you no longer need the data here, you can clear it. The data in the old "
@@ -218,6 +239,14 @@ msgid_plural "做完 %d 条"
 msgstr[0] "%d done"
 msgstr[1] "%d done"
 
+#: src/components/rosterImage/RosterImageDialog.tsx:360
+msgid "先上下"
+msgstr "Down First"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:359
+msgid "先左右"
+msgstr "Across First"
+
 #: src/components/ConfigUi.tsx:322
 msgid "免责声明"
 msgstr "Disclaimer"
@@ -276,11 +305,32 @@ msgstr[1] "The other %d are done too"
 msgid "最好还是别合成的道具"
 msgstr "Better Not Synthesizing"
 
+#: src/components/rosterImage/RosterImageDialog.tsx:330
+msgid "写在图顶上，例如博士的名字；不写就没有"
+msgstr "Shown at the top, e.g. the Doctor’s name; none if left empty"
+
 #: src/locales.tsx:59
 msgid "切换语言失败"
 msgstr "Failed to switch the UI language"
 
 #: src/components/RetiredGame.tsx:163
+#: src/components/rosterImage/RosterImageDialog.tsx:333
+msgid "列数"
+msgstr "Columns"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:237
+msgid "列表上写着出错的原因。"
+msgstr "The list says what went wrong."
+
+#: src/components/rosterImage/RosterImageDialog.tsx:236
+msgid "列表查询失败"
+msgstr "The List’s Query Failed"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:241
+msgid "列表还在查询"
+msgstr "The list is still being queried"
+
+#: src/components/RetiredGame.tsx:169
 msgid "到旧版去"
 msgstr "Head to the old version"
 
@@ -318,7 +368,7 @@ msgstr "Region switched"
 msgid "取消"
 msgstr "Cancel"
 
-#: src/components/CharacterList.tsx:217
+#: src/components/CharacterList.tsx:219
 msgid "取消选中"
 msgstr "Deselect"
 
@@ -343,6 +393,11 @@ msgid "回到「提取装置」"
 msgstr "Back to «Sklanding»"
 
 #: src/components/RetiredGame.tsx:187
+#: src/components/rosterImage/RosterImageDialog.tsx:249
+msgid "图太大，或者浏览器内存不够。"
+msgstr "The image is too large, or the browser is out of memory."
+
+#: src/components/RetiredGame.tsx:193
 msgid "在旧版里导入"
 msgstr "Import in the old version"
 
@@ -409,11 +464,11 @@ msgstr "Copy as Arknights Toolbox «Material Calculation» Backup"
 msgid "复制数据"
 msgstr "Copy Data"
 
-#: src/components/CharacterList.tsx:239
+#: src/components/CharacterList.tsx:241
 msgid "复制角色名"
 msgstr "Copy Name"
 
-#: src/components/PhoneMore.tsx:129 src/components/PhoneMore.tsx:158
+#: src/components/PhoneMore.tsx:131 src/components/PhoneMore.tsx:160
 #: src/components/ThemeMenu.tsx:29 src/components/ThemeMenu.tsx:46
 msgid "外观"
 msgstr "Appearance"
@@ -453,6 +508,7 @@ msgid "导入 MAA「干员识别」数据"
 msgstr "Import MAA «Operator» Data"
 
 #: src/App.tsx:349 src/components/RetiredGame.tsx:189
+#: src/App.tsx:349 src/components/RetiredGame.tsx:195
 msgid "导入/导出"
 msgstr "Import/Export"
 
@@ -523,7 +579,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
-#: src/components/CharacterList.tsx:246
+#: src/components/CharacterList.tsx:248
 msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
@@ -600,7 +656,7 @@ msgstr "Help"
 msgid "帮助与社区"
 msgstr "Help & Community"
 
-#: src/components/AboutList.tsx:34 src/components/PhoneMore.tsx:138
+#: src/components/AboutList.tsx:34 src/components/PhoneMore.tsx:140
 msgid "帮助文档"
 msgstr "Documentation"
 
@@ -611,6 +667,14 @@ msgstr "Open in a window"
 #: src/components/TaskList.tsx:152
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:317
+msgid "当前列表"
+msgstr "Current List"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:243
+msgid "当前列表里没有干员"
+msgstr "No operators in the current list"
 
 #: src/components/arknights/statusEditor/Header.tsx:76
 #: src/components/CharacterStatusPopover.tsx:64
@@ -669,7 +733,11 @@ msgstr "Filter by stage code or name"
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
-#: src/App.tsx:66 src/App.tsx:67 src/components/Importer.tsx:168
+#: src/components/rosterImage/RosterImageDialog.tsx:295
+msgid "排列"
+msgstr "Order"
+
+#: src/App.tsx:67 src/App.tsx:68 src/components/Importer.tsx:168
 #: src/components/PlanActions.tsx:51
 msgid "撤销"
 msgstr "Undo"
@@ -706,7 +774,7 @@ msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:112
 #: src/components/arknights/ExporterMenuItems.tsx:39
-#: src/components/CharacterList.tsx:252
+#: src/components/CharacterList.tsx:254
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
@@ -719,6 +787,10 @@ msgid "无法加载数据，请检查网络连接/更换网络/使用「加速�
 msgstr ""
 "Unable to load the data. Check your network connection, try another network, "
 "use a VPN or accelerator, or switch to another server."
+
+#: src/components/rosterImage/RosterImageDialog.tsx:248
+msgid "无法生成 PNG"
+msgstr "Cannot Create the PNG"
 
 #: src/components/Importer.tsx:64
 msgid "无法识别粘贴的内容。支持以下格式："
@@ -757,6 +829,15 @@ msgid "显示全部"
 msgstr "Show All"
 
 #: src/components/FarmList.tsx:316
+#: src/components/rosterImage/RosterImageDialog.tsx:372
+msgid "显示培养目标"
+msgstr "Show Targets"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:380
+msgid "显示页脚"
+msgstr "Show Footer"
+
+#: src/components/FarmList.tsx:280
 msgid "暂不支持计算毕业合成"
 msgstr "Synthesizing Cannot be Planned for Maxed"
 
@@ -782,7 +863,7 @@ msgstr "Data updating…"
 msgid "更新笔记"
 msgstr "Patch Notes"
 
-#: src/components/PhoneMore.tsx:46
+#: src/components/PhoneMore.tsx:47
 msgid "有新内容"
 msgstr "New"
 
@@ -840,9 +921,13 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:1294
+#: src/components/CharacterList.tsx:1308
 msgid "查询失败"
 msgstr "Query Failed"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:326
+msgid "标题"
+msgstr "Title"
 
 #: src/components/Value.tsx:182
 msgid "样本数"
@@ -863,7 +948,7 @@ msgstr "Profile %1 has no data, so there is nothing to export."
 msgid "档案 %s 不存在，要新建吗？"
 msgstr "Profile %s does not exist. Do you want to create it?"
 
-#: src/App.tsx:106 src/components/PhoneMore.tsx:135
+#: src/App.tsx:107 src/components/PhoneMore.tsx:137
 msgid "检查数据更新"
 msgstr "Check For Data Updates"
 
@@ -887,6 +972,12 @@ msgid "正在切换区域…"
 msgstr "Switching region…"
 
 #: src/components/RetiredGame.tsx:202 src/components/UserDataManager.tsx:371
+#. %d$done, %d$total: number of images
+#: src/components/rosterImage/RosterImageDialog.tsx:258
+msgid "正在载入图片 %d$done / %d$total"
+msgstr "Loading images %d$done / %d$total"
+
+#: src/components/RetiredGame.tsx:208 src/components/UserDataManager.tsx:344
 msgid "清空"
 msgstr "Clear"
 
@@ -897,16 +988,17 @@ msgid_plural "清空 %d 名干员的计划"
 msgstr[0] "Clear the plan of %d operator"
 msgstr[1] "Clear the plans of %d operators"
 
-#: src/components/CharacterList.tsx:221 src/components/ListSelection.tsx:161
+#: src/components/CharacterList.tsx:223 src/components/ListSelection.tsx:161
 msgid "清除选择"
 msgstr "Clear selection"
 
 #: src/App.tsx:216 src/components/reloadGameData.ts:31
+#: src/App.tsx:214 src/components/reloadGameData.ts:31
 msgid "游戏数据已更新"
 msgstr "Game data updated"
 
-#: src/components/ConfigUi.tsx:300 src/components/PhoneMore.tsx:116
-#: src/components/PhoneMore.tsx:154
+#: src/components/ConfigUi.tsx:300 src/components/PhoneMore.tsx:118
+#: src/components/PhoneMore.tsx:156
 msgid "游戏服务器"
 msgstr "Game Region"
 
@@ -948,7 +1040,24 @@ msgid_plural "用过的 · %d 张"
 msgstr[0] "Used · %d ticket"
 msgstr[1] "Used · %d tickets"
 
-#: src/components/PhoneMore.tsx:123 src/components/PhoneMore.tsx:156
+#: src/components/rosterImage/RosterImageDialog.tsx:294
+msgid "画哪些"
+msgstr "Draw"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:212
+msgid "画当前列表里的 %d 名干员，次序和列表一样。"
+msgid_plural "画当前列表里的 %d 名干员，次序和列表一样。"
+msgstr[0] "Draws the %d operator in the current list, in the order of the list."
+msgstr[1] "Draws the %d operators in the current list, in the order of the list."
+
+#. %d: number
+#: src/components/rosterImage/RosterImageDialog.tsx:207
+msgid "画选中的 %d 名干员，次序和列表一样。"
+msgid_plural "画选中的 %d 名干员，次序和列表一样。"
+msgstr[0] "Draws the %d selected operator, in the order of the list."
+msgstr[1] "Draws the %d selected operators, in the order of the list."
+
+#: src/components/PhoneMore.tsx:125 src/components/PhoneMore.tsx:158
 #: src/locales.tsx:78
 msgid "界面语言"
 msgstr "UI Language"
@@ -971,6 +1080,16 @@ msgstr[1] "(%d missions)"
 msgid "线性规划失败"
 msgstr "Failed to Plan"
 
+#: src/components/rosterImage/entries.tsx:31
+#: src/components/rosterImage/RosterImageDialog.tsx:270
+#: src/components/rosterImage/RosterImageDialog.tsx:301
+msgid "练度图"
+msgstr "Roster Image"
+
+#: src/components/rosterImage/entries.tsx:23
+msgid "练度图…"
+msgstr "Roster Image…"
+
 #: src/components/arknights/SkinTimeline.tsx:14
 msgid "缺 %d 件"
 msgid_plural "缺 %d 件"
@@ -992,7 +1111,7 @@ msgstr "Characters"
 msgid "角色内排序"
 msgstr "Sorting within Character"
 
-#: src/components/CharacterList.tsx:208
+#: src/components/CharacterList.tsx:210
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -1068,7 +1187,7 @@ msgstr ""
 msgid "近期更新"
 msgstr "Recent Patches"
 
-#: src/components/PhoneMore.tsx:192
+#: src/components/PhoneMore.tsx:199
 msgid "返回"
 msgstr "Back"
 
@@ -1210,19 +1329,23 @@ msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 "This is Closure++ save data for %s; it cannot be imported into this game."
 
-#: src/components/CharacterList.tsx:217
+#: src/components/CharacterList.tsx:219
 msgid "选中"
 msgstr "Select"
 
+#: src/components/rosterImage/RosterImageDialog.tsx:318
+msgid "选中的"
+msgstr "Selected"
+
 #. %d: number
-#: src/components/CharacterList.tsx:201
+#: src/components/CharacterList.tsx:203
 msgid "选中的 %d 名干员"
 msgid_plural "选中的 %d 名干员"
 msgstr[0] "%d selected operator"
 msgstr[1] "%d selected operators"
 
-#: src/components/ConfigUi.tsx:77 src/components/PhoneMore.tsx:112
-#: src/components/PhoneMore.tsx:152
+#: src/components/ConfigUi.tsx:77 src/components/PhoneMore.tsx:114
+#: src/components/PhoneMore.tsx:154
 msgid "选项"
 msgstr "Options"
 
@@ -1234,13 +1357,17 @@ msgstr "Items"
 msgid "邮箱"
 msgstr "E-mail"
 
-#: src/App.tsx:78
+#: src/App.tsx:79
 msgid "重做"
 msgstr "Redo"
 
-#: src/App.tsx:99 src/components/PhoneMore.tsx:136
+#: src/App.tsx:100 src/components/PhoneMore.tsx:138
 msgid "重新下载数据"
 msgstr "Re-download Data"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:282
+msgid "长按图片保存到相册"
+msgstr "Long-press the image to save it to your photos"
 
 #: src/components/AboutList.tsx:92
 msgid "鸣谢"
@@ -2928,22 +3055,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:616
+#: src/components/CharacterList.tsx:618
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:617
+#: src/components/CharacterList.tsx:619
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:625
+#: src/components/CharacterList.tsx:627
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:626
+#: src/components/CharacterList.tsx:628
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -3050,7 +3177,7 @@ msgstr "Increase"
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:454
 #: src/components/arknights/voucherText.tsx:31
-#: src/components/CharacterList.tsx:711
+#: src/components/CharacterList.tsx:713
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
 msgctxt "list separator"
@@ -3782,37 +3909,37 @@ msgctxt "peek card"
 msgid "需要 / 库存"
 msgstr "Need / Stock"
 
-#: src/components/PhoneMore.tsx:108 src/components/PhoneMore.tsx:150
+#: src/components/PhoneMore.tsx:110 src/components/PhoneMore.tsx:152
 msgctxt "phone more"
 msgid "价值"
 msgstr "Value"
 
-#: src/components/PhoneMore.tsx:146 src/components/PhoneMore.tsx:87
+#: src/components/PhoneMore.tsx:148 src/components/PhoneMore.tsx:89
 msgctxt "phone more"
 msgid "导入"
 msgstr "Import"
 
-#: src/components/PhoneMore.tsx:148 src/components/PhoneMore.tsx:95
+#: src/components/PhoneMore.tsx:150 src/components/PhoneMore.tsx:97
 msgctxt "phone more"
 msgid "导出"
 msgstr "Export"
 
-#: src/components/PhoneMore.tsx:82
+#: src/components/PhoneMore.tsx:84
 msgctxt "phone more"
 msgid "数据"
 msgstr "Data"
 
-#: src/components/PhoneMore.tsx:134
+#: src/components/PhoneMore.tsx:136
 msgctxt "phone more"
 msgid "游戏数据"
 msgstr "Game Data"
 
-#: src/components/PhoneMore.tsx:105
+#: src/components/PhoneMore.tsx:107
 msgctxt "phone more"
 msgid "设置"
 msgstr "Settings"
 
-#: src/components/PhoneMore.tsx:101
+#: src/components/PhoneMore.tsx:103
 msgctxt "phone more"
 msgid "面板"
 msgstr "Panels"
@@ -3977,19 +4104,19 @@ msgctxt "predefined query"
 msgid "精二直升价值（全部）"
 msgstr "E2 voucher value (all)"
 
-#: src/components/CharacterList.tsx:879
+#: src/components/CharacterList.tsx:881
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:872
+#: src/components/CharacterList.tsx:874
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:886
+#: src/components/CharacterList.tsx:888
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -4592,7 +4719,7 @@ msgctxt "query menu"
 msgid "全部 4–6 星干员的技能"
 msgstr "Every skill of the 4–6★ operators"
 
-#: src/components/CharacterList.tsx:1063 src/components/CharacterList.tsx:1064
+#: src/components/CharacterList.tsx:1065 src/components/CharacterList.tsx:1066
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
@@ -4602,7 +4729,7 @@ msgctxt "query menu"
 msgid "养成成本"
 msgstr "Training costs"
 
-#: src/components/CharacterList.tsx:959
+#: src/components/CharacterList.tsx:961
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
@@ -4642,7 +4769,7 @@ msgctxt "query menu"
 msgid "已持有的干员的全部基建技能，含已解锁的"
 msgstr "Every base skill of the owned operators, unlocked ones too"
 
-#: src/components/CharacterList.tsx:1004
+#: src/components/CharacterList.tsx:1006
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
@@ -4652,7 +4779,7 @@ msgctxt "query menu"
 msgid "所有干员的全部基建技能，含没持有的和已解锁的"
 msgstr "Every base skill of every operator, owned or not, unlocked or not"
 
-#: src/components/CharacterList.tsx:1055 src/components/CharacterList.tsx:1056
+#: src/components/CharacterList.tsx:1057 src/components/CharacterList.tsx:1058
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
@@ -4662,7 +4789,7 @@ msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:1063 src/components/CharacterList.tsx:1064
+#: src/components/CharacterList.tsx:1065 src/components/CharacterList.tsx:1066
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -4728,13 +4855,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:708
+#: src/components/CharacterList.tsx:710
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:708
+#: src/components/CharacterList.tsx:710
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -4754,6 +4881,21 @@ msgstr "Module Lv. %d"
 msgctxt "query value"
 msgid "精英 %d"
 msgstr "E%d"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:136
+msgctxt "roster image"
+msgid "当前"
+msgstr "Current"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:137
+msgctxt "roster image"
+msgid "目标"
+msgstr "Target"
+
+#: src/components/rosterImage/RosterImageDialog.tsx:135
+msgctxt "roster image"
+msgid "练度图由 Closure++ 生成"
+msgstr "Roster image made with Closure++"
 
 #: src/pkg/cpp-arknights/survey.ts:55
 msgctxt "short name"
@@ -5618,7 +5760,7 @@ msgstr ""
 "Max: what it saves if used from E0 level 1; the light blue part of the bar "
 "is already trained."
 
-#: src/components/CharacterList.tsx:902
+#: src/components/CharacterList.tsx:904
 msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr "What the operators in the list have cost in total"
