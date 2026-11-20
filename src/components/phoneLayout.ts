@@ -52,7 +52,7 @@ export const phoneAreaAtom = atom(
     set(phoneAreaStorageAtom, typeof update === 'function' ? update(readPhoneArea(get(phoneAreaStorageAtom))) : update),
 )
 
-export type PhoneMorePage = 'import' | 'export' | 'value' | 'options' | 'region' | 'locale'
+export type PhoneMorePage = 'import' | 'export' | 'value' | 'options' | 'region' | 'locale' | 'theme'
 
 /** 「更多」里打开的子页；刷新后回到列表 */
 export const phoneMorePageAtom = atom<PhoneMorePage | null>(null)

@@ -5,11 +5,13 @@ import { useCpp } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { LocaleMenu, getLocale } from '../locales'
 import { gt } from '../pkg/gt'
+import { useThemeSetting } from '../theme'
 import { HELP_DOC_URL, externalLinkProps } from './AboutList'
 import { ConfigMenu, RegionMenu, useHasBlobFlavours, useRegions } from './ConfigUi'
 import { ImportPasteBox } from './ImportPasteBox'
 import { PhoneMorePage, phoneMorePageAtom } from './phoneLayout'
 import { useReloadGameData } from './reloadGameData'
+import { ThemeMenu, themeIcon, themeName } from './ThemeMenu'
 import { SidebarPanel } from './types'
 import { UserDataManagerMenuItem } from './UserDataManager'
 import { ValueOptionMenu, useValueTypeName } from './Value'
@@ -72,6 +74,7 @@ const MoreList = memo(({ panels, onOpenPanel }: { panels: SidebarPanel[]; onOpen
   const { regions, current: currentRegion, region } = useRegions()
   const soul = useHasBlobFlavours()
   const { updating, checkForUpdates, reload } = useReloadGameData()
+  const theme = useThemeSetting()
   const go = (page: PhoneMorePage) => () => setPage(page)
 
   return (
@@ -121,6 +124,12 @@ const MoreList = memo(({ panels, onOpenPanel }: { panels: SidebarPanel[]; onOpen
         labelElement={<Next tag={getLocale()} />}
         onClick={go('locale')}
       />
+      <MenuItem
+        icon={themeIcon(theme)}
+        text={gt.gettext('外观')}
+        labelElement={<Next tag={themeName(theme)} />}
+        onClick={go('theme')}
+      />
       {soul ? <SoulMenuItem /> : null}
       <MenuDivider title={gt.pgettext('phone more', '游戏数据')} />
       <MenuItem icon="refresh" text={gt.gettext('检查数据更新')} disabled={updating} onClick={checkForUpdates} />
@@ -145,6 +154,8 @@ function pageTitle(page: PhoneMorePage): string {
       return gt.gettext('游戏服务器')
     case 'locale':
       return gt.gettext('界面语言')
+    case 'theme':
+      return gt.gettext('外观')
   }
 }
 
@@ -163,6 +174,8 @@ const PageBody = memo(({ page }: { page: PhoneMorePage }) => {
       return <RegionMenu className="cpp-phone-more" />
     case 'locale':
       return <LocaleMenu className="cpp-phone-more" />
+    case 'theme':
+      return <ThemeMenu className="cpp-phone-more" />
   }
 })
 

@@ -3,6 +3,7 @@ import { memo, useMemo } from 'react'
 import { LocaleButton } from '../locales'
 import { formatProfileName, getProfiles } from '../profiles'
 import { HelpButton } from './AboutList'
+import { ThemeButton } from './ThemeMenu'
 
 export const Home = memo(() => {
   const profiles = useMemo(() => getProfiles(), [])
@@ -20,6 +21,7 @@ export const Home = memo(() => {
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <HelpButton />
+          <ThemeButton />
           <LocaleButton />
         </Navbar.Group>
       </Navbar>

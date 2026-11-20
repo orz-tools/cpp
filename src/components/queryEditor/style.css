@@ -3,8 +3,8 @@
   flex-direction: column;
   max-height: 45vh;
   margin-bottom: 1px;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
-  border-bottom: 1px solid var(--bp-palette-light-gray-2, #dce0e5);
+  background: var(--cpp-tint-1);
+  border-bottom: 1px solid var(--cpp-tint-4);
   box-shadow: 0 1px 2px rgba(17, 20, 24, 0.08);
   /*
    * 栏比没有附加列时宽出来的部分。条件区和 JSON 区用右内边距让出它，控件不跟着
@@ -20,8 +20,8 @@
   align-items: center;
   gap: 6px;
   padding: 5px 6px 5px 12px;
-  background: var(--bp-palette-white, #fff);
-  border-bottom: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
+  background: var(--cpp-surface);
+  border-bottom: 1px solid var(--cpp-tint-3);
 }
 
 .cpp-qe-title {
@@ -47,11 +47,11 @@
 }
 
 .cpp-qe-muted {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-qe-dirty {
-  color: var(--bp-palette-orange-2, #935610);
+  color: var(--bp-typography-color-warning-rest);
 }
 
 .cpp-qe-body {
@@ -66,7 +66,7 @@
 .cpp-qe-label {
   font-size: 12px;
   line-height: 30px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   text-align: right;
 }
 
@@ -80,7 +80,7 @@
 .cpp-qe-group .cpp-qe-group {
   margin-left: 2px;
   padding: 4px 0 4px 12px;
-  border-left: 1px solid var(--bp-palette-gray-5, #c5cbd3);
+  border-left: 1px solid var(--cpp-tint-6);
 }
 
 .cpp-qe-group-head {
@@ -89,7 +89,7 @@
   gap: 6px;
   min-height: 30px;
   font-size: 13px;
-  color: var(--bp-palette-dark-gray-5, #404854);
+  color: var(--cpp-strong);
 }
 
 .cpp-qe-group-head .cpp-qe-remove {
@@ -158,7 +158,7 @@ select.cpp-qe-invalid {
   line-height: 30px;
   font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -189,7 +189,7 @@ select.cpp-qe-invalid {
   display: inline-block;
   padding: 0 8px 0 2px;
   line-height: 30px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-qe-value input[type='number'] {
@@ -199,8 +199,8 @@ select.cpp-qe-invalid {
 .cpp-qe-tags-button.bp6-button {
   justify-content: flex-start;
   min-width: 0;
-  background: var(--bp-palette-white, #fff);
-  box-shadow: inset 0 0 0 1px var(--bp-palette-gray-5, #c5cbd3);
+  background: var(--cpp-surface);
+  box-shadow: inset 0 0 0 1px var(--cpp-tint-6);
 }
 
 .cpp-qe-tags-button .bp6-button-text {
@@ -224,7 +224,7 @@ select.cpp-qe-invalid {
   gap: 6px;
   font-size: 12px;
   line-height: 1.5;
-  color: var(--bp-palette-red-2, #ac2f33);
+  color: var(--bp-typography-color-danger-rest);
 }
 
 .cpp-qe-row-message .bp6-icon {
@@ -234,7 +234,7 @@ select.cpp-qe-invalid {
 .cpp-qe-note {
   font-size: 12px;
   line-height: 1.5;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-qe-columns {
@@ -276,8 +276,8 @@ select.cpp-qe-invalid {
   flex-shrink: 0;
   padding: 6px 12px;
   font-size: 12px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
-  border-top: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
+  color: var(--bp-typography-color-muted);
+  border-top: 1px solid var(--cpp-tint-3);
 }
 
 .cpp-qe-name-dialog {
@@ -309,9 +309,9 @@ select.cpp-qe-invalid {
   height: 27px;
   font-size: 12px;
   line-height: 26px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
-  background: var(--bp-palette-white, #fff);
-  border-bottom: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
+  color: var(--bp-typography-color-muted);
+  background: var(--cpp-surface);
+  border-bottom: 1px solid var(--cpp-tint-3);
   user-select: none;
 }
 
@@ -334,7 +334,7 @@ select.cpp-qe-invalid {
 }
 
 .cpp-qe-colhead-cell {
-  color: var(--bp-palette-dark-gray-5, #404854);
+  color: var(--cpp-strong);
 }
 
 .cpp-qe-colhead-cell.is-right {
@@ -386,7 +386,7 @@ select.cpp-qe-invalid {
   bottom: 6px;
   left: 4px;
   width: 1px;
-  background: var(--bp-palette-gray-5, #c5cbd3);
+  background: var(--cpp-tint-6);
 }
 
 .cpp-qe-colhead-handle:not([aria-disabled='true']):hover::after,

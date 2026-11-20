@@ -3,6 +3,7 @@ import { type ReactNode, memo, useState } from 'react'
 import { RetiredGameInfo } from '../games'
 import { LocaleButton } from '../locales'
 import { gt } from '../pkg/gt'
+import { ThemeButton } from './ThemeMenu'
 import { AppToaster } from './Toaster'
 import { ExportDataButton, confirmClearUserData, removeStoredUserData, useUserDataDump } from './UserDataManager'
 
@@ -126,6 +127,7 @@ export const RetiredGame = memo(
             </Navbar.Heading>
           </Navbar.Group>
           <Navbar.Group align={Alignment.RIGHT}>
+            <ThemeButton />
             <LocaleButton />
           </Navbar.Group>
         </Navbar>

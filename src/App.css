@@ -39,8 +39,8 @@ body {
   align-items: center;
   gap: 4px;
   padding-top: 4px;
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
-  box-shadow: inset -1px 0 0 rgba(17, 20, 24, 0.15);
+  background: var(--cpp-tint-1);
+  box-shadow: inset -1px 0 0 rgb(var(--cpp-ink) / 0.15);
 }
 
 .cpp-sidebar-rail-item.bp6-button {
@@ -66,7 +66,10 @@ body {
   height: 8px;
   border-radius: 50%;
   background: var(--bp-palette-red-3, #cd4246);
-  box-shadow: 0 0 0 2px var(--bp-palette-light-gray-5, #f6f7f9);
+  /* 先用底色盖住图标，再叠上侧栏的浅灰：深色下的浅灰是半透明的 */
+  box-shadow:
+    0 0 0 2px var(--cpp-tint-1),
+    0 0 0 2px var(--cpp-surface);
 }
 
 .cpp-sidebar-panel {
@@ -113,7 +116,7 @@ body {
   align-items: center;
   gap: 12px;
   padding: 12px 8px 12px 20px;
-  box-shadow: 0 1px 0 rgba(17, 20, 24, 0.15);
+  box-shadow: 0 1px 0 rgb(var(--cpp-ink) / 0.15);
   flex: none;
 }
 
@@ -159,13 +162,13 @@ body {
   font-size: 18px;
   font-weight: 600;
   line-height: 24px;
-  color: var(--bp-palette-dark-gray-1, #1c2127);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-dossier-meta {
   font-size: 13px;
   line-height: 18px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 /* The tab list stays at the top; only the page under it scrolls */
@@ -181,7 +184,7 @@ body {
   flex: none;
   padding: 0 20px;
   column-gap: 22px;
-  box-shadow: inset 0 -1px 0 rgba(17, 20, 24, 0.15);
+  box-shadow: inset 0 -1px 0 rgb(var(--cpp-ink) / 0.15);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -357,7 +360,7 @@ body {
 /* While a cell's popover is open its row reads as selected, the same as while the dossier shows it */
 .cpp-char-menu-master:has(> .bp6-popover-open > .cpp-char-menu-status) .cpp-char-menu-char {
   background-color: rgba(45, 114, 210, 0.2);
-  color: #184a90;
+  color: var(--bp-typography-color-primary-active);
   box-shadow: inset 3px 0 0 var(--bp-palette-blue-3, #2d72d2);
 }
 
@@ -514,7 +517,7 @@ body {
   left: 4px;
   top: 0px;
   font-size: 80%;
-  color: black;
+  color: var(--bp-typography-color-default-rest);
   opacity: 0.25;
   pointer-events: none;
   line-height: 21px;
@@ -764,7 +767,7 @@ body {
   box-sizing: border-box;
   border: 2px solid var(--bp-palette-blue-3, #2d72d2);
   border-radius: 50%;
-  background: #fff;
+  background: var(--cpp-surface);
 }
 
 /* Fixed in body rather than in the row: it hangs over the next column, and the columns clip what overflows them.
@@ -776,12 +779,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border: 1px solid #c5cbd3;
+  background: var(--cpp-surface);
+  border: 1px solid var(--cpp-tint-6);
   border-right: none;
   border-radius: 4px 0 0 4px;
   box-shadow: -1px 1px 2px rgba(17, 20, 24, 0.15);
-  color: #5f6b7c;
+  color: var(--bp-typography-color-muted);
   cursor: grab;
 }
 
@@ -831,10 +834,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid #fff;
+  border: 1.5px solid var(--cpp-surface);
   border-radius: 50%;
   background: var(--bp-palette-blue-3, #2d72d2);
-  box-shadow: 0 0 0 0.5px rgba(17, 20, 24, 0.2);
+  box-shadow: 0 0 0 0.5px rgb(var(--cpp-ink) / 0.2);
 }
 
 .cpp-select-tick > .bp6-icon {
@@ -854,6 +857,11 @@ body {
 .cpp-select-tick.cpp-select-tick-empty {
   background: rgba(255, 255, 255, 0.92);
   border: 1.5px solid var(--bp-palette-gray-3, #8f99a8);
+}
+
+/* 白底是给盖在头像上的空圈的；任务列表里的空圈画在界面上，深色下跟着底色 */
+:root.bp6-dark .cpp-select-tick-inline.cpp-select-tick-empty {
+  background: var(--cpp-surface);
 }
 
 .cpp-char-menu-char:hover .cpp-select-tick-empty,
@@ -876,7 +884,7 @@ body {
 
 /* 「选中的 n 名干员」 in place of 「角色计划排序」: the buttons move the whole selection */
 .cpp-sort-label-many {
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
   font-weight: 600;
 }
 
@@ -916,8 +924,8 @@ body {
   align-items: center;
   gap: 8px;
   padding: 0 6px 0 10px;
-  border-top: 1px solid var(--bp-palette-light-gray-2, #dce0e5);
-  background: var(--bp-palette-light-gray-5, #f6f7f9);
+  border-top: 1px solid var(--cpp-tint-4);
+  background: var(--cpp-tint-1);
 }
 
 .cpp-selection-bar-count {
@@ -929,7 +937,7 @@ body {
 }
 
 .cpp-selection-bar b {
-  color: var(--bp-palette-blue-2, #215db0);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 /* 「全选」「清除选择」 at the far end, away from 「清空计划」 next to the count */
@@ -962,7 +970,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 7px 6px 7px 10px;
-  border-bottom: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
+  border-bottom: 1px solid var(--cpp-tint-3);
 }
 
 /* 「返回」贴着左边 */
@@ -1003,7 +1011,7 @@ body {
 .cpp-peek-sub {
   font-size: 12px;
   line-height: 16px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1061,13 +1069,13 @@ body {
   justify-content: flex-end;
   margin: 10px -10px -10px;
   padding: 4px 6px 4px 10px;
-  border-top: 1px solid var(--bp-palette-light-gray-3, #e5e8eb);
+  border-top: 1px solid var(--cpp-tint-3);
 }
 
 .cpp-peek-missing,
 .cpp-peek-label,
 .cpp-peek-note {
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-peek-label {
@@ -1122,7 +1130,7 @@ body {
   justify-content: space-between;
   padding-bottom: 2px;
   font-size: 11.5px;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-peek-list-row {
@@ -1153,7 +1161,7 @@ body {
 }
 
 .cpp-peek-list-row.is-short .cpp-peek-list-value {
-  color: var(--bp-palette-red-2, #ac2f33);
+  color: var(--bp-typography-color-danger-rest);
 }
 
 /* 弹出的卡片比窗口高时，内容在卡片里滚动，标题栏留着 */
@@ -1217,9 +1225,9 @@ body {
 .cpp-peek-pinned > .cpp-peek-card {
   max-width: 100%;
   border-radius: 4px;
-  background: #fff;
+  background: var(--cpp-surface);
   box-shadow:
-    0 0 0 1px rgba(17, 20, 24, 0.1),
+    0 0 0 1px rgb(var(--cpp-ink) / 0.1),
     0 2px 4px rgba(17, 20, 24, 0.2),
     0 8px 24px rgba(17, 20, 24, 0.2);
 }
@@ -1308,7 +1316,7 @@ body {
 .cpp-split-menu-item > .cpp-split-menu-item-segment {
   position: relative;
   flex: none;
-  color: var(--bp-palette-gray-1, #5f6b7c);
+  color: var(--bp-typography-color-muted);
 }
 
 /* Blueprint 给菜单项的 ::before 留了图标的 16px 高和 3px 上边距，不清掉的话竖线比字低 3px */
@@ -1321,7 +1329,7 @@ body {
   width: 0;
   height: auto;
   margin: 0;
-  border-left: 1px solid var(--bp-palette-light-gray-1, #d3d8de);
+  border-left: 1px solid var(--cpp-tint-5);
 }
 
 .cpp-split-menu-item > .cpp-split-menu-item-segment:hover,
@@ -1412,8 +1420,8 @@ body .bp6-navbar-group {
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  background: #f6f7f9;
-  color: #1c2127;
+  background: var(--cpp-tint-1);
+  color: var(--bp-typography-color-default-rest);
 }
 
 .cpp-retired-body {
@@ -1437,14 +1445,14 @@ body .bp6-navbar-group {
   margin: 0;
   font-size: 15px;
   line-height: 1.75;
-  color: #404854;
+  color: var(--cpp-strong);
   text-wrap: pretty;
 }
 
 .cpp-retired-panel {
   margin-top: 28px;
-  background: #ffffff;
-  border: 1px solid #d3d8de;
+  background: var(--cpp-surface);
+  border: 1px solid var(--cpp-tint-5);
   border-radius: 4px;
 }
 
@@ -1463,7 +1471,7 @@ body .bp6-navbar-group {
 }
 
 .cpp-retired-steps > li + li {
-  border-top: 1px solid #e5e8eb;
+  border-top: 1px solid var(--cpp-tint-3);
 }
 
 .cpp-retired-step-no {
@@ -1476,7 +1484,7 @@ body .bp6-navbar-group {
   border-radius: 50%;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: #404854;
+  color: var(--cpp-strong);
   transition:
     background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
     border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -1501,13 +1509,13 @@ body .bp6-navbar-group {
 }
 
 .cpp-retired-steps > li.is-skipped .cpp-retired-step-title {
-  color: #5f6b7c;
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-retired-step-desc {
   margin-top: 2px;
   line-height: 1.7;
-  color: #5f6b7c;
+  color: var(--bp-typography-color-muted);
   text-wrap: pretty;
 }
 
@@ -1525,7 +1533,7 @@ body .bp6-navbar-group {
 }
 
 .cpp-retired-step-desc .bp6-tag > .bp6-icon {
-  color: #5f6b7c;
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-retired-step-actions {
@@ -1536,7 +1544,7 @@ body .bp6-navbar-group {
 .cpp-retired-link,
 .cpp-retired-link:hover {
   font-weight: inherit;
-  color: #215db0;
+  color: var(--bp-typography-color-primary-rest);
   white-space: nowrap;
 }
 
@@ -1556,9 +1564,9 @@ body .bp6-navbar-group {
   align-items: center;
   gap: 12px;
   padding: 10px 24px 10px 72px;
-  border-top: 1px solid #e5e8eb;
+  border-top: 1px solid var(--cpp-tint-3);
   font-size: 13px;
-  color: #5f6b7c;
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-retired-clear > span {
@@ -1574,10 +1582,10 @@ body .bp6-navbar-group {
 .cpp-retired-farewell {
   margin-top: auto;
   padding: 24px;
-  border-top: 1px solid #dce0e5;
+  border-top: 1px solid var(--cpp-tint-4);
   text-align: center;
   text-wrap: balance;
-  color: #66717f;
+  color: var(--bp-typography-color-muted);
 }
 
 .cpp-retired-farewell > span {
@@ -1635,7 +1643,7 @@ body .bp6-navbar-group {
 /*
  * 手机布局（src/components/phoneLayout.ts）：宽度不到 768px 时 <html> 带 cpp-phone。
  * 五个区域叠在一起，一次只露出一个，底部一排标签切换；侧栏那一栏是「更多」。
- * 颜色只取 Blueprint 的变量
+ * 颜色取 src/theme.css 的变量和 Blueprint 的字色变量
  */
 
 /* 顶栏只有品牌和撤销 / 重做；品牌不换行，排不下时省略档案名那一段 */
@@ -1722,8 +1730,8 @@ body .bp6-navbar-group {
   box-sizing: border-box;
   height: calc(56px + env(safe-area-inset-bottom, 0px));
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  background: var(--bp-palette-white);
-  box-shadow: inset 0 1px 0 var(--bp-palette-light-gray-1);
+  background: var(--cpp-surface);
+  box-shadow: inset 0 1px 0 var(--cpp-tint-5);
 }
 
 .cpp-phone-tab {
@@ -1738,7 +1746,7 @@ body .bp6-navbar-group {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--bp-palette-gray-1);
+  color: var(--bp-typography-color-muted);
   font: inherit;
   font-size: 12px;
   line-height: 16px;
@@ -1747,7 +1755,7 @@ body .bp6-navbar-group {
 }
 
 .cpp-phone-tab.is-current {
-  color: var(--bp-palette-blue-3);
+  color: var(--bp-typography-color-primary-rest);
 }
 
 .cpp-phone-tab.is-current::before {
@@ -1788,7 +1796,7 @@ body .bp6-navbar-group {
   height: 8px;
   border-radius: 50%;
   background: var(--bp-palette-red-3);
-  box-shadow: 0 0 0 2px var(--bp-palette-white);
+  box-shadow: 0 0 0 2px var(--cpp-surface);
 }
 
 .cpp-phone-tab-dot.is-pin {
@@ -1825,7 +1833,7 @@ body .bp6-navbar-group {
   width: 48px;
   overflow: visible;
   scroll-snap-align: none;
-  background: var(--bp-palette-white);
+  background: var(--cpp-surface);
 }
 
 .cpp-phone .cpp-char-menu-avatar-cell > .cpp-char-menu-char {
@@ -1860,8 +1868,7 @@ body .bp6-navbar-group {
 }
 
 .cpp-phone .cpp-list-selected > .cpp-char-menu-avatar-cell {
-  background:
-    linear-gradient(color-mix(in srgb, var(--bp-palette-blue-3) 12%, transparent) 0 0), var(--bp-palette-white);
+  background: linear-gradient(color-mix(in srgb, var(--bp-palette-blue-3) 12%, transparent) 0 0), var(--cpp-surface);
 }
 
 .cpp-phone .cpp-list-selected > .cpp-char-menu-name {
@@ -1871,7 +1878,7 @@ body .bp6-navbar-group {
 /* 和头像格的 bp6-active bp6-intent-primary 同一种浅蓝 */
 .cpp-char-menu-name.is-open {
   background-color: color-mix(in srgb, var(--bp-palette-blue-3) 20%, transparent);
-  color: var(--bp-palette-blue-1);
+  color: var(--bp-typography-color-primary-active);
 }
 
 .cpp-char-menu-name-text {
@@ -1899,7 +1906,7 @@ body .bp6-navbar-group {
   z-index: 2;
   flex: none;
   width: 48px;
-  background: var(--bp-palette-white);
+  background: var(--cpp-surface);
 }
 
 .cpp-phone .cpp-char-list .cpp-qe-colhead > .cpp-qe-colhead-name {
@@ -2002,7 +2009,7 @@ body .bp6-navbar-group {
   position: static;
   font-size: 11px;
   line-height: 16px;
-  color: var(--bp-palette-gray-1);
+  color: var(--bp-typography-color-muted);
   opacity: 1;
   white-space: nowrap;
 }

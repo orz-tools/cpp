@@ -1,6 +1,7 @@
 @import url(normalize.css/normalize.css);
 @import url(@blueprintjs/icons/lib/css/blueprint-icons.css);
 @import url(@blueprintjs/core/lib/css/blueprint.css);
+@import url(./theme.css);
 
 :root,
 body {
@@ -21,9 +22,7 @@ body {
 }
 
 :root {
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: var(--cpp-surface);
 }
 
 a {
@@ -32,7 +31,7 @@ a {
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #747bff;
 }
 
 body {
@@ -55,9 +54,13 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #f9f9f9;
   cursor: pointer;
   transition: border-color 0.25s;
+}
+/* :where 让它和上面的 button 一样轻，压不过 Blueprint 按钮自己的底色 */
+:where(:root.bp6-dark) button {
+  background-color: #1a1a1a;
 }
 button:hover {
   border-color: #646cff;
@@ -65,17 +68,4 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }

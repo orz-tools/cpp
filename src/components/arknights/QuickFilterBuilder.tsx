@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Colors, Icon, Navbar } from '@blueprintjs/core'
+import { Button, ButtonGroup, Icon, Navbar } from '@blueprintjs/core'
 import { memo } from 'react'
 import { DeployableProfession, Profession, ProfessionNames } from '../../pkg/cpp-arknights'
 import { BASE_ROOMS, baseRoomName } from '../../pkg/cpp-arknights/baseSkills'
@@ -56,7 +56,7 @@ const RarityFilters = memo(() => {
         icon="star"
         size={12}
         title={gt.pgettext('arknights quick filter', '稀有度')}
-        style={{ color: Colors.GRAY1, paddingLeft: 7, paddingRight: 3 }}
+        style={{ color: 'var(--bp-typography-color-muted)', paddingLeft: 7, paddingRight: 3 }}
       />
       <RarityFilter rarity={6} />
       <RarityFilter rarity={5} />
@@ -118,16 +118,7 @@ const EliteFilter = memo(({ elite }: { elite: number }) => {
       title={name}
       aria-label={name}
       onClick={toggle}
-      icon={
-        <img
-          src={img}
-          width={'20'}
-          style={{
-            filter: 'invert(1)',
-            transform: 'scale(1.2)',
-          }}
-        />
-      }
+      icon={<img className="cpp-qf-elite" src={img} width={'20'} style={{ transform: 'scale(1.2)' }} />}
     />
   )
 })

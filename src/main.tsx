@@ -9,8 +9,10 @@ import './icons'
 import { LocaleBoundary, setupLocale } from './locales'
 import { gt } from './pkg/gt'
 import { formatProfileName, getStoragePrefix } from './profiles'
+import { startTheme } from './theme'
 
 FocusStyleManager.onlyShowFocusOnTabs()
+startTheme()
 
 async function runApp() {
   await setupLocale()
@@ -71,7 +73,8 @@ function runRetired(game: string, profile: string, retired: RetiredGameInfo) {
 
 runApp().catch((e) => {
   const he = document.getElementById('root') as HTMLElement
-  he.style.cssText = 'color: darkred; margin: 20px; white-space: pre-wrap; font-family: monospace'
+  he.style.cssText =
+    'color: var(--bp-typography-color-danger-rest, darkred); margin: 20px; white-space: pre-wrap; font-family: monospace'
   he.innerText = `## PANIC: ${e.message}\n\n${e.stack}`
   he.appendChild(document.createElement('br'))
   const a = document.createElement('a')
