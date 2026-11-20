@@ -2476,8 +2476,8 @@ msgctxt "arknights status editor"
 msgid "技能等级提到 %d"
 msgstr "skill level to %d"
 
-#: src/components/arknights/statusEditor/SurveyBar.tsx:55
-#: src/components/arknights/statusEditor/SurveyBar.tsx:63
+#: src/components/arknights/statusEditor/SurveyBar.tsx:58
+#: src/components/arknights/statusEditor/SurveyBar.tsx:66
 msgctxt "arknights status editor"
 msgid "持有率"
 msgstr "Owned"
@@ -2562,11 +2562,6 @@ msgctxt "arknights status editor"
 msgid "统计"
 msgstr "Stats"
 
-#: src/components/arknights/statusEditor/SurveyBar.tsx:45
-msgctxt "arknights status editor"
-msgid "统计载入失败"
-msgstr "Couldn't load the statistics"
-
 #: src/components/arknights/statusEditor/SurveyStat.tsx:20
 msgctxt "arknights status editor"
 msgid "解锁者中的占比"
@@ -2576,6 +2571,11 @@ msgstr "of those who unlocked it"
 msgctxt "arknights status editor"
 msgid "说明载入失败"
 msgstr "Couldn't load the details"
+
+#: src/components/arknights/statusEditor/SurveyBar.tsx:46
+msgctxt "arknights status editor"
+msgid "载入失败"
+msgstr "Couldn't load"
 
 #. %d: skill level
 #: src/components/arknights/statusEditor/text.ts:47
@@ -2606,7 +2606,7 @@ msgid "这个模组还没有说明数据"
 msgstr "No details for this module yet"
 
 #: src/components/arknights/statusEditor/Detail.tsx:83
-#: src/components/arknights/statusEditor/SurveyBar.tsx:47
+#: src/components/arknights/statusEditor/SurveyBar.tsx:48
 msgctxt "arknights status editor"
 msgid "重试"
 msgstr "Retry"
@@ -6261,6 +6261,10 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgctxt "arknights status editor"
+#~ msgid "统计载入失败"
+#~ msgstr "Couldn't load the statistics"
 
 #~ msgid "重载数据"
 #~ msgstr "Reset Data"

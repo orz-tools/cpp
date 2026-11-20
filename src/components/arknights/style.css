@@ -214,10 +214,14 @@
   padding-right: 20px;
 }
 
+/* Short of room, the right part (持有率, 载入失败) takes the next line instead of squeezing the
+   source picker: its Chinese labels would otherwise break between characters, one per line.
+   The column gap is 6px because at 8px 载入失败 重试 misses the row of a 360px phone by a fraction of a pixel */
 .cpp-charstat-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 2px 6px;
   padding: 5px 14px;
   background: var(--cpp-tint-1);
   box-shadow:
@@ -229,6 +233,7 @@
 
 .cpp-charstat-bar-source {
   display: flex;
+  flex: none;
   align-items: center;
   gap: 8px;
 }
@@ -249,15 +254,16 @@
   color: var(--bp-typography-color-muted);
 }
 
-/* The network advice does not fit in the row: a line of its own, right-aligned under 统计载入失败 */
-.cpp-charstat-bar.is-missing {
-  flex-wrap: wrap;
-  row-gap: 2px;
-}
-
+/* The network advice does not fit in the row: a line of its own, right-aligned under 载入失败 */
 .cpp-charstat-own-advice {
   flex: 1 0 100%;
   text-align: right;
+}
+
+/* Right-aligned, an advice of several lines (English) would have a ragged left edge */
+.cpp-charstat-own-advice > span {
+  display: inline-block;
+  text-align: left;
 }
 
 .cpp-charstat-empty {
