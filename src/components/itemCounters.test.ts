@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Level } from '../Cpp'
-import { itemCounterCells, itemCounterSlots } from './itemCounters'
+import { categoriesWithSynthesis, counterKinds, itemCounterCells, itemCounterSlots } from './itemCounters'
 
 // Cpp 导入时会创建 toaster，测试环境里没有 document
 vi.mock('./Toaster', () => ({ AppToaster: new Promise(() => {}) }))
@@ -68,5 +68,30 @@ describe('itemCounterCells', () => {
     expect(cells.direct).toEqual({ value: 2, strong: false })
     expect(cells.indirect).toEqual({ value: 4, strong: true })
     expect(cells.remaining).toEqual({ value: 3, strong: true })
+  })
+})
+
+describe('counterKinds', () => {
+  it('lists the five desktop counters in their order with synthesis', () => {
+    expect(counterKinds(true)).toEqual(['afterSynthesis', 'synthesizable', 'remaining', 'direct', 'indirect'])
+  })
+
+  it('drops the two synthesis counters without synthesis', () => {
+    expect(counterKinds(false)).toEqual(['remaining', 'direct', 'indirect'])
+  })
+})
+
+describe('categoriesWithSynthesis', () => {
+  it('takes a category in when any of its items has a recipe', () => {
+    const groups = [
+      ['all', [{ key: 'a' }, { key: 'b' }]],
+      ['mixed', [{ key: 'c' }, { key: 'd' }]],
+      ['none', [{ key: 'e' }]],
+    ] as const
+    expect(categoriesWithSynthesis(groups, new Set(['a', 'b', 'd']))).toEqual(new Set(['all', 'mixed']))
+  })
+
+  it('is empty without groups', () => {
+    expect(categoriesWithSynthesis([], new Set(['a']))).toEqual(new Set())
   })
 })

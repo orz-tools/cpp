@@ -26,6 +26,31 @@ export interface ItemCounterCells {
   indirect: ItemCounterCell
 }
 
+export type ItemCounterKind = keyof ItemCounterCells
+
+const allCounterKinds: readonly ItemCounterKind[] = [
+  'afterSynthesis',
+  'synthesizable',
+  'remaining',
+  'direct',
+  'indirect',
+]
+
+/** 手机上计数表的列：分类里没有能合成的道具，就不要「合成后」「可合成」两列，钱和经验的九位数才放得下 */
+export function counterKinds(withSynthesis: boolean): readonly ItemCounterKind[] {
+  return withSynthesis ? allCounterKinds : allCounterKinds.slice(2)
+}
+
+/** 列按分类定而不按条目，同一分类里有配方和没配方的挨着也上下对齐 */
+export function categoriesWithSynthesis(
+  groups: readonly (readonly [string, readonly { key: string }[]])[],
+  formulaItemIds: ReadonlySet<string>,
+): Set<string> {
+  return new Set(
+    groups.filter(([, items]) => items.some((i) => formulaItemIds.has(i.key))).map(([category]) => category),
+  )
+}
+
 // `synthesizable` counts a forbidden recipe too, so 可合成 still shows what the stock could make, only faded;
 // 合成后 counts on the recipes the user allows, so it takes `canSynthesize` into account.
 export function itemCounterCells(
