@@ -11,6 +11,7 @@ import { CharacterStatusPopover } from './CharacterStatusPopover'
 import { CachedImg } from './Icons'
 import { dossierAtom, dossierPrefsAtom, useCloseCharacterDossier } from './dossierHooks'
 import { DossierState, STATUS_SECTION_ID, shownSection, visibleSections } from './dossierState'
+import { watchScrollStrip } from './scrollStrip'
 import { DossierSection } from './types'
 
 const StatusSectionBody = memo(({ character }: { character: ICharacter }) => {
@@ -101,7 +102,14 @@ const DossierTabs = memo(
       else if (list.scrollLeft < right) list.scrollLeft = right
     }, [character.key, shown, frameRef])
 
-    if (sections.length < 2) {
+    // Blueprint's Tabs takes neither a ref nor a class for its tab list
+    const tabbed = sections.length >= 2
+    useEffect(() => {
+      const list = frameRef.current?.querySelector<HTMLElement>('.cpp-dossier-tabs > .bp6-tab-list')
+      return list ? watchScrollStrip(list) : undefined
+    }, [tabbed, frameRef])
+
+    if (!tabbed) {
       const page = sections[0]
       if (!page) return null
       return (
