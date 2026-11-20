@@ -705,7 +705,8 @@ msgstr "Could not write to the clipboard. Use «Export as File» instead."
 #: src/pkg/cpp-basic/DataManager.ts:362
 msgid "无法加载数据，请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
-"Unable to load required game data. Please check your network connection."
+"Unable to load the data. Check your network connection, try another network, "
+"use a VPN or accelerator, or switch to another server."
 
 #: src/components/Importer.tsx:64
 msgid "无法识别粘贴的内容。支持以下格式："
