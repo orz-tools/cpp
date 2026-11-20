@@ -39,6 +39,28 @@ export const PeekItemRow = memo(
 
 const buildIcon = <Icon icon="build" size={10} className="cpp-peek-build" />
 
+/**
+ * 悬停合成按钮时配方按那一档算，字的长短跟着变。弹出的物品卡按内容定宽，所以每一档的字都叠在同一格里、按最宽的占位：
+ * 不然卡片随悬停变宽变窄，靠右的按钮从指针下挪开，移出、变回、又移进，来回闪
+ */
+const EachTimes = ({
+  options,
+  times,
+  render,
+}: {
+  options: readonly number[]
+  times: number
+  render: (times: number) => React.ReactNode
+}) => (
+  <span className="cpp-peek-times">
+    {options.map((t) => (
+      <span key={t} className={t === times ? undefined : 'is-other'}>
+        {render(t)}
+      </span>
+    ))}
+  </span>
+)
+
 /** 物品栏「可合成」原来那个弹层搬过来的：上面一行合成按钮，下面是配方；一次合成一步撤销 */
 export const ItemSynthesis = memo(
   <G extends IGame>({ item, navigate }: { item: IItem; navigate: (ref: PeekRef) => void }) => {
@@ -55,6 +77,7 @@ export const ItemSynthesis = memo(
       0,
       Math.min(...formula.costs.map((x) => Math.floor((quantities[x.itemId] || 0) / x.quantity))),
     )
+    const options = synthesisTimes(maxTimes, formula.apCost)
     return (
       <>
         <div className="cpp-peek-synth">
@@ -65,7 +88,7 @@ export const ItemSynthesis = memo(
             </span>
           ) : null}
           <ButtonGroup variant="minimal">
-            {synthesisTimes(maxTimes, formula.apCost).map((t) => (
+            {options.map((t) => (
               <Button
                 key={t}
                 size="small"
@@ -89,24 +112,27 @@ export const ItemSynthesis = memo(
         </div>
         <div className="cpp-peek-list">
           <div className="cpp-peek-list-head">
-            <span>
-              {gt
-                .ngettext(`制作 %d 次所需`, `制作 %d 次所需`, times) /* I10N: %d: number */
-                .replaceAll('%d', times.toString())}
-            </span>
+            <EachTimes
+              options={options}
+              times={times}
+              render={(t) =>
+                gt
+                  .ngettext(`制作 %d 次所需`, `制作 %d 次所需`, t) /* I10N: %d: number */
+                  .replaceAll('%d', t.toString())
+              }
+            />
             <span>{gt.pgettext('peek card', '需要 / 库存')}</span>
           </div>
           {formula.costs.map((cost) => {
-            const need = times * cost.quantity
             const have = quantities[cost.itemId] || 0
             return (
               <PeekItemRow
                 key={cost.itemId}
                 item={ga.getItem(cost.itemId)}
                 navigate={navigate}
-                className={have < need ? 'is-short' : undefined}
+                className={have < times * cost.quantity ? 'is-short' : undefined}
               >
-                {need} / {have}
+                <EachTimes options={options} times={times} render={(t) => `${t * cost.quantity} / ${have}`} />
               </PeekItemRow>
             )
           })}

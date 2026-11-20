@@ -282,7 +282,7 @@ msgid "到旧版去"
 msgstr ""
 
 #. %d: number
-#: src/components/ItemPeek.tsx:93
+#: src/components/ItemPeek.tsx:119
 msgid "制作 %d 次所需"
 msgid_plural "制作 %d 次所需"
 msgstr[0] ""
@@ -629,7 +629,7 @@ msgstr ""
 msgid "当前状态"
 msgstr ""
 
-#: src/components/ItemPeek.tsx:64
+#: src/components/ItemPeek.tsx:87
 msgid "心情"
 msgstr ""
 
@@ -3716,7 +3716,7 @@ msgctxt "peek card"
 msgid "全部关闭"
 msgstr ""
 
-#: src/components/ItemPeek.tsx:61
+#: src/components/ItemPeek.tsx:84
 msgctxt "peek card"
 msgid "合成"
 msgstr ""
@@ -3741,7 +3741,7 @@ msgctxt "peek card"
 msgid "已不在现在的数据里"
 msgstr ""
 
-#: src/components/ItemPeek.tsx:129
+#: src/components/ItemPeek.tsx:155
 msgctxt "peek card"
 msgid "库存"
 msgstr ""
@@ -3777,7 +3777,7 @@ msgctxt "peek card"
 msgid "钉住的卡片"
 msgstr ""
 
-#: src/components/ItemPeek.tsx:97
+#: src/components/ItemPeek.tsx:124
 msgctxt "peek card"
 msgid "需要 / 库存"
 msgstr ""

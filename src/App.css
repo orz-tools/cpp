@@ -1417,6 +1417,33 @@ body {
     0 8px 24px rgba(17, 20, 24, 0.2);
 }
 
+/*
+ * 弹出的物品卡按内容定宽：中文的名字、价值、库存都短，344px 宽时库存框离价值标签太远；英文撑到 344px 为止。
+ * 钉住的仍是 344px，在卡里点配方换物品、改库存时宽度不动
+ */
+.cpp-peek-popover .cpp-peek-card[data-kind='item'] {
+  width: fit-content;
+  max-width: min(344px, calc(100vw - 16px));
+}
+
+/* ItemPeek.tsx 的 EachTimes：每一档合成的字叠在同一格里，格子按最宽的一档 */
+.cpp-peek-times {
+  display: inline-grid;
+}
+
+.cpp-peek-times > * {
+  grid-area: 1 / 1;
+}
+
+.cpp-peek-times > .is-other {
+  visibility: hidden;
+}
+
+/* 需要 / 库存靠右，和表头对齐 */
+.cpp-peek-list-value > .cpp-peek-times {
+  justify-items: end;
+}
+
 /* .App {
   transform: rotateX(180deg);
 }
