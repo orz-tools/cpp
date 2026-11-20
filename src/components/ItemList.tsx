@@ -1,8 +1,18 @@
-import { Alignment, Button, Callout, Dialog, Menu, MenuDivider, Navbar, NumericInput } from '@blueprintjs/core'
+import {
+  Alignment,
+  Button,
+  Callout,
+  ControlGroup,
+  Dialog,
+  Menu,
+  MenuDivider,
+  Navbar,
+  NumericInput,
+} from '@blueprintjs/core'
 import { WritableAtom, atom, useAtom, useAtomValue, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
-import React, { SetStateAction, memo, useEffect, useState } from 'react'
+import React, { SetStateAction, memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { Level, useAtoms, useCpp, useGameAdapter, useGameDataMemo } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
@@ -13,12 +23,27 @@ import { ItemIcon } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
 import { formatQuantity } from './quantity'
 import { PeekTrigger } from './Peek'
-import { ItemCounterCells, itemCounterCells, itemCounterSlots } from './itemCounters'
+import {
+  ItemCounterKind,
+  categoriesWithSynthesis,
+  counterKinds,
+  itemCounterCells,
+  itemCounterSlots,
+} from './itemCounters'
+import { SLOP_PX } from './longPress'
 import { useCoarsePointer, usePhoneLayout } from './phoneLayout'
+import {
+  COMMIT_DELAY_MS,
+  HOLD_DELAY_MS,
+  REPEAT_MS,
+  createDeferredCommit,
+  createHoldRepeat,
+  formatter,
+  parser,
+  stepQuantity,
+} from './quantityStepper'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
-const formatter = (q: number) => q.toFixed(0)
-const parser = (q: string) => Math.floor(parseFloat(q) || 0)
 // NumericInput sanitizes its value whenever its parent renders, even when it then skips its own render as a pure
 // component; the item list holds one per item, and they all render again with each new game data generation.
 const MemoNumericInput = memo(NumericInput)
@@ -27,28 +52,78 @@ export const ItemQuantityEditor = memo(
     item,
     style,
     compact,
+    stepper,
   }: {
     item: IItem
     style?: React.CSSProperties
     /** 和价值标签一样高、没有上下箭头（键盘 ↑↓ 照样加减），宽度跟着数字 */
     compact?: boolean
+    /** 手机条目的 [数][−][+]：一串加减停手才写进用户数据，是一步撤销 */
+    stepper?: boolean
   }) => {
     const ga = useGameAdapter<G>()
     const atoms = useAtoms<G>()
-    const phone = usePhoneLayout()
     const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
     const [input, setInput] = useState(formatter(quantity))
-    useEffect(() => setInput(formatter(quantity)), [quantity])
+    // 从别处来的改动（撤销、导入）也把框里没写的那几下丢掉；还没到点的那次写入届时读到的框和数量一样，什么都不写
+    const [inputQuantity, setInputQuantity] = useState(quantity)
+    if (inputQuantity !== quantity) {
+      setInputQuantity(quantity)
+      setInput(formatter(quantity))
+    }
     // Stable handlers let MemoNumericInput skip the re-render each new game data generation brings.
     const onValueChange = useEvent((_: number, valueAsString: string) => setInput(valueAsString))
-    const onBlur = useEvent(() => {
-      if (input === formatter(quantity)) return
-      setInput(formatter(quantity))
-      setQuantity(parser(input))
+    // 框里直接放新数而不是先退回旧数：紧跟着点的加减从框里的字算起
+    const commitNow = useEvent(() => {
+      const next = parser(input)
+      setInput(formatter(next))
+      if (next !== quantity) setQuantity(next)
     })
     const onButtonClick = useEvent((_: number, valueAsString: string) => {
       setQuantity(parser(valueAsString))
     })
+    const [deferred] = useState(() => createDeferredCommit(COMMIT_DELAY_MS, commitNow))
+    // 筛掉、换档案、换布局会卸载；切区域不会，到点照样写
+    useEffect(() => () => deferred.flush(), [deferred])
+    const onBlur = useEvent(() => {
+      deferred.cancel()
+      commitNow()
+    })
+    const onFocus = useEvent(() => deferred.flush())
+    const step = useEvent((delta: number) => {
+      setInput((prev) => formatter(stepQuantity(prev, delta)))
+      deferred.schedule()
+    })
+
+    const isExp = Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)
+    if (stepper) {
+      // 经验由各级作战记录折算，改不了
+      if (isExp) return <span className="cpp-quantity-readonly">{input}</span>
+      return (
+        <ControlGroup className="cpp-quantity-stepper">
+          <MemoNumericInput
+            size="large"
+            buttonPosition="none"
+            inputMode="numeric"
+            min={0}
+            allowNumericCharactersOnly={false}
+            value={input}
+            title={input}
+            onValueChange={onValueChange}
+            onBlur={onBlur}
+            onFocus={onFocus}
+          />
+          <StepButton
+            icon="minus"
+            label={gt.pgettext('item quantity button', '减少')}
+            delta={-1}
+            disabled={parser(input) === 0}
+            onStep={step}
+          />
+          <StepButton icon="plus" label={gt.pgettext('item quantity button', '增加')} delta={1} onStep={step} />
+        </ControlGroup>
+      )
+    }
 
     const look = compact
       ? ({
@@ -57,12 +132,9 @@ export const ItemQuantityEditor = memo(
           className: 'cpp-quantity-compact',
           style: { ...style, width: `calc(${Math.max(input.length, 3)}ch + 14px)` },
         } as const)
-      : phone
-        ? // 手机上弹数字键盘，不画上下箭头
-          ({ style, buttonPosition: 'none', inputMode: 'numeric' } as const)
-        : { style }
+      : { style }
 
-    if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
+    if (isExp) {
       return <NumericInput value={input} {...look} title={input} disabled={true} allowNumericCharactersOnly={false} />
     }
     return (
@@ -75,6 +147,78 @@ export const ItemQuantityEditor = memo(
         onValueChange={onValueChange}
         onBlur={onBlur}
         onButtonClick={onButtonClick}
+      />
+    )
+  },
+)
+
+/**
+ * 点一下加减一下；按住一会儿开始连加，松手停。按下时不加：手指落在按钮上开始滑动列表，浏览器发 pointercancel，
+ * 这次什么都不改，也不会有 click
+ */
+const StepButton = memo(
+  ({
+    icon,
+    label,
+    delta,
+    disabled,
+    onStep,
+  }: {
+    icon: 'minus' | 'plus'
+    label: string
+    delta: number
+    disabled?: boolean
+    onStep: (delta: number) => void
+  }) => {
+    // 只管紧跟着的那一次 click：连加过的那次按住，松手时浏览器还会补一次 click
+    const repeated = useRef(false)
+    const origin = useRef<{ x: number; y: number } | null>(null)
+    const fire = useEvent(() => onStep(delta))
+    const fireHeld = useEvent(() => {
+      repeated.current = true
+      onStep(delta)
+    })
+    const [repeat] = useState(() => createHoldRepeat(HOLD_DELAY_MS, REPEAT_MS, fireHeld))
+    const halt = useEvent(() => {
+      repeat.stop()
+      origin.current = null
+    })
+    // 减到 0 禁用时停下：禁用的按钮不一定再收到 pointerup，也不会有 click 来清掉标记
+    useEffect(() => {
+      if (!disabled) return
+      halt()
+      repeated.current = false
+    }, [disabled, halt])
+    useEffect(() => () => halt(), [halt])
+
+    return (
+      <Button
+        size="large"
+        icon={icon}
+        aria-label={label}
+        disabled={disabled}
+        onClick={() => {
+          if (repeated.current) {
+            repeated.current = false
+            return
+          }
+          fire()
+        }}
+        onPointerDown={(e) => {
+          if (e.button !== 0 || disabled) return
+          repeated.current = false
+          origin.current = { x: e.clientX, y: e.clientY }
+          repeat.start()
+        }}
+        onPointerMove={(e) => {
+          const o = origin.current
+          if (o && !repeated.current && Math.hypot(e.clientX - o.x, e.clientY - o.y) > SLOP_PX) halt()
+        }}
+        onPointerUp={halt}
+        onPointerCancel={halt}
+        onPointerLeave={halt}
+        // 安卓长按会弹系统菜单
+        onContextMenu={(e) => e.preventDefault()}
       />
     )
   },
@@ -103,7 +247,33 @@ function levelAtoms<G extends IGame>(atoms: UserDataAtomHolder<G>['atoms'], leve
   }
 }
 
-export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IItem }) => {
+function counterLabel(kind: ItemCounterKind) {
+  switch (kind) {
+    case 'afterSynthesis':
+      return gt.pgettext('item list counter label', '合成后')
+    case 'synthesizable':
+      return gt.pgettext('item list counter label', '可合成')
+    case 'remaining':
+      return gt.pgettext('item list counter label', '还需')
+    case 'direct':
+      return gt.pgettext('item list counter label', '直接需求')
+    case 'indirect':
+      return gt.pgettext('item list counter label', '间接需求')
+  }
+}
+
+function levelLabel(level: Level) {
+  switch (level) {
+    case Level.Star:
+      return gt.pgettext('item list view label', '星标')
+    case Level.Goal:
+      return gt.pgettext('item list view label', '计划')
+    case Level.Finished:
+      return gt.pgettext('item list view label', '毕业')
+  }
+}
+
+function useItemCounters<G extends IGame>(item: IItem) {
   const ga = useGameAdapter<G>()
   const formula = useGameDataMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
   const atoms = useAtoms<G>()
@@ -129,8 +299,13 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
   const cells = [
     itemCounterCells(upperDirect, upperIndirect, quantity, synableReal, canSyn),
     itemCounterCells(lowerDirect, lowerIndirect, quantity, synableReal, canSyn),
-  ]
-  const rows = (cell: keyof ItemCounterCells) =>
+  ] as const
+  return { slots, cells, compact, hasFormula: !!formula, afterSynthesisShown: !!formula && synable !== 0 }
+}
+
+export const ItemTaskRequirements = memo(({ item }: { item: IItem }) => {
+  const { slots, cells, compact, hasFormula, afterSynthesisShown } = useItemCounters(item)
+  const rows = (cell: ItemCounterKind) =>
     slots.map((slot, i) => (
       <div key={i} style={{ textAlign: 'right', opacity: slot.shown ? (cells[i][cell].strong ? 1 : 0.4) : 0 }}>
         <span title={compact ? formatter(cells[i][cell].value) : undefined} style={{ whiteSpace: 'nowrap' }}>
@@ -143,8 +318,8 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
     <>
       <div
         className="cpp-goal-counter"
-        style={{ visibility: !formula || synable === 0 ? 'hidden' : undefined }}
-        data-label={gt.pgettext('item list counter label', '合成后')}
+        style={{ visibility: afterSynthesisShown ? undefined : 'hidden' }}
+        data-label={counterLabel('afterSynthesis')}
       >
         {rows('afterSynthesis')}
       </div>
@@ -159,63 +334,116 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
               lineHeight: '21px',
               padding: 0,
               fontWeight: 'normal',
-              visibility: !formula ? 'hidden' : undefined,
+              visibility: hasFormula ? undefined : 'hidden',
             }}
           >
-            <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '可合成')}>
+            <div className="cpp-goal-counter" data-label={counterLabel('synthesizable')}>
               {rows('synthesizable')}
             </div>
           </a>
         )}
       />
-      <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '还需')}>
+      <div className="cpp-goal-counter" data-label={counterLabel('remaining')}>
         {rows('remaining')}
       </div>
-      <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '直接需求')}>
+      <div className="cpp-goal-counter" data-label={counterLabel('direct')}>
         {rows('direct')}
       </div>
-      <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '间接需求')}>
+      <div className="cpp-goal-counter" data-label={counterLabel('indirect')}>
         {rows('indirect')}
       </div>
     </>
   )
 })
 
+function ItemLink({ item }: { item: IItem }) {
+  return (
+    <PeekTrigger
+      peek={{ kind: 'item', id: item.key }}
+      renderTarget={(target) => (
+        <a
+          role="menuitem"
+          {...target}
+          className={'bp6-menu-item cpp-item-menu ' + (target?.className ?? 'cpp-menu-not-interactive')}
+          style={{ flexShrink: 1, overflow: 'hidden' }}
+        >
+          <span className="bp6-menu-item-icon">
+            <ItemIcon item={item} size={40} />
+          </span>
+          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp6-text-overflow-ellipsis" title={item.name}>
+              {item.name}
+            </div>
+            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
+              <ValueTag value={item.valueAsAp} minimal={true} single={true} />
+            </div>
+          </div>
+        </a>
+      )}
+    />
+  )
+}
+
 export const ItemMenu = memo(({ item }: { item: IItem }) => {
   return (
     <li role="none">
-      <PeekTrigger
-        peek={{ kind: 'item', id: item.key }}
-        renderTarget={(target) => (
-          <a
-            role="menuitem"
-            {...target}
-            className={'bp6-menu-item cpp-item-menu ' + (target?.className ?? 'cpp-menu-not-interactive')}
-            style={{ flexShrink: 1, overflow: 'hidden' }}
-          >
-            <span className="bp6-menu-item-icon">
-              <ItemIcon item={item} size={40} />
-            </span>
-            <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div className="bp6-text-overflow-ellipsis" title={item.name}>
-                {item.name}
-              </div>
-              <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
-                <ValueTag value={item.valueAsAp} minimal={true} single={true} />
-              </div>
-            </div>
-          </a>
-        )}
-      />
+      <ItemLink item={item} />
       <div>
         <ItemQuantityEditor item={item} style={itemQuantityStyle} />
       </div>
-      {/* 手机上计数格从这里折到第二层 */}
-      <span className="cpp-item-row-break" aria-hidden />
       <ItemTaskRequirements item={item} />
     </li>
   )
 })
+
+/** 每个条目自带一排列标签，单看一条也明白；左边一列写这一行是哪一层 */
+function ItemPhoneCounters({ item, withSynthesis }: { item: IItem; withSynthesis: boolean }) {
+  const { slots, cells, compact, hasFormula, afterSynthesisShown } = useItemCounters(item)
+  const kinds = counterKinds(withSynthesis)
+  const blank = (kind: ItemCounterKind) =>
+    (kind === 'afterSynthesis' && !afterSynthesisShown) || (kind === 'synthesizable' && !hasFormula)
+
+  return (
+    <div className={'cpp-item-counts' + (withSynthesis ? ' is-wide' : '')}>
+      <span />
+      {kinds.map((kind) => (
+        <span key={kind} className="cpp-item-counts-label">
+          {counterLabel(kind)}
+        </span>
+      ))}
+      {slots.map((slot, i) =>
+        slot.shown ? (
+          <React.Fragment key={slot.level}>
+            <span className="cpp-item-counts-level">{levelLabel(slot.level)}</span>
+            {kinds.map((kind) => {
+              const cell = cells[i][kind]
+              if (blank(kind)) return <span key={kind} className="cpp-item-counts-value" />
+              return (
+                <span
+                  key={kind}
+                  className={'cpp-item-counts-value' + (cell.strong ? '' : ' is-faint')}
+                  title={compact ? formatter(cell.value) : undefined}
+                >
+                  {formatQuantity(cell.value, compact)}
+                </span>
+              )
+            })}
+          </React.Fragment>
+        ) : null,
+      )}
+    </div>
+  )
+}
+
+const ItemPhoneRow = memo(({ item, withSynthesis }: { item: IItem; withSynthesis: boolean }) => (
+  <li role="none" className="cpp-item-phone-row">
+    <div className="cpp-item-phone-main">
+      <ItemLink item={item} />
+      <ItemQuantityEditor item={item} stepper />
+    </div>
+    <ItemPhoneCounters item={item} withSynthesis={withSynthesis} />
+  </li>
+))
 
 const itemQuantityStyle: React.CSSProperties = { width: '6em', textAlign: 'right' }
 
@@ -273,13 +501,7 @@ const AllGoalValue = memo(<G extends IGame>({ level }: { level: Level }) => {
   return (
     <Button
       variant="minimal"
-      text={
-        {
-          [Level.Finished]: gt.pgettext('item list view label', '毕业'),
-          [Level.Goal]: gt.pgettext('item list view label', '计划'),
-          [Level.Star]: gt.pgettext('item list view label', '星标'),
-        }[level]
-      }
+      text={levelLabel(level)}
       endIcon={<ValueTagProgressBar value={remaining} maxValue={total} />}
       active={param.level === level}
       onClick={() => {
@@ -376,6 +598,11 @@ export const ItemList = memo(<G extends IGame>() => {
   const param = useAtomValue(itemListParamAtom)
   const ga = useGameAdapter<G>()
   const itemGroups = useGameDataMemo(() => buildItemList(ga), [ga])
+  const synthesisCategories = useGameDataMemo(
+    () => categoriesWithSynthesis(itemGroups, new Set(ga.getFormulas().map((f) => f.itemId))),
+    [ga, itemGroups],
+  )
+  const phone = usePhoneLayout()
   const atoms = useAtoms<G>()
   const store = useStore()
   const filterAtoms = levelAtoms(atoms, param.level ?? Level.Finished)
@@ -418,9 +645,13 @@ export const ItemList = memo(<G extends IGame>() => {
           return (
             <React.Fragment key={key}>
               <MenuDivider title={categoryNames[key]?.toString() ?? key} />
-              {items.map((x) => (
-                <ItemMenu key={x.key} item={x} />
-              ))}
+              {items.map((x) =>
+                phone ? (
+                  <ItemPhoneRow key={x.key} item={x} withSynthesis={synthesisCategories.has(key)} />
+                ) : (
+                  <ItemMenu key={x.key} item={x} />
+                ),
+              )}
             </React.Fragment>
           )
         })}

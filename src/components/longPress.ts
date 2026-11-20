@@ -4,7 +4,7 @@ import { useCoarsePointer } from './phoneLayout'
 /** 按住多久算长按；和安卓自己的长按差不多 */
 const HOLD_MS = 500
 /** 手指挪动超过这么多就是在滑，不算长按 */
-const SLOP_PX = 10
+export const SLOP_PX = 10
 
 interface Press {
   timer: number

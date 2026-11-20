@@ -515,11 +515,6 @@ body {
   width: 6em;
 }
 
-/* 手机上计数格从这里折到第二层 */
-.cpp-item-row-break {
-  display: none;
-}
-
 .cpp-goal-counter::before {
   display: block;
   content: attr(data-label);
@@ -2033,59 +2028,111 @@ body .bp6-navbar-group {
 }
 
 /*
- * 材料：第一层是物品和数量框，第二层是五个计数格，标签写在数字上方。
- * 一行放不下时计数格再折一行，数字不重叠、不截断
+ * 材料（ItemList.tsx 的 ItemPhoneRow）：第一行物品和数量框，下面是计数表，每个条目自带一排列标签，左边一列写层名。
+ * 列宽在同一分类里上下对齐；数大到一列放不下时那一列变宽，数不重叠
  */
 .cpp-phone .cpp-item-menu-master {
   overscroll-behavior: contain;
 }
 
-.cpp-phone .cpp-item-menu-master > li {
-  flex-wrap: wrap;
-  column-gap: 8px;
-  padding-bottom: 6px;
+/* 菜单自己有 4px 内边距，再补 8px：图标左沿、数量框右沿离屏幕边 12px */
+.cpp-phone .cpp-item-menu-master > .cpp-item-phone-row {
+  display: block;
+  padding: 8px;
 }
 
-.cpp-phone .cpp-item-menu-master > li > :first-child {
+.cpp-phone .cpp-item-phone-row + .cpp-item-phone-row {
+  border-top: 1px solid rgb(var(--cpp-ink) / 0.1);
+}
+
+.cpp-phone .cpp-item-phone-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cpp-phone .cpp-item-phone-main > .bp6-menu-item {
   flex: 1 1 0;
   min-width: 0;
+  padding: 0;
+  line-height: 20px;
 }
 
-.cpp-phone .cpp-item-menu-master > li > :nth-child(2) {
+/* 名字一行、价值标签一行，合起来和图标、数量框一样 40px 高；标签按行高排会多出几像素 */
+.cpp-phone .cpp-item-phone-main .bp6-fill > :last-child {
+  display: flex;
+}
+
+.cpp-phone .cpp-quantity-stepper {
   flex: none;
 }
 
-.cpp-phone .cpp-item-row-break {
-  display: block;
-  flex: 0 0 100%;
-  height: 0;
+.cpp-phone .cpp-quantity-stepper .bp6-input-group {
+  width: 96px;
 }
 
-.cpp-phone .cpp-item-menu-master > li > .cpp-item-row-break ~ * {
-  flex: 1 1 0;
-  min-width: max-content;
-}
-
-/* 「可合成」那一格包在能点开物品卡的菜单项里 */
-.cpp-phone .cpp-item-menu-master > li > .cpp-item-row-break ~ a > .cpp-goal-counter {
-  flex: 1 1 auto;
-}
-
-.cpp-phone .cpp-goal-counter {
-  width: auto;
-  font-size: 13px;
-  line-height: 18px;
+.cpp-phone .cpp-quantity-stepper .bp6-input {
+  text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+/* 连点不触发双击缩放，按住不选字、不弹系统菜单 */
+.cpp-phone .cpp-quantity-stepper .bp6-button {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* 经验：和数量框整组一样宽，数的右沿对齐别的条目输入框里数字的右沿（两个按钮、两道 2px 的缝、输入框的右内边距） */
+.cpp-phone .cpp-quantity-readonly {
+  flex: none;
+  box-sizing: border-box;
+  width: 180px;
+  padding-right: 92px;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  color: var(--bp-typography-color-muted);
   text-align: right;
 }
 
-.cpp-phone .cpp-goal-counter::before {
-  position: static;
+.cpp-phone .cpp-item-counts {
+  display: grid;
+  /* 层名那一列和图标一样宽；英文的「Planned」比 40px 宽，列跟着变宽，不压到旁边的数 */
+  grid-template-columns: minmax(40px, max-content) repeat(3, minmax(max-content, 1fr));
+  column-gap: 4px;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cpp-phone .cpp-item-counts.is-wide {
+  grid-template-columns: minmax(40px, max-content) repeat(5, minmax(max-content, 1fr));
+}
+
+.cpp-phone .cpp-item-counts-label {
   font-size: 11px;
   line-height: 16px;
   color: var(--bp-typography-color-muted);
-  opacity: 1;
+  text-align: right;
   white-space: nowrap;
+}
+
+.cpp-phone .cpp-item-counts-level {
+  font-size: 11px;
+  color: var(--bp-typography-color-muted);
+  text-align: left;
+  align-self: center;
+}
+
+.cpp-phone .cpp-item-counts-value {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cpp-phone .cpp-item-counts-value.is-faint {
+  opacity: 0.4;
 }
 
 /*
