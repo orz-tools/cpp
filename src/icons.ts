@@ -106,6 +106,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
     new Map([
       [IconNames.AUTOMATIC_UPDATES, Paths20.AutomaticUpdates],
       [IconNames.BOX, Paths20.Box],
+      [IconNames.BUILD, Paths20.Build],
       [IconNames.ERROR, Paths20.Error],
       [IconNames.FLAG, Paths20.Flag],
       [IconNames.IMPORT, Paths20.Import],

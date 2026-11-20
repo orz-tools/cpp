@@ -26,6 +26,7 @@ import { ErrAtom } from './Err'
 import { ItemIcon } from './Icons'
 import { ItemTile } from './ItemTile'
 import { PeekTrigger } from './Peek'
+import { phoneAreaAtom, usePhoneLayout } from './phoneLayout'
 import { formatExpectedQuantity, formatTileQuantity } from './quantity'
 import { SynthesisList, planSynthesisList } from './SynthesisList'
 import { SampleTag, ValueTag } from './Value'
@@ -201,6 +202,9 @@ export const FarmList = memo(() => {
   const { useFarmNotice = noFarmNotice } = useComponents()
   const notice = useFarmNotice()
   const blocked = notice != null
+  const phone = usePhoneLayout()
+  const area = useAtomValue(phoneAreaAtom)
+  const synthesisPane = phone && area === 'synthesis'
   const refresh = useEvent((f?: FarmLevel) => {
     if (blocked) return
     if (!f) f = farmLevel
@@ -254,7 +258,7 @@ export const FarmList = memo(() => {
     <>
       <Navbar style={{ paddingLeft: '0.5em', paddingRight: '0.5em' }}>
         <Navbar.Group align={Alignment.RIGHT}>
-          <DropsViewButton />
+          {synthesisPane ? null : <DropsViewButton />}
           <Popover
             usePortal={true}
             minimal={true}
@@ -292,7 +296,11 @@ export const FarmList = memo(() => {
           {response && !blocked ? <ValueTag value={response.ap} intent={'primary'} /> : null}
         </Navbar.Group>
       </Navbar>
-      <div className="cpp-farm-body" style={{ opacity: expired && !blocked ? 0.5 : undefined }}>
+      <div
+        className="cpp-farm-body"
+        data-pane={synthesisPane ? 'synthesis' : 'stages'}
+        style={{ opacity: expired && !blocked ? 0.5 : undefined }}
+      >
         {blocked ? (
           notice
         ) : response ? (

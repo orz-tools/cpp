@@ -11,6 +11,7 @@ const tabs: { area: PhoneArea; glyph: React.ReactNode; label: () => string }[] =
   { area: 'chars', glyph: <Icon icon="people" size={20} />, label: () => gt.pgettext('phone tab', '干员') },
   { area: 'tasks', glyph: <Icon icon="tick-circle" size={20} />, label: () => gt.pgettext('phone tab', '任务') },
   { area: 'farm', glyph: <Icon icon="map" size={20} />, label: () => gt.pgettext('phone tab', '刷图') },
+  { area: 'synthesis', glyph: <Icon icon="build" size={20} />, label: () => gt.pgettext('phone tab', '合成') },
   { area: 'items', glyph: <Icon icon="box" size={20} />, label: () => gt.pgettext('phone tab', '材料') },
   { area: 'more', glyph: <Icon icon="menu" size={20} />, label: () => gt.gettext('更多') },
 ]
@@ -24,7 +25,7 @@ const PanelBadgeDot = memo(({ panel }: { panel: SidebarPanel }) => {
   return useBadge() ? <span className="cpp-phone-tab-dot" aria-hidden /> : null
 })
 
-/** 手机布局底部的五个区域；侧栏面板收窄了干员列表而人不在「干员」时，「干员」上亮蓝点 */
+/** 手机布局底部的六个区域（「合成」露出的是刷图区）；侧栏面板收窄了干员列表而人不在「干员」时，「干员」上亮蓝点 */
 export const PhoneTabBar = memo(() => {
   const [area, setArea] = useAtom(phoneAreaAtom)
   const panels = useSidebarPanels()

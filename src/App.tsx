@@ -37,7 +37,7 @@ import { useReloadGameData } from './components/reloadGameData'
 import { PhoneTabBar } from './components/PhoneTabBar'
 import { requeryList } from './components/planBatch'
 import { BackGuardEvent, closeTopOverlay, initialBackGuard, openOverlays, stepBackGuard } from './components/phoneBack'
-import { PhoneArea, phoneAreaAtom, usePhoneLayout } from './components/phoneLayout'
+import { PhoneArea, phoneAreaAtom, phoneSectionOf, usePhoneLayout } from './components/phoneLayout'
 import { ProfileMenu, ProfileTitle } from './components/Profile'
 import { Sidebar, usePhoneMoreLayer } from './components/Sidebar'
 import { TaskList } from './components/TaskList'
@@ -192,7 +192,10 @@ const charExtraWidthAtom = atom(0)
 
 /** 手机上五个区域叠在一起，只露出当前那个；都一直挂着，切回来时滚动位置、搜索框都还在 */
 function areaProps(area: PhoneArea, phone: boolean, current: PhoneArea) {
-  return { 'data-area': area, className: Classes.ELEVATION_1 + (phone && area === current ? ' is-phone-current' : '') }
+  return {
+    'data-area': area,
+    className: Classes.ELEVATION_1 + (phone && area === phoneSectionOf(current) ? ' is-phone-current' : ''),
+  }
 }
 
 const App = memo(() => {

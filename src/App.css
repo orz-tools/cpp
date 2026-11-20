@@ -2008,17 +2008,23 @@ body .bp6-navbar-group {
   }
 }
 
-/* 刷图：关卡在上、合成在下，整块一起滚 */
+/* 刷图：「刷图」露出关卡，「合成」露出合成。两块叠在一起、各自滚动，都一直挂着，切回来滚动位置还在 */
 .cpp-phone .cpp-farm-body {
-  flex-direction: column;
-  overscroll-behavior: contain;
+  position: relative;
 }
 
 .cpp-phone .cpp-farm-body > .cpp-farm-stages,
 .cpp-phone .cpp-farm-body > .cpp-farm-synthesis {
-  flex: none;
-  width: 100%;
-  overflow: visible;
+  position: absolute;
+  inset: 0;
+  width: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .cpp-farm-body[data-pane='stages'] > .cpp-farm-synthesis,
+.cpp-phone .cpp-farm-body[data-pane='synthesis'] > .cpp-farm-stages {
+  visibility: hidden;
 }
 
 /*

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PHONE_AREAS, readPhoneArea } from './phoneLayout'
+import { PHONE_AREAS, phoneSectionOf, readPhoneArea } from './phoneLayout'
 
 describe('readPhoneArea', () => {
   it('keeps each area as stored', () => {
@@ -12,5 +12,15 @@ describe('readPhoneArea', () => {
     expect(readPhoneArea(3)).toBe('chars')
     expect(readPhoneArea('foo')).toBe('chars')
     expect(readPhoneArea({ area: 'tasks' })).toBe('chars')
+  })
+})
+
+describe('phoneSectionOf', () => {
+  it('shows the farm section for 合成', () => {
+    expect(phoneSectionOf('synthesis')).toBe('farm')
+  })
+
+  it('shows every other area in its own section', () => {
+    for (const area of PHONE_AREAS) if (area !== 'synthesis') expect(phoneSectionOf(area)).toBe(area)
   })
 })
