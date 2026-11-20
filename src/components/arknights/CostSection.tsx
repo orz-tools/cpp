@@ -19,8 +19,8 @@ import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
 import { networkAdvice } from '../Err'
 import { CachedImg } from '../Icons'
+import { ItemTile } from '../ItemTile'
 import { useMissingData } from '../MissingData'
-import { PeekTrigger } from '../Peek'
 import { formatQuantity } from '../quantity'
 import { ValueTag, ValueText, ValueUnitIcon } from '../Value'
 import { DossierSection } from '../types'
@@ -266,27 +266,16 @@ const CostMaterials = memo(({ ga, title, cost }: { ga: ArknightsAdapter; title: 
         />
       </div>
       {items.length > 0 ? (
-        <div className="cpp-cost-materials">
-          {items.map(({ id, quantity, folded, item }) => {
-            const name = item?.name ?? id
-            return (
-              <PeekTrigger
-                key={id}
-                peek={{ kind: 'item', id }}
-                renderTarget={(peek) => (
-                  <span
-                    role={peek ? 'button' : undefined}
-                    {...peek}
-                    className={'cpp-cost-material' + (peek ? ' ' + peek.className : '')}
-                    title={materialTitle(name, quantity, folded)}
-                  >
-                    {item ? <CachedImg src={item.icon} width={34} height={34} alt={name} /> : null}
-                    <span className="cpp-cost-material-quantity">{formatQuantity(quantity)}</span>
-                  </span>
-                )}
-              />
-            )
-          })}
+        <div className="cpp-item-tiles">
+          {items.map(({ id, quantity, folded, item }) => (
+            <ItemTile
+              key={id}
+              id={id}
+              item={item}
+              label={formatQuantity(quantity)}
+              title={materialTitle(item?.name ?? id, quantity, folded)}
+            />
+          ))}
         </div>
       ) : (
         <div className="cpp-cost-muted">—</div>
