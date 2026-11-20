@@ -17,6 +17,21 @@ export interface CreateFarmPlannerOptions {
   forbiddenStageIds: string[]
 }
 
+/**
+ * Solved at 1e-9, the values carry noise of a few 1e-9 once the LMD needed runs into the hundreds of millions, and the
+ * plan rounds runs up: a stage at 2e-9 would be listed with one run. 1e-4 is the grid the solver rounded to when it
+ * ran at that precision, so plans it could solve come out as before.
+ */
+function roundSolution(result: Record<string, unknown>) {
+  for (const [k, v] of Object.entries(result)) {
+    if (typeof v !== 'number') continue
+    const rounded = Math.round(v * 1e4) / 1e4
+    // The plan lists every stage in the result, ×0 too; the solver itself leaves zeros out
+    if (rounded === 0 && k !== 'result') delete result[k]
+    else result[k] = rounded
+  }
+}
+
 export class FarmPlanner<G extends IGame> {
   private feasible = new Set<string>()
   private unfeasible = new Set<string>()
@@ -159,7 +174,10 @@ export class FarmPlanner<G extends IGame> {
     } catch (e) {
       console.warn('failed to convert as minizinc input', e)
     }
-    const result = Lpsolver.Solve(this.model, 1e-4) as Solution<FarmModelSolutionVar>
+    // The solver pivots only on coefficients larger than this. A stage yielding 10000 of an item (LS-6's EXP, CE-6's
+    // LMD) leaves 1/10000 in the tableau, and at 1e-4 that pivot was skipped and a solvable plan called infeasible.
+    const result = Lpsolver.Solve(this.model, 1e-9) as Solution<FarmModelSolutionVar>
+    roundSolution(result)
     console.log('lpsolver result', this.model, result)
     return result
   }
