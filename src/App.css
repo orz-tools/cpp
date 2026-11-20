@@ -1283,9 +1283,19 @@ body {
   transform: rotateX(180deg);
 } */
 
-/* 用户数据管理的文本框撑开弹窗；手机上弹窗占满屏宽，不再撑 */
+/* 用户数据管理（UserDataManager.tsx）；文本框撑开弹窗，手机上弹窗占满屏宽，不再撑 */
+.cpp-userdata-box {
+  position: relative;
+}
+
 .cpp-userdata-text {
   min-width: 400px;
+  /* 不写 height：Blueprint 的 textarea.bp6-input.bp6-small 选择器更强，会改回 auto */
+  min-height: 200px;
+  width: 100%;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .cpp-importer-result {
@@ -2184,8 +2194,66 @@ body .bp6-navbar-group {
   white-space: nowrap;
 }
 
-.cpp-phone .cpp-userdata-text {
+/*
+ * 用户数据管理（UserDataManager.tsx）：标题先写「用户数据管理」，档案名跟在后面，放不下就省略；
+ * 文本框撑满中间那一块；底栏的按钮两个一排，「清空」单独放在最后一排
+ */
+.cpp-phone .cpp-userdata-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.cpp-phone .cpp-userdata-title-name {
+  flex: none;
+}
+
+.cpp-phone .cpp-userdata-title-profile {
+  order: 1;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: normal;
+  color: var(--bp-typography-color-muted);
+}
+
+.cpp-phone .cpp-userdata-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.cpp-phone .cpp-userdata-box {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 160px;
+}
+
+.cpp-phone .cpp-userdata-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  resize: none;
+}
+
+.cpp-phone .cpp-userdata-actions {
+  padding: 12px 16px;
+}
+
+.cpp-phone .cpp-userdata-actions > .bp6-dialog-footer-main-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* 横屏或窄的桌面窗口：导出、导入四个排成一排 */
+@media (min-width: 640px) {
+  .cpp-phone .cpp-userdata-actions > .bp6-dialog-footer-main-section {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.cpp-phone .cpp-userdata-actions .bp6-button {
+  min-height: 40px;
 }
 
 /* 「关于」的大窗口排成一栏，整页滚动 */

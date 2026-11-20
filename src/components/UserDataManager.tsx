@@ -2,6 +2,7 @@ import {
   AnchorButton,
   type AnchorButtonProps,
   Button,
+  type ButtonProps,
   Classes,
   Dialog,
   DialogBody,
@@ -22,6 +23,8 @@ import { formatProfileName, getStoragePrefix } from '../profiles'
 import { useChamber } from './Chamber'
 import { ErrAtom } from './Err'
 import { showAlert, showConfirm } from './MessageBox'
+import { useCoarsePointer, usePhoneLayout } from './phoneLayout'
+import { AppToaster } from './Toaster'
 
 /**
  * A snapshot of the stored data, taken once when the component mounts. The profile's extras are in IndexedDB,
@@ -82,7 +85,13 @@ export const UserDataManager = memo(
       <Dialog
         isOpen={true}
         onClose={onClose}
-        title={`Closure${formatProfileName(game, instanceName)}++ ${gt.gettext('用户数据管理')}`}
+        title={
+          // Two parts so that a phone can put the dialog's name first; see .cpp-userdata-title in App.css.
+          <span className="cpp-userdata-title">
+            <span className="cpp-userdata-title-profile">{`Closure${formatProfileName(game, instanceName)}++`}</span>{' '}
+            <span className="cpp-userdata-title-name">{gt.gettext('用户数据管理')}</span>
+          </span>
+        }
         icon="database"
       >
         {/* Remounted once the dump is ready, so the text box starts with it. */}
@@ -122,6 +131,39 @@ export const ExportDataButton = ({
       disabled={!data}
     />
   </>
+)
+
+/** Puts the dump on the clipboard, or tells the user to export a file instead. Returns whether it got there. */
+async function copyDump(text: string) {
+  try {
+    // Before anything is awaited: Safari only lets the clipboard be written while the click is still being handled.
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch {
+    const toaster = await AppToaster
+    toaster.show({ icon: 'error', intent: 'danger', message: gt.gettext('无法写入剪贴板，请改用「导出为文件」。') })
+    return false
+  }
+}
+
+/** Copies the dump as text; disabled while there is nothing to copy. */
+export const CopyDataButton = ({
+  data,
+  onCopied,
+  ...props
+}: {
+  data?: { data: string }
+  onCopied: () => void
+} & Omit<ButtonProps, 'onClick' | 'disabled'>) => (
+  <Button
+    icon="clipboard"
+    text={gt.gettext('复制数据')}
+    {...props}
+    disabled={!data}
+    onClick={() => {
+      if (data) void copyDump(data.data).then((copied) => copied && onCopied())
+    }}
+  />
 )
 
 export function confirmClearUserData() {
@@ -285,22 +327,65 @@ const UserDataManagerContent = memo(
       }
     }, [importFile])
 
+    const phone = usePhoneLayout()
+    const touch = useCoarsePointer()
+    // On a phone the five buttons take two columns, and outlines show where each one starts and ends.
+    const variant = phone ? 'outlined' : 'minimal'
+    const exportButtons = (
+      <>
+        <ExportDataButton variant={variant} game={game} instanceName={instanceName} data={data} />
+        <CopyDataButton
+          variant={variant}
+          data={data}
+          onCopied={() =>
+            void AppToaster.then((t) =>
+              t.show({ icon: 'tick', intent: 'success', message: gt.gettext('数据已复制。') }),
+            )
+          }
+        />
+      </>
+    )
+    const importButtons = (
+      <>
+        <Button
+          variant={variant}
+          intent={'primary'}
+          icon="document-open"
+          text={gt.gettext('从文件导入')}
+          onClick={() => fileInputRef.current?.click()}
+        />
+        <Button
+          variant={variant}
+          intent={'primary'}
+          icon="log-in"
+          text={gt.gettext('从文本框中导入')}
+          onClick={() => void importData(value)}
+        />
+      </>
+    )
+    const clearButton = (
+      <Button
+        variant="minimal"
+        intent={'danger'}
+        icon="trash"
+        text={gt.gettext('清空')}
+        onClick={() => void clearData()}
+      />
+    )
+
     return (
       <>
-        <DialogBody>
-          <p className={Classes.TEXT_MUTED}>{gt.gettext('可将导出的文件拖入此处，或直接粘贴文件导入。')}</p>
-          <div style={{ position: 'relative' }}>
+        <DialogBody className="cpp-userdata-body">
+          <p className={Classes.TEXT_MUTED}>
+            {touch
+              ? gt.gettext('可将文本框里的内容换成复制来的数据后导入。')
+              : gt.gettext('可将导出的文件拖入此处，或直接粘贴文件导入。')}
+          </p>
+          <div className="cpp-userdata-box">
             <TextArea
               size="small"
               value={value}
               className="cpp-userdata-text"
-              style={{
-                width: '100%',
-                height: '200px',
-                fontFamily: 'monospace',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-all',
-              }}
               onChange={(e) => setValue(e.target.value)}
               readOnly={loading}
               spellCheck="false"
@@ -334,35 +419,24 @@ const UserDataManagerContent = memo(
             }}
           />
         </DialogBody>
-        <DialogFooter
-          actions={
-            <>
-              <Button
-                variant="minimal"
-                intent={'danger'}
-                icon="trash"
-                text={gt.gettext('清空')}
-                onClick={() => void clearData()}
-              />
-              <Button
-                variant="minimal"
-                intent={'primary'}
-                icon="document-open"
-                text={gt.gettext('从文件导入')}
-                onClick={() => fileInputRef.current?.click()}
-              />
-              <Button
-                variant="minimal"
-                intent={'primary'}
-                icon="log-in"
-                text={gt.gettext('从文本框中导入')}
-                onClick={() => void importData(value)}
-              />
-            </>
-          }
-        >
-          <ExportDataButton variant="minimal" game={game} instanceName={instanceName} data={data} />
-        </DialogFooter>
+        {phone ? (
+          <DialogFooter className="cpp-userdata-actions">
+            {exportButtons}
+            {importButtons}
+            {clearButton}
+          </DialogFooter>
+        ) : (
+          <DialogFooter
+            actions={
+              <>
+                {clearButton}
+                {importButtons}
+              </>
+            }
+          >
+            {exportButtons}
+          </DialogFooter>
+        )}
       </>
     )
   },

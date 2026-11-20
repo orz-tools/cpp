@@ -5,7 +5,13 @@ import { LocaleButton } from '../locales'
 import { gt } from '../pkg/gt'
 import { ThemeButton } from './ThemeMenu'
 import { AppToaster } from './Toaster'
-import { ExportDataButton, confirmClearUserData, removeStoredUserData, useUserDataDump } from './UserDataManager'
+import {
+  CopyDataButton,
+  ExportDataButton,
+  confirmClearUserData,
+  removeStoredUserData,
+  useUserDataDump,
+} from './UserDataManager'
 
 /** Sets names the reader should find on screen (a profile, the old build's buttons) as tags at %1, %2, … */
 function withTags(template: string, tags: { text: string; icon?: IconName }[]) {
@@ -102,17 +108,11 @@ export const RetiredGame = memo(
       : // I10N: %1, %2, %3: the old version's labels 导入/导出, 用户数据管理 and 从文本框中导入
         gt.gettext('点右上角的 %1，选 %2；把文本框清空，粘贴刚才复制的数据或导出文件的全部内容，再点 %3 并确认。')
 
-    const copy = async () => {
-      if (!data) return
-      const toaster = await AppToaster
-      try {
-        await navigator.clipboard.writeText(data.data)
-      } catch {
-        toaster.show({ icon: 'error', intent: 'danger', message: gt.gettext('无法写入剪贴板，请改用「导出为文件」。') })
-        return
-      }
+    const copied = () => {
       setExported(true)
-      toaster.show({ icon: 'tick', intent: 'success', message: gt.gettext('已复制，到旧版里粘贴就好。') })
+      void AppToaster.then((t) =>
+        t.show({ icon: 'tick', intent: 'success', message: gt.gettext('已复制，到旧版里粘贴就好。') }),
+      )
     }
 
     return (
@@ -144,13 +144,7 @@ export const RetiredGame = memo(
                     title={gt.gettext('在这里导出')}
                     action={
                       <div className="cpp-retired-step-actions">
-                        <Button
-                          variant="outlined"
-                          icon="clipboard"
-                          text={gt.gettext('复制数据')}
-                          disabled={!data}
-                          onClick={() => void copy()}
-                        />
+                        <CopyDataButton variant="outlined" data={data} onCopied={copied} />
                         <ExportDataButton
                           intent="primary"
                           game={game}
