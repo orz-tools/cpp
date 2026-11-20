@@ -22,6 +22,7 @@ import {
 } from '../../../pkg/cpp-arknights/richText'
 import type { ArknightsDataManager } from '../../../pkg/cpp-arknights'
 import { gt } from '../../../pkg/gt'
+import { networkAdvice } from '../../Err'
 import { useDetails } from '../useDetails'
 import { useEditor } from './context'
 import { skillLevelText } from './text'
@@ -73,7 +74,11 @@ const DetailPanel = memo(
     } else if ('error' in loaded) {
       body = (
         <div className="cpp-charstat-det-error">
-          {gt.pgettext('arknights status editor', '说明载入失败')}
+          <span>
+            {gt.pgettext('arknights status editor', '说明载入失败')}
+            <br />
+            {networkAdvice()}
+          </span>
           <Button size="small" variant="outlined" onClick={retry}>
             {gt.pgettext('arknights status editor', '重试')}
           </Button>

@@ -1,5 +1,6 @@
 import { Button, Icon, Menu, MenuDivider, MenuItem, Popover, Tag } from '@blueprintjs/core'
 import { CSSProperties, Fragment, ReactNode, memo, useSyncExternalStore } from 'react'
+import { networkAdvice } from './components/Err'
 import { PSTRs } from './components/LineBreaks'
 import { showAlert } from './components/MessageBox'
 import { gt } from './pkg/gt'
@@ -54,7 +55,8 @@ async function setLocale(locale: string) {
     await loadLocale(locale)
   } catch (e) {
     console.error(e)
-    void showAlert(`${gt.gettext('切换语言失败')}\n${e instanceof Error ? e.message : String(e)}`)
+    // The language file is downloaded on first use, so a failure here is almost always the network.
+    void showAlert(`${gt.gettext('切换语言失败')}\n${networkAdvice()}\n${e instanceof Error ? e.message : String(e)}`)
     return
   }
   localStorage.setItem(LOCALE_STORAGE_KEY, locale)

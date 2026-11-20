@@ -6,6 +6,7 @@ import { useGameAdapter } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { DataContainerObject } from '../pkg/dccache'
 import { PSTR, gt, lpstr } from '../pkg/gt'
+import { networkAdvice } from './Err'
 import { FullLogList, SimpleLogList, useChangelogBadge, useMarkChangelogSeen } from './LogList'
 import { useMissingData } from './MissingData'
 import { useOpenSidebarPanel } from './SidebarPanelDialog'
@@ -229,6 +230,11 @@ export const DataObjectStatus = memo(
                 className="cpp-menu-not-interactive"
                 intent="danger"
                 text={gt.pgettext('missing data', '载入失败')}
+              />
+              <MenuItem
+                className="cpp-menu-not-interactive"
+                multiline={true}
+                text={<div className="cpp-menu-secondary">{networkAdvice()}</div>}
               />
               <MenuItem
                 icon="refresh"

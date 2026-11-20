@@ -1,4 +1,4 @@
-import { Callout, SegmentedControl, Tooltip } from '@blueprintjs/core'
+import { Button, Callout, SegmentedControl, Tooltip } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import React, { memo, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
@@ -17,7 +17,9 @@ import {
 } from '../../pkg/cpp-arknights/trainingCost'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
+import { networkAdvice } from '../Err'
 import { CachedImg } from '../Icons'
+import { useMissingData } from '../MissingData'
 import { PeekTrigger } from '../Peek'
 import { formatQuantity } from '../quantity'
 import { ValueTag, ValueText, ValueUnitIcon } from '../Value'
@@ -522,6 +524,8 @@ const CostSectionBody = memo(({ character }: { character: ICharacter }) => {
   // goalCharacter() 没有计划时给的是现在的练度，分不出有没有计划
   const goal = useAtomValue(atoms.goalCharacters)[c.key]
   const tc = ga.getTrainingCost()
+  // Without the penguin matrix there are no values either; that is a download to retry, not a calculation that failed.
+  const penguin = useMissingData(ga.getDataManager().$penguin)
   const matrix = useMemo(() => tc.costMatrix(c, current, goal), [tc, c, current, goal])
   const [selected, setSelected] = useState<CostCellId>()
   // 选中的格不在这张表里了（例如刚取消了计划），回到默认格
@@ -531,6 +535,19 @@ const CostSectionBody = memo(({ character }: { character: ICharacter }) => {
     <div className="cpp-cost">
       {tc.valuesOk ? (
         <CostTrack matrix={matrix} />
+      ) : penguin.missing ? (
+        <Callout intent="warning" compact={true} className="cpp-cost-warning">
+          <div className="cpp-cost-missing">
+            <span>
+              {gt.pgettext('training cost', '企鹅物流的掉落数据载入失败，暂时算不出价值；材料明细不受影响')}
+              <br />
+              {networkAdvice()}
+            </span>
+            <Button size="small" variant="outlined" loading={penguin.loading} onClick={penguin.retry}>
+              {gt.pgettext('missing data', '重试')}
+            </Button>
+          </div>
+        </Callout>
       ) : (
         <Callout intent="warning" compact={true} className="cpp-cost-warning">
           {gt.pgettext('training cost', '物品价值计算失败，暂时算不出价值；材料明细不受影响')}

@@ -11,6 +11,7 @@ import { RankKind, TrainingCost, efficiencyPercent, showsMost } from '../../pkg/
 import { FieldContext, Querier } from '../../pkg/cpp-basic'
 import { gt } from '../../pkg/gt'
 import { CharacterListColumn, createSimpleExtraField, percentageColumnWidth } from '../CharacterList'
+import { networkAdvice } from '../Err'
 import { CachedImg } from '../Icons'
 import { useShowCharacterDossier } from '../dossierHooks'
 import { useRequestFrame } from '../focusFrame'
@@ -249,7 +250,10 @@ const BaseSkillCell = memo(({ context, width }: { context: BaseSkillContext; wid
   if (!loaded) {
     text = <Skeleton />
   } else if ('error' in loaded) {
-    text = <span className="cpp-bskill-missing">{gt.pgettext('arknights base skill', '原文没有加载出来')}</span>
+    const missing = gt.pgettext('arknights base skill', '原文没有加载出来')
+    text = <span className="cpp-bskill-missing">{missing}</span>
+    // No room in the cell; a click opens the 基建技能 page, which says it with a 重试.
+    title = [buff.name, missing, networkAdvice()].join('\n')
   } else {
     const detail = getBuildingBuffDetail(loaded.details, buff.id)
     if (!detail) {

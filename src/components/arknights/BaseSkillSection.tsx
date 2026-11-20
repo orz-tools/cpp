@@ -17,6 +17,7 @@ import { Details, getBuildingBuffDetail } from '../../pkg/cpp-arknights/details'
 import { parseRichText } from '../../pkg/cpp-arknights/richText'
 import { ICharacter } from '../../pkg/cpp-basic'
 import { gt, lpstr } from '../../pkg/gt'
+import { networkAdvice } from '../Err'
 import { CachedImg } from '../Icons'
 import { useFocusFrame } from '../focusFrame'
 import { ValueTag } from '../Value'
@@ -331,6 +332,7 @@ const BaseSkillSectionBody = memo(({ character }: { character: ICharacter }) => 
       </div>
       {loaded && 'error' in loaded ? (
         <div className="cpp-bskill-retry">
+          <span className="cpp-bskill-missing">{networkAdvice()}</span>
           <Button size="small" variant="outlined" onClick={retry}>
             {gt.pgettext('arknights base skill', '重试')}
           </Button>

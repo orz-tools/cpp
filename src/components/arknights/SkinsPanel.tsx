@@ -6,6 +6,7 @@ import { useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
 import { SkinBrand, SkinPeriod } from '../../pkg/cpp-arknights/skins'
 import { gt, lpstr } from '../../pkg/gt'
+import { networkAdvice } from '../Err'
 import { SidebarPanel } from '../types'
 import {
   SkinOwnSwitch,
@@ -260,7 +261,10 @@ const Footer = memo(({ model, marking }: { model: SkinModel; marking: boolean })
       {model.prts.status === 'error' ? (
         <div className="cpp-skins-foot cpp-skins-foot-error">
           <Icon icon="warning-sign" size={12} />
-          <span>{gt.pgettext('skins', 'PRTS 数据载入失败')}</span>
+          <span>
+            {gt.pgettext('skins', 'PRTS 数据载入失败')}
+            <span className="cpp-skins-advice">{networkAdvice()}</span>
+          </span>
           <Button variant="minimal" size="small" text={gt.pgettext('skins', '重试')} onClick={model.prts.retry} />
         </div>
       ) : null}

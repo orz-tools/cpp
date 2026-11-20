@@ -249,6 +249,17 @@
   color: var(--bp-typography-color-muted);
 }
 
+/* The network advice does not fit in the row: a line of its own, right-aligned under 统计载入失败 */
+.cpp-charstat-bar.is-missing {
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+
+.cpp-charstat-own-advice {
+  flex: 1 0 100%;
+  text-align: right;
+}
+
 .cpp-charstat-empty {
   padding: 14px;
   font-size: 13px;
@@ -883,6 +894,10 @@ p > .cpp-charstat-det-tag,
   justify-content: space-between;
   gap: 8px;
   color: var(--bp-typography-color-muted);
+}
+
+.cpp-charstat-det-error > .bp6-button {
+  flex: none;
 }
 
 .cpp-charstat-det-missing {
@@ -2573,6 +2588,17 @@ section:first-child > .cpp-stages-wide-section {
   margin-bottom: 12px;
 }
 
+.cpp-cost-missing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cpp-cost-missing > .bp6-button {
+  flex: none;
+}
+
 .cpp-cost-subtitle {
   margin: 16px 0 6px;
   font-size: 12px;
@@ -3570,6 +3596,23 @@ section:first-child > .cpp-stages-wide-section {
   margin-left: auto;
 }
 
+/* 载入失败的红字后面那句网络建议是灰字；底部一行放不下，自成一行、可以折行 */
+.cpp-skins-advice {
+  color: var(--bp-typography-color-muted);
+}
+
+.cpp-skins-foot-error > span:first-of-type {
+  white-space: normal;
+}
+
+.cpp-skins-foot-error > .bp6-button {
+  flex: none;
+}
+
+.cpp-skins-foot-error .cpp-skins-advice {
+  display: block;
+}
+
 /* 大窗口 */
 
 .cpp-skins-wide {
@@ -3615,12 +3658,22 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 12px;
 }
 
+/* 带上网络建议，工具栏里放不下：自成一行，排在工具栏下面 */
+.cpp-skins-wide-bar > .cpp-skins-wide-error {
+  flex: 1 0 100%;
+}
+
 .cpp-skins-wide-error {
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: 12px;
+  white-space: normal;
   color: var(--bp-typography-color-danger-rest);
+}
+
+.cpp-skins-wide-error > .bp6-button {
+  flex: none;
 }
 
 .cpp-skins-wide-chart {
@@ -4381,7 +4434,14 @@ section:first-child > .cpp-stages-wide-section {
 }
 
 .cpp-bskill-retry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-top: 10px;
+}
+
+.cpp-bskill-retry > .bp6-button {
+  flex: none;
 }
 
 /* 档案「特勤任务」页（SpecialOperatorSection.tsx） */

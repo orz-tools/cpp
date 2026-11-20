@@ -10,6 +10,7 @@ import {
 } from '../../pkg/cpp-arknights/arkntools'
 import { buildMaaOperProgressPlans, formatMaaOperProgressPlans } from '../../pkg/cpp-arknights/maaOperProgress'
 import { gt } from '../../pkg/gt'
+import { networkAdvice } from '../Err'
 import { AppToaster } from '../Toaster'
 
 export const ExporterMenuItems = memo(() => {
@@ -123,7 +124,7 @@ export const ExporterMenuItems = memo(() => {
     ]
     // The stage codes come from the penguin matrix; without it no excluded stage can be named.
     if (dm.isMissing(dm.$penguin) && forbiddenStageIds.length > 0) {
-      notes.push(gt.gettext('企鹅物流的掉落数据没有载入，排除的关卡没有导出。'))
+      notes.push(gt.gettext('企鹅物流的掉落数据没有载入，排除的关卡没有导出。'), networkAdvice())
     }
     if (partial > 0) {
       notes.push(

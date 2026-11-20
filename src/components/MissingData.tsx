@@ -5,6 +5,7 @@ import useEvent from 'react-use-event-hook'
 import { useCpp } from '../Cpp'
 import { DataContainerObject } from '../pkg/dccache'
 import { gt } from '../pkg/gt'
+import { networkAdvice } from './Err'
 
 /**
  * Whether the committed game data goes without this optional container, whether it is loading, and a retry that loads
@@ -28,7 +29,7 @@ export function useMissingData(obj: DataContainerObject<any> | null | undefined)
   return { missing, loading, retry }
 }
 
-/** Fills the place of what cannot be drawn without the container, with a 重试 */
+/** Fills the place of what cannot be drawn without the container, with the network advice and a 重试 */
 export const MissingDataState = memo(
   ({ obj, title, description }: { obj: DataContainerObject<any>; title: string; description: string }) => {
     const { loading, retry } = useMissingData(obj)
@@ -36,7 +37,13 @@ export const MissingDataState = memo(
       <NonIdealState
         icon="warning-sign"
         title={title}
-        description={description}
+        description={
+          <>
+            {description}
+            <br />
+            {networkAdvice()}
+          </>
+        }
         action={<Button icon="refresh" text={gt.pgettext('missing data', '重试')} loading={loading} onClick={retry} />}
       />
     )

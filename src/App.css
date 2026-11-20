@@ -620,6 +620,11 @@ body {
   font-weight: normal;
 }
 
+/* 弹出的菜单按内容收缩：这段长文字不参与撑宽，按其他项的宽度折行 */
+.cpp-menu-fit {
+  contain: inline-size;
+}
+
 .cpp-menu-not-interactive {
   background-color: inherit !important;
   cursor: auto !important;

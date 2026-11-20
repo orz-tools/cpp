@@ -6,6 +6,7 @@ import { useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter } from '../../pkg/cpp-arknights'
 import { SkinPeriod } from '../../pkg/cpp-arknights/skins'
 import { gt } from '../../pkg/gt'
+import { networkAdvice } from '../Err'
 import {
   SkinOwnSwitch,
   SkinSearch,
@@ -351,13 +352,6 @@ export const SkinsWide = memo(() => {
           ]}
         />
         <span className="cpp-skins-wide-actions">
-          {model.prts.status === 'error' ? (
-            <span className="cpp-skins-wide-error">
-              <Icon icon="warning-sign" size={12} />
-              {gt.pgettext('skins', 'PRTS 数据载入失败')}
-              <Button variant="minimal" size="small" text={gt.pgettext('skins', '重试')} onClick={model.prts.retry} />
-            </span>
-          ) : null}
           {model.canImportSkland ? (
             <Button
               variant="minimal"
@@ -387,6 +381,14 @@ export const SkinsWide = memo(() => {
             />
           )}
         </span>
+        {model.prts.status === 'error' ? (
+          <div className="cpp-skins-wide-error">
+            <Icon icon="warning-sign" size={12} />
+            {gt.pgettext('skins', 'PRTS 数据载入失败')}
+            <span className="cpp-skins-advice">{networkAdvice()}</span>
+            <Button variant="minimal" size="small" text={gt.pgettext('skins', '重试')} onClick={model.prts.retry} />
+          </div>
+        ) : null}
       </div>
       <WideTimeline model={model} />
       <div className="cpp-skins-wide-main">

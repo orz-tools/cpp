@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+import { gt } from '../pkg/gt'
 
 export interface Err {
   error?: any
@@ -13,3 +14,6 @@ export class FriendlyError extends Error {
     super(message, options)
   }
 }
+
+/** The advice every message about data that did not load or download carries; one string, so one translation. */
+export const networkAdvice = () => gt.gettext('请检查网络连接/更换网络/使用「加速器」/切换线路。')

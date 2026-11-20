@@ -10,6 +10,7 @@ import {
   HTMLSelect,
   HTMLTable,
   Intent,
+  Menu,
   MenuItem,
   NumericInput,
   Popover,
@@ -38,6 +39,7 @@ import {
 import { gt } from '../../pkg/gt'
 import { externalLinkProps } from '../AboutList'
 import { StagePopover } from '../ConfigUi'
+import { networkAdvice } from '../Err'
 import { ItemIcon } from '../Icons'
 import { useMissingData } from '../MissingData'
 
@@ -498,6 +500,13 @@ export const ValueConfigMenu = memo(() => {
             intent={Intent.DANGER}
             text={gt.pgettext('value config', '企鹅物流的掉落数据载入失败')}
           />
+          <Menu className="cpp-menu-indent">
+            <MenuItem
+              className="cpp-menu-not-interactive"
+              multiline={true}
+              text={<div className="cpp-menu-secondary cpp-menu-fit">{networkAdvice()}</div>}
+            />
+          </Menu>
           <MenuItem
             icon="refresh"
             text={gt.pgettext('value config', '重试')}

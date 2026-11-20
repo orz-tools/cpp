@@ -3,6 +3,7 @@ import { memo, useId } from 'react'
 import { ArknightsDataManager, SurveySourceKey } from '../../../pkg/cpp-arknights'
 import { HeyboxSurveySource, YituliuSurveySource } from '../../../pkg/cpp-arknights/survey'
 import { gt } from '../../../pkg/gt'
+import { networkAdvice } from '../../Err'
 import { useMissingData } from '../../MissingData'
 import { statTooltip } from './SurveyStat'
 import { useEditor } from './context'
@@ -24,7 +25,7 @@ export const SurveyBar = memo(
     const own = survey?.own(character)
 
     return (
-      <div className="cpp-charstat-bar">
+      <div className={'cpp-charstat-bar' + (missing ? ' is-missing' : '')}>
         <div className="cpp-charstat-bar-source" role="group" aria-labelledby={labelId}>
           <span id={labelId}>{gt.pgettext('arknights status editor', '统计')}</span>
           <SegmentedControl
@@ -39,12 +40,15 @@ export const SurveyBar = memo(
           />
         </div>
         {missing ? (
-          <span className="cpp-charstat-own cpp-charstat-own-error">
-            {gt.pgettext('arknights status editor', '统计载入失败')}
-            <Button size="small" variant="outlined" loading={loading} onClick={retry}>
-              {gt.pgettext('arknights status editor', '重试')}
-            </Button>
-          </span>
+          <>
+            <span className="cpp-charstat-own cpp-charstat-own-error">
+              {gt.pgettext('arknights status editor', '统计载入失败')}
+              <Button size="small" variant="outlined" loading={loading} onClick={retry}>
+                {gt.pgettext('arknights status editor', '重试')}
+              </Button>
+            </span>
+            <span className="cpp-charstat-own-advice">{networkAdvice()}</span>
+          </>
         ) : survey ? (
           <span className="cpp-charstat-own">
             <Icon icon="people" size={14} />
