@@ -1,8 +1,8 @@
-import { IconName, MenuDivider, MenuItem } from '@blueprintjs/core'
+import { Icon, IconName, Menu, MenuDivider, MenuItem } from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, sortBy } from 'ramda'
-import React, { memo, useContext, useEffect, useMemo } from 'react'
+import React, { memo, useContext, useEffect, useMemo, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useGameAdapter } from '../Cpp'
 import { GameName } from '../games'
@@ -10,6 +10,7 @@ import { PSTR, gt, lpstr } from '../pkg/gt'
 import { externalLinkProps } from './AboutList'
 import { PSTRs } from './LineBreaks'
 import { LogTarget, useLogTarget } from './logTargets'
+import { usePhoneLayout } from './phoneLayout'
 import { CloseSidebarPanelDialogContext } from './SidebarPanelDialog'
 import { LogMark, hasUnseenLogs, readLogMark } from './sidebarState'
 
@@ -317,35 +318,62 @@ const LogDetails = memo(({ details }: { details: LogDetail[] }) => (
   </>
 ))
 
+/** 手机布局里一条日志占满整行，子菜单左右都放不下，弹出来就出了屏幕：点一下在这一条底下展开 */
+const InlineLogEntry = ({ log, details }: { log: Log; details: React.ReactNode }) => {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <MenuItem
+        icon={iconMap[log.type]}
+        text={<LogText desc={log.desc} />}
+        multiline={true}
+        labelElement={<Icon icon={open ? 'chevron-up' : 'chevron-down'} />}
+        aria-expanded={open}
+        onClick={() => setOpen((x) => !x)}
+      />
+      {open ? (
+        <li role="none">
+          <Menu className="cpp-menu-indent">{details}</Menu>
+        </li>
+      ) : null}
+    </>
+  )
+}
+
+const LogEntry = memo(({ log, inline }: { log: Log; inline: boolean }) => {
+  // Blueprint opens a submenu whenever children is not null, so pass nothing for a plain entry
+  const submenu =
+    log.details || log.children ? (
+      <>
+        {log.details ? <LogDetails details={log.details} /> : null}
+        {log.children}
+      </>
+    ) : undefined
+  if (submenu && inline) return <InlineLogEntry log={log} details={submenu} />
+  return (
+    <MenuItem
+      href={log.href}
+      className={submenu || log.href ? undefined : 'cpp-menu-not-interactive'}
+      icon={iconMap[log.type]}
+      text={<LogText desc={log.desc} />}
+      multiline={true}
+      popoverProps={{ usePortal: true }}
+      submenuProps={log.details ? { className: 'cpp-log-details' } : undefined}
+      {...(log.href ? externalLinkProps : {})}
+    >
+      {submenu}
+    </MenuItem>
+  )
+})
+
 const LogGroup = memo(({ title, items }: { title: React.ReactNode; items: Log[] }) => {
+  const inline = usePhoneLayout()
   return (
     <>
       <MenuDivider title={title} />
-      {items.map((vv, index) => {
-        // Blueprint opens a submenu whenever children is not null, so pass nothing for a plain entry
-        const submenu =
-          vv.details || vv.children ? (
-            <>
-              {vv.details ? <LogDetails details={vv.details} /> : null}
-              {vv.children}
-            </>
-          ) : undefined
-        return (
-          <MenuItem
-            key={index}
-            href={vv.href}
-            className={submenu || vv.href ? undefined : 'cpp-menu-not-interactive'}
-            icon={iconMap[vv.type]}
-            text={<LogText desc={vv.desc} />}
-            multiline={true}
-            popoverProps={{ usePortal: true }}
-            submenuProps={vv.details ? { className: 'cpp-log-details' } : undefined}
-            {...(vv.href ? externalLinkProps : {})}
-          >
-            {submenu}
-          </MenuItem>
-        )
-      })}
+      {items.map((log, index) => (
+        <LogEntry key={index} log={log} inline={inline} />
+      ))}
     </>
   )
 })

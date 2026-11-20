@@ -34,7 +34,7 @@ import { PeekTrigger } from './Peek'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
 import { useRequestFrame } from './focusFrame'
 import { useLongPressContextMenu } from './longPress'
-import { useCoarsePointer } from './phoneLayout'
+import { useCoarsePointer, usePhoneLayout } from './phoneLayout'
 import {
   TASK_HEADER_HEIGHT,
   charDragGaps,
@@ -88,7 +88,7 @@ const TaskContextMenu = memo(
   }: {
     task: Task<G>
     extra: TaskExtra
-    /** 触屏上隐藏材料时，悬停的子菜单没有了：备注和材料放在菜单最上面 */
+    /** 触屏上和手机布局里隐藏材料时，悬停的子菜单没有了：备注和材料放在菜单最上面 */
     details?: React.ReactNode
   }) => {
     const store = useStore()
@@ -270,10 +270,13 @@ export const TaskMenu = memo(
     ))
 
     const hasDetails = renderedNotes.length > 0 || renderedCosts.length > 0
-    // 触屏上没有悬停：点任务行弹出它的右键菜单，隐藏材料时材料也列在那个菜单里
+    // 触屏上没有悬停；手机布局里任务行占满整行，子菜单左右都放不下，用鼠标也一样。
+    // 这两种情况点任务行弹出它的右键菜单，隐藏材料时材料也列在那个菜单里
     const coarse = useCoarsePointer()
-    const submenu = !coarse && hideCosts && hasDetails
-    const menuDetails = coarse && hideCosts && hasDetails ? [...renderedNotes, ...renderedCosts] : undefined
+    const phone = usePhoneLayout()
+    const menuOnClick = coarse || phone
+    const submenu = !menuOnClick && hideCosts && hasDetails
+    const menuDetails = menuOnClick && hideCosts && hasDetails ? [...renderedNotes, ...renderedCosts] : undefined
 
     const starred = details.directStars.has(task)
       ? StarStatus.Starred
@@ -376,9 +379,9 @@ export const TaskMenu = memo(
           <ContextMenu content={<TaskContextMenu task={task} extra={extra} details={menuDetails} />}>
             <MenuItem
               {...(task.group ? dragProps('group') : null)}
-              // 没有子菜单时只有右键菜单，悬停不该像能点；触屏上点了就出菜单
-              className={'cpp-menu-nosubmenu cpp-task-row' + (submenu || coarse ? '' : ' cpp-task-row-static')}
-              onClick={coarse ? openContextMenuBelow : undefined}
+              // 没有子菜单时只有右键菜单，悬停不该像能点；触屏上和手机布局里点了就出菜单
+              className={'cpp-menu-nosubmenu cpp-task-row' + (submenu || menuOnClick ? '' : ' cpp-task-row-static')}
+              onClick={menuOnClick ? openContextMenuBelow : undefined}
               // title={task.id}
               style={{ fontWeight: 'normal' }}
               icon={StatusIcon[extra.status]}
