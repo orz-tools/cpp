@@ -2940,6 +2940,24 @@ section:first-child > .cpp-stages-wide-section {
   min-height: 0;
 }
 
+.cpp-skins-scroll {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* 手机上筛选、档期和列表一起滚：小屏竖着拿时头像墙只剩两三行，横着拿时一行都不剩 */
+.cpp-phone .cpp-skins-scroll {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.cpp-phone .cpp-skins-list {
+  flex: none;
+  overflow: visible;
+}
+
 .cpp-skins-filter {
   display: flex;
   flex-direction: column;

@@ -309,22 +309,25 @@ const SkinsBody = memo(() => {
   const [marking] = useMarkingLifetime()
   return (
     <div className="cpp-skins-body">
-      <div className="cpp-skins-filter">
-        <SkinOwnSwitch fill />
-        <SkinSearch />
-        <div className="cpp-skins-toggles">
-          <SkinToggles model={model} />
+      {/* 手机上这一块整个滚动；底栏留在外面，标记中的「完成」一直看得见 */}
+      <div className="cpp-skins-scroll">
+        <div className="cpp-skins-filter">
+          <SkinOwnSwitch fill />
+          <SkinSearch />
+          <div className="cpp-skins-toggles">
+            <SkinToggles model={model} />
+          </div>
         </div>
-      </div>
-      {model.owned === 0 && !marking ? <EmptyCallout model={model} /> : null}
-      <TimelineBlock model={model} />
-      {/* 换一期时从列表顶上开始 */}
-      <div className="cpp-skins-list" key={period?.key ?? ''}>
-        {period ? (
-          <PeriodList model={model} period={period} marking={marking} />
-        ) : (
-          <BrandWall model={model} marking={marking} />
-        )}
+        {model.owned === 0 && !marking ? <EmptyCallout model={model} /> : null}
+        <TimelineBlock model={model} />
+        {/* 换一期时从列表顶上开始 */}
+        <div className="cpp-skins-list" key={period?.key ?? ''}>
+          {period ? (
+            <PeriodList model={model} period={period} marking={marking} />
+          ) : (
+            <BrandWall model={model} marking={marking} />
+          )}
+        </div>
       </div>
       <Footer model={model} marking={marking} />
     </div>
