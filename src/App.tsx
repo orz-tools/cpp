@@ -282,7 +282,8 @@ const App = memo(() => {
         <section
           {...areaProps('farm', phone, area)}
           style={{
-            width: phone ? undefined : '470px',
+            // 两栏 250px + 220px；关卡那一栏的滚动条不浮在内容上时，这一块再宽出滚动条那一条（App.css 的 .cpp-farm-stages）
+            minWidth: phone ? undefined : '470px',
             display: 'flex',
             flexDirection: 'column',
           }}
