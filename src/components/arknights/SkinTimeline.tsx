@@ -48,15 +48,16 @@ function fitText(text: string, size: number, max: number) {
   return out + '…'
 }
 
+/** 侧栏面板 300px 宽时图的宽度；量到实际宽度之前先照它画 */
 const PANEL_WIDTH = 284
 const PANEL_ROW = 20
 const PANEL_TOP = 14
 const PANEL_FONT = 11
 
 /** 条够宽就写在条里，否则写在左边或右边放得下的一边；哪边都放不下时选最宽的一边截短 */
-function panelLabel(x: number, w: number, text: string) {
+function panelLabel(x: number, w: number, text: string, width: number) {
   const need = textWidth(text, PANEL_FONT)
-  const rooms = { inside: w - 10, left: x - 4, right: PANEL_WIDTH - (x + w) - 4 }
+  const rooms = { inside: w - 10, left: x - 4, right: width - (x + w) - 4 }
   const fits = (['inside', 'left', 'right'] as const).find((k) => need <= rooms[k])
   const place = fits ?? (['inside', 'left', 'right'] as const).reduce((a, b) => (rooms[b] > rooms[a] ? b : a))
   const shown = fitText(text, PANEL_FONT, rooms[place])
@@ -99,13 +100,16 @@ export const TimelineHead = memo(({ open, onToggle, now }: { open: boolean; onTo
 
 /**
  * 面板的档期图：今天往前 26 天到往后 21 天，只画还没结束的；下面一排常驻渠道。每一条都是按钮，点一下选中这一期，再点取消。
+ * 图占满面板的宽度：手机上面板占满一屏，日期跟着拉开。
  */
 export const PanelTimeline = memo(({ model }: { model: SkinModel }) => {
   const { selected, toggle } = usePeriodToggle()
+  const ref = useRef<HTMLDivElement>(null)
+  const { width = PANEL_WIDTH } = useResizeObserver({ ref })
   const { now } = model
   const x0 = now - 26 * DAY
   const x1 = now + 21 * DAY
-  const X = (t: number) => ((Math.min(Math.max(t, x0), x1) - x0) / (x1 - x0)) * PANEL_WIDTH
+  const X = (t: number) => ((Math.min(Math.max(t, x0), x1) - x0) / (x1 - x0)) * width
 
   const bars = model.periods.filter((p) => p.lane != null && p.end != null && p.end >= now && p.start < x1)
   const permanent = model.periods
@@ -123,8 +127,8 @@ export const PanelTimeline = memo(({ model }: { model: SkinModel }) => {
       {bars.length === 0 ? (
         <div className="cpp-skins-muted cpp-skins-time-empty">{gt.pgettext('skins', '现在没有在卖的时装')}</div>
       ) : (
-        <div className="cpp-skins-time-chart" style={{ height }}>
-          <svg width={PANEL_WIDTH} height={height} aria-hidden="true">
+        <div className="cpp-skins-time-chart" ref={ref} style={{ height }}>
+          <svg width={width} height={height} aria-hidden="true">
             {ticks.map((t) => (
               <g key={t} className="cpp-skins-tick">
                 <line x1={X(t)} x2={X(t)} y1={PANEL_TOP - 2} y2={height} />
@@ -137,7 +141,7 @@ export const PanelTimeline = memo(({ model }: { model: SkinModel }) => {
               const x = X(p.start)
               const w = Math.max(4, X(p.end!) - x)
               const y = PANEL_TOP + i * PANEL_ROW + 2
-              const label = panelLabel(x, w, barText(model, p))
+              const label = panelLabel(x, w, barText(model, p), width)
               return (
                 <g
                   key={p.key}
@@ -164,7 +168,7 @@ export const PanelTimeline = memo(({ model }: { model: SkinModel }) => {
           {bars.map((p, i) => {
             const x = X(p.start)
             const w = Math.max(4, X(p.end!) - x)
-            const { hitLeft: left, hitRight: right } = panelLabel(x, w, barText(model, p))
+            const { hitLeft: left, hitRight: right } = panelLabel(x, w, barText(model, p), width)
             return (
               <button
                 key={p.key}

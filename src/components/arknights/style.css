@@ -3259,6 +3259,13 @@ section:first-child > .cpp-stages-wide-section {
   padding: 6px 4px 10px 14px;
 }
 
+/* 手机上面板占满一屏：一行能放几个头像就放几个，再放大到排满整行；右边留 12px，勾伸出头像 4px，和进度条右端对齐 */
+.cpp-phone .cpp-skins-wall {
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 6px;
+  padding-right: 12px;
+}
+
 .cpp-skins-tile-wrap.bp6-popover-target {
   display: block;
 }
