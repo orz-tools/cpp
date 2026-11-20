@@ -6,6 +6,7 @@ import type { UserData } from '../pkg/cpp-core/UserData'
 import { PSTR } from '../pkg/gt'
 import type { ImportFormat } from './Importer'
 import type { PeekKind } from './peek'
+import type { RosterImagePainter } from './rosterImage/scene'
 
 export interface ItemSimulatedViewConfig {
   limit: number
@@ -84,6 +85,8 @@ export interface IGameComponent {
   CharacterDossierMeta?: React.FC<{ character: any }>
   renderCharacterStatus?: (status: any, character: any, current?: any, alreadyHide?: boolean) => any
   renderCharacterAvatarBadge?: (status: any, character: any) => any
+  /** hook：练度图里头像和练度格的画法；没有时两个入口都不出现 */
+  useRosterImagePainter?: () => RosterImagePainter
   charStatusWidth?: number
   style?: string
   itemSimulatedViewConfig?: ItemSimulatedViewConfig
