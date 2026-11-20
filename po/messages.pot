@@ -10,42 +10,42 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:141
+#: src/components/arknights/ExporterMenuItems.tsx:142
 msgid "%d 名一、二星干员在明日方舟工具箱中没有养成数据，没有导出。"
 msgid_plural "%d 名一、二星干员在明日方舟工具箱中没有养成数据，没有导出。"
 msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:64
+#: src/components/arknights/ExporterMenuItems.tsx:65
 msgid "%d 名干员尚未持有或是阿米娅，没有导出。"
 msgid_plural "%d 名干员尚未持有或是阿米娅，没有导出。"
 msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:53
+#: src/components/arknights/ExporterMenuItems.tsx:54
 msgid "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
 msgid_plural "%d 名干员的等级或模组目标 MAA 不能执行，未包含在内。"
 msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:130
+#: src/components/arknights/ExporterMenuItems.tsx:131
 msgid "%d 名干员的等级目标明日方舟工具箱不计算，未包含在内。"
 msgid_plural "%d 名干员的等级目标明日方舟工具箱不计算，未包含在内。"
 msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:75
+#: src/components/arknights/ExporterMenuItems.tsx:76
 msgid "%d 名特殊干员靠集成战略的任务养成，MAA 不能执行，没有导出。"
 msgid_plural "%d 名特殊干员靠集成战略的任务养成，MAA 不能执行，没有导出。"
 msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:152
+#: src/components/arknights/ExporterMenuItems.tsx:153
 msgid "%d 名特殊干员靠集成战略的任务养成，不消耗材料，没有导出。"
 msgid_plural "%d 名特殊干员靠集成战略的任务养成，不消耗材料，没有导出。"
 msgstr[0] ""
@@ -80,7 +80,7 @@ msgstr ""
 msgid "Closure++ 已不再支持 %s"
 msgstr ""
 
-#: src/components/AboutList.tsx:39
+#: src/components/AboutList.tsx:40
 msgid "Discord"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 msgid "PRTS 时装回廊"
 msgstr ""
 
-#: src/components/AboutList.tsx:50
+#: src/components/AboutList.tsx:51
 msgid "QQ 交流群"
 msgstr ""
 
@@ -131,7 +131,7 @@ msgstr ""
 msgid "企鹅物流数据统计 素材掉落统计数据"
 msgstr ""
 
-#: src/components/arknights/ExporterMenuItems.tsx:126
+#: src/components/arknights/ExporterMenuItems.tsx:127
 msgid "企鹅物流的掉落数据没有载入，排除的关卡没有导出。"
 msgstr ""
 
@@ -181,8 +181,8 @@ msgstr ""
 msgid "全部禁用"
 msgstr ""
 
-#: src/components/AboutList.tsx:142
 #: src/components/AboutList.tsx:143
+#: src/components/AboutList.tsx:144
 msgid "关于"
 msgstr ""
 
@@ -207,7 +207,7 @@ msgid_plural "其中 %d 次有人还不能做"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/AboutList.tsx:81
+#: src/components/AboutList.tsx:82
 msgid "其他资源"
 msgstr ""
 
@@ -221,7 +221,7 @@ msgstr[1] ""
 msgid "最好还是别合成的道具"
 msgstr ""
 
-#: src/locales.tsx:57
+#: src/locales.tsx:59
 msgid "切换语言失败"
 msgstr ""
 
@@ -313,7 +313,7 @@ msgstr ""
 msgid "培养目标"
 msgstr ""
 
-#: src/components/AboutList.tsx:106
+#: src/components/AboutList.tsx:107
 msgid "声明"
 msgstr ""
 
@@ -324,11 +324,11 @@ msgid_plural "备份中排除了 %d 个关卡，与 cpp 当前的设置不同；
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/arknights/ExporterMenuItems.tsx:171
+#: src/components/arknights/ExporterMenuItems.tsx:172
 msgid "复制为 MAA「干员培养」计划"
 msgstr ""
 
-#: src/components/arknights/ExporterMenuItems.tsx:174
+#: src/components/arknights/ExporterMenuItems.tsx:175
 msgid "复制为明日方舟工具箱「精英材料计算」备份"
 msgstr ""
 
@@ -427,7 +427,7 @@ msgid "尚不支持这名干员：%s。可能游戏数据尚未更新，请静�
 msgstr ""
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:43
+#: src/components/arknights/ExporterMenuItems.tsx:44
 msgid "已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
 msgid_plural "已复制 %d 名干员的培养计划，请在 MAA「干员培养」中点击「从剪贴板读取」。"
 msgstr[0] ""
@@ -442,14 +442,14 @@ msgid "已复制「%s」"
 msgstr ""
 
 #. %d: number
-#: src/components/arknights/ExporterMenuItems.tsx:116
+#: src/components/arknights/ExporterMenuItems.tsx:117
 msgid "已复制含 %d 项干员计划的备份，请在明日方舟工具箱「精英材料计算」中点击「导入」→「恢复」并粘贴。恢复会覆盖明日方舟工具箱中现有的计划和库存。"
 msgid_plural "已复制含 %d 项干员计划的备份，请在明日方舟工具箱「精英材料计算」中点击「导入」→「恢复」并粘贴。恢复会覆盖明日方舟工具箱中现有的计划和库存。"
 msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ValueConfigMenu.tsx:489
+#: src/components/arknights/ValueConfigMenu.tsx:491
 msgid "已定价 %d 种物品"
 msgid_plural "已定价 %d 种物品"
 msgstr[0] ""
@@ -463,7 +463,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. %d: number
-#: src/components/arknights/ValueConfigMenu.tsx:229
+#: src/components/arknights/ValueConfigMenu.tsx:231
 msgid "已排除 %d 个关卡"
 msgid_plural "已排除 %d 个关卡"
 msgstr[0] ""
@@ -496,15 +496,15 @@ msgid_plural "已选 %d 名干员"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/AboutList.tsx:281
+#: src/components/AboutList.tsx:287
 msgid "帮助"
 msgstr ""
 
-#: src/components/AboutList.tsx:32
+#: src/components/AboutList.tsx:33
 msgid "帮助与社区"
 msgstr ""
 
-#: src/components/AboutList.tsx:33
+#: src/components/AboutList.tsx:34
 #: src/components/PhoneMore.tsx:138
 msgid "帮助文档"
 msgstr ""
@@ -593,7 +593,7 @@ msgstr ""
 msgid "数据整理自小黑盒 app 明日方舟干员统计功能。"
 msgstr ""
 
-#: src/components/AboutList.tsx:79
+#: src/components/AboutList.tsx:80
 msgid "数据源"
 msgstr ""
 
@@ -605,8 +605,8 @@ msgstr ""
 msgid "无匹配关卡"
 msgstr ""
 
-#: src/components/arknights/ExporterMenuItems.tsx:111
-#: src/components/arknights/ExporterMenuItems.tsx:38
+#: src/components/arknights/ExporterMenuItems.tsx:112
+#: src/components/arknights/ExporterMenuItems.tsx:39
 #: src/components/CharacterList.tsx:252
 msgid "无法写入剪贴板"
 msgstr ""
@@ -635,7 +635,7 @@ msgstr ""
 msgid "时间重叠、飞跃，令人恍惚，所幸我们共度的时光鲜明而真切……"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:465
+#: src/components/arknights/ValueConfigMenu.tsx:467
 msgid "明日方舟一图流"
 msgstr ""
 
@@ -661,7 +661,7 @@ msgid "更多"
 msgstr ""
 
 #. %s: datetime
-#: src/components/AboutList.tsx:219
+#: src/components/AboutList.tsx:220
 msgid "更新于 %s"
 msgstr ""
 
@@ -670,7 +670,7 @@ msgstr ""
 msgid "更新数据中…"
 msgstr ""
 
-#: src/components/AboutList.tsx:129
+#: src/components/AboutList.tsx:130
 msgid "更新笔记"
 msgstr ""
 
@@ -805,7 +805,7 @@ msgstr[1] ""
 
 #: src/components/PhoneMore.tsx:123
 #: src/components/PhoneMore.tsx:156
-#: src/locales.tsx:76
+#: src/locales.tsx:78
 msgid "界面语言"
 msgstr ""
 
@@ -853,7 +853,7 @@ msgstr ""
 msgid "解析训练室数据失败，正在训练的专精没有计入。请尽量把下面的信息发给开发者："
 msgstr ""
 
-#: src/components/arknights/ExporterMenuItems.tsx:31
+#: src/components/arknights/ExporterMenuItems.tsx:32
 msgid "计划中没有 MAA「干员培养」能执行的目标"
 msgstr ""
 
@@ -872,6 +872,10 @@ msgstr ""
 
 #: src/entry.tsx:67
 msgid "请更新您的浏览器。"
+msgstr ""
+
+#: src/components/Err.tsx:19
+msgid "请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 
 #: src/components/FarmList.tsx:291
@@ -1033,7 +1037,7 @@ msgstr ""
 msgid "道具"
 msgstr ""
 
-#: src/components/AboutList.tsx:62
+#: src/components/AboutList.tsx:63
 msgid "邮箱"
 msgstr ""
 
@@ -1046,7 +1050,7 @@ msgstr ""
 msgid "重新下载数据"
 msgstr ""
 
-#: src/components/AboutList.tsx:91
+#: src/components/AboutList.tsx:92
 msgid "鸣谢"
 msgstr ""
 
@@ -1071,47 +1075,47 @@ msgctxt "arknights arkntools step"
 msgid "点击「导出」→「导出培养方案至 MAA」"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:310
+#: src/components/arknights/statusEditor/Detail.tsx:315
 msgctxt "arknights attribute"
 msgid "再部署时间"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:305
+#: src/components/arknights/statusEditor/Detail.tsx:310
 msgctxt "arknights attribute"
 msgid "攻击"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:308
+#: src/components/arknights/statusEditor/Detail.tsx:313
 msgctxt "arknights attribute"
 msgid "攻击速度"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:312
+#: src/components/arknights/statusEditor/Detail.tsx:317
 msgctxt "arknights attribute"
 msgid "攻击间隔"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:307
+#: src/components/arknights/statusEditor/Detail.tsx:312
 msgctxt "arknights attribute"
 msgid "法术抗性"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:304
+#: src/components/arknights/statusEditor/Detail.tsx:309
 msgctxt "arknights attribute"
 msgid "生命"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:309
+#: src/components/arknights/statusEditor/Detail.tsx:314
 msgctxt "arknights attribute"
 msgid "部署费用"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:306
+#: src/components/arknights/statusEditor/Detail.tsx:311
 msgctxt "arknights attribute"
 msgid "防御"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:311
+#: src/components/arknights/statusEditor/Detail.tsx:316
 msgctxt "arknights attribute"
 msgid "阻挡数"
 msgstr ""
@@ -1223,47 +1227,47 @@ msgid "%d$level 级"
 msgstr ""
 
 #. %s$cond: 精一, 精二 or 30 级
-#: src/components/arknights/BaseSkillSection.tsx:316
+#: src/components/arknights/BaseSkillSection.tsx:317
 msgctxt "arknights base skill"
 msgid "%s$cond后升级为"
 msgstr ""
 
 #. hover text of a base skill: its name and text
-#: src/components/arknights/extraFields.tsx:260
+#: src/components/arknights/extraFields.tsx:264
 msgctxt "arknights base skill"
 msgid "%s$name：%s$text"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:222
-#: src/components/arknights/extraFields.tsx:252
+#: src/components/arknights/BaseSkillSection.tsx:223
+#: src/components/arknights/extraFields.tsx:253
 msgctxt "arknights base skill"
 msgid "原文没有加载出来"
 msgstr ""
 
 #. %s: base skill name
-#: src/components/arknights/extraFields.tsx:272
+#: src/components/arknights/extraFields.tsx:276
 msgctxt "arknights base skill"
 msgid "在档案里看 %s"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:276
+#: src/components/arknights/BaseSkillSection.tsx:277
 msgctxt "arknights base skill"
 msgid "已升级"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:278
+#: src/components/arknights/BaseSkillSection.tsx:279
 msgctxt "arknights base skill"
 msgid "已解锁"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:283
-#: src/components/arknights/extraFields.tsx:285
+#: src/components/arknights/BaseSkillSection.tsx:284
+#: src/components/arknights/extraFields.tsx:289
 msgctxt "arknights base skill"
 msgid "未持有"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:229
-#: src/components/arknights/extraFields.tsx:256
+#: src/components/arknights/BaseSkillSection.tsx:230
+#: src/components/arknights/extraFields.tsx:260
 msgctxt "arknights base skill"
 msgid "没有这条技能的原文"
 msgstr ""
@@ -1274,13 +1278,13 @@ msgctxt "arknights base skill"
 msgid "等级%d$level解锁"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:167
+#: src/components/arknights/BaseSkillSection.tsx:168
 #: src/components/arknights/baseSkillText.ts:426
 msgctxt "arknights base skill"
 msgid "精一"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:168
+#: src/components/arknights/BaseSkillSection.tsx:169
 #: src/components/arknights/baseSkillText.ts:427
 msgctxt "arknights base skill"
 msgid "精二"
@@ -1298,7 +1302,7 @@ msgctxt "arknights base skill"
 msgid "精英阶段%d$elite解锁"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:166
+#: src/components/arknights/BaseSkillSection.tsx:167
 #: src/components/arknights/baseSkillText.ts:425
 msgctxt "arknights base skill"
 msgid "精零"
@@ -1309,7 +1313,7 @@ msgctxt "arknights base skill"
 msgid "这条技能还概括不了，看原文"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:335
+#: src/components/arknights/BaseSkillSection.tsx:337
 msgctxt "arknights base skill"
 msgid "重试"
 msgstr ""
@@ -1911,50 +1915,50 @@ msgctxt "arknights quick filter"
 msgid "精英 %d"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:427
+#: src/components/arknights/CostSection.tsx:429
 #: src/components/arknights/peekKinds.tsx:31
 msgctxt "arknights skill ref"
 msgid "一技能"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:429
+#: src/components/arknights/CostSection.tsx:431
 #: src/components/arknights/peekKinds.tsx:33
 msgctxt "arknights skill ref"
 msgid "三技能"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:428
+#: src/components/arknights/CostSection.tsx:430
 #: src/components/arknights/peekKinds.tsx:32
 msgctxt "arknights skill ref"
 msgid "二技能"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:139
+#: src/components/arknights/statusEditor/Detail.tsx:144
 msgctxt "arknights skill sp"
 msgid "受击回复"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:138
+#: src/components/arknights/statusEditor/Detail.tsx:143
 msgctxt "arknights skill sp"
 msgid "攻击回复"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:137
+#: src/components/arknights/statusEditor/Detail.tsx:142
 msgctxt "arknights skill sp"
 msgid "自动回复"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:143
+#: src/components/arknights/statusEditor/Detail.tsx:148
 msgctxt "arknights skill trigger"
 msgid "手动触发"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:144
+#: src/components/arknights/statusEditor/Detail.tsx:149
 msgctxt "arknights skill trigger"
 msgid "自动触发"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:145
+#: src/components/arknights/statusEditor/Detail.tsx:150
 msgctxt "arknights skill trigger"
 msgid "被动"
 msgstr ""
@@ -2019,7 +2023,7 @@ msgctxt "arknights stage difficulty"
 msgid "磨难"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:377
+#: src/components/arknights/statusEditor/Detail.tsx:382
 #: src/components/arknights/statusEditor/text.ts:56
 msgctxt "arknights status editor"
 msgid "，"
@@ -2038,13 +2042,13 @@ msgid "%1 人里有 %2 人"
 msgstr ""
 
 #. %1: the value at the first level; %2: later levels where it changes, e.g. 3 级 60%
-#: src/components/arknights/statusEditor/Detail.tsx:376
+#: src/components/arknights/statusEditor/Detail.tsx:381
 msgctxt "arknights status editor"
 msgid "%1（%2）"
 msgstr ""
 
 #. %d: skill or module level
-#: src/components/arknights/statusEditor/Detail.tsx:368
+#: src/components/arknights/statusEditor/Detail.tsx:373
 #: src/components/arknights/statusEditor/ModSection.tsx:20
 #: src/components/arknights/statusEditor/text.ts:26
 msgctxt "arknights status editor"
@@ -2052,7 +2056,7 @@ msgid "%d 级"
 msgstr ""
 
 #. %d: module level
-#: src/components/arknights/statusEditor/Detail.tsx:455
+#: src/components/arknights/statusEditor/Detail.tsx:460
 msgctxt "arknights status editor"
 msgid "%d 级起"
 msgstr ""
@@ -2076,18 +2080,18 @@ msgid "%s %d 级以上"
 msgstr ""
 
 #. %s: skill or module name
-#: src/components/arknights/statusEditor/Detail.tsx:39
+#: src/components/arknights/statusEditor/Detail.tsx:40
 msgctxt "arknights status editor"
 msgid "%s 的说明"
 msgstr ""
 
 #. %s: seconds
-#: src/components/arknights/statusEditor/Detail.tsx:161
+#: src/components/arknights/statusEditor/Detail.tsx:166
 msgctxt "arknights status editor"
 msgid "%s 秒"
 msgstr ""
 
-#: src/components/arknights/statusEditor/SurveyBar.tsx:35
+#: src/components/arknights/statusEditor/SurveyBar.tsx:36
 msgctxt "arknights status editor"
 msgid "不显示"
 msgstr ""
@@ -2098,7 +2102,7 @@ msgctxt "arknights status editor"
 msgid "专精 %d"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:215
+#: src/components/arknights/statusEditor/Detail.tsx:220
 msgctxt "arknights status editor"
 msgid "初始技力"
 msgstr ""
@@ -2108,12 +2112,12 @@ msgctxt "arknights status editor"
 msgid "升一级"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:453
+#: src/components/arknights/statusEditor/Detail.tsx:458
 msgctxt "arknights status editor"
 msgid "召唤物"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:452
+#: src/components/arknights/statusEditor/Detail.tsx:457
 msgctxt "arknights status editor"
 msgid "天赋"
 msgstr ""
@@ -2123,13 +2127,13 @@ msgctxt "arknights status editor"
 msgid "已经练满了"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:273
+#: src/components/arknights/statusEditor/Detail.tsx:278
 msgctxt "arknights status editor"
 msgid "当前"
 msgstr ""
 
 #. %s: skill level, e.g. 7 级
-#: src/components/arknights/statusEditor/Detail.tsx:237
+#: src/components/arknights/statusEditor/Detail.tsx:242
 msgctxt "arknights status editor"
 msgid "当前 %s"
 msgstr ""
@@ -2139,7 +2143,7 @@ msgctxt "arknights status editor"
 msgid "打开「持有」后设置练度"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:210
+#: src/components/arknights/statusEditor/Detail.tsx:215
 msgctxt "arknights status editor"
 msgid "技力消耗"
 msgstr ""
@@ -2155,8 +2159,8 @@ msgctxt "arknights status editor"
 msgid "技能等级提到 %d"
 msgstr ""
 
-#: src/components/arknights/statusEditor/SurveyBar.tsx:51
-#: src/components/arknights/statusEditor/SurveyBar.tsx:59
+#: src/components/arknights/statusEditor/SurveyBar.tsx:55
+#: src/components/arknights/statusEditor/SurveyBar.tsx:63
 msgctxt "arknights status editor"
 msgid "持有率"
 msgstr ""
@@ -2167,12 +2171,12 @@ msgctxt "arknights status editor"
 msgid "持有的 %1 人里有 %2 人"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:220
+#: src/components/arknights/statusEditor/Detail.tsx:225
 msgctxt "arknights status editor"
 msgid "持续时间"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:160
+#: src/components/arknights/statusEditor/Detail.tsx:165
 msgctxt "arknights status editor"
 msgid "无限"
 msgstr ""
@@ -2198,18 +2202,18 @@ msgctxt "arknights status editor"
 msgid "模组"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:451
+#: src/components/arknights/statusEditor/Detail.tsx:456
 msgctxt "arknights status editor"
 msgid "特性"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:278
+#: src/components/arknights/statusEditor/Detail.tsx:283
 msgctxt "arknights status editor"
 msgid "目标"
 msgstr ""
 
 #. %s: skill level, e.g. 专精 3
-#: src/components/arknights/statusEditor/Detail.tsx:189
+#: src/components/arknights/statusEditor/Detail.tsx:194
 msgctxt "arknights status editor"
 msgid "目标 %s"
 msgstr ""
@@ -2236,12 +2240,12 @@ msgctxt "arknights status editor"
 msgid "精英化与等级"
 msgstr ""
 
-#: src/components/arknights/statusEditor/SurveyBar.tsx:29
+#: src/components/arknights/statusEditor/SurveyBar.tsx:30
 msgctxt "arknights status editor"
 msgid "统计"
 msgstr ""
 
-#: src/components/arknights/statusEditor/SurveyBar.tsx:43
+#: src/components/arknights/statusEditor/SurveyBar.tsx:45
 msgctxt "arknights status editor"
 msgid "统计载入失败"
 msgstr ""
@@ -2251,7 +2255,7 @@ msgctxt "arknights status editor"
 msgid "解锁者中的占比"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:76
+#: src/components/arknights/statusEditor/Detail.tsx:78
 msgctxt "arknights status editor"
 msgid "说明载入失败"
 msgstr ""
@@ -2274,18 +2278,18 @@ msgctxt "arknights status editor"
 msgid "还会把等级提到 %s（模组解锁）"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:199
+#: src/components/arknights/statusEditor/Detail.tsx:204
 msgctxt "arknights status editor"
 msgid "这个技能还没有说明数据"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:404
+#: src/components/arknights/statusEditor/Detail.tsx:409
 msgctxt "arknights status editor"
 msgid "这个模组还没有说明数据"
 msgstr ""
 
-#: src/components/arknights/statusEditor/Detail.tsx:78
-#: src/components/arknights/statusEditor/SurveyBar.tsx:45
+#: src/components/arknights/statusEditor/Detail.tsx:83
+#: src/components/arknights/statusEditor/SurveyBar.tsx:47
 msgctxt "arknights status editor"
 msgid "重试"
 msgstr ""
@@ -2598,12 +2602,12 @@ msgctxt "character list column"
 msgid "目标状态"
 msgstr ""
 
-#: src/components/AboutList.tsx:104
+#: src/components/AboutList.tsx:105
 msgctxt "credit role"
 msgid "帮助文档撰写"
 msgstr ""
 
-#: src/components/AboutList.tsx:97
+#: src/components/AboutList.tsx:98
 msgctxt "credit role"
 msgid "数据源自动化、氛围开发"
 msgstr ""
@@ -2613,12 +2617,12 @@ msgctxt "credit role"
 msgid "矢量图标绘制"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:548
+#: src/components/arknights/CostSection.tsx:565
 msgctxt "dossier section"
 msgid "养成成本"
 msgstr ""
 
-#: src/components/arknights/BaseSkillSection.tsx:345
+#: src/components/arknights/BaseSkillSection.tsx:347
 msgctxt "dossier section"
 msgid "基建技能"
 msgstr ""
@@ -2835,7 +2839,7 @@ msgid "计划"
 msgstr ""
 
 #: src/components/arknights/baseSkillText.ts:110
-#: src/components/arknights/CostSection.tsx:248
+#: src/components/arknights/CostSection.tsx:250
 #: src/components/arknights/importHooks.ts:110
 #: src/components/arknights/importHooks.ts:158
 #: src/components/arknights/importHooks.ts:167
@@ -2901,13 +2905,14 @@ msgctxt "missing data"
 msgid "物品价值、关卡统计不可用"
 msgstr ""
 
-#: src/components/AboutList.tsx:231
+#: src/components/AboutList.tsx:232
 msgctxt "missing data"
 msgid "载入失败"
 msgstr ""
 
-#: src/components/AboutList.tsx:235
-#: src/components/MissingData.tsx:40
+#: src/components/AboutList.tsx:241
+#: src/components/arknights/CostSection.tsx:547
+#: src/components/MissingData.tsx:47
 msgctxt "missing data"
 msgid "重试"
 msgstr ""
@@ -4574,8 +4579,8 @@ msgctxt "short name"
 msgid "计划(毕业)"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:333
-#: src/components/arknights/SkinsPanel.tsx:334
+#: src/components/arknights/SkinsPanel.tsx:337
+#: src/components/arknights/SkinsPanel.tsx:338
 msgctxt "sidebar panel"
 msgid "时装"
 msgstr ""
@@ -4602,7 +4607,7 @@ msgid "%1 · %2，%3"
 msgstr ""
 
 #. %1: total, %2: missing
-#: src/components/arknights/SkinsWide.tsx:217
+#: src/components/arknights/SkinsWide.tsx:218
 msgctxt "skins"
 msgid "%1 件，缺 %2"
 msgstr ""
@@ -4637,8 +4642,8 @@ msgctxt "skins"
 msgid "%s 获得"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:263
-#: src/components/arknights/SkinsWide.tsx:357
+#: src/components/arknights/SkinsPanel.tsx:265
+#: src/components/arknights/SkinsWide.tsx:387
 msgctxt "skins"
 msgid "PRTS 数据载入失败"
 msgstr ""
@@ -4648,7 +4653,7 @@ msgctxt "skins"
 msgid "不到 1 天"
 msgstr ""
 
-#: src/components/arknights/SkinsWide.tsx:163
+#: src/components/arknights/SkinsWide.tsx:164
 msgctxt "skins"
 msgid "不知道获得时间"
 msgstr ""
@@ -4664,9 +4669,9 @@ msgctxt "skins"
 msgid "今天 %s"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:283
-#: src/components/arknights/SkinsPanel.tsx:73
-#: src/components/arknights/SkinsWide.tsx:366
+#: src/components/arknights/SkinsPanel.tsx:287
+#: src/components/arknights/SkinsPanel.tsx:74
+#: src/components/arknights/SkinsWide.tsx:360
 msgctxt "skins"
 msgid "从森空岛导入"
 msgstr ""
@@ -4686,9 +4691,9 @@ msgctxt "skins"
 msgid "全部"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:120
-#: src/components/arknights/SkinsWide.tsx:133
-#: src/components/arknights/SkinsWide.tsx:267
+#: src/components/arknights/SkinsPanel.tsx:121
+#: src/components/arknights/SkinsWide.tsx:134
+#: src/components/arknights/SkinsWide.tsx:268
 msgctxt "skins"
 msgid "其他"
 msgstr ""
@@ -4738,17 +4743,17 @@ msgctxt "skins"
 msgid "可获得"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:135
+#: src/components/arknights/SkinsPanel.tsx:136
 msgctxt "skins"
 msgid "可获得 %d"
 msgstr ""
 
-#: src/components/arknights/SkinsWide.tsx:253
+#: src/components/arknights/SkinsWide.tsx:254
 msgctxt "skins"
 msgid "品牌"
 msgstr ""
 
-#: src/components/arknights/SkinsWide.tsx:228
+#: src/components/arknights/SkinsWide.tsx:229
 msgctxt "skins"
 msgid "回到全部"
 msgstr ""
@@ -4759,8 +4764,8 @@ msgctxt "skins"
 msgid "复刻"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:271
-#: src/components/arknights/SkinsWide.tsx:376
+#: src/components/arknights/SkinsPanel.tsx:275
+#: src/components/arknights/SkinsWide.tsx:370
 msgctxt "skins"
 msgid "完成"
 msgstr ""
@@ -4772,9 +4777,9 @@ msgctxt "skins"
 msgid "已有"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:138
-#: src/components/arknights/SkinsPanel.tsx:55
-#: src/components/arknights/SkinsWide.tsx:254
+#: src/components/arknights/SkinsPanel.tsx:139
+#: src/components/arknights/SkinsPanel.tsx:56
+#: src/components/arknights/SkinsWide.tsx:255
 msgctxt "skins"
 msgid "已有 / 全部"
 msgstr ""
@@ -4796,34 +4801,34 @@ msgctxt "skins"
 msgid "干员或时装名"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:292
-#: src/components/arknights/SkinsPanel.tsx:77
-#: src/components/arknights/SkinsWide.tsx:385
+#: src/components/arknights/SkinsPanel.tsx:296
+#: src/components/arknights/SkinsPanel.tsx:78
+#: src/components/arknights/SkinsWide.tsx:379
 msgctxt "skins"
 msgid "手动标记"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:275
+#: src/components/arknights/SkinsPanel.tsx:279
 msgctxt "skins"
 msgid "拥有情况"
 msgstr ""
 
-#: src/components/arknights/SkinsWide.tsx:349
+#: src/components/arknights/SkinsWide.tsx:350
 msgctxt "skins"
 msgid "按上线时间"
 msgstr ""
 
-#: src/components/arknights/SkinsWide.tsx:348
+#: src/components/arknights/SkinsWide.tsx:349
 msgctxt "skins"
 msgid "按品牌"
 msgstr ""
 
-#: src/components/arknights/SkinsWide.tsx:350
+#: src/components/arknights/SkinsWide.tsx:351
 msgctxt "skins"
 msgid "按获得时间"
 msgstr ""
 
-#: src/components/arknights/SkinsWide.tsx:345
+#: src/components/arknights/SkinsWide.tsx:346
 msgctxt "skins"
 msgid "排序"
 msgstr ""
@@ -4841,7 +4846,7 @@ msgstr ""
 
 #: src/components/arknights/SkinImages.tsx:115
 #: src/components/arknights/SkinsSection.tsx:88
-#: src/components/arknights/SkinsWide.tsx:87
+#: src/components/arknights/SkinsWide.tsx:88
 msgctxt "skins"
 msgid "暂时拿不到"
 msgstr ""
@@ -4851,7 +4856,7 @@ msgctxt "skins"
 msgid "有时装没干员"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:270
+#: src/components/arknights/SkinsPanel.tsx:274
 msgctxt "skins"
 msgid "标记中：点头像切换「已有」和「缺」"
 msgstr ""
@@ -4861,10 +4866,10 @@ msgctxt "skins"
 msgid "档期"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:172
-#: src/components/arknights/SkinsPanel.tsx:247
-#: src/components/arknights/SkinsWide.tsx:176
-#: src/components/arknights/SkinsWide.tsx:232
+#: src/components/arknights/SkinsPanel.tsx:173
+#: src/components/arknights/SkinsPanel.tsx:248
+#: src/components/arknights/SkinsWide.tsx:177
+#: src/components/arknights/SkinsWide.tsx:233
 msgctxt "skins"
 msgid "没有符合的时装"
 msgstr ""
@@ -4884,7 +4889,7 @@ msgctxt "skins"
 msgid "点击打开干员档案"
 msgstr ""
 
-#: src/components/arknights/SkinsWide.tsx:372
+#: src/components/arknights/SkinsWide.tsx:366
 msgctxt "skins"
 msgid "点半身像切换已有 / 缺"
 msgstr ""
@@ -4920,7 +4925,7 @@ msgid "精英零"
 msgstr ""
 
 #: src/components/arknights/SkinControls.tsx:64
-#: src/components/arknights/SkinsWide.tsx:162
+#: src/components/arknights/SkinsWide.tsx:163
 msgctxt "skins"
 msgid "缺"
 msgstr ""
@@ -4931,7 +4936,7 @@ msgctxt "skins"
 msgid "缺 %1/%2"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:134
+#: src/components/arknights/SkinsPanel.tsx:135
 msgctxt "skins"
 msgid "缺的里面现在能拿到的件数"
 msgstr ""
@@ -4947,7 +4952,7 @@ msgctxt "skins"
 msgid "记录修复"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:66
+#: src/components/arknights/SkinsPanel.tsx:67
 msgctxt "skins"
 msgid "还没有记下你有哪些时装，下面全算「缺」。"
 msgstr ""
@@ -4957,8 +4962,8 @@ msgctxt "skins"
 msgid "里程碑奖励"
 msgstr ""
 
-#: src/components/arknights/SkinsPanel.tsx:264
-#: src/components/arknights/SkinsWide.tsx:358
+#: src/components/arknights/SkinsPanel.tsx:268
+#: src/components/arknights/SkinsWide.tsx:389
 msgctxt "skins"
 msgid "重试"
 msgstr ""
@@ -5292,61 +5297,66 @@ msgid "%d 星 %s"
 msgstr ""
 
 #. %s: item name
-#: src/components/arknights/CostSection.tsx:226
+#: src/components/arknights/CostSection.tsx:228
 msgctxt "training cost"
 msgid "%s × %d$total（直接 %d$direct，折算 %d$folded）"
 msgstr ""
 
 #. %s: 一技能, 二技能 or 三技能
-#: src/components/arknights/CostSection.tsx:437
+#: src/components/arknights/CostSection.tsx:439
 msgctxt "training cost"
 msgid "%s专三"
 msgstr ""
 
 #. %s: item names
-#: src/components/arknights/CostSection.tsx:303
+#: src/components/arknights/CostSection.tsx:305
 msgctxt "training cost"
 msgid "%s没有价值，没算进上面的数"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:402
+#: src/components/arknights/CostSection.tsx:404
 msgctxt "training cost"
 msgid "下面的「最多」是从能用这张道具的最早那一点用时能省的：精二从精零 1 级，专三从专零，满级从精二 1 级。"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:491
+#: src/components/arknights/CostSection.tsx:493
 msgctxt "training cost"
 msgid "不分干员，只看等级"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:171
+#: src/components/arknights/CostSection.tsx:173
 msgctxt "training cost"
 msgid "从现在"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:172
+#: src/components/arknights/CostSection.tsx:174
 msgctxt "training cost"
 msgid "从目标"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:170
+#: src/components/arknights/CostSection.tsx:172
 msgctxt "training cost"
 msgid "从零"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:30
+#: src/components/arknights/CostSection.tsx:32
 msgctxt "training cost"
 msgid "从零到满的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:28
+#: src/components/arknights/CostSection.tsx:30
 msgctxt "training cost"
 msgid "从零到现在的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:29
+#: src/components/arknights/CostSection.tsx:31
 msgctxt "training cost"
 msgid "从零到目标的材料"
+msgstr ""
+
+#: src/components/arknights/CostSection.tsx:542
+msgctxt "training cost"
+msgid "企鹅物流的掉落数据载入失败，暂时算不出价值；材料明细不受影响"
 msgstr ""
 
 #. %s: a value like 5571
@@ -5355,12 +5365,12 @@ msgctxt "training cost"
 msgid "最多 %s"
 msgstr ""
 
-#: src/components/arknights/extraFields.tsx:191
+#: src/components/arknights/extraFields.tsx:192
 msgctxt "training cost"
 msgid "最多：从专零用时能省的；条上浅蓝的那段是已经练掉的。"
 msgstr ""
 
-#: src/components/arknights/extraFields.tsx:170
+#: src/components/arknights/extraFields.tsx:171
 msgctxt "training cost"
 msgid "最多：从精零 1 级用时能省的；条上浅蓝的那段是已经练掉的。"
 msgstr ""
@@ -5370,196 +5380,196 @@ msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:167
+#: src/components/arknights/CostSection.tsx:169
 msgctxt "training cost"
 msgid "到满"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:165
+#: src/components/arknights/CostSection.tsx:167
 msgctxt "training cost"
 msgid "到现在"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:166
+#: src/components/arknights/CostSection.tsx:168
 msgctxt "training cost"
 msgid "到目标"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:261
+#: src/components/arknights/CostSection.tsx:263
 msgctxt "training cost"
 msgid "原样"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:464
+#: src/components/arknights/CostSection.tsx:466
 msgctxt "training cost"
 msgid "在 %d 星里排第几"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:52
+#: src/components/arknights/CostSection.tsx:54
 msgctxt "training cost"
 msgid "已投入"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:262
+#: src/components/arknights/CostSection.tsx:264
 msgctxt "training cost"
 msgid "折成蓝材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:56
+#: src/components/arknights/CostSection.tsx:58
 msgctxt "training cost"
 msgid "拉满"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:467
+#: src/components/arknights/CostSection.tsx:469
 msgctxt "training cost"
 msgid "效率"
 msgstr ""
 
 #. %s: a percentage like 54%
-#: src/components/arknights/extraFields.tsx:149
+#: src/components/arknights/extraFields.tsx:150
 msgctxt "training cost"
 msgid "效率 %s"
 msgstr ""
 
 #. %s: a list like 4★ 2022, 5★ 3765, 6★ 5735
-#: src/components/arknights/extraFields.tsx:173
+#: src/components/arknights/extraFields.tsx:174
 msgctxt "training cost"
 msgid "效率：现在能省的，占同星级最多能省的几成；条的全长就是同星级最多（%s）。"
 msgstr ""
 
 #. %s: a list like 4★ 1472, 5★ 2909, 6★ 4272
-#: src/components/arknights/extraFields.tsx:194
+#: src/components/arknights/extraFields.tsx:195
 msgctxt "training cost"
 msgid "效率：现在能省的，占同星级所有技能里最多能省的几成；条的全长就是同星级最多（%s）。"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:71
+#: src/components/arknights/CostSection.tsx:73
 msgctxt "training cost"
 msgid "满"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:536
+#: src/components/arknights/CostSection.tsx:553
 msgctxt "training cost"
 msgid "物品价值计算失败，暂时算不出价值；材料明细不受影响"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:69
+#: src/components/arknights/CostSection.tsx:71
 msgctxt "training cost"
 msgid "现在"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:32
+#: src/components/arknights/CostSection.tsx:34
 msgctxt "training cost"
 msgid "现在到满的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:31
+#: src/components/arknights/CostSection.tsx:33
 msgctxt "training cost"
 msgid "现在到目标的材料"
 msgstr ""
 
-#: src/components/arknights/extraFields.tsx:186
+#: src/components/arknights/extraFields.tsx:187
 msgctxt "training cost"
 msgid "现在用技巧集能省多少：这个技能从现在的专精到专三的材料价值。已经专精过的那几级省不回来。"
 msgstr ""
 
-#: src/components/arknights/extraFields.tsx:165
+#: src/components/arknights/extraFields.tsx:166
 msgctxt "training cost"
 msgid "现在用特训邀请函能省多少：从现在的练度到精二 1 级的材料价值。已经练过的那一段省不回来，所以练得越多，数越小。"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:472
+#: src/components/arknights/CostSection.tsx:474
 msgctxt "training cost"
 msgid "现在用能省"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:399
+#: src/components/arknights/CostSection.tsx:401
 msgctxt "training cost"
 msgid "现在用这张道具能省多少，从这名干员现在的练度算起；已经练过的那一段省不回来。"
 msgstr ""
 
 #. %d: 4, 5 or 6; %s$…: the most each voucher saves on an operator of that rarity
-#: src/components/arknights/CostSection.tsx:382
+#: src/components/arknights/CostSection.tsx:384
 msgctxt "training cost"
 msgid "现在能省的，占这张道具在 %d 星干员身上最多能省的几成：精二 %s$elite2（从精零 1 级用），专三 %s$mastery3（从专零用），精二满级 %s$levelMax（从精二 1 级用）。"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:70
+#: src/components/arknights/CostSection.tsx:72
 msgctxt "training cost"
 msgid "目标"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:33
+#: src/components/arknights/CostSection.tsx:35
 msgctxt "training cost"
 msgid "目标到满的材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:458
+#: src/components/arknights/CostSection.tsx:460
 msgctxt "training cost"
 msgid "直升道具"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:332
+#: src/components/arknights/CostSection.tsx:334
 msgctxt "training cost"
 msgid "第 %d$rank / %d$count"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:421
+#: src/components/arknights/CostSection.tsx:423
 msgctxt "training cost"
 msgid "精二"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:449
+#: src/components/arknights/CostSection.tsx:451
 msgctxt "training cost"
 msgid "精二满级"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:56
+#: src/components/arknights/CostSection.tsx:58
 msgctxt "training cost"
 msgid "计划之后"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:53
+#: src/components/arknights/CostSection.tsx:55
 msgctxt "training cost"
 msgid "还差"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:298
+#: src/components/arknights/CostSection.tsx:300
 msgctxt "training cost"
 msgid "金、紫材料按加工站配方折成了蓝材料"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:295
+#: src/components/arknights/CostSection.tsx:297
 msgctxt "training cost"
 msgid "金、紫材料按加工站配方折成了蓝材料；龙门币里有 %d 是合成费"
 msgstr ""
 
-#: src/components/arknights/CostSection.tsx:68
+#: src/components/arknights/CostSection.tsx:70
 msgctxt "training cost"
 msgid "零"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:253
+#: src/components/arknights/ValueConfigMenu.tsx:255
 msgctxt "value config"
 msgid "1 表示按 CE-6 的理智折算"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:100
+#: src/components/arknights/ValueConfigMenu.tsx:102
 msgctxt "value config"
 msgid "不需要"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:273
+#: src/components/arknights/ValueConfigMenu.tsx:275
 msgctxt "value config"
 msgid "不需要（0）"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:210
+#: src/components/arknights/ValueConfigMenu.tsx:212
 msgctxt "value config"
 msgid "主线"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:378
+#: src/components/arknights/ValueConfigMenu.tsx:380
 msgctxt "value config"
 msgid "价值"
 msgstr ""
@@ -5569,230 +5579,230 @@ msgctxt "value config"
 msgid "价值计算"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:514
+#: src/components/arknights/ValueConfigMenu.tsx:523
 msgctxt "value config"
 msgid "价值计算失败"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:194
+#: src/components/arknights/ValueConfigMenu.tsx:196
 msgctxt "value config"
 msgid "价值计算设置"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:499
+#: src/components/arknights/ValueConfigMenu.tsx:501
 msgctxt "value config"
 msgid "企鹅物流的掉落数据载入失败"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:405
+#: src/components/arknights/ValueConfigMenu.tsx:407
 msgctxt "value config"
 msgid "删除"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:337
 #: src/components/arknights/ValueConfigMenu.tsx:339
+#: src/components/arknights/ValueConfigMenu.tsx:341
 msgctxt "value config"
 msgid "加工为 %s"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:305
+#: src/components/arknights/ValueConfigMenu.tsx:307
 msgctxt "value config"
 msgid "加工站副产物提升量"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:212
+#: src/components/arknights/ValueConfigMenu.tsx:214
 msgctxt "value config"
 msgid "含开放活动"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:344
+#: src/components/arknights/ValueConfigMenu.tsx:346
 msgctxt "value config"
 msgid "固定价值"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:334
+#: src/components/arknights/ValueConfigMenu.tsx:336
 msgctxt "value config"
 msgid "均分"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:79
+#: src/components/arknights/ValueConfigMenu.tsx:81
 msgctxt "value config"
 msgid "基建材料"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:200
+#: src/components/arknights/ValueConfigMenu.tsx:202
 msgctxt "value config"
 msgid "定价关卡"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:202
+#: src/components/arknights/ValueConfigMenu.tsx:204
 msgctxt "value config"
 msgid "定价范围"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:211
+#: src/components/arknights/ValueConfigMenu.tsx:213
 msgctxt "value config"
 msgid "常驻"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:453
+#: src/components/arknights/ValueConfigMenu.tsx:455
 msgctxt "value config"
 msgid "应用"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:447
+#: src/components/arknights/ValueConfigMenu.tsx:449
 msgctxt "value config"
 msgid "恢复默认"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:75
+#: src/components/arknights/ValueConfigMenu.tsx:77
 msgctxt "value config"
 msgid "技巧概要 卷1→卷2"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:77
+#: src/components/arknights/ValueConfigMenu.tsx:79
 msgctxt "value config"
 msgid "技巧概要 卷2→卷3"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:268
+#: src/components/arknights/ValueConfigMenu.tsx:270
 msgctxt "value config"
 msgid "按 CE-6 定价（1）"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:90
+#: src/components/arknights/ValueConfigMenu.tsx:92
 msgctxt "value config"
 msgid "按 LS-6 定价"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:238
+#: src/components/arknights/ValueConfigMenu.tsx:240
 msgctxt "value config"
 msgid "掉落样本少于此数的关卡不参与定价"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:214
+#: src/components/arknights/ValueConfigMenu.tsx:216
 msgctxt "value config"
 msgid "排除的关卡"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:431
+#: src/components/arknights/ValueConfigMenu.tsx:433
 msgctxt "value config"
 msgid "新增"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:232
+#: src/components/arknights/ValueConfigMenu.tsx:234
 msgctxt "value config"
 msgid "无"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:98
+#: src/components/arknights/ValueConfigMenu.tsx:100
 msgctxt "value config"
 msgid "无人机：1 级贸易站，精 2 但书"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:96
+#: src/components/arknights/ValueConfigMenu.tsx:98
 msgctxt "value config"
 msgid "无人机：2 级贸易站，精 2 但书"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:92
+#: src/components/arknights/ValueConfigMenu.tsx:94
 msgctxt "value config"
 msgid "无人机：3 级贸易站"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:94
+#: src/components/arknights/ValueConfigMenu.tsx:96
 msgctxt "value config"
 msgid "无人机：3 级贸易站，精 2 龙舌兰、精 2 但书"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:346
+#: src/components/arknights/ValueConfigMenu.tsx:348
 msgctxt "value config"
 msgid "材料退环境"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:237
+#: src/components/arknights/ValueConfigMenu.tsx:239
 msgctxt "value config"
 msgid "样本量阈值"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:347
+#: src/components/arknights/ValueConfigMenu.tsx:349
 msgctxt "value config"
 msgid "点亮后按按钮上的数值固定价值"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:377
+#: src/components/arknights/ValueConfigMenu.tsx:379
 msgctxt "value config"
 msgid "物品"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:67
+#: src/components/arknights/ValueConfigMenu.tsx:69
 msgctxt "value config"
 msgid "精英材料 T1→T2"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:69
+#: src/components/arknights/ValueConfigMenu.tsx:71
 msgctxt "value config"
 msgid "精英材料 T2→T3"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:71
+#: src/components/arknights/ValueConfigMenu.tsx:73
 msgctxt "value config"
 msgid "精英材料 T3→T4"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:73
+#: src/components/arknights/ValueConfigMenu.tsx:75
 msgctxt "value config"
 msgid "精英材料 T4→T5"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:278
+#: src/components/arknights/ValueConfigMenu.tsx:280
 msgctxt "value config"
 msgid "经验系数"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:287
+#: src/components/arknights/ValueConfigMenu.tsx:289
 msgctxt "value config"
 msgid "自定义"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:319
-#: src/components/arknights/ValueConfigMenu.tsx:81
+#: src/components/arknights/ValueConfigMenu.tsx:321
+#: src/components/arknights/ValueConfigMenu.tsx:83
 msgctxt "value config"
 msgid "芯片"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:83
+#: src/components/arknights/ValueConfigMenu.tsx:85
 msgctxt "value config"
 msgid "芯片组"
 msgstr ""
 
 #. %s: 明日方舟一图流, linked
-#: src/components/arknights/ValueConfigMenu.tsx:459
+#: src/components/arknights/ValueConfigMenu.tsx:461
 msgctxt "value config"
 msgid "计算思路参考 %s"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:525
+#: src/components/arknights/ValueConfigMenu.tsx:534
 msgctxt "value config"
 msgid "设置…"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:415
+#: src/components/arknights/ValueConfigMenu.tsx:417
 msgctxt "value config"
 msgid "选择材料…"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:503
+#: src/components/arknights/ValueConfigMenu.tsx:512
 msgctxt "value config"
 msgid "重试"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:250
+#: src/components/arknights/ValueConfigMenu.tsx:252
 msgctxt "value config"
 msgid "龙门币与经验"
 msgstr ""
 
-#: src/components/arknights/ValueConfigMenu.tsx:252
+#: src/components/arknights/ValueConfigMenu.tsx:254
 msgctxt "value config"
 msgid "龙门币系数"
 msgstr ""
