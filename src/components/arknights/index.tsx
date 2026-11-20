@@ -23,6 +23,7 @@ import { extraFields } from './extraFields'
 import { modulePeekKind, skillPeekKind, stagePeekKind } from './peekKinds'
 import { useArknightsImportFormats } from './importFormats'
 import { renderCharacterAvatarBadge, renderCharacterStatus } from './renderCharacterStatus'
+import { useRosterImagePainter } from './rosterImage'
 import style from './style.css?inline'
 import { taskNotes } from './taskNotes'
 
@@ -37,6 +38,7 @@ export const ArknightsComponents: IGameComponent = {
   CharacterDossierMeta,
   renderCharacterStatus,
   renderCharacterAvatarBadge,
+  useRosterImagePainter,
   itemSimulatedViewConfig: { limit: 3, horizontal: true, viewMaxSize: 500 },
   blobFlavours: ['normal'],
   ImporterMenuItems,
