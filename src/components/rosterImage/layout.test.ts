@@ -3,8 +3,11 @@ import {
   AREA_CAPS,
   FOOTER_HEIGHT,
   MAX_SIDE,
+  QR_PLATE,
+  QR_QUIET,
   cellOrigin,
   cellWidth,
+  footerRow,
   gridCells,
   pngPixels,
   pngScale,
@@ -79,6 +82,16 @@ describe('sheetSize', () => {
     expect(sheetSize({ ...base, goal: true }).height).toBe(16 * 2 + 20 + 4 * 48)
     expect(sheetSize({ ...base, footer: true }).height).toBe(16 * 2 + 4 * 48 + 93)
     expect(FOOTER_HEIGHT).toBe(93)
+  })
+
+  it('makes the footer row as tall as the QR plate when there is one', () => {
+    // 4 格静区：56 / 25 × 4 = 8.96，取整到 9
+    expect(QR_QUIET).toBe(9)
+    expect(QR_PLATE).toBe(74)
+    expect(footerRow(false)).toBe(56)
+    expect(footerRow(true)).toBe(74)
+    expect(sheetSize({ ...base, footer: true, qrPlate: true }).height).toBe(16 * 2 + 4 * 48 + 93 + 18)
+    expect(sheetSize({ ...base, qrPlate: true }).height).toBe(sheetSize(base).height)
   })
 
   it('lays the columns out with a gap', () => {

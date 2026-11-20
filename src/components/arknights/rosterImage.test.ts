@@ -4,7 +4,14 @@ import type { ArknightsCharacterStatus } from '../../pkg/cpp-arknights/types'
 import { SceneNode, walkScene } from '../rosterImage/scene'
 import m2 from './assets/m2.png'
 import potential3 from './assets/potential3.png'
-import { ARKNIGHTS_STATUS_HEIGHT, ARKNIGHTS_STATUS_WIDTH, createArknightsRosterPainter } from './rosterImage'
+import {
+  ARKNIGHTS_STATUS_HEIGHT,
+  ARKNIGHTS_STATUS_WIDTH,
+  POTENTIAL_TOGGLE,
+  STATUS_SHADOW,
+  createArknightsRosterPainter,
+  rosterShowsPotential,
+} from './rosterImage'
 
 // 只测画法本身，不碰 React
 vi.mock('../../Cpp', () => ({}))
@@ -57,6 +64,18 @@ describe('createArknightsRosterPainter', () => {
     expect(ARKNIGHTS_STATUS_WIDTH).toBe(260)
     expect(ARKNIGHTS_STATUS_HEIGHT).toBe(42)
     expect(painter.statusWidth).toBe(260)
+  })
+
+  it('gives the status box the shadow of the list, under the current and the goal alike', () => {
+    expect(STATUS_SHADOW).toEqual({ dx: 0, dy: 3, blur: 6, color: '#313131' })
+    for (const nodes of [
+      painter.status(status(), character()),
+      painter.status(status({ elite: 2, level: 90 }), character(), status()),
+    ]) {
+      expect(nodes[0]).toMatchObject({ kind: 'rect', w: 260, h: 42, fill: '#313131', shadow: STATUS_SHADOW })
+      // 等级的小方块不带
+      expect(all(nodes).filter((n) => n.kind === 'rect' && n.shadow)).toHaveLength(1)
+    }
   })
 
   it('draws the mastery icon for a mastered skill and the level for the others', () => {
@@ -130,6 +149,14 @@ describe('createArknightsRosterPainter', () => {
     expect(badge(painter.avatar(character(), st, false))).toMatchObject({ glow: true, w: 18, h: 18 })
     expect(badge(painter.avatar(character(), st, true))).toBeUndefined()
     expect(badge(createArknightsRosterPainter({ showPotential: false }).avatar(character(), st, false))).toBeUndefined()
+  })
+
+  it('shows potential as the list does until it is changed for the image', () => {
+    expect(rosterShowsPotential({}, true)).toBe(true)
+    expect(rosterShowsPotential({}, false)).toBe(false)
+    expect(rosterShowsPotential({ [POTENTIAL_TOGGLE]: false }, true)).toBe(false)
+    expect(rosterShowsPotential({ [POTENTIAL_TOGGLE]: true }, false)).toBe(true)
+    expect(rosterShowsPotential({ other: false }, true)).toBe(true)
   })
 
   it('draws the avatar over the rarity background', () => {

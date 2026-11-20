@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { defaultRosterImagePrefs, readRosterImagePrefs } from './prefs'
+import { defaultRosterImagePrefs, readRosterImagePrefs, rosterScheme } from './prefs'
+
+describe('rosterScheme', () => {
+  it('follows the app until a scheme is chosen', () => {
+    expect(rosterScheme(undefined, false)).toBe('light')
+    expect(rosterScheme(undefined, true)).toBe('dark')
+  })
+
+  it('keeps the chosen scheme whatever the app shows', () => {
+    expect(rosterScheme('light', true)).toBe('light')
+    expect(rosterScheme('dark', false)).toBe('dark')
+  })
+})
 
 describe('readRosterImagePrefs', () => {
   it('falls back to the defaults for nothing stored or a bad value', () => {
@@ -11,12 +23,47 @@ describe('readRosterImagePrefs', () => {
   })
 
   it('keeps what it recognises', () => {
-    expect(readRosterImagePrefs({ columns: 3, order: 'columns', goal: true, header: '博士' })).toEqual({
+    expect(
+      readRosterImagePrefs({
+        columns: 3,
+        order: 'columns',
+        goal: true,
+        header: '博士',
+        scheme: 'dark',
+        toggles: { potential: false },
+      }),
+    ).toEqual({
       columns: 3,
       order: 'columns',
       goal: true,
       header: '博士',
+      scheme: 'dark',
+      toggles: { potential: false },
     })
+  })
+
+  it('reads prefs stored before the scheme and the toggles as not chosen', () => {
+    const old = readRosterImagePrefs({ columns: 2, order: 'rows', goal: true, header: '' })
+    expect(old.scheme).toBeUndefined()
+    expect('scheme' in old).toBe(false)
+    expect(old.toggles).toEqual({})
+  })
+
+  it('takes an unknown scheme as not chosen', () => {
+    for (const scheme of ['auto', 'Dark', 1, true, null, {}]) {
+      expect(readRosterImagePrefs({ scheme }).scheme).toBeUndefined()
+    }
+    expect(readRosterImagePrefs({ scheme: 'light' }).scheme).toBe('light')
+  })
+
+  it('keeps only the toggles that are true or false', () => {
+    expect(readRosterImagePrefs({ toggles: { potential: true, a: 'yes', b: 1, c: null, d: false } }).toggles).toEqual({
+      potential: true,
+      d: false,
+    })
+    for (const toggles of ['potential', [true], null, 3]) {
+      expect(readRosterImagePrefs({ toggles }).toggles).toEqual({})
+    }
   })
 
   it('rounds the columns and clamps them to 1–6', () => {

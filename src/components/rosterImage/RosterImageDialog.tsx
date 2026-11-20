@@ -20,14 +20,16 @@ import { BlobFlavour } from '../../pkg/blobcache'
 import { useComponents } from '../../hooks/useComponents'
 import { IGame } from '../../pkg/cpp-basic'
 import { gt } from '../../pkg/gt'
+import { isDark, useSystemDark, useThemeSetting } from '../../theme'
 import { downloadBlob, rosterFileName } from '../download'
 import { listedCharactersAtom } from '../listedCharacters'
 import { useCoarsePointer, usePhoneLayout } from '../phoneLayout'
+import { themeName } from '../ThemeMenu'
 import { Measure, RosterEntry, RosterOptions, RosterTexts, buildRosterScene, rosterEntries } from './build'
 import { ImageCache, ImageLookup, loadSceneImages } from './images'
 import { RenderedPng, blobToDataUrl, renderPng, svgEmbed } from './paint'
-import { MAX_COLUMNS, MIN_COLUMNS, clampColumns, clampHeader, rosterImagePrefsAtom } from './prefs'
-import { RosterImagePainter, Scene, sceneToSvg } from './scene'
+import { MAX_COLUMNS, MIN_COLUMNS, clampColumns, clampHeader, rosterImagePrefsAtom, rosterScheme } from './prefs'
+import { RosterImagePainter, RosterToggleValues, Scene, sceneToSvg } from './scene'
 
 export type RosterImageSource = 'list' | 'selection'
 
@@ -43,7 +45,7 @@ function useDebounced<T>(value: T, delay: number): T {
   return debounced
 }
 
-const noPainter = (): RosterImagePainter | undefined => undefined
+const noPainter = (_toggles: RosterToggleValues): RosterImagePainter | undefined => undefined
 
 let measureContext: CanvasRenderingContext2D | null | undefined
 
@@ -85,10 +87,11 @@ export const RosterImageDialog = memo(
     const generation = useGameDataGeneration()
     // 入口只在游戏给了画法时出现，所以这个 hook 在对话框开着期间不会换
     const usePainter = useComponents().useRosterImagePainter ?? noPainter
-    const painter = usePainter()
+    const [prefs, setPrefs] = useAtom(rosterImagePrefsAtom)
+    const painter = usePainter(prefs.toggles)
     const flavour = useAtomValue(cpp.preferenceAtoms.blobFlavourAtom)
     const listed = useAtomValue(listedCharactersAtom)
-    const [prefs, setPrefs] = useAtom(rosterImagePrefsAtom)
+    const scheme = rosterScheme(prefs.scheme, isDark(useThemeSetting(), useSystemDark()))
     const [footer, setFooter] = useState(true)
     const [which, setWhich] = useState<RosterImageSource>(source)
     const phone = usePhoneLayout()
@@ -126,8 +129,8 @@ export const RosterImageDialog = memo(
 
     const header = useDebounced(prefs.header, HEADER_DELAY)
     const options = useMemo<RosterOptions>(
-      () => ({ columns: prefs.columns, order: prefs.order, goal: prefs.goal, header, footer }),
-      [prefs.columns, prefs.order, prefs.goal, header, footer],
+      () => ({ columns: prefs.columns, order: prefs.order, goal: prefs.goal, header, footer, scheme }),
+      [prefs.columns, prefs.order, prefs.goal, header, footer, scheme],
     )
 
     const texts = useMemo<RosterTexts>(
@@ -293,6 +296,7 @@ export const RosterImageDialog = memo(
 
     const whichLabel = gt.gettext('画哪些')
     const orderLabel = gt.gettext('排列')
+    const schemeLabel = gt.gettext('配色')
 
     return (
       <Dialog
@@ -366,6 +370,19 @@ export const RosterImageDialog = memo(
                 </span>
               </span>
             </div>
+            <span>{schemeLabel}</span>
+            <div role="group" aria-label={schemeLabel}>
+              <SegmentedControl
+                size="small"
+                intent="primary"
+                value={scheme}
+                options={[
+                  { value: 'light', label: themeName('light') },
+                  { value: 'dark', label: themeName('dark') },
+                ]}
+                onValueChange={(value) => setPrefs((p) => ({ ...p, scheme: value === 'dark' ? 'dark' : 'light' }))}
+              />
+            </div>
             <div className="cpp-roster-image-checks">
               <Checkbox
                 checked={prefs.goal}
@@ -375,6 +392,17 @@ export const RosterImageDialog = memo(
                   setPrefs((p) => ({ ...p, goal: checked }))
                 }}
               />
+              {painter?.toggles?.map(({ key, label, value }) => (
+                <Checkbox
+                  key={key}
+                  checked={value}
+                  label={label}
+                  onChange={(e) => {
+                    const checked = e.currentTarget.checked
+                    setPrefs((p) => ({ ...p, toggles: { ...p.toggles, [key]: checked } }))
+                  }}
+                />
+              ))}
               <Checkbox
                 checked={footer}
                 label={gt.gettext('显示页脚')}

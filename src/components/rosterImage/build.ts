@@ -12,14 +12,16 @@ import {
   FOOTER_RULE,
   FOOTER_SPACE_ABOVE,
   FOOTER_SPACE_BELOW,
-  FOOTER_ROW,
   FOOTER_TEXT_GAP,
   MARGIN,
   NAME_WIDTH,
+  QR_PLATE,
+  QR_QUIET,
   QR_SIZE,
   ROW_HEIGHT,
   RosterOrder,
   cellOrigin,
+  footerRow,
   sheetSize,
 } from './layout'
 import { RosterImagePainter, Scene, SceneNode, sceneFont } from './scene'
@@ -39,12 +41,15 @@ export interface RosterEntry {
   finished: boolean
 }
 
+export type RosterScheme = 'light' | 'dark'
+
 export interface RosterOptions {
   columns: number
   order: RosterOrder
   goal: boolean
   header: string
   footer: boolean
+  scheme: RosterScheme
 }
 
 /** 图上的几句字，由对话框翻译好传入 */
@@ -57,14 +62,40 @@ export interface RosterTexts {
 /** 量字：canvas 的 measureText；font 是 canvas 的 font 简写 */
 export type Measure = (text: string, font: string) => number
 
-// 图的配色固定，不跟深色模式：分享出去的图不该随看图的人的设置变
-export const ROSTER_COLORS = {
-  background: '#ffffff',
-  name: '#1c2127',
-  muted: '#5f6b7c',
-  footer: '#1c2127',
-  rule: '#e5e8eb',
-} as const
+export interface RosterPalette {
+  background: string
+  name: string
+  muted: string
+  footer: string
+  rule: string
+  /** 二维码的深色格 */
+  qr: string
+  /** 给了时二维码先垫一块这个颜色的底板，四周留出静区：有的扫码软件认不出深底浅格的反色码 */
+  qrPlate?: string
+}
+
+// 配色在生成时定，图里不写跟着看图的人深浅色变的东西：分享出去的图在谁那里都一样。
+// 深色取应用深色模式的颜色：底是列表的 --cpp-surface（dark-gray-3），字是 Blueprint 深色的正文、次要文字，
+// 分隔线是 --cpp-tint-3（10% 的白）叠在底上的颜色。练度格两种配色都是列表的 #313131
+export const ROSTER_PALETTES: Record<RosterScheme, RosterPalette> = {
+  light: {
+    background: '#ffffff',
+    name: '#1c2127',
+    muted: '#5f6b7c',
+    footer: '#1c2127',
+    rule: '#e5e8eb',
+    qr: '#1c2127',
+  },
+  dark: {
+    background: '#2f343c',
+    name: '#f6f7f9',
+    muted: '#abb3bf',
+    footer: '#f6f7f9',
+    rule: '#444850',
+    qr: '#1c2127',
+    qrPlate: '#ffffff',
+  },
+}
 
 export const FOOTER_LOGO_URL = '/favicon.png'
 /** 页脚第二行，不翻译 */
@@ -112,6 +143,7 @@ export function buildRosterScene(
   texts: RosterTexts,
 ): Scene {
   const header = options.header.trim()
+  const colors = ROSTER_PALETTES[options.scheme]
   const sheet = sheetSize({
     n: entries.length,
     columns: options.columns,
@@ -120,6 +152,7 @@ export function buildRosterScene(
     goal: options.goal,
     header: !!header,
     footer: options.footer,
+    qrPlate: !!colors.qrPlate,
   })
   const nodes: SceneNode[] = []
   const statusLeft = AVATAR_SIZE + CELL_GAP + NAME_WIDTH + CELL_GAP
@@ -134,7 +167,7 @@ export function buildRosterScene(
       y: MARGIN + 30,
       text: fitText(header, sceneFont(font), sheet.width - MARGIN * 2, measure),
       ...font,
-      fill: ROSTER_COLORS.name,
+      fill: colors.name,
     })
   }
 
@@ -146,7 +179,7 @@ export function buildRosterScene(
         [statusLeft, texts.current],
         [goalLeft, texts.goal],
       ] as const) {
-        nodes.push({ kind: 'text', x: x + dx, y, text, size: COLUMN_HEAD_SIZE, fill: ROSTER_COLORS.muted })
+        nodes.push({ kind: 'text', x: x + dx, y, text, size: COLUMN_HEAD_SIZE, fill: colors.muted })
       }
     }
   }
@@ -183,11 +216,9 @@ export function buildRosterScene(
           y: sub ? 20 : 29,
           text: fitText(character.name, sceneFont(nameFont), NAME_WIDTH, measure),
           ...nameFont,
-          fill: ROSTER_COLORS.name,
+          fill: colors.name,
         },
-        ...(sub
-          ? [{ kind: 'text', x: 0, y: 36, text: sub, ...subFont, fill: ROSTER_COLORS.muted } satisfies SceneNode]
-          : []),
+        ...(sub ? [{ kind: 'text', x: 0, y: 36, text: sub, ...subFont, fill: colors.muted } satisfies SceneNode] : []),
       ],
     })
 
@@ -224,12 +255,14 @@ export function buildRosterScene(
       y: ruleTop,
       w: sheet.contentRight - MARGIN,
       h: FOOTER_RULE,
-      fill: ROSTER_COLORS.rule,
+      fill: colors.rule,
     })
     const rowTop = ruleTop + FOOTER_RULE + FOOTER_SPACE_BELOW
-    const blockTop = rowTop + (FOOTER_ROW - FOOTER_LOGO) / 2
+    const plate = colors.qrPlate
+    const blockTop = rowTop + (footerRow(!!plate) - FOOTER_LOGO) / 2
     const textLeft = MARGIN + FOOTER_LOGO + FOOTER_LOGO_GAP
-    const qrLeft = sheet.contentRight - QR_SIZE
+    // 有底板时底板和图里别的东西一样对齐内容的右缘，码在底板里四周留出静区
+    const qrLeft = sheet.contentRight - (plate ? QR_PLATE : QR_SIZE)
     const line1 = { size: FOOTER_LINE1_SIZE }
     const line2 = { size: FOOTER_LINE2_SIZE }
     const textWidth = qrLeft - FOOTER_TEXT_GAP - textLeft
@@ -248,7 +281,7 @@ export function buildRosterScene(
         y: blockTop + 14,
         text: fitText(texts.footer, sceneFont(line1), textWidth, measure),
         ...line1,
-        fill: ROSTER_COLORS.footer,
+        fill: colors.footer,
       },
       {
         kind: 'text',
@@ -256,17 +289,19 @@ export function buildRosterScene(
         y: blockTop + FOOTER_LINE1_HEIGHT + 12,
         text: fitText(FOOTER_SITE_TEXT, sceneFont(line2), textWidth, measure),
         ...line2,
-        fill: ROSTER_COLORS.muted,
-      },
-      {
-        kind: 'path',
-        x: qrLeft,
-        y: rowTop,
-        d: qrPath(SITE_QR, QR_SIZE / SITE_QR.length),
-        fill: ROSTER_COLORS.footer,
+        fill: colors.muted,
       },
     )
+    if (plate) nodes.push({ kind: 'rect', x: qrLeft, y: rowTop, w: QR_PLATE, h: QR_PLATE, fill: plate })
+    const quiet = plate ? QR_QUIET : 0
+    nodes.push({
+      kind: 'path',
+      x: qrLeft + quiet,
+      y: rowTop + quiet,
+      d: qrPath(SITE_QR, QR_SIZE / SITE_QR.length),
+      fill: colors.qr,
+    })
   }
 
-  return { width: sheet.width, height: sheet.height, background: ROSTER_COLORS.background, nodes }
+  return { width: sheet.width, height: sheet.height, background: colors.background, nodes }
 }
