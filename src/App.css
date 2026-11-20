@@ -1355,11 +1355,16 @@ body .bp6-navbar-group {
   height: 40px;
 }
 
-.cpp-quick-filter > .bp6-navbar-divider {
+.cpp-quick-filter-strip {
+  display: flex;
+  align-items: center;
+}
+
+.cpp-quick-filter-strip > .bp6-navbar-divider {
   margin: 0 5px;
 }
 
-.cpp-quick-filter > .bp6-navbar-divider + .bp6-button-group:has(.bp6-tag:first-child) {
+.cpp-quick-filter-strip > .bp6-navbar-divider + .bp6-button-group:has(.bp6-tag:first-child) {
   margin-left: -5px;
 }
 
@@ -1367,8 +1372,24 @@ body .bp6-navbar-group {
   min-width: auto;
 }
 
-.cpp-quick-filter > .bp6-button-group > .bp6-tag:first-child {
+.cpp-quick-filter-strip > .bp6-button-group > .bp6-tag:first-child {
   padding-right: 2px;
+}
+
+/* 横滑的条哪边还有没露出来的内容，就在哪边渐隐（scrollStrip.ts） */
+[data-scroll-more='left'] {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 24px);
+  mask-image: linear-gradient(to right, transparent, black 24px);
+}
+
+[data-scroll-more='right'] {
+  -webkit-mask-image: linear-gradient(to left, transparent, black 24px);
+  mask-image: linear-gradient(to left, transparent, black 24px);
+}
+
+[data-scroll-more='both'] {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent);
 }
 
 @media screen and (max-width: 1500px) {
@@ -1921,18 +1942,17 @@ body .bp6-navbar-group {
 }
 
 /* 快捷过滤排成一行，放不下时横滑 */
-.cpp-phone .cpp-quick-filter {
-  flex-wrap: nowrap;
+.cpp-phone .cpp-quick-filter-strip {
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
 }
 
-.cpp-phone .cpp-quick-filter::-webkit-scrollbar {
+.cpp-phone .cpp-quick-filter-strip::-webkit-scrollbar {
   display: none;
 }
 
-.cpp-phone .cpp-quick-filter > * {
+.cpp-phone .cpp-quick-filter-strip > * {
   flex: none;
 }
 

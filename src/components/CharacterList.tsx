@@ -92,6 +92,7 @@ import { QueryEditor, queryEditorStaleAtom, useQueryEditorToggle } from './query
 import { RosterPin, clearRosterPin, useActiveRosterPin } from './rosterPin'
 import { useLongPressContextMenu } from './longPress'
 import { usePhoneLayout } from './phoneLayout'
+import { useScrollStrip } from './scrollStrip'
 
 export const Hide = memo(
   ({ children, hide, alreadyHide }: React.PropsWithChildren<{ hide: boolean; alreadyHide: boolean }>) => {
@@ -1080,28 +1081,21 @@ export const QuickFilterBuilder = memo(() => {
       return undefined
     }
   }, [cpp, query])
+  const strip = useScrollStrip<HTMLDivElement>()
 
-  // 「可练」「缺席」只看持有和练度，每个游戏、每种展开都适用，所以由这里放在最前面，不归游戏的快捷过滤管
+  // 「可练」「缺席」只看持有和练度，每个游戏、每种展开都适用，所以由这里放在最前面，不归游戏的快捷过滤管。
+  // 横滑的是里面那一层：渐隐的遮罩会连 Navbar 底下那道阴影一起遮掉
   return (
-    <Navbar
-      className="cpp-quick-filter"
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 'auto',
-        padding: 0,
-        marginTop: 1,
-        marginBottom: 2,
-      }}
-    >
-      <HoldingFilter />
-      {QuickFilterBuilder ? (
-        <>
-          <Navbar.Divider />
-          <QuickFilterBuilder join={join} />
-        </>
-      ) : null}
+    <Navbar className="cpp-quick-filter" style={{ height: 'auto', padding: 0, marginTop: 1, marginBottom: 2 }}>
+      <div ref={strip} className="cpp-quick-filter-strip">
+        <HoldingFilter />
+        {QuickFilterBuilder ? (
+          <>
+            <Navbar.Divider />
+            <QuickFilterBuilder join={join} />
+          </>
+        ) : null}
+      </div>
     </Navbar>
   )
 })
