@@ -224,7 +224,7 @@ msgstr ""
 msgid "关卡产物显示为图标"
 msgstr ""
 
-#: src/App.tsx:547
+#: src/App.tsx:548
 #: src/components/CharacterDossier.tsx:243
 #: src/components/CharacterDossier.tsx:244
 #: src/components/Importer.tsx:163
@@ -441,7 +441,7 @@ msgstr ""
 msgid "导入 MAA「干员识别」数据"
 msgstr ""
 
-#: src/App.tsx:352
+#: src/App.tsx:353
 #: src/components/RetiredGame.tsx:189
 msgid "导入/导出"
 msgstr ""
@@ -599,7 +599,7 @@ msgstr ""
 msgid "总价值"
 msgstr ""
 
-#: src/App.tsx:497
+#: src/App.tsx:498
 msgid "您不妨试试"
 msgstr ""
 
@@ -735,11 +735,11 @@ msgstr ""
 msgid "显示页脚"
 msgstr ""
 
-#: src/components/FarmList.tsx:316
+#: src/components/FarmList.tsx:318
 msgid "暂不支持计算毕业合成"
 msgstr ""
 
-#: src/components/FarmList.tsx:388
+#: src/components/FarmList.tsx:390
 msgid "暂无可计算来源"
 msgstr ""
 
@@ -941,7 +941,7 @@ msgid_plural "等 %d 条"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/components/FarmList.tsx:325
+#: src/components/FarmList.tsx:327
 msgid "线性规划失败"
 msgstr ""
 
@@ -1006,7 +1006,7 @@ msgstr ""
 msgid "请检查网络连接/更换网络/使用「加速器」/切换线路。"
 msgstr ""
 
-#: src/components/FarmList.tsx:327
+#: src/components/FarmList.tsx:329
 msgid "请稍候"
 msgstr ""
 
@@ -1033,7 +1033,7 @@ msgstr ""
 msgid "返回"
 msgstr ""
 
-#: src/App.tsx:490
+#: src/App.tsx:491
 msgid "返回主页"
 msgstr ""
 
@@ -2836,7 +2836,7 @@ msgctxt "error context"
 msgid "读取文件时遇到问题"
 msgstr ""
 
-#: src/App.tsx:477
+#: src/App.tsx:478
 msgctxt "error context"
 msgid "遇到错误"
 msgstr ""
@@ -3001,43 +3001,43 @@ msgid "、"
 msgstr ""
 
 #. loading data objects, %s: names of pending data objects
-#: src/App.tsx:378
+#: src/App.tsx:379
 msgctxt "loading status"
 msgid "仍在加载 %s 中…"
 msgstr ""
 
 #. initial
-#: src/App.tsx:386
+#: src/App.tsx:387
 msgctxt "loading status"
 msgid "别急…"
 msgstr ""
 
 #. loading hero line 1, %s: Product Name (Closure++)
-#: src/App.tsx:414
+#: src/App.tsx:415
 msgctxt "loading status"
 msgid "我们正在准备您的 %s"
 msgstr ""
 
 #. loaded data objects
-#: src/App.tsx:385
+#: src/App.tsx:386
 msgctxt "loading status"
 msgid "收拾中…"
 msgstr ""
 
 #. joke text
-#: src/App.tsx:412
+#: src/App.tsx:413
 msgctxt "loading status"
 msgid "海记忆体知己，天涯霍位元人"
 msgstr ""
 
 #. loading hero line 2
-#: src/App.tsx:421
+#: src/App.tsx:422
 msgctxt "loading status"
 msgid "请稍候"
 msgstr ""
 
 #. done
-#: src/App.tsx:376
+#: src/App.tsx:377
 msgctxt "loading status"
 msgid "马上就好…"
 msgstr ""
