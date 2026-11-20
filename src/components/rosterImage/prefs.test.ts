@@ -23,19 +23,30 @@ describe('readRosterImagePrefs', () => {
   })
 
   it('keeps what it recognises', () => {
-    expect(readRosterImagePrefs({ columns: 3, order: 'columns', goal: true, header: '博士', scheme: 'dark' })).toEqual({
+    expect(
+      readRosterImagePrefs({
+        columns: 3,
+        order: 'columns',
+        goal: true,
+        header: '博士',
+        scheme: 'dark',
+        toggles: { potential: false },
+      }),
+    ).toEqual({
       columns: 3,
       order: 'columns',
       goal: true,
       header: '博士',
       scheme: 'dark',
+      toggles: { potential: false },
     })
   })
 
-  it('reads prefs stored before the scheme as not chosen', () => {
+  it('reads prefs stored before the scheme and the toggles as not chosen', () => {
     const old = readRosterImagePrefs({ columns: 2, order: 'rows', goal: true, header: '' })
     expect(old.scheme).toBeUndefined()
     expect('scheme' in old).toBe(false)
+    expect(old.toggles).toEqual({})
   })
 
   it('takes an unknown scheme as not chosen', () => {
@@ -43,6 +54,16 @@ describe('readRosterImagePrefs', () => {
       expect(readRosterImagePrefs({ scheme }).scheme).toBeUndefined()
     }
     expect(readRosterImagePrefs({ scheme: 'light' }).scheme).toBe('light')
+  })
+
+  it('keeps only the toggles that are true or false', () => {
+    expect(readRosterImagePrefs({ toggles: { potential: true, a: 'yes', b: 1, c: null, d: false } }).toggles).toEqual({
+      potential: true,
+      d: false,
+    })
+    for (const toggles of ['potential', [true], null, 3]) {
+      expect(readRosterImagePrefs({ toggles }).toggles).toEqual({})
+    }
   })
 
   it('rounds the columns and clamps them to 1–6', () => {

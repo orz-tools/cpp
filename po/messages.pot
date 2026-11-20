@@ -112,11 +112,11 @@ msgstr ""
 msgid "QQ 交流群"
 msgstr ""
 
-#: src/components/rosterImage/RosterImageDialog.tsx:424
+#: src/components/rosterImage/RosterImageDialog.tsx:435
 msgid "下载 PNG"
 msgstr ""
 
-#: src/components/rosterImage/RosterImageDialog.tsx:416
+#: src/components/rosterImage/RosterImageDialog.tsx:427
 msgid "下载 SVG"
 msgstr ""
 
@@ -773,7 +773,7 @@ msgstr ""
 msgid "显示培养目标"
 msgstr ""
 
-#: src/components/rosterImage/RosterImageDialog.tsx:397
+#: src/components/rosterImage/RosterImageDialog.tsx:408
 msgid "显示页脚"
 msgstr ""
 
@@ -2061,6 +2061,7 @@ msgid "不从绿材料合成蓝材料"
 msgstr ""
 
 #: src/components/arknights/ConfigMenuItems.tsx:12
+#: src/components/arknights/rosterImage.ts:278
 msgctxt "arknights option"
 msgid "显示潜能"
 msgstr ""

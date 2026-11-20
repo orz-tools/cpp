@@ -11,13 +11,21 @@ export interface RosterImagePrefs {
   header: string
   /** 没选过时跟着应用的深浅色 */
   scheme?: RosterScheme
+  /** 游戏自己的开关里改过的，按 key；没改过的跟着游戏自己的设置 */
+  toggles: Readonly<Record<string, boolean>>
 }
 
 export const MIN_COLUMNS = 1
 export const MAX_COLUMNS = 6
 export const MAX_HEADER_LENGTH = 40
 
-export const defaultRosterImagePrefs: RosterImagePrefs = { columns: 1, order: 'rows', goal: false, header: '' }
+export const defaultRosterImagePrefs: RosterImagePrefs = {
+  columns: 1,
+  order: 'rows',
+  goal: false,
+  header: '',
+  toggles: {},
+}
 
 /** 按码点截，不切开代理对 */
 export function clampHeader(header: string): string {
@@ -32,9 +40,16 @@ export function clampColumns(columns: number): number {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value != null && !Array.isArray(value)
 
+function readToggles(stored: unknown): Readonly<Record<string, boolean>> {
+  if (!isRecord(stored)) return defaultRosterImagePrefs.toggles
+  const result: Record<string, boolean> = {}
+  for (const [key, value] of Object.entries(stored)) if (typeof value === 'boolean') result[key] = value
+  return result
+}
+
 export function readRosterImagePrefs(stored: unknown): RosterImagePrefs {
   if (!isRecord(stored)) return defaultRosterImagePrefs
-  const { columns, order, goal, header, scheme } = stored as Partial<Record<keyof RosterImagePrefs, unknown>>
+  const { columns, order, goal, header, scheme, toggles } = stored as Partial<Record<keyof RosterImagePrefs, unknown>>
   return {
     columns:
       typeof columns === 'number' && Number.isFinite(columns) ? clampColumns(columns) : defaultRosterImagePrefs.columns,
@@ -42,6 +57,7 @@ export function readRosterImagePrefs(stored: unknown): RosterImagePrefs {
     goal: typeof goal === 'boolean' ? goal : defaultRosterImagePrefs.goal,
     header: typeof header === 'string' ? clampHeader(header) : defaultRosterImagePrefs.header,
     ...(scheme === 'light' || scheme === 'dark' ? { scheme } : null),
+    toggles: readToggles(toggles),
   }
 }
 

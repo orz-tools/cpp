@@ -7,8 +7,10 @@ import potential3 from './assets/potential3.png'
 import {
   ARKNIGHTS_STATUS_HEIGHT,
   ARKNIGHTS_STATUS_WIDTH,
+  POTENTIAL_TOGGLE,
   STATUS_SHADOW,
   createArknightsRosterPainter,
+  rosterShowsPotential,
 } from './rosterImage'
 
 // 只测画法本身，不碰 React
@@ -147,6 +149,14 @@ describe('createArknightsRosterPainter', () => {
     expect(badge(painter.avatar(character(), st, false))).toMatchObject({ glow: true, w: 18, h: 18 })
     expect(badge(painter.avatar(character(), st, true))).toBeUndefined()
     expect(badge(createArknightsRosterPainter({ showPotential: false }).avatar(character(), st, false))).toBeUndefined()
+  })
+
+  it('shows potential as the list does until it is changed for the image', () => {
+    expect(rosterShowsPotential({}, true)).toBe(true)
+    expect(rosterShowsPotential({}, false)).toBe(false)
+    expect(rosterShowsPotential({ [POTENTIAL_TOGGLE]: false }, true)).toBe(false)
+    expect(rosterShowsPotential({ [POTENTIAL_TOGGLE]: true }, false)).toBe(true)
+    expect(rosterShowsPotential({ other: false }, true)).toBe(true)
   })
 
   it('draws the avatar over the rarity background', () => {

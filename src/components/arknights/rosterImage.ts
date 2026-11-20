@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 import { WithGame } from '../../Cpp'
 import type { Character } from '../../pkg/cpp-arknights'
 import { Arknights, ArknightsCharacterStatus, PreferenceKeys } from '../../pkg/cpp-arknights/types'
-import type { RosterImagePainter, SceneImage, SceneNode, SceneShadow } from '../rosterImage/scene'
+import { gt } from '../../pkg/gt'
+import type { RosterImagePainter, RosterToggleValues, SceneImage, SceneNode, SceneShadow } from '../rosterImage/scene'
 import charbg1 from './assets/charbg1.png'
 import charbg2 from './assets/charbg2.png'
 import charbg3 from './assets/charbg3.png'
@@ -261,7 +262,21 @@ export function createArknightsRosterPainter({ showPotential }: { showPotential:
   }
 }
 
-export function useRosterImagePainter(): RosterImagePainter {
-  const showPotential = WithGame<Arknights>().useGamePreferenceAtomValue(PreferenceKeys.ShowPotential)
-  return useMemo(() => createArknightsRosterPainter({ showPotential }), [showPotential])
+export const POTENTIAL_TOGGLE = 'potential'
+
+/** 练度图的对话框里改过就按改的，没改过跟着列表的「显示潜能」；改了也不动列表的 */
+export function rosterShowsPotential(toggles: RosterToggleValues, listShowsPotential: boolean): boolean {
+  return toggles[POTENTIAL_TOGGLE] ?? listShowsPotential
+}
+
+export function useRosterImagePainter(toggles: RosterToggleValues): RosterImagePainter {
+  const listShowsPotential = WithGame<Arknights>().useGamePreferenceAtomValue(PreferenceKeys.ShowPotential)
+  const showPotential = rosterShowsPotential(toggles, listShowsPotential)
+  return useMemo(
+    () => ({
+      ...createArknightsRosterPainter({ showPotential }),
+      toggles: [{ key: POTENTIAL_TOGGLE, label: gt.pgettext('arknights option', '显示潜能'), value: showPotential }],
+    }),
+    [showPotential],
+  )
 }

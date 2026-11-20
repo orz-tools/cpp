@@ -162,11 +162,11 @@ msgstr "PRTS 时装回廊 (outfit gallery)"
 msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:424
+#: src/components/rosterImage/RosterImageDialog.tsx:435
 msgid "下载 PNG"
 msgstr "Download PNG"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:416
+#: src/components/rosterImage/RosterImageDialog.tsx:427
 msgid "下载 SVG"
 msgstr "Download SVG"
 
@@ -874,7 +874,7 @@ msgstr "Show All"
 msgid "显示培养目标"
 msgstr "Show Targets"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:397
+#: src/components/rosterImage/RosterImageDialog.tsx:408
 msgid "显示页脚"
 msgstr "Show Footer"
 
@@ -2250,6 +2250,7 @@ msgid "不从绿材料合成蓝材料"
 msgstr "Do Not Use T2 Materials for Synthesizing T3 Materials"
 
 #: src/components/arknights/ConfigMenuItems.tsx:12
+#: src/components/arknights/rosterImage.ts:278
 msgctxt "arknights option"
 msgid "显示潜能"
 msgstr "Show Potential"

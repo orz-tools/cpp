@@ -66,11 +66,23 @@ export interface Scene {
   nodes: SceneNode[]
 }
 
+/** 游戏自己的一个开关，对话框里一个勾选框 */
+export interface RosterImageToggle {
+  key: string
+  label: string
+  /** 画法现在用的值：对话框里改过的，没改过就是游戏自己的设置 */
+  value: boolean
+}
+
+/** 对话框里改过的开关，按 key；没改过的不在里面 */
+export type RosterToggleValues = Readonly<Partial<Record<string, boolean>>>
+
 /** 练度图里游戏给的画法；外壳排版，画名字、标题和页脚 */
 export interface RosterImagePainter {
   /** 练度格的宽、高；每名干员一样大，列才对得齐 */
   statusWidth: number
   statusHeight: number
+  toggles?: readonly RosterImageToggle[]
   /** 40×40 的头像，原点在左上角；absent 是未持有 */
   avatar: (character: any, status: any, absent: boolean) => SceneNode[]
   /** 一格练度，原点在左上角；给了 current 时，和它相同的部分画淡，像列表的目标格 */
