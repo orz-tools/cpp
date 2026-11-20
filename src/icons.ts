@@ -70,6 +70,7 @@ const map = new Map<IconSize, Map<IconName, string[]>>([
       [IconNames.LOG_OUT, Paths16.LogOut],
       [IconNames.MAXIMIZE, Paths16.Maximize],
       [IconNames.MEDIA, Paths16.Media],
+      [IconNames.MINUS, Paths16.Minus],
       [IconNames.MOON, Paths16.Moon],
       [IconNames.MORE, Paths16.More],
       [IconNames.MUGSHOT, Paths16.Mugshot],
