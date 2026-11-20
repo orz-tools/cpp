@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import type { SetStateAction } from 'react'
+import type { RosterScheme } from './build'
 import type { RosterOrder } from './layout'
 
 export interface RosterImagePrefs {
@@ -8,6 +9,8 @@ export interface RosterImagePrefs {
   order: RosterOrder
   goal: boolean
   header: string
+  /** 没选过时跟着应用的深浅色 */
+  scheme?: RosterScheme
 }
 
 export const MIN_COLUMNS = 1
@@ -26,16 +29,25 @@ export function clampColumns(columns: number): number {
   return Math.min(MAX_COLUMNS, Math.max(MIN_COLUMNS, Math.round(columns)))
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value != null && !Array.isArray(value)
+
 export function readRosterImagePrefs(stored: unknown): RosterImagePrefs {
-  if (typeof stored !== 'object' || stored == null || Array.isArray(stored)) return defaultRosterImagePrefs
-  const { columns, order, goal, header } = stored as Partial<Record<keyof RosterImagePrefs, unknown>>
+  if (!isRecord(stored)) return defaultRosterImagePrefs
+  const { columns, order, goal, header, scheme } = stored as Partial<Record<keyof RosterImagePrefs, unknown>>
   return {
     columns:
       typeof columns === 'number' && Number.isFinite(columns) ? clampColumns(columns) : defaultRosterImagePrefs.columns,
     order: order === 'rows' || order === 'columns' ? order : defaultRosterImagePrefs.order,
     goal: typeof goal === 'boolean' ? goal : defaultRosterImagePrefs.goal,
     header: typeof header === 'string' ? clampHeader(header) : defaultRosterImagePrefs.header,
+    ...(scheme === 'light' || scheme === 'dark' ? { scheme } : null),
   }
+}
+
+/** 选过的配色；没选过时跟着应用此刻的深浅色（跟随系统的按系统此刻的） */
+export function rosterScheme(chosen: RosterScheme | undefined, appDark: boolean): RosterScheme {
+  return chosen ?? (appDark ? 'dark' : 'light')
 }
 
 // 和 cpp_sidebar、cpp_dossier 一样记在本机、不分档案；页脚开关不记，每次打开都是开

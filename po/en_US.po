@@ -83,7 +83,7 @@ msgstr[1] ""
 "Strategies missions, not with materials."
 
 #. %d: number
-#: src/components/rosterImage/RosterImageDialog.tsx:285
+#: src/components/rosterImage/RosterImageDialog.tsx:288
 msgid "%d 张图片没有载入，图里留空。"
 msgid_plural "%d 张图片没有载入，图里留空。"
 msgstr[0] "%d image did not load and is left blank."
@@ -150,7 +150,7 @@ msgstr ""
 "before the import. Please check them yourself."
 
 #. %d$width, %d$height: pixels; %s: scale, e.g. 1.5
-#: src/components/rosterImage/RosterImageDialog.tsx:224
+#: src/components/rosterImage/RosterImageDialog.tsx:227
 msgid "PNG %d$width × %d$height px（%s 倍）"
 msgstr "PNG %d$width × %d$height px (%s×)"
 
@@ -162,11 +162,11 @@ msgstr "PRTS 时装回廊 (outfit gallery)"
 msgid "QQ 交流群"
 msgstr "QQ Chat Group"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:407
+#: src/components/rosterImage/RosterImageDialog.tsx:424
 msgid "下载 PNG"
 msgstr "Download PNG"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:399
+#: src/components/rosterImage/RosterImageDialog.tsx:416
 msgid "下载 SVG"
 msgstr "Download SVG"
 
@@ -238,11 +238,11 @@ msgid_plural "做完 %d 条"
 msgstr[0] "%d done"
 msgstr[1] "%d done"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:360
+#: src/components/rosterImage/RosterImageDialog.tsx:364
 msgid "先上下"
 msgstr "Down First"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:359
+#: src/components/rosterImage/RosterImageDialog.tsx:363
 msgid "先左右"
 msgstr "Across First"
 
@@ -304,7 +304,7 @@ msgstr[1] "The other %d are done too"
 msgid "最好还是别合成的道具"
 msgstr "Better Not Synthesizing"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:330
+#: src/components/rosterImage/RosterImageDialog.tsx:334
 msgid "写在图顶上，例如博士的名字；不写就没有"
 msgstr "Shown at the top, e.g. the Doctor’s name; none if left empty"
 
@@ -312,19 +312,19 @@ msgstr "Shown at the top, e.g. the Doctor’s name; none if left empty"
 msgid "切换语言失败"
 msgstr "Failed to switch the UI language"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:333
+#: src/components/rosterImage/RosterImageDialog.tsx:337
 msgid "列数"
 msgstr "Columns"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:237
+#: src/components/rosterImage/RosterImageDialog.tsx:240
 msgid "列表上写着出错的原因。"
 msgstr "The list says what went wrong."
 
-#: src/components/rosterImage/RosterImageDialog.tsx:236
+#: src/components/rosterImage/RosterImageDialog.tsx:239
 msgid "列表查询失败"
 msgstr "The List’s Query Failed"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:241
+#: src/components/rosterImage/RosterImageDialog.tsx:244
 msgid "列表还在查询"
 msgstr "The list is still being queried"
 
@@ -415,7 +415,7 @@ msgstr "To import copied data, replace what is in the text box with it."
 msgid "回到「提取装置」"
 msgstr "Back to «Sklanding»"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:249
+#: src/components/rosterImage/RosterImageDialog.tsx:252
 msgid "图太大，或者浏览器内存不够。"
 msgstr "The image is too large, or the browser is out of memory."
 
@@ -705,11 +705,11 @@ msgstr "Open in a window"
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:317
+#: src/components/rosterImage/RosterImageDialog.tsx:321
 msgid "当前列表"
 msgstr "Current List"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:243
+#: src/components/rosterImage/RosterImageDialog.tsx:246
 msgid "当前列表里没有干员"
 msgstr "No operators in the current list"
 
@@ -770,7 +770,7 @@ msgstr "Filter by stage code or name"
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:295
+#: src/components/rosterImage/RosterImageDialog.tsx:298
 msgid "排列"
 msgstr "Order"
 
@@ -830,7 +830,7 @@ msgstr ""
 "Unable to load the data. Check your network connection, try another network, "
 "use a VPN or accelerator, or switch to another server."
 
-#: src/components/rosterImage/RosterImageDialog.tsx:248
+#: src/components/rosterImage/RosterImageDialog.tsx:251
 msgid "无法生成 PNG"
 msgstr "Cannot Create the PNG"
 
@@ -870,11 +870,11 @@ msgstr "Operator Statistics from Arknights-yituliu"
 msgid "显示全部"
 msgstr "Show All"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:372
+#: src/components/rosterImage/RosterImageDialog.tsx:389
 msgid "显示培养目标"
 msgstr "Show Targets"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:380
+#: src/components/rosterImage/RosterImageDialog.tsx:397
 msgid "显示页脚"
 msgstr "Show Footer"
 
@@ -971,7 +971,7 @@ msgstr "View source"
 msgid "查询失败"
 msgstr "Query Failed"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:326
+#: src/components/rosterImage/RosterImageDialog.tsx:330
 msgid "标题"
 msgstr "Title"
 
@@ -1018,7 +1018,7 @@ msgid "正在切换区域…"
 msgstr "Switching region…"
 
 #. %d$done, %d$total: number of images
-#: src/components/rosterImage/RosterImageDialog.tsx:258
+#: src/components/rosterImage/RosterImageDialog.tsx:261
 msgid "正在载入图片 %d$done / %d$total"
 msgstr "Loading images %d$done / %d$total"
 
@@ -1101,11 +1101,11 @@ msgid_plural "用过的 · %d 张"
 msgstr[0] "Used · %d ticket"
 msgstr[1] "Used · %d tickets"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:294
+#: src/components/rosterImage/RosterImageDialog.tsx:297
 msgid "画哪些"
 msgstr "Draw"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:212
+#: src/components/rosterImage/RosterImageDialog.tsx:215
 msgid "画当前列表里的 %d 名干员，次序和列表一样。"
 msgid_plural "画当前列表里的 %d 名干员，次序和列表一样。"
 msgstr[0] ""
@@ -1114,7 +1114,7 @@ msgstr[1] ""
 "Draws the %d operators in the current list, in the order of the list."
 
 #. %d: number
-#: src/components/rosterImage/RosterImageDialog.tsx:207
+#: src/components/rosterImage/RosterImageDialog.tsx:210
 msgid "画选中的 %d 名干员，次序和列表一样。"
 msgid_plural "画选中的 %d 名干员，次序和列表一样。"
 msgstr[0] "Draws the %d selected operator, in the order of the list."
@@ -1144,8 +1144,8 @@ msgid "线性规划失败"
 msgstr "Failed to Plan"
 
 #: src/components/rosterImage/entries.tsx:31
-#: src/components/rosterImage/RosterImageDialog.tsx:270
-#: src/components/rosterImage/RosterImageDialog.tsx:301
+#: src/components/rosterImage/RosterImageDialog.tsx:273
+#: src/components/rosterImage/RosterImageDialog.tsx:305
 msgid "练度图"
 msgstr "Roster Image"
 
@@ -1403,7 +1403,7 @@ msgstr ""
 msgid "选中"
 msgstr "Select"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:318
+#: src/components/rosterImage/RosterImageDialog.tsx:322
 msgid "选中的"
 msgstr "Selected"
 
@@ -1427,6 +1427,10 @@ msgstr "Items"
 msgid "邮箱"
 msgstr "E-mail"
 
+#: src/components/rosterImage/RosterImageDialog.tsx:299
+msgid "配色"
+msgstr "Colors"
+
 #: src/App.tsx:79
 msgid "重做"
 msgstr "Redo"
@@ -1435,7 +1439,7 @@ msgstr "Redo"
 msgid "重新下载数据"
 msgstr "Re-download Data"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:282
+#: src/components/rosterImage/RosterImageDialog.tsx:285
 msgid "长按图片保存到相册"
 msgstr "Long-press the image to save it to your photos"
 
@@ -4952,17 +4956,17 @@ msgctxt "query value"
 msgid "精英 %d"
 msgstr "E%d"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:136
+#: src/components/rosterImage/RosterImageDialog.tsx:139
 msgctxt "roster image"
 msgid "当前"
 msgstr "Current"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:137
+#: src/components/rosterImage/RosterImageDialog.tsx:140
 msgctxt "roster image"
 msgid "目标"
 msgstr "Target"
 
-#: src/components/rosterImage/RosterImageDialog.tsx:135
+#: src/components/rosterImage/RosterImageDialog.tsx:138
 msgctxt "roster image"
 msgid "练度图由 Closure++ 生成"
 msgstr "Roster image made with Closure++"

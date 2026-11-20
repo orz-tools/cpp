@@ -1,3 +1,5 @@
+import { SITE_QR } from './siteQr'
+
 /** 练度图的版面，尺寸都是 1 倍的 px */
 
 export const MARGIN = 16
@@ -9,7 +11,7 @@ export const COLUMN_GAP = 24
 export const HEADER_HEIGHT = 48
 export const COLUMN_HEAD_HEIGHT = 20
 
-// 页脚：最后一行格子下面空 20，1px 的分隔线，再空 16，然后是 56 高的一行。
+// 页脚：最后一行格子下面空 20，1px 的分隔线，再空 16，然后是 56 高的一行（二维码有底板时是底板的高）。
 // 练度格的影子（列表的 0 3px 6px）往外最多伸出 12，最后一行下面的 20、底边的 16 和列间的 24 都容得下
 export const FOOTER_SPACE_ABOVE = 20
 export const FOOTER_RULE = 1
@@ -26,6 +28,17 @@ export const FOOTER_LINE2_HEIGHT = 16
 /** 页脚第一行和二维码之间至少空这么多 */
 export const FOOTER_TEXT_GAP = 16
 export const QR_SIZE = 56
+/**
+ * 深色配色里二维码垫一块浅色的底板，四周各留 QR 码规定的 4 格静区（取整到 px）。
+ * 码不缩：缩进 56 里的话，1 倍的 PNG 上一格只剩 1.7 px，试过扫不出来；所以页脚那一行跟着底板长高
+ */
+export const QR_QUIET = Math.ceil((QR_SIZE / SITE_QR.length) * 4)
+export const QR_PLATE = QR_SIZE + QR_QUIET * 2
+
+/** 页脚那一行的高：有底板时是底板的高 */
+export function footerRow(qrPlate: boolean): number {
+  return qrPlate ? QR_PLATE : FOOTER_ROW
+}
 
 /** rows 是先左右（一行排满再换行），columns 是先上下 */
 export type RosterOrder = 'rows' | 'columns'
@@ -66,6 +79,8 @@ export interface SheetOptions {
   goal: boolean
   header: boolean
   footer: boolean
+  /** 二维码垫底板（深色配色） */
+  qrPlate?: boolean
 }
 
 export interface Sheet {
@@ -81,13 +96,14 @@ export interface Sheet {
   contentRight: number
 }
 
-export function sheetSize({ n, columns, order, statusWidth, goal, header, footer }: SheetOptions): Sheet {
+export function sheetSize({ n, columns, order, statusWidth, goal, header, footer, qrPlate }: SheetOptions): Sheet {
   const grid = gridCells(n, columns, order)
   const cell = cellWidth(statusWidth, goal)
   const width = MARGIN * 2 + grid.cols * cell + Math.max(0, grid.cols - 1) * COLUMN_GAP
   const gridTop = MARGIN + (header ? HEADER_HEIGHT : 0) + (goal ? COLUMN_HEAD_HEIGHT : 0)
   const gridBottom = gridTop + grid.rows * ROW_HEIGHT
-  const height = gridBottom + (footer ? FOOTER_HEIGHT : 0) + MARGIN
+  const footerHeight = FOOTER_SPACE_ABOVE + FOOTER_RULE + FOOTER_SPACE_BELOW + footerRow(!!qrPlate)
+  const height = gridBottom + (footer ? footerHeight : 0) + MARGIN
   return { width, height, grid, cellWidth: cell, gridTop, gridBottom, contentRight: width - MARGIN }
 }
 
