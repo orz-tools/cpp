@@ -591,6 +591,28 @@ body {
   height: 100%;
 }
 
+/* 线性规划失败（FarmFailure.tsx）：手机上整屏都是它，文字和框不贴着屏幕边 */
+.cpp-farm-failure.bp6-non-ideal-state {
+  box-sizing: border-box;
+  padding: 0 16px;
+}
+
+/* 求解数据是一整行 base64，在框里随处折行，不把这一块撑宽 */
+.cpp-farm-failure-data {
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--bp-typography-family-mono);
+  word-break: break-all;
+  resize: none;
+}
+
+.cpp-farm-failure-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
 /* 图标模式下一关的产物（FarmList.tsx 的 Drops）：左右和菜单项的内容对齐 */
 .cpp-farm-drop-tiles {
   padding: 4px 8px;

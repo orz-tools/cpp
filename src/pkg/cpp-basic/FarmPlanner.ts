@@ -25,6 +25,12 @@ export interface CreateFarmPlannerOptions {
 const SOURCELESS_AP = 1e4
 
 /**
+ * The solver pivots only on coefficients larger than this. A stage yielding 10000 of an item (LS-6's EXP, CE-6's LMD)
+ * leaves 1/10000 in the tableau, and at 1e-4 that pivot was skipped and a solvable plan called infeasible.
+ */
+export const FARM_PLANNER_PRECISION = 1e-9
+
+/**
  * Solved at 1e-9, the values carry noise of a few 1e-9 once the LMD needed runs into the hundreds of millions, and the
  * plan rounds runs up: a stage at 2e-9 would be listed with one run. 1e-4 is the grid the solver rounded to when it
  * ran at that precision, so plans it could solve come out as before.
@@ -181,9 +187,7 @@ export class FarmPlanner<G extends IGame> {
     } catch (e) {
       console.warn('failed to convert as minizinc input', e)
     }
-    // The solver pivots only on coefficients larger than this. A stage yielding 10000 of an item (LS-6's EXP, CE-6's
-    // LMD) leaves 1/10000 in the tableau, and at 1e-4 that pivot was skipped and a solvable plan called infeasible.
-    const result = Lpsolver.Solve(this.model, 1e-9) as Solution<FarmModelSolutionVar>
+    const result = Lpsolver.Solve(this.model, FARM_PLANNER_PRECISION) as Solution<FarmModelSolutionVar>
     for (const i of this.unfeasible) {
       const taken = result[`unfeasible:${i}`]
       if (typeof taken === 'number') result.result -= taken * SOURCELESS_AP
@@ -191,6 +195,11 @@ export class FarmPlanner<G extends IGame> {
     roundSolution(result)
     console.log('lpsolver result', this.model, result)
     return result
+  }
+
+  /** The model as run() hands it to the solver, once run() has been called */
+  public getModel(): Model {
+    return this.model
   }
 
   public compile() {

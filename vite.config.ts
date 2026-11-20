@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react-swc'
+import { execFileSync } from 'node:child_process'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
@@ -10,6 +11,9 @@ const chunks = {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), visualizer(), svgr()],
+  define: {
+    __CPP_COMMIT__: JSON.stringify(headCommit()),
+  },
   build: {
     rolldownOptions: {
       output: {
@@ -26,6 +30,19 @@ export default defineConfig({
     },
   },
 })
+
+/** What a failed farm plan reports it was built from; a build outside a git checkout has nothing to say */
+function headCommit(): string | null {
+  try {
+    return (
+      execFileSync('git', ['rev-parse', 'HEAD'], { stdio: ['ignore', 'pipe', 'ignore'] })
+        .toString()
+        .trim() || null
+    )
+  } catch {
+    return null
+  }
+}
 
 function chunkOf(id: string): string | null {
   if (isCSSRequest(id)) return null

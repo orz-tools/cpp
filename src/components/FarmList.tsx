@@ -11,6 +11,7 @@ import {
   Spinner,
   Tag,
 } from '@blueprintjs/core'
+import { version as lpSolverVersion } from 'javascript-lp-solver/package.json'
 import { Atom, atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { sortBy } from 'ramda'
@@ -19,10 +20,12 @@ import useEvent from 'react-use-event-hook'
 import { Cpp, FarmLevel, FarmLevelNames, FarmLevelShortNames, Level, useCpp, useGameAdapter } from '../Cpp'
 import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
-import { FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
+import { FARM_PLANNER_PRECISION, FarmPlanner, IGame, IStageInfo } from '../pkg/cpp-basic'
+import { FarmFailure, encodeFarmFailure } from '../pkg/cpp-basic/farmFailure'
 import { UserDataAtomHolder } from '../pkg/cpp-core/UserData'
 import { gt } from '../pkg/gt'
 import { ErrAtom } from './Err'
+import { FarmFailureState } from './FarmFailure'
 import { ItemIcon } from './Icons'
 import { ItemTile } from './ItemTile'
 import { PeekTrigger } from './Peek'
@@ -42,6 +45,8 @@ export interface FormulaUse {
   formulaId: string
   times: number
 }
+
+type PlanSolution = Awaited<ReturnType<FarmPlanner<IGame>['run']>>
 
 function getLevelTaskRequirementsAtom(atoms: UserDataAtomHolder<IGame>['atoms'], l: Level): Atom<Record<string, number>>
 
@@ -63,12 +68,39 @@ function getLevelTaskRequirementsAtom(atoms: UserDataAtomHolder<IGame>['atoms'],
   throw new Error('invalid level')
 }
 
-export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
+/** The requirements level each farm level plans for, and the one whose plan caps its runs, planned first */
+const farmLevelPlans: Record<FarmLevel, readonly [target: Level, consider?: Level]> = {
+  [FarmLevel.StarOnly]: [Level.Star],
+  [FarmLevel.StarForGoal]: [Level.Star, Level.Goal],
+  [FarmLevel.StarForFinished]: [Level.Star, Level.Finished],
+  [FarmLevel.Goal]: [Level.Goal],
+  [FarmLevel.GoalForFinished]: [Level.Goal, Level.Finished],
+  [FarmLevel.Finished]: [Level.Finished],
+}
+
+/** The solver found no plan, or threw */
+export interface PlanFailed {
+  failure: FarmFailure
+  /** failure as encodeFarmFailure writes it, for the user to pass on */
+  text: string
+  expired: () => boolean
+}
+
+export async function plan(cpp: Cpp<IGame>, farmLevel: FarmLevel) {
+  const levels = farmLevelPlans[farmLevel] as (typeof farmLevelPlans)[FarmLevel] | undefined
+  if (!levels) throw new Error('Invalid farm level')
+  const [target, consider] = levels
   console.log('new planning session')
   const ga = cpp.gameAdapter
   const atoms = cpp.atoms.atoms
   const store = cpp.store
   const generation = store.get(cpp.gameDataGenerationAtom)
+  const dataAtomValue = store.get(atoms.dataAtom)
+  const preferenceAtomValue = store.get(cpp.preferenceAtoms.preferenceAtom)
+  const expired = () =>
+    store.get(cpp.gameDataGenerationAtom) !== generation ||
+    store.get(atoms.dataAtom) !== dataAtomValue ||
+    store.get(cpp.preferenceAtoms.preferenceAtom) !== preferenceAtomValue
   const quantities = store.get(atoms.itemQuantities)
   const considerAtom = getLevelTaskRequirementsAtom(atoms, consider)
   const considerRequirements = considerAtom ? store.get(considerAtom) : undefined
@@ -76,33 +108,55 @@ export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
   const forbiddenFormulaTags = store.get(cpp.preferenceAtoms.forbiddenFormulaTagsAtom)
   const forbiddenStageIds = store.get(cpp.preferenceAtoms.forbiddenStageIdsAtom)
 
-  const previousResult = considerRequirements
-    ? await (async () => {
-        console.log('pre-planning for consider level', Level[consider!])
-        const planner = await FarmPlanner.create(ga, { forbiddenFormulaTags, forbiddenStageIds })
-        planner.setRequirements(considerRequirements)
-        planner.setQuantity(quantities)
-        const result = await planner.run()
-        if (!result.feasible) {
-          return null
-        }
-        return result
-      })()
-    : undefined
-  if (previousResult === null) return null
+  const solve = async (
+    level: Level,
+    levelRequirements: Record<string, number>,
+    previousResult?: PlanSolution,
+  ): Promise<{ solution: PlanSolution } | { failed: PlanFailed }> => {
+    const planner = await FarmPlanner.create(ga, { forbiddenFormulaTags, forbiddenStageIds }, previousResult)
+    planner.setRequirements(levelRequirements)
+    planner.setQuantity(quantities)
+    let outcome: FarmFailure['outcome']
+    try {
+      const solution = await planner.run()
+      if (solution.feasible) return { solution }
+      outcome = { feasible: solution.feasible, bounded: solution.bounded, result: solution.result }
+    } catch (e) {
+      console.error(e)
+      outcome = { error: e instanceof Error ? e.stack || String(e) : String(e) }
+    }
+    const dm = ga.getDataManager()
+    const failure: FarmFailure = {
+      at: new Date().toJSON(),
+      game: ga.getCodename(),
+      region: dm.region,
+      build: __CPP_COMMIT__ ?? undefined,
+      solver: { version: lpSolverVersion, precision: FARM_PLANNER_PRECISION },
+      data: dm.getVersions(),
+      level: farmLevel,
+      failed: Level[level],
+      forbiddenStageIds: [...forbiddenStageIds],
+      forbiddenFormulaTags: [...forbiddenFormulaTags],
+      outcome,
+      previousResult,
+      model: planner.getModel(),
+    }
+    return { failed: { failure, text: await encodeFarmFailure(failure), expired } }
+  }
 
-  if (previousResult) {
+  let previousResult: PlanSolution | undefined
+  if (consider !== undefined && considerRequirements) {
+    console.log('pre-planning for consider level', Level[consider])
+    const first = await solve(consider, considerRequirements)
+    if ('failed' in first) return first.failed
+    previousResult = first.solution
     console.log('planning for target level', Level[target], 'with previous result', previousResult)
   } else {
     console.log('planning for target level', Level[target], 'directly')
   }
-  const planner = await FarmPlanner.create(ga, { forbiddenFormulaTags, forbiddenStageIds }, previousResult)
-  planner.setRequirements(requirements)
-  planner.setQuantity(quantities)
-  const result = await planner.run()
-  if (!result.feasible) {
-    return null
-  }
+  const second = await solve(target, requirements, previousResult)
+  if ('failed' in second) return second.failed
+  const result = second.solution
 
   let ap = 0
   const stageInfo = ga.getStageInfos()
@@ -129,9 +183,6 @@ export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
     }
   }
 
-  const dataAtomValue = store.get(atoms.dataAtom)
-  const preferenceAtomValue = store.get(cpp.preferenceAtoms.preferenceAtom)
-
   return {
     target: target,
     consider: consider,
@@ -140,13 +191,7 @@ export async function plan(cpp: Cpp<IGame>, target: Level, consider?: Level) {
     ap,
     unfeasibleItems: hasUnfeasibleItems ? unfeasibleItems : undefined,
     synthesisList: target === Level.Finished ? undefined : planSynthesisList(cpp, target, formulaUses),
-    expired: () => {
-      return (
-        store.get(cpp.gameDataGenerationAtom) !== generation ||
-        store.get(atoms.dataAtom) !== dataAtomValue ||
-        store.get(cpp.preferenceAtoms.preferenceAtom) !== preferenceAtomValue
-      )
-    },
+    expired,
   }
 }
 
@@ -207,23 +252,8 @@ export const FarmList = memo(() => {
   const synthesisPane = phone && area === 'synthesis'
   const refresh = useEvent((f?: FarmLevel) => {
     if (blocked) return
-    if (!f) f = farmLevel
     try {
-      switch (f) {
-        case FarmLevel.Finished:
-          return send(cpp, Level.Finished)
-        case FarmLevel.Goal:
-          return send(cpp, Level.Goal)
-        case FarmLevel.GoalForFinished:
-          return send(cpp, Level.Goal, Level.Finished)
-        case FarmLevel.StarOnly:
-          return send(cpp, Level.Star)
-        case FarmLevel.StarForGoal:
-          return send(cpp, Level.Star, Level.Goal)
-        case FarmLevel.StarForFinished:
-          return send(cpp, Level.Star, Level.Finished)
-      }
-      throw new Error('Invalid farm level')
+      return send(cpp, f || farmLevel)
     } catch (e) {
       setErr({ error: e, context: gt.pgettext('error context', '刷本规划时遇到问题') })
     }
@@ -293,7 +323,9 @@ export const FarmList = memo(() => {
           />
         </Navbar.Group>
         <Navbar.Group align={Alignment.LEFT}>
-          {response && !blocked ? <ValueTag value={response.ap} intent={'primary'} /> : null}
+          {response && !('failure' in response) && !blocked ? (
+            <ValueTag value={response.ap} intent={'primary'} />
+          ) : null}
         </Navbar.Group>
       </Navbar>
       <div
@@ -303,6 +335,8 @@ export const FarmList = memo(() => {
       >
         {blocked ? (
           notice
+        ) : response && 'failure' in response ? (
+          <FarmFailureState failed={response} />
         ) : response ? (
           <>
             <div className="bp6-elevation-1 cpp-farm-stages">
@@ -323,8 +357,6 @@ export const FarmList = memo(() => {
               </Menu>
             )}
           </>
-        ) : response === null ? (
-          <NonIdealState title={gt.gettext('线性规划失败')} icon="error" />
         ) : response === undefined ? (
           <NonIdealState title={gt.gettext('请稍候')} icon={<Spinner />} />
         ) : null}

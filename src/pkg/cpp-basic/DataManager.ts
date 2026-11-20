@@ -128,6 +128,13 @@ export abstract class BasicDataManager<
     return container as IDataContainer<T>
   }
 
+  /** Container name → version id of the committed data */
+  public getVersions(): Record<string, string> {
+    const versions: Record<string, string> = {}
+    for (const [obj, container] of this.committed?.containers ?? []) versions[obj.name] = String(container.version.id)
+    return versions
+  }
+
   public getState(): DataManagerState {
     return this.state
   }
