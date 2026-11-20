@@ -318,7 +318,7 @@ msgid "取消选中"
 msgstr ""
 
 #. %d: number
-#: src/components/arknights/StageRows.tsx:239
+#: src/components/arknights/StageRows.tsx:263
 msgid "另外 %d 关"
 msgid_plural "另外 %d 关"
 msgstr[0] ""
@@ -5287,7 +5287,7 @@ msgctxt "stage panel"
 msgid "图标角上是库存，「需」是需求；点材料看它的全部关卡"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:172
+#: src/components/arknights/StageRows.tsx:196
 msgctxt "stage panel"
 msgid "够了"
 msgstr ""
@@ -5303,34 +5303,34 @@ msgctxt "stage panel"
 msgid "已启用的关卡"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:165
+#: src/components/arknights/StageRows.tsx:189
 msgctxt "stage panel"
 msgid "库存"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:205
+#: src/components/arknights/StageRows.tsx:229
 msgctxt "stage panel"
 msgid "库存 %s"
 msgstr ""
 
 #. %s$level: 星标, 计划 or 毕业
-#: src/components/arknights/StageRows.tsx:144
+#: src/components/arknights/StageRows.tsx:168
 msgctxt "stage panel"
 msgid "按%s$level目标：直接需求 %s$direct，间接需求 %s$indirect"
 msgstr ""
 
 #. %s$level: 星标, 计划 or 毕业
-#: src/components/arknights/StageRows.tsx:140
+#: src/components/arknights/StageRows.tsx:164
 msgctxt "stage panel"
 msgid "按%s$level目标：直接需求 %s$direct，间接需求 %s$indirect；数字都是经验，库存是作战记录折成的经验"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:260
+#: src/components/arknights/StageRows.tsx:284
 msgctxt "stage panel"
 msgid "按材料"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:259
+#: src/components/arknights/StageRows.tsx:283
 msgctxt "stage panel"
 msgid "按章节"
 msgstr ""
@@ -5356,7 +5356,7 @@ msgctxt "stage panel"
 msgid "效率超过 100%"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:275
+#: src/components/arknights/StageRows.tsx:299
 msgctxt "stage panel"
 msgid "无匹配材料"
 msgstr ""
@@ -5382,17 +5382,17 @@ msgctxt "stage panel"
 msgid "每次掉落价值"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:82
+#: src/components/arknights/StageRows.tsx:83
 msgctxt "stage panel"
 msgid "活动"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:274
+#: src/components/arknights/StageRows.tsx:298
 msgctxt "stage panel"
 msgid "物品价值计算失败"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:268
+#: src/components/arknights/StageRows.tsx:292
 msgctxt "stage panel"
 msgid "物品价值计算失败，暂时无法显示效率；关卡的启用、禁用不受影响"
 msgstr ""
@@ -5412,22 +5412,22 @@ msgctxt "stage panel"
 msgid "芯片"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:169
+#: src/components/arknights/StageRows.tsx:193
 msgctxt "stage panel"
 msgid "还缺"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:220
+#: src/components/arknights/StageRows.tsx:244
 msgctxt "stage panel"
 msgid "需 %s"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:162
+#: src/components/arknights/StageRows.tsx:186
 msgctxt "stage panel"
 msgid "需求"
 msgstr ""
 
-#: src/components/arknights/StageRows.tsx:214
+#: src/components/arknights/StageRows.tsx:238
 msgctxt "stage panel"
 msgid "需求 %s"
 msgstr ""
