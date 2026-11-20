@@ -18,6 +18,13 @@ export interface CreateFarmPlannerOptions {
 }
 
 /**
+ * What the plan pays for a unit it lists as having no source, over twenty times what the dearest material costs to
+ * farm. Were it free, a plan held to another level's stages and formulas, each capped at its count there rounded up,
+ * would take from nowhere what the synthesis the rounding allows consumes and none of those stages drops.
+ */
+const SOURCELESS_AP = 1e4
+
+/**
  * Solved at 1e-9, the values carry noise of a few 1e-9 once the LMD needed runs into the hundreds of millions, and the
  * plan rounds runs up: a stage at 2e-9 would be listed with one run. 1e-4 is the grid the solver rounded to when it
  * ran at that precision, so plans it could solve come out as before.
@@ -165,7 +172,7 @@ export class FarmPlanner<G extends IGame> {
   public async run() {
     await Promise.resolve()
     for (const i of this.unfeasible) {
-      this.model.variables[`unfeasible:${i}`] = { [i]: 1 }
+      this.model.variables[`unfeasible:${i}`] = { [i]: 1, ap: SOURCELESS_AP }
       this.model.constraints[`unfeasible:${i}`] = { min: 0 }
     }
     // delete this.model.ints
@@ -177,6 +184,10 @@ export class FarmPlanner<G extends IGame> {
     // The solver pivots only on coefficients larger than this. A stage yielding 10000 of an item (LS-6's EXP, CE-6's
     // LMD) leaves 1/10000 in the tableau, and at 1e-4 that pivot was skipped and a solvable plan called infeasible.
     const result = Lpsolver.Solve(this.model, 1e-9) as Solution<FarmModelSolutionVar>
+    for (const i of this.unfeasible) {
+      const taken = result[`unfeasible:${i}`]
+      if (typeof taken === 'number') result.result -= taken * SOURCELESS_AP
+    }
     roundSolution(result)
     console.log('lpsolver result', this.model, result)
     return result

@@ -17,8 +17,13 @@ function adapter(
   } as unknown as IGameAdapter<IGame>
 }
 
-async function plan(ga: IGameAdapter<IGame>, requirements: Record<string, number>, quantities: Record<string, number>) {
-  const planner = await FarmPlanner.create(ga, { forbiddenFormulaTags: [], forbiddenStageIds: [] })
+async function plan(
+  ga: IGameAdapter<IGame>,
+  requirements: Record<string, number>,
+  quantities: Record<string, number>,
+  previousResult?: Awaited<ReturnType<FarmPlanner<IGame>['run']>>,
+) {
+  const planner = await FarmPlanner.create(ga, { forbiddenFormulaTags: [], forbiddenStageIds: [] }, previousResult)
   planner.setRequirements(requirements)
   planner.setQuantity(quantities)
   return await planner.run()
@@ -60,6 +65,35 @@ describe('FarmPlanner', () => {
     expect(result['battle:s1']).toBeCloseTo(1000)
     expect(result['battle:exp']).toBeUndefined()
     expect(result.result).toBeCloseTo(15000)
+  })
+
+  it('lists what nothing makes, at no AP', async () => {
+    const ga = adapter({ a: { ap: 10, 'item:x': 1 } })
+    const result = await plan(ga, { x: 3, token: 5 }, { token: 2 })
+    expect(result.feasible).toBe(true)
+    expect(result['unfeasible:item:token']).toBeCloseTo(3)
+    expect(result['unfeasible:item:x']).toBeUndefined()
+    expect(result.result).toBeCloseTo(30)
+  })
+
+  it('plans a level on the stages of another without taking an item from nowhere', async () => {
+    const ga = adapter(
+      {
+        t1: { ap: 10, 'item:t1': 1 },
+        t2: { ap: 10, 'item:t2': 1 },
+      },
+      [{ id: 'f', itemId: 't2', quantity: 1, costs: [{ itemId: 't1', quantity: 3 }], tags: [] } as unknown as Formula],
+    )
+    // Making t2 from farmed t1 costs 30 AP, so the first plan uses up the 4 t1 in stock on 4/3 syntheses and farms
+    // none; the second may synthesize up to twice, which needs 2 t1 it cannot farm
+    const first = await plan(ga, { t2: 10 }, { t1: 4 })
+    expect(first['formula:f']).toBeCloseTo(4 / 3, 3)
+    expect(first['battle:t1']).toBeUndefined()
+    const second = await plan(ga, { t2: 10 }, { t1: 4 }, first)
+    expect(second.feasible).toBe(true)
+    expect(second['unfeasible:item:t1']).toBeUndefined()
+    expect(second['formula:f']).toBeCloseTo(4 / 3, 3)
+    expect(second['battle:t2']).toBeCloseTo(26 / 3, 3)
   })
 
   it('rounds away the noise of the solve', async () => {
