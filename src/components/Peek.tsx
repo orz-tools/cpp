@@ -112,7 +112,7 @@ export const PeekCard = memo(
     const phone = usePhoneLayout()
     const canPin = !pinned && exists && !phone
     return (
-      <div className="cpp-peek-card" role="dialog" aria-labelledby={titleId} tabIndex={-1}>
+      <div className="cpp-peek-card" data-kind={ref.kind} role="dialog" aria-labelledby={titleId} tabIndex={-1}>
         <div className="cpp-peek-head">
           {stack.length > 1 ? (
             <Button

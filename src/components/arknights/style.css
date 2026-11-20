@@ -845,6 +845,26 @@
   box-shadow: none;
 }
 
+/*
+ * 关卡卡片按内容定宽：中文的关卡名、道具名都短，344px 宽时名字和数隔得太开，最长的中文关卡名
+ * 248px 放得下；英文的界面字和道具名长，撑到 344px 为止，再长的名字省略
+ */
+.cpp-peek-card[data-kind='stage'] {
+  width: fit-content;
+  min-width: 248px;
+  max-width: min(344px, calc(100vw - 16px));
+}
+
+/* 上一条盖住了 App.css 给钉住的卡片的 max-width: 100%，钉板出了滚动条时比 344px 窄 */
+.cpp-peek-pinned > .cpp-peek-card[data-kind='stage'] {
+  max-width: min(344px, 100%);
+}
+
+/* 英文里卡片的宽正好是这一行的宽，「Efficiency」紧挨着勾选框的字，读着像一句 */
+.cpp-peek-card[data-kind='stage'] .cpp-peek-row > .cpp-peek-push {
+  padding-left: 16px;
+}
+
 /* 技能卡对比满级时：满级不在计划内，只加粗、不用蓝色 */
 .cpp-charstat-det-vs-max .cpp-charstat-det-to,
 .cpp-charstat-det-vs-max .cpp-charstat-rt-to {

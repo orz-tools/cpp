@@ -15,6 +15,8 @@
 
 /* 深色的浅灰是半透明的白：放在页面、对话框、气泡上，都比底色亮同样的一点 */
 :root.bp6-dark {
+  /* 不写的话，不浮在内容上的滚动条在深色里还是一道浅灰 */
+  color-scheme: dark;
   --cpp-surface: var(--bp-palette-dark-gray-3);
   --cpp-tint-1: rgb(255 255 255 / 0.04);
   --cpp-tint-2: rgb(255 255 255 / 0.07);

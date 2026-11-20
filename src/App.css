@@ -562,13 +562,27 @@ body {
   overflow: auto;
 }
 
+/*
+ * 滚动条在关卡的菜单外面另占一条，刷图这一块（App.tsx 只给了最小宽度）跟着宽出这一条：
+ * 从菜单里扣的话，图标模式一排放不下五格；从合成那一栏扣，合成又窄了。
+ * stable 是为了不管这时滚不滚都留着这一条，宽度才算得进它，也不随关卡多少变宽变窄
+ */
 .cpp-farm-stages {
-  width: 250px;
+  flex: none;
   overflow: auto;
+  scrollbar-gutter: stable;
+  border-radius: var(--bp-surface-border-radius);
+  background: var(--cpp-surface);
 }
 
+.cpp-farm-stages > .bp6-menu {
+  width: 250px;
+}
+
+/* 定宽：按内容算的话，合成的长名字会把刷图这一块撑宽 */
 .cpp-farm-synthesis {
-  flex: 1 1 0%;
+  flex: 1 0 auto;
+  width: 220px;
   overflow: auto;
 }
 
@@ -1353,7 +1367,13 @@ body {
   align-self: flex-end;
 }
 
+/*
+ * 卡片可以比钉板窄（关卡卡片按内容定宽）：窄的也贴着右边，聚焦的框跟着卡片的宽。
+ * 不再拉满以后，钉板出了滚动条时 344px 的卡片要靠 max-width 收进来
+ */
 .cpp-peek-pinned {
+  align-self: flex-end;
+  max-width: 100%;
   border-radius: 4px;
 }
 
@@ -2123,6 +2143,10 @@ body .bp6-navbar-group {
   width: auto;
   overflow: auto;
   overscroll-behavior: contain;
+}
+
+.cpp-phone .cpp-farm-stages > .bp6-menu {
+  width: auto;
 }
 
 .cpp-phone .cpp-farm-body[data-pane='stages'] > .cpp-farm-synthesis,

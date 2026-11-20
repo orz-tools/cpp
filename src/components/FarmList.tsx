@@ -305,12 +305,14 @@ export const FarmList = memo(() => {
           notice
         ) : response ? (
           <>
-            <Menu className="bp6-elevation-1 cpp-farm-stages">
-              {response.stageRuns.map((run) => (
-                <StageLine run={run} key={run.stageId} />
-              ))}
-              {response.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
-            </Menu>
+            <div className="bp6-elevation-1 cpp-farm-stages">
+              <Menu>
+                {response.stageRuns.map((run) => (
+                  <StageLine run={run} key={run.stageId} />
+                ))}
+                {response.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
+              </Menu>
+            </div>
             {!response.synthesisList ? (
               <div className="bp6-elevation-1 cpp-farm-synthesis">
                 <NonIdealState title={gt.gettext('暂不支持计算毕业合成')} icon="warning-sign" />
