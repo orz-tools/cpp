@@ -1,6 +1,6 @@
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { gt } from '../pkg/gt'
-import { formatQuantity } from './quantity'
+import { formatExpectedQuantity, formatQuantity, formatTileQuantity } from './quantity'
 
 beforeAll(() => {
   gt.addTranslations('zh_Hans', 'messages', { translations: {} } as any)
@@ -44,5 +44,33 @@ describe('formatQuantity', () => {
     expect(formatQuantity(-40288589, false)).toBe('-40288589')
     gt.setLocale('en_US')
     expect(formatQuantity(123456789, false)).toBe('123456789')
+  })
+})
+
+describe('formatExpectedQuantity', () => {
+  it('keeps two decimals and drops trailing zeros', () => {
+    expect(formatExpectedQuantity(1.46)).toBe('1.46')
+    expect(formatExpectedQuantity(0.3)).toBe('0.3')
+    expect(formatExpectedQuantity(756)).toBe('756')
+    expect(formatExpectedQuantity(100)).toBe('100')
+    expect(formatExpectedQuantity(0.004)).toBe('0')
+  })
+})
+
+describe('formatTileQuantity', () => {
+  it('keeps decimals below 100', () => {
+    gt.setLocale('zh_Hans')
+    expect(formatTileQuantity(0.05)).toBe('0.05')
+    expect(formatTileQuantity(22.8)).toBe('22.8')
+    expect(formatTileQuantity(99.996)).toBe('100')
+  })
+
+  it('rounds from 100 and abbreviates from ten thousand', () => {
+    gt.setLocale('zh_Hans')
+    expect(formatTileQuantity(756)).toBe('756')
+    expect(formatTileQuantity(1440.4)).toBe('1440')
+    expect(formatTileQuantity(75600)).toBe('7.6万')
+    gt.setLocale('en_US')
+    expect(formatTileQuantity(75600)).toBe('76K')
   })
 })
