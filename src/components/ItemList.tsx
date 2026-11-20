@@ -23,9 +23,15 @@ import { ItemIcon } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
 import { formatQuantity } from './quantity'
 import { PeekTrigger } from './Peek'
-import { ItemCounterKind, itemCounterCells, itemCounterSlots } from './itemCounters'
+import {
+  ItemCounterKind,
+  categoriesWithSynthesis,
+  counterKinds,
+  itemCounterCells,
+  itemCounterSlots,
+} from './itemCounters'
 import { SLOP_PX } from './longPress'
-import { useCoarsePointer } from './phoneLayout'
+import { useCoarsePointer, usePhoneLayout } from './phoneLayout'
 import {
   COMMIT_DELAY_MS,
   HOLD_DELAY_MS,
@@ -385,12 +391,59 @@ export const ItemMenu = memo(({ item }: { item: IItem }) => {
       <div>
         <ItemQuantityEditor item={item} style={itemQuantityStyle} />
       </div>
-      {/* 手机上计数格从这里折到第二层 */}
-      <span className="cpp-item-row-break" aria-hidden />
       <ItemTaskRequirements item={item} />
     </li>
   )
 })
+
+/** 每个条目自带一排列标签，单看一条也明白；左边一列写这一行是哪一层 */
+function ItemPhoneCounters({ item, withSynthesis }: { item: IItem; withSynthesis: boolean }) {
+  const { slots, cells, compact, hasFormula, afterSynthesisShown } = useItemCounters(item)
+  const kinds = counterKinds(withSynthesis)
+  const blank = (kind: ItemCounterKind) =>
+    (kind === 'afterSynthesis' && !afterSynthesisShown) || (kind === 'synthesizable' && !hasFormula)
+
+  return (
+    <div className={'cpp-item-counts' + (withSynthesis ? ' is-wide' : '')}>
+      <span />
+      {kinds.map((kind) => (
+        <span key={kind} className="cpp-item-counts-label">
+          {counterLabel(kind)}
+        </span>
+      ))}
+      {slots.map((slot, i) =>
+        slot.shown ? (
+          <React.Fragment key={slot.level}>
+            <span className="cpp-item-counts-level">{levelLabel(slot.level)}</span>
+            {kinds.map((kind) => {
+              const cell = cells[i][kind]
+              if (blank(kind)) return <span key={kind} className="cpp-item-counts-value" />
+              return (
+                <span
+                  key={kind}
+                  className={'cpp-item-counts-value' + (cell.strong ? '' : ' is-faint')}
+                  title={compact ? formatter(cell.value) : undefined}
+                >
+                  {formatQuantity(cell.value, compact)}
+                </span>
+              )
+            })}
+          </React.Fragment>
+        ) : null,
+      )}
+    </div>
+  )
+}
+
+const ItemPhoneRow = memo(({ item, withSynthesis }: { item: IItem; withSynthesis: boolean }) => (
+  <li role="none" className="cpp-item-phone-row">
+    <div className="cpp-item-phone-main">
+      <ItemLink item={item} />
+      <ItemQuantityEditor item={item} stepper />
+    </div>
+    <ItemPhoneCounters item={item} withSynthesis={withSynthesis} />
+  </li>
+))
 
 const itemQuantityStyle: React.CSSProperties = { width: '6em', textAlign: 'right' }
 
@@ -545,6 +598,11 @@ export const ItemList = memo(<G extends IGame>() => {
   const param = useAtomValue(itemListParamAtom)
   const ga = useGameAdapter<G>()
   const itemGroups = useGameDataMemo(() => buildItemList(ga), [ga])
+  const synthesisCategories = useGameDataMemo(
+    () => categoriesWithSynthesis(itemGroups, new Set(ga.getFormulas().map((f) => f.itemId))),
+    [ga, itemGroups],
+  )
+  const phone = usePhoneLayout()
   const atoms = useAtoms<G>()
   const store = useStore()
   const filterAtoms = levelAtoms(atoms, param.level ?? Level.Finished)
@@ -587,9 +645,13 @@ export const ItemList = memo(<G extends IGame>() => {
           return (
             <React.Fragment key={key}>
               <MenuDivider title={categoryNames[key]?.toString() ?? key} />
-              {items.map((x) => (
-                <ItemMenu key={x.key} item={x} />
-              ))}
+              {items.map((x) =>
+                phone ? (
+                  <ItemPhoneRow key={x.key} item={x} withSynthesis={synthesisCategories.has(key)} />
+                ) : (
+                  <ItemMenu key={x.key} item={x} />
+                ),
+              )}
             </React.Fragment>
           )
         })}

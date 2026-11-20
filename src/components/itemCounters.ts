@@ -43,11 +43,12 @@ export function counterKinds(withSynthesis: boolean): readonly ItemCounterKind[]
 
 /** 列按分类定而不按条目，同一分类里有配方和没配方的挨着也上下对齐 */
 export function categoriesWithSynthesis(
-  groups: readonly (readonly [string, readonly { key: string }[]])[],
+  // ramda 的 groupBy 把每组的类型标成可能没有
+  groups: readonly (readonly [string, readonly { key: string }[] | undefined])[],
   formulaItemIds: ReadonlySet<string>,
 ): Set<string> {
   return new Set(
-    groups.filter(([, items]) => items.some((i) => formulaItemIds.has(i.key))).map(([category]) => category),
+    groups.filter(([, items]) => items?.some((i) => formulaItemIds.has(i.key))).map(([category]) => category),
   )
 }
 
