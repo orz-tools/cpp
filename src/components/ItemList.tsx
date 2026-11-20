@@ -2,7 +2,7 @@ import { Alignment, Button, Callout, Dialog, Menu, MenuDivider, Navbar, NumericI
 import { WritableAtom, atom, useAtom, useAtomValue, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
-import React, { SetStateAction, memo, useEffect, useState } from 'react'
+import React, { SetStateAction, memo, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { Level, useAtoms, useCpp, useGameAdapter, useGameDataMemo } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
@@ -13,12 +13,11 @@ import { ItemIcon } from './Icons'
 import { InventorySyncer } from './InventorySyncer'
 import { formatQuantity } from './quantity'
 import { PeekTrigger } from './Peek'
-import { ItemCounterCells, itemCounterCells, itemCounterSlots } from './itemCounters'
+import { ItemCounterKind, itemCounterCells, itemCounterSlots } from './itemCounters'
 import { useCoarsePointer, usePhoneLayout } from './phoneLayout'
+import { formatter, parser } from './quantityStepper'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
-const formatter = (q: number) => q.toFixed(0)
-const parser = (q: string) => Math.floor(parseFloat(q) || 0)
 // NumericInput sanitizes its value whenever its parent renders, even when it then skips its own render as a pure
 // component; the item list holds one per item, and they all render again with each new game data generation.
 const MemoNumericInput = memo(NumericInput)
@@ -38,13 +37,18 @@ export const ItemQuantityEditor = memo(
     const phone = usePhoneLayout()
     const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
     const [input, setInput] = useState(formatter(quantity))
-    useEffect(() => setInput(formatter(quantity)), [quantity])
+    const [inputQuantity, setInputQuantity] = useState(quantity)
+    if (inputQuantity !== quantity) {
+      setInputQuantity(quantity)
+      setInput(formatter(quantity))
+    }
     // Stable handlers let MemoNumericInput skip the re-render each new game data generation brings.
     const onValueChange = useEvent((_: number, valueAsString: string) => setInput(valueAsString))
-    const onBlur = useEvent(() => {
-      if (input === formatter(quantity)) return
-      setInput(formatter(quantity))
-      setQuantity(parser(input))
+    // 框里直接放新数而不是先退回旧数：紧跟着点的加减从框里的字算起
+    const commitNow = useEvent(() => {
+      const next = parser(input)
+      setInput(formatter(next))
+      if (next !== quantity) setQuantity(next)
     })
     const onButtonClick = useEvent((_: number, valueAsString: string) => {
       setQuantity(parser(valueAsString))
@@ -73,7 +77,7 @@ export const ItemQuantityEditor = memo(
         title={input}
         min={0}
         onValueChange={onValueChange}
-        onBlur={onBlur}
+        onBlur={commitNow}
         onButtonClick={onButtonClick}
       />
     )
@@ -103,7 +107,33 @@ function levelAtoms<G extends IGame>(atoms: UserDataAtomHolder<G>['atoms'], leve
   }
 }
 
-export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IItem }) => {
+function counterLabel(kind: ItemCounterKind) {
+  switch (kind) {
+    case 'afterSynthesis':
+      return gt.pgettext('item list counter label', '合成后')
+    case 'synthesizable':
+      return gt.pgettext('item list counter label', '可合成')
+    case 'remaining':
+      return gt.pgettext('item list counter label', '还需')
+    case 'direct':
+      return gt.pgettext('item list counter label', '直接需求')
+    case 'indirect':
+      return gt.pgettext('item list counter label', '间接需求')
+  }
+}
+
+function levelLabel(level: Level) {
+  switch (level) {
+    case Level.Star:
+      return gt.pgettext('item list view label', '星标')
+    case Level.Goal:
+      return gt.pgettext('item list view label', '计划')
+    case Level.Finished:
+      return gt.pgettext('item list view label', '毕业')
+  }
+}
+
+function useItemCounters<G extends IGame>(item: IItem) {
   const ga = useGameAdapter<G>()
   const formula = useGameDataMemo(() => ga.getFormulas().find((x) => x.itemId === item.key), [ga, item.key])
   const atoms = useAtoms<G>()
@@ -129,8 +159,13 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
   const cells = [
     itemCounterCells(upperDirect, upperIndirect, quantity, synableReal, canSyn),
     itemCounterCells(lowerDirect, lowerIndirect, quantity, synableReal, canSyn),
-  ]
-  const rows = (cell: keyof ItemCounterCells) =>
+  ] as const
+  return { slots, cells, compact, hasFormula: !!formula, afterSynthesisShown: !!formula && synable !== 0 }
+}
+
+export const ItemTaskRequirements = memo(({ item }: { item: IItem }) => {
+  const { slots, cells, compact, hasFormula, afterSynthesisShown } = useItemCounters(item)
+  const rows = (cell: ItemCounterKind) =>
     slots.map((slot, i) => (
       <div key={i} style={{ textAlign: 'right', opacity: slot.shown ? (cells[i][cell].strong ? 1 : 0.4) : 0 }}>
         <span title={compact ? formatter(cells[i][cell].value) : undefined} style={{ whiteSpace: 'nowrap' }}>
@@ -143,8 +178,8 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
     <>
       <div
         className="cpp-goal-counter"
-        style={{ visibility: !formula || synable === 0 ? 'hidden' : undefined }}
-        data-label={gt.pgettext('item list counter label', '合成后')}
+        style={{ visibility: afterSynthesisShown ? undefined : 'hidden' }}
+        data-label={counterLabel('afterSynthesis')}
       >
         {rows('afterSynthesis')}
       </div>
@@ -159,54 +194,60 @@ export const ItemTaskRequirements = memo(<G extends IGame>({ item }: { item: IIt
               lineHeight: '21px',
               padding: 0,
               fontWeight: 'normal',
-              visibility: !formula ? 'hidden' : undefined,
+              visibility: hasFormula ? undefined : 'hidden',
             }}
           >
-            <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '可合成')}>
+            <div className="cpp-goal-counter" data-label={counterLabel('synthesizable')}>
               {rows('synthesizable')}
             </div>
           </a>
         )}
       />
-      <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '还需')}>
+      <div className="cpp-goal-counter" data-label={counterLabel('remaining')}>
         {rows('remaining')}
       </div>
-      <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '直接需求')}>
+      <div className="cpp-goal-counter" data-label={counterLabel('direct')}>
         {rows('direct')}
       </div>
-      <div className="cpp-goal-counter" data-label={gt.pgettext('item list counter label', '间接需求')}>
+      <div className="cpp-goal-counter" data-label={counterLabel('indirect')}>
         {rows('indirect')}
       </div>
     </>
   )
 })
 
+function ItemLink({ item }: { item: IItem }) {
+  return (
+    <PeekTrigger
+      peek={{ kind: 'item', id: item.key }}
+      renderTarget={(target) => (
+        <a
+          role="menuitem"
+          {...target}
+          className={'bp6-menu-item cpp-item-menu ' + (target?.className ?? 'cpp-menu-not-interactive')}
+          style={{ flexShrink: 1, overflow: 'hidden' }}
+        >
+          <span className="bp6-menu-item-icon">
+            <ItemIcon item={item} size={40} />
+          </span>
+          <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div className="bp6-text-overflow-ellipsis" title={item.name}>
+              {item.name}
+            </div>
+            <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
+              <ValueTag value={item.valueAsAp} minimal={true} single={true} />
+            </div>
+          </div>
+        </a>
+      )}
+    />
+  )
+}
+
 export const ItemMenu = memo(({ item }: { item: IItem }) => {
   return (
     <li role="none">
-      <PeekTrigger
-        peek={{ kind: 'item', id: item.key }}
-        renderTarget={(target) => (
-          <a
-            role="menuitem"
-            {...target}
-            className={'bp6-menu-item cpp-item-menu ' + (target?.className ?? 'cpp-menu-not-interactive')}
-            style={{ flexShrink: 1, overflow: 'hidden' }}
-          >
-            <span className="bp6-menu-item-icon">
-              <ItemIcon item={item} size={40} />
-            </span>
-            <div className="bp6-fill" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <div className="bp6-text-overflow-ellipsis" title={item.name}>
-                {item.name}
-              </div>
-              <div className="bp6-text-overflow-ellipsis" style={{ fontWeight: 'normal', opacity: 0.75 }}>
-                <ValueTag value={item.valueAsAp} minimal={true} single={true} />
-              </div>
-            </div>
-          </a>
-        )}
-      />
+      <ItemLink item={item} />
       <div>
         <ItemQuantityEditor item={item} style={itemQuantityStyle} />
       </div>
@@ -273,13 +314,7 @@ const AllGoalValue = memo(<G extends IGame>({ level }: { level: Level }) => {
   return (
     <Button
       variant="minimal"
-      text={
-        {
-          [Level.Finished]: gt.pgettext('item list view label', '毕业'),
-          [Level.Goal]: gt.pgettext('item list view label', '计划'),
-          [Level.Star]: gt.pgettext('item list view label', '星标'),
-        }[level]
-      }
+      text={levelLabel(level)}
       endIcon={<ValueTagProgressBar value={remaining} maxValue={total} />}
       active={param.level === level}
       onClick={() => {
