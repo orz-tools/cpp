@@ -1,8 +1,18 @@
-import { Alignment, Button, Callout, Dialog, Menu, MenuDivider, Navbar, NumericInput } from '@blueprintjs/core'
+import {
+  Alignment,
+  Button,
+  Callout,
+  ControlGroup,
+  Dialog,
+  Menu,
+  MenuDivider,
+  Navbar,
+  NumericInput,
+} from '@blueprintjs/core'
 import { WritableAtom, atom, useAtom, useAtomValue, useStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { groupBy, intersection, map, sum, uniq } from 'ramda'
-import React, { SetStateAction, memo, useState } from 'react'
+import React, { SetStateAction, memo, useEffect, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { Level, useAtoms, useCpp, useGameAdapter, useGameDataMemo } from '../Cpp'
 import { IGame, IGameAdapter, IItem } from '../pkg/cpp-basic'
@@ -14,8 +24,18 @@ import { InventorySyncer } from './InventorySyncer'
 import { formatQuantity } from './quantity'
 import { PeekTrigger } from './Peek'
 import { ItemCounterKind, itemCounterCells, itemCounterSlots } from './itemCounters'
-import { useCoarsePointer, usePhoneLayout } from './phoneLayout'
-import { formatter, parser } from './quantityStepper'
+import { SLOP_PX } from './longPress'
+import { useCoarsePointer } from './phoneLayout'
+import {
+  COMMIT_DELAY_MS,
+  HOLD_DELAY_MS,
+  REPEAT_MS,
+  createDeferredCommit,
+  createHoldRepeat,
+  formatter,
+  parser,
+  stepQuantity,
+} from './quantityStepper'
 import { ValueTag, ValueTagProgressBar } from './Value'
 
 // NumericInput sanitizes its value whenever its parent renders, even when it then skips its own render as a pure
@@ -26,17 +46,20 @@ export const ItemQuantityEditor = memo(
     item,
     style,
     compact,
+    stepper,
   }: {
     item: IItem
     style?: React.CSSProperties
     /** 和价值标签一样高、没有上下箭头（键盘 ↑↓ 照样加减），宽度跟着数字 */
     compact?: boolean
+    /** 手机条目的 [数][−][+]：一串加减停手才写进用户数据，是一步撤销 */
+    stepper?: boolean
   }) => {
     const ga = useGameAdapter<G>()
     const atoms = useAtoms<G>()
-    const phone = usePhoneLayout()
     const [quantity, setQuantity] = useAtom(atoms.itemQuantity(item.key))
     const [input, setInput] = useState(formatter(quantity))
+    // 从别处来的改动（撤销、导入）也把框里没写的那几下丢掉；还没到点的那次写入届时读到的框和数量一样，什么都不写
     const [inputQuantity, setInputQuantity] = useState(quantity)
     if (inputQuantity !== quantity) {
       setInputQuantity(quantity)
@@ -53,6 +76,48 @@ export const ItemQuantityEditor = memo(
     const onButtonClick = useEvent((_: number, valueAsString: string) => {
       setQuantity(parser(valueAsString))
     })
+    const [deferred] = useState(() => createDeferredCommit(COMMIT_DELAY_MS, commitNow))
+    // 筛掉、换档案、换布局会卸载；切区域不会，到点照样写
+    useEffect(() => () => deferred.flush(), [deferred])
+    const onBlur = useEvent(() => {
+      deferred.cancel()
+      commitNow()
+    })
+    const onFocus = useEvent(() => deferred.flush())
+    const step = useEvent((delta: number) => {
+      setInput((prev) => formatter(stepQuantity(prev, delta)))
+      deferred.schedule()
+    })
+
+    const isExp = Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)
+    if (stepper) {
+      // 经验由各级作战记录折算，改不了
+      if (isExp) return <span className="cpp-quantity-readonly">{input}</span>
+      return (
+        <ControlGroup className="cpp-quantity-stepper">
+          <MemoNumericInput
+            size="large"
+            buttonPosition="none"
+            inputMode="numeric"
+            min={0}
+            allowNumericCharactersOnly={false}
+            value={input}
+            title={input}
+            onValueChange={onValueChange}
+            onBlur={onBlur}
+            onFocus={onFocus}
+          />
+          <StepButton
+            icon="minus"
+            label={gt.pgettext('item quantity button', '减少')}
+            delta={-1}
+            disabled={parser(input) === 0}
+            onStep={step}
+          />
+          <StepButton icon="plus" label={gt.pgettext('item quantity button', '增加')} delta={1} onStep={step} />
+        </ControlGroup>
+      )
+    }
 
     const look = compact
       ? ({
@@ -61,12 +126,9 @@ export const ItemQuantityEditor = memo(
           className: 'cpp-quantity-compact',
           style: { ...style, width: `calc(${Math.max(input.length, 3)}ch + 14px)` },
         } as const)
-      : phone
-        ? // 手机上弹数字键盘，不画上下箭头
-          ({ style, buttonPosition: 'none', inputMode: 'numeric' } as const)
-        : { style }
+      : { style }
 
-    if (Object.prototype.hasOwnProperty.call(ga.getExpItems(), item.key)) {
+    if (isExp) {
       return <NumericInput value={input} {...look} title={input} disabled={true} allowNumericCharactersOnly={false} />
     }
     return (
@@ -77,8 +139,80 @@ export const ItemQuantityEditor = memo(
         title={input}
         min={0}
         onValueChange={onValueChange}
-        onBlur={commitNow}
+        onBlur={onBlur}
         onButtonClick={onButtonClick}
+      />
+    )
+  },
+)
+
+/**
+ * 点一下加减一下；按住一会儿开始连加，松手停。按下时不加：手指落在按钮上开始滑动列表，浏览器发 pointercancel，
+ * 这次什么都不改，也不会有 click
+ */
+const StepButton = memo(
+  ({
+    icon,
+    label,
+    delta,
+    disabled,
+    onStep,
+  }: {
+    icon: 'minus' | 'plus'
+    label: string
+    delta: number
+    disabled?: boolean
+    onStep: (delta: number) => void
+  }) => {
+    // 只管紧跟着的那一次 click：连加过的那次按住，松手时浏览器还会补一次 click
+    const repeated = useRef(false)
+    const origin = useRef<{ x: number; y: number } | null>(null)
+    const fire = useEvent(() => onStep(delta))
+    const fireHeld = useEvent(() => {
+      repeated.current = true
+      onStep(delta)
+    })
+    const [repeat] = useState(() => createHoldRepeat(HOLD_DELAY_MS, REPEAT_MS, fireHeld))
+    const halt = useEvent(() => {
+      repeat.stop()
+      origin.current = null
+    })
+    // 减到 0 禁用时停下：禁用的按钮不一定再收到 pointerup，也不会有 click 来清掉标记
+    useEffect(() => {
+      if (!disabled) return
+      halt()
+      repeated.current = false
+    }, [disabled, halt])
+    useEffect(() => () => halt(), [halt])
+
+    return (
+      <Button
+        size="large"
+        icon={icon}
+        aria-label={label}
+        disabled={disabled}
+        onClick={() => {
+          if (repeated.current) {
+            repeated.current = false
+            return
+          }
+          fire()
+        }}
+        onPointerDown={(e) => {
+          if (e.button !== 0 || disabled) return
+          repeated.current = false
+          origin.current = { x: e.clientX, y: e.clientY }
+          repeat.start()
+        }}
+        onPointerMove={(e) => {
+          const o = origin.current
+          if (o && !repeated.current && Math.hypot(e.clientX - o.x, e.clientY - o.y) > SLOP_PX) halt()
+        }}
+        onPointerUp={halt}
+        onPointerCancel={halt}
+        onPointerLeave={halt}
+        // 安卓长按会弹系统菜单
+        onContextMenu={(e) => e.preventDefault()}
       />
     )
   },
