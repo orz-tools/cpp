@@ -222,6 +222,11 @@ body {
   max-width: 80vw !important;
 }
 
+/* 选择栏里的「练度图」和「拉满计划」「清空计划」一样不缩：挤的时候省略的是人数 */
+.cpp-roster-image-bar-button {
+  flex: none;
+}
+
 /* 练度图（rosterImage/RosterImageDialog.tsx）：760 宽，要 !important 才盖得过上面的 width: unset；手机上照旧占满一屏 */
 .bp6-dialog.cpp-roster-image-dialog {
   width: 760px !important;

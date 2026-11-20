@@ -31,6 +31,7 @@ export const RosterImageSelectionButton = memo(({ compact }: { compact?: boolean
   const text = gt.gettext('练度图')
   return (
     <Button
+      className="cpp-roster-image-bar-button"
       size="small"
       variant="minimal"
       icon="media"
