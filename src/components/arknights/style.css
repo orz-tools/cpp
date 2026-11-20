@@ -4016,6 +4016,21 @@ section:first-child > .cpp-stages-wide-section {
   height: 200px;
 }
 
+/* 手机上一行放不下四张 100px 的卡：能放几张放几张，再放宽到排满整行，立绘保持 1:2 */
+.cpp-phone .cpp-skins-dcards {
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+}
+
+.cpp-phone .cpp-skins-dcard {
+  width: auto;
+}
+
+.cpp-phone .cpp-skins-dcard-pic {
+  width: auto;
+  height: auto;
+  aspect-ratio: 1 / 2;
+}
+
 .cpp-skins-dcard.is-focused .cpp-skins-dcard-pic {
   outline: 2px solid var(--bp-palette-blue-3, #2d72d2);
   outline-offset: 2px;
