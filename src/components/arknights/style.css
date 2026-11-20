@@ -2191,14 +2191,28 @@ section:first-child > .cpp-stages-wide-section {
   gap: 2px;
 }
 
-/* 大窗口：和「关卡」的大窗口一样大，两栏各自滚动 */
+/*
+ * 大窗口：和「关卡」的大窗口一样大，两栏各自滚动。窗口拉窄时右栏的表格先保住 600 宽，左栏从 360 缩到面板的 300；
+ * 再窄就只剩一栏（.is-single，ModuleMissionPanel.tsx 的 SPLIT_MIN_WIDTH）
+ */
 .cpp-mm-wide {
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr);
+  grid-template-columns: clamp(300px, calc(100% - 615px), 360px) minmax(0, 1fr);
   column-gap: 15px;
   width: 1110px;
   max-width: calc(80vw - 40px);
   height: min(78vh, 720px);
+}
+
+.cpp-mm-wide.is-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* 手机布局下弹窗占满一屏，大窗口跟着撑满 */
+.cpp-phone .cpp-mm-wide {
+  width: auto;
+  max-width: none;
+  height: 100%;
 }
 
 .cpp-mm-wide-left,

@@ -16,7 +16,7 @@ import {
   mergeRefs,
 } from '@blueprintjs/core'
 import { useAtom, useAtomValue } from 'jotai'
-import React, { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
 import { useCpp, useGameAdapter } from '../../Cpp'
 import { Arknights, ArknightsAdapter, DeployableProfession, Profession, ProfessionNames } from '../../pkg/cpp-arknights'
@@ -42,7 +42,7 @@ import { PSTR, gt, lpstr } from '../../pkg/gt'
 import { CachedImg } from '../Icons'
 import { PeekTrigger } from '../Peek'
 import { AppToaster } from '../Toaster'
-import { useOpenCharacterDossier } from '../dossierHooks'
+import { PopOutWindowContext, useOpenCharacterDossier } from '../dossierHooks'
 import { usePhoneLayout } from '../phoneLayout'
 import { clearRosterPin, setRosterPin } from '../rosterPin'
 import { SidebarPanel } from '../types'
@@ -270,12 +270,17 @@ function useFocusAfterRender() {
 
 /**
  * 「打完了」以后焦点交给哪张券：新列表里同一个下标上的那张，列表短了就是统计行。按下的那一刻新列表还没画出来，
- * 所以先记在这里，由画出来的那张券认领
+ * 所以先记在这里，由画出来的那张券认领。面板和大窗口各有一份列表，只认按钮所在的那一份；
+ * 看的是在不在大窗口里，不是券展不展开：大窗口拉窄成一栏时，券和面板里一样展开
  */
-let focusAfterFinish: { index: number; wide: boolean } | null = null
+let focusAfterFinish: { index: number; inWindow: boolean } | null = null
 
-function claimFocus(wide: boolean, el: HTMLElement | null, mine: (index: number) => boolean) {
-  if (!el || !focusAfterFinish || focusAfterFinish.wide !== wide || !mine(focusAfterFinish.index)) return
+function useInWindow() {
+  return useContext(PopOutWindowContext) != null
+}
+
+function claimFocus(inWindow: boolean, el: HTMLElement | null, mine: (index: number) => boolean) {
+  if (!el || !focusAfterFinish || focusAfterFinish.inWindow !== inWindow || !mine(focusAfterFinish.index)) return
   focusAfterFinish = null
   el.focus({ preventScroll: true })
 }
@@ -288,11 +293,12 @@ function finishText(ticket: Ticket, board: Board) {
   return gt.ngettext('其余 %d 条也做成了', '其余 %d 条也做成了', left).replaceAll('%d', String(left))
 }
 
-/** index 是这张券在列表里的下标，wide 是按钮在不在大窗口里 */
-function useFinishRun(wide: boolean) {
+/** index 是这张券在列表里的下标 */
+function useFinishRun() {
   const cpp = useCpp<Arknights>()
   const ga = useArknights()
   const select = useSelectTicket()
+  const inWindow = useInWindow()
   return useEvent((ticket: Ticket, index: number) => {
     const added = markRunDone(
       cpp,
@@ -302,7 +308,7 @@ function useFinishRun(wide: boolean) {
       cpp,
       [...ticket.missions, ...ticket.piggyback, ...ticket.tagAlongs.flatMap((x) => x.missions)].map((x) => x.id),
     )
-    focusAfterFinish = { index, wide }
+    focusAfterFinish = { index, inWindow }
     // 认领的那张券这一次没画出来的话，不能等到以后哪次重画再抢焦点
     setTimeout(() => (focusAfterFinish = null))
     select(null)
@@ -483,7 +489,7 @@ const PickerCount = ({ count }: { count: number }) => (
   </>
 )
 
-/** 券的下半截：还能再编入几位、哪些职业。面板里选中的券上，有候选时整行打开候选弹窗 */
+/** 券的下半截：还能再编入几位、哪些职业。展开的券上（面板里，或拉窄成一栏的大窗口里），有候选时整行打开候选弹窗 */
 const CapacityStrip = memo(
   ({
     ticket,
@@ -496,6 +502,7 @@ const CapacityStrip = memo(
     pickable: boolean
     fallbackFocus: () => void
   }) => {
+    const inWindow = useInWindow()
     const cap = ticket.capacity
     const note = cap.count > 0 ? capacityNote(cap) : ''
     const strip = (target?: PickerTarget) => (
@@ -534,12 +541,13 @@ const CapacityStrip = memo(
       </div>
     )
     if (!pickable) return strip()
+    // 面板旁边有地方，弹窗让开面板；大窗口拉窄成一栏时这一行和窗口一样宽，右边放不下，和右栏里一样放在下面
     return (
       <TagAlongPicker
         ticket={ticket}
         board={board}
-        placement="right-start"
-        clearOf=".cpp-mm-panel"
+        placement={inWindow ? 'bottom-start' : 'right-start'}
+        clearOf={inWindow ? undefined : '.cpp-mm-panel'}
         fallbackFocus={fallbackFocus}
       >
         {strip}
@@ -549,6 +557,12 @@ const CapacityStrip = memo(
 )
 
 const EMPTY_PROS: ReadonlySet<Profession> = new Set()
+
+/**
+ * 放在下面时，下面放不下就往上挪，盖住那一行也要整个露在窗口里：大窗口拉窄成一栏时，那一行可能在窗口下半截。
+ * 放在右边时上下挪本来就有
+ */
+const keepInView = { options: { altAxis: true } }
 
 /**
  * 「还能编入」那一行打开的候选弹窗。没有候选（包括编满了）时那一行不是按钮，children 拿到的是 undefined；
@@ -647,7 +661,7 @@ const TagAlongPicker = ({
       placement={placement}
       minimal={true}
       popupKind={PopupKind.DIALOG}
-      modifiers={{ offset }}
+      modifiers={{ offset, preventOverflow: placement === 'bottom-start' ? keepInView : undefined }}
       popoverClassName="cpp-mm-picker-popover"
       onOpened={focusFirst}
       content={<PickerContent ticket={ticket} board={board} candidates={candidates} pros={pros} onPros={setPros} />}
@@ -999,7 +1013,7 @@ const ExpandedRun = memo(
   }) => {
     const ga = useArknights()
     const names = useMissionNames()
-    const finish = useFinishRun(false)
+    const finish = useFinishRun()
     const piggyback = piggybackAfter(ticket)
     return (
       <div className="cpp-mm-run">
@@ -1059,6 +1073,7 @@ const TicketCard = memo(
     const focusAfter = useFocusAfterRender()
     const card = useRef<HTMLDivElement>(null)
     const stub = useRef<HTMLDivElement>(null)
+    const inWindow = useInWindow()
     const expanded = expandable && selected
     const allDone = ticket.allDone && !expanded
     const toggle = () => select(selected ? null : ticket)
@@ -1073,7 +1088,7 @@ const TicketCard = memo(
           stub.current,
       )
     })
-    useLayoutEffect(() => claimFocus(!expandable, stub.current, (i) => i === index))
+    useLayoutEffect(() => claimFocus(inWindow, stub.current, (i) => i === index))
     return (
       <div
         ref={card}
@@ -1302,11 +1317,12 @@ const ScopeRow = memo(() => {
 const Nowrap = ({ children }: React.PropsWithChildren) => <span className="cpp-mm-nowrap">{children}</span>
 
 /** 「打完了」以后列表比原来短，焦点交给这里 */
-const StatsRow = memo(({ board, wide }: { board: Board; wide: boolean }) => {
+const StatsRow = memo(({ board }: { board: Board }) => {
   const { stats } = board
+  const inWindow = useInWindow()
   const self = useRef<HTMLDivElement>(null)
   const count = board.tickets.length
-  useLayoutEffect(() => claimFocus(wide, self.current, (i) => i >= count))
+  useLayoutEffect(() => claimFocus(inWindow, self.current, (i) => i >= count))
   return (
     <div className="cpp-mm-stats" ref={self} tabIndex={-1}>
       <div className="cpp-mm-stats-main">
@@ -1408,8 +1424,8 @@ const TidyBar = memo(({ board }: { board: Board }) => {
   )
 })
 
-/** 面板和大窗口左栏共用：范围、统计、券和三个分组。大窗口里选中的券不展开 */
-const BoardView = memo(({ wide }: { wide: boolean }) => {
+/** 面板和大窗口左栏共用：范围、统计、券和三个分组。split 是选中的券画在右栏，券就不展开 */
+const BoardView = memo(({ split }: { split: boolean }) => {
   const board = useMissionBoard()
   useSyncSelection(board)
   return (
@@ -1419,12 +1435,12 @@ const BoardView = memo(({ wide }: { wide: boolean }) => {
         <EmptyBoard />
       ) : (
         <>
-          <StatsRow board={board} wide={wide} />
+          <StatsRow board={board} />
           {board.tickets.length === 0 ? (
             <div className="cpp-mm-all-done">{gt.pgettext('module mission', '关卡任务都做完了')}</div>
           ) : (
             board.tickets.map((t, i) => (
-              <TicketCard key={t.key} ticket={t} board={board} expandable={!wide} index={i} />
+              <TicketCard key={t.key} ticket={t} board={board} expandable={!split} index={i} />
             ))
           )}
           <AnyStageGroup board={board} />
@@ -1439,7 +1455,7 @@ const BoardView = memo(({ wide }: { wide: boolean }) => {
 
 const ModuleMissionPanelBody = memo(() => (
   <div className="cpp-mm-panel">
-    <BoardView wide={false} />
+    <BoardView split={false} />
   </div>
 ))
 
@@ -1485,7 +1501,7 @@ const TicketDetail = memo(({ ticket, board }: { ticket: Ticket; board: Board }) 
   const ga = useArknights()
   const names = useMissionNames()
   const select = useSelectTicket()
-  const finish = useFinishRun(true)
+  const finish = useFinishRun()
   const { drop } = useTagAlongActions(ticket)
   const focusAfter = useFocusAfterRender()
   const self = useRef<HTMLDivElement>(null)
@@ -1705,16 +1721,42 @@ const WideRight = memo(() => {
   return ticket ? <TicketDetail ticket={ticket} board={board} /> : <BoardSummary board={board} />
 })
 
-const ModuleMissionWide = memo(() => (
-  <div className="cpp-mm-wide">
-    <div className="cpp-mm-wide-left">
-      <BoardView wide={true} />
+/** 左栏最窄 300、两栏间距 15，右栏的表格窄过 420 就一格只剩几个字（style.css 的 .cpp-mm-wide） */
+const SPLIT_MIN_WIDTH = 300 + 15 + 420
+
+/** 窗口拉窄、放不下两栏时只剩一栏，选中的券和面板里一样就地展开；手机布局下也是一栏 */
+const ModuleMissionWide = memo(() => {
+  const self = useRef<HTMLDivElement>(null)
+  const phone = usePhoneLayout()
+  // 宽度在画面出来之前就量好；没量好时先不画列表，免得按两栏画一遍又改成一栏
+  const [roomy, setRoomy] = useState<boolean | null>(null)
+  useLayoutEffect(() => {
+    const el = self.current
+    if (!el) return
+    const measure = () => setRoomy(el.clientWidth >= SPLIT_MIN_WIDTH)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  const split = roomy === true && !phone
+  return (
+    <div ref={self} className={'cpp-mm-wide' + (split ? '' : ' is-single')}>
+      {roomy === null ? null : (
+        <>
+          <div className="cpp-mm-wide-left">
+            <BoardView split={split} />
+          </div>
+          {split ? (
+            <div className="cpp-mm-wide-right">
+              <WideRight />
+            </div>
+          ) : null}
+        </>
+      )}
     </div>
-    <div className="cpp-mm-wide-right">
-      <WideRight />
-    </div>
-  </div>
-))
+  )
+})
 
 export const moduleMissionsPanel: SidebarPanel = {
   id: 'moduleMissions',
