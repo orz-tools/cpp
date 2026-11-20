@@ -618,7 +618,7 @@ msgstr "Current"
 msgid "心情"
 msgstr "Morale"
 
-#: src/components/ItemList.tsx:395
+#: src/components/ItemList.tsx:622
 msgid "总价值"
 msgstr "Total Value"
 
@@ -661,7 +661,7 @@ msgstr "Own"
 msgid "按关卡代号或名称筛选"
 msgstr "Filter by stage code or name"
 
-#: src/components/ItemList.tsx:347
+#: src/components/ItemList.tsx:569
 msgid "按游戏内仓库排布形式展示"
 msgstr "Display as In-game Layout"
 
@@ -1087,7 +1087,7 @@ msgid_plural "还剩 %d 次作战"
 msgstr[0] "%d run left"
 msgstr[1] "%d runs left"
 
-#: src/components/ItemList.tsx:368
+#: src/components/ItemList.tsx:590
 msgid ""
 "还没有星标任务。在任务列表里右键一项任务，选「优先培养（星标）」，这里就列出"
 "它和它前置任务要用的材料。"
@@ -1096,7 +1096,7 @@ msgstr ""
 "«Prioritize (mark as starred)»; the materials it and the tasks it depends on "
 "need will be listed here."
 
-#: src/components/ItemList.tsx:365
+#: src/components/ItemList.tsx:587
 msgid ""
 "还没有星标任务。在任务列表里点一项任务，选「优先培养（星标）」，这里就列出它"
 "和它前置任务要用的材料。"
@@ -2981,48 +2981,58 @@ msgctxt "import result title"
 msgid "导入结果 · %s"
 msgstr "Import Result · %s"
 
-#: src/components/ItemList.tsx:165
+#: src/components/ItemList.tsx:255
 msgctxt "item list counter label"
 msgid "可合成"
 msgstr "Syn.-able"
 
-#: src/components/ItemList.tsx:147
+#: src/components/ItemList.tsx:253
 msgctxt "item list counter label"
 msgid "合成后"
 msgstr "Post Syn."
 
-#: src/components/ItemList.tsx:174
+#: src/components/ItemList.tsx:259
 msgctxt "item list counter label"
 msgid "直接需求"
 msgstr "Direct"
 
-#: src/components/ItemList.tsx:171
+#: src/components/ItemList.tsx:257
 msgctxt "item list counter label"
 msgid "还需"
 msgstr "Gap"
 
-#: src/components/ItemList.tsx:177
+#: src/components/ItemList.tsx:261
 msgctxt "item list counter label"
 msgid "间接需求"
 msgstr "Indirect"
 
 #: src/components/arknights/stagePanelModel.ts:220
-#: src/components/ItemList.tsx:280
+#: src/components/ItemList.tsx:268
 msgctxt "item list view label"
 msgid "星标"
 msgstr "Starred"
 
 #: src/components/arknights/stagePanelModel.ts:224
-#: src/components/ItemList.tsx:278
+#: src/components/ItemList.tsx:272
 msgctxt "item list view label"
 msgid "毕业"
 msgstr "Maxed"
 
 #: src/components/arknights/stagePanelModel.ts:222
-#: src/components/ItemList.tsx:279
+#: src/components/ItemList.tsx:270
 msgctxt "item list view label"
 msgid "计划"
 msgstr "Planned"
+
+#: src/components/ItemList.tsx:118
+msgctxt "item quantity button"
+msgid "减少"
+msgstr "Decrease"
+
+#: src/components/ItemList.tsx:123
+msgctxt "item quantity button"
+msgid "增加"
+msgstr "Increase"
 
 #: src/components/arknights/baseSkillText.ts:110
 #: src/components/arknights/CostSection.tsx:250
