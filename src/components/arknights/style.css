@@ -2391,6 +2391,45 @@ section:first-child > .cpp-stages-wide-section {
   color: var(--bp-palette-gray-3, #8f99a8);
 }
 
+/* 手机上候选是全屏弹窗（App.css 的 .cpp-phone .bp6-dialog）：标题栏下面整片给它，候选列表在里面滚动 */
+.cpp-mm-picker-dialog > .cpp-mm-picker {
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+  max-height: none;
+  min-height: 0;
+}
+
+.cpp-mm-picker-dialog .cpp-mm-picker-list {
+  gap: 10px;
+  overscroll-behavior: contain;
+}
+
+/* 手指点的：按钮放大，「+」和它两行字一样高 */
+.cpp-mm-picker-dialog .cpp-mm-picker-row .bp6-button {
+  min-height: 30px;
+}
+
+.cpp-mm-picker-dialog .cpp-mm-picker-row .bp6-button.cpp-mm-picker-pro {
+  min-height: 30px;
+  padding: 0 6px;
+}
+
+.cpp-mm-picker-dialog .cpp-mm-picker-row .cpp-mm-chip {
+  height: 30px;
+}
+
+.cpp-mm-picker-dialog .cpp-mm-picker-row .cpp-mm-chip .bp6-button {
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.cpp-mm-picker-dialog .cpp-mm-cand > .cpp-mm-picker-add.bp6-button {
+  min-width: 32px;
+  min-height: 32px;
+  margin-top: 2px;
+}
+
 /* 档案一节 */
 .cpp-mm-dossier {
   display: flex;
@@ -2457,6 +2496,11 @@ section:first-child > .cpp-stages-wide-section {
   font-size: 12px;
   font-weight: 600;
   color: var(--bp-typography-color-primary-rest);
+}
+
+/* 窄的时候让标题折行，按钮不折：手机上会折成「在「更多」里」「看」两行 */
+.cpp-mm-together-title > .bp6-button {
+  flex: none;
 }
 
 /* 左边是人，右边是他这一次那条任务 */

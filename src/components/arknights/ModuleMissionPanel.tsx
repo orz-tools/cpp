@@ -2,6 +2,7 @@ import {
   Button,
   ButtonGroup,
   Checkbox,
+  Dialog,
   HTMLTable,
   Icon,
   Menu,
@@ -42,6 +43,7 @@ import { CachedImg } from '../Icons'
 import { PeekTrigger } from '../Peek'
 import { AppToaster } from '../Toaster'
 import { useOpenCharacterDossier } from '../dossierHooks'
+import { usePhoneLayout } from '../phoneLayout'
 import { clearRosterPin, setRosterPin } from '../rosterPin'
 import { SidebarPanel } from '../types'
 import { ProfessionIcon } from './Icons'
@@ -550,7 +552,8 @@ const EMPTY_PROS: ReadonlySet<Profession> = new Set()
 
 /**
  * 「还能编入」那一行打开的候选弹窗。没有候选（包括编满了）时那一行不是按钮，children 拿到的是 undefined；
- * 弹窗开着时变成这样，弹窗随之关掉，焦点交给 fallbackFocus。给了 clearOf 时，弹窗让开那一行外面的这个元素
+ * 弹窗开着时变成这样，弹窗随之关掉，焦点交给 fallbackFocus。给了 clearOf 时，弹窗让开那一行外面的这个元素。
+ * 手机上面板占满屏宽，旁边没有地方，候选和别的弹窗一样占满全屏
  */
 const TagAlongPicker = ({
   ticket,
@@ -567,6 +570,7 @@ const TagAlongPicker = ({
   fallbackFocus: () => void
   children: (target?: PickerTarget) => React.JSX.Element
 }) => {
+  const phone = usePhoneLayout()
   const target = useRef<HTMLDivElement | null>(null)
   // 侧栏里那一行比侧栏窄一截，还要看有没有滚动条，所以打开时再量
   const offset = useMemo(
@@ -600,6 +604,42 @@ const TagAlongPicker = ({
     wasShowing.current = showing
   })
   if (count === 0) return children()
+  const focusFirst = (node: HTMLElement) => node.querySelector<HTMLElement>('.cpp-mm-picker-add')?.focus()
+  if (phone) {
+    return (
+      <>
+        {children({
+          count,
+          isOpen: open,
+          props: {
+            ref: target,
+            role: 'button',
+            tabIndex: 0,
+            'aria-haspopup': 'dialog',
+            'aria-expanded': open,
+            onClick: () => setOpen(true),
+            onKeyDown: onButtonKey,
+          },
+        })}
+        <Dialog
+          isOpen={open}
+          onClose={close}
+          title={<Num text={gt.ngettext('还能带 %d 位', '还能带 %d 位', count)} value={count} />}
+          className="cpp-mm-picker-dialog"
+          onOpened={focusFirst}
+        >
+          <PickerContent
+            ticket={ticket}
+            board={board}
+            candidates={candidates}
+            pros={pros}
+            onPros={setPros}
+            inDialog={true}
+          />
+        </Dialog>
+      </>
+    )
+  }
   return (
     <Popover
       isOpen={open}
@@ -609,7 +649,7 @@ const TagAlongPicker = ({
       popupKind={PopupKind.DIALOG}
       modifiers={{ offset }}
       popoverClassName="cpp-mm-picker-popover"
-      onOpened={(node) => node.querySelector<HTMLElement>('.cpp-mm-picker-add')?.focus()}
+      onOpened={focusFirst}
       content={<PickerContent ticket={ticket} board={board} candidates={candidates} pros={pros} onPros={setPros} />}
       renderTarget={({
         ref,
@@ -647,19 +687,21 @@ const sortNames: Record<CandidateSort, PSTR> = {
   trainingLow: lpstr(() => gt.pgettext('module mission', '练度低的在前')),
 }
 
-/** 弹窗里：标题、带上了、排序、职业筛选，下面是候选列表，自己滚动 */
+/** 弹窗里：标题、带上了、排序、职业筛选，下面是候选列表，自己滚动。inDialog 时标题在 Dialog 的标题栏上 */
 const PickerContent = ({
   ticket,
   board,
   candidates,
   pros,
   onPros,
+  inDialog,
 }: {
   ticket: Ticket
   board: Board
   candidates: { planned: Candidate[]; others: Candidate[] }
   pros: ReadonlySet<Profession>
   onPros: (pros: ReadonlySet<Profession>) => void
+  inDialog?: boolean
 }) => {
   const ga = useArknights()
   const [sort, setSort] = useAtom(candidateSortAtom)
@@ -692,12 +734,19 @@ const PickerContent = ({
 
   const title = gt.ngettext('还能带 %d 位', '还能带 %d 位', all.length)
   return (
-    <div className="cpp-mm-picker" ref={self} role="dialog" aria-label={title.replaceAll('%d', String(all.length))}>
+    <div
+      className="cpp-mm-picker"
+      ref={self}
+      role={inDialog ? undefined : 'dialog'}
+      aria-label={inDialog ? undefined : title.replaceAll('%d', String(all.length))}
+    >
       <div className="cpp-mm-picker-head">
         <div className="cpp-mm-picker-title">
-          <span>
-            <Num text={title} value={all.length} />
-          </span>
+          {inDialog ? null : (
+            <span>
+              <Num text={title} value={all.length} />
+            </span>
+          )}
           <span className="cpp-mm-muted">
             {runName(ga, ticket)}
             {' · '}
