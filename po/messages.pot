@@ -2293,11 +2293,6 @@ msgctxt "arknights status editor"
 msgid "%s 秒"
 msgstr ""
 
-#: src/components/arknights/statusEditor/SurveyBar.tsx:36
-msgctxt "arknights status editor"
-msgid "不显示"
-msgstr ""
-
 #. %d: mastery, 1-3
 #: src/components/arknights/statusEditor/text.ts:22
 msgctxt "arknights status editor"
@@ -2376,6 +2371,11 @@ msgstr ""
 #: src/components/arknights/statusEditor/Detail.tsx:225
 msgctxt "arknights status editor"
 msgid "持续时间"
+msgstr ""
+
+#: src/components/arknights/statusEditor/SurveyBar.tsx:36
+msgctxt "arknights status editor"
+msgid "无"
 msgstr ""
 
 #: src/components/arknights/statusEditor/Detail.tsx:165

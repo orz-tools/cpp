@@ -9,7 +9,7 @@ import { statTooltip } from './SurveyStat'
 import { useEditor } from './context'
 import { percentText } from './text'
 
-/** The data container behind the statistics chosen; null for 不显示 */
+/** The data container behind the statistics chosen; null for 无 */
 export function surveyContainer(dm: ArknightsDataManager, source: SurveySourceKey) {
   if (source === SurveySourceKey.Yituliu) return dm.$surveyYituliu
   if (source === SurveySourceKey.Heybox) return dm.$surveyHeybox
@@ -33,7 +33,7 @@ export const SurveyBar = memo(
             value={source}
             onValueChange={(x) => setSource(x as SurveySourceKey)}
             options={[
-              { label: gt.pgettext('arknights status editor', '不显示'), value: SurveySourceKey.None },
+              { label: gt.pgettext('arknights status editor', '无'), value: SurveySourceKey.None },
               { label: YituliuSurveySource.VeryShortName.toString(), value: SurveySourceKey.Yituliu },
               { label: HeyboxSurveySource.VeryShortName.toString(), value: SurveySourceKey.Heybox },
             ]}

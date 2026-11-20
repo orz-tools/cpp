@@ -2482,11 +2482,6 @@ msgctxt "arknights status editor"
 msgid "%s 秒"
 msgstr "%ss"
 
-#: src/components/arknights/statusEditor/SurveyBar.tsx:36
-msgctxt "arknights status editor"
-msgid "不显示"
-msgstr "Off"
-
 #. %d: mastery, 1-3
 #: src/components/arknights/statusEditor/text.ts:22
 msgctxt "arknights status editor"
@@ -2566,6 +2561,11 @@ msgstr "%2 of %1 owners"
 msgctxt "arknights status editor"
 msgid "持续时间"
 msgstr "Duration"
+
+#: src/components/arknights/statusEditor/SurveyBar.tsx:36
+msgctxt "arknights status editor"
+msgid "无"
+msgstr "Off"
 
 #: src/components/arknights/statusEditor/Detail.tsx:165
 msgctxt "arknights status editor"
@@ -6335,6 +6335,10 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgctxt "arknights status editor"
+#~ msgid "不显示"
+#~ msgstr "Off"
 
 #~ msgctxt "arknights status editor"
 #~ msgid "统计载入失败"
