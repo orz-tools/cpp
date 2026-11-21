@@ -50,6 +50,7 @@ import { useComponents } from '../hooks/useComponents'
 import { useRequest } from '../hooks/useRequest'
 import { ListDrag, useListDrag } from './ListDrag'
 import { ListSelectionContext, SelectionBar, handleTitle, useListSelection } from './ListSelection'
+import { NoPlanState, useHasPlan } from './NoPlan'
 import { CharacterPlanMenuItems, GroupPlanMenuItems, PlanBatchButtons } from './PlanActions'
 import { ValueTag } from './Value'
 import { useDossierOpenFor, useOpenCharacterDossier, useShowCharacterDossier } from './dossierHooks'
@@ -1103,7 +1104,7 @@ export const QuickFilterBuilder = memo(() => {
 })
 
 export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom: PrimitiveAtom<number> }) => {
-  const param = useAtomValue(useCpp().queryParamAtom)
+  const [param, setParam] = useAtom(useCpp().queryParamAtom)
   const phone = usePhoneLayout()
   const stale = useAtomValue(queryEditorStaleAtom)
 
@@ -1117,7 +1118,9 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
 
   const generation = useGameDataGeneration()
   const requery = useAtomValue(listRequeryAtom)
-  useEffect(() => refresh(), [param, pin, refresh, generation, requery])
+  // The 计划 view's rows are a snapshot: a first goal set in the dossier would otherwise leave it empty
+  const hasPlan = useHasPlan()
+  useEffect(() => refresh(), [param, pin, refresh, generation, requery, hasPlan])
   useEffect(() => {
     if (error) console.error('Failed to query', error)
   }, [error])
@@ -1308,6 +1311,16 @@ export const CharacterList = memo(({ charExtraWidthAtom }: { charExtraWidthAtom:
         <NonIdealState title={gt.gettext('查询失败')} icon={'warning-sign'}>
           <pre style={{ margin: 0 }}>{error.message}</pre>
         </NonIdealState>
+      ) : param.query === ListModeWithGoal && !pin && !hasPlan ? (
+        <NoPlanState
+          icon="people"
+          action={
+            <Button
+              text={gt.gettext('查看全部干员')}
+              onClick={() => setParam((x) => ({ ...x, query: ListModeAll, source: undefined }))}
+            />
+          }
+        />
       ) : (
         <ListSelectionContext.Provider value={selection}>
           <Menu

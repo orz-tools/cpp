@@ -28,6 +28,7 @@ import { CharacterContextMenu, SortButtonGroup, menuItemKeyDown } from './Charac
 import { CachedImg, ItemIcon } from './Icons'
 import { ListDrag, useListDrag } from './ListDrag'
 import { ListSelectionContext, SelectionBar, handleTitle, useListSelection } from './ListSelection'
+import { NoPlanState, useHasPlan } from './NoPlan'
 import { PlanBatchButtons } from './PlanActions'
 import { inRanges } from './listDrag'
 import { PeekTrigger } from './Peek'
@@ -577,6 +578,7 @@ export const TaskList = memo(<G extends IGame>() => {
 
   const hideCosts = param.hideCosts || false
   const list = useAtomValue(atoms.goalTasksWithExtra)
+  const hasPlan = useHasPlan()
   const starredCount = useAtomValue(atoms.allStarredTasksDetails).sortedStarredTasks.length
   const tasks = useMemo(() => list.map(([task]) => task), [list])
   const layout = useMemo(() => layoutTasks(tasks, starredCount), [tasks, starredCount])
@@ -652,52 +654,56 @@ export const TaskList = memo(<G extends IGame>() => {
           <HideCostsButton />
         </Navbar.Group>
       </Navbar>
-      <ListSelectionContext.Provider value={selection}>
-        <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
-          <div
-            ref={contentRef}
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              width: '100%',
-              position: 'relative',
-            }}
-          >
-            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-              const index = virtualRow.index
-              const dragged = active && inRanges(active.ranges, index)
-              return (
-                <TaskMenu
-                  key={String(virtualRow.key)}
-                  index={index}
-                  rowRef={rowVirtualizer.measureElement}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    transform: `translateY(${virtualRow.start}px)`,
-                  }}
-                  task={list[index][0]}
-                  extra={list[index][1]}
-                  same={same(index)}
-                  nextSame={nextSame(index)}
-                  hideCosts={param.hideCosts}
-                  notes={notes[index]}
-                  drag={drag}
-                  dim={dragged ? (active.source.kind === 'char' ? 'all' : 'task') : undefined}
-                  // 只有标题行画得出选中，别的行不跟着选择重画
-                  selected={!same(index) && selected.has(list[index][0].charId)}
-                  previewed={preview?.has(list[index][0].id) ?? false}
-                  selecting={!same(index) && selection.selecting}
-                  onHeaderClick={onHeaderClick}
-                  onHeaderMouseDown={selection.mouseDown}
-                />
-              )
-            })}
-            {overlay}
-          </div>
-        </Menu>
-      </ListSelectionContext.Provider>
+      {hasPlan ? (
+        <ListSelectionContext.Provider value={selection}>
+          <Menu style={{ flex: 1, flexShrink: 1, overflow: 'auto' }} ulRef={parentRef}>
+            <div
+              ref={contentRef}
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+                width: '100%',
+                position: 'relative',
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const index = virtualRow.index
+                const dragged = active && inRanges(active.ranges, index)
+                return (
+                  <TaskMenu
+                    key={String(virtualRow.key)}
+                    index={index}
+                    rowRef={rowVirtualizer.measureElement}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                    task={list[index][0]}
+                    extra={list[index][1]}
+                    same={same(index)}
+                    nextSame={nextSame(index)}
+                    hideCosts={param.hideCosts}
+                    notes={notes[index]}
+                    drag={drag}
+                    dim={dragged ? (active.source.kind === 'char' ? 'all' : 'task') : undefined}
+                    // 只有标题行画得出选中，别的行不跟着选择重画
+                    selected={!same(index) && selected.has(list[index][0].charId)}
+                    previewed={preview?.has(list[index][0].id) ?? false}
+                    selecting={!same(index) && selection.selecting}
+                    onHeaderClick={onHeaderClick}
+                    onHeaderMouseDown={selection.mouseDown}
+                  />
+                )
+              })}
+              {overlay}
+            </div>
+          </Menu>
+        </ListSelectionContext.Provider>
+      ) : (
+        <NoPlanState icon="tick-circle" />
+      )}
       <SelectionBar
         count={selected.size}
         compact

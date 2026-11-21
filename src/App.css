@@ -591,6 +591,25 @@ body {
   height: 100%;
 }
 
+/* 还没有计划（NoPlan.tsx）：说明是一整句，两边留出边距 */
+.cpp-no-plan.bp6-non-ideal-state {
+  box-sizing: border-box;
+  padding: 16px;
+}
+
+/* 干员、任务两栏是纵向的 flex，它接在工具栏下面占满剩下的高度；height: 100% 会多出工具栏那么高 */
+.App > section > .cpp-no-plan.bp6-non-ideal-state {
+  flex: 1 1 0%;
+  height: auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* 和关卡的菜单一样宽：按说明的长度算的话，关卡这一栏会变宽 */
+.cpp-farm-stages > .cpp-no-plan.bp6-non-ideal-state {
+  width: 250px;
+}
+
 /* 线性规划失败（FarmFailure.tsx）：手机上整屏都是它，文字和框不贴着屏幕边 */
 .cpp-farm-failure.bp6-non-ideal-state {
   box-sizing: border-box;
@@ -2201,7 +2220,8 @@ body .bp6-navbar-group {
   overscroll-behavior: contain;
 }
 
-.cpp-phone .cpp-farm-stages > .bp6-menu {
+.cpp-phone .cpp-farm-stages > .bp6-menu,
+.cpp-phone .cpp-farm-stages > .cpp-no-plan.bp6-non-ideal-state {
   width: auto;
 }
 

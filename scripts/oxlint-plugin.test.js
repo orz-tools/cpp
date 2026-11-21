@@ -20,6 +20,7 @@ tester.run('bundled-icon', rule, {
     '<Button icon="search" />',
     '<NonIdealState icon="flag" />',
     '<NonIdealState icon={<Spinner />} />',
+    '<NoPlanState icon="flag" />',
     '<Icon icon="search" size={12} />',
     '<Icon icon="flag" size={20} />',
     '<TagInput leftIcon="search" />',
@@ -52,6 +53,8 @@ tester.run('bundled-icon', rule, {
     { code: '<Button icon={open ? "chevron-down" : "chevron-right"} />', errors: [missing('chevron-right', 16)] },
     { code: '<Alert icon="search" />', errors: [missing('search', 20)] },
     { code: '<Drawer icon="search" />', errors: [missing('search', 20)] },
+    // NoPlan.tsx draws it in a NonIdealState
+    { code: '<NoPlanState icon="search" />', errors: [missing('search', 20)] },
     { code: '<Icon icon="search" size={40} />', errors: [missing('search', 20)] },
     { code: '<Icon icon="search" size={IconSize.LARGE} />', errors: [missing('search', 20)] },
     { code: '<TagInput large leftIcon="search" />', errors: [missing('search', 20)] },

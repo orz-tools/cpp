@@ -29,8 +29,9 @@ export function readBundledIcons(source) {
 
 const iconProps = new Set(['icon', 'leftIcon', 'rightIcon', 'endIcon'])
 
-// Blueprint picks the 20px paths for an icon drawn at 20px or more, which these props always are
-const largeIconElements = new Set(['NonIdealState', 'Alert', 'Drawer'])
+// Blueprint picks the 20px paths for an icon drawn at 20px or more, which these props always are.
+// NoPlanState (src/components/NoPlan.tsx) hands its icon to a NonIdealState
+const largeIconElements = new Set(['NonIdealState', 'Alert', 'Drawer', 'NoPlanState'])
 
 // MessageBox.tsx hands their options' icon to an Alert
 const messageBoxCalls = new Set(['showAlert', 'showConfirm'])

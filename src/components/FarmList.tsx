@@ -28,6 +28,7 @@ import { ErrAtom } from './Err'
 import { FarmFailureState } from './FarmFailure'
 import { ItemIcon } from './Icons'
 import { ItemTile } from './ItemTile'
+import { NoPlanState, useHasPlan } from './NoPlan'
 import { PeekTrigger } from './Peek'
 import { phoneAreaAtom, usePhoneLayout } from './phoneLayout'
 import { formatExpectedQuantity, formatTileQuantity } from './quantity'
@@ -250,6 +251,7 @@ export const FarmList = memo(() => {
   const phone = usePhoneLayout()
   const area = useAtomValue(phoneAreaAtom)
   const synthesisPane = phone && area === 'synthesis'
+  const hasPlan = useHasPlan()
   const refresh = useEvent((f?: FarmLevel) => {
     if (blocked) return
     try {
@@ -340,12 +342,17 @@ export const FarmList = memo(() => {
         ) : response ? (
           <>
             <div className="bp6-elevation-1 cpp-farm-stages">
-              <Menu>
-                {response.stageRuns.map((run) => (
-                  <StageLine run={run} key={run.stageId} />
-                ))}
-                {response.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
-              </Menu>
+              {/* At 毕业 the stages cover every operator, with a plan or without */}
+              {hasPlan || response.stageRuns.length > 0 || response.unfeasibleItems ? (
+                <Menu>
+                  {response.stageRuns.map((run) => (
+                    <StageLine run={run} key={run.stageId} />
+                  ))}
+                  {response.unfeasibleItems ? <UnfeasibleLine items={response.unfeasibleItems} /> : null}
+                </Menu>
+              ) : (
+                <NoPlanState icon="map" />
+              )}
             </div>
             {!response.synthesisList ? (
               <div className="bp6-elevation-1 cpp-farm-synthesis">

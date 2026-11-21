@@ -90,7 +90,7 @@ msgstr[0] "%d image did not load and is left blank."
 msgstr[1] "%d images did not load and are left blank."
 
 #. %d: number of tasks
-#: src/components/TaskList.tsx:161
+#: src/components/TaskList.tsx:162
 msgid "%d 项"
 msgid_plural "%d 项"
 msgstr[0] "%d task"
@@ -208,7 +208,7 @@ msgstr ""
 "The drop data from Penguin Statistics did not load, so excluded stages were "
 "not exported."
 
-#: src/components/TaskList.tsx:175
+#: src/components/TaskList.tsx:176
 msgid "优先培养（星标）"
 msgstr "Prioritize (mark as starred)"
 
@@ -274,7 +274,7 @@ msgstr "About"
 msgid "关卡"
 msgstr "Stages"
 
-#: src/components/FarmList.tsx:232
+#: src/components/FarmList.tsx:233
 msgid "关卡产物显示为图标"
 msgstr "Show stage drops as icons"
 
@@ -384,7 +384,7 @@ msgstr "Region: %s"
 msgid "取消"
 msgstr "Cancel"
 
-#: src/components/CharacterList.tsx:219
+#: src/components/CharacterList.tsx:220
 msgid "取消选中"
 msgstr "Deselect"
 
@@ -410,6 +410,10 @@ msgstr ""
 #: src/components/UserDataManager.tsx:381
 msgid "可将文本框里的内容换成复制来的数据后导入。"
 msgstr "To import copied data, replace what is in the text box with it."
+
+#: src/components/NoPlan.tsx:25
+msgid "右键点干员，选「拉满计划」；或者点开干员，在「练度」页设定培养目标。"
+msgstr "Right-click an operator and choose “Plan to Max”, or open an operator and set a target on the “Progress” page."
 
 #: src/components/arknights/SklandImporter.tsx:155
 msgid "回到「提取装置」"
@@ -494,7 +498,7 @@ msgstr "Copy Data"
 msgid "复制求解数据"
 msgstr "Copy Solver Data"
 
-#: src/components/CharacterList.tsx:241
+#: src/components/CharacterList.tsx:242
 msgid "复制角色名"
 msgstr "Copy Name"
 
@@ -514,11 +518,11 @@ msgstr[1] "%d outfits added"
 msgid "如今"
 msgstr "Current"
 
-#: src/components/TaskList.tsx:146
+#: src/components/TaskList.tsx:147
 msgid "完成"
 msgstr "Complete"
 
-#: src/components/TaskList.tsx:159
+#: src/components/TaskList.tsx:160
 msgid "完成至此"
 msgstr "Complete Up to Here"
 
@@ -608,7 +612,7 @@ msgstr[1] ""
 msgid "已复制，到旧版里粘贴就好。"
 msgstr "Copied. Paste it into the old version."
 
-#: src/components/CharacterList.tsx:248
+#: src/components/CharacterList.tsx:249
 msgid "已复制「%s」"
 msgstr "Copied “%s”"
 
@@ -701,7 +705,7 @@ msgstr "Documentation"
 msgid "弹出成大窗口"
 msgstr "Open in a window"
 
-#: src/components/TaskList.tsx:152
+#: src/components/TaskList.tsx:153
 msgid "强制完成（不消耗材料）"
 msgstr "Mark as Completed (without consuming items)"
 
@@ -811,7 +815,7 @@ msgstr "No matching stages"
 
 #: src/components/arknights/ExporterMenuItems.tsx:112
 #: src/components/arknights/ExporterMenuItems.tsx:39
-#: src/components/CharacterList.tsx:254
+#: src/components/CharacterList.tsx:255
 msgid "无法写入剪贴板"
 msgstr "Could not write to the clipboard"
 
@@ -878,11 +882,11 @@ msgstr "Show Targets"
 msgid "显示页脚"
 msgstr "Show Footer"
 
-#: src/components/FarmList.tsx:352
+#: src/components/FarmList.tsx:359
 msgid "暂不支持计算毕业合成"
 msgstr "Synthesizing Cannot be Planned for Maxed"
 
-#: src/components/FarmList.tsx:422
+#: src/components/FarmList.tsx:429
 msgid "暂无可计算来源"
 msgstr "No Feasible Sources"
 
@@ -959,6 +963,10 @@ msgstr "Drop to Import"
 msgid "构建：%s"
 msgstr "Build: %s"
 
+#: src/components/CharacterList.tsx:1319
+msgid "查看全部干员"
+msgstr "Show All Operators"
+
 #: src/components/LogList.tsx:461
 msgid "查看更多…"
 msgstr "Read More…"
@@ -967,7 +975,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:1308
+#: src/components/CharacterList.tsx:1311
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -1050,7 +1058,7 @@ msgid_plural "清空 %d 名干员的计划"
 msgstr[0] "Clear the plan of %d operator"
 msgstr[1] "Clear the plans of %d operators"
 
-#: src/components/CharacterList.tsx:223 src/components/ListSelection.tsx:161
+#: src/components/CharacterList.tsx:224 src/components/ListSelection.tsx:161
 msgid "清除选择"
 msgstr "Clear selection"
 
@@ -1170,11 +1178,11 @@ msgstr ""
 msgid "角色"
 msgstr "Characters"
 
-#: src/components/TaskList.tsx:141
+#: src/components/TaskList.tsx:142
 msgid "角色内排序"
 msgstr "Sorting within Character"
 
-#: src/components/CharacterList.tsx:210
+#: src/components/CharacterList.tsx:211
 msgid "角色计划排序"
 msgstr "Plan Sorting"
 
@@ -1223,7 +1231,7 @@ msgstr ""
 "Check your network connection, try another network, use a VPN or "
 "accelerator, or switch to another server."
 
-#: src/components/FarmList.tsx:361
+#: src/components/FarmList.tsx:368
 msgid "请稍候"
 msgstr "Loading"
 
@@ -1300,6 +1308,10 @@ msgstr ""
 "No starred tasks yet. Tap a task in the task list and choose «Prioritize "
 "(mark as starred)»; the materials it and the tasks it depends on need will "
 "be listed here."
+
+#: src/components/NoPlan.tsx:21
+msgid "还没有计划"
+msgstr "No Plan Yet"
 
 #: src/components/arknights/ModuleMissionPanel.tsx:487
 #: src/components/arknights/ModuleMissionPanel.tsx:641
@@ -1399,7 +1411,7 @@ msgid "这是 Closure++ 的 %s 用户数据，不能导入到当前游戏。"
 msgstr ""
 "This is Closure++ save data for %s; it cannot be imported into this game."
 
-#: src/components/CharacterList.tsx:219
+#: src/components/CharacterList.tsx:220
 msgid "选中"
 msgstr "Select"
 
@@ -1408,7 +1420,7 @@ msgid "选中的"
 msgstr "Selected"
 
 #. %d: number
-#: src/components/CharacterList.tsx:203
+#: src/components/CharacterList.tsx:204
 msgid "选中的 %d 名干员"
 msgid_plural "选中的 %d 名干员"
 msgstr[0] "%d selected operator"
@@ -1442,6 +1454,10 @@ msgstr "Re-download Data"
 #: src/components/rosterImage/RosterImageDialog.tsx:285
 msgid "长按图片保存到相册"
 msgstr "Long-press the image to save it to your photos"
+
+#: src/components/NoPlan.tsx:24
+msgid "长按干员，选「拉满计划」；或者点开干员，在「练度」页设定培养目标。"
+msgstr "Long-press an operator and choose “Plan to Max”, or open an operator and set a target on the “Progress” page."
 
 #: src/components/AboutList.tsx:92
 msgid "鸣谢"
@@ -3111,7 +3127,7 @@ msgctxt "error context"
 msgid "初始化失败"
 msgstr "Error During Initializing"
 
-#: src/components/FarmList.tsx:258
+#: src/components/FarmList.tsx:260
 msgctxt "error context"
 msgid "刷本规划时遇到问题"
 msgstr "Error During Planning"
@@ -3181,22 +3197,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:618
+#: src/components/CharacterList.tsx:619
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:619
+#: src/components/CharacterList.tsx:620
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:627
+#: src/components/CharacterList.tsx:628
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:628
+#: src/components/CharacterList.tsx:629
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -3303,7 +3319,7 @@ msgstr "Increase"
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:462
 #: src/components/arknights/voucherText.tsx:31
-#: src/components/CharacterList.tsx:713
+#: src/components/CharacterList.tsx:714
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
 msgctxt "list separator"
@@ -4230,19 +4246,19 @@ msgctxt "predefined query"
 msgid "精二直升价值（全部）"
 msgstr "E2 voucher value (all)"
 
-#: src/components/CharacterList.tsx:881
+#: src/components/CharacterList.tsx:882
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:874
+#: src/components/CharacterList.tsx:875
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:888
+#: src/components/CharacterList.tsx:889
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -4845,7 +4861,7 @@ msgctxt "query menu"
 msgid "全部 4–6 星干员的技能"
 msgstr "Every skill of the 4–6★ operators"
 
-#: src/components/CharacterList.tsx:1065 src/components/CharacterList.tsx:1066
+#: src/components/CharacterList.tsx:1066 src/components/CharacterList.tsx:1067
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
@@ -4855,7 +4871,7 @@ msgctxt "query menu"
 msgid "养成成本"
 msgstr "Training costs"
 
-#: src/components/CharacterList.tsx:961
+#: src/components/CharacterList.tsx:962
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
@@ -4895,7 +4911,7 @@ msgctxt "query menu"
 msgid "已持有的干员的全部基建技能，含已解锁的"
 msgstr "Every base skill of the owned operators, unlocked ones too"
 
-#: src/components/CharacterList.tsx:1006
+#: src/components/CharacterList.tsx:1007
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
@@ -4905,7 +4921,7 @@ msgctxt "query menu"
 msgid "所有干员的全部基建技能，含没持有的和已解锁的"
 msgstr "Every base skill of every operator, owned or not, unlocked or not"
 
-#: src/components/CharacterList.tsx:1057 src/components/CharacterList.tsx:1058
+#: src/components/CharacterList.tsx:1058 src/components/CharacterList.tsx:1059
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
@@ -4915,7 +4931,7 @@ msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:1065 src/components/CharacterList.tsx:1066
+#: src/components/CharacterList.tsx:1066 src/components/CharacterList.tsx:1067
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -4981,13 +4997,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:710
+#: src/components/CharacterList.tsx:711
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:710
+#: src/components/CharacterList.tsx:711
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -5886,7 +5902,7 @@ msgstr ""
 "Max: what it saves if used from E0 level 1; the light blue part of the bar "
 "is already trained."
 
-#: src/components/CharacterList.tsx:904
+#: src/components/CharacterList.tsx:905
 msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr "What the operators in the list have cost in total"
