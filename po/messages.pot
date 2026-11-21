@@ -354,10 +354,6 @@ msgstr ""
 msgid "可将文本框里的内容换成复制来的数据后导入。"
 msgstr ""
 
-#: src/components/NoPlan.tsx:25
-msgid "右键点干员，选「拉满计划」；或者点开干员，在「练度」页设定培养目标。"
-msgstr ""
-
 #: src/components/arknights/SklandImporter.tsx:155
 msgid "回到「提取装置」"
 msgstr ""
@@ -948,6 +944,10 @@ msgstr ""
 msgid "潜能 %d"
 msgstr ""
 
+#: src/components/NoPlan.tsx:19
+msgid "点击干员设定培养目标。"
+msgstr ""
+
 #: src/components/RetiredGame.tsx:109
 msgid "点右上角的 %1，选 %2；把文本框清空，粘贴刚才复制的数据或导出文件的全部内容，再点 %3 并确认。"
 msgstr ""
@@ -1137,7 +1137,7 @@ msgstr ""
 msgid "还没有星标任务。在任务列表里点一项任务，选「优先培养（星标）」，这里就列出它和它前置任务要用的材料。"
 msgstr ""
 
-#: src/components/NoPlan.tsx:21
+#: src/components/NoPlan.tsx:18
 msgid "还没有计划"
 msgstr ""
 
@@ -1266,10 +1266,6 @@ msgstr ""
 
 #: src/components/rosterImage/RosterImageDialog.tsx:285
 msgid "长按图片保存到相册"
-msgstr ""
-
-#: src/components/NoPlan.tsx:24
-msgid "长按干员，选「拉满计划」；或者点开干员，在「练度」页设定培养目标。"
 msgstr ""
 
 #: src/components/AboutList.tsx:92

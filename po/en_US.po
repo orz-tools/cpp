@@ -411,10 +411,6 @@ msgstr ""
 msgid "可将文本框里的内容换成复制来的数据后导入。"
 msgstr "To import copied data, replace what is in the text box with it."
 
-#: src/components/NoPlan.tsx:25
-msgid "右键点干员，选「拉满计划」；或者点开干员，在「练度」页设定培养目标。"
-msgstr "Right-click an operator and choose “Plan to Max”, or open an operator and set a target on the “Progress” page."
-
 #: src/components/arknights/SklandImporter.tsx:155
 msgid "回到「提取装置」"
 msgstr "Back to «Sklanding»"
@@ -1081,6 +1077,10 @@ msgstr "Assets from Game"
 msgid "潜能 %d"
 msgstr "Potential %d"
 
+#: src/components/NoPlan.tsx:19
+msgid "点击干员设定培养目标。"
+msgstr "Click an operator to set a target."
+
 #: src/components/RetiredGame.tsx:109
 msgid ""
 "点右上角的 %1，选 %2；把文本框清空，粘贴刚才复制的数据或导出文件的全部内容，"
@@ -1309,7 +1309,7 @@ msgstr ""
 "(mark as starred)»; the materials it and the tasks it depends on need will "
 "be listed here."
 
-#: src/components/NoPlan.tsx:21
+#: src/components/NoPlan.tsx:18
 msgid "还没有计划"
 msgstr "No Plan Yet"
 
@@ -1454,10 +1454,6 @@ msgstr "Re-download Data"
 #: src/components/rosterImage/RosterImageDialog.tsx:285
 msgid "长按图片保存到相册"
 msgstr "Long-press the image to save it to your photos"
-
-#: src/components/NoPlan.tsx:24
-msgid "长按干员，选「拉满计划」；或者点开干员，在「练度」页设定培养目标。"
-msgstr "Long-press an operator and choose “Plan to Max”, or open an operator and set a target on the “Progress” page."
 
 #: src/components/AboutList.tsx:92
 msgid "鸣谢"
@@ -6407,6 +6403,16 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgid "右键点干员，选「拉满计划」；或者点开干员，在「练度」页设定培养目标。"
+#~ msgstr ""
+#~ "Right-click an operator and choose “Plan to Max”, or open an operator and "
+#~ "set a target on the “Progress” page."
+
+#~ msgid "长按干员，选「拉满计划」；或者点开干员，在「练度」页设定培养目标。"
+#~ msgstr ""
+#~ "Long-press an operator and choose “Plan to Max”, or open an operator and "
+#~ "set a target on the “Progress” page."
 
 #~ msgctxt "arknights status editor"
 #~ msgid "不显示"

@@ -605,7 +605,7 @@ body {
   overflow: auto;
 }
 
-/* 和关卡的菜单一样宽：按说明的长度算的话，关卡这一栏会变宽 */
+/* 和关卡的菜单一样宽：不然这一栏的宽窄跟着说明的长度走 */
 .cpp-farm-stages > .cpp-no-plan.bp6-non-ideal-state {
   width: 250px;
 }
