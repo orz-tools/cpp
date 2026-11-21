@@ -16,7 +16,7 @@ export const NoPlanState = memo(({ icon, action }: { icon: IconName; action?: Re
     className="cpp-no-plan"
     icon={icon}
     title={gt.gettext('还没有计划')}
-    description={gt.gettext('点击干员设定培养目标。')}
+    description={gt.gettext('点击干员设定培养目标')}
     action={action}
   />
 ))

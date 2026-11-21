@@ -1078,7 +1078,7 @@ msgid "潜能 %d"
 msgstr "Potential %d"
 
 #: src/components/NoPlan.tsx:19
-msgid "点击干员设定培养目标。"
+msgid "点击干员设定培养目标"
 msgstr "Click an operator to set a target."
 
 #: src/components/RetiredGame.tsx:109
@@ -6403,6 +6403,9 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgid "点击干员设定培养目标。"
+#~ msgstr "Click an operator to set a target."
 
 #~ msgid "右键点干员，选「拉满计划」；或者点开干员，在「练度」页设定培养目标。"
 #~ msgstr ""

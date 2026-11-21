@@ -945,7 +945,7 @@ msgid "潜能 %d"
 msgstr ""
 
 #: src/components/NoPlan.tsx:19
-msgid "点击干员设定培养目标。"
+msgid "点击干员设定培养目标"
 msgstr ""
 
 #: src/components/RetiredGame.tsx:109
