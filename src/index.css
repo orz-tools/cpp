@@ -34,12 +34,13 @@ a:hover {
   color: #747bff;
 }
 
+/* No height in vh: on a phone 100vh is the height with the browser's toolbar hidden, so the page could scroll by the
+   toolbar's height and carry the app up under the fixed navbar, and Firefox puts that scroll back on reload */
 body {
   margin: 0;
   display: flex;
   place-items: flex-start;
   min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
