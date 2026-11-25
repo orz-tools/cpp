@@ -1073,7 +1073,7 @@ msgstr "Assets from Game"
 
 #. %d: potential, 1-6
 #: src/components/arknights/Icons.tsx:93
-#: src/components/arknights/statusEditor/PotentialSection.tsx:12
+#: src/components/arknights/statusEditor/text.ts:32
 msgid "潜能 %d"
 msgstr "Potential %d"
 
@@ -2432,10 +2432,16 @@ msgid "磨难"
 msgstr "Tough "
 
 #: src/components/arknights/statusEditor/Detail.tsx:382
-#: src/components/arknights/statusEditor/text.ts:56
+#: src/components/arknights/statusEditor/text.ts:62
 msgctxt "arknights status editor"
 msgid "，"
 msgstr ", "
+
+#. between a talent's name and its text
+#: src/components/arknights/statusEditor/PotentialDetail.tsx:80
+msgctxt "arknights status editor"
+msgid "："
+msgstr ": "
 
 #. %1: what, e.g. 锈枝 · 2 级; %2: share; %3: sample detail; %4: source
 #: src/components/arknights/statusEditor/SurveyStat.tsx:35
@@ -2525,6 +2531,16 @@ msgctxt "arknights status editor"
 msgid "天赋"
 msgstr "Talent"
 
+#: src/components/arknights/statusEditor/PotentialDetail.tsx:43
+msgctxt "arknights status editor"
+msgid "天赋的数值按满级、不装模组计"
+msgstr "Talent values at max level, without modules"
+
+#: src/components/arknights/statusEditor/PotentialDetail.tsx:67
+msgctxt "arknights status editor"
+msgid "已有"
+msgstr "Reached"
+
 #: src/components/arknights/statusEditor/CharacterStatusEditor.tsx:77
 msgctxt "arknights status editor"
 msgid "已经练满了"
@@ -2557,7 +2573,7 @@ msgid "技能等级"
 msgstr "Skill Level"
 
 #. follows 还会把等级提到 …; %d: skill level
-#: src/components/arknights/statusEditor/text.ts:45
+#: src/components/arknights/statusEditor/text.ts:51
 msgctxt "arknights status editor"
 msgid "技能等级提到 %d"
 msgstr "skill level to %d"
@@ -2669,22 +2685,27 @@ msgid "载入失败"
 msgstr "Couldn't load"
 
 #. %d: skill level
-#: src/components/arknights/statusEditor/text.ts:47
+#: src/components/arknights/statusEditor/text.ts:53
 msgctxt "arknights status editor"
 msgid "还会把技能等级提到 %d"
 msgstr "Also raises the skill level to %d"
 
 #. %s: elite and level, e.g. 精二 1
-#: src/components/arknights/statusEditor/text.ts:43
+#: src/components/arknights/statusEditor/text.ts:49
 msgctxt "arknights status editor"
 msgid "还会把等级提到 %s"
 msgstr "Also raises the level to %s"
 
 #. %s: elite and level, e.g. 精二 50
-#: src/components/arknights/statusEditor/text.ts:41
+#: src/components/arknights/statusEditor/text.ts:47
 msgctxt "arknights status editor"
 msgid "还会把等级提到 %s（模组解锁）"
 msgstr "Also raises the level to %s (module unlock)"
+
+#: src/components/arknights/statusEditor/PotentialDetail.tsx:21
+msgctxt "arknights status editor"
+msgid "还没有这名干员的潜能数据"
+msgstr "No potential data for this operator yet"
 
 #: src/components/arknights/statusEditor/Detail.tsx:204
 msgctxt "arknights status editor"
@@ -2695,6 +2716,11 @@ msgstr "No details for this skill yet"
 msgctxt "arknights status editor"
 msgid "这个模组还没有说明数据"
 msgstr "No details for this module yet"
+
+#: src/components/arknights/statusEditor/PotentialDetail.tsx:31
+msgctxt "arknights status editor"
+msgid "这名干员不能提升潜能"
+msgstr "This operator has no potential ranks"
 
 #: src/components/arknights/statusEditor/Detail.tsx:83
 #: src/components/arknights/statusEditor/SurveyBar.tsx:48
@@ -2712,7 +2738,7 @@ msgctxt "arknights status group"
 msgid "技能"
 msgstr "Skill"
 
-#: src/components/arknights/statusEditor/PotentialSection.tsx:22
+#: src/components/arknights/statusEditor/PotentialSection.tsx:20
 msgctxt "arknights status group"
 msgid "潜能"
 msgstr "Potential"
