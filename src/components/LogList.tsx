@@ -38,6 +38,12 @@ const arknights = [GameName.Arknights]
 
 const logs: Log[] = [
   {
+    date: '2026-11-26',
+    type: 'new',
+    game: arknights,
+    desc: lpstr(() => gt.pgettext('changelog', '公开招募和潜能说明')),
+  },
+  {
     date: '2026-11-20',
     type: 'new',
     desc: lpstr(() => gt.pgettext('changelog', '「口袋里的罗德岛」更新')),

@@ -649,7 +649,7 @@ msgid "您不妨试试"
 msgstr ""
 
 #. %s: datetime
-#: src/components/LogList.tsx:443
+#: src/components/LogList.tsx:449
 msgid "截止 %s"
 msgstr ""
 
@@ -844,7 +844,7 @@ msgstr ""
 msgid "查看全部干员"
 msgstr ""
 
-#: src/components/LogList.tsx:461
+#: src/components/LogList.tsx:467
 msgid "查看更多…"
 msgstr ""
 
@@ -1105,7 +1105,7 @@ msgid ""
 "你现在的数据将会永久失去！（真的很久！）"
 msgstr ""
 
-#: src/components/LogList.tsx:447
+#: src/components/LogList.tsx:453
 msgid "近期更新"
 msgstr ""
 
@@ -2663,207 +2663,212 @@ msgctxt "arknights zone"
 msgid "芯片搜索"
 msgstr ""
 
-#: src/components/LogList.tsx:67
+#: src/components/LogList.tsx:73
 msgctxt "changelog"
 msgid "「不是人类，而是氛围」大更新"
 msgstr ""
 
-#: src/components/LogList.tsx:43
+#: src/components/LogList.tsx:49
 msgctxt "changelog"
 msgid "「口袋里的罗德岛」更新"
 msgstr ""
 
-#: src/components/LogList.tsx:140
+#: src/components/LogList.tsx:146
 msgctxt "changelog"
 msgid "从 MAA 导入仓库时保留不支持识别的道具"
 msgstr ""
 
-#: src/components/LogList.tsx:53
+#: src/components/LogList.tsx:59
 msgctxt "changelog"
 msgid "任务右键「完成至此」"
 msgstr ""
 
-#: src/components/LogList.tsx:156
+#: src/components/LogList.tsx:162
 msgctxt "changelog"
 msgid "优化小屏幕上的导航栏体验"
 msgstr ""
 
-#: src/components/LogList.tsx:182
+#: src/components/LogList.tsx:188
 msgctxt "changelog"
 msgid "优化干员列表样式"
 msgstr ""
 
-#: src/components/LogList.tsx:151
+#: src/components/LogList.tsx:157
 msgctxt "changelog"
 msgid "修复干员「阿米娅」在特定情况下数据异常的问题"
 msgstr ""
 
-#: src/components/LogList.tsx:61
+#: src/components/LogList.tsx:67
 msgctxt "changelog"
 msgid "修正部分情况下刷图规划失败或缺漏"
 msgstr ""
 
-#: src/components/LogList.tsx:121
+#: src/components/LogList.tsx:127
 msgctxt "changelog"
 msgid "修正部分模组不显示"
 msgstr ""
 
-#: src/components/LogList.tsx:73
+#: src/components/LogList.tsx:44
 msgctxt "changelog"
-msgid "关卡效率"
-msgstr ""
-
-#: src/components/LogList.tsx:91
-msgctxt "changelog"
-msgid "养成成本"
-msgstr ""
-
-#: src/components/LogList.tsx:57
-msgctxt "changelog"
-msgid "养成成本可折算成蓝材料"
-msgstr ""
-
-#: src/components/LogList.tsx:60
-msgctxt "changelog"
-msgid "刷图区掉落可显示为图标，合成单独一栏"
-msgstr ""
-
-#: src/components/LogList.tsx:188
-msgctxt "changelog"
-msgid "加入海外服务器的游戏数据"
-msgstr ""
-
-#: src/components/LogList.tsx:97
-msgctxt "changelog"
-msgid "基建技能"
-msgstr ""
-
-#: src/components/LogList.tsx:194
-msgctxt "changelog"
-msgid "增加一些基于社区练度统计数据的排行榜视图"
-msgstr ""
-
-#: src/components/LogList.tsx:145
-msgctxt "changelog"
-msgid "增加角色的快速过滤器"
-msgstr ""
-
-#: src/components/LogList.tsx:50
-msgctxt "changelog"
-msgid "多选干员，批量调整顺序、拉满或清空计划"
-msgstr ""
-
-#: src/components/LogList.tsx:129
-msgctxt "changelog"
-msgid "导入前检查数据更新"
-msgstr ""
-
-#: src/components/LogList.tsx:69
-msgctxt "changelog"
-msgid "干员档案"
-msgstr ""
-
-#: src/components/LogList.tsx:107
-msgctxt "changelog"
-msgid "拖动干员、任务调整计划顺序"
-msgstr ""
-
-#: src/components/LogList.tsx:201
-msgctxt "changelog"
-msgid "接入小黑盒 app 的干员统计数据"
-msgstr ""
-
-#: src/components/LogList.tsx:207
-msgctxt "changelog"
-msgid "接入明日方舟一图流的干员练度统计数据"
-msgstr ""
-
-#: src/components/LogList.tsx:134
-msgctxt "changelog"
-msgid "支持拼音、模糊匹配"
-msgstr ""
-
-#: src/components/LogList.tsx:111
-msgctxt "changelog"
-msgid "支持更多数据导入"
-msgstr ""
-
-#: src/components/LogList.tsx:176
-msgctxt "changelog"
-msgid "支持森空岛仓库导入"
-msgstr ""
-
-#: src/components/LogList.tsx:169
-msgctxt "changelog"
-msgid "支持界面语言切换"
-msgstr ""
-
-#: src/components/LogList.tsx:85
-msgctxt "changelog"
-msgid "时装"
-msgstr ""
-
-#: src/components/LogList.tsx:120
-msgctxt "changelog"
-msgid "更新数据、切换语言和地区无需刷新页面"
+msgid "公开招募和潜能说明"
 msgstr ""
 
 #: src/components/LogList.tsx:79
 msgctxt "changelog"
-msgid "模组任务"
+msgid "关卡效率"
+msgstr ""
+
+#: src/components/LogList.tsx:97
+msgctxt "changelog"
+msgid "养成成本"
+msgstr ""
+
+#: src/components/LogList.tsx:63
+msgctxt "changelog"
+msgid "养成成本可折算成蓝材料"
+msgstr ""
+
+#: src/components/LogList.tsx:66
+msgctxt "changelog"
+msgid "刷图区掉落可显示为图标，合成单独一栏"
+msgstr ""
+
+#: src/components/LogList.tsx:194
+msgctxt "changelog"
+msgid "加入海外服务器的游戏数据"
 msgstr ""
 
 #: src/components/LogList.tsx:103
 msgctxt "changelog"
-msgid "模组解锁率"
+msgid "基建技能"
 msgstr ""
 
-#: src/components/LogList.tsx:46
+#: src/components/LogList.tsx:200
 msgctxt "changelog"
-msgid "深色模式"
+msgid "增加一些基于社区练度统计数据的排行榜视图"
+msgstr ""
+
+#: src/components/LogList.tsx:151
+msgctxt "changelog"
+msgid "增加角色的快速过滤器"
+msgstr ""
+
+#: src/components/LogList.tsx:56
+msgctxt "changelog"
+msgid "多选干员，批量调整顺序、拉满或清空计划"
+msgstr ""
+
+#: src/components/LogList.tsx:135
+msgctxt "changelog"
+msgid "导入前检查数据更新"
+msgstr ""
+
+#: src/components/LogList.tsx:75
+msgctxt "changelog"
+msgid "干员档案"
+msgstr ""
+
+#: src/components/LogList.tsx:113
+msgctxt "changelog"
+msgid "拖动干员、任务调整计划顺序"
+msgstr ""
+
+#: src/components/LogList.tsx:207
+msgctxt "changelog"
+msgid "接入小黑盒 app 的干员统计数据"
+msgstr ""
+
+#: src/components/LogList.tsx:213
+msgctxt "changelog"
+msgid "接入明日方舟一图流的干员练度统计数据"
+msgstr ""
+
+#: src/components/LogList.tsx:140
+msgctxt "changelog"
+msgid "支持拼音、模糊匹配"
 msgstr ""
 
 #: src/components/LogList.tsx:117
 msgctxt "changelog"
+msgid "支持更多数据导入"
+msgstr ""
+
+#: src/components/LogList.tsx:182
+msgctxt "changelog"
+msgid "支持森空岛仓库导入"
+msgstr ""
+
+#: src/components/LogList.tsx:175
+msgctxt "changelog"
+msgid "支持界面语言切换"
+msgstr ""
+
+#: src/components/LogList.tsx:91
+msgctxt "changelog"
+msgid "时装"
+msgstr ""
+
+#: src/components/LogList.tsx:126
+msgctxt "changelog"
+msgid "更新数据、切换语言和地区无需刷新页面"
+msgstr ""
+
+#: src/components/LogList.tsx:85
+msgctxt "changelog"
+msgid "模组任务"
+msgstr ""
+
+#: src/components/LogList.tsx:109
+msgctxt "changelog"
+msgid "模组解锁率"
+msgstr ""
+
+#: src/components/LogList.tsx:52
+msgctxt "changelog"
+msgid "深色模式"
+msgstr ""
+
+#: src/components/LogList.tsx:123
+msgctxt "changelog"
 msgid "物品价值改为本地计算，支持设置"
 msgstr ""
 
-#: src/components/LogList.tsx:47
+#: src/components/LogList.tsx:53
 msgctxt "changelog"
 msgid "练度图"
 msgstr ""
 
-#: src/components/LogList.tsx:106
+#: src/components/LogList.tsx:112
 msgctxt "changelog"
 msgid "编辑角色过滤器"
 msgstr ""
 
-#: src/components/LogList.tsx:122
+#: src/components/LogList.tsx:128
 msgctxt "changelog"
 msgid "肉鸽干员养成支持"
 msgstr ""
 
-#: src/components/LogList.tsx:45
+#: src/components/LogList.tsx:51
 msgctxt "changelog"
 msgid "适配手机"
 msgstr ""
 
-#: src/components/LogList.tsx:161
+#: src/components/LogList.tsx:167
 msgctxt "changelog"
 msgid "道具图标不存在时显示名称"
 msgstr ""
 
-#: src/components/LogList.tsx:275
+#: src/components/LogList.tsx:281
 msgctxt "changelog type"
 msgid "优化"
 msgstr ""
 
-#: src/components/LogList.tsx:276
+#: src/components/LogList.tsx:282
 msgctxt "changelog type"
 msgid "修复"
 msgstr ""
 
-#: src/components/LogList.tsx:274
+#: src/components/LogList.tsx:280
 msgctxt "changelog type"
 msgid "新增"
 msgstr ""
