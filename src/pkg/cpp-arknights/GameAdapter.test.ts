@@ -3,7 +3,6 @@ import { Assertion, Querier, QueryParam } from '../cpp-basic'
 import type { DataContainerObject } from '../dccache'
 import { Character } from './DataManager'
 import { ArknightsAdapter } from './GameAdapter'
-import { recruitAssertion } from './recruit'
 import { HeyboxSurveySource, YituliuSurveySource } from './survey'
 import { Arknights, ArknightsRegion, PreferenceKeys, SurveySourceKey } from './types'
 
@@ -502,9 +501,11 @@ describe('ArknightsAdapter', () => {
       ])
     })
 
-    it('leaves a 6★ out of the quick filter until 高级资深干员 is picked', async () => {
-      expect((await query(recruitAssertion(['19']))).map((x) => x[0])).toEqual(['char_2013_cerber'])
-      expect((await query(recruitAssertion(['11', '19']))).map((x) => x[0])).toEqual(['char_103_angel'])
+    it('narrows a query to the operators carrying a tag', async () => {
+      const carrying = async (tag: string) =>
+        (await query({ _: 'field', field: 'recruit', op: 'contains', operand: tag })).map((x) => x[0])
+      expect(await carrying('19')).toEqual(['char_103_angel', 'char_2013_cerber'])
+      expect(await carrying('11')).toEqual(['char_103_angel'])
     })
 
     it('offers the tags of the data as the field’s options', async () => {

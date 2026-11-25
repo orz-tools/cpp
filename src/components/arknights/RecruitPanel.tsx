@@ -2,7 +2,7 @@ import { Button, Classes, Intent, Tag } from '@blueprintjs/core'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import React, { memo, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useEvent from 'react-use-event-hook'
-import { useAtoms, useGameAdapter, useGameDataMemo } from '../../Cpp'
+import { useAtoms, useCpp, useGameAdapter, useGameDataMemo } from '../../Cpp'
 import {
   Arknights,
   ArknightsAdapter,
@@ -14,15 +14,15 @@ import {
   recruitTagGroups,
 } from '../../pkg/cpp-arknights'
 import { PSTR, gt, lpstr } from '../../pkg/gt'
-import { useQuickFilterSet } from '../CharacterList'
 import { CachedImg } from '../Icons'
 import { useOpenCharacterDossier } from '../dossierHooks'
 import { phoneAreaAtom, usePhoneLayout } from '../phoneLayout'
+import { clearRosterPin, setRosterPin, useActiveRosterPin } from '../rosterPin'
 import { SidebarPanel } from '../types'
 import { renderCharacterAvatarBadge } from './renderCharacterStatus'
 
 /** 侧栏面板的 id，记在 cpp_sidebar 里，发布之后不能改 */
-export const RECRUIT_PANEL = 'recruit'
+const RECRUIT_PANEL = 'recruit'
 
 /** 选中的词条，按选的先后；跟着档案的 store 走，不存 */
 export const recruitTagsAtom = atom<number[]>([])
@@ -45,12 +45,12 @@ function useArknights() {
 }
 
 /** 本服的公招数据，数据提交后跟着换 */
-export function useRecruit(): RecruitData {
+function useRecruit(): RecruitData {
   const dm = useArknights().getDataManager()
   return useGameDataMemo(() => dm.recruit, [dm])
 }
 
-export function useRecruitTagNames(recruit: RecruitData): Map<number, string> {
+function useRecruitTagNames(recruit: RecruitData): Map<number, string> {
   return useMemo(() => new Map(recruit.tags.map((x) => [x.tagId, x.tagName])), [recruit])
 }
 
@@ -135,31 +135,39 @@ const RecruitAvatar = memo(({ charId }: { charId: string }) => {
   )
 })
 
-const sameSet = (a: readonly string[], b: readonly string[]) => a.length === b.length && a.every((x) => b.includes(x))
+const pinKey = (combo: RecruitCombo) => RECRUIT_PANEL + ':' + combo.tags.join()
+
+/** 「公招 · 资深干员、减速」 */
+function pinLabel(combo: RecruitCombo, names: Map<number, string>) {
+  return gt
+    .pgettext('recruit', '公招 · %s')
+    .replaceAll('%s', combo.tags.map((id) => names.get(id) ?? String(id)).join(gt.pgettext('recruit', '、')))
+}
 
 const ComboBlock = memo(
   ({
     combo,
     names,
+    active,
     expanded,
     onExpand,
   }: {
     combo: RecruitCombo
     names: Map<number, string>
+    /** 干员列表钉着的是这个组合 */
+    active: boolean
     expanded: boolean
     onExpand: (key: string) => void
   }) => {
-    const filter = useQuickFilterSet('recruit')
+    const cpp = useCpp()
     const phone = usePhoneLayout()
     const setArea = useSetAtom(phoneAreaAtom)
-    const ids = combo.tags.map(String)
-    const active = sameSet(filter.values, ids)
     const toggle = () => {
       if (active) {
-        filter.clear()
+        clearRosterPin(cpp)
         return
       }
-      filter.set(ids)
+      setRosterPin(cpp, pinLabel(combo, names), combo.charIds, pinKey(combo))
       // 手机上列表和面板不在同一屏
       if (phone) setArea('chars')
     }
@@ -218,6 +226,7 @@ const RecruitBody = memo(() => {
   const recruit = useRecruit()
   const names = useRecruitTagNames(recruit)
   const selected = useAtomValue(recruitTagsAtom)
+  const pinned = useActiveRosterPin()?.key
   const combos = useGameDataMemo(
     () =>
       recruitCombos(selected, recruit, (charId) => {
@@ -243,7 +252,16 @@ const RecruitBody = memo(() => {
       {selected.length > 0
         ? combos.map((combo) => {
             const key = combo.tags.join()
-            return <ComboBlock key={key} combo={combo} names={names} expanded={open.includes(key)} onExpand={expand} />
+            return (
+              <ComboBlock
+                key={key}
+                combo={combo}
+                names={names}
+                active={pinned === pinKey(combo)}
+                expanded={open.includes(key)}
+                onExpand={expand}
+              />
+            )
           })
         : null}
     </div>

@@ -21,7 +21,7 @@ msgstr[0] "%d stage · by efficiency"
 msgstr[1] "%d stages · by efficiency"
 
 #. %d: number of operators
-#: src/components/arknights/RecruitPanel.tsx:193
+#: src/components/arknights/RecruitPanel.tsx:201
 msgid "%d 名"
 msgid_plural "%d 名"
 msgstr[0] "%d operator"
@@ -270,13 +270,6 @@ msgstr "Enable all"
 #: src/components/ConfigUi.tsx:220
 msgid "全部禁用"
 msgstr "Disable all"
-
-#. %d: number of tags
-#: src/components/arknights/QuickFilterBuilder.tsx:68
-msgid "公招：%d 个词条"
-msgid_plural "公招：%d 个词条"
-msgstr[0] "Recruitment: %d tag"
-msgstr[1] "Recruitment: %d tags"
 
 #: src/components/AboutList.tsx:150 src/components/AboutList.tsx:151
 msgid "关于"
@@ -973,7 +966,7 @@ msgstr "Drop to Import"
 msgid "构建：%s"
 msgstr "Build: %s"
 
-#: src/components/CharacterList.tsx:1334
+#: src/components/CharacterList.tsx:1319
 msgid "查看全部干员"
 msgstr "Show All Operators"
 
@@ -985,7 +978,7 @@ msgstr "Read More…"
 msgid "查看源码"
 msgstr "View source"
 
-#: src/components/CharacterList.tsx:1326
+#: src/components/CharacterList.tsx:1311
 msgid "查询失败"
 msgstr "Query Failed"
 
@@ -2322,17 +2315,17 @@ msgid "重装"
 msgstr "Defender"
 
 #: src/components/arknights/CharacterDossierMeta.tsx:6
-#: src/components/arknights/QuickFilterBuilder.tsx:143
+#: src/components/arknights/QuickFilterBuilder.tsx:101
 msgctxt "arknights quick filter"
 msgid "%d 星"
 msgstr "%d-star"
 
-#: src/components/arknights/QuickFilterBuilder.tsx:100
+#: src/components/arknights/QuickFilterBuilder.tsx:58
 msgctxt "arknights quick filter"
 msgid "稀有度"
 msgstr "Rarity"
 
-#: src/components/arknights/QuickFilterBuilder.tsx:154
+#: src/components/arknights/QuickFilterBuilder.tsx:112
 msgctxt "arknights quick filter"
 msgid "精英 %d"
 msgstr "Elite %d"
@@ -3233,22 +3226,22 @@ msgctxt "full name"
 msgid "计划 (以毕业为目标)"
 msgstr "Planned targeting Maxed"
 
-#: src/components/CharacterList.tsx:634
+#: src/components/CharacterList.tsx:619
 msgctxt "holding filter"
 msgid "可练"
 msgstr "Trainable"
 
-#: src/components/CharacterList.tsx:635
+#: src/components/CharacterList.tsx:620
 msgctxt "holding filter"
 msgid "已持有、还没练完的干员"
 msgstr "Owned, not yet maxed"
 
-#: src/components/CharacterList.tsx:643
+#: src/components/CharacterList.tsx:628
 msgctxt "holding filter"
 msgid "缺席"
 msgstr "Absent"
 
-#: src/components/CharacterList.tsx:644
+#: src/components/CharacterList.tsx:629
 msgctxt "holding filter"
 msgid "还没有持有的干员"
 msgstr "Not owned yet"
@@ -3355,7 +3348,7 @@ msgstr "Increase"
 #: src/components/arknights/importHooks.ts:92
 #: src/components/arknights/ModuleMissionPanel.tsx:462
 #: src/components/arknights/voucherText.tsx:31
-#: src/components/CharacterList.tsx:729
+#: src/components/CharacterList.tsx:714
 #: src/components/queryEditor/VisualEditor.tsx:348
 #: src/pkg/cpp-arknights/moduleMissions.ts:1015
 msgctxt "list separator"
@@ -4282,19 +4275,19 @@ msgctxt "predefined query"
 msgid "精二直升价值（全部）"
 msgstr "E2 voucher value (all)"
 
-#: src/components/CharacterList.tsx:897
+#: src/components/CharacterList.tsx:882
 #: src/components/queryEditor/QueryEditor.tsx:83
 msgctxt "predefined view name"
 msgid "全部"
 msgstr "All"
 
-#: src/components/CharacterList.tsx:890
+#: src/components/CharacterList.tsx:875
 #: src/components/queryEditor/QueryEditor.tsx:81
 msgctxt "predefined view name"
 msgid "常看"
 msgstr "Watchlist"
 
-#: src/components/CharacterList.tsx:904
+#: src/components/CharacterList.tsx:889
 #: src/components/queryEditor/QueryEditor.tsx:85
 msgctxt "predefined view name"
 msgid "计划"
@@ -4902,7 +4895,7 @@ msgctxt "query menu"
 msgid "全部 4–6 星干员的技能"
 msgstr "Every skill of the 4–6★ operators"
 
-#: src/components/CharacterList.tsx:1081 src/components/CharacterList.tsx:1082
+#: src/components/CharacterList.tsx:1066 src/components/CharacterList.tsx:1067
 msgctxt "query menu"
 msgid "关闭编辑"
 msgstr "Close the editor"
@@ -4912,7 +4905,7 @@ msgctxt "query menu"
 msgid "养成成本"
 msgstr "Training costs"
 
-#: src/components/CharacterList.tsx:977
+#: src/components/CharacterList.tsx:962
 msgctxt "query menu"
 msgid "只列出还没练到的"
 msgstr "Only those not trained this far yet"
@@ -4952,7 +4945,7 @@ msgctxt "query menu"
 msgid "已持有的干员的全部基建技能，含已解锁的"
 msgstr "Every base skill of the owned operators, unlocked ones too"
 
-#: src/components/CharacterList.tsx:1022
+#: src/components/CharacterList.tsx:1007
 msgctxt "query menu"
 msgid "我的过滤器"
 msgstr "My filters"
@@ -4962,7 +4955,7 @@ msgctxt "query menu"
 msgid "所有干员的全部基建技能，含没持有的和已解锁的"
 msgstr "Every base skill of every operator, owned or not, unlocked or not"
 
-#: src/components/CharacterList.tsx:1073 src/components/CharacterList.tsx:1074
+#: src/components/CharacterList.tsx:1058 src/components/CharacterList.tsx:1059
 msgctxt "query menu"
 msgid "更多视图"
 msgstr "More views"
@@ -4972,7 +4965,7 @@ msgctxt "query menu"
 msgid "练度统计"
 msgstr "Training surveys"
 
-#: src/components/CharacterList.tsx:1081 src/components/CharacterList.tsx:1082
+#: src/components/CharacterList.tsx:1066 src/components/CharacterList.tsx:1067
 msgctxt "query menu"
 msgid "编辑过滤条件"
 msgstr "Edit the filter"
@@ -5038,13 +5031,13 @@ msgctxt "query value"
 msgid "专精 %d"
 msgstr "M%d"
 
-#: src/components/CharacterList.tsx:726
+#: src/components/CharacterList.tsx:711
 #: src/components/queryEditor/VisualEditor.tsx:266
 msgctxt "query value"
 msgid "否"
 msgstr "No"
 
-#: src/components/CharacterList.tsx:726
+#: src/components/CharacterList.tsx:711
 #: src/components/queryEditor/VisualEditor.tsx:265
 msgctxt "query value"
 msgid "是"
@@ -5065,37 +5058,37 @@ msgctxt "query value"
 msgid "精英 %d"
 msgstr "E%d"
 
-#: src/components/arknights/QuickFilterBuilder.tsx:67
+#: src/components/arknights/RecruitPanel.tsx:144
 msgctxt "recruit"
 msgid "、"
 msgstr ", "
 
-#: src/components/arknights/RecruitPanel.tsx:198
+#: src/components/arknights/RecruitPanel.tsx:206
 msgctxt "recruit"
 msgid "%d★"
 msgstr "%d★"
 
-#: src/components/arknights/RecruitPanel.tsx:207
+#: src/components/arknights/RecruitPanel.tsx:215
 msgctxt "recruit"
 msgid "+%d"
 msgstr "+%d"
 
-#: src/components/arknights/RecruitPanel.tsx:240
+#: src/components/arknights/RecruitPanel.tsx:249
 msgctxt "recruit"
 msgid "保底按招募时限 9 小时计"
 msgstr "Guarantees assume a 9-hour recruitment time"
 
-#: src/components/arknights/QuickFilterBuilder.tsx:67
+#: src/components/arknights/RecruitPanel.tsx:142
 msgctxt "recruit"
-msgid "公招：%s"
-msgstr "Recruitment: %s"
+msgid "公招 · %s"
+msgstr "Recruitment · %s"
 
 #: src/components/arknights/RecruitPanel.tsx:63
 msgctxt "recruit"
 msgid "清除"
 msgstr "Clear"
 
-#: src/components/arknights/RecruitPanel.tsx:241
+#: src/components/arknights/RecruitPanel.tsx:250
 msgctxt "recruit"
 msgid "选上公招界面给出的词条"
 msgstr "Pick the tags the recruitment screen offers"
@@ -5175,12 +5168,12 @@ msgctxt "short name"
 msgid "计划(毕业)"
 msgstr "Planned t/Maxed"
 
-#: src/components/arknights/RecruitPanel.tsx:257
+#: src/components/arknights/RecruitPanel.tsx:275
 msgctxt "sidebar panel"
 msgid "公开招募"
 msgstr "Recruitment"
 
-#: src/components/arknights/RecruitPanel.tsx:256
+#: src/components/arknights/RecruitPanel.tsx:274
 msgctxt "sidebar panel"
 msgid "公招"
 msgstr "Recruit"
@@ -6008,7 +6001,7 @@ msgstr ""
 "Max: what it saves if used from E0 level 1; the light blue part of the bar "
 "is already trained."
 
-#: src/components/CharacterList.tsx:920
+#: src/components/CharacterList.tsx:905
 msgctxt "training cost"
 msgid "列表里这些干员一共花了多少"
 msgstr "What the operators in the list have cost in total"
@@ -6513,6 +6506,15 @@ msgstr "yituliu"
 msgctxt "very short name"
 msgid "小黑盒"
 msgstr "Heybox"
+
+#~ msgid "公招：%d 个词条"
+#~ msgid_plural "公招：%d 个词条"
+#~ msgstr[0] "Recruitment: %d tag"
+#~ msgstr[1] "Recruitment: %d tags"
+
+#~ msgctxt "recruit"
+#~ msgid "公招：%s"
+#~ msgstr "Recruitment: %s"
 
 #~ msgid "点击干员设定培养目标。"
 #~ msgstr "Click an operator to set a target."

@@ -6,6 +6,8 @@ import { useCpp } from '../Cpp'
 export interface RosterPin {
   label: string
   charIds: string[]
+  /** 设筛选的那一项，面板凭它认出钉着的是自己哪一项 */
+  key?: string
   /** 设筛选时的 queryParamAtom，用来判断视图变没变 */
   param: ListCharactersQueryParam
 }
@@ -15,8 +17,8 @@ export const rosterPinAtom = atom<RosterPin | null>(null)
 
 type PinHost = Pick<Cpp<any>, 'store' | 'queryParamAtom'>
 
-export function setRosterPin(cpp: PinHost, label: string, charIds: string[]) {
-  cpp.store.set(rosterPinAtom, { label, charIds, param: cpp.store.get(cpp.queryParamAtom) })
+export function setRosterPin(cpp: PinHost, label: string, charIds: string[], key?: string) {
+  cpp.store.set(rosterPinAtom, { label, charIds, key, param: cpp.store.get(cpp.queryParamAtom) })
 }
 
 export function clearRosterPin(cpp: PinHost) {

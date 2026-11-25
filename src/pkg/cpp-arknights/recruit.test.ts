@@ -1,12 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  RecruitData,
-  recruitAssertion,
-  recruitCombos,
-  recruitTagGroups,
-  recruitTagOrder,
-  recruitTagsOf,
-} from './recruit'
+import { RecruitData, recruitCombos, recruitTagGroups, recruitTagOrder, recruitTagsOf } from './recruit'
 
 const tags = (...ids: number[]) => ids.map((tagId) => ({ tagId, tagName: `t${tagId}` }))
 const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
@@ -152,30 +145,5 @@ describe('recruitTagsOf', () => {
   it('names the tags of an operator in the pool, and none of one outside it', () => {
     expect(recruitTagsOf(recruit, 'char_glaucus')).toEqual([5, 10, 12, 14, 23])
     expect(recruitTagsOf(recruit, 'char_amiya')).toEqual([])
-  })
-})
-
-describe('recruitAssertion', () => {
-  const contains = (operand: string) => ({ _: 'field', field: 'recruit', op: 'contains', operand })
-  const below6 = { _: 'field', field: 'rarity', op: '<', operand: 6 }
-
-  it('adds nothing without a tag', () => {
-    expect(recruitAssertion(undefined)).toBeUndefined()
-    expect(recruitAssertion('19')).toBeUndefined()
-    expect(recruitAssertion([])).toBeUndefined()
-    expect(recruitAssertion([19, null])).toBeUndefined()
-  })
-
-  it('asks for every tag, and no 6★ without 高级资深干员', () => {
-    expect(recruitAssertion(['19'])).toEqual({ _: '&&', operand: [contains('19'), below6] })
-    expect(recruitAssertion(['14', '23'])).toEqual({ _: '&&', operand: [contains('14'), contains('23'), below6] })
-  })
-
-  it('lets a 6★ in with 高级资深干员', () => {
-    expect(recruitAssertion(['11', '19'])).toEqual({ _: '&&', operand: [contains('11'), contains('19')] })
-  })
-
-  it('ignores what is not a string', () => {
-    expect(recruitAssertion([19, '23', { id: 11 }])).toEqual({ _: '&&', operand: [contains('23'), below6] })
   })
 })

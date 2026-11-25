@@ -1,5 +1,3 @@
-import type { Assertion } from '../cpp-basic'
-
 /** 高级资深干员：组合里有它，才会出 6★ */
 export const TOP_OPERATOR_TAG = 11
 /** 公招界面一次给出的词条数 */
@@ -108,13 +106,4 @@ export function recruitTagsOf(recruit: RecruitData, charId: string): number[] {
     tagsByChar.set(recruit, map)
   }
   return map.get(charId) ?? []
-}
-
-/** 快捷过滤 quick.recruit 的条件：带着所选的每个词条，没选高级资深干员时不要 6★ */
-export function recruitAssertion(value: unknown): Assertion | undefined {
-  const ids = Array.isArray(value) ? value.filter((x): x is string => typeof x === 'string') : []
-  if (ids.length === 0) return undefined
-  const operand: Assertion[] = ids.map((id) => ({ _: 'field', field: 'recruit', op: 'contains', operand: id }))
-  if (!ids.includes(String(TOP_OPERATOR_TAG))) operand.push({ _: 'field', field: 'rarity', op: '<', operand: 6 })
-  return { _: '&&', operand }
 }

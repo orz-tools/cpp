@@ -1,4 +1,3 @@
-import { recruitAssertion } from '../../pkg/cpp-arknights'
 import type { IGameComponent } from '../types'
 import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from './AboutList'
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
@@ -60,7 +59,6 @@ export const ArknightsComponents: IGameComponent = {
     professions: 'contains',
     rarity: '==',
     elite: '==',
-    recruit: recruitAssertion,
   },
   // 十个房间按钮放不下职业和精英化
   quickFiltersByJoin: {

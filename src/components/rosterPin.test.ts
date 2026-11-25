@@ -31,6 +31,12 @@ describe('roster pin', () => {
     expect(activeRosterPin(pin, cpp.store.get(cpp.queryParamAtom))).toBeNull()
   })
 
+  it('keeps the key of the entry that set it', () => {
+    const cpp = setup()
+    setRosterPin(cpp as any, '公招 · 减速', ['char_a'], 'recruit:26')
+    expect(activeRosterPin(cpp.store.get(rosterPinAtom), cpp.store.get(cpp.queryParamAtom))?.key).toBe('recruit:26')
+  })
+
   it('clears', () => {
     const cpp = setup()
     setRosterPin(cpp as any, 'x', ['char_a'])
