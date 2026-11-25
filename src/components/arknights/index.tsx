@@ -1,3 +1,4 @@
+import { recruitAssertion } from '../../pkg/cpp-arknights'
 import type { IGameComponent } from '../types'
 import { AboutCopyright, AboutCredits, AboutDataSources, AboutThirdParty } from './AboutList'
 import { CharacterContextMenuItems } from './CharacterContextMenuItems'
@@ -12,6 +13,7 @@ import { ImporterMenuItems } from './ImporterMenuItems'
 import { moduleMissionsPanel } from './ModuleMissionPanel'
 import { moduleMissionsSection } from './ModuleMissionSection'
 import { QuickFilterBuilder } from './QuickFilterBuilder'
+import { recruitPanel } from './RecruitPanel'
 import { useSkinImportDiffTabs } from './SkinImportDiff'
 import { skinsPanel } from './SkinsPanel'
 import { skinsSection } from './SkinsSection'
@@ -58,12 +60,13 @@ export const ArknightsComponents: IGameComponent = {
     professions: 'contains',
     rarity: '==',
     elite: '==',
+    recruit: recruitAssertion,
   },
   // 十个房间按钮放不下职业和精英化
   quickFiltersByJoin: {
     building: { 'building.room': '==', rarity: '==' },
   },
-  sidebarPanels: [stagesPanel, moduleMissionsPanel, skinsPanel],
+  sidebarPanels: [stagesPanel, moduleMissionsPanel, skinsPanel, recruitPanel],
   // 特殊干员没有「养成成本」，所以「特勤任务」紧跟「练度」
   dossierSections: [costSection, specialOperatorSection, baseSkillsSection, skinsSection, moduleMissionsSection],
   peekKinds: { skill: skillPeekKind, module: modulePeekKind, stage: stagePeekKind },
