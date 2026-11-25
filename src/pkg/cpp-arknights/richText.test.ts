@@ -60,7 +60,7 @@ describe('parseRichText', () => {
   })
 
   it('keeps the text of markup it does not know', () => {
-    expect(parseRichText('<@ba.talpu>（+2%）</>的<替身>', [])).toEqual([{ text: '（+2%）的<替身>' }])
+    expect(parseRichText('<@ba.nobody>（+2%）</>的<替身>', [])).toEqual([{ text: '（+2%）的<替身>' }])
   })
 
   it('marks terms, nested styles included', () => {
@@ -76,6 +76,14 @@ describe('parseRichText', () => {
       { text: '自身', style: 'rem' },
       { text: '晕眩', style: 'rem', term: 'ba.stun' },
       { text: '5秒', style: 'rem' },
+    ])
+  })
+
+  it('styles what a potential adds to a talent as vup, as the game does', () => {
+    expect(parseRichText('7<@ba.talpu>（+1）</>秒', [])).toEqual([
+      { text: '7' },
+      { text: '（+1）', style: 'vup' },
+      { text: '秒' },
     ])
   })
 

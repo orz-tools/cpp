@@ -12,8 +12,9 @@ export interface RichSegment {
   br?: true
 }
 
-// <@cc.kw> and the like carry the same meaning as their <@ba.*> namesakes.
-const styles: Record<string, RichStyle> = { vup: 'vup', kw: 'kw', vdown: 'vdown', rem: 'rem' }
+// <@cc.kw> and the like carry the same meaning as their <@ba.*> namesakes. <@ba.talpu> marks what a potential adds to
+// a talent, which the game colours as vup.
+const styles: Record<string, RichStyle> = { vup: 'vup', kw: 'kw', vdown: 'vdown', rem: 'rem', talpu: 'vup' }
 
 const TOKEN = /<([@$])([^<>]+)>|<\/>|\{(-?)([^{}:]+)(?::([^{}]*))?\}|\\n|\n/g
 
