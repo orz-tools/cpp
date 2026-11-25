@@ -1,7 +1,7 @@
 import { IconName } from '@blueprintjs/core'
 import React from 'react'
 import { BlobFlavour } from '../pkg/blobcache'
-import { Assertion, FieldContext, ICharacter, IGameAdapter, Querier, Task } from '../pkg/cpp-basic'
+import { FieldContext, ICharacter, IGameAdapter, Querier, Task } from '../pkg/cpp-basic'
 import type { UserData } from '../pkg/cpp-core/UserData'
 import { PSTR } from '../pkg/gt'
 import type { ImportFormat } from './Importer'
@@ -13,12 +13,6 @@ export interface ItemSimulatedViewConfig {
   horizontal: boolean
   viewMaxSize: number
 }
-
-/**
- * 快捷过滤一个字段的写法：比较符时条件是「字段 比较符 值」；
- * 函数时由它拿 quick 里的值写出条件，返回 undefined 时不加条件
- */
-export type QuickFilterOp = string | ((value: unknown) => Assertion | undefined)
 
 export interface SidebarPanel {
   /** 记在 cpp_sidebar 里，所以发布之后不能改 */
@@ -126,10 +120,10 @@ export interface IGameComponent {
   ValueConfigMenu?: React.FC
   /** ValueConfigMenu 里「设置…」打开的那个对话框，别处要直接打开它时用 */
   ValueConfigDialog?: React.FC<{ onClose: () => void }>
-  /** 快捷过滤的字段 → 比较符，或者由值写出条件的函数 */
-  quickFilters?: Record<string, QuickFilterOp>
+  /** 快捷过滤的字段 → 比较符 */
+  quickFilters?: Record<string, string>
   /** 展开了这里列出的子查询时用它的那一组，代替 quickFilters */
-  quickFiltersByJoin?: Record<string, Record<string, QuickFilterOp>>
+  quickFiltersByJoin?: Record<string, Record<string, string>>
   /** 排在外壳自己的「关于」后面，按数组顺序 */
   sidebarPanels?: SidebarPanel[]
   /** 排在外壳自己的「练度」后面，按数组顺序 */
