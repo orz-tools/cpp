@@ -340,4 +340,16 @@ export type CppData_ArknightsKengxxiaoDetailsKoKr = {
             })[] | undefined;
         };
     };
+    potentials: {
+        [x: string]: {
+            ranks: string[];
+            talents: {
+                candidates: {
+                    potential: number;
+                    name: string | null;
+                    desc: string | null;
+                }[];
+            }[];
+        };
+    };
 }

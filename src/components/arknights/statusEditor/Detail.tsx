@@ -48,7 +48,7 @@ export const DetailToggle = memo(({ id, panelId, name }: { id: string; panelId: 
 })
 
 /** Loading, failed, or missing the entry: the panel says so; otherwise it renders what it is given. */
-const DetailPanel = memo(
+export const DetailPanel = memo(
   ({
     dm,
     id,

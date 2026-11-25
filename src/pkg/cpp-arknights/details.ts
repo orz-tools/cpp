@@ -16,9 +16,11 @@ export type BaseSkillEffect = NonNullable<BuildingBuffDetail['effects']>[0]
 export type Leaf = Exclude<BaseSkillEffect, { k: 'if' }>
 export type Cond = Extract<BaseSkillEffect, { k: 'if' }>['when']
 export type Noun = Extract<Leaf, { k: 'res' }>['what']
+export type PotentialDetail = DetailsData['potentials']['']
+export type PotentialTalentDetail = PotentialDetail['talents'][0]
 
-/** Base skill texts and effects came with schema 2; an older copy has none. */
-const BASE_SKILLS_SCHEMA = 2
+/** The newest part the client reads (potentials) came with schema 3; an older copy has to ask the repo again. */
+const DETAILS_SCHEMA = 3
 
 /** The region's own language where it has one, and zh_CN to fall back on, as for skill names. */
 export interface Details {
@@ -52,6 +54,11 @@ export function getTermDetail(details: Details, termId: string): TermDetail | nu
 /** The region's text and effects together when it has the skill, otherwise zh_CN's: the two are never mixed. */
 export function getBuildingBuffDetail(details: Details, buffId: string): BuildingBuffDetail | null {
   return pick(details.local?.buildingBuffs, details.base.buildingBuffs ?? {}, buffId)
+}
+
+/** The region's entry when it has the operator, otherwise zh_CN's; null when neither has it. */
+export function getPotentialDetail(details: Details, charId: string): PotentialDetail | null {
+  return pick(details.local?.potentials, details.base.potentials ?? {}, charId)
 }
 
 /** The level's data, or null for a level the skill does not have (one without masteries has only 7). */
@@ -113,9 +120,9 @@ export class DetailsLoader {
   private async loadOne({ obj, versionId }: DetailsTarget) {
     let container = await this.load(obj)
     // The stored copy predates the game data: ask the repo once. If the worker has not caught up yet either, the copy
-    // in hand still covers everything but the newest skills and modules. A copy from before base skills is asked about
+    // in hand still covers everything but the newest skills and modules. A copy from before potentials is asked about
     // too, or it would stay until the next game update.
-    if (container.version.id !== versionId || container.version.schema < BASE_SKILLS_SCHEMA) {
+    if (container.version.id !== versionId || container.version.schema < DETAILS_SCHEMA) {
       try {
         container = await this.load(obj, true)
       } catch (e) {

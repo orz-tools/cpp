@@ -28,6 +28,12 @@ export function skillLevelText(skillLevel: number, mastery: number) {
     .replaceAll('%d', `${skillLevel}`)
 }
 
+export function potentialText(potential: number) {
+  return gt
+    .gettext('潜能 %d') /* I10N: %d: potential, 1-6 */
+    .replaceAll('%d', `${potential}`)
+}
+
 export function percentText(share: number) {
   return `${(share * 100).toFixed(1)}%`
 }

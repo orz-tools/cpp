@@ -974,6 +974,56 @@ p > .cpp-charstat-det-tag,
   margin-top: 4px;
 }
 
+/* 潜能的 (i)：每级一行，依次是 ✓、「潜能 n」、这一级加什么 */
+.cpp-charstat-pot-form + .cpp-charstat-pot-form {
+  margin-top: 8px;
+}
+
+.cpp-charstat-pot-prof {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+  font-size: 11.5px;
+  color: var(--bp-typography-color-muted);
+}
+
+.cpp-charstat-pot-grid {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  column-gap: 6px;
+  row-gap: 3px;
+  align-items: baseline;
+}
+
+.cpp-charstat-pot-mark {
+  width: 14px;
+  color: var(--bp-typography-color-primary-rest);
+}
+
+.cpp-charstat-pot-n {
+  font-size: 11.5px;
+  white-space: nowrap;
+  color: var(--bp-typography-color-muted);
+}
+
+.cpp-charstat-pot-talent {
+  display: block;
+}
+
+.cpp-charstat-pot-talent > b {
+  font-weight: 600;
+}
+
+/* 没到的一级整行是灰的，天赋原文里蓝色、加粗的数也一样 */
+.cpp-charstat-det-dim .cpp-charstat-rt-from,
+.cpp-charstat-det-dim .cpp-charstat-rt-to,
+.cpp-charstat-det-dim .cpp-charstat-rt-vup,
+.cpp-charstat-det-dim .cpp-charstat-rt-vdown,
+.cpp-charstat-det-dim .cpp-charstat-rt-kw {
+  color: inherit;
+}
+
 /* 关卡 sidebar panel */
 
 .cpp-stages-body {
