@@ -1,10 +1,12 @@
-import { Button, ButtonGroup, Icon, Navbar } from '@blueprintjs/core'
+import { Button, ButtonGroup, Icon, Navbar, Tag } from '@blueprintjs/core'
 import { memo } from 'react'
-import { DeployableProfession, Profession, ProfessionNames } from '../../pkg/cpp-arknights'
+import { DeployableProfession, Profession, ProfessionNames, recruitTagOrder } from '../../pkg/cpp-arknights'
 import { BASE_ROOMS, baseRoomName } from '../../pkg/cpp-arknights/baseSkills'
 import { gt } from '../../pkg/gt'
-import { useQuickFilter } from '../CharacterList'
+import { useQuickFilter, useQuickFilterSet } from '../CharacterList'
+import { useShowSidebarPanel } from '../Sidebar'
 import { ProfessionIcon } from './Icons'
+import { RECRUIT_PANEL, useRecruit, useRecruitTagNames } from './RecruitPanel'
 import elite0 from './assets/elite0-small.png'
 import elite1 from './assets/elite1-small.png'
 import elite2 from './assets/elite2-small.png'
@@ -26,6 +28,7 @@ export const QuickFilterBuilder = memo(({ join }: { join?: string }) => {
   }
   return (
     <>
+      <RecruitFilterTag />
       <ButtonGroup>
         <ProfessionFilter profession={Profession.PIONEER} />
         <ProfessionFilter profession={Profession.WARRIOR} />
@@ -44,6 +47,45 @@ export const QuickFilterBuilder = memo(({ join }: { join?: string }) => {
         <EliteFilter elite={1} />
         <EliteFilter elite={0} />
       </ButtonGroup>
+    </>
+  )
+})
+
+/** 公招面板点出来的过滤：点 ✕ 取消，点文字打开面板 */
+const RecruitFilterTag = memo(() => {
+  const filter = useQuickFilterSet('recruit')
+  const recruit = useRecruit()
+  const names = useRecruitTagNames(recruit)
+  const showPanel = useShowSidebarPanel()
+  if (filter.values.length === 0) return null
+
+  const known = recruitTagOrder(recruit.tags)
+    .filter((id) => filter.values.includes(String(id)))
+    .map((id) => names.get(id)!)
+  const text =
+    known.length > 0
+      ? gt.pgettext('recruit', '公招：%s').replaceAll('%s', known.join(gt.pgettext('recruit', '、')))
+      : gt
+          .ngettext('公招：%d 个词条', '公招：%d 个词条', filter.values.length) /* I10N: %d: number of tags */
+          .replaceAll('%d', String(filter.values.length))
+  return (
+    <>
+      <Tag
+        minimal
+        interactive
+        intent="primary"
+        className="cpp-recruit-filter-tag"
+        title={text}
+        onClick={() => showPanel(RECRUIT_PANEL)}
+        onRemove={(e) => {
+          // ✕ 在标签里面，不能同时打开面板
+          e.stopPropagation()
+          filter.clear()
+        }}
+      >
+        {text}
+      </Tag>
+      <Navbar.Divider />
     </>
   )
 })

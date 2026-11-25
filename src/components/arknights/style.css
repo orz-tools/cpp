@@ -4931,3 +4931,13 @@ section:first-child > .cpp-stages-wide-section {
 .cpp-recruit-more:hover {
   background: var(--cpp-tint-2);
 }
+
+/*
+ * 快捷过滤条上的标签：太长时截断，完整的在 title 里。桌面上这条不横滑，放不下时差多少都由它让：
+ * 收缩按 flex-shrink 乘宽度分摊，「可练」「缺席」那一组的字可以逐字折行，分到一点就会挤进它的字里
+ */
+.cpp-recruit-filter-tag {
+  flex: 0 1000 auto;
+  min-width: 6em;
+  max-width: 16em;
+}
