@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Querier, QueryParam } from '../cpp-basic'
+import { Assertion, Querier, QueryParam } from '../cpp-basic'
 import type { DataContainerObject } from '../dccache'
 import { Character } from './DataManager'
 import { ArknightsAdapter } from './GameAdapter'
+import { recruitAssertion } from './recruit'
 import { HeyboxSurveySource, YituliuSurveySource } from './survey'
 import { Arknights, ArknightsRegion, PreferenceKeys, SurveySourceKey } from './types'
 
@@ -421,6 +422,98 @@ describe('ArknightsAdapter', () => {
       expect(dm.isMissing(dm.$penguin)).toBe(false)
       expect(Object.keys(ga.getStageInfos())).toContain('main_01')
       expect(ga.getItemValues().status).not.toBe('unavailable')
+    })
+  })
+
+  describe('recruitment', () => {
+    const recruit = (tagName: string) => ({
+      tags: [
+        { tagId: 11, tagName: '高级资深干员' },
+        { tagId: 19, tagName },
+      ],
+      pool: [
+        { charId: 'char_103_angel', tags: [2, 10, 11, 19] },
+        { charId: 'char_2013_cerber', tags: [6, 10, 14, 19] },
+      ],
+    })
+
+    beforeEach(() => {
+      const k = remote.get('arknights-kengxxiao-zh_CN') as any
+      k.exCharacters = {
+        char_103_angel: { name: '能天使', rarity: 'TIER_6', profession: 'SNIPER', skills: [] },
+        char_2013_cerber: { name: '刻俄柏', rarity: 'TIER_5', profession: 'CASTER', skills: [] },
+        char_002_amiya: { name: '阿米娅', rarity: 'TIER_5', profession: 'CASTER', skills: [] },
+      }
+      k.exRecruit = recruit('输出')
+    })
+
+    function setGlobal(exRecruit: unknown) {
+      const k = structuredClone(remote.get('arknights-kengxxiao-zh_CN')) as any
+      if (exRecruit) k.exRecruit = exRecruit
+      else delete k.exRecruit
+      remote.set('arknights-kengxxiao-en_US', k)
+      remote.set('arknights-penguin-US', remote.get('arknights-penguin-CN'))
+    }
+
+    it('reads the pool of zh_CN', async () => {
+      const dm = new ArknightsAdapter().getDataManager()
+      await dm.init('zh_CN')
+      expect(dm.recruit).toEqual(recruit('输出'))
+    })
+
+    it('has an empty pool in data published before it', async () => {
+      delete (remote.get('arknights-kengxxiao-zh_CN') as any).exRecruit
+      const dm = new ArknightsAdapter().getDataManager()
+      await dm.init('zh_CN')
+      expect(dm.recruit).toEqual({ tags: [], pool: [] })
+    })
+
+    it('reads a global server’s own pool, never zh_CN’s', async () => {
+      setGlobal(recruit('DPS'))
+      const dm = new ArknightsAdapter().getDataManager()
+      await dm.init('en_US')
+      expect(dm.recruit).toEqual(recruit('DPS'))
+
+      setGlobal(null)
+      const old = new ArknightsAdapter().getDataManager()
+      await old.init('en_US')
+      expect(old.recruit).toEqual({ tags: [], pool: [] })
+    })
+
+    async function query(where?: Assertion) {
+      const ga = new ArknightsAdapter()
+      await ga.getDataManager().init('zh_CN')
+      const empty = ga.getUserDataAdapter().getFrozenEmptyCharacterStatus()
+      const querier = new Querier<Arknights, any>(ga.getRootCharacterQuery(), { where })
+      querier.execute(
+        (function* () {
+          for (const key of ['char_103_angel', 'char_2013_cerber', 'char_002_amiya'])
+            yield { character: ga.getCharacter(key), current: empty, goal: undefined }
+        })(),
+      )
+      return querier.result.map((x) => [x.character.key, querier.getFieldValue('recruit', x)])
+    }
+
+    it('gives the tags as strings, and none to an operator outside the pool', async () => {
+      expect(await query()).toEqual([
+        ['char_103_angel', ['2', '10', '11', '19']],
+        ['char_2013_cerber', ['6', '10', '14', '19']],
+        ['char_002_amiya', []],
+      ])
+    })
+
+    it('leaves a 6★ out of the quick filter until 高级资深干员 is picked', async () => {
+      expect((await query(recruitAssertion(['19']))).map((x) => x[0])).toEqual(['char_2013_cerber'])
+      expect((await query(recruitAssertion(['11', '19']))).map((x) => x[0])).toEqual(['char_103_angel'])
+    })
+
+    it('offers the tags of the data as the field’s options', async () => {
+      const ga = new ArknightsAdapter()
+      await ga.getDataManager().init('zh_CN')
+      expect(ga.getRootCharacterQuery().fields.get('recruit')!.options!()).toEqual([
+        { value: '11', label: '高级资深干员' },
+        { value: '19', label: '输出' },
+      ])
     })
   })
 })

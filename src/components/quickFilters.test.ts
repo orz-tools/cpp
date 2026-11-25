@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { Assertion } from '../pkg/cpp-basic'
 import { HoldingTrainable } from './characterQuery'
 import { quickFiltersFor, wrapQueryWithQuickFilter } from './quickFilters'
 
@@ -9,8 +10,12 @@ vi.mock('localforage', () => {
 })
 vi.mock('./Toaster', () => ({ AppToaster: new Promise(() => {}) }))
 
+const tagged = vi.fn((value: unknown): Assertion | undefined =>
+  value === 'none' ? undefined : { _: 'field', field: 'tags', op: 'contains', operand: value },
+)
+
 const component = {
-  quickFilters: { professions: 'contains', rarity: '==', elite: '==' },
+  quickFilters: { professions: 'contains', rarity: '==', elite: '==', tagged },
   quickFiltersByJoin: { building: { 'building.room': '==', rarity: '==' } },
 }
 
@@ -51,6 +56,46 @@ describe('wrapQueryWithQuickFilter', () => {
     expect(wrapQueryWithQuickFilter({}, quick, quickFiltersFor(component, undefined)).where).toEqual({
       _: '&&',
       operand: [{ _: 'field', field: 'professions', op: 'contains', operand: 'WARRIOR' }],
+    })
+  })
+
+  describe('a function entry', () => {
+    beforeEach(() => tagged.mockClear())
+
+    it('builds its condition from the value in quick, after the view’s own', () => {
+      const where = { _: 'field' as const, field: 'own', op: '==', operand: true }
+      const wrapped = wrapQueryWithQuickFilter({ where }, { tagged: 'x' }, quickFiltersFor(component, undefined))
+      expect(tagged).toHaveBeenCalledWith('x')
+      expect(wrapped.where).toEqual({
+        _: '&&',
+        operand: [where, { _: 'field', field: 'tags', op: 'contains', operand: 'x' }],
+      })
+    })
+
+    it('adds nothing when it returns undefined', () => {
+      const query = { join: 'skill' }
+      expect(wrapQueryWithQuickFilter(query, { tagged: 'none' }, quickFiltersFor(component, undefined))).toBe(query)
+    })
+
+    it('is not called under a set it is not in', () => {
+      const quick = { tagged: 'x', 'building.room': 'TRADING' }
+      expect(wrapQueryWithQuickFilter({}, quick, quickFiltersFor(component, 'building')).where).toEqual({
+        _: '&&',
+        operand: [{ _: 'field', field: 'building.room', op: '==', operand: 'TRADING' }],
+      })
+      expect(tagged).not.toHaveBeenCalled()
+    })
+
+    it('goes with holding as before', () => {
+      const wrapped = wrapQueryWithQuickFilter(
+        {},
+        { holding: [HoldingTrainable], tagged: 'x' },
+        quickFiltersFor(component, undefined),
+      )
+      expect(wrapped.where).toMatchObject({
+        _: '&&',
+        operand: [{ _: '&&' }, { _: 'field', field: 'tags', op: 'contains', operand: 'x' }],
+      })
     })
   })
 })

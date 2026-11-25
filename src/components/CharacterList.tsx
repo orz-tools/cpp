@@ -587,23 +587,38 @@ export const useQuickFilter = (field: string, value: any) => {
   }
 }
 
-const holdingValues = (quick: Record<string, any> | undefined): string[] =>
-  Array.isArray(quick?.holding) ? quick.holding : []
+const quickStrings = (quick: Record<string, any> | undefined, field: string): string[] =>
+  quick && Object.hasOwn(quick, field) && Array.isArray(quick[field])
+    ? quick[field].filter((x: unknown) => typeof x === 'string')
+    : []
+
+/** 快捷过滤里值是一组字符串的字段，例如 holding；一个都不剩时删掉这个键 */
+export const useQuickFilterSet = (field: string) => {
+  const [param, setParam] = useAtom(useCpp().queryParamAtom)
+  const values = useMemo(() => quickStrings(param.quick, field), [param.quick, field])
+  const write = useEvent((next: (current: string[]) => string[]) => {
+    setParam((x) => {
+      const quick = x.quick || {}
+      const values = next(quickStrings(quick, field))
+      const { [field]: _, ...rest } = quick
+      return { ...x, quick: values.length === 0 ? rest : { ...rest, [field]: values } }
+    })
+  })
+  return {
+    values,
+    toggle: useEvent((value: string) =>
+      write((current) => (current.includes(value) ? current.filter((v) => v !== value) : [...current, value])),
+    ),
+    set: useEvent((values: string[]) => write(() => values)),
+    clear: useEvent(() => write(() => [])),
+  }
+}
 
 const useHoldingFilter = (value: string) => {
-  const [param, setParam] = useAtom(useCpp().queryParamAtom)
-  const current = holdingValues(param.quick)
+  const { values, toggle } = useQuickFilterSet('holding')
   return {
-    active: current.includes(value),
-    toggle: useEvent(() => {
-      setParam((x) => {
-        const quick = x.quick || {}
-        const current = holdingValues(quick)
-        const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value]
-        const { holding: _, ...rest } = quick
-        return { ...x, quick: next.length === 0 ? rest : { ...rest, holding: next } }
-      })
-    }),
+    active: values.includes(value),
+    toggle: useEvent(() => toggle(value)),
   }
 }
 

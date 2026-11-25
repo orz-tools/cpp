@@ -1,12 +1,12 @@
 import { Assertion, QueryParam } from '../pkg/cpp-basic'
 import { holdingAssertion } from './characterQuery'
-import type { IGameComponent } from './types'
+import type { IGameComponent, QuickFilterOp } from './types'
 
 /** 查询展开了 quickFiltersByJoin 里的某一项时用那一组，否则用 quickFilters */
 export function quickFiltersFor(
   component: Pick<IGameComponent, 'quickFilters' | 'quickFiltersByJoin'>,
   join: string | null | undefined,
-): Record<string, string> | undefined {
+): Record<string, QuickFilterOp> | undefined {
   const byJoin = component.quickFiltersByJoin
   if (join != null && byJoin && Object.hasOwn(byJoin, join)) return byJoin[join]
   return component.quickFilters
@@ -19,7 +19,7 @@ export function quickFiltersFor(
 export function wrapQueryWithQuickFilter(
   query: QueryParam,
   field?: Record<string, any>,
-  valids?: Record<string, string>,
+  valids?: Record<string, QuickFilterOp>,
 ) {
   if (!field) return query
   const keys = Object.keys(field)
@@ -32,6 +32,11 @@ export function wrapQueryWithQuickFilter(
   for (const [k, v] of Object.entries(field)) {
     const op = Object.prototype.hasOwnProperty.call(valids, k) ? valids[k] : null
     if (op == null) continue
+    if (typeof op === 'function') {
+      const assertion = op(v)
+      if (assertion) extra.push(assertion)
+      continue
+    }
     extra.push({ _: 'field', field: k, op: op, operand: v })
   }
   if (extra.length === 0) return query

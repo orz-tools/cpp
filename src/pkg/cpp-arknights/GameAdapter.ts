@@ -35,6 +35,7 @@ import {
   normalizeItemValueConfig,
 } from './itemValue'
 import { EnemyLevel, MissionCatalog, MissionModule, MissionStageInfo } from './moduleMissions'
+import { recruitTagsOf } from './recruit'
 import { SkinCatalog, buildSkinCatalog } from './skins'
 import { editableUniEquips } from './statusEdit'
 import { HeyboxSurveySource, SurveySource, YituliuSurveySource, toTierShares } from './survey'
@@ -317,6 +318,12 @@ export class ArknightsAdapter implements IGameAdapter<Arknights> {
       QStrings,
       ({ character }) => [...new Set([character.raw.profession, ...character.patches.map((x) => x[1].profession)])],
     ).withOptions(professionOptions)
+    aa.addField(
+      'recruit',
+      lpstr(() => gt.pgettext('query field', '公招词条')),
+      QStrings,
+      ({ character }) => recruitTagsOf(this.dataManager.recruit, character.key).map(String),
+    ).withOptions(() => this.dataManager.recruit.tags.map((x) => ({ value: String(x.tagId), label: x.tagName })))
 
     aa.addStatusField(
       'elite',

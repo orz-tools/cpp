@@ -22,6 +22,7 @@ import { Category, myCategories } from './GameAdapter'
 import { Details, DetailsLoader } from './details'
 import type { ItemValueResult } from './itemValue'
 import { PrtsSkinsData, PrtsSkinsLoader } from './prtsSkins'
+import type { RecruitData } from './recruit'
 import { SpecialOperator, buildSpecialOperator } from './specialOperators'
 import {
   AK_ITEM_GOLD,
@@ -83,6 +84,8 @@ export class ArknightsSources implements DataSources {
   }
 }
 
+const emptyRecruit: RecruitData = { tags: [], pool: [] }
+
 function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter, getOptional: OptionalContainerGetter) {
   const k = getContainer(sources.kengxxiao)
   // Penguin Statistics has no second host and the surveys come from other sites. Without the matrix there are no stages,
@@ -128,6 +131,8 @@ function extractRaw(sources: ArknightsSources, getContainer: ContainerGetter, ge
       nodeUnlockMissionData: {},
       masterNames: {},
     },
+    // Nor exRecruit, before it published the public recruitment pool
+    exRecruit: k.data.exRecruit ?? emptyRecruit,
     penguinMatrix: penguin,
     yituliuSurvey,
     heyboxSurvey,
@@ -177,6 +182,16 @@ export class ArknightsDataManager extends BasicDataManager<Arknights, ArknightsS
     } as ArknightsSnapshot
     s.data = transform(s)
     return s
+  }
+
+  /**
+   * The public recruitment pool of the region's own data, empty in data published before it. A global server never
+   * falls back on zh_CN's pool, which has operators the server does not have yet.
+   */
+  public get recruit(): RecruitData {
+    const raw = this.raw
+    if (!raw) return emptyRecruit
+    return this.sources.kengxxiaoLocal ? (raw.local?.exRecruit ?? emptyRecruit) : raw.exRecruit
   }
 
   private readonly detailsLoader = new DetailsLoader()

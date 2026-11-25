@@ -405,4 +405,14 @@ export type CppData_ArknightsKengxxiaoJaJp = {
             [x: string]: string;
         };
     };
+    exRecruit: {
+        tags: {
+            tagId: number;
+            tagName: string;
+        }[];
+        pool: {
+            charId: string;
+            tags: number[];
+        }[];
+    };
 }
