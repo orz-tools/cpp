@@ -8,6 +8,7 @@ import {
   DetailsLoader,
   getBuildingBuffDetail,
   getEquipDetail,
+  getPotentialDetail,
   getSkillDetail,
   getSkillLevel,
   getTermDetail,
@@ -53,6 +54,7 @@ describe('reading details', () => {
       equips: {},
       terms: {},
       buildingBuffs: {},
+      potentials: {},
     }
     const details: Details = { local, base: zh }
     expect(getSkillDetail(details, 'skchr_quercu_2')!.texts).toEqual(['ASPD +{attack_speed}'])
@@ -79,7 +81,13 @@ describe('getBuildingBuffDetail', () => {
   it("takes the region's text and effects together when it has the skill", () => {
     // en_US has its own text but no effects: zh_CN's are not borrowed
     const enBuff = { text: 'When this Operator is assigned to a Factory, productivity <@cc.vup>+15%</>' }
-    const local: DetailsData = { skills: {}, equips: {}, terms: {}, buildingBuffs: { 'manu_prod_spd[000]': enBuff } }
+    const local: DetailsData = {
+      skills: {},
+      equips: {},
+      terms: {},
+      buildingBuffs: { 'manu_prod_spd[000]': enBuff },
+      potentials: {},
+    }
     const details: Details = { local, base }
     expect(getBuildingBuffDetail(details, 'manu_prod_spd[000]')).toBe(enBuff)
     expect(getBuildingBuffDetail(details, 'manu_prod_spd[010]')).toBe(zhBuff)
@@ -89,6 +97,35 @@ describe('getBuildingBuffDetail', () => {
   it('reads a copy from before base skills as having none', () => {
     const old = { skills: {}, equips: {}, terms: {} } as unknown as DetailsData
     expect(getBuildingBuffDetail({ local: null, base: old }, 'manu_prod_spd[000]')).toBeNull()
+  })
+})
+
+describe('getPotentialDetail', () => {
+  const empty = { skills: {}, equips: {}, terms: {}, buildingBuffs: {} }
+  const zhHuang = {
+    ranks: ['部署费用-1', '第一天赋效果增强', '攻击力+28', '第二天赋效果增强', '部署费用-1'],
+    talents: [],
+  }
+  const zhAmiya2 = { ranks: ['生命上限+200', '部署费用-1', '攻击力+28', '部署费用-1', '防御力+22'], talents: [] }
+  const base: DetailsData = { ...empty, potentials: { char_017_huang: zhHuang, char_1001_amiya2: zhAmiya2 } }
+
+  it("takes the region's entry when it has the operator, otherwise zh_CN's", () => {
+    const enHuang = { ranks: ['DP Cost -1', 'Improves First Talent', 'ATK +28', 'Improves Second Talent'], talents: [] }
+    const local: DetailsData = { ...empty, potentials: { char_017_huang: enHuang } }
+    const details: Details = { local, base }
+    expect(getPotentialDetail(details, 'char_017_huang')).toBe(enHuang)
+    expect(getPotentialDetail(details, 'char_1001_amiya2')).toBe(zhAmiya2)
+  })
+
+  it('returns null when neither has the operator', () => {
+    expect(getPotentialDetail({ local: null, base }, 'char_9999_nobody')).toBeNull()
+    expect(getPotentialDetail({ local: null, base }, 'toString')).toBeNull()
+  })
+
+  it('reads a copy from before potentials as having none', () => {
+    const old = empty as unknown as DetailsData
+    expect(getPotentialDetail({ local: null, base: old }, 'char_017_huang')).toBeNull()
+    expect(getPotentialDetail({ local: old, base }, 'char_017_huang')).toBe(zhHuang)
   })
 })
 
@@ -117,15 +154,15 @@ describe('DetailsLoader', () => {
   const base = new ArknightsKengxxiaoDetailsObject('zh_CN')
   const local = new ArknightsKengxxiaoDetailsObject('en_US')
 
-  // 'v2@1' is version v2 of schema 1; without @ the schema is 2
+  // 'v2@1' is version v2 of schema 1; without @ the schema is 3
   function container(obj: DataContainerObject<any>, version: string): IDataContainer<DetailsData> {
-    const [id, schema = '2'] = version.split('@')
+    const [id, schema = '3'] = version.split('@')
     return {
       '@type': '@orz/cpp/data-container',
       '@version': 1,
       name: obj.name,
       version: { id, text: id, timestamp: 1, sources: [], schema: Number(schema) },
-      data: obj === base ? zh : { skills: {}, equips: {}, terms: {}, buildingBuffs: {} },
+      data: obj === base ? zh : { skills: {}, equips: {}, terms: {}, buildingBuffs: {}, potentials: {} },
     }
   }
 
@@ -171,11 +208,21 @@ describe('DetailsLoader', () => {
     ])
   })
 
+  it('refreshes once a stored copy from before potentials, even of the same version', async () => {
+    const { load, calls } = fakeLoad({ [base.name]: ['v2@2', 'v2'] })
+    const loader = new DetailsLoader(load)
+    await loader.get({ obj: base, versionId: 'v2' }, null)
+    expect(calls).toEqual([
+      [base.name, undefined],
+      [base.name, true],
+    ])
+  })
+
   it('loads the local language beside zh_CN', async () => {
     const { load, calls } = fakeLoad({ [base.name]: ['v2'], [local.name]: ['l2'] })
     const loader = new DetailsLoader(load)
     const d = await loader.get({ obj: base, versionId: 'v2' }, { obj: local, versionId: 'l2' })
-    expect(d.local).toEqual({ skills: {}, equips: {}, terms: {}, buildingBuffs: {} })
+    expect(d.local).toEqual({ skills: {}, equips: {}, terms: {}, buildingBuffs: {}, potentials: {} })
     expect(calls).toHaveLength(2)
   })
 
